@@ -8,13 +8,33 @@
                 @include('consultations.partials.head',array('patient'=>$patient,'appointment'=>$appointment))
             </div>
             <div class="col-md-10  my-4" id="reason">
-                <livewire:consultation.reason :encounter_id="$consultation->id"/>
+                @component('components.card',array('title'=>'Queja Principal','show'=>''))
+                    @slot('card_body')
+                        <livewire:consultation.reason :encounter_id="$consultation->id"/>
+                    @endslot
+                @endcomponent
+            </div>
+            <div class="col-md-10  my-3" id="vital_signs">
+                @component('components.card',array('title'=>'Signos Vitales','show'=>''))
+                    @slot('card_body')
+                        <livewire:consultation.vital-signs :encounter_id="$consultation->id"/>
+                    @endslot
+                @endcomponent
+
             </div>
             <div class="col-md-10  my-3" id="reason">
-                <livewire:consultation.vital-signs :encounter_id="$consultation->id"/>
+                @component('components.card',array('title'=>'Enfermedad Actual','show'=>''))
+                    @slot('card_body')
+                        <livewire:consultation.present-illness :encounter_id="$consultation->id"/>
+                    @endslot
+                @endcomponent
             </div>
             <div class="col-md-10  my-3" id="reason">
-                <livewire:consultation.present-illness :encounter_id="$consultation->id"/>
+                @component('components.card',array('title'=>'Examen Fisico','show'=>''))
+                    @slot('card_body')
+                        <livewire:consultation.physical-exam :encounter_id="$consultation->id"/>
+                    @endslot
+                @endcomponent
             </div>
             {{--}}
           @php

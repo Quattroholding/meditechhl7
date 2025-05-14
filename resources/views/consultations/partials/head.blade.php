@@ -1,4 +1,4 @@
-<div class="consultation-ficha">
+<div class="consultation-ficha" style="padding: 0px">
     <div class="consultation-ficha-contenido">
         <div>
             <b>Consulta #</b> {{ $consultation->id }}
