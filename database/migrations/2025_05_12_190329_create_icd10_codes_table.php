@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('icd10_code',15)->nullable();
             $table->boolean('active')->default(1);
             $table->foreignId('medical_speciality_id')->nullable()->references('id')->on('medical_specialties')->nullable()->onDelete('cascade');
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->comment('Created by');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade')->comment('Created by');
 
             $table->text('note')->nullable();
             $table->softDeletes();

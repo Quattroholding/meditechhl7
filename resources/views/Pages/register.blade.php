@@ -26,10 +26,19 @@
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form_register">
                                     @csrf
                                     <div class="form-group">
-                                        <label>Full Name <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="name" value="{{old('name')}}" name="name">
+                                        <label>First Name <span class="login-danger">*</span></label>
+                                        <input class="form-control" type="text" id="name" value="{{old('name')}}" name="first_name">
                                         <div class="text-danger pt-2">
-                                            @error('name')
+                                            @error('first_name')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name <span class="login-danger">*</span></label>
+                                        <input class="form-control" type="text" id="name" value="{{old('name')}}" name="last_name">
+                                        <div class="text-danger pt-2">
+                                            @error('last_name')
                                                 {{ $message }}
                                             @enderror
                                         </div>
@@ -65,7 +74,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Confirm Password <span class="login-danger">*</span></label>
-                                        <input class="form-control pass-input-confirm" type="password" id="confirm-password" name="password">
+                                         <div id="passwordError" style="color: red;"></div>
+                                        <input class="form-control pass-input-confirm" type="password" id="confirm-password" name="password_confirmed">
                                         <span class="profile-views feather-eye-off confirm-password"></span>
                                         <div class="text-danger pt-2">
                                             @error('password')
@@ -121,5 +131,30 @@
         </div>
     </div>
     @vite(['resources/js/app.js'])
+    <script>
+                var password = document.getElementById('password');
+        var passwordConfirmation = document.getElementById('confirm-password');
+        var passwordError = document.getElementById('passwordError');
+
+        function validatePasswords() {
+            if (password.value !== passwordConfirmation.value) {
+                passwordError.textContent = 'Las contraseñas no coinciden.';
+            } else {
+                passwordError.textContent = '';
+            }
+        }
+
+        password.addEventListener('input', validatePasswords);
+        passwordConfirmation.addEventListener('input', validatePasswords);
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            if (password.value !== passwordConfirmation.value) {
+                passwordError.textContent = 'Las contraseñas no coinciden.';
+                event.preventDefault(); // Evita que el formulario se envíe
+            } else {
+                passwordError.textContent = '';
+            }
+        });
+    </script>
 </x-guest-layout>
 

@@ -22,9 +22,10 @@ class PatientController extends Controller
         
     }
     public function store_public(Request $request){
-       // dd($request->all());
+       //dd($request->all());
         $validated = $request->validate([
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'email' => 'required',
             'phone' => 'required',
             'full_phone' => 'required',
