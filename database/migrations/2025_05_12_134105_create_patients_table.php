@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('fhir_id')->unique()->comment('FHIR Patient resource ID');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('identifier')->unique()->comment('Identificador único del paciente');
-            $table->enum('identifier_type', ['DNI', 'Pasaporte', 'Seguro', 'Otro']);
+            $table->enum('identifier_type', ['DNI', 'Pasaporte', 'Seguro', 'Otro'])->nullable();
             $table->string('name');
             $table->string('given_name');
             $table->string('family_name');
-            $table->enum('gender', ['male', 'female', 'other', 'unknown']);
-            $table->date('birth_date');
-            $table->boolean('deceased')->default(false);
+            $table->enum('gender', ['male', 'female', 'other', 'unknown'])->default('unknown');
+            $table->date('birth_date')->nullable();
+            $table->boolean('deceased')->default(false)->nullable();
             $table->dateTime('deceased_date')->nullable();
             $table->string('address')->nullable();
             $table->string('city')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('marital_status')->nullable();
-            $table->boolean('multiple_birth')->default(false);
+            $table->boolean('multiple_birth')->default(false)->nullable();
             $table->integer('multiple_birth_count')->nullable();
             $table->json('communication')->nullable()->comment('Idiomas que habla el paciente');
             $table->json('extension')->nullable()->comment('Extensiones FHIR');

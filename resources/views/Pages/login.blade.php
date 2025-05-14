@@ -24,6 +24,12 @@
                                 </div>
                                 <h2>Login</h2>
                                 <!-- Form -->
+
+                                 @if(session('message'))
+        <div style="color: blue;">
+            {{ session('message') }}
+        </div>
+    @endif
                                 <form action="{{ route('login') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
