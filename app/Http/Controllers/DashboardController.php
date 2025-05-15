@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
         $totApp = Appointment::count();
         $totAppFullFilled = Appointment::fullFilled()->count();
-        $porcFullFilled = round($totAppFullFilled*100/$totApp,2);
+        $porcFullFilled = 0;//round($totAppFullFilled*100/$totApp,2);
         $classApp = 'status-pink';
         $signApp = '-';
         if($porcFullFilled>50){
@@ -39,7 +39,7 @@ class DashboardController extends Controller
 
         $totCon = Encounter::count();
         $totConCompleted = Encounter::finished()->count();
-        $porcCompleted = round($totConCompleted*100/$totCon,2);
+        $porcCompleted = 0;//round($totConCompleted*100/$totCon,2);
         $classCon = 'status-pink';
         $signCon = '-';
         if($porcCompleted>50){
