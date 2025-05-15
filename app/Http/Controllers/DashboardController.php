@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Consultation;
+use App\Models\Encounter;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -36,8 +37,8 @@ class DashboardController extends Controller
             "class" => $classApp,
             "percentageChange" =>$signApp.$porcFullFilled.'%');
 
-        $totCon = Consultation::count();
-        $totConCompleted = Consultation::completed()->count();
+        $totCon = Encounter::count();
+        $totConCompleted = Encounter::finished()->count();
         $porcCompleted = round($totConCompleted*100/$totCon,2);
         $classCon = 'status-pink';
         $signCon = '-';
@@ -69,6 +70,6 @@ class DashboardController extends Controller
     public function patient(Request $request){
 
         $dashboard = array();
-        return view('Dashboard.patient-dashboard',compact('dashboards'));
+        return view('Dashboard.patient-dashboard',compact('dashboard'));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,7 +44,27 @@ class Appointment extends Model
         return $this->belongsTo(ConsultingRoom::class)->withDefault(['name'=>'N/A']);
     }
 
-    /*public function getStatusAttribute($attr){
+    /**
+     * Scope a query to only include appointments fullfilled.
+     */
+    public function scopeFullFilled(Builder $query): void
+    {
+        $query->where('status', 'cumplido');
+    }
 
-    }*/
+    /**
+     * Scope a query to only include appointments pending.
+     */
+    public function scopePending(Builder $query): void
+    {
+        $query->where('status', 'pendiente');
+    }
+
+    /**
+     * Scope a query to only include appointments booked.
+     */
+    public function scopeBooked(Builder $query): void
+    {
+        $query->where('status', 'reservado');
+    }
 }
