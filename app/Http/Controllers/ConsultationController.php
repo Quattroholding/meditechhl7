@@ -56,7 +56,18 @@ class ConsultationController extends Controller
 
         //dd($template);
 
-       $secciones=[1=>'Queja Principal',2=>'Signos Vitales',3=>'Enfermedad Actual',4=>'Examen Físico'];
+       $secciones=[
+           1=>'Queja Principal',
+           2=>'Signos Vitales',
+           3=>'Enfermedad Actual',
+           4=>'Examen Físico',
+           5=>'Diagnosticos',
+           6=>'Laboratorios',
+           7=>'Imagenes',
+           8=>'Procedimientos',
+           9=>'Referencia Especialista',
+           10=>'Medicamentos'
+       ];
 
         return view('consultations.create',compact('consultation','appointment','patient','secciones'));
     }

@@ -3,23 +3,25 @@
         <div class="card">
             <div class="card-body">
                 <div class="heading-detail ">
-                    <h4 class="mb-3">About me</h4>
-                    <p>Hello I am Smith Bruklin a Gynaecologist in Sanjivni Hospital Surat. I love
-                        to work with all my hospital staff and seniour doctors.</p>
+                    <h4 class="mb-3">{{__('Acerca de mi')}}</h4>
                 </div>
                 <div class="about-me-list">
                     <ul class="list-space">
                         <li>
-                            <h4>Gender</h4>
-                            <span>Male</span>
+                            <h4>{{__('patient.gender')}}</h4>
+                            <span>{{$data->gender}}</span>
                         </li>
                         <li>
-                            <h4>Operation Done</h4>
-                            <span>30+</span>
+                            <h4>{{__('patient.birthdate')}}</h4>
+                            <span>{{$data->birth_date}}</span>
                         </li>
                         <li>
-                            <h4>Designation</h4>
-                            <span>Engineer</span>
+                            <h4>{{__('patient.email')}}</h4>
+                            <span>{{$data->email}}</span>
+                        </li>
+                        <li>
+                            <h4>{{__('patient.civil_state')}}</h4>
+                            <span>{{$data->marital_status}}</span>
                         </li>
                     </ul>
                 </div>

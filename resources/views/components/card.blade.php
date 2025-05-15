@@ -6,7 +6,7 @@ if(!isset($show)) $show='show';
         <h5 class="accordion-faq m-0">
             <a class="text-dark" data-bs-toggle="collapse" href="#{{\Illuminate\Support\Str::slug($title)}}" aria-expanded="true">
 
-                <h3 style="color: #fff;">  <i class="fa fa-plus"></i> {{__($title)}}</h3>
+                <h3 style="color: #fff;font-size: 15px;">  <i class="fa fa-plus"></i> {{__($title)}}</h3>
             </a>
         </h5>
     </div>

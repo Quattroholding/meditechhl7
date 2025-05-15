@@ -24,19 +24,19 @@
         </div>
     @endforeach
     <div class="p-3 text-gray-900" style="min-height: 100px;" id="marker-id-3.5">
-        <div class="py-1">
+        <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Agravantes')}}" />
             <x-text-input class="block w-full" wire:model.live="aggravating_factors" :value="$aggravating_factors" type="text"/>
         </div>
-        <div class="py-1">
+        <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Atenuantes')}}" />
             <x-text-input class="block w-full" wire:model.live="alleviating_factors" :value="$alleviating_factors" type="text"/>
         </div>
-        <div class="py-1">
+        <div class="input-block local-forms">
             <x-input-label  value="{{__('Sintomas Asociados')}}" />
             <x-text-input class="block w-full" wire:model.live="associated_symptoms" :value="$associated_symptoms" type="text"/>
         </div>
-        <div class="py-1">
+        <div class="input-block local-forms">
             <x-input-label  value="{{__('Descripcion')}}" />
             <x-textarea-input
                 wire:model.live="description"

@@ -1,6 +1,6 @@
 <div id="marker-id-4">
     @foreach($items as $vs)
-        <div class="py-3">
+        <div class="input-block local-forms">
             <x-input-label  :value="$vs->name.' ('.$vs->description.')'" />
             <x-textarea-input
                 wire:model.live="values.{{$vs->code}}"

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Referral extends Model
 {
     protected $fillable = [
-        'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id',
+        'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id','practitioner_id',
         'identifier', 'status', 'intent', 'priority', 'code', 'reason',
         'description', 'occurrence_date', 'note','supporting_info'
     ];
@@ -37,5 +37,9 @@ class Referral extends Model
     public function referredTo(): BelongsTo
     {
         return $this->belongsTo(Practitioner::class, 'referred_to_id');
+    }
+
+    public function speciality(){
+        return $this->belongsTo(MedicalSpeciality::class,'code');
     }
 }
