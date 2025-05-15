@@ -197,11 +197,46 @@ class EncounterFactory extends Factory
                 $encounter->procedures()->create([
                     'fhir_id' => 'procedure-' . $this->faker->uuid(),
                     'code' => $examTypes->code,
+                    'identifier'=>$examTypes->type,
                     'status' => $this->faker->randomElement(['preparation', 'in-progress', 'not-done', 'completed']),
                     'performed_date' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
                     'reason' => $this->faker->sentence(),
                     'patient_id' => $encounter->patient_id,
                     'practitioner_id' => $encounter->practitioner_id,
+                ]);
+            }
+        });
+    }
+
+    public function withServiceRequests($count = 1)
+    {
+        return $this->afterCreating(function (Encounter $encounter) use ($count) {
+
+            for ($i = 0; $i < $count; $i++) {
+                $examTypes = CptCode::inRandomOrder()->limit(1)->first();
+
+                $encounter->serviceRequests()->create([
+                    'fhir_id' => 'servicerequest-' . $this->faker->uuid(),
+                    'patient_id' => $encounter->patient_id,
+                    'practitioner_id' => $encounter->practitioner_id,
+                    'status' => $this->faker->randomElement(['draft', 'active', 'on-hold', 'completed']),
+                    'intent' => $this->faker->randomElement(['order', 'original-order', 'reflex-order']),
+                    'priority' => $this->faker->randomElement(['routine', 'urgent', 'asap', 'stat']),
+                    'do_not_perform' => $this->faker->boolean(10),
+                    'code' =>$examTypes->code,
+                    'service_type'=>$examTypes->type,
+                    'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
+                    'code_display' => $this->faker->sentence(3),
+                    'quantity' => $this->faker->numberBetween(1, 3),
+                    'occurrence_start' => $this->faker->dateTimeBetween( $encounter->start, '+1 week'),
+                    'occurrence_end' => $this->faker->dateTimeBetween( $encounter->end, '+2 weeks'),
+                    'body_site' => [
+                        'code' => $this->faker->randomElement(['HEAD', 'CHEST', 'ABDOMEN']),
+                        'display' => $this->faker->word
+                    ],
+                    'note' => $this->faker->optional()->sentence,
+                    'authored_on' => $this->faker->dateTimeBetween($encounter->start,  $encounter->end),
+                    'last_updated' => $this->faker->dateTimeBetween($encounter->start,  $encounter->end),
                 ]);
             }
         });
@@ -279,8 +314,12 @@ class EncounterFactory extends Factory
             $this->withDiagnoses(rand(1, 3))->create([], $encounter);
 
             // Historia de la enfermedad actual
-           $this->withPresentIllness()->create([], $encounter);
+            $this->withPresentIllness()->create([], $encounter);
 
+            // Solicitud de servicios (0-2)
+            if ($this->faker->boolean(80)) {
+                $this->withServiceRequests(rand(0, 3))->create([], $encounter);
+            }
 
             // Procedimientos (0-2)
             if ($this->faker->boolean(50)) {
@@ -288,7 +327,7 @@ class EncounterFactory extends Factory
             }
 
             // Medicamentos (0-3)
-            if ($this->faker->boolean(70)) {
+            if ($this->faker->boolean(60)) {
                 $this->withMedicationRequests(rand(0, 3))->create([], $encounter);
             }
 

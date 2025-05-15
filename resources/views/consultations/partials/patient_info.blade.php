@@ -6,7 +6,6 @@
 
     <div class="offcanvas-body">
         <div class="col-sm-12">
-
             <div class="row">
                 <livewire:patient.patient-profile-about patient_id="{{$id}}"/>
                 <livewire:patient.patient-profile-details patient_id="{{$id}}"/>

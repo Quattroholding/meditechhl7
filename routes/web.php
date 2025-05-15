@@ -170,6 +170,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('/medicines', [ApiController::class, 'medicines'])->name('api.medicines');
     Route::get('/patients', [ApiController::class, 'patients'])->name('api.patients');
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
+    Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
 
 });
 

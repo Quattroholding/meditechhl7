@@ -207,8 +207,8 @@
 
 
 .multivalue-item-container {
-    display: flex;
-    margin-bottom: 0px;
+   /* display: flex;*/
+    margin-bottom: 10px 0px;
 }
 
 .fast-access-medicines {
@@ -1499,7 +1499,7 @@ textarea {
     width: 100%;
     background-color: #005dba;
     color: #FFFFFF;
-    margin: 0px 0px;
+    margin: 10px 0px;
     padding: 10px;
     border-radius: 0px;
     letter-spacing: 0.5px;

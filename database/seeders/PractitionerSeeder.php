@@ -18,7 +18,7 @@ class PractitionerSeeder extends Seeder
 
         foreach ($especialidades as $e){
            $doctor = \App\Models\Practitioner::factory()
-                ->specialist($e->name)
+                ->specialist($e->name,$e->id)
                 ->create();
 
             $this->command->info($doctor);

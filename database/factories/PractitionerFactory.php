@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Client;
+use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\UserClient;
@@ -59,17 +60,19 @@ class PractitionerFactory extends Factory
         });
     }
 
-    public function specialist(string $specialty)
+    public function specialist(string $specialty,int $specialty_id)
     {
-        return  $this->afterCreating(function (Practitioner $practitioner) use($specialty) {
+        return  $this->afterCreating(function (Practitioner $practitioner) use($specialty,$specialty_id) {
             $period_start = $this->faker->dateTimeBetween('-20 years', '-5 years')->format('Y-m-d');
             $period_end = $this->faker->dateTimeBetween($period_start, '+8 years');
+            $medical_speciality = MedicalSpeciality::whereName($specialty)->first();
             return  $practitioner->qualifications()->create([
-                    'code' => 'MD',
+                    'code' => $medical_speciality->id,
                     'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
                     'display' => $specialty,
                     'period_start' => $period_start,
-                    'period_end'=>$period_end
+                    'period_end'=>$period_end,
+                    'medical_speciality_id'=>$specialty_id,
                 ]);
         });
     }

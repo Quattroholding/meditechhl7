@@ -37,8 +37,8 @@ class MedicationRequest extends Model
         return $this->belongsTo(Practitioner::class);
     }
 
-    public function medication(): BelongsTo
+    public function medicine(): BelongsTo
     {
-        return $this->belongsTo(Medicine::class);
+        return $this->belongsTo(Medicine::class,'medication_id');
     }
 }

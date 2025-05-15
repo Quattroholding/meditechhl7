@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('practitioner_qualifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('practitioner_id')->constrained('practitioners')->cascadeOnDelete();
+            $table->foreignId('medical_speciality_id')->constrained('medical_specialties');
             $table->string('code'); // Código de especialidad
             $table->string('system')->nullable(); // Sistema de codificación (ej. 'http://snomed.info/sct')
             $table->string('display'); // Nombre legible

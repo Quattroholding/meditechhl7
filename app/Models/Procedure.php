@@ -14,6 +14,7 @@ class Procedure extends Model
         'practitioner_id',
         'code',
         'display',
+        'identifier',
         'status',
         'performed_date',
         'reason',
@@ -47,5 +48,9 @@ class Procedure extends Model
     public function practitioner(): BelongsTo
     {
         return $this->belongsTo(Practitioner::class);
+    }
+
+    public function cpt(){
+        return $this->belongsTo(CptCode::class,'code','code');
     }
 }

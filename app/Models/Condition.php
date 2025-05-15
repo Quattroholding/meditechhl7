@@ -42,7 +42,7 @@ class Condition extends Model
 
     public function icd10Code(): BelongsTo
     {
-        return $this->belongsTo(Icd10Code::class,'code');
+        return $this->belongsTo(Icd10Code::class,'code','code');
     }
 
     // Accesor para el recurso FHIR
