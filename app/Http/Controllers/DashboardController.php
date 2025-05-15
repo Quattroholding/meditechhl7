@@ -69,6 +69,6 @@ class DashboardController extends Controller
     public function patient(Request $request){
 
         $dashboard = array();
-        return view('Dashboard.patient-dashboard',compact('dashboards'));
+        return view('Dashboard.patient-dashboard',compact('dashboard'));
     }
 }
