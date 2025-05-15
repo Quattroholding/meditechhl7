@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Faker\Factory as Faker;
 
 class PatientController extends Controller
 {
@@ -33,6 +37,54 @@ class PatientController extends Controller
             'terms_and_privacy' => "required"
 
         ]);
+        // Verificar si el correo ya está registrado
+        $email_validation = User::where('email', $request->email)->first();
+
+
+
+        if (!empty($email_validation)) {
+            // El correo ya está registrado
+            session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+            return redirect('/login');
+        }
+        $model = new User();
+        $model->first_name = $request->first_name;
+        $model->last_name = $request->last_name;
+        $model->email = $request->email;
+        $model->password = $request->password;
+        $model->save();
+        
+        // Asignar rol de paciente
+        $model->assignRole('paciente');
+
+        $patient = new Patient();
+        $patient->given_name = $request->first_name;
+        $patient->family_name = $request->last_name;
+        $patient->email = $request->email;
+        $patient->phone = $request->full_phone;
+        $patient->name = $request->first_name .' '. $request->last_name;
+        $patient->user_id = $model->id;
+        $patient->fhir_id = 'patient-' . Str::uuid();
+        $patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        if($patient->save()){
+            
+            session()->flash('message', 'Se ha registrado exitósamente el paciente');
+            $credentials = ([
+            'email' => $model->email,
+            'password' => $request->password,
+        ]);
+             if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $route=route('patient.dashboard');
+            return redirect()->intended($route);
+        }
+        }
+            session()->flash('message', 'Ha habido un error con el registro del paciente');
+            return back();
+    
+
+
+
     }
 
     public function profile(Request $request,$id){
