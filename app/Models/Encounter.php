@@ -72,4 +72,9 @@ class Encounter extends Model
         return $this->hasMany(Referral::class);
     }
 
+    public function observations(): HasMany
+    {
+        return $this->hasMany(Observation::class);
+    }
+
 }
