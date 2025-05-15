@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>Good Morning, <span>Williams Sarah</span></h2>
+                            <h2>Good Morning, <span>{{auth()->user()->full_name}}</span></h2>
                             <p>Have a nice day at work</p>
                         </div>
                     </div>
