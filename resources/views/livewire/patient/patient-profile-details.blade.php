@@ -58,7 +58,7 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title ">Medical History</h4>
+                <h4 class="card-title">Medical History</h4>
             </div>
             <div class="card-body p-0 table-dash">
                 <div class="table-responsive">

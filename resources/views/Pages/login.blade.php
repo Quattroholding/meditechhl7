@@ -25,16 +25,17 @@
                                 <h2>Login</h2>
                                 <!-- Form -->
 
-                                 @if(session('message'))
-        <div style="color: blue;">
-            {{ session('message') }}
-        </div>
-    @endif
+                                @if (session('message'))
+                                    <div style="color: blue;">
+                                        {{ session('message') }}
+                                    </div>
+                                @endif
                                 <form action="{{ route('login') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
                                         <label>Email <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="email" value="" name="email">
+                                        <input class="form-control" type="text" id="email" value=""
+                                            name="email">
                                         <div class="text-danger pt-2">
                                             @error('0')
                                                 {{ $message }}
@@ -46,7 +47,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Password <span class="login-danger">*</span></label>
-                                        <input class="form-control pass-input" type="password" id="password" name="password"  value="">
+                                        <input class="form-control pass-input" type="password" id="password"
+                                            name="password" value="">
                                         <span class="profile-views feather-eye-off toggle-password"></span>
                                         <div class="text-danger pt-2">
                                             @error('0')
@@ -73,7 +75,8 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">Need an account? <a href="{{ url('register') }}">Sign Up</a>
+                                    <p class="account-subtitle">Need an account? <a href="{{ url('register') }}">Sign
+                                            Up</a>
                                     </p>
                                     <!-- Social Login -->
                                     <div class="social-login">
