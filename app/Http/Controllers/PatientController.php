@@ -69,7 +69,7 @@ class PatientController extends Controller
         if($patient->save()){
             
             session()->flash('message', 'Se ha registrado exitósamente el paciente');
-           /* $credentials = ([ POR REVISAR
+            $credentials = ([
             'email' => $model->email,
             'password' => $request->password,
         ]);
@@ -78,7 +78,7 @@ class PatientController extends Controller
              $route=route('patient.dashboard');
 
             return redirect()->intended($route);
-        }*/
+        }
         }
             session()->flash('message', 'Ha habido un error con el registro del paciente');
             return back();
