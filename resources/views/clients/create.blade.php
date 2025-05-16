@@ -52,7 +52,7 @@
                                 <div class=" col-12 col-md-6 col-xl-4">
                                     <!-- RUC/DV -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="ruc" :value="__('DV')" />
+                                        <x-input-label for="dv" :value="__('DV')" />
                                         <x-text-input id="dv" class="block mt-1 w-full" type="number" name="dv" :value="old('dv')" required maxlength="2"  min="1"/>
                                         <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                                     </div>
@@ -71,7 +71,7 @@
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="whatsapp" :value="__('Whatsapp')" />
-                                        <x-text-input id="whatsapp" class="block mt-1 w-full" type="email" name="whatsapp" :value="old('whatsapp')"/>
+                                        <x-text-input id="whatsapp" class="block mt-1 w-full" type="tel" name="whatsapp" :value="old('whatsapp')"/>
                                         <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                                     </div>
                                 </div>

@@ -20,7 +20,38 @@ class ClientController extends Controller
     }
 
     public function store(Request $request){
+        //dd($request->all(), $request->logo);
+        $validated = $request->validate([
+            'name' => 'required',
+            'long_name' => 'required',
+            'ruc' => 'required',
+            'email' => 'required',
+            'dv' => 'required',
+            'whatsapp' => 'required',
+            'logo' => 'required',
 
+        ]);
+
+        $model = new Client();
+        $model->dv = $request->dv;
+        $model->ruc = $request->ruc;
+        $model->long_name = $request->long_name;
+        $model->name=$request->name;
+        $model->email = $request->email;
+        $model->whatsapp = $request->whatsapp;
+        $model->active = 1;
+        if($request->file('logo')){
+            $service = new FileService();
+            $filename = 'client_logo_'.$model->id;
+            $model->logo = $service->uploadSingleFile($request->file('logo'),'clients',$filename);
+            }
+        if($model->save()){
+            $request->session()->flash('message.success','Cliente registrado con éxito.');
+        }else{
+            $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
+        }
+
+        return redirect(route('client.index'));
     }
 
     public function edit($id){
