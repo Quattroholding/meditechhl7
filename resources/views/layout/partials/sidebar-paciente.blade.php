@@ -1,4 +1,4 @@
-sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
@@ -12,6 +12,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                         <li><a class="{{ Request::is('dashboard/patient') ? 'active' : '' }}"  href="{{ route('patient.dashboard') }}">{{ __('patient.titles') }} Dashboard</a></li>
                     </ul>
                 </li>
+                {{--}}
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-08.svg') }}" alt=""></span>
@@ -34,7 +35,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                         <li><a class="{{ Request::is('patients') ? 'active' : '' }}"  href="{{ route('patient.index') }}">{{ __('generic.list') }} {{ __('patient.titles') }}</a></li>
                         <li><a class="{{ Request::is('patients/create') ? 'active' : '' }}"   href="{{ route('patient.create') }}">{{ __('generic.create') }} {{ __('patient.title') }}</a></li>
                     </ul>
-                </li>
+                </li>{{--}}
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side"><img
                                 src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
@@ -58,7 +59,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                                 href="{{ url('edit-schedule') }}">Edit Schedule</a></li>
                     </ul>
                 </li>
-                {{--}}
+                
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
@@ -78,7 +79,6 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                         <li><a class="{{ Request::is('users/create') ? 'active' : '' }}"  href="{{ route('user.create') }}">{{ __('generic.create') }} {{ __('user.title') }}</a></li>
                     </ul>
                 </li>
-                {{--}}
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side"><img
                                 src="{{ URL::asset('/assets/img/icons/menu-icon-06.svg') }}" alt=""></span>

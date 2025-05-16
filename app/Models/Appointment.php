@@ -49,7 +49,7 @@ class Appointment extends Model
      */
     public function scopeFullFilled(Builder $query): void
     {
-        $query->where('status', 'cumplido');
+        $query->where('status', 'fullfilled');
     }
 
     /**
@@ -57,7 +57,7 @@ class Appointment extends Model
      */
     public function scopePending(Builder $query): void
     {
-        $query->where('status', 'pendiente');
+        $query->where('status', 'pending');
     }
 
     /**
