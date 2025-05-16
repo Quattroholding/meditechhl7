@@ -22,10 +22,7 @@ class PractitionerFactory extends Factory
         $gender = $this->faker->randomElement(['male', 'female']);
         $givenName = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
 
-        $specialties = [
-            'Cardiología', 'Pediatría', 'Dermatología', 'Ginecología',
-            'Traumatología', 'Neurología', 'Oncología', 'Medicina General'
-        ];
+        $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
 
         return [
             'fhir_id' => 'practitioner-' . Str::uuid(),
@@ -42,8 +39,9 @@ class PractitionerFactory extends Factory
                 [
                     'code' => $this->faker->randomElement(['MD', 'DO']),
                     'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
-                    'display' => $this->faker->randomElement($specialties),
+                    'display' => $specialty->name,
                     'period_start' => $this->faker->dateTimeBetween('-20 years', '-5 years')->format('Y-m-d'),
+                    'medical_speciality_id'=>$specialty->id,
                 ]
             ]),
             'active' => true,
@@ -65,7 +63,7 @@ class PractitionerFactory extends Factory
         return  $this->afterCreating(function (Practitioner $practitioner) use($specialty,$specialty_id) {
             $period_start = $this->faker->dateTimeBetween('-20 years', '-5 years')->format('Y-m-d');
             $period_end = $this->faker->dateTimeBetween($period_start, '+8 years');
-            $medical_speciality = MedicalSpeciality::whereName($specialty)->first();
+            $medical_speciality = MedicalSpeciality::find($specialty_id);
             return  $practitioner->qualifications()->create([
                     'code' => $medical_speciality->id,
                     'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',

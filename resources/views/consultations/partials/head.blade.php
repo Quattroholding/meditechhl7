@@ -41,9 +41,11 @@
     <div class="consultation-ficha-contenido">
         <div>
             <b>Doctor:</b> {!! $appointment->practitioner->profile_name  !!}</div>
+            @if( $appointment->practitioner->qualifications()->first())
             <div>
                 <b>Especialidad:</b> {{ $appointment->practitioner->qualifications()->first()->display }}
             </div>
+            @endif
     </div>
 </div>
 <style>

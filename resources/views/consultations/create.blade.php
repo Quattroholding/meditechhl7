@@ -36,50 +36,50 @@
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="diagnostics">
                 @component('components.card',array('title'=>'Diagnosticos','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.diagnostics :encounter_id="$consultation->id"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="laboratorios">
                 @component('components.card',array('title'=>'Laboratorios','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.service-request :encounter_id="$consultation->id" type="laboratory"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="imagenes">
                 @component('components.card',array('title'=>'Imagenes','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.service-request :encounter_id="$consultation->id" type="images"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="procedimientos">
                 @component('components.card',array('title'=>'Procedimientos','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.service-request :encounter_id="$consultation->id" type="procedure"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="custom_procedimientos">
                 @component('components.card',array('title'=>'Procedimientos (En sitio , aqui tenemos que ver si los sacamos de los cpt o creamos nuestra propia tabla)','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.procedures :encounter_id="$consultation->id" type="procedure"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
+            <div class="col-md-10  col-sm-12 my-3" id="ref-especialista">
                 @component('components.card',array('title'=>'Referir especialista','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.referral :encounter_id="$consultation->id"/>
                     @endslot
                 @endcomponent
             </div>
-            <div class="col-md-10  col-sm-12 my-3" id="physical-exam">
-                @component('components.card',array('title'=>'Medicamentos','show'=>'show'))
+            <div class="col-md-10  col-sm-12 my-3" id="medicamentos">
+                @component('components.card',array('title'=>'Medicamentos','show'=>''))
                     @slot('card_body')
                         <livewire:consultation.medication-requests :encounter_id="$consultation->id" />
                     @endslot

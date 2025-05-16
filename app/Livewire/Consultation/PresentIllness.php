@@ -41,6 +41,7 @@ class PresentIllness extends Component
             $this->alleviating_factors = $this->present_illness->alleviating_factors;
             $this->associated_symptoms = $this->present_illness->associated_symptoms;
         }
+
     }
 
     public function render()

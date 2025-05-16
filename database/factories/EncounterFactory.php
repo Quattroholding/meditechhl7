@@ -4,6 +4,7 @@ namespace Database\Factories;
 use App\Models\{Condition,
     CptCode,
     Encounter,
+    MedicalSpeciality,
     Medicine,
     Patient,
     Practitioner,
@@ -178,9 +179,9 @@ class EncounterFactory extends Factory
                 'duration' => $duration->value,
                 'timing' =>$timing->value,
                 'onset' => $this->faker->randomElement(['sudden', 'acute', 'gradual']),
-                'aggravating_factors' => $this->faker->sentences(2),
-                'alleviating_factors' => $this->faker->sentences(2),
-                'associated_symptoms' => $this->faker->sentences(3),
+                'aggravating_factors' => $this->faker->sentences(),
+                'alleviating_factors' => $this->faker->sentences(),
+                'associated_symptoms' => $this->faker->sentences(),
                 'patient_id' => $encounter->patient_id,
                 'practitioner_id' => $encounter->practitioner_id,
             ]);
@@ -228,15 +229,14 @@ class EncounterFactory extends Factory
                     'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
                     'code_display' => $this->faker->sentence(3),
                     'quantity' => $this->faker->numberBetween(1, 3),
-                    'occurrence_start' => $this->faker->dateTimeBetween( $encounter->start, '+1 week'),
-                    'occurrence_end' => $this->faker->dateTimeBetween( $encounter->end, '+2 weeks'),
+                    'occurrence_start' =>$encounter->start,
                     'body_site' => [
                         'code' => $this->faker->randomElement(['HEAD', 'CHEST', 'ABDOMEN']),
                         'display' => $this->faker->word
                     ],
                     'note' => $this->faker->optional()->sentence,
-                    'authored_on' => $this->faker->dateTimeBetween($encounter->start,  $encounter->end),
-                    'last_updated' => $this->faker->dateTimeBetween($encounter->start,  $encounter->end),
+                    'authored_on' =>$encounter->start,
+                    'last_updated' =>$encounter->start,
                 ]);
             }
         });
@@ -253,6 +253,9 @@ class EncounterFactory extends Factory
             }*/
 
             foreach ($medications as $medication) {
+
+                $dosage_instruction = $this->generateDosageInstruction();
+
                 $medArr = [
                     'fhir_id' => 'medicationrequest-' . $this->faker->uuid(),
                     'identifier' => 'RX-' . $this->faker->unique()->numerify('#######'),
@@ -260,6 +263,9 @@ class EncounterFactory extends Factory
                     'intent' => 'order',
                     'medication_id' => $medication->id,
                     'dosage_instruction' => $this->generateDosageInstruction(),
+                    'dosage_text'=>$dosage_instruction['text'],
+                    'quantity'=> $this->faker->numberBetween(1, 30),
+                    'refills'=> $this->faker->numberBetween(1, 5),
                     'valid_from' => now(),
                     'valid_to' => now()->addDays($this->faker->numberBetween(7, 30)),
                     'patient_id' => $encounter->patient_id,
@@ -273,25 +279,18 @@ class EncounterFactory extends Factory
     public function withReferral()
     {
         return $this->afterCreating(function (Encounter $encounter) {
-            $specialties = [
-                'Cardiología',
-                'Dermatología',
-                'Gastroenterología',
-                'Neurología',
-                'Ortopedia'
-            ];
 
-            $specialty = $this->faker->randomElement($specialties);
-            $referredTo = Practitioner::factory()->create(['qualification->display' => $specialty]);
+            $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
+            $referredTo = Practitioner::factory()->specialist($specialty->name,$specialty->id);
 
             $encounter->referrals()->create([
                 'fhir_id' => 'servicerequest-' . $this->faker->uuid(),
                 'identifier' => 'REF-' . $this->faker->unique()->numerify('#######'),
                 'status' => 'active',
                 'intent' => 'order',
-                'code' => $specialty,
+                'code' => $specialty->id,
                 'reason' => $this->faker->sentence(),
-                'description' => "Referencia a especialista en $specialty",
+                'description' => "Referencia a especialista en $specialty->name",
                 'occurrence_date' => $this->faker->dateTimeBetween($encounter->start, '+30 days'),
                 'referred_to_id' => $referredTo->id,
                 'patient_id' => $encounter->patient_id,

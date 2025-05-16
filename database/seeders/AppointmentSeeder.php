@@ -33,7 +33,7 @@ class AppointmentSeeder extends Seeder
 
         // Crear 5 citas fullfilled
         Appointment::factory()
-            ->count(5)
+            ->count(1)
             ->fulfilled()
             ->withEncounter()
             ->create();
