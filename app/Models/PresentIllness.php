@@ -14,9 +14,9 @@ class PresentIllness extends Model
 
     protected $casts = [
         'onset_date' => 'datetime',
-        'aggravating_factors' => 'array',
-        'alleviating_factors' => 'array',
-        'associated_symptoms' => 'array',
+        'aggravating_factors' => 'string',
+        'alleviating_factors' => 'string',
+        'associated_symptoms' => 'string',
         'timeline' => 'array'
     ];
 

@@ -22,10 +22,13 @@ class PhysicalExam extends Component
         foreach ($this->items as $i){
             $result = $this->encounter->physicalExams()->whereCode($i->code)->first();
             $this->values[$i->code]='';
-            if($result) $this->values[$i->code] = $result->finding;
-        }
 
-        //dd($this->values);
+            if($result) {
+                foreach ($result->finding as $key=>$value){
+                    $this->values[$i->code] .=$value;
+                }
+            }
+        }
     }
 
     public function updatedValues($value, $code){

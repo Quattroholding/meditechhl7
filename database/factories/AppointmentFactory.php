@@ -154,6 +154,9 @@ class AppointmentFactory extends Factory
                     ->withPresentIllness()
                     ->withPhysicalExams()
                     ->withDiagnoses()
+                    ->withServiceRequests()
+                    ->withMedicationRequests()
+                    ->withReferral()
                     ->create([
                         'patient_id' => $appointment->patient_id,
                         'practitioner_id' => $appointment->practitioner_id,
