@@ -46,15 +46,9 @@ class DoctorWorkingHoursForm extends Component
 
     public function save()
     {
-
-        dd($this->workingHours,$this->star_times,$this->end_times);
-
-
         UserWorkingHour::where('user_id', auth()->id())->delete();
 
-
         foreach ($this->workingHours as $day => $config) {
-            dd($config);
             if ($config['enabled']) {
                 UserWorkingHour::create([
                     'user_id' => auth()->id(),
@@ -77,7 +71,6 @@ class DoctorWorkingHoursForm extends Component
     }
 
     public function setStartDayTime($day){
-        dd($this->workingHours[$day]);
         $this->workingHours[$day]['start']=$this->workingHours[$day]['start'];
     }
     public function render()

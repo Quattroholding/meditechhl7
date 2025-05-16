@@ -47,4 +47,16 @@ class Practitioner extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getProfileNameAttribute(){
+        $path = url('assets/img/profiles/avatar-02.jpg');
+        if($this->profile_picture) $path = url('storage/'.$this->profile_picture);
+
+        return '<div class="profile-image">
+                  <a href="'.url('patient/'.$this->id.'/pofile').'" >
+                                        <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
+                                        '.$this->name.'
+                                    </a>
+                    </div>';
+    }
+
 }

@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\ConsultationField;
 use App\Models\ConsultationFieldTemplate;
+use App\Models\EncounterSection;
+use App\Models\EncounterTemplate;
 use Livewire\Component;
 
 class ItemTransfer extends Component
@@ -18,25 +20,27 @@ class ItemTransfer extends Component
     public function mount()
     {
         // Por ejemplo, llenar con datos de una base
-        $disponibles = ConsultationField::pluck('id');
+        $disponibles = EncounterSection::pluck('id');
         $selecionados =[];
 
         if(auth()->user()->clients()->first()){
             $this->client_id = auth()->user()->clients()->first()->id;
-            $selecionados = ConsultationFieldTemplate::whereClientId($this->client_id)->whereType('client')->pluck('consultation_field_id');
+            $selecionados = EncounterTemplate::whereClientId($this->client_id)->whereType('client')->pluck('encounter_section_id');
         }
 
         if(count($selecionados)==0){
-            $this->availableItems =ConsultationField::whereCategory($this->category)->get()->toArray();
+            $this->availableItems =EncounterSection::whereCategory($this->category)->get()->toArray();
             $this->selectedItems = [];
         }else{
 
             $diff = $disponibles->diff($selecionados);
             $diff2 = $selecionados->diff($disponibles);
 
-            $this->availableItems = ConsultationField::whereCategory($this->category)->whereIn('id',$diff)->get()->toArray();
-            $this->selectedItems = ConsultationField::whereCategory($this->category)->whereIn('id',$selecionados)->get()->toArray();;
+            $this->availableItems = EncounterSection::whereCategory($this->category)->whereIn('id',$diff)->get()->toArray();
+            $this->selectedItems = EncounterSection::whereCategory($this->category)->whereIn('id',$selecionados)->get()->toArray();;
         }
+
+        //dd($this->availableItems);
     }
 
     public function moveToSelected($itemId)
@@ -47,11 +51,11 @@ class ItemTransfer extends Component
             $this->selectedItems[] = $item;
         }
 
-        ConsultationFieldTemplate::create([
+        EncounterTemplate::create([
             'type'=>'client',
             'client_id'=>$this->client_id,
             'user_id'=>auth()->user()->id,
-            'consultation_field_id'=>$itemId,
+            'encounter_section_id'=>$itemId,
         ]);
     }
 
@@ -63,7 +67,7 @@ class ItemTransfer extends Component
             $this->availableItems[] = $item;
         }
 
-        $field = ConsultationFieldTemplate::whereRaw("(client_id = ".$this->client_id." or user_id = ".auth()->user()->id.")")->whereConsultationFieldId($itemId)->first();
+        $field = EncounterTemplate::whereRaw("(client_id = ".$this->client_id." or user_id = ".auth()->user()->id.")")->whereEncounterSectionId($itemId)->first();
         $field->delete();
     }
 

@@ -1,7 +1,7 @@
 <div>
     @if(count($selectedLists)>0)
         <x-input-label  :value="__('Medicinas')" />
-        <table style="width:100%"
+        <table style="width:100%;"
                class="medicine-table">
             <tbody>
             <tr>
@@ -12,7 +12,7 @@
                     <b rel="producto-full-name">{{$m->medicine->full_name}}</b>
                 </td>
                 <td>
-                    <table style="width:100%">
+                    <table style="width:100%;">
                         <tbody>
                         <tr>
                             <td colspan="3">
@@ -29,24 +29,20 @@
                             <td>
                                 <div class="input-block local-forms">
                                     <x-input-label for="quantity" :value="__('Cantidad')" />
-                                    <input wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')" type="number" class="form-control"
-                                       placeholder="Ejemplo: 15"
-                                       value="{{$m->quantity}}">
+                                    <input wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
+                                           type="number" class="form-control"   placeholder="Ejemplo: 15"  value="{{$m->quantity}}">
                                 </div>
-                            </td>
-                            <td>
-                                <div id="selector-6825f4389ec85" class="prerendered-selector">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="refills" :value="__('Meses de Refill')" />
-                                        <select class="form-control" wire:change="updateField({{$m->id}},$event.target.value,'refills')">
-                                            <option value="">Sin Refill</option>
-                                            @for($i=2;$i<6;$i++)
+                                <div class="input-block local-forms">
+                                    <x-input-label for="refills" :value="__('Meses de Refill')" />
+                                    <select class="form-control" wire:change="updateField({{$m->id}},$event.target.value,'refills')">
+                                        <option value="">Sin Refill</option>
+                                        @for($i=2;$i<6;$i++)
                                             <option value="{{$i}}" @if($m->refills==$i) selected @endif>{{$i}} meses</option>
-                                            @endfor
-                                        </select>
-                                    </div>
+                                        @endfor
+                                    </select>
                                 </div>
                             </td>
+
                         </tr>
                         </tbody>
                     </table>

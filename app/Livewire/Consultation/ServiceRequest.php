@@ -17,11 +17,21 @@ class ServiceRequest extends Component
     public $encounter;
     public $type='procedure';
     public $selectedLists=[];
+    public $rapidAccess=[];
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
         $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
+
+        $section_id='';
+        if($this->type=='laboratory') $section_id=6;
+        if($this->type=='images') $section_id=7;
+        if($this->type=='procedure') $section_id=8;
+
+        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())->whereType('CLIENT')->whereEncounterSectionId($section_id)->get();
+
+        if($this->rapidAccess->count()==0) $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')->whereEncounterSectionId($section_id)->get();
     }
 
     public function updatedQuery()
@@ -45,8 +55,9 @@ class ServiceRequest extends Component
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
         $cpt = CptCode::whereId($option)->first();
-        $procedure =  $this->encounter->procedures()->where('procedures.code',$cpt->code)->first();
-        if(!$procedure){
+        $service_request =  $this->encounter->serviceRequests()->whereCode($cpt->code)->first();
+
+        if(!$service_request){
 
             $this->encounter->serviceRequests()->create([
                 'fhir_id' => 'servicerequest-' . Str::uuid(),

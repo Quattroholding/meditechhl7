@@ -7,6 +7,16 @@
             <div class="col-md-10 col-sm-12" id="paciente">
                 @include('consultations.partials.head',array('patient'=>$patient,'appointment'=>$appointment))
             </div>
+            @foreach($encounter_sections as $section)
+                <div class="col-md-10  col-sm-12 my-4" id="reason">
+                    @component('components.card',array('title'=>$section->name_esp,'show'=>''))
+                        @slot('card_body')
+                            @livewire($section->livewire_component_name, ['encounter_id' => $consultation->id])
+                        @endslot
+                    @endcomponent
+                </div>
+            @endforeach
+            {{--}}
             <div class="col-md-10  col-sm-12 my-4" id="reason">
                 @component('components.card',array('title'=>'Queja Principal','show'=>''))
                     @slot('card_body')
@@ -85,6 +95,7 @@
                     @endslot
                 @endcomponent
             </div>
+            {{--}}
             <div class="my-6">&nbsp;</div>
             <div class="my-6">&nbsp;</div>
             <div class="my-6">&nbsp;</div>

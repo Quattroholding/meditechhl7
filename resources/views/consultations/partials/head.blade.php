@@ -34,13 +34,13 @@
 
         <div>
             <!-- transform $patient->birthdate date to years -->
-            <b>{{$patient->id_type}}:</b> {{ $patient->id_number }}
+            <b>{{$patient->identifier_type}}:</b> {{ $patient->identifier }}
         </div>
 
     </div>
     <div class="consultation-ficha-contenido">
         <div>
-            <b>Doctor:</b> {!! $appointment->practitioner->profile_name  !!}</div>
+            <b>Doctor:</b> {!! $consultation->practitioner->profile_name  !!}</div>
             @if( $appointment->practitioner->qualifications()->first())
             <div>
                 <b>Especialidad:</b> {{ $appointment->practitioner->qualifications()->first()->display }}

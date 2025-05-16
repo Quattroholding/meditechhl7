@@ -262,7 +262,7 @@ class EncounterFactory extends Factory
                     'status' => 'active',
                     'intent' => 'order',
                     'medication_id' => $medication->id,
-                    'dosage_instruction' => $this->generateDosageInstruction(),
+                    'dosage_instruction' =>$dosage_instruction,
                     'dosage_text'=>$dosage_instruction['text'],
                     'quantity'=> $this->faker->numberBetween(1, 30),
                     'refills'=> $this->faker->numberBetween(1, 5),

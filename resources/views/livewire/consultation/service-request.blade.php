@@ -31,7 +31,38 @@
         </div>
     @endif
 
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
+    <table style="width:100%">
+        <tbody><tr>
+            <td style="width:80%">
+                <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
+            </td>
+            <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
+                <div class="general-btn-small" type="button" data-bs-toggle="offcanvas" data-bs-target="#modal_acceso_rapido_{{$type}}"
+                     aria-controls="offcanvasTop">
+                    <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
+                    <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="offcanvas offcanvas-top quick-items quick-items-active" tabindex="-1" id="modal_acceso_rapido_{{$type}}" aria-labelledby="offcanvasTopLabel" style="height: 100vh;overflow-y: scroll;">
+        <div class="offcanvas-body quick-items-content">
+            <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
+                <img src="/images/close-floating.png" alt="">
+            </div>
+            <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
+            @foreach($rapidAccess as $i)
+                <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
+                    <div class="sel-list-item-code">{{$i->cpt->code}}</div>
+                    <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
+                    <div class="preloader-space"></div><div class="preloader-space-2">
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 
     <!-- Spinner de Carga -->
     <div wire:loading class="absolute right-2 top-2">

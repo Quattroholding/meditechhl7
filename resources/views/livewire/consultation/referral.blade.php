@@ -48,7 +48,7 @@
         </tbody>
     </table>
     @endif
-
+    <div class="my-3"></div>
     <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
 
     <!-- Spinner de Carga -->

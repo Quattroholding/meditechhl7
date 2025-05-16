@@ -17,7 +17,7 @@
                         <div class="card-body">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>  {{ __('Configurar campos de consulta') }}</h4>
+                                    <h4>  {{ __('Configurar secciones de consulta') }}</h4>
                                 </div>
                             </div>
                             <ul class="nav nav-pills navtab-bg nav-justified" role="tablist">
