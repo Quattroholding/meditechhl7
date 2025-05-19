@@ -49,6 +49,9 @@
                                                 <a class="dropdown-item"  wire:click="openModal({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                     {{__('patient.add_note')}}
                                                 </a>
+                                                <a class="dropdown-item"  href="{{route('patient.profile',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
+                                                    {{__('patient.profile')}}
+                                                </a>
                                                 <a class="dropdown-item"  href="{{ route('patient.edit',$patient->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>

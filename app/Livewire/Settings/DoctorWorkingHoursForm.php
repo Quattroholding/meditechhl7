@@ -20,6 +20,15 @@ class DoctorWorkingHoursForm extends Component
     {
         if(auth()->user()->clients()->first()){
             $this->clientId = auth()->user()->clients()->first()->id;
+            $client = auth()->user()->clients()->first();
+
+            $branch = $client->branches()->first();
+            if($branch) {
+                $this->branch_id = $branch->id;
+                $room = $branch->consultingRooms()->first();
+                if($room) $this->consulting_room_id = $room->id;
+            }
+
         }
         $days = [__('lunes'), __('martes'),__('miercoles'), __('jueves'), __('viernes'), __('sabado'), __('domingo')];
         foreach ($days as $day) {

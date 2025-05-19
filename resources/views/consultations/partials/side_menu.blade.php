@@ -13,7 +13,7 @@
     @php $i=0; @endphp
     @foreach($secciones as $k=>$v)
         @php $i++; @endphp
-            <div id="menu-right-item-{{$i}}" class="menu-right-item menu-right-item-hiddable" onclick="scroll_to_marker (1)">
+            <div id="menu-right-item-{{$i}}" class="menu-right-item menu-right-item-hiddable" onclick="scrollToMarker({{$k}})">
                 <div id="mandatory-bullet-{{$i}}" class="mandatory-bullet-{{$i}} mandatory-bullet mandatory-bullet-on"></div>
                 {{ $v }}
             </div>
@@ -156,4 +156,21 @@
             $('.menu-right').removeClass('menu-right-off');
         }
     }
+
+    function scrollToMarker(markerId) {
+        const marker = document.getElementById('section_marker_'+markerId);
+
+        if (marker) {
+            marker.scrollIntoView({
+                behavior: 'smooth',  // Opción para un desplazamiento suave (opcional)
+                block: 'start'      // Opción para alinear el elemento con la parte superior
+            });
+        } else {
+            console.error(`No se encontró el elemento con el ID: ${markerId}`);
+        }
+    }
+
+    // Ejemplo de uso:
+    // Puedes llamar a esta función con el ID del elemento al que quieres desplazar
+    // scrollToMarker('mi-marcador');
 </script>

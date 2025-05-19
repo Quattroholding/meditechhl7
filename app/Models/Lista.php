@@ -49,4 +49,18 @@ class Lista extends Model
             'cosnultorio'=>'Consultorio',
         ];
     }
+
+    public static function medicalHistoryCategory(){
+
+        return [
+            'allergy'=>'Alergia',
+            'surgery'=>'Cirugía',
+            'chronic-illness'=>'Enfermedad Crónica',
+            'hospitalization'=>'Hspitalizacíon',
+            'immunization'=>'Inmunizacíon',
+            'family-history'=>'Historia Familiar',
+            'social-history'=>'Historia Social',
+            'other'=>'Otro',
+        ];
+    }
 }

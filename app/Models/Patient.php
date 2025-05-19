@@ -25,6 +25,21 @@ class Patient extends BaseModel
         'multiple_birth' => 'boolean'
     ];
 
+    public function getCompleteHistory(): array
+    {
+        return [
+            'patient' => $this,
+            'encounters' => $this->getEncountersWithDetails(),
+            'conditions' => $this->conditions(),
+            'vital_signs' => $this->vitalSigns(),
+            'physical_exams' => $this->physicalExams(),
+            'medications' => $this->medicationRequests(),
+            'procedures' => $this->procedures(),
+            'referrals' => $this->referrals(),
+            'allergies'=>$this->allergies(),
+        ];
+    }
+
     // Relaciones
     public function appointments(): HasMany
     {
@@ -55,6 +70,26 @@ class Patient extends BaseModel
     public function vitalSigns(): HasMany
     {
         return $this->hasMany(VitalSign::class);
+    }
+
+    public function physicalExams(): HasMany
+    {
+        return $this->hasMany(PhysicalExam::class);
+    }
+
+    public function medicationRequests(): HasMany
+    {
+        return $this->hasMany(MedicationRequest::class);
+    }
+
+    public function procedures(): HasMany
+    {
+        return $this->hasMany(Procedure::class);
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class);
     }
 
     // Accesor para FHIR
@@ -99,6 +134,13 @@ class Patient extends BaseModel
                                         '.$this->name.'
                                     </a>
                     </div>';
+    }
+
+    protected function getEncountersWithDetails(): Collection
+    {
+        return $this->encounters()
+            ->with(['practitioner', 'serviceRequests', 'observations'])
+            ->get();
     }
 
     public function avatar(){

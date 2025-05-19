@@ -18,20 +18,22 @@ class ServiceRequest extends Component
     public $type='procedure';
     public $selectedLists=[];
     public $rapidAccess=[];
+    public $section_id;
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
+        if($this->section_id==6) $this->type='laboratory';
+        if($this->section_id==7) $this->type='images';
+        if($this->section_id==8) $this->type='procedure';
+
         $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
 
-        $section_id='';
-        if($this->type=='laboratory') $section_id=6;
-        if($this->type=='images') $section_id=7;
-        if($this->type=='procedure') $section_id=8;
+        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())->whereType('CLIENT')->whereEncounterSectionId($this->section_id)->get();
 
-        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())->whereType('CLIENT')->whereEncounterSectionId($section_id)->get();
+        if($this->rapidAccess->count()==0) $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')->whereEncounterSectionId($this->section_id)->get();
 
-        if($this->rapidAccess->count()==0) $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')->whereEncounterSectionId($section_id)->get();
+
     }
 
     public function updatedQuery()

@@ -9,9 +9,9 @@
             </div>
             @foreach($encounter_sections as $section)
                 <div class="col-md-10  col-sm-12 my-4" id="reason">
-                    @component('components.card',array('title'=>$section->name_esp,'show'=>''))
+                    @component('components.card',array('title'=>$section->name_esp,'show'=>'','section_id'=>$section->id))
                         @slot('card_body')
-                            @livewire($section->livewire_component_name, ['encounter_id' => $consultation->id])
+                            @livewire($section->livewire_component_name, ['encounter_id' => $consultation->id,'section_id'=>$section->id])
                         @endslot
                     @endcomponent
                 </div>

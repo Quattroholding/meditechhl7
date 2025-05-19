@@ -27,5 +27,9 @@ return [
     'profile_name'=>'Nombre',
     'profile'=>'Perfil',
     'add_note'=>'Agrager Nota',
-    'civil_state'=>'Estado Civil'
+    'civil_state'=>'Estado Civil',
+    'category'=>'Categoria',
+    'date'=>'Fecha',
+    'description'=>'Descripción',
+    'history_title'=>'Título'
 ];

@@ -10,6 +10,10 @@
 <!-- Slimscroll -->
 <script src="{{ URL::asset('/assets/js/jquery.slimscroll.js') }}"></script>
 
+<!-- Mask JS -->
+<script src="{{URL::asset('/assets/plugins/toastr/toastr.min.js') }}"></script>
+<script src="{{URL::asset('/assets/plugins/toastr/toastr.js') }}"></script>
+
 <!-- Select2 Js -->
 <script src="{{ URL::asset('/assets/js/select2.min.js') }}"></script>
 

@@ -11,6 +11,9 @@
  <!-- Select2 CSS -->
  <link rel="stylesheet" type="text/css" href="{{ url('assets/css/select2.min.css') }}">
 
+ <!-- Toatr CSS -->
+ <link rel="stylesheet" href="{{ url('assets/plugins//toastr/toatr.css') }}">
+
  <!-- Datatables CSS -->
  <link rel="stylesheet" href="{{ url('assets/plugins/datatables/datatables.min.css') }}">
 

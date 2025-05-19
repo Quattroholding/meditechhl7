@@ -26,8 +26,8 @@
                                     </div>
                                 </div>
                                 <div class="names-profiles">
-                                    <h4>{{$data->full_name}}</h4>
-                                    <h5>Engineer</h5>
+                                    <h4>{!! $data->name !!}</h4>
+                                    <h5>{{strtoupper($data->identifier_type)}} : {{$data->identifier}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="doctor-follows">
                                     <h5>Diagnosticos</h5>
-                                    <h4>{{$data->diagnostics()->count()}}</h4>
+                                    <h4>{{$data->conditions()->count()}}</h4>
                                 </div>
                                 {{--}}
                                 <div class="doctor-follows">
@@ -51,10 +51,7 @@
                         </div>
                         <div class="col-lg-6 col-xl-4 d-flex align-items-center">
                             <div class="follow-btn-group py-3">
-                                {{--}}
-                                <button type="submit" class="btn btn-info follow-btns">Follow</button>
-                                {{--}}
-                                <button type="submit" class="btn btn-info message-btns">Enviar Email</button>
+                                <livewire:patient.add-medical-history :patient_id="$data->id">
                             </div>
                         </div>
                     </div>
