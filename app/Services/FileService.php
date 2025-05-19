@@ -43,7 +43,7 @@ class FileService
     }
 
     function guardarArchivos($archivos,$data,$private=false){
-
+        //dd(count($archivos));
         $files_saved=array();
         $record_id = null;
 
