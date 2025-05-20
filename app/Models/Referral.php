@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,7 @@ class Referral extends Model
 
     public function requester(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class, 'requester_id');
+        return $this->belongsTo(Practitioner::class, 'practitioner_id');
     }
 
     public function referredTo(): BelongsTo
@@ -41,5 +42,9 @@ class Referral extends Model
 
     public function speciality(){
         return $this->belongsTo(MedicalSpeciality::class,'code');
+    }
+
+    public function getOccurrenceDateAttribute($attr) {
+        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
     }
 }

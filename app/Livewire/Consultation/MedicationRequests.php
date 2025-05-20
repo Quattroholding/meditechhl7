@@ -22,10 +22,23 @@ class MedicationRequests extends Component
     public $quantitys=[];
     public $refills=[];
 
+    public $frecuencies=[];
+    public $durations=[];
+    public $routes=[];
+
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
         $this->selectedLists = $this->encounter->medicationRequests()->get();
+
+        foreach ($this->selectedLists as $sl){
+            $this->frecuencies[$sl->id] = $sl->frecuency;
+            $this->routes[$sl->id] = $sl->route;
+            $this->durations[$sl->id] = $sl->duration;
+            $this->quantitys[$sl->id] = $sl->quantity;
+            $this->dosage_texts[$sl->id] = $sl->dosage_text;
+        }
+
 
     }
     public function updatedQuery()
@@ -61,6 +74,7 @@ class MedicationRequests extends Component
                 'valid_to' => now()->addDays(30),
                 'patient_id' => $this->encounter->patient_id,
                 'practitioner_id' => $this->encounter->practitioner_id,
+                'dosage_instruction'
             ]);
 
 
@@ -78,9 +92,20 @@ class MedicationRequests extends Component
 
     public function updateField($id,$value,$field)
     {
-        $referral = $this->encounter->medicationRequests()->whereId($id)->first();
-        $referral->$field = htmlspecialchars($value);
-        $referral->save();
+        if($field=='quantity') $this->quantitys[$id] = $value;
+        if($field=='frequency') $this->frecuencies[$id] = $value;
+        if($field=='duration') $this->durations[$id] = $value;
+        if($field=='route') $this->routes[$id] = $value;
+
+        $dosage_instructions = $this->generateDosageInstruction($id);
+
+        $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+        $medicationRequest->$field = htmlspecialchars($value);
+        $medicationRequest->dosage_instruction =$dosage_instructions;
+        $medicationRequest->dosage_text =$dosage_instructions['text'];
+        $medicationRequest->save();
+
+        $this->dosage_texts[$id] =$dosage_instructions['text'];
     }
 
     public function setEspecialist($specialist,$referral_id)
@@ -88,6 +113,28 @@ class MedicationRequests extends Component
         $referral = $this->encounter->medicationRequests()->whereId($referral_id)->first();
         $referral->referred_to_id = $specialist;
         $referral->save();
+    }
+
+    protected function generateDosageInstruction($id)
+    {
+        $frequency = $this->frecuencies[$id];
+        $route =$this->routes[$id];
+        $duration = $this->durations[$id];
+        $quantity = $this->quantitys[$id];
+
+        $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
+        $medicine_type='';
+        if($requestMedicine) $medicine_type = $requestMedicine->medicine->type;
+
+        return [
+            'text' => $quantity . ' ' .$medicine_type .
+                ' cada ' . $frequency. ' horas' .
+                ' via ' . $route .
+                ' por ' . $duration. ' dias',
+            'route' => $route,
+            'frequency' => $frequency,
+            'duration' => $duration
+        ];
     }
 
     public function render()

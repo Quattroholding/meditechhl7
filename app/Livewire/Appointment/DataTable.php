@@ -24,6 +24,7 @@ class DataTable extends Component
     public $count = 0;
     public $route_name;
     public $title='';
+    public $patient_id;
 
     public function mount($pagination=10,$sortField='id',$sortDirection='asc',$routename='',$title='')
     {
@@ -52,20 +53,21 @@ class DataTable extends Component
                 $query->where(function ($q) { // Asegura que las condiciones sean correctas
 
                       $q->whereHas('patient',function ($q2){
-                          $q2->orWhereRaw("patients.first_name like '%" . $this->search . "%' or patients.last_name like '%" . $this->search . "%'");
+                          $q2->orWhereRaw("patients.name like '%" . $this->search . "%'");
                       });
-                    $q->whereHas('user',function ($q2){
-                        $q2->orWhereRaw("users.first_name like '%" . $this->search . "%' or users.last_name like '%" . $this->search . "%'");
+                    $q->whereHas('practitioner',function ($q2){
+                        $q2->orWhereRaw("practitioners.name like '%" . $this->search . "%'");
                     });
-                    $q->whereHas('type',function ($q2){
-                        $q2->orWhereRaw("appointment_types.name like '%" . $this->search . "%'");
-                    });
+                    $q->orWhere('service_type', 'like', '%' . $this->search . '%');
                     $q->orWhere('start_date', 'like', '%' . $this->search . '%');
                     $q->orWhere('status', 'like', '%' . $this->search . '%');
                 });
             })
             ->when(Schema::hasColumn($this->class->getTable(),$this->sortField),function ($q){
                 $q->orderBy($this->sortField, $this->sortDirection);
+            })
+            ->when(!empty($this->patient_id),function ($q){
+                $q->where('patient_id',$this->patient_id);
             })
             ->paginate($this->pagination);
 

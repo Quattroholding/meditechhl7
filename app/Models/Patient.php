@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Collection;
 
 class Patient extends BaseModel
 {
@@ -28,16 +29,55 @@ class Patient extends BaseModel
     public function getCompleteHistory(): array
     {
         return [
-            'patient' => $this,
-            'encounters' => $this->getEncountersWithDetails(),
-            'conditions' => $this->conditions(),
-            'vital_signs' => $this->vitalSigns(),
-            'physical_exams' => $this->physicalExams(),
-            'medications' => $this->medicationRequests(),
-            'procedures' => $this->procedures(),
-            'referrals' => $this->referrals(),
-            'allergies'=>$this->allergies(),
+           // 'patient' => ['title'=>__('patient.title'),'data'=>$this],
+            'medical_history'=>['title'=>__('patient.medical_history'),'data'=>$this->medicalHistories()],
+            'encounters' => ['title'=>__('encounter.titles'),'data'=>$this->getEncountersWithDetails()],
+            'conditions' => ['title'=>__('patient.diagnostics'),'data'=>$this->conditions()],
+            'vital_signs' => ['title'=>__('patient.vital_signs'),'data'=>$this->vitalSigns()],
+            'physical_exams' => ['title'=>__('patient.physical_exams'),'data'=>$this->physicalExams()],
+            'medications' => ['title'=>__('patient.medications'),'data'=>$this->medicationRequests()],
+            'services' => ['title'=>__('patient.service_request'),'data'=>$this->serviceRequests()],
+            'procedures' => ['title'=>__('patient.procedures'),'data'=>$this->procedures()],
+            'referrals' => ['title'=>__('patient.title'),'data'=>$this->referrals()],
         ];
+    }
+
+    public function getSectionHistory($section){
+        $data =[];
+        switch ($section) {
+            case 'info':
+                $data = $this;
+                break;
+            case 'medical_history':
+                $data = $this->medicalHistories();
+                break;
+            case 'encounters':
+                $data = $this->getEncountersWithDetails();
+                break;
+            case 'conditions':
+                $data = $this->conditions();
+                break;
+            case 'vital_signs':
+                $data = $this->vitalSigns();
+                break;
+            case 'physical_exams':
+                $data = $this->physicalExams();
+                break;
+            case 'medications':
+                $data = $this->medicationRequests();
+                break;
+            case 'services':
+                $data = $this->serviceRequests();
+                break;
+            case 'procedures':
+                $data = $this->procedures();
+                break;
+            case 'referrals':
+                $data = $this->referrals();
+                break;
+        }
+
+        return $data;
     }
 
     // Relaciones
@@ -79,7 +119,12 @@ class Patient extends BaseModel
 
     public function medicationRequests(): HasMany
     {
-        return $this->hasMany(MedicationRequest::class);
+        return $this->hasMany(MedicationRequest::class,'patient_id');
+    }
+
+    public function serviceRequests(): HasMany
+    {
+        return $this->hasMany(ServiceRequest::class);
     }
 
     public function procedures(): HasMany

@@ -1,4 +1,4 @@
-<div class="col-lg-4">
+<div class="col-lg-12">
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">
@@ -29,6 +29,7 @@
             </div>
         </div>
     </div>
+    {{--}}
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">
@@ -83,4 +84,5 @@
             </div>
         </div>
     </div>
+    {{--}}
 </div>

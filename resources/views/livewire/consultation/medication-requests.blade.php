@@ -17,21 +17,52 @@
                         <tr>
                             <td colspan="3">
                                 <div class="input-block local-forms">
+                                    <x-input-label for="quantity" :value="__('Cantidad')" />
+                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
+                                                   wire:model="quantitys.{{$m->id}}"
+                                                   name="quantity" type="number"
+                                                   class="block mt-1 w-full" placeholder="Ejemplo : 2 tabletas"/>
+                                </div>
+                                <div class="input-block local-forms">
+                                    <x-input-label for="frecuency" :value="__('Frecuencia (Horas)')" />
+                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'frequency')"
+                                                   wire:model="frecuencies.{{$m->id}}"
+                                                   name="frequency" type="number"
+                                                   class="block mt-1 w-full" placeholder="Ejemplo : Cada 12 horas"/>
+                                </div>
+                                <div class="input-block local-forms">
+                                    <x-input-label for="route" :value="__('Via')" />
+                                    <x-select-input wire:change="updateField({{$m->id}},$event.target.value,'route')"
+                                                    wire:model="routes.{{$m->id}}"
+                                                    name="route" :options="\App\Models\Lista::medicationVias()" :selected="[$routes[$m->id]]"
+                                                    class="block mt-1 w-full"/>
+                                </div>
+                                <div class="input-block local-forms">
+                                    <x-input-label for="duration" :value="__('Duración (Días)')" />
+                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'duration')"
+                                                   wire:model="durations.{{$m->id}}"
+                                                   name="duration" type="number"  class="block mt-1 w-full" placeholder="Ejemplo : por 5 dias"/>
+                                </div>
+                                <div class="input-block local-forms">
                                     <x-input-label for="dosage_text" :value="__('Indicciones')" />
-                                    <textarea wire:keyup="updateField({{$m->id}},$event.target.value,'dosage_text')" maxlength="500" class="char-lenght-count-control form-control field-medicine-plan textarea-full-bg"
+                                    <textarea wire:keyup="updateField({{$m->id}},$event.target.value,'dosage_text')"
+                                              wire:model="dosage_texts.{{$m->id}}"
+                                              maxlength="500" class="char-lenght-count-control form-control field-medicine-plan textarea-full-bg"
                                               placeholder="Ejemplo: Una tableta cada 8 horas vía oral por 5 días">
-                                        {{$m->dosage_text}}
+                                        {{$dosage_texts[$m->id]}}
                                     </textarea>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
+                                {{--}}
                                 <div class="input-block local-forms">
                                     <x-input-label for="quantity" :value="__('Cantidad')" />
                                     <input wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
                                            type="number" class="form-control"   placeholder="Ejemplo: 15"  value="{{$m->quantity}}">
                                 </div>
+                                {{--}}
                                 <div class="input-block local-forms">
                                     <x-input-label for="refills" :value="__('Meses de Refill')" />
                                     <select class="form-control" wire:change="updateField({{$m->id}},$event.target.value,'refills')">

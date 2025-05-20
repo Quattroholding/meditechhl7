@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('frequency')->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('refills')->nullable();
+            $table->integer('duration')->nullable();
             $table->date('valid_from');
             $table->date('valid_to')->nullable();
             $table->boolean('substitution_allowed')->default(true);

@@ -63,4 +63,17 @@ class Lista extends Model
             'other'=>'Otro',
         ];
     }
+
+    public static function medicationVias(){
+
+        return [
+            'Oral'=>'Oral',
+            'Sublingual'=>'Sublingual',
+            'Intramuscular'=>'Intramuscular',
+            'Subcutáneo'=>'Subcutáneo',
+            'Otro'=>'Otro',
+        ];
+    }
+
+
 }

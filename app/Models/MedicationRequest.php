@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,5 +41,13 @@ class MedicationRequest extends Model
     public function medicine(): BelongsTo
     {
         return $this->belongsTo(Medicine::class,'medication_id');
+    }
+
+    public function getValidFromAttribute($attr) {
+        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    }
+
+    public function getValidToAttribute($attr) {
+        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
     }
 }

@@ -16,7 +16,7 @@
                     <livewire:patient.patient-head patient_id="{{$id}}"/>
                     <div class="row">
                         <livewire:patient.patient-profile-about patient_id="{{$id}}"/>
-                        <livewire:patient.patient-profile-details patient_id="{{$id}}"/>
+                        <livewire:patient.patient-profile-details patient_id="{{$id}}" tabs="medical-history,encounters,conditions,vital-signs,physical-exams,medications,services,procedures,referrals" activeTab="medical-history"/>
                     </div>
                 </div>
             </div>
