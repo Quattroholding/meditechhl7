@@ -12,8 +12,13 @@
         </thead>
         <tbody>
         @foreach ($data as $row)
+            @php
+                if($row->service_type=='laboratory') $section_id=6 ;
+                if($row->service_type=='images') $section_id=7;
+                if($row->service_type=='procedure') $section_id=8;
+            @endphp
             <tr class="">
-                <td><a href="{{route('consultation.show',$row->encounter->appointment_id)}}" target="_blank"> {{$row->encounter->identifier}}</a></td>
+                <td><a href="{{route('consultation.show',$row->encounter->appointment_id).'?section='.$section_id}}" target="_blank"> {{$row->encounter->identifier}}</a></td>
                 <td>{{$row->code}}</td>
                 <td>{{$row->cpt->description_es}}</td>
                 <td>{{$row->service_type}} </td>

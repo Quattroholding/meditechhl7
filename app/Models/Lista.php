@@ -75,5 +75,14 @@ class Lista extends Model
         ];
     }
 
+    public static function userProcedureTypes(){
+
+        return [
+            'consulta'=>'Consulta',
+            'injectable'=>'Injectable',
+            'procedimiento'=>'Procedimiento',
+            'otro'=>'Otro',
+        ];
+    }
 
 }

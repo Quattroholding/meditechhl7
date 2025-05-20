@@ -13,7 +13,7 @@
         <tbody>
         @foreach ($data as $row)
             <tr class="">
-                <td><a href="{{route('consultation.show',$row->encounter->appointment_id)}}" target="_blank"> {{$row->encounter->identifier}}</a></td>
+                <td><a href="{{route('consultation.show',$row->encounter->appointment_id).'?section=4'}}" target="_blank"> {{$row->encounter->identifier}}</a></td>
                 <td>{{$row->observationType->name}}</td>
                 <td>{{$row->code}}</td>
                 <td>

@@ -1,5 +1,5 @@
 @php
-if(!isset($show)) $show='show';
+if(!isset($show) or (request()->has('section') && request()->get('section') == $section_id)) $show='show';
 $id = \Illuminate\Support\Str::uuid();
 @endphp
 <div class="card mb-1">

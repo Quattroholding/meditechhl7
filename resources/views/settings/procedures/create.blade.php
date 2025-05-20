@@ -1,25 +1,19 @@
 <x-app-layout>
-
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    {{ __('Procedimientos') }}
+                    {{ __('Configuraciones') }}
                 @endslot
                 @slot('li_1')
-                     {{__('Lista')}}  {{ __('Procedimientos') }}
+                    {{ __('Procedimientos') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->
-
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card card-table show-entire">
-                        <div class="card-body">
-                            <livewire:data-table wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
-                        </div>
-                    </div>
+                    <livewire:settings.user-procedure-create/>
                 </div>
             </div>
         </div>

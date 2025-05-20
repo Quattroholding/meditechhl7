@@ -77,6 +77,10 @@ class User extends Authenticatable
         return $this->hasOne(Practitioner::class);
     }
 
+    public function procedures(){
+        return $this->hasMany(UserProcedure::class);
+    }
+
     public function getProfileNameAttribute(){
 
         $path = url('assets/img/profiles/avatar-02.jpg');

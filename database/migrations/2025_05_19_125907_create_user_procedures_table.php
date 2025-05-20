@@ -16,10 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->comment('User Owner if type USER');
             $table->foreignId('client_id')->nullable()->references('id')->on('clients')->onDelete('cascade')->comment('Client Owner if type CLIENT');
             $table->string('code',10)->unique();
-            $table->string('description',250);
+            $table->string('description',250)->nullable();
             $table->string('cpt_code',10)->nullable();
             $table->decimal('current_price')->default('0.0');
             $table->enum('type',['consulta','injectable','procedimiento','otro'])->comment('Type of procedure');
+            $table->boolean('active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

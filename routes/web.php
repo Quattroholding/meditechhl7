@@ -159,6 +159,7 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), fu
 
     Route::get('/create_working_hour_user', [SettingController::class, 'workingHourUser'])->name('setting.create_working_hour_user');
 
+    Route::get('/create_user_procedures', [SettingController::class, 'createUserProcedure'])->name('setting.create_user_procedures');
 
 });
 

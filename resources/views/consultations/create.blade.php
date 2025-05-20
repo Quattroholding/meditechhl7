@@ -8,7 +8,7 @@
                 @include('consultations.partials.head',array('patient'=>$patient,'appointment'=>$appointment))
             </div>
             @foreach($encounter_sections as $section)
-                <div class="col-md-10  col-sm-12 my-4" id="reason">
+                <div class="col-md-10  col-sm-12 my-4" id="section_{{$section->id}}">
                     @component('components.card',array('title'=>$section->name_esp,'show'=>'','section_id'=>$section->id))
                         @slot('card_body')
                             @livewire($section->livewire_component_name, ['encounter_id' => $consultation->id,'section_id'=>$section->id])
@@ -16,6 +16,8 @@
                     @endcomponent
                 </div>
             @endforeach
+            <div class="my-5">&nbsp;</div>
+            <div class="my-5">&nbsp;</div>
         </div>
     </div>
     @include('consultations.partials.side_menu')

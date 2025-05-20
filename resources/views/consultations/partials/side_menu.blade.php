@@ -159,6 +159,7 @@
 
     function scrollToMarker(markerId) {
         const marker = document.getElementById('section_marker_'+markerId);
+        $("#section_marker_"+markerId).addClass('show');
 
         if (marker) {
             marker.scrollIntoView({

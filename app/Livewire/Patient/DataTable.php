@@ -74,9 +74,8 @@ class DataTable extends Component
     {
         $data = Patient::query()
             ->when($this->search, function (Builder $query) {
-                dd($this->search);
                 $query->where(function ($q) { // Asegura que las condiciones sean correctas
-                    $q->orWhere('birt_hdate', 'like', '%' . $this->search . '%');
+                    $q->orWhere('birth_date', 'like', '%' . $this->search . '%');
                     $q->orWhere('identifier', 'like', '%' . $this->search . '%');
                     $q->orWhere('email', 'like', '%' . $this->search . '%');
                     $q->orWhere('name', 'like', '%' . $this->search . '%');

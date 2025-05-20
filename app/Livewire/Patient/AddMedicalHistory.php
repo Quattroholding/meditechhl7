@@ -39,6 +39,8 @@ class AddMedicalHistory extends Component
 
         $this->showModal=false;
 
+        $this->dispatch('$refresh')->to('patient.medical-history');
+
         $this->dispatch('showToastr',
             type: 'success',
             message: '¡Guardado exitosamente!'
