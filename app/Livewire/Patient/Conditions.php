@@ -4,9 +4,11 @@ namespace App\Livewire\Patient;
 
 use App\Models\Patient;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Conditions extends Component
 {
+    use WithPagination;
     public $patient;
     public $patient_id;
 

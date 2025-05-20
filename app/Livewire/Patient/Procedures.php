@@ -4,9 +4,11 @@ namespace App\Livewire\Patient;
 
 use App\Models\Patient;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Procedures extends Component
 {
+    use WithPagination;
     public $patient_id;
 
     public function render()
