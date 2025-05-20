@@ -8,4 +8,5 @@ class MedicalSpeciality  extends Model
 {
     protected $table='medical_specialties';
     protected $fillable = ['code', 'name','is_surgical',''];
+     protected $primaryKey = 'id';
 }

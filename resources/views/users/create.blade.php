@@ -56,30 +56,75 @@
                                         <x-input-error :messages="$errors->get('last_name')" class="mt-2" /><p>&nbsp;</p>
                                     </div>
                                 </div>
+                                    <div class="col-12 col-md-6 col-xl-6">
+                                    <!-- CLIENTS -->
+                                    <div class="input-block  local-forms">
+                                        <x-input-label for="client" :value="__('user.gender')" required/>
+                                        <x-select-input name="gender" :options="['male'=> 'male', 'female'=>'female', 'other'=>'other', 'unknow'=>'unknow']" class="block  w-full"/>
+                                        <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
+                                    </div>
+                                </div>     
+                                <!-- BIRTHDATE -->
+                                <div class=" col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <div class="form-group local-forms cal-icon">
+                                            <x-input-label for="birthdate" :value="__('user.birthdate')" required="true"/>
+                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="old('birthdate')"/>
+                                        </div>
+                                    </div>
+                                </div>  
+                                    <div class="col-12 col-md-6 col-xl-6">
+                                        <!-- Rol -->
+                                        <div class="input-block  local-forms">
+                                            <x-input-label for="address" :value="__('user.address')" required/>
+                                            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" required/>
+                                            <x-input-error :messages="$errors->get('address')" class="mt-2" /><p>&nbsp;</p>
+                                        </div>
+                                    </div>
+
+                                    <div class=" col-12 col-md-6 col-xl-6">
+                                    <!-- WHATSAPP -->
+                                    <div class="input-block  local-forms">
+                                        <x-input-label for="whatsapp" :value="__('phone')" />
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-6">
+                                <div class="col-12 col-md-6 col-xl-4">
                                     <!-- CLIENTS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="client" :value="__('user.client')" required/>
-                                        <x-select-input name="clients[]" :options="$clients" :selected="$selected_clients" class="block  w-full"/>
+                                        <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="$selected_clients" class="block  w-full"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-6">
+                                <div class="col-12 col-md-6 col-xl-4">
                                     <!-- Rol -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="rol" :value="__('user.rol')" required/>
                                         @if(request()->get('role_id')==2)
                                             <x-select-input name="rol" :options="\App\Models\Rol::whereId(2)->pluck('name','id')->toArray()" :selected="[2]" class="block w-full"/>
                                         @elseif(request()->get('role_id')==5)
-                                            <x-select-input name="rol" :options="\App\Models\Rol::whereId(5)->pluck('name','id')->toArray()" :selected="[5]" class="block w-full"/>
+                                            <x-select-input name="rol" :options="\App\Models\Rol::whereId(3)->pluck('name','id')->toArray()" :selected="[3]" class="block w-full"/>
                                         @else
                                             <x-select-input name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" :selected="[null]" class="block w-full"/>
                                         @endif
                                         <x-input-error :messages="$errors->get('rol')" class="mt-2" /><p>&nbsp;</p>
                                     </div>
                                 </div>
+                                 @if(request()->get('role_id')==2)       
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <!-- Rol -->
+                                        <div class="input-block  local-forms">
+                                            <x-input-label for="medical_speciality" :value="__('user.speciality')" required/>
+                                            <x-select-input name="medical_speciality" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block w-full"/>
+                                            <x-input-error :messages="$errors->get('medical_speciality')" class="mt-2" /><p>&nbsp;</p>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="row">
                                 <!-- PICTURE -->
