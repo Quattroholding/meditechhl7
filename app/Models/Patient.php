@@ -48,7 +48,7 @@ class Patient extends BaseModel
             case 'info':
                 $data = $this;
                 break;
-            case 'medical_history':
+            case 'medical-history':
                 $data = $this->medicalHistories();
                 break;
             case 'encounters':
@@ -57,10 +57,10 @@ class Patient extends BaseModel
             case 'conditions':
                 $data = $this->conditions();
                 break;
-            case 'vital_signs':
+            case 'vital-signs':
                 $data = $this->vitalSigns();
                 break;
-            case 'physical_exams':
+            case 'physical-exams':
                 $data = $this->physicalExams();
                 break;
             case 'medications':

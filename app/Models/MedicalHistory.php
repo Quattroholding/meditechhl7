@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,5 +35,9 @@ class MedicalHistory extends Model
     public function procedure(): HasOne
     {
         return $this->hasOne(Procedure::class);
+    }
+
+    public function getOccurrenceDateAttribute($attr) {
+        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
     }
 }

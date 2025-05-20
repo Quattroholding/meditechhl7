@@ -26,13 +26,19 @@ class PatientProfileDetails extends Component
         $this->tabs = explode(',',$this->tabs);
 
         foreach ($this->tabs as $tab){
-            $this->tabs2[$tab]['title'] =$tab;
-            $this->tabs2[$tab]['active']='';
-            $this->tabs2[$tab]['component']='patient.'.$tab;
-            if($tab == $this->activeTab){
-                $this->tabs2[$tab]['active']='show active';
+             $count = $this->patient->getSectionHistory($tab)->count();
+            if($count>0){
+                $this->tabs2[$tab]['title'] =$tab;
+                $this->tabs2[$tab]['active']='';
+                $this->tabs2[$tab]['component']='patient.'.$tab;
+                $this->tabs2[$tab]['count']=$count;
+                if($tab == $this->activeTab){
+                    $this->tabs2[$tab]['active']='show active';
+                }
             }
+
         }
+
     }
 
     public function changeActiveTab($tab){
