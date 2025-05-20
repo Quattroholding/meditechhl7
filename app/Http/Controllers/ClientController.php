@@ -20,7 +20,7 @@ class ClientController extends Controller
     }
 
     public function store(Request $request){
-        //dd($request->all(), $request->logo);
+        //dd($request->all(), $request->logo, $request->file('logo'));
         $validated = $request->validate([
             'name' => 'required',
             'long_name' => 'required',
@@ -40,12 +40,18 @@ class ClientController extends Controller
         $model->email = $request->email;
         $model->whatsapp = $request->whatsapp;
         $model->active = 1;
-        if($request->file('logo')){
-            $service = new FileService();
-            $filename = 'client_logo_'.$model->id;
-            $model->logo = $service->uploadSingleFile($request->file('logo'),'clients',$filename);
-            }
+        $model->logo = 'clients/logo_'.time();
+        
         if($model->save()){
+            //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
+            $service = new FileService();
+        //$filename = 'client_logo_'.$model->id;
+            $file = [$request->file('logo')]; 
+            $data['folder'] = 'clients';
+            $data['type'] ='img';
+            $data['name'] ='logo_'.time();
+            $data['record_id']= $model->id;
+            $model->logo = $service->guardarArchivos($file,$data);
             $request->session()->flash('message.success','Cliente registrado con éxito.');
         }else{
             $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
