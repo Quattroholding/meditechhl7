@@ -26,7 +26,7 @@ class DataTable extends Component
     public $title='';
     public $patient_id;
 
-    public function mount($pagination=10,$sortField='id',$sortDirection='asc',$routename='',$title='')
+    public function mount($pagination=10,$sortField='appointments.id',$sortDirection='asc',$routename='',$title='')
     {
         $this->class = new Appointment();
         $this->pagination = $pagination;
@@ -48,27 +48,23 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = Appointment::query()
+        $data = Appointment::selectRaw('appointments.*')
+            ->leftJoin('patients','patients.id','=','appointments.patient_id')
+            ->leftJoin('practitioners','practitioners.id','=','appointments.practitioner_id')
             ->when($this->search, function (Builder $query) {
-                $query->where(function ($q) { // Asegura que las condiciones sean correctas
-
-                      $q->whereHas('patient',function ($q2){
-                          $q2->orWhereRaw("patients.name like '%" . $this->search . "%'");
-                      });
-                    $q->whereHas('practitioner',function ($q2){
-                        $q2->orWhereRaw("practitioners.name like '%" . $this->search . "%'");
-                    });
+                $query->where(function ($q) {
                     $q->orWhere('service_type', 'like', '%' . $this->search . '%');
-                    $q->orWhere('start_date', 'like', '%' . $this->search . '%');
+                    $q->orWhere('start', 'like', '%' . $this->search . '%');
+                    $q->orWhere('end', 'like', '%' . $this->search . '%');
                     $q->orWhere('status', 'like', '%' . $this->search . '%');
+                    $q->orWhereRaw("patients.name like '%" . $this->search . "%'");
+                    $q->orWhereRaw("practitioners.name like '%" . $this->search . "%'");
                 });
-            })
-            ->when(Schema::hasColumn($this->class->getTable(),$this->sortField),function ($q){
-                $q->orderBy($this->sortField, $this->sortDirection);
             })
             ->when(!empty($this->patient_id),function ($q){
                 $q->where('patient_id',$this->patient_id);
             })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
 
         return view('livewire.appointment.data-table', [ 'data' => $data, ]);

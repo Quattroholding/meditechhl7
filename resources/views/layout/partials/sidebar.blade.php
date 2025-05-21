@@ -42,8 +42,16 @@
                                 src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
                         <span>  {{ __('appointment.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ url('appointments') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
+                        <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ route('appointment.index') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('Calendario') }} </a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side"><img
+                                src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
+                        <span>  {{ __('encounter.titles') }} </span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
                     </ul>
                 </li>
                 {{--}}
@@ -66,10 +74,11 @@
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
                         <span> Configuraciones </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Procedimientos') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_rapid_access') ? 'active' : '' }}"  href="{{ route('setting.create_rapid_access') }}">{{ __('Accesos Rapidos') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
-                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Procedimientos') }}</a></li>
+
                     </ul>
                 </li>
                 <li class="submenu">

@@ -17,13 +17,13 @@
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
                             <tr>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th>{{__('appointment.patient')}}</th>
-                                <th>{{__('appointment.doctor')}}</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('status')">{{__('appointment.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
+                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.identifier')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
+                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('patients.name')">{{__('appointment.patient')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
+                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">{{__('appointment.doctor')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
+                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.status')">{{__('appointment.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th>{{__('appointment.type')}}</th>
                                 <th>{{__('appointment.consultorio')}}</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('start_date')">{{__('appointment.date')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
+                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.start')">{{__('appointment.date')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th>{{__('appointment.time')}}</th>
                                 <th></th>
                             </tr>
@@ -31,9 +31,9 @@
                             <tbody>
                             @foreach ($data as $appointment)
                                 <tr>
-                                    <td>{{$appointment->id}}</td>
+                                    <td>{{$appointment->identifier}}</td>
                                     <td>{!!  $appointment->patient->profile_name !!}</td>
-                                    <td>{!!  $appointment->practitioner->user->profile_name !!} </td>
+                                    <td>{!!  $appointment->practitioner->profile_name !!} </td>
                                     <td>
                                         @if(in_array($appointment->status,['booked','arrived','fulfilled','proposed','pending']))
                                         <div class="btn-group" role="group">

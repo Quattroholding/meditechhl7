@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -89,6 +90,10 @@ class Encounter extends Model
     public function scopeFinished(Builder $query): void
     {
         $query->where('status', 'finished');
+    }
+
+    public function getTimeAttribute(){
+        return Carbon::parse($this->start)->format('h:i').'-'.Carbon::parse($this->end)->format('h:i');
     }
 
 }

@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
 
 Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified']), function() {
 
+    Route::get('/', [ConsultationController::class, 'index'])->name('consultation.index');
+
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->name('consultation.show');
 
 });

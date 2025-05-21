@@ -17,12 +17,7 @@
                     <div class="card card-table show-entire p-0 table-dash">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <livewire:appointment.data-table model="{{$model}}"
-                                                     routename="appointment"
-                                                     sortField="first_name"
-                                                     sortDirecction="asc"
-                                                     title="{{ __('generic.list') }} {{ __('appointment.titles') }}"
-                                                     wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
+                                <livewire:appointment.data-table/>
                             </div>
                         </div>
                     </div>

@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Auth;
 
 class ConsultationController extends Controller
 {
+
+    public function index(){
+        return view('consultations.index');
+    }
     public function show(Request $request,$appointment_id){
 
 

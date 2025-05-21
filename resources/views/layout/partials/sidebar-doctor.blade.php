@@ -34,10 +34,10 @@
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
                         <span> Configuraciones </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Procedimientos') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_rapid_access') ? 'active' : '' }}"  href="{{ route('setting.create_rapid_access') }}">{{ __('Accesos Rapidos') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
-                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Procedimientos') }}</a></li>
                         <li><a class="{{ Request::is('client/branch/create') ? 'active' : '' }}"   href="{{ route('client.branch.create') }}">{{ __('generic.create') }} {{ __('client.branch') }}</a></li>
                         <li><a class="{{ Request::is('client/room/create') ? 'active' : '' }}"   href="{{ route('client.room.create') }}">{{ __('generic.create') }} {{ __('client.room') }}</a></li>
                     </ul>
