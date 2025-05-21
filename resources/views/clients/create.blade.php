@@ -65,14 +65,28 @@
                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                    </div>
                                </div>
+                                                               <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block  local-forms">
+                                        <x-input-label for="update_password_password" :value="__('Contraseña')" />
+                                        <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" /><p>&nbsp;</p>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block  local-forms">
+                                        <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" />
+                                        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" /><p>&nbsp;</p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class=" col-12 col-md-6 col-xl-4">
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="whatsapp" :value="__('Whatsapp')" />
-                                        <x-text-input id="whatsapp" class="block mt-1 w-full" type="tel" name="whatsapp" :value="old('whatsapp')"/>
-                                        <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
+                                        <x-input-label for="phone" :value="__('Whatsapp')" />
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
                                 <!-- IMAGE -->
