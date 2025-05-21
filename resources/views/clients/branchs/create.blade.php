@@ -37,9 +37,9 @@
                             </div>
                             <!-- PHONE -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="telefono" :value="__('Teléfono')" required/>
-                                <x-text-input id="telefono" class="block mt-1 w-full" type="text" name="telefono" :value="old('telefono')"/>
-                                <x-input-error :messages="$errors->get('telefono')" class="mt-2" /><p>&nbsp;</p>
+                                <x-input-label for="phone" :value="__('Teléfono')" required/>
+                                <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                <x-input-error :messages="$errors->get('phone')" class="mt-2" /><p>&nbsp;</p>
                             </div>
                             <!-- ADDRESS -->
                             <div class="input-block  local-forms">
