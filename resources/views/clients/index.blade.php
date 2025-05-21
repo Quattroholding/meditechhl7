@@ -5,10 +5,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    {{ __('Procedimientos') }}
+                    {{ __('client.title') }}
                 @endslot
                 @slot('li_1')
-                     {{__('Lista')}}  {{ __('Procedimientos') }}
+                     {{__('Lista')}}  {{ __('client.titles') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->
