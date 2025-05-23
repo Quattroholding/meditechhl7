@@ -17,4 +17,11 @@ return [
     'date'=>'Fecha y Hora',
     'day'=>'Dia',
     'time'=>'Hora',
+    'status.planned'=>'Planificado',
+    'status.arrived'=>'Llegado/Presente',
+    'status.triaged'=>'Triaje',
+    'status.in-progress'=>'En Progreso',
+    'status.onleave'=>'En Pausa/Salida Temporal',
+    'status.finished'=>'Finalizado',
+    'status.cancelled'=>'Cancelado',
 ];

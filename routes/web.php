@@ -53,6 +53,11 @@ Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified'])
 
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->name('consultation.show');
 
+    Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->name('consultation.download_resumen');
+
+    Route::post('/{appointment_id}', [ConsultationController::class, 'finished'])->name('consultation.finished');
+
+
 });
 
 Route::post('/store_public', [PatientController::class, 'store_public'])->name('patient.public.store');

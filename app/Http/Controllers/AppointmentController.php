@@ -42,7 +42,7 @@ class AppointmentController extends Controller
             })
             ->whereRaw("((date_format('".$desde."','%Y-%m-%d') >= start AND date_format('".$hasta."','%Y-%m-%d') <= end)
                     OR (date_format('".$desde."','%Y-%m-%d') <= end AND date_format('".$hasta."','%Y-%m-%d') >= start))")
-            ->whereIn('status',['booked','arrived'])
+            ->whereIn('status',['booked','arrived','checked-in'])
             ->orderBy("start")
             ->get();
 
@@ -50,15 +50,13 @@ class AppointmentController extends Controller
         $data = array();
 
         foreach ($appointments as $a){
-
-            if($a->status=='booked')$color="#0d6efd";
-            if($a->status=='arrived')$color="#55ce63";
+            $color = $a::statusColors()[$a->status];
 
             $data[]=[
                 'title'=>'Paciente :'.$a->patient->name,
                 'start'=>$a->start->format('Y-m-d H:i'),
                 'end'=>$a->end->format('Y-m-d H:i'),
-                'color'=>$color,
+                'color'=>'#'.$color,
             ];
         }
 

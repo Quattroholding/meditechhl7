@@ -9,15 +9,11 @@
 
                         @endslot
                         @slot('li_1')
-                            {{ route('patient.create') }}
+
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-                    @if(session()->has('message'))
-                        <div class="bg-green-100 text-green-800 p-2 mb-2 rounded">
-                            {{ session('message') }}
-                        </div>
-                    @endif
+
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
@@ -34,10 +30,10 @@
                             <tbody>
                             @foreach ($data as $dato)
                                 <tr>
-                                    <td>{{$dato->identifier}}</td>
+                                    <td>{{$dato->id}}</td>
                                     <td>{!!  $dato->practitioner->profile_name !!} </td>
                                     <td>{!!  $dato->patient->profile_name !!}</td>
-                                    <td>{{ $dato->status }}</td>
+                                    <td>{!!  $dato->status !!}</td>
                                     <td>{{ \Carbon\Carbon::parse($dato->start)->format('d-m-Y')  }}</td>
                                     <td>{{ $dato->time }}</td>
                                     <td class="text-end">
@@ -48,6 +44,9 @@
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item"  href="{{ route('consultation.show',$dato->appointment_id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
+                                                </a>
+                                                <a class="dropdown-item"  href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
+                                                    {{__('generic.download')}}
                                                 </a>
                                             </div>
                                         </div>

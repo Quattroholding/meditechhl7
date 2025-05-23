@@ -57,7 +57,7 @@ class PresentIllness extends Component
         if($type=='timing') $this->timing = $value;
 
         if(!$this->encounter->presentIllnesses){
-            $this->encounter->presentIllnesses()->create([
+            $this->present_illness = $this->encounter->presentIllnesses()->create([
                 'fhir_id' => 'condition-' . fake()->uuid(),
                 'description' => '',
                 'location' => $this->location,

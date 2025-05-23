@@ -20,6 +20,6 @@
             <div class="my-5">&nbsp;</div>
         </div>
     </div>
-    @include('consultations.partials.side_menu')
+    @include('consultations.partials.side_menu',array('appointment_id'=>$appointment->id))
     @include('consultations.partials.patient_info',array('id'=>$patient->id))
 </x-app-layout>

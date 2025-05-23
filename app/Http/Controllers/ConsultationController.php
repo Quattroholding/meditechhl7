@@ -11,8 +11,10 @@ use App\Models\Encounter;
 use App\Models\EncounterSection;
 use App\Models\EncounterTemplate;
 use App\Models\Patient;
+use App\Models\PresentIllnesType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ConsultationController extends Controller
 {
@@ -55,5 +57,40 @@ class ConsultationController extends Controller
        $secciones= $encounter_sections->pluck('name_esp','id');
 
         return view('consultations.create',compact('consultation','appointment','patient','encounter_sections','secciones'));
+    }
+
+    public function finished(Request $request,$appointment_id){
+        $appointment = Appointment::find($appointment_id);
+        $appointment->status = 'fulfilled';
+        $appointment->save();
+        $encounter = Encounter::whereAppointmentId($appointment->id)->first();
+        $encounter->status = 'finished';
+        $encounter->end = now();
+        $encounter->save();
+
+        session()->flash('message.success', '¡Consulta finalizada con exito!');
+
+        return redirect(route('consultation.index'));
+    }
+
+    public function downloadResumen(Request $request,$appointment_id){
+
+        $appointment = Appointment::find($appointment_id);
+        $data = Encounter::whereAppointmentId($appointment_id)->first();
+        $data['consultation-list'] = PresentIllnesType::get();
+        $consultation_disabilities = array();
+        $lang='esp';
+        $home_visit=false;
+        $sello=$firma='';
+        $mode='full';
+        foreach ($data->diagnoses()->get() as $d){
+            array_push($consultation_disabilities, "<td>".$d->condition->code."</td><td>".$d->condition->icd10Code->description_es."</td>");
+        }
+
+        if($request->has('html')) return view('consultations.consultation_report.index', compact('data','lang','home_visit','sello','firma','mode','consultation_disabilities'));
+
+        $pdf = Pdf::loadView('consultations.consultation_report.index', compact('data','lang','home_visit','sello','firma','mode','consultation_disabilities'));
+
+        return $pdf->stream('resumen.pdf');
     }
 }

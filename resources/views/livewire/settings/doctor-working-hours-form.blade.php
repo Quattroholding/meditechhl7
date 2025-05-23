@@ -48,9 +48,6 @@
         <div class="flex items-center justify-end mt-4">
             <div class="doctor-submit text-end">
                 <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
-                @if (session()->has('message'))
-                    <a href="javascript: void(0);" id="alert-success" class="btn btn-success btn-sm waves-effect waves-light">{{ session('message') }}</a>
-                @endif
             </div>
         </div>
     </form>

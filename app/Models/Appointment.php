@@ -5,10 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 class Appointment extends Model
 {
@@ -67,4 +65,21 @@ class Appointment extends Model
     {
         $query->where('status', 'reservado');
     }
+
+    public static function statusColors(){
+          return [
+              'proposed'=>'FFD700',
+              'pending'=>'FFA500',
+              'booked'=>'4CAF50',
+              'arrived'=>'00BCD4',
+              'fulfilled'=>'2196F3',
+              'cancelled'=>'F44336',
+              'noshow'=>'9E9E9E',
+              'entered-in-error'=>'FF5252',
+              'checked-in'=>'7C4DFF',
+              'waitlist'=>'FF9800'
+          ];
+    }
+
 }
+

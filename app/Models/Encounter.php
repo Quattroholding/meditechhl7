@@ -96,4 +96,21 @@ class Encounter extends Model
         return Carbon::parse($this->start)->format('h:i').'-'.Carbon::parse($this->end)->format('h:i');
     }
 
+    public function getStatusAttribute($attr){
+
+       return ' <span  class="badge" style="background-color: #'.$this->statusColors()[$attr].'">'. __('encounter.status.'.$attr). '</span>';
+    }
+
+    public function statusColors(){
+        return [
+            'planned'=>'FFD700',
+            'arrived'=>'00BCD4',
+            'triaged'=>'FF9800',
+            'in-progress'=>'4CAF50',
+            'onleave'=>'9C27B0',
+            'finished'=>'2196F3',
+            'cancelled'=>'F44336',
+        ];
+    }
+
 }

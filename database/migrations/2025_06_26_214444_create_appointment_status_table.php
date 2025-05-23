@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('appointment_id')->references('id')->on('appointments')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('status',35);
+            $table->string('previous_status',35)->nullable();
             $table->string('observation',500)->nullable();
             $table->softDeletes();
             $table->timestamps();

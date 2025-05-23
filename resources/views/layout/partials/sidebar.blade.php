@@ -47,8 +47,9 @@
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
+                    <a href="javascript:;"><span class="menu-side">
+                            <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt="" style="fill:red !important;">
+                        </span>
                         <span>  {{ __('encounter.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>

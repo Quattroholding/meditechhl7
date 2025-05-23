@@ -31,42 +31,10 @@
                             <tbody>
                             @foreach ($data as $appointment)
                                 <tr>
-                                    <td>{{$appointment->identifier}}</td>
+                                    <td>{{$appointment->id}}</td>
                                     <td>{!!  $appointment->patient->profile_name !!}</td>
                                     <td>{!!  $appointment->practitioner->profile_name !!} </td>
-                                    <td>
-                                        @if(in_array($appointment->status,['booked','arrived','fulfilled','proposed','pending']))
-                                        <div class="btn-group" role="group">
-                                            <button id="btngroupverticaldrop1" type="button"
-                                                    class="btn  dropdown-toggle
-                                                    @if($appointment->status=='fulfilled') btn-success
-                                                    @elseif($appointment->status=='booked') btn-warning
-                                                    @elseif(in_array($appointment->status,['proposed','pending'])) btn-dark
-                                                    @else btn-primary @endif"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">   {{ __('appointment.status.'.$appointment->status) }}  </button>
-                                            <div class="dropdown-menu" aria-labelledby="btngroupverticaldrop1" style="">
-                                                @if($appointment->status=='booked')
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-door-open"></i> {{__('Llegada')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-door-closed"></i> {{__('No Asistio')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-close"></i> {{__('Cancelar')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-warning"></i> {{__('Ingresado por error')}}</a>
-                                                @elseif($appointment->status=='arrived')
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-clock-o"></i> {{__('Inciar Consulta')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-close"></i> {{__('Cancelar')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-warning"></i> {{__('Ingresado por error')}}</a>
-                                                @elseif($appointment->status=='fulfilled')
-                                                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" ><i class="fa fa-eye"></i> {{__('Ver Consulta')}}</a>
-                                                @elseif(in_array($appointment->status,['proposed','pending']))
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-door-open"></i> {{__('Confirmar')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-close"></i> {{__('Cancelar')}}</a>
-                                                    <a class="dropdown-item" href="#" ><i class="fa fa-warning"></i> {{__('Ingresado por error')}}</a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @else
-                                            <button type="button" class="btn btn-danger">   {{ __('appointment.status.'.$appointment->status) }}  </button>
-                                        @endif
-                                    </td>
+                                    <td><livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/> </td>
                                     <td>{{ $appointment->service_type }}</td>
                                     <td>{{ $appointment->consultingRoom->name }}</a></td>
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</td>
