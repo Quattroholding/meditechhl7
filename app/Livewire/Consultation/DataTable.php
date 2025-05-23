@@ -29,6 +29,8 @@ class DataTable extends Component
     public $selectedPatient;
 
     public $note;
+    public $patient_id;
+    public $practitioner_id;
 
     public function mount($pagination=10,$sortField='encounters.id',$sortDirection='asc',$routename='',$title='')
     {
@@ -57,13 +59,19 @@ class DataTable extends Component
             ->join('practitioners','practitioners.id','=','encounters.practitioner_id')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
-                    $q->orWhere('status', 'like', '%' . $this->search . '%');
-                    $q->orWhere('identifier', 'like', '%' . $this->search . '%');
-                    $q->orWhere('start', 'like', '%' . $this->search . '%');
-                    $q->orWhere('end', 'like', '%' . $this->search . '%');
+                    $q->orWhere('encounters.status', 'like', '%' . $this->search . '%');
+                    $q->orWhere('encounters.identifier', 'like', '%' . $this->search . '%');
+                    $q->orWhere('encounters.start', 'like', '%' . $this->search . '%');
+                    $q->orWhere('encounters.end', 'like', '%' . $this->search . '%');
                     $q->orWhere('patients.name', 'like', '%' . $this->search . '%');
                     $q->orWhere('practitioners.name', 'like', '%' . $this->search . '%');
                 });
+            })
+            ->when(!empty($this->patient_id),function ($q){
+                $q->where('patient_id',$this->patient_id);
+            })
+            ->when(!empty($this->practitioner_id),function ($q){
+                $q->where('practitioner_id',$this->practitioner_id);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);

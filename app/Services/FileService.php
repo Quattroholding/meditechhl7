@@ -102,12 +102,13 @@ class FileService
             $filename = Str::random(10).".".$ext;
         }
 
-
         if($private){
             $upload = Storage::disk('local')->putFileAs($folder,$file,$filename);
         }else{
             $upload = Storage::disk('public')->putFileAs($folder,$file,$filename);
         }
+
+        dd($upload);
 
         if ($upload){
             return $folder.'/'.$filename;

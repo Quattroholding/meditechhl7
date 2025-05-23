@@ -20,7 +20,9 @@
                                     <div class="form-group doctor-up-files profile-edit-icon mb-0">
                                         <div class="uplod d-flex">
                                             <label class="file-upload profile-upbtn mb-0">
-                                                <img src="{{ URL::asset('/assets/img/icons/camera-icon.svg') }}"  alt="Profile"></i><input type="file">
+                                                <input type="file" wire:model="avatar">
+                                                @error('avatar') <span class="error">{{ $message }}</span> @enderror
+                                                <img src="{{ URL::asset('/assets/img/icons/camera-icon.svg') }}" alt="Profile">
                                             </label>
                                         </div>
                                     </div>

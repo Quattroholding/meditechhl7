@@ -29,8 +29,11 @@
                             <a href="{{ url('activities') }}">
                                 <div class="media">
                                     <span class="avatar">
-                                        <img alt="John Doe" src="{{ URL::asset('/assets/img/user.jpg') }}"
-                                            class="img-fluid">
+                                        @if(!empty(auth()->user()->profile_picture))
+                                            <img src="{{url('storage/'.auth()->user()->profile_picture) }}" alt="{{auth()->user()->full_name}}" class="img-fluid">
+                                        @else
+                                            <img src="{{ URL::asset('/assets/img/user.jpg') }}" alt="{{auth()->user()->full_name}}"  class="img-fluid">
+                                        @endif
                                     </span>
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">John Doe</span> added new task

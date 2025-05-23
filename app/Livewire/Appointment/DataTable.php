@@ -25,6 +25,7 @@ class DataTable extends Component
     public $route_name;
     public $title='';
     public $patient_id;
+    public $practitioner_id;
 
     public function mount($pagination=10,$sortField='appointments.id',$sortDirection='asc',$routename='',$title='')
     {
@@ -63,6 +64,9 @@ class DataTable extends Component
             })
             ->when(!empty($this->patient_id),function ($q){
                 $q->where('patient_id',$this->patient_id);
+            })
+            ->when(!empty($this->practitioner_id),function ($q){
+                $q->where('practitioner_id',$this->practitioner_id);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);

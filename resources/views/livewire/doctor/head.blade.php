@@ -3,21 +3,24 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="about-info">
-                    <h4>Doctor Profile <span><a href="javascript:;"><i
-                                    class="feather-more-vertical"></i></a></span></h4>
+                    <h4>{{__('doctor.profile')}}<span><a href="javascript:;"><i  class="feather-more-vertical"></i></a></span></h4>
                 </div>
                 <div class="doctor-profile-head">
                     <div class="row">
                         <div class="col-lg-4 col-md-4">
                             <div class="profile-user-box">
                                 <div class="profile-user-img">
-                                    <img src="{{ URL::asset('/assets/img/profile-user.jpg') }}"
-                                        alt="Profile">
+                                    @if($data->avatar())
+                                        <img src="{{url('storage/'.$data->avatar()->path) }}" alt="Profile">
+                                    @else
+                                        <img src="{{ URL::asset('/assets/img/profile-user-01.jpg') }}" alt="Profile">
+                                    @endif
                                     <div class="form-group doctor-up-files profile-edit-icon mb-0">
                                         <div class="uplod d-flex">
                                             <label class="file-upload profile-upbtn mb-0">
-                                                <img src="{{ URL::asset('/assets/img/icons/camera-icon.svg') }}"
-                                                    alt="Profile"></i><input type="file">
+                                                <input type="file" wire:model="avatar">
+                                                @error('avatar') <span class="error">{{ $message }}</span> @enderror
+                                                <img src="{{ URL::asset('/assets/img/icons/camera-icon.svg') }}" alt="Profile">
                                             </label>
                                         </div>
                                     </div>

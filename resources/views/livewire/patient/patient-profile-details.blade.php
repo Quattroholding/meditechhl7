@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="account_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('patient.update',$patient->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">
                         <div class="form-heading">
@@ -156,13 +156,12 @@
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
-                                <a href="{{route('patient.index')}}" class="btn btn-primary cancel-form">  {{ __('button.cancel') }}</a>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="tab-pane" id="security_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('patient.update',$patient->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">
                         <div class="form-heading">
@@ -201,7 +200,6 @@
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
-                                <a href="{{route('patient.index')}}" class="btn btn-primary cancel-form">  {{ __('button.cancel') }}</a>
                             </div>
                         </div>
                     </form>
