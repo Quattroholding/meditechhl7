@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title'=>'Paciente',
-    'titles'=>'Pacientes',
+    'title'=>'Doctor',
+    'titles'=>'Doctores',
     'id'=>'Id',
     'first_name'=>'Nombre',
     'last_name' =>'Apellido',
@@ -42,9 +42,8 @@ return [
     'services'=>'Servicios',
     'procedures'=>'Procedimientos',
     'referrals'=>'Referencias',
-    'account_settings'=>'Configuracion de perfil',
-    'security_settings'=>'Configuracion de acceso',
-    'current_password'=>'Contraseña Actual',
-    'new_password'=>'Nueva Contraseña',
-    'confirm_password'=>'Confirmar Contraseña',
+    'qualifications'=>'Especialidades',
+    'add_qualification'=>'Agregar Especialidad',
+    'about_me'=>'Acerca de mi',
+    'period'=>'Periodo',
 ];

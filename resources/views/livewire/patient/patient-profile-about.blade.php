@@ -1,4 +1,4 @@
-<div class="col-lg-12">
+<div class="col-lg-3">
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">

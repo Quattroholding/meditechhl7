@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -57,6 +58,10 @@ class Practitioner extends Model
                                         '.$this->name.'
                                     </a>
                     </div>';
+    }
+
+    public function getBirthDateAttribute($attr){
+        return Carbon::parse($attr)->format('d-m-Y');
     }
 
 }

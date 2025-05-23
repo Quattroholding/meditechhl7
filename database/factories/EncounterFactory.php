@@ -44,6 +44,7 @@ class EncounterFactory extends Factory
             'reason' => $this->faker->sentence(), //CHIEF COMPLAINT
             'start' => $startDate,
             'end' => $endDate,
+            'medical_speciality_id'=>$appointment->medical_speciality_id,
         ];
     }
 

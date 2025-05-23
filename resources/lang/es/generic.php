@@ -14,4 +14,7 @@ return [
     'hello'=>'Hola',
     'Have a nice day at work'=>'Que tengas un buen día en el trabajo. ',
     'download'=>'Descargar',
+    'hi'=>'Hola',
+    'welcome'=>'Bienvenido(a)',
+    'vs_last_month'=>'vs mes pasado'
 ];
