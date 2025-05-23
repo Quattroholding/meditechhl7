@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\Request;
 
@@ -27,25 +28,41 @@ class ClientController extends Controller
             'ruc' => 'required',
             'email' => 'required',
             'dv' => 'required',
-            'whatsapp' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
             'logo' => 'required',
 
         ]);
-
+        //VALIDAR SI EL CORREO YA EXISTE EN EL SISTEMA
+        $email_validation = User::whereEmail($request->email)->first();
+                if (!empty($email_validation)) {
+            // El correo ya está registrado
+            session()->flash('message.error', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+            return redirect(route('client.create'));
+        }
         $model = new Client();
         $model->dv = $request->dv;
         $model->ruc = $request->ruc;
         $model->long_name = $request->long_name;
         $model->name=$request->name;
         $model->email = $request->email;
-        $model->whatsapp = $request->whatsapp;
+        $model->whatsapp = $request->full_phone;
         $model->active = 1;
         $model->logo = 'clients/logo_'.time();
         
         if($model->save()){
+            //SE CREA UN USUARIO ADMIN-CLIENT
+            $user = new User();
+            $user->last_name = $request->name;
+            $user->first_name= 'Admin de';
+            $user->email = $request->email;
+            $user->password = $request->password;
+            $user->profile_picture = $model->logo;
+            $user->save();
+            // Asignar rol de usuario administrador del cliente
+            $user->assignRole('admin client');
             //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
             $service = new FileService();
-        //$filename = 'client_logo_'.$model->id;
             $file = [$request->file('logo')]; 
             $data['folder'] = 'clients';
             $data['type'] ='img';
@@ -54,7 +71,7 @@ class ClientController extends Controller
             $model->logo = $service->guardarArchivos($file,$data);
             $request->session()->flash('message.success','Cliente registrado con éxito.');
         }else{
-            $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
+            $request->session()->flash('message.error','Hubo un error y no se pudo actualizar.');
         }
 
         return redirect(route('client.index'));
