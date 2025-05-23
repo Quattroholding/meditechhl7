@@ -23,7 +23,30 @@ class PatientController extends Controller
     }
 
     public function store(Request $request){
-        
+        //dd($request->all());
+         $validated = $request->validate([
+            'id_number' => 'required',
+            'id_type' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'gender' => 'required',
+            'birthdate' => 'required',
+            'physical_address' => 'required',
+            'billing_address' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
+            'blood_type' => 'required',
+            'password' => "required",
+            'image' => "required",
+        ]);
+        // Verificar si el correo ya está registrado
+        $email_validation = User::where('email', $request->email)->first();
+        if (!empty($email_validation)) {
+            // El correo ya está registrado
+            session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+            return back();
+        }
     }
     public function store_public(Request $request){
        //dd($request->all());
@@ -65,6 +88,7 @@ class PatientController extends Controller
         $patient->name = $request->first_name .' '. $request->last_name;
         $patient->user_id = $model->id;
         $patient->fhir_id = 'patient-' . Str::uuid();
+        //IDENTIFIER ES ID
         $patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
         if($patient->save()){
             
@@ -127,5 +151,31 @@ class PatientController extends Controller
         $data->delete();
 
         return redirect(route('patient.index'));
+    }
+
+    public function check($idNumber){
+        $exists = Patient::where('identifier', $idNumber)->exists();
+        return response()->json(['exists' => $exists]);
+
+    }
+
+    public function associate(Request $request)
+    {
+        $idNumber = $request->input('id_number');
+        $patient = Patient::where('identifier', $idNumber)->first();
+
+        // Asociar paciente a la clínica del usuario logueado
+        if ($patient) {
+            /*$clinicId = auth()->user()->clinic_id;
+            $patient->clinics()->syncWithoutDetaching([$clinicId]);*/
+            $client = UserClient::where('user_id',$patient->identifier)->first();
+            $user_client= new PatientClinic();
+            $user_client->patient_id = $patient->identifier;
+            $user_client->client_id = $client->client_id;
+            $user_client->save();
+            
+             return response()->json(['message' => 'Paciente asociado']);
+        }
+        return response()->json(['error' => 'Paciente no encontrado'], 404);
     }
 }
