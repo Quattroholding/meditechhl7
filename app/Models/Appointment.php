@@ -13,7 +13,7 @@ class Appointment extends Model
     use HasFactory;
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id', 'identifier', 'status',
-        'service_type', 'description', 'start', 'end', 'minutes_duration'
+        'service_type', 'description', 'start', 'end', 'minutes_duration','medical_speciality_id'
     ];
 
     protected $casts = [
@@ -35,6 +35,11 @@ class Appointment extends Model
     public function encounter(): HasOne
     {
         return $this->hasOne(Encounter::class);
+    }
+
+    public function medicalSpeciality(): HasOne
+    {
+        return $this->belongsTo(MedicalHistory::class);
     }
 
     public function consultingRoom()

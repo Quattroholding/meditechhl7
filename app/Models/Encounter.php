@@ -15,7 +15,7 @@ class Encounter extends Model
     use HasFactory;
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id', 'appointment_id', 'identifier',
-        'status', 'class', 'type', 'priority', 'reason','start','end'
+        'status', 'class', 'type', 'priority', 'reason','start','end','medical_speciality_id',
     ];
 
     protected $casts = [
@@ -82,6 +82,11 @@ class Encounter extends Model
     public function serviceRequests(): HasMany
     {
         return $this->hasMany(ServiceRequest::class);
+    }
+
+    public function medicalSpeciality(): HasOne
+    {
+        return $this->belongsTo(MedicalHistory::class);
     }
 
     /**

@@ -25,18 +25,19 @@ class Lista extends Model
     public static function documentType(){
 
         return [
-            'PA+'=>'PA: Pasaporte',
+            'PA'=>'PA: Pasaporte',
             'CC'=>'CC: Cédula de ciudadania',
             'CE'=>'CE: Cédula extranjera',
             'PT'=>'PT: Permiso temporal de permanencia',
+            'SS'=>'SS: Número seguro social',
         ];
     }
 
     public static function gender(){
 
         return [
-            'M'=>'Masculino',
-            'F'=>'Femenino',
+            'male'=>'Masculino',
+            'female'=>'Femenino',
         ];
     }
 

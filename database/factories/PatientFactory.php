@@ -26,7 +26,7 @@ class PatientFactory extends Factory
         return [
             'fhir_id' => 'patient-' . Str::uuid(),
             'identifier' => $this->faker->unique()->numerify('##########'),
-            'identifier_type' => $this->faker->randomElement(['DNI', 'Pasaporte', 'Seguro']),
+            'identifier_type' => $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']),
             'name' => $givenName . ' ' . $this->faker->lastName,
             'given_name' => $givenName,
             'family_name' => $this->faker->lastName,

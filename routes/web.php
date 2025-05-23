@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use \App\Http\Controllers\BranchController;
 use \App\Http\Controllers\RoomController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\UserController;
 use \App\Http\Controllers\AppointmentController;
 use \App\Http\Controllers\ApiController;
@@ -171,6 +172,24 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), fu
     Route::get('/create_working_hour_user', [SettingController::class, 'workingHourUser'])->name('setting.create_working_hour_user');
 
     Route::get('/create_user_procedures', [SettingController::class, 'createUserProcedure'])->name('setting.create_user_procedures');
+
+});
+
+Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']), function() {
+
+    Route::get('/', [PractitionerController::class, 'index'])->name('practitioner.index');
+
+    Route::get('/create', [PractitionerController::class, 'create'])->name('practitioner.create');
+
+    Route::post('/store', [PractitionerController::class, 'store'])->name('practitioner.store');
+
+    Route::get('/{id}/profile', [PractitionerController::class, 'profile'])->name('practitioner.profile');
+
+    Route::get('/{id}/edit', [PractitionerController::class, 'edit'])->name('practitioner.edit');
+
+    Route::post('/{id}/update', [PractitionerController::class, 'update'])->name('practitioner.update');
+
+    Route::delete('/{id}', [PractitionerController::class, 'destroy'])->name('practitioner.destroy');
 
 });
 

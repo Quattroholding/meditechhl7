@@ -28,6 +28,12 @@ class AppointmentFactory extends Factory
 
         $practitioner = Practitioner::inRandomOrder()->limit(1)->first();
 
+        $specility_id=null;
+
+        if($practitioner->qualifications()->first()){
+            $specility_id = $practitioner->qualifications()->first()->medical_speciality_id;
+        }
+
         $serviceTypes = [
             'Consulta general',
             'Control de rutina',
@@ -59,6 +65,7 @@ class AppointmentFactory extends Factory
             'start' => $startDate,
             'end' => $endDate,
             'minutes_duration' => $duration,
+            'medical_speciality_id'=>$specility_id,
             'participant' => json_encode([
                 [
                     'actor' => 'Patient/' . $patient->fhir_id,

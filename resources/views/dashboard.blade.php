@@ -17,8 +17,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>Good Morning, <span>Daniel Bruk</span></h2>
-                            <p>Have a nice day at work</p>
+                            <h2>{{__('generic.hi')}}, <span>{{auth()->user()->full_name}}</span></h2>
+                            <p>{{__('generic.welcome')}}</p>
                         </div>
                     </div>
                     <div class="col-md-6 position-blk">
@@ -29,32 +29,12 @@
                 </div>
             </div>
             <div class="row">
-                @php
-                    $json = file_get_contents(public_path('../public/assets/json/admin-dashboard.json'));
-                    $dashboards = json_decode($json, true);
-                @endphp
-                @foreach ($dashboards as $dashboard)
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                        <div class="dash-widget">
-                            <div class="dash-boxs comman-flex-center">
-                                <img src="{{ URL::asset('/assets/img/icons/' . $dashboard['Image']) }}" alt="">
-                            </div>
-                            <div class="dash-content dash-count">
-                                <h4>{{ $dashboard['type'] }}</h4>
-                                @if ($dashboard['type'] === 'Earnings')
-                                    <h2>$<span class="counter-up">{{ $dashboard['count'] }}</span></h2>
-                                @else
-                                    <h2><span class="counter-up">{{ $dashboard['count'] }}</span></h2>
-                                @endif
-                                <p><span class="{{ $dashboard['class'] }}"><i
-                                            class="{{ $dashboard['arrowclass'] }}"></i>{{ $dashboard['change'] }}</span> vs
-                                    last
-                                    month</p>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                <livewire:dashboard.counter function="appointments" wire:key="counter_appointments"/>
+                <livewire:dashboard.counter function="patients" wire:key="counter_patients"/>
+                <livewire:dashboard.counter function="encounters" wire:key="counter_encounters"/>
+                <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
             </div>
+            {{--}}
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-6 col-xl-9">
                     <div class="card">
@@ -88,11 +68,12 @@
                     </div>
                 </div>
             </div>
+            {{--}}
             <div class="row">
                 <div class="col-12 col-md-12  col-xl-4">
                     <div class="card top-departments">
                         <div class="card-header">
-                            <h4 class="card-title mb-0">Top Departments</h4>
+                            <h4 class="card-title mb-0" style="color: #fff;">{{__('Top Especialidades')}}</h4>
                         </div>
                         <div class="card-body">
                             @php

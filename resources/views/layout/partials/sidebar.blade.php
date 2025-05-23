@@ -21,10 +21,19 @@
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('clients') ? 'active' : '' }}" href="{{ route('client.index') }}">{{ __('generic.list') }} {{ __('client.titles') }}  </a></li>
                         <li><a class="{{ Request::is('clients/create') ? 'active' : '' }}"   href="{{ route('client.create') }}">{{ __('generic.create') }} {{ __('client.title') }}</a></li>
-                        <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>2)) }}">{{ __('generic.create') }} {{ __('user.doctor') }}</a></li>
                         <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>5)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
                         <li><a class="{{ Request::is('client/branch/create') ? 'active' : '' }}"   href="{{ route('client.branch.create') }}">{{ __('generic.create') }} {{ __('client.branch') }}</a></li>
                         <li><a class="{{ Request::is('client/room/create') ? 'active' : '' }}"   href="{{ route('client.room.create') }}">{{ __('generic.create') }} {{ __('client.room') }}</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <img  src="{{ URL::asset('/assets/img/icons/menu-icon-02.svg') }}" alt=""></span>
+                        <span>{{ __('doctor.titles') }} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('practitioners') ? 'active' : '' }}"  href="{{ route('practitioner.index') }}">{{ __('generic.list') }} {{ __('doctor.titles') }}</a></li>
+                        <li><a class="{{ Request::is('practitioners/create') ? 'active' : '' }}"   href="{{ route('practitioner.create') }}">{{ __('generic.create') }} {{ __('doctor.title') }}</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
