@@ -23,6 +23,7 @@ return new class extends Migration
             $table->dateTime('start');
             $table->dateTime('end');
             $table->foreignId('consulting_room_id')->nullable()->references('id')->on('consulting_rooms')->onDelete('cascade');
+            $table->foreignId('medical_speciality_id')->nullable()->references('id')->on('medical_specialties')->onDelete('cascade');
             $table->integer('minutes_duration')->nullable();
             $table->json('participant')->nullable()->comment('Otros participantes en la cita');
             $table->json('extension')->nullable()->comment('Extensiones FHIR');
