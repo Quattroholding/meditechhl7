@@ -47,6 +47,27 @@ class PatientController extends Controller
             session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
             return back();
         }
+        //DEBO CREAR UN PASSWORD GENÉRICO
+        $model = new User();
+        $model->first_name = $request->first_name;
+        $model->last_name = $request->last_name;
+        $model->email = $request->email;
+        $model->password = $request->password;
+        $model->save();
+        
+        // Asignar rol de paciente
+        $model->assignRole('paciente');
+
+        $patient = new Patient();
+        $patient->given_name = $request->first_name;
+        $patient->family_name = $request->last_name;
+        $patient->email = $request->email;
+        $patient->phone = $request->full_phone;
+        $patient->name = $request->first_name .' '. $request->last_name;
+        $patient->user_id = $model->id;
+        $patient->fhir_id = 'patient-' . Str::uuid();
+        //IDENTIFIER ES ID
+        $patient->identifier = $request->id_number;
     }
     public function store_public(Request $request){
        //dd($request->all());
