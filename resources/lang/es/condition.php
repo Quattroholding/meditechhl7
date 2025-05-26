@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title'=>'Consulta',
-    'titles'=>'Consultas',
+    'title'=>'Diagnostico',
+    'titles'=>'Diagnosticos',
     'practitioner'=>'Doctor',
     'catefory'=>'Categoria',
     'severity'=>'Gravedad',
@@ -12,4 +12,7 @@ return [
     'description'=>'Descripción',
     'status'=>'Estatus',
     'identifier'=>'Idetificador',
+    'clinical_status'=>'Estatus Clínico',
+    'verification_status'=>'Verificación'
 ];
+

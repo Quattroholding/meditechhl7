@@ -49,7 +49,7 @@ class PhysicalExam extends Component
                 'practitioner_id' => $this->encounter->practitioner_id,
             ]);
         }else{
-            $vs->finding =$value;
+            $vs->finding = array('text'=>$value);
             $vs->save();
         }
 

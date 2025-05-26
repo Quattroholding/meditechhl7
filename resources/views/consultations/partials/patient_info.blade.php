@@ -7,8 +7,9 @@
     <div class="offcanvas-body">
         <div class="col-sm-12">
             <div class="row">
-                <livewire:patient.patient-profile-about patient_id="{{$id}}"/>
-                <livewire:patient.patient-profile-details patient_id="{{$id}}" tabs="medical-history,encounters,conditions,vital-signs,physical-exams,medications,services,procedures,referrals" activeTab="medical-history"/>
+                <div wire:init>
+                    <livewire:consultation.patient-history patient_id="{{$id}}"/>
+                </div>
             </div>
         </div>
     </div> <!-- end offcanvas-body-->

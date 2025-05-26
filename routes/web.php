@@ -31,6 +31,10 @@ Route::get('/forgot-password', function () {
     return view('Pages/forgot-password');
 })->name('forgot-password');
 
+Route::get('/calendario', function () {
+    return view('appointments/calendar/index');
+})->name('calendario');
+
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 
 

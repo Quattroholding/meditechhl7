@@ -84,9 +84,9 @@ class Encounter extends Model
         return $this->hasMany(ServiceRequest::class);
     }
 
-    public function medicalSpeciality(): HasOne
+    public function medicalSpeciality(): BelongsTo
     {
-        return $this->belongsTo(MedicalHistory::class);
+        return $this->belongsTo(MedicalSpeciality::class);
     }
 
     /**

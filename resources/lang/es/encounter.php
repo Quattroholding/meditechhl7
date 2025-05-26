@@ -12,6 +12,7 @@ return [
     'type'=>'Tipo',
     'priority'=>'Prioridad',
     'reason'=>'Razón',
+    'chief_complaint'=>'Queja Principal',
     'status'=>'Estatus',
     'identifier'=>'Idetificador',
     'date'=>'Fecha y Hora',
@@ -24,4 +25,5 @@ return [
     'status.onleave'=>'En Pausa/Salida Temporal',
     'status.finished'=>'Finalizado',
     'status.cancelled'=>'Cancelado',
+    'speciality'=>'Especialidad',
 ];
