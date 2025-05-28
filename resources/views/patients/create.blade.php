@@ -39,7 +39,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" style="display: none;" id="client-user">
+                                <p>Este usuario ya se encuentra registrado en el sistema, ¿Desea asociarlo a su empresa?</p>
+                                <button class="btn btn-primary cancel-form" id="associate-yes">  Asociar </button>
+                            </div>
+                            <div id="form-patient" style="display: none;">
+                            <div class="row ">
                                 <div class="col-12 col-md-6 col-xl-4">
                                     <!-- First Name -->
                                     <div class="input-block local-forms">
@@ -80,7 +85,7 @@
                                     <div class="input-block local-forms">
                                         <div class="form-group local-forms cal-icon">
                                             <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="date" :value="old('birthdate')"/>
+                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birthdate" :value="old('birthdate')"/>
                                         </div>
                                     </div>
                                 </div>
@@ -109,18 +114,18 @@
                                 <div class=" col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <x-input-label for="phone" :value="__('patient.phone')" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="email" name="phone" :value="old('phone')"/>
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
                                 <!-- WHATSAPP -->
-                                <div class=" col-12 col-md-6 col-xl-6">
+                                {{--}}<div class=" col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <x-input-label for="whatsapp" :value="__('patient.whatsapp')" />
                                         <x-text-input id="whatsapp" class="block mt-1 w-full" type="email" name="whatsapp" :value="old('whatsapp')"/>
                                         <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                                     </div>
-                                </div>
+                                </div>{{--}}
                             </div>
                             <div class="row">
                                 <!-- BLOOD TYPE -->
@@ -147,6 +152,7 @@
                                     <a class="btn btn-primary cancel-form" href="{{ route('patient.index') }}">  {{ __('button.cancel') }}</a>
                                 </div>
                             </div>
+                            </div>
                             </form>
                         </div>
                     </div>
@@ -154,4 +160,54 @@
             </div>
         </div>
     </div>
+    <script>
+        var path ='{{ url('/') }}';
+    document.getElementById('id_number').addEventListener('blur', function () {
+    const idNumber = this.value;
+
+    fetch(`/patients/check/${idNumber}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.exists) {
+                $('#form-patient').hide();
+                $('#client-user').show();
+                console.log(data);
+                console.log('exists');
+                document.getElementById('associate-modal').style.display = 'block';
+                document.getElementById('extra-fields').style.display = 'none';
+            } else {
+                console.log('no exists');
+                $('#form-patient').show();
+                $('#client-user').hide();
+            }
+        });
+});
+    $("#associate-yes").click(function(){
+        const idNumber = document.getElementById('id_number').value;
+
+    });
+   document.getElementById('associate-yes').addEventListener('click', function (e) {
+    e.preventDefault();
+    const idNumber = document.getElementById('id_number').value;
+
+    fetch(`/patients/associate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+        },
+        body: JSON.stringify({ id_number: idNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "/patients"; // o donde desees redirigir
+        } else {
+            alert("Error al asociar el paciente.");
+        }
+    })
+    .catch(error => console.error('Error al asociar:', error));
+});
+
+    </script>
 </x-app-layout>

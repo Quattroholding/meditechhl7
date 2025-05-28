@@ -40,8 +40,8 @@ class Counter extends Component
         $this->count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
         $lastMonth = Appointment::whereRaw("start>='".$curr_month->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
 
-
-        $this->change = round($lastMonth+100/$this->count,2).'%';
+        //$this->change = round($lastMonth+100/$this->count,2).'%';
+        $this->change = ($this->count > 0) ? round($lastMonth+100/$this->count,2).'%' : '0%';
 
         if($this->count>$lastMonth){
             $this->class='passive-view';
@@ -61,9 +61,10 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $this->count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
         $lastMonth = Patient::whereRaw("created_at>='".$curr_month->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
-
-        $this->change = round($lastMonth+100/$this->count).'%';
-
+        //dd($this->count);
+        //$this->change = round($lastMonth+100/$this->count).'%';
+        $this->change = ($this->count > 0) ? round($lastMonth+100/$this->count,2).'%' : '0%';
+        
         if($this->count>$lastMonth){
             $this->class='passive-view';
         }else{
@@ -81,9 +82,9 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $this->count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
         $lastMonth = Encounter::whereRaw("start>='".$curr_month->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
-
-        $this->change = round($lastMonth+100/$this->count,2).'%';
-
+        //d($this->count);
+        //$this->change = round($lastMonth+100/$this->count,2).'%';
+        $this->change = ($this->count > 0) ? round($lastMonth+100/$this->count,2).'%' : '0%';
         if($this->count>$lastMonth){
             $this->class='passive-view';
         }else{
@@ -109,13 +110,15 @@ class Counter extends Component
         }else{
             $this->class='negative-view';
         }
-
+        //dd($this->class);
+        /*dd($this->count);
         if($this->count>0){
             $this->change = round($lastMonth+100/$this->count,2).'%';
         }else{
             $this->change = '0%';
-        }
-
+        }*/
+        $this->change = ($this->count > 0) ? round($lastMonth+100/$this->count,2).'%' : '0%';
+        //dd($this->change);
 
 
 

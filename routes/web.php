@@ -111,6 +111,10 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), fu
     Route::get('/create', [PatientController::class, 'create'])->name('patient.create');
 
     Route::post('/store', [PatientController::class, 'store'])->name('patient.store');
+    
+    Route::get('/check/{id_number}', [PatientController::class, 'check'])->name('patient.check');
+    
+    Route::post('/associate', [PatientController::class, 'associate'])->name('patient.associate');
 
     Route::get('/{id}/profile', [PatientController::class, 'profile'])->name('patient.profile');
 

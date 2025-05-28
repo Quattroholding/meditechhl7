@@ -1,10 +1,13 @@
 <div class="col-12 col-md-12  col-xl-8">
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title d-inline-block">Upcoming Appointments</h4> <a
+            <h4 class="card-title d-inline-block" style="color: #fff;">Upcoming Appointments</h4> <a
                 href="{{ url('appointments') }}" class="patient-views float-end">Show all</a>
         </div>
         <div class="card-body p-0 table-dash">
+            @if($appointments->isEmpty())
+                <p class="px-4 pt-3">No appointment found.</p>
+            @else
             <div class="table-responsive">
                 <table class="table mb-0 border-0 datatable custom-table">
                     <thead>
@@ -18,8 +21,8 @@
                             <th>Patient name</th>
                             <th>Doctor</th>
                             <th>Time</th>
-                            <th>Disease</th>
-                            <th></th>
+                            <th>Reason for Visit</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,27 +30,35 @@
                             $json = file_get_contents(public_path('../public/assets/json/admin-dashboard-appointments.json'));
                             $dashboards = json_decode($json, true);
                         @endphp
-                        @foreach ($dashboards as $dashboard)
-                            <tr>
-                                <td>
-                                    <div class="form-check check-tables">
-                                        <input class="form-check-input" type="checkbox" value="something">
-                                    </div>
-                                </td>
-                                <td>{{ $dashboard['No'] }}</td>
-                                <td>{{ $dashboard['Patientname'] }}</td>
-                                <td class="table-image appoint-doctor">
-                                    <img width="28" height="28" class="rounded-circle"
-                                        src="{{ URL::asset('/assets/img/profiles/' . $dashboard['Image']) }}"
+                        @foreach($appointments as $appointment)
+                        <tr>
+                            <td>
+                                <div class="form-check check-tables">
+                                    <input class="form-check-input" type="checkbox" value="something">
+                                </div>
+                            </td>
+                            <td>
+                                {{$appointment->id}}
+                            </td>
+                            <td>
+                                {{$appointment->patient->name}}
+                            </td>
+                            <td class="table-image appoint-doctor">
+                                <img width="28" height="28" class="rounded-circle"
+                                        src="{{ URL::asset('/assets/img/profiles/' . $appointment->patient->user->profile_picture) }}"
                                         alt="">
-                                    <h2>{{ $dashboard['Doctor'] }}</h2>
-                                </td>
-                                <td class="appoint-time"><span>{{ $dashboard['Date'] }} at
-                                    </span>{{ $dashboard['Time'] }}</td>
-                                <td><button
-                                        class="custom-badge status-green ">{{ $dashboard['Disease'] }}</button>
-                                </td>
-                                <td class="text-end">
+                                <h2>{{$appointment->practitioner->name}}</h2>
+                            </td>
+                            @php 
+                            $date = \Carbon\Carbon::parse($appointment->created_at);
+                            $format_date = $date->format('M d Y H:i A');
+                            @endphp
+                            <td class="appoint-time">
+                                <span>{{ $date->format('M d Y') }} at
+                                    </span>{{ $date->format('H:i A') }}
+                            </td>
+                            <td><button class="custom-badge status-green">{{$appointment->service_type}}</button></td>
+                                                            <td class="text-end">
                                     <div class="dropdown dropdown-action">
                                         <a href="javascript:;" class="action-icon dropdown-toggle"
                                             data-bs-toggle="dropdown" aria-expanded="false"><i
@@ -63,11 +74,12 @@
                                         </div>
                                     </div>
                                 </td>
-                            </tr>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+            @endif
         </div>
     </div>
 </div>
