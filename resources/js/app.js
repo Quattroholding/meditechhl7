@@ -2,9 +2,6 @@ import './bootstrap';
 
 import Alpine from 'alpinejs';
 
-window.Alpine = Alpine;
-
-Alpine.start();
 
 import intlTelInput from 'intl-tel-input';
 import 'intl-tel-input/build/css/intlTelInput.css';

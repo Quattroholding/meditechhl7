@@ -70,9 +70,11 @@
             </div>
             {{--}}
             <div class="row">
-                <div class="col-12 col-md-12  col-xl-4">
+                <div class="col-xl-4 col-md-12  col-xs-12">
                     {{--}}COMPONENTE DE TOP 5 DE ESPECIALIDADES {{--}}
                     @livewire('dashboard.top-specialties')
+                </div>
+                <div class="col-xl-8 col-xs-12">
                     {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENST SEGÚN EL ROL DEL USUARIO {{--}}
                     @livewire('admin-dashboard-appointments')
                 </div>
