@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Encounter;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,9 +20,15 @@ class AppointmentFactory extends Factory
     public function definition()
     {
         // Fechas aleatorias en el futuro (próximos 30 días)
-        $startDate = $this->faker->dateTimeBetween('now', '+30 days');
+        //$startDate = $this->faker->dateTimeBetween('now', '+5 days');
+        $addHours = 8+$this->faker->randomNumber(1);
+
+        $today = now()->format('Y-m-d').' '.$addHours.":00:00";
+        $startDate = Carbon::parse($today);
+
+
         // Duración de la cita entre 15 y 60 minutos
-        $duration = $this->faker->numberBetween(15, 60);
+        $duration = $this->faker->randomElement(['15','30','45','60']);
         $endDate = (clone $startDate)->modify("+{$duration} minutes");
 
         $patient = Patient::inRandomOrder()->limit(1)->first();

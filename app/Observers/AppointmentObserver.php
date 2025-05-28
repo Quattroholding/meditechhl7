@@ -12,10 +12,12 @@ class AppointmentObserver
      */
     public function created(Appointment $appointment): void
     {
+        $user_id =  auth()->id();
+        if(empty($user_id)) $user_id=1;
         AppointmentStatus::create([
             'appointment_id' => $appointment->id,
             'status' => $appointment->status,
-            'user_id' => auth()->id() // Asume que estás usando autenticación
+            'user_id' =>$user_id // Asume que estás usando autenticación
         ]);
     }
 

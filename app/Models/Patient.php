@@ -96,9 +96,9 @@ class Patient extends BaseModel
         return $this->hasMany(MedicalHistory::class);
     }
 
-    public function allergies(): HasMany
-    {
-        return $this->hasMany(Allergy::class);
+    public function allergies(){
+
+        return $this->hasMany(MedicalHistory::class,'patient_id')->whereCategory('allergy');
     }
 
     public function conditions(): HasMany
@@ -136,6 +136,8 @@ class Patient extends BaseModel
     {
         return $this->hasMany(Referral::class);
     }
+
+
 
     // Accesor para FHIR
     public function getFhirResourceAttribute()
@@ -190,5 +192,15 @@ class Patient extends BaseModel
 
     public function avatar(){
         return $this->files()->whereType('avatar')->latest()->first();
+    }
+
+    public function getLastEncounter(){
+
+    }
+
+    public function current_medications(){
+        return $this->hasMany(MedicationRequest::class,'patient_id')
+            ->whereEncounterId($this->encounters()->latest()->first()->id)
+            ->whereRaw("valid_to >='".now()->format('Y-m-d')."'");
     }
 }

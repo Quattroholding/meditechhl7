@@ -29,4 +29,9 @@ return [
     'status.entered-in-error'=>'Registrado por Error',
     'status.checked-in'=>'Registrado',
     'status.waitlist'=>'Lista de espera',
+    'duration'=>'Duración (minutos)',
+    'speciality'=>'Especialidad',
+    'consulting_room'=>'Consultorio',
+    'reason'=>'Motivo de consulta',
+    'service_type'=>'Tipo de Servicio'
 ];

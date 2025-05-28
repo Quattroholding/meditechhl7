@@ -119,6 +119,18 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'patient_id' => [
+            'required' => 'Debe seleccionar un paciente',
+        ],
+        'consulting_room_id' => [
+            'required' => 'Debe seleccionar un consultorio',
+        ],
+        'medical_speciality_id' => [
+            'required' => 'Debe seleccionar una especialidad',
+        ],
+        'service_type' => [
+            'required' => 'El tipo de servicio es requerido',
+        ],
     ],
 
     /*

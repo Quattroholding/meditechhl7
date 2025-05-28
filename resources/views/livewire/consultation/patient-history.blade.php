@@ -29,7 +29,7 @@
                                     <td>{{$dato->id}}</td>
                                     <td>{!!  $dato->practitioner->name !!} </td>
                                     <td>{!!  $dato->status !!}</td>
-                                    <td>{{$dato->medicalSpeciality->name}}</td>
+                                    <td>@if($dato->medicalSpeciality){{$dato->medicalSpeciality->name}}@else N/A @endif</td>
                                     <td>{{ \Carbon\Carbon::parse($dato->start)->format('d-m-Y')  }} {{ $dato->time }}</td>
                                     <td>{{$dato->reason}}</td>
                                 </tr>

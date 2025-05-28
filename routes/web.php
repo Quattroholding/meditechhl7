@@ -31,12 +31,7 @@ Route::get('/forgot-password', function () {
     return view('Pages/forgot-password');
 })->name('forgot-password');
 
-Route::get('/calendario', function () {
-    return view('appointments/calendar/index');
-})->name('calendario');
-
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
-
 
 Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), function() {
 
@@ -118,6 +113,8 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), fu
     Route::post('/store', [PatientController::class, 'store'])->name('patient.store');
 
     Route::get('/{id}/profile', [PatientController::class, 'profile'])->name('patient.profile');
+
+    Route::get('/{id}/medical_history', [PatientController::class, 'medicalHistory'])->name('patient.medical_history');
 
     Route::get('/{id}/edit', [PatientController::class, 'edit'])->name('patient.edit');
 

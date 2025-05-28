@@ -47,4 +47,5 @@ return [
     'current_password'=>'Contraseña Actual',
     'new_password'=>'Nueva Contraseña',
     'confirm_password'=>'Confirmar Contraseña',
+    'medical_history'=>'Historial Médico',
 ];

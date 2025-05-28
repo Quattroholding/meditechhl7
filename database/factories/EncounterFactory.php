@@ -31,6 +31,9 @@ class EncounterFactory extends Factory
         $duration = $this->faker->numberBetween(15, 60);
         $endDate = (clone $startDate)->modify("+{$duration} minutes");
 
+        $type ='4525004'; // consulta de medicina general
+        if($appointment->medical_speciality_id <> '50')   $type ='26172008'; // consulta de especialidad
+
         return [
             'fhir_id' => 'encounter-' . $this->faker->uuid(),
             'patient_id' => $appointment->patient_id,
@@ -39,7 +42,7 @@ class EncounterFactory extends Factory
             'identifier' => 'ENC-' . $this->faker->unique()->numerify('#######'),
             'status' => $this->faker->randomElement(['planned', 'arrived', 'in-progress', 'finished', 'cancelled']),
             'class' => $this->faker->randomElement(['AMB', 'EMER', 'FLD', 'HH', 'IMP']),
-            'type' => $this->faker->randomElement(['AMB', 'EMER', 'FLD', 'HH', 'IMP']),
+            'type' => $type,
             'priority' => $this->faker->randomElement(['routine', 'urgent', 'asap', 'stat']),
             'reason' => $this->faker->sentence(), //CHIEF COMPLAINT
             'start' => $startDate,

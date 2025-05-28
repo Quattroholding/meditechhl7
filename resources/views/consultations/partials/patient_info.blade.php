@@ -8,7 +8,11 @@
         <div class="col-sm-12">
             <div class="row">
                 <div wire:init>
+                    {{--}}
                     <livewire:consultation.patient-history patient_id="{{$id}}"/>
+                    {{--}}
+
+                    <livewire:patient.medical-history2 patient_id="{{$id}}"/>
                 </div>
             </div>
         </div>

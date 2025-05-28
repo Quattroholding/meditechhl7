@@ -33,9 +33,9 @@ class AppointmentSeeder extends Seeder
 
         // Crear 5 citas fullfilled
         Appointment::factory()
-            ->count(1)
-            ->fulfilled()
-            ->withEncounter()
+            ->count(8)
+            ->booked()
+           // ->withEncounter()
             ->create();
 
         // Crear citas para un paciente específico

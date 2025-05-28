@@ -23,7 +23,7 @@ class PatientController extends Controller
     }
 
     public function store(Request $request){
-        
+
     }
     public function store_public(Request $request){
        //dd($request->all());
@@ -53,7 +53,7 @@ class PatientController extends Controller
         $model->email = $request->email;
         $model->password = $request->password;
         $model->save();
-        
+
         // Asignar rol de paciente
         $model->assignRole('paciente');
 
@@ -67,7 +67,7 @@ class PatientController extends Controller
         $patient->fhir_id = 'patient-' . Str::uuid();
         $patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
         if($patient->save()){
-            
+
             session()->flash('message', 'Se ha registrado exitósamente el paciente');
             $credentials = ([
             'email' => $model->email,
@@ -81,7 +81,7 @@ class PatientController extends Controller
         }
             session()->flash('message', 'Ha habido un error con el registro del paciente');
             return back();
-    
+
 
 
 
@@ -127,5 +127,10 @@ class PatientController extends Controller
         $data->delete();
 
         return redirect(route('patient.index'));
+    }
+
+    public function medicalHistory(Request $request,$id){
+
+        return view('patients.medicalHistory.index',compact('id'));
     }
 }

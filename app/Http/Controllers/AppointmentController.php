@@ -3,68 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Practitioner;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class AppointmentController extends Controller
 {
 
     public function index(Request $request){
-
         $model = Appointment::class;
-
         return view('appointments.index',compact('model'));
     }
 
     public function calendar(Request $request){
+        return view('appointments.calendar.index');
+    }
 
-        $patient_id = $request->patient_id;
-        $client_id = $request->client_id;
-        $consulting_room_id = $request->consulting_room_id;
-        $status='';
-        if($request->has('status')) $status=$request->status;
-        $hasta = \Carbon\Carbon::now()->addWeek(1)->format('Y-m-d');
-        $desde = \Carbon\Carbon::now()->subWeek(3)->format('Y-m-d');
-        if(!empty($request->start)) $desde = Carbon::parse($request->start)->format('Y-m-d');
-        if(!empty($request->end)) $hasta =  Carbon::parse($request->end)->format('Y-m-d');
+    public function updateStatus(Appointment $appointment, Request $request)
+    {
+        $validStatuses = ['booked', 'arrived', 'fulfilled', 'cancelled', 'noshow'];
 
-        $appointments = Appointment::when(!empty($patient_id),function ($q) use($patient_id){
-                $q->where('patient_id',$patient_id);
-            })
-            ->when(!empty($client_id),function ($q) use($client_id){
-                $q->where('client_id',$client_id);
-            })
-            ->when(!empty($consulting_room_id),function ($q) use($consulting_room_id){
-                $q->where('consulting_room_id',$consulting_room_id);
-            })
-            ->when(!empty($status),function ($q) use($status){
-                $q->where('status',$status);
-            })
-            ->whereRaw("((date_format('".$desde."','%Y-%m-%d') >= start AND date_format('".$hasta."','%Y-%m-%d') <= end)
-                    OR (date_format('".$desde."','%Y-%m-%d') <= end AND date_format('".$hasta."','%Y-%m-%d') >= start))")
-            ->whereIn('status',['booked','arrived','checked-in'])
-            ->orderBy("start")
-            ->get();
+        if(in_array($request->status, $validStatuses)) {
+            $appointment->update(['status' => $request->status]);
 
+            // Si tienes integración FHIR, aquí podrías sincronizar el cambio
+            // $this->syncWithFhirServer($appointment);
 
-        $data = array();
-
-        foreach ($appointments as $a){
-            $color = $a::statusColors()[$a->status];
-
-            $data[]=[
-                'title'=>'Paciente :'.$a->patient->name,
-                'start'=>$a->start->format('Y-m-d H:i'),
-                'end'=>$a->end->format('Y-m-d H:i'),
-                'color'=>'#'.$color,
-            ];
+            return response()->json(['success' => true]);
         }
 
-        //dd($data);
-
-        if($request->has('ajax'))   return response()->json($data);
-
-        return view('appointments.calendar',compact('data','desde','hasta'));
+        return response()->json(['success' => false], 400);
     }
 
     public function create(){

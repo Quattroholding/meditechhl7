@@ -1,8 +1,10 @@
 <div>
-    <button wire:click="openModal()" class="btn btn-info message-btns">{{__('Agregar historial')}}</button>
+    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{__('Agregar historial')}}</button>
     @if($showModal)
     <!-- Modal -->
-    <div class="modal fade show" id="bs-example-modal-lg" tabindex="-1" aria-labelledby="myLargeModalLabel" style="display: block;" aria-modal="true" role="dialog">
+    <div class="modal fade show" id="bs-example-modal-lg" tabindex="1000"
+         aria-labelledby="myLargeModalLabel"
+         style="display: block;" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

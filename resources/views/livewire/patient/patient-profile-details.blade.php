@@ -2,12 +2,7 @@
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a href="#clinica_history" data-bs-toggle="tab" aria-expanded="false" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
-                       {{__('patient.clinical_history')}}
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
+                <li class="nav-item active show" role="presentation">
                     <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
                         {{__('patient.account_settings')}}
                     </a>
@@ -19,46 +14,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane  show active" id="clinica_history" role="tabpanel">
-                    <div class="doctor-personals-grp">
-                        <div class="card">
-                            <div class="card-body">
-                                <ul class="nav nav-pills navtab-bg nav-justified" role="tablist">
-                                    @foreach($tabs2 as $tab)
-                                        @isset($tab['title'])
-                                            <li class="nav-item" role="presentation">
-                                                <a href="#{{$tab['title']}}"   wire:click="changeActiveTab('{{$tab['title']}}')"
-                                                   data-bs-toggle="tab"
-                                                   aria-expanded="false"
-                                                   class="nav-link {{$tab['active']}}"
-                                                   aria-selected="false"
-                                                   tabindex="-1"
-                                                   role="tab">
-                                                    {{__('patient.'.$tab['title'])}}
-                                                    <span class="badge bg-danger ms-1">{{$tab['count']}}</span>
-                                                </a>
-                                            </li>
-                                        @endisset
-                                    @endforeach
-                                </ul>
-                                <div class="tab-content">
-                                    @foreach($tabs2 as $tab)
-                                        @isset($tab['title'])
-                                            <div class="tab-pane {{$tab['active']}}" id="{{$tab['title']}}" role="tabpanel">
-                                                @if($activeTab === $tab['title'])
-                                                    <div wire:init>
-                                                        @livewire($tab['component'], ['patient_id' => $patient_id], key($tab['title']))
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        @endisset
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="account_settings" role="tabpanel">
+                <div class="tab-pane active show" id="account_settings" role="tabpanel">
                     <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">

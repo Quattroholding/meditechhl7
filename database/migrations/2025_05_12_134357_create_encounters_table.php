@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('identifier')->unique()->comment('Identificador único del encuentro');
             $table->enum('status', ['planned', 'arrived', 'triaged', 'in-progress', 'onleave', 'finished', 'cancelled']);
             $table->enum('class', ['AMB', 'EMER', 'FLD', 'HH', 'IMP', 'ACUTE', 'NONAC', 'OBSENC', 'PRENC', 'SS', 'VR']);
-            $table->enum('type', ['AMB', 'EMER', 'FLD', 'HH', 'IMP', 'ACUTE', 'NONAC', 'OBSENC', 'PRENC', 'SS', 'VR']);
+            $table->string('type', 20);
             $table->string('priority')->nullable();
             $table->text('reason')->nullable()->comment('Motivo de la consulta');
             $table->json('diagnosis')->nullable()->comment('Diagnósticos relacionados');

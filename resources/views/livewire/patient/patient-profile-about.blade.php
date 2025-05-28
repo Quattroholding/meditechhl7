@@ -4,7 +4,6 @@
             <div class="card-body">
                 <div class="heading-detail ">
                     <h4 class="mb-3">{{__('Acerca de mi')}}</h4>
-                    <p>{!! $data->profile_name!!}</p>
                 </div>
                 <div class="about-me-list">
                     <ul class="list-space">

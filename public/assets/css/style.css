@@ -6578,9 +6578,9 @@ a.status-grey {
 	padding-left: 30px;
 }
 .profile-user-img {
-	margin-right: 20px;
+
 	position: relative;
-    top: -30px;
+
 }
 .profile-user-img img {
 	border-radius: 50%;
@@ -6855,6 +6855,7 @@ a.status-grey {
 .doctor-up-files label.file-upload {
     position: relative;
     overflow: hidden;
+    top:30px;
 }
 .doctor-up-files label.file-upload input[type="file"] {
     position: absolute;

@@ -32,6 +32,9 @@ class ConsultationController extends Controller
 
         $consultation = Encounter::whereAppointmentId($appointment_id)->first();
 
+        $type ='4525004'; // consulta de medicina general
+        if($appointment->medical_speciality_id <> '50')   $type ='26172008'; // consulta de especialidad
+
         if(!$consultation){
             $consultation =  Encounter::create([ 'fhir_id' => 'encounter-' . fake()->uuid(),
                 'patient_id' => $appointment->patient_id,
@@ -39,10 +42,11 @@ class ConsultationController extends Controller
                 'appointment_id' => $appointment->id,
                 'identifier' => 'ENC-' . fake()->unique()->numerify('#######'),
                 'status' =>'in-progress',
-                'class' => 'IMP',
-                'type' => 'IMP',
+                'class' => 'SS',
+                'type' =>$type,
                 'priority' => 'routine',
                 'start' => now(),
+                'medical_speciality_id'=>$appointment->medical_speciality_id,
                 'end' => now()]);
         }
 
