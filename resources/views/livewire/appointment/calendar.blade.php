@@ -108,8 +108,10 @@
 
     <!-- Calendario -->
     <div class="calendar-content">
-        @if(in_array($currentView ,['montly','weekly']))
+
+        @if(in_array($currentView ,['monthly','weekly']))
         <div class="legend">
+
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #28a745, #20c997);"></div>
                 <span>Programada</span>
@@ -117,6 +119,10 @@
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #007bff, #6610f2);"></div>
                 <span>Llegada</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #FFA500, #d7a323);"></div>
+                <span>Pendiente de Confirmacion</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #ffc107, #fd7e14);"></div>
@@ -164,16 +170,20 @@
                     <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
                 <form wire:submit="saveAppointment">
+                    @if(!auth()->user()->hasRole('paciente'))
                     <div class="input-block local-forms">
                         <x-input-label for="patient_id" :value="__('patient.title')" required/>
                         <x-select-input  wire:model="patient_id" id="patient_id" name="patient_id" :options="\App\Models\Patient::get()->pluck('name','id')->toArray()"  class="block w-full"/>
                         @error('patient_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
                     </div>
+                    @endif
+                    @if(!auth()->user()->hasRole('doctor'))
                     <div class="input-block local-forms">
                         <x-input-label for="doctor_id" :value="__('doctor.title')" required/>
                         <x-select-input wire:change="changeDoctor()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="\App\Models\Practitioner::get()->pluck('name','id')->toArray()"  class="block w-full"/>
                         @error('doctor_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
                     </div>
+                    @endif
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
                             <x-input-label for="Fecha" :value="__('appointment.date')" required/>

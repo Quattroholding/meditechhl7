@@ -16,9 +16,18 @@
                 <div class="col-sm-12">
                     <div class="card card-table show-entire p-0 table-dash">
                         <div class="card-body">
-                            <div class="table-responsive">
+                            @if(\App\Models\Patient::count()>0)
                                 <livewire:appointment.data-table/>
-                            </div>
+                            @else
+                                <div class="text-center" style="margin: 40px;">
+                                    <h2>Para poder crear citas debes primero registrar un paciente</h2>
+                                    <a  class="btn btn-primary" style="margin-top: 20px;" href="{{route('patient.create')}}">
+                                        + {{__('Registrar paciente')}}
+                                    </a>
+                                </div>
+
+                            @endif
+
                         </div>
                     </div>
                 </div>

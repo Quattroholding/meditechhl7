@@ -124,10 +124,12 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
-                <a class="dropdown-item" href="{{ url('edit-profile') }}">Edit Profile</a>
-                <a class="dropdown-item" href="{{ url('settings') }}">Settings</a>
-                <a class="dropdown-item" href="{{ url('login') }}">Logout</a>
+                @if(auth()->user()->hasRole('paciente'))
+                    <a class="dropdown-item" href="{{ route('patient.profile',auth()->user()->patient->id) }}">{{__('patient.profile')}}</a>
+                @elseif(auth()->user()->hasRole('doctor'))
+                    <a class="dropdown-item" href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">{{__('patient.profile')}}</a>
+                @endif
+                <a class="dropdown-item" href="{{ url('login') }}">{{__('generic.logout')}}</a>
             </div>
         </li>
         <li class="nav-item ">

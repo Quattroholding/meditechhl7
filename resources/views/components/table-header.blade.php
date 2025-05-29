@@ -13,8 +13,10 @@
                         </form>
                     </div>
                     <div class="add-group">
-                        <a href="{{ $li_1 }}" class="btn btn-primary add-pluss ms-2"><img src="{{ URL::asset('/assets/img/icons/plus.svg') }}" alt=""></a>
-                        <a href="javascript:;" class="btn btn-primary doctor-refresh ms-2"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
+                        <a href="{{ $li_1 }}" class="btn btn-primary add-pluss ms-2" title="{{__('generic.new')}}">
+                            <img src="{{ URL::asset('/assets/img/icons/plus.svg') }}" alt="{{__('generic.new')}}">
+                        </a>
+                        <a href="#" class="btn btn-primary doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
                     </div>
                 </div>
             </div>

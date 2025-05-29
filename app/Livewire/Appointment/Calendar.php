@@ -66,7 +66,7 @@ class Calendar extends Component
     ];
 
     protected $messages = [
-        'patient_name.required' => 'El nombre del paciente es obligatorio.',
+       // 'patient_id.required' => 'Debe seleccionar un paciente.',
         'doctor_id.required' => 'Debe seleccionar un doctor.',
         'appointment_date.required' => 'La fecha es obligatoria.',
         'appointment_time.required' => 'La hora es obligatoria.',
@@ -84,7 +84,6 @@ class Calendar extends Component
         30 => '30 minutos',
         60 => '60 minutos'
     ];
-
     public function mount()
     {
         $this->currentDate = Carbon::now();
@@ -93,14 +92,36 @@ class Calendar extends Component
         $this->timeBlockMinutes = session('calendar.time_block_minutes', 30);
         $this->startHour = session('calendar.start_hour', 7);
         $this->endHour = session('calendar.end_hour', 21);
-
         $this->loadDoctors();
         $this->loadAppointments();
         $this->loadStats();
+
+
     }
 
     public function render()
     {
+
+        if(auth()->user()->hasRole('paciente')){
+            $this->patient_id = auth()->user()->patient->id;
+            $this->currentView = 'monthly';
+        }
+
+        if(auth()->user()->hasRole('doctor')){
+            $this->doctor_id = auth()->user()->practitioner->id;
+            $practitioner = Practitioner::find($this->doctor_id);
+
+            $clientId=null;
+            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
+            if($userClient) $clientId= $userClient->client_id;
+
+            $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
+                $q->whereClientId($clientId);
+            })->pluck('name','id')->toArray();
+
+            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
+        }
+
         return view('livewire.appointment.calendar', [
             'calendarData' => $this->getCalendarData(),
             'currentPeriod' => $this->getCurrentPeriod()
@@ -188,7 +209,7 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%" . $this->searchTerm . "%'");
             });
         }
-        $query->whereNotIn('status',['pending','proposed','whaitlist','noshow','cancelled']);
+        $query->whereNotIn('status',['proposed','whaitlist','noshow','cancelled']);
         $this->appointments = $query->orderBy('start')->get()->toArray();
     }
 
@@ -279,6 +300,8 @@ class Calendar extends Component
         $this->appointment_time = '';
         $this->duration = 30;
         $this->status = 'booked';
+        if(auth()->user()->hasRole('paciente')) $this->status = 'pending';
+
         $this->consulting_room_id = '';
         $this->medical_speciality_id = '';
         $this->service_type='';
@@ -312,7 +335,7 @@ class Calendar extends Component
 
             // Verificar disponibilidad
             if (!$this->checkAvailability()) {
-
+                $this->closeModal();
                 session()->flash('error', 'El doctor no está disponible en ese horario.');
                 return;
             }
@@ -414,7 +437,7 @@ class Calendar extends Component
         $endTime = $startTime->copy()->addMinutes($this->duration);
 
         $query = Appointment::where('practitioner_id', $this->doctor_id)
-            ->where('start', $this->appointment_date)
+            ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")
             ->where('status', '!=', 'cancelled')
             ->where(function($q) use ($startTime, $endTime) {
                 $q->where(function($q2) use ($startTime, $endTime) {
@@ -521,7 +544,7 @@ class Calendar extends Component
         });
 
         // Ordenar citas por hora
-        $sortedAppointments = collect($dayAppointments)->sortBy('formatted_time')->values()->all();
+        $sortedAppointments = collect($dayAppointments)->sortBy('start')->values()->all();
 
         // Encontrar la cita más cercana
         $now = Carbon::now();
@@ -529,7 +552,7 @@ class Calendar extends Component
         $nextAppointmentIndex = -1;
 
         foreach ($sortedAppointments as $index => $appointment) {
-            $appointmentDateTime = Carbon::parse($appointment['formatted_time']);
+            $appointmentDateTime = Carbon::parse($appointment['start'] );
 
             // Si es hoy y la cita es futura, o si la cita está en progreso
             if ($appointmentDateTime->isToday() &&
@@ -684,7 +707,7 @@ class Calendar extends Component
 
     public function calculateAppointmentPosition($appointment, $blockHeight = 60)
     {
-        $appointmentTime = Carbon::parse($appointment['start']);
+        $appointmentTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
         $appointmentMinutes = $appointmentTime->minute;
 
         // Calcular posición dentro del bloque
@@ -722,7 +745,9 @@ class Calendar extends Component
         $totalMinutes = $dayEnd->diffInMinutes($dayStart);
         $currentMinutes = $now->diffInMinutes($dayStart);
 
-        return ($currentMinutes / $totalMinutes) * 100; // Porcentaje de posición
+        $caculate =($currentMinutes / $totalMinutes) * 100;
+
+        return  $caculate;// Porcentaje de posición
     }
 
     // ===========================================
@@ -736,18 +761,21 @@ class Calendar extends Component
 
         if ($appointment['status'] === 'fulfilled') {
             return 'fulfilled';
+        }elseif ($appointment['status'] === 'pending') {
+            return 'pending';
         } elseif ($appointment['status'] === 'cancelled') {
             return 'cancelled';
         } elseif ($appointment['status'] === 'checked-in') {
             return 'current';
         } elseif ($appointmentDateTime->isPast() && $appointment['status'] !== 'fulfilled') {
             return 'overdue';
+        }elseif ($now->diffInMinutes($appointmentDateTime, false) <= 15 && $appointmentDateTime->isFuture()) {
+            return 'upcoming';
         } elseif ($isNext) {
             return 'next';
-        } elseif ($now->diffInMinutes($appointmentDateTime, false) <= 15 && $appointmentDateTime->isFuture()) {
-            return 'upcoming';
         } else {
             return 'scheduled';
         }
     }
+
 }

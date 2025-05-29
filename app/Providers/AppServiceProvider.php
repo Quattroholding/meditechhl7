@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\Appointment;
 use App\Observers\AppointmentObserver;
+use App\Policies\AppointmentPolicy;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrapFour();
-        Appointment::observe(AppointmentObserver::class);
+       Paginator::useBootstrapFour();
+       Appointment::observe(AppointmentObserver::class);
+       Gate::policy(Appointment::class,AppointmentPolicy::class);
     }
 }

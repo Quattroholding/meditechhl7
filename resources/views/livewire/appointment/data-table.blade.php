@@ -14,6 +14,7 @@
                     @endcomponent
                     <!-- /Table Header -->
                     <div class="table-responsive">
+                        @if($data->count()>0)
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
                             <tr>
@@ -44,11 +45,15 @@
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
+                                            @if(auth()->user()->can('edit',$appointment))
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item"  href="{{ route('appointment.edit',$appointment->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>
+                                            @endif
+                                            @if(auth()->user()->can('delete',$appointment))
                                                 <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
+                                            @endif
                                             </div>
                                         </div>
                                     </td>
@@ -59,6 +64,9 @@
                         <div class="mt-3" class="float-right">
                             {{ $data->links() }}
                         </div>
+                        @else
+                            <h3 class="text-center">No tiene ninguna cita registrada por favor de click en + en la parte superior para registrar una nueva cita.</h3>
+                        @endif
                     </div>
                 </div>
             </div>

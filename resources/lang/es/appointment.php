@@ -27,7 +27,7 @@ return [
     'status.cancelled'=>'Cancelado',
     'status.noshow'=>'No Presentado',
     'status.entered-in-error'=>'Registrado por Error',
-    'status.checked-in'=>'Registrado',
+    'status.checked-in'=>'En progreso',
     'status.waitlist'=>'Lista de espera',
     'duration'=>'Duración (minutos)',
     'speciality'=>'Especialidad',

@@ -42,22 +42,15 @@
                         <li><a class="{{ Request::is('client/room/create') ? 'active' : '' }}"   href="{{ route('client.room.create') }}">{{ __('generic.create') }} {{ __('client.room') }}</a></li>
                     </ul>
                 </li>
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-08.svg') }}" alt=""></span>
-                        <span> Usuarios </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a class="{{ Request::is('users') ? 'active' : '' }}"  href="{{ route('user.index') }}">{{ __('generic.list') }} {{ __('user.titles') }}</a></li>
-                    </ul>
-                </li>
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('login') }}">
                     <span class="menu-side">
                         <img src="{{ URL::asset('/assets/img/icons/logout.svg') }}" alt=""></span>
-                    <span>Logout</span>
+                    <span>{{__('Cerrar sesión')}}</span>
                 </a>
             </div>
         </div>
     </div>
 </div>
+ ó

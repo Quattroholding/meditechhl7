@@ -33,7 +33,8 @@
 
         .timeline-main {
             position: relative;
-            padding-left: 80px;
+            padding-left: 100px;
+            width: 97%;
         }
 
         .timeline-axis {
@@ -85,7 +86,7 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -55px;
+            left: -60px;
             top: 50%;
             transform: translateY(-50%);
             width: 18px;
@@ -97,7 +98,7 @@
 
         .timeline-time {
             position: absolute;
-            left: -118px;
+            left: -125px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 14px;
@@ -172,6 +173,14 @@
         }
         .timeline-item.scheduled::before {
             background: #17a2b8;
+        }
+
+        .timeline-item.pending {
+            background: linear-gradient(135deg, #FFA500, #d7a323);
+            border-left-color: #d7a323;
+        }
+        .timeline-item.pending::before {
+            background: #fff;
         }
 
         .timeline-item:hover {
@@ -404,6 +413,10 @@
                 <span>Próxima Cita</span>
             </div>
             <div class="legend-item">
+                <div class="legend-dot" style="background: #FFA500;"></div>
+                <span>Pendiente</span>
+            </div>
+            <div class="legend-item">
                 <div class="legend-dot" style="background: #ffc107;"></div>
                 <span>En Progreso</span>
             </div>
@@ -433,17 +446,20 @@
             <div class="timeline-axis"></div>
 
             <!-- Indicador de tiempo actual -->
+            {{--}}
             @if($calendarData['isToday'] && $calendarData['currentTimePosition'])
                 <div class="current-time-indicator" style="top: {{ $calendarData['currentTimePosition'] }}%;">
                     {{ now()->format('H:i') }}
                 </div>
             @endif
+            {{--}}
 
             <!-- Citas del día -->
             @foreach($calendarData['appointments'] as $index => $appointment)
                 @php
                     $isNext = $index === $calendarData['nextAppointmentIndex'];
                     $status = $this->getAppointmentStatus($appointment, $isNext);
+                    $appModel = \App\Models\Appointment::find($appointment['id']);
                 @endphp
 
                 <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-highlight' : '' }}"
@@ -461,12 +477,14 @@
                         <div class="appointment-status-badge" style="background:
                             @if($status === 'next') #007bff
                             @elseif($status === 'current') #ffc107
+                            @elseif($status === 'pending') #408f2d
                             @elseif($status === 'fulfilled') #28a745
                             @elseif($status === 'overdue') #dc3545
                             @elseif($status === 'upcoming') #6f42c1
                             @elseif($status === 'cancelled') #6c757d
                             @else #17a2b8 @endif; color: white;">
                             @if($status === 'next') 🔔 PRÓXIMA
+                            @elseif($status === 'pending') 🕐 PENDIENTE DE CONFIRMACION
                             @elseif($status === 'current') ⏱️ EN PROGRESO
                             @elseif($status === 'fulfilled') ✅ COMPLETADA
                             @elseif($status === 'overdue') ⚠️ RETRASADA
@@ -504,42 +522,47 @@
                     @endif
 
                     <div class="appointment-actions">
-                        @if(in_array($appointment['status'], ['booked']))
+                        @if(auth()->user()->can('arrived',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'arrived')" class="action-btn btn-start">
                                 🚪 Registrar Llegada
                             </button>
                         @endif
 
-                        @if(in_array($appointment['status'], ['arrived']))
+                        @if(auth()->user()->can('checked_in',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'checked-in')" class="action-btn btn-start">
                                 ▶️ Iniciar
                             </button>
                         @endif
 
-                        @if($appointment['status'] === 'checked-in')
-                            <a href="{{route('consultation.show',$appointment['id'])}}" class="action-btn btn-start">
-                                ▶️ Iniciar
-                            </a>
+                        @if(auth()->user()->can('fulfilled',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'fulfilled')" class="action-btn btn-complete">
-                                ✅ Completar
+                                ✅ Finalizar
                             </button>
                         @endif
 
-                        @if(in_array($appointment['status'],['booked','arrived']) && $status != 'overdue')
+                        @if(auth()->user()->can('viewConsultation',$appModel))
+                            <a href="{{route('consultation.show',$appointment['id'])}}" class="action-btn btn-start">
+                                ▶️ Ver Consulta
+                            </a>
+                        @endif
+
+                        @if(auth()->user()->can('cancelled',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'canceled')"  class="action-btn btn-cancel">
                                 ❌ Cancelar
                             </button>
                         @endif
 
-                        @if(in_array($appointment['status'],['booked','arrived']) && $status === 'overdue')
+                        @if(auth()->user()->can('noshow',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'noshow')"  class="action-btn btn-cancel">
                                 👻 No aparecio
                             </button>
                         @endif
-                        @if(!in_array($appointment['status'],['fulfilled','checked-in']))
-                        <button wire:click.stop="editAppointment({{ $appointment['id'] }})"  class="action-btn btn-edit">
-                            ✏️ Editar
-                        </button>
+                        @if(auth()->user()->can('edit',$appModel))
+                            <div class="float-right">
+                                <button wire:click.stop="editAppointment({{ $appointment['id'] }})"  class="action-btn btn-edit">
+                                    ✏️ Editar
+                                </button>
+                            </div>
                         @endif
                     </div>
                 </div>

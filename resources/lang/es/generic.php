@@ -9,6 +9,8 @@ return [
     'cancel'=>'Cancelar',
     'back'=>'Atras',
     'detail'=>'Detalle',
+    'new'=>'Nuevo(a)',
+    'refresh'=>'Refrescar',
     'Choose File'=>'Escoger Archivo',
     'delete'=>'Borrar',
     'hello'=>'Hola',

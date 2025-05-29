@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\PatientScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,14 @@ class Patient extends BaseModel
         'deceased' => 'boolean',
         'multiple_birth' => 'boolean'
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new PatientScope());
+    }
 
     public function getCompleteHistory(): array
     {
@@ -81,6 +90,11 @@ class Patient extends BaseModel
     }
 
     // Relaciones
+
+    public function clients(){
+        return $this->belongsToMany(Client::class,'patient_clients');
+    }
+
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);

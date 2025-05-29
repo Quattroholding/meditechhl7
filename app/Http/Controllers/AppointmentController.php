@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Client;
 use App\Models\Practitioner;
 use App\Models\User;
 use Carbon\Carbon;
