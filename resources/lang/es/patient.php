@@ -19,6 +19,7 @@ return [
     'billing_address'=>'Dirección Fiscal',
     'phone'=>'Teléfono',
     'blood_type'=>'Tipo de Sangre',
+    'marital_status'=>'Estado Civil',
     'status'=>'Estatus',
     'active'=>'Activo',
     'created_at'=>'Fecha de creación',

@@ -14,7 +14,6 @@
                     @endcomponent
                     <!-- /Table Header -->
                     <div class="table-responsive">
-                        @if($data->count()>0)
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
                             <tr>
@@ -64,9 +63,6 @@
                         <div class="mt-3" class="float-right">
                             {{ $data->links() }}
                         </div>
-                        @else
-                            <h3 class="text-center">No tiene ninguna cita registrada por favor de click en + en la parte superior para registrar una nueva cita.</h3>
-                        @endif
                     </div>
                 </div>
             </div>

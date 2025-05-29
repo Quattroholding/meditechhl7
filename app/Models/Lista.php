@@ -86,6 +86,11 @@ class Lista extends Model
         ];
     }
 
+    public static function maritalStatus(){
+        return [
+            'Soltero/a'=>'Soltero/a', 'Casado/a'=>'Casado/a', 'Divorciado/a'=>'Divorciado/a', 'Viudo/a'=>'Viudo/a'
+        ];
+    }
 
 
 }

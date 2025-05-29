@@ -27,14 +27,14 @@
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block  local-forms">
                                             <x-input-label for="id_type" :value="__('patient.id_type')" required="true"/>
-                                            <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="[$data->id_type]" class="block mt-1 w-full"/>
+                                            <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="[$data->identifier_type]" class="block mt-1 w-full"/>
                                             <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-8">
                                         <div class=" input-block  local-forms ">
                                             <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
-                                            <x-text-input id="id_number" class="block mt-1 w-full" type="number" name="id_number" value="{{$data->id_number}}" autofocus/>
+                                            <x-text-input id="id_number" class="block mt-1 w-full" type="number" name="id_number" value="{{$data->identifier}}" autofocus/>
                                             <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                                         </div>
                                     </div>
@@ -44,7 +44,7 @@
                                         <!-- First Name -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="first_name" :value="__('patient.first_name')" required="true"/>
-                                            <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="$data->first_name" required />
+                                            <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="$data->given_name" required />
                                             <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                                         </div>
                                     </div>
@@ -52,7 +52,7 @@
                                         <!-- Last Name -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="last_name" :value="__('patient.last_name')" required="true"/>
-                                            <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="$data->last_name" required/>
+                                            <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="$data->family_name" required/>
                                             <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                                         </div>
                                     </div>
@@ -78,7 +78,7 @@
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="form-group local-forms cal-icon">
                                             <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                                            <x-text-input id="birthdate" type="text" name="text" :value="$data->birthdate" class="block mt-1 w-full datetimepicker" />
+                                            <x-text-input id="birthdate" type="text" name="text" :value="$data->birth_date" class="block mt-1 w-full datetimepicker" />
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="physical_address" :value="__('patient.physical_address')" />
-                                            <x-textarea-input id="physical_address" class="block mt-1 w-full" type="email" name="physical_address">{{$data->physical_address}}</x-textarea-input>
+                                            <x-textarea-input id="physical_address" class="block mt-1 w-full" type="email" name="physical_address">{{$data->address}}</x-textarea-input>
                                             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                         </div>
                                     </div>
@@ -101,22 +101,21 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-md-6 col-xl-6">
-                                        <!-- PHONE -->
-                                        <div class="input-block local-forms ">
+                                    <!-- PHONE -->
+                                    <div class=" col-12 col-md-6 col-xl-6">
+                                        <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('patient.phone')" />
-                                            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$data->phone"/>
-                                            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                            <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                            @error('phone') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
-                                   <div class=" col-12 col-md-6 col-xl-6">
-                                       <!-- WHATSAPP -->
-                                       <div class="input-block local-forms">
-                                           <x-input-label for="whatsapp" :value="__('patient.whatsapp')" />
-                                           <x-text-input id="whatsapp" class="block mt-1 w-full" type="text" name="whatsapp" :value="$data->whatsapp"/>
-                                           <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
-                                       </div>
-                                   </div>
+                                    <div class=" col-12 col-md-6 col-xl-6">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="marital_status" :value="__('patient.marital_status')" />
+                                            <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[$data->marital_status]" class="block w-full" required/>
+                                            @error('marital_status') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class=" col-12 col-md-6 col-xl-6">

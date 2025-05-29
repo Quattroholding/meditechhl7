@@ -13,24 +13,21 @@
         @endif
         {{--}}
         @if (session('message.error'))
-            <p>&nbsp;</p>
-            <div class="alert alert-danger ">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {!! nl2br(session('message.error')) !!}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
         @if (session('message.warning'))
-            <p>&nbsp;</p>
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 {!! nl2br(session('message.warning')) !!}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
         @if (session('message.success'))
-            <p>&nbsp;</p>
-            <div class="alert alert-success">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {!! nl2br(session('message.success')) !!}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
     </div>

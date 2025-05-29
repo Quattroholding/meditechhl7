@@ -25,7 +25,6 @@
                                         + {{__('Registrar paciente')}}
                                     </a>
                                 </div>
-
                             @endif
 
                         </div>

@@ -81,6 +81,9 @@ class MedicalHistory2 extends Component
     public function loadOverviewData()
     {
         $this->isLoading = true;
+        $current_medications = [];
+        if(Encounter::where('patient_id', $this->patientId)->count()>0)
+            $current_medications = $this->patient->current_medications;
 
         // Resumen general del paciente
         $this->overviewData = [
@@ -90,7 +93,7 @@ class MedicalHistory2 extends Component
             'total_requests' => MedicationRequest::where('patient_id', $this->patientId)->count()+ServiceRequest::where('patient_id', $this->patientId)->count(),
             'vital_signs_count' => VitalSign::where('patient_id', $this->patientId)->count(),
             'allergies' => $this->patient->allergies ?? [],
-            'medications' => $this->patient->current_medications ?? [],
+            'medications' =>$current_medications,
             'recent_activity' => $this->getRecentActivity()
         ];
 
