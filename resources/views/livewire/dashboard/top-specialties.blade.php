@@ -19,21 +19,6 @@
                                                 </div>
                                             </div>
                             @endforeach
-                            @foreach ($departments as $department)
-                                @if ($department['name'] === 'Opthomology')
-                                    <div class="activity-top mb-0">
-                                        @else
-                                            <div class="activity-top">
-                                                @endif
-                                                <div class="activity-boxs comman-flex-center">
-                                                    <img src="{{ URL::asset('/assets/img/icons/' . $department['icon']) }}" alt="">
-                                                </div>
-                                                <div class="departments-list">
-                                                    <h4>{{ $department['name'] }}</h4>
-                                                    <p>{{ $department['percentage'] }}</p>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                    </div>
+
                         </div>
                     </div>
