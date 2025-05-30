@@ -15,7 +15,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: rgb(45, 59, 165);
             color: white;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
