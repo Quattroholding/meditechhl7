@@ -108,7 +108,6 @@ class FileService
             $upload = Storage::disk('public')->putFileAs($folder,$file,$filename);
         }
 
-        //dd($upload);
 
         if ($upload){
             return $folder.'/'.$filename;

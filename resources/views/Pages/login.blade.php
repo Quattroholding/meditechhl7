@@ -1,6 +1,4 @@
-<?php $page = 'login'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-guest-layout>
     <div class="container-fluid px-0">
         <div class="row">
             <!-- Login logo -->
@@ -19,10 +17,13 @@
                         <div class="login-right">
                             <div class="login-right-wrap">
                                 <div class="account-logo">
-                                    <a href="{{ url('/') }}"><img src="{{ URL::asset('/assets/img/login-logo.png') }}"
-                                            alt=""></a>
+                                    <a href="{{ url('/') }}"> {{--}}
+                                        <img  src="{{ URL::asset('/assets/img/login-logo.png') }}" alt="">
+                                        {{--}}
+                                        <div class="logo">Meditech</div>
+                                    </a>
                                 </div>
-                                <h2>Login</h2>
+
                                 <!-- Form -->
 
                                 @if (session('message'))
@@ -46,7 +47,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Password <span class="login-danger">*</span></label>
+                                        <label>{{__('Contraeña')}} <span class="login-danger">*</span></label>
                                         <input class="form-control pass-input" type="password" id="password"
                                             name="password" value="">
                                         <span class="profile-views feather-eye-off toggle-password"></span>
@@ -61,34 +62,29 @@
                                     </div>
                                     <div class="forgotpass">
                                         <div class="remember-me">
-                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> Remember me
+                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> {{__('Recurdame')}}
                                                 <input type="checkbox" name="radio">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        <a href="{{ url('forgot-password') }}">Forgot Password?</a>
+                                        <a href="{{ url('forgot-password') }}">{{__('¿ Se te olvido la contraseña ?')}}</a>
                                     </div>
                                     <div class="form-group login-btn">
-                                        <button class="btn btn-primary btn-block" type="submit">Login</button>
+                                        <button class="btn btn-primary btn-block" type="submit">{{__('Ingresar')}}</button>
                                     </div>
                                 </form>
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">Need an account? <a href="{{ url('register') }}">Sign
-                                            Up</a>
-                                    </p>
+                                    <p class="account-subtitle">{{__('¿ Necesitas una cuenta ?')}} <a href="{{ url('register') }}">{{__('Registrarse')}}</a></p>
                                     <!-- Social Login -->
                                     <div class="social-login">
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}"
-                                                alt=""></a>
+                                        {{--}}
+                                        <a href="javascript:;"><img src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}" alt=""></a>
+                                        <a href="javascript:;"><img  src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}" alt=""></a>
+                                        <a href="javascript:;"><img   src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}" alt=""></a>
+                                        {{--}}
+
                                     </div>
                                     <!-- /Social Login -->
                                 </div>
@@ -100,4 +96,4 @@
             <!-- /Login Content -->
         </div>
     </div>
-@endsection
+</x-guest-layout>>

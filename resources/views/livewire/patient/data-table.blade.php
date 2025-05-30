@@ -13,11 +13,7 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-                    @if(session()->has('message'))
-                        <div class="bg-green-100 text-green-800 p-2 mb-2 rounded">
-                            {{ session('message') }}
-                        </div>
-                    @endif
+                    @include('partials.message')
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>

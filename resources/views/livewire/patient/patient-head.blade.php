@@ -30,7 +30,6 @@
             gap: 30px;
             align-items: center;
             position: relative;
-            z-index: 2;
         }
 
         .data-avatar {

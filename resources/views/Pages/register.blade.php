@@ -18,10 +18,14 @@
                         <div class="login-right">
                             <div class="login-right-wrap">
                                 <div class="account-logo">
-                                    <a href="{{ url('/') }}"><img
-                                            src="{{ URL::asset('/assets/img/login-logo.png') }}" alt=""></a>
+
+                                    <a href="{{ url('/') }}">
+                                        {{--}}
+                                        <img  src="{{ URL::asset('/assets/img/login-logo.png') }}" alt="">
+                                        {{--}}
+                                        <div class="logo">Meditech</div>
+                                    </a>
                                 </div>
-                                <h2>Getting Started</h2>
                                 <!-- Form -->
                                 @if (session('message'))
                                     <div style="color: blue;">
@@ -31,7 +35,7 @@
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form_register">
                                     @csrf
                                     <div class="form-group">
-                                        <label>First Name <span class="login-danger">*</span></label>
+                                        <label>{{__('user.first_name')}} <span class="login-danger">*</span></label>
                                         <input class="form-control" type="text" id="first_name"
                                             value="{{ old('name') }}" name="first_name">
                                         <div class="text-danger pt-2">
@@ -41,7 +45,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Last Name <span class="login-danger">*</span></label>
+                                        <label>{{__('user.last_name')}} <span class="login-danger">*</span></label>
                                         <input class="form-control" type="text" id="last_name"
                                             value="{{ old('name') }}" name="last_name">
                                         <div class="text-danger pt-2">
@@ -60,7 +64,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Phone Number<span class="login-danger w-full">*</span></label>
+                                        <label>{{__('user.phone')}}<span class="login-danger w-full">*</span></label>
                                         <input class="form-control" type="tel" id="phone" name="phone"
                                             required>
                                         <p id="message"></p>
@@ -72,7 +76,7 @@
                                     </div>
                                     <div id="passwordError" style="color: red;"></div>
                                     <div class="form-group">
-                                        <label>Password <span class="login-danger">*</span></label>
+                                        <label>{{__('user.password')}} <span class="login-danger">*</span></label>
                                         <input class="form-control pass-input" type="password" id="password"
                                             name="password" value="{{ old('password') }}">
                                         <span class="profile-views feather-eye-off toggle-password"></span>
@@ -83,7 +87,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Confirm Password <span class="login-danger">*</span></label>
+                                        <label>{{__('user.new_password')}} <span class="login-danger">*</span></label>
                                         <input class="form-control pass-input-confirm" type="password"
                                             id="confirm-password" name="password_confirmed">
                                         <span class="profile-views feather-eye-off confirm-password"></span>
@@ -93,12 +97,12 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <div class="forgotpass">
                                         <div class="remember-me">
-                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> I agree to
-                                                the
-                                                <a href="javascript:;">&nbsp terms of service </a>&nbsp and <a
-                                                    href="javascript:;">&nbsp privacy policy </a>
+                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
+                                                <a href="javascript:;">&nbsp {{__('Terminos de Servicios')}} </a>&nbsp y <a
+                                                    href="javascript:;">&nbsp {{__('Politicas de Privacidad')}} </a>
                                                 <input type="checkbox" name="terms_and_privacy">
                                                 <span class="checkmark"></span>
                                             </label>
@@ -109,31 +113,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h4>Faltarian los datos de la cita para programarla (Fecha , Hora , Doctor , Sucusal
-                                        ? ,consultroio ? , esto supongo que se puede preguntar cuando se confirme la
-                                        cita )</h4>
                                     <div class="form-group login-btn">
-                                        <button class="btn btn-primary btn-block" type="submit">Sign up</button>
+                                        <button class="btn btn-primary btn-block" type="submit">{{__('Registrarse')}}</button>
                                     </div>
                                 </form>
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">Already have account? <a
-                                            href="{{ url('login') }}">Login</a></p>
-                                    <!-- Social Login -->
-                                    <div class="social-login">
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}"
-                                                alt=""></a>
-                                    </div>
-                                    <!-- /Social Login -->
+                                    <p class="account-subtitle">{{(__('¿ Ya tienes una cuenta ?'))}} <a  href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
                                 </div>
                             </div>
                         </div>

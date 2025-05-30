@@ -22,7 +22,9 @@ class UserAdminSeeder extends Seeder
             'last_name'  => 'Del Sistema',
             'email' => 'rgasperi@smartcarebilling.com',
             'password'=>'Prueba.1'
-        ])->asAdmin();
+        ]);
+
+        $admin->assignRole('admin');
 
         $client = Client::create( [
             'name' => 'Meditech',

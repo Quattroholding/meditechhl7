@@ -67,3 +67,12 @@ centered::before, .centered::after {
     height: 1px;
     background: black;
 }
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(92.39deg, #4E57CD 1.86%, #2E37A4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
