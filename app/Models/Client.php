@@ -9,6 +9,7 @@ class Client extends BaseModel
 {
 
     use HasFactory;
+    protected $fillable=['name','group','ruc','dv','long_name','email','whatsapp','logo'];
 
     public function patients(){
         return $this->belongsToMany(Patient::class,'patient_clients');
