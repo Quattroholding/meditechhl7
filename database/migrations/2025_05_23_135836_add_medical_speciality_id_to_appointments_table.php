@@ -18,6 +18,11 @@ return new class extends Migration
         Schema::table('encounters', function (Blueprint $table) {
             $table->foreignId('medical_speciality_id')->nullable()->references('id')->on('medical_specialties')->onDelete('cascade');
         });
+
+        Schema::table('practitioner_qualifications', function (Blueprint $table) {
+            $table->foreignId('medical_speciality_id')->nullable()->references('id')->on('medical_specialties')->onDelete('cascade');
+        });
+
     }
 
     /**
@@ -30,6 +35,10 @@ return new class extends Migration
         });
 
         Schema::table('encounters', function (Blueprint $table) {
+            $table->dropColumn('medical_speciality_id');
+        });
+
+        Schema::table('practitioner_qualifications', function (Blueprint $table) {
             $table->dropColumn('medical_speciality_id');
         });
     }
