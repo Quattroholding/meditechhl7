@@ -57,6 +57,13 @@ class UserFactory extends Factory
         });
     }
 
+    public function asAdminClient()
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->assignRole('admin client');
+        });
+    }
+
     public function asDoctor()
     {
         return $this->afterCreating(function (User $user) {
