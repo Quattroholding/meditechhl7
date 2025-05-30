@@ -95,7 +95,7 @@ class PatientFactory extends Factory
                         'client_id'=>$client->id,
                     ]);
                     PatientClient::create([
-                        'user_id'=>$user->id,
+                        'patient_id'=>$patient->id,
                         'client_id'=>$client->id,
                     ]);
                 }
