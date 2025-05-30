@@ -13,6 +13,7 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
+                    @include('partials.message')
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
