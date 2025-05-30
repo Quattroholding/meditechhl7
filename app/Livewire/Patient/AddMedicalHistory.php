@@ -17,6 +17,19 @@ class AddMedicalHistory extends Component
     public $description;
     public $occurrence_date;
 
+    protected $rules = [
+        'patient_id' => 'required|exists:patients,id',
+        'category' => 'required|string',
+        'title' => 'required|string',
+        'occurrence_date' => 'required|date'
+    ];
+
+    protected $messages = [
+        'category.required' => 'Debe seleccionar un categoria.',
+        'title.required' => 'Debe escribir un titulo.',
+        'occurrence_date.required' => 'La fecha es obligatoria.',
+    ];
+
     public function mount(){
         $this->patient = Patient::find($this->patient_id);
     }
@@ -26,6 +39,8 @@ class AddMedicalHistory extends Component
     }
 
     public function save(){
+
+        $this->validate();
 
         $this->patient->medicalHistories()->create([
             'fhir_id' => 'medicalhistory-' . Str::uuid(),

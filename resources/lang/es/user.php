@@ -11,11 +11,13 @@ return [
     'profile_picture'=>'foto',
     'client'=>'Cliente',
     'acciones'=>'Acciones',
+    'password'=>'Contraseña',
     'new_password'=>'Nueva contraseña',
     'confirm_password'=>'Confirmar contraseña',
     'doctor'=>'Doctor',
     'asistent'=>'Asistente',
     'rol'=>'Rol',
     'roles'=>'Roles',
-    'profile_name'=>'Nombre'
+    'profile_name'=>'Nombre',
+    'phone'=>'Teléfono',
 ];
