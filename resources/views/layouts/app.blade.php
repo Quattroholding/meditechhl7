@@ -52,5 +52,6 @@
     @component('components.modal-popup') @endcomponent
     <div class="sidebar-overlay" data-reff=""></div>
     @include('layout.partials.footer-scripts')
+    @stack('scripts')
 </body>
 </html>

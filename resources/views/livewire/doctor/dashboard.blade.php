@@ -1,26 +1,6 @@
 <div class="row">
     <div class="col-12 col-md-12  col-xl-7">
-        <div class="card">
-            <div class="card-body">
-                <div class="chart-title patient-visit">
-                    <h4>Activity Chart</h4>
-                    <div>
-                        <ul class="nav chat-user-total">
-                            <li><i class="fa fa-circle low-users" aria-hidden="true"></i>Low</li>
-                            <li><i class="fa fa-circle current-users" aria-hidden="true"></i> High</li>
-                        </ul>
-                    </div>
-                    <div class="form-group mb-0">
-                        <select wire:model="selectedOption1" class="form-control select">
-                            @foreach ( [ 'This Week', 'Last Week', 'This Month', 'Last Month' ] as $option)
-                                <option>{{ $option }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div id="activity-chart"></div>
-            </div>
-        </div>
+       <livewire:activity-chart />
         <div class="row">
             <div class="col-12 col-md-12  col-xl-8">
                 <div class="card">

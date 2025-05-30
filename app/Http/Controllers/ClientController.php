@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\User;
+use App\Models\File;
+use App\Models\UserClient;
 use App\Services\FileService;
 use Illuminate\Http\Request;
 
@@ -48,7 +50,7 @@ class ClientController extends Controller
         $model->email = $request->email;
         $model->whatsapp = $request->full_phone;
         $model->active = 1;
-        $model->logo = 'clients/logo_'.time();
+        //$model->logo = 'clients/logo_'.time();
         
         if($model->save()){
             //SE CREA UN USUARIO ADMIN-CLIENT
@@ -58,19 +60,67 @@ class ClientController extends Controller
             $user->email = $request->email;
             $user->password = $request->password;
             $user->profile_picture = $model->logo;
-            $user->save();
             // Asignar rol de usuario administrador del cliente
             $user->assignRole('admin client');
+            if($user->save()){
+                $request->session()->flash('message.success','Usuario admin client registrado con éxito.');
+            }else{
+                $data = Client::find($model->id);
+                $data->delete();
+                $request->session()->flash('message.error','Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+                return redirect(route('client.create'));
+            }
+            $rel_clientuser= new UserClient();
+            $rel_clientuser->user_id = $user->id;
+            $rel_clientuser->client_id = $model->id;
+            if($rel_clientuser->save()){
+                $request->session()->flash('message.success','Usuario admin client registrado con éxito.');
+            }else{
+                $data = Client::find($model->id);
+                $data->delete();
+                $user = User::find($user->id);
+                $user->delete();
+                $userclient = UserClient::find($rel_clientuser->id);
+                $userclient->delete();
+                $request->session()->flash('message.error','Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+                return redirect(route('client.create'));
+            }
+            //SE BUSCA EL REGISTRO PARA ASIGNAR EL NOMBRE DEL LOGO
+            $user_logo = Client::find($model->id);
             //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
             $service = new FileService();
-            $file = [$request->file('logo')]; 
+            $file = $request->file('logo'); 
             $data['folder'] = 'clients';
             $data['type'] ='img';
             $data['name'] ='logo_'.time();
             $data['record_id']= $model->id;
-            $model->logo = $service->guardarArchivos($file,$data);
+            $user_logo->logo = $service->uploadSingleFile($file,'clients',$data['name']);
+            if($user_logo->save()){
+                $request->session()->flash('message.success','Usuario admin client registrado con éxito.');
+            }else{
+                $data = Client::find($model->id);
+                $data->delete();
+                $user = User::find($user->id);
+                $user->delete();
+                $userclient = UserClient::find($rel_clientuser->id);
+                $userclient->delete();
+                $request->session()->flash('message.error','Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+                return redirect(route('client.create'));
+            }
+            if (!$user_logo->logo) {
+                session()->flash('message.error', 'Hubo un error al subir el logo.');
+                return redirect(route('client.create'));
+            }
             $request->session()->flash('message.success','Cliente registrado con éxito.');
         }else{
+            $data = Client::find($model->id);
+            $data->delete();
+            $user = User::find($user->id);
+            $user->delete();
+            $userclient = UserClient::find($rel_clientuser->id);
+            $userclient->delete();
+            $file =  File::whereRecordId($model->id)->first();
+            $file->delete();
             $request->session()->flash('message.error','Hubo un error y no se pudo actualizar.');
         }
 
