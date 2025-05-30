@@ -17,6 +17,10 @@ class PractitionerController extends Controller
         return view('practitioners.create');
     }
 
+     public function edit($id){
+        $data = Practitioner::find($id);
+        return view('practitioners.edit', compact('data'));
+    }
     public function store(Request $request){
 
     }

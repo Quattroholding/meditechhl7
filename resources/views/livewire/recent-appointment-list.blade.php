@@ -4,11 +4,11 @@
         <div class="card flex-fill comman-shadow">
             <div class="card-header">
                 <h4 class="card-title d-inline-block" style="color: white">Recent Appointments</h4> <a
-                    href="appointments.html" class="patient-views float-end">Show all</a>
+                    href="{{route('appointment.index')}}" class="patient-views float-end">Show all</a>
             </div>
             <div class="card-body">
                 @if ($appointments->isEmpty())
-                    <p class="px-2">No appointments found.</p>
+                    <p class="px-2">No appointments found for today.</p>
                 @else
                     <div class="teaching-card">
                         <ul class="steps-history">
