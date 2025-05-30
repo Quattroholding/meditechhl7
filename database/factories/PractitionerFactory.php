@@ -91,7 +91,7 @@ class PractitionerFactory extends Factory
 
                 $practitioner->user()->associate($user);
                 if($practitioner->save()){
-                    $client = Client::inRandomOrder()->take(1)->first();
+                    $client = Client::where('id','>',1)->inRandomOrder()->take(1)->first();
                     UserClient::create([
                         'user_id'=>$user->id,
                         'client_id'=>$client->id,
