@@ -27,6 +27,7 @@ return new class extends Migration
             $table->json('participant')->nullable()->comment('Otros participantes en la cita');
             $table->json('extension')->nullable()->comment('Extensiones FHIR');
             $table->timestamps();
+
         });
     }
 
