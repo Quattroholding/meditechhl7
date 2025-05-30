@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Appointment resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
-            $table->foreignId('practitioner_id')->constrained('practitioners');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
+            $table->foreignId('practitioner_id')->constrained('practitioners')->onDelete('cascade');
             $table->string('identifier')->unique()->comment('Identificador único de la cita');
             $table->enum('status', ['proposed', 'pending', 'booked', 'arrived', 'fulfilled', 'cancelled', 'noshow', 'entered-in-error', 'checked-in', 'waitlist']);
             $table->string('service_type')->comment('Tipo de servicio o especialidad');

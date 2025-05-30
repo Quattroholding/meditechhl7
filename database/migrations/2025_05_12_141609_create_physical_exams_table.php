@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Observation resource ID');
             $table->foreignId('encounter_id')->constrained('encounters')->cascadeOnDelete();
-            $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->enum('status', ['registered', 'preliminary', 'final', 'amended', 'corrected', 'cancelled', 'entered-in-error', 'unknown']);
             $table->string('category')->default('exam');

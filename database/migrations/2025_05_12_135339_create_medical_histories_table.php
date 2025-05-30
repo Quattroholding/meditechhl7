@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('medical_histories', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR FamilyMemberHistory/AllergyIntolerance/Procedure resource ID');
-            $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->enum('category', [
                 'allergy',
                 'surgery',

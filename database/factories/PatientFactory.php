@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Client;
 use App\Models\Patient;
+use App\Models\PatientClient;
 use App\Models\User;
 use App\Models\UserClient;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -88,8 +89,12 @@ class PatientFactory extends Factory
 
                 $patient->user()->associate($user);
                 if($patient->save()){
-                    $client = Client::inRandomOrder()->take(1)->first();
+                    $client = Client::where('id','>',1)->inRandomOrder()->take(1)->first();
                     UserClient::create([
+                        'user_id'=>$user->id,
+                        'client_id'=>$client->id,
+                    ]);
+                    PatientClient::create([
                         'user_id'=>$user->id,
                         'client_id'=>$client->id,
                     ]);

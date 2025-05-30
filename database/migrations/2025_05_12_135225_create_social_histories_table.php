@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('social_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->string('category')->comment('Tipo de dato social');
             $table->text('value')->nullable();
             $table->json('detail')->nullable()->comment('Detalles adicionales');

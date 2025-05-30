@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('family_histories', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR FamilyMemberHistory resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->string('relationship')->comment('Parentesco');
             $table->boolean('deceased')->default(false);
             $table->integer('age_at_death')->nullable();

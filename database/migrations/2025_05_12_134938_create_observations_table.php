@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('observations', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Observation resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->foreignId('practitioner_id')->nullable()->constrained('practitioners');
             $table->string('identifier')->nullable();

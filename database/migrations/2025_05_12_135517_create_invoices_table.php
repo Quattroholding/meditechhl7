@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Invoice resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->string('identifier')->unique();
             $table->enum('status', ['draft', 'issued', 'balanced', 'cancelled', 'entered-in-error']);

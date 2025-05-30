@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Condition/ClinicalImpression resource ID');
             $table->foreignId('encounter_id')->constrained('encounters')->cascadeOnDelete();
-            $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->text('description')->comment('Narrativa de la enfermedad actual');
             $table->string('location')->nullable()->comment('Localización anatómica');

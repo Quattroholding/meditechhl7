@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('procedures', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Procedure resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->foreignId('practitioner_id')->nullable()->constrained('practitioners');
             $table->foreignId('medical_history_id')->nullable()->constrained('medical_histories')->cascadeOnDelete();

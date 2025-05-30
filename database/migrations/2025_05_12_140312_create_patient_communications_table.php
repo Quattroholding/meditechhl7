@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('patient_communications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->string('language'); // ISO 639-1 code (es, en, etc.)
             $table->boolean('preferred')->default(false);
             $table->timestamps();

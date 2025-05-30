@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('referrals', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR ServiceRequest resource ID');
-            $table->foreignId('patient_id')->constrained('patients');
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->foreignId('referred_to_id')->constrained('practitioners')->comment('Especialista referido');
