@@ -10,6 +10,8 @@ class Reason extends Component
     public $reason;
     public $encounter_id;
     public $encounter;
+    public $section_name;
+    public $section_id;
 
 
     public function mount(){

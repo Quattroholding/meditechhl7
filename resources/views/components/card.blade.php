@@ -3,7 +3,7 @@ if(!isset($show) or (request()->has('section') && request()->get('section') == $
 $id = \Illuminate\Support\Str::uuid();
 @endphp
 <div class="card mb-1">
-    <div class="card-header" id="headingOne">
+    <div class="card-header" id="{{$id}}">
         <h5 class="accordion-faq m-0">
             <a class="text-dark" data-bs-toggle="collapse" href="#section_marker_{{$section_id}}" aria-expanded="true">
 
@@ -11,7 +11,7 @@ $id = \Illuminate\Support\Str::uuid();
             </a>
         </h5>
     </div>
-    <div id="section_marker_{{$section_id}}" class="collapse {{$show}}" aria-labelledby="headingOne" data-bs-parent="#accordion" style="">
+    <div id="section_marker_{{$section_id}}" class="collapse {{$show}}" aria-labelledby="{{$id}}" data-bs-parent="#accordion" style="">
         <div class="card-body">
             {{$card_body}}
         </div>
