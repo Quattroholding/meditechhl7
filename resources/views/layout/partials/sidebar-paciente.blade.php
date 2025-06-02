@@ -41,7 +41,7 @@
                 <a href="{{ url('login') }}">
                     <span class="menu-side">
                         <img src="{{ URL::asset('/assets/img/icons/logout.svg') }}" alt=""></span>
-                    <span>Logout</span>
+                    <span>{{__('Cerrar sesión')}}</span>
                 </a>
             </div>
         </div>

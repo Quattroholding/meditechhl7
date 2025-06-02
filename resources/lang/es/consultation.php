@@ -1,8 +1,8 @@
 <?php
 
 return [
-
-
+    'title'=>'Consulta',
+    'titles'=>'Consultas',
     'age' => 'Edad',
     'alcohol' => 'Alcohol',
     'allergies' => 'Alergias',

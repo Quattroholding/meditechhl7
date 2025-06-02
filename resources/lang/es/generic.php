@@ -18,5 +18,6 @@ return [
     'download'=>'Descargar',
     'hi'=>'Hola',
     'welcome'=>'Bienvenido(a)',
-    'vs_last_month'=>'vs mes pasado'
+    'vs_last_month'=>'vs mes pasado',
+    'logout'=>'Cerrar sesion',
 ];

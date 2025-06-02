@@ -33,6 +33,32 @@
             </div>
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="doctor-list-blk">
+                        <div class="row">
+                            @foreach ($dashboards as $dashboard)
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="doctor-widget border-right-bg">
+                                        <div class="doctor-box-icon flex-shrink-0">
+                                            <img src="{{ URL::asset('/assets/img/icons/' . $dashboard['icon']) }}" alt="">
+                                        </div>
+                                        <div class="doctor-content dash-count flex-grow-1">
+                                            <h4>
+                                                @if($dashboard['title'] === 'Earnings')
+                                                    $<span
+                                                        class="counter-up">{{ $dashboard['count'] }}</span>
+                                                @else
+                                                    <span
+                                                        class="counter-up">{{ $dashboard['count'] }}</span>
+                                                @endif<span>{{ $dashboard['total'] }}</span><span
+                                                    class="{{ $dashboard['class'] }}">{{ $dashboard['percentageChange'] }}</span>
+                                            </h4>
+                                            <h5>{{ $dashboard['title'] }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                     <!-- Con parámetros personalizados -->
                     {{--}}
                     <livewire:patient.dashboard.vital-signs-status

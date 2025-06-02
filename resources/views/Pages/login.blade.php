@@ -22,6 +22,9 @@
                                         {{--}}
                                         <div class="logo">Meditech</div>
                                     </a>
+                                    <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
+                                    <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
+                                    <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
                                 </div>
 
                                 <!-- Form -->
@@ -79,15 +82,18 @@
                                     <p class="account-subtitle">{{__('¿ Necesitas una cuenta ?')}} <a href="{{ url('register') }}">{{__('Registrarse')}}</a></p>
                                     <!-- Social Login -->
                                     <div class="social-login">
-                                        {{dd(request()->getClientIp())}}
+
                                         {{--}}
                                         <a href="javascript:;"><img src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}" alt=""></a>
                                         <a href="javascript:;"><img  src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}" alt=""></a>
                                         <a href="javascript:;"><img   src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}" alt=""></a>
                                         {{--}}
 
+
                                     </div>
                                     <!-- /Social Login -->
+                                    <br/>
+
                                 </div>
                             </div>
                         </div>

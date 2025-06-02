@@ -8,12 +8,14 @@
             alt=""></a>
     <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img
             src="{{ URL::asset('/assets/img/icons/bar-icon.svg') }}" alt=""></a>
+    {{--}}
     <div class="top-nav-search mob-view">
         <form action="javascript:;">
             <input type="text" class="form-control" placeholder="Search here">
             <a class="btn"><img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}" alt=""></a>
         </form>
     </div>
+    {{--}}
     <ul class="nav user-menu float-end">
         <li class="nav-item dropdown d-none d-md-block">
             <a href="javascript:;" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><img
@@ -134,10 +136,13 @@
                 <a class="dropdown-item" href="{{ url('login') }}">{{__('generic.logout')}}</a>
             </div>
         </li>
+        {{--}}
         <li class="nav-item ">
             <a href="{{ url('settings') }}" class="hasnotifications nav-link"><img   src="{{ URL::asset('/assets/img/icons/setting-icon-01.svg') }}" alt=""> </a>
         </li>
+        {{--}}
     </ul>
+    {{--}}
     <div class="dropdown mobile-user-menu float-end">
         <a href="javascript:;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-end">
@@ -147,4 +152,5 @@
             <a class="dropdown-item" href="{{ url('login') }}">Logout</a>
         </div>
     </div>
+    {{--}}
 </div>

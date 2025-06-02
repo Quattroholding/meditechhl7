@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ClientController;
@@ -30,6 +31,23 @@ Route::get('/login', function () {
 Route::get('/forgot-password', function () {
     return view('Pages/forgot-password');
 })->name('forgot-password');
+
+Route::get('/autologin', function () {
+
+  if(request()->get('role')=='admin') $route=route('admin.dashboard');
+  if(request()->get('role')=='doctor')   $route=route('doctor.dashboard');
+  if(request()->get('role')=='paciente') $route=route('patient.dashboard');
+
+  $user = \App\Models\User::role(request()->get('role'))->inRandomOrder()->limit(1)->first();
+
+
+    if($user)
+        Auth::login($user);
+
+    return redirect($route);
+
+
+})->name('autologin');
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 
