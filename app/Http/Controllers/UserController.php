@@ -72,7 +72,8 @@ class UserController extends Controller
         $userclient->save();
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
         //SE ASIGNA EL ROL SEGÚN EL ID
-            $rol = ($request->rol == 2) ? $model->assignRole('doctor') : $model->assignRole('asistente');
+            //$rol = ($request->rol == 2) ? $model->assignRole('doctor') : $model->assignRole('asistente');
+            $model->assignRole($request->rol);
         //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
             $practitioner = new Practitioner();
             //LLamada a Faker para crear el número de identifier
@@ -103,9 +104,9 @@ class UserController extends Controller
            $qualifications->code = $request->medical_speciality;
            $qualifications->medical_speciality_id = $request->medical_speciality;
          //SE BUSCA EL NOMBRE DE MEDICAL SPECIALITY
-           $medical_speciality_name =  MedicalSpeciality::find($request->medical_speciality)->pluck('name')->first();
+           $medical_speciality_name =  MedicalSpeciality::find($request->medical_speciality)->first();
 
-           $qualifications->display = $medical_speciality_name;
+           $qualifications->display = $medical_speciality_name->name;
            $qualifications->save();}
 
         //SE GUARDA EL AVATAR EN LA TABLA DE ARCHIVOS
