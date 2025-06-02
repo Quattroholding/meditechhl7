@@ -25,6 +25,12 @@
                     </a>
                 </li>
                 <li>
+                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
+                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;
+                        {{ __('patient.medical_directory') }}
+                    </a>
+                </li>
+                <li>
                     <a class="{{ Request::is('patient/') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>&nbsp;
                         {{ __('patient.profile') }}

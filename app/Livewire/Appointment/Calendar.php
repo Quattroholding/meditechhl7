@@ -92,6 +92,10 @@ class Calendar extends Component
         $this->timeBlockMinutes = session('calendar.time_block_minutes', 30);
         $this->startHour = session('calendar.start_hour', 7);
         $this->endHour = session('calendar.end_hour', 21);
+        if(auth()->user()->hasRole('paciente')){
+            $this->patient_id = auth()->user()->patient->id;
+            $this->currentView = 'monthly';
+        }
         $this->loadDoctors();
         $this->loadAppointments();
         $this->loadStats();
@@ -207,7 +211,7 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%" . $this->searchTerm . "%'");
             });
         }
-        $query->whereNotIn('status',['proposed','whaitlist','noshow','cancelled']);
+        $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
         $this->appointments = $query->orderBy('start')->get()->toArray();
     }
 
@@ -342,11 +346,11 @@ class Calendar extends Component
                 // Actualizar cita existente
                 $appointment = Appointment::find($this->editingAppointment);
                 $appointment->update($appointmentData);
-                session()->flash('message', 'Cita actualizada exitosamente.');
+                session()->flash('message.success', 'Cita actualizada exitosamente.');
             } else {
                 // Crear nueva cita
                 Appointment::create($appointmentData);
-                session()->flash('message', 'Cita creada exitosamente.');
+                session()->flash('message.success', 'Cita creada exitosamente.');
             }
 
             $this->closeModal();
@@ -355,7 +359,7 @@ class Calendar extends Component
 
         } catch (\Exception $e) {
             dd($e->getMessage());
-            session()->flash('error', 'Error al guardar la cita: ' . $e->getMessage());
+            session()->flash('message.error', 'Error al guardar la cita: ' . $e->getMessage());
         }
     }
 
@@ -365,12 +369,12 @@ class Calendar extends Component
             $appointment = Appointment::find($appointmentId);
             if ($appointment) {
                 $appointment->delete();
-                session()->flash('message', 'Cita eliminada exitosamente.');
+                session()->flash('message.success', 'Cita eliminada exitosamente.');
                 $this->loadAppointments();
                 $this->loadStats();
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al eliminar la cita.');
+            session()->flash('message.error', 'Error al eliminar la cita.');
         }
     }
 
@@ -382,7 +386,7 @@ class Calendar extends Component
             if ($appointment) {
 
                 $appointment->update(['status' => $newStatus]);
-                session()->flash('message', 'Estado actualizado exitosamente.');
+                session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
                 $this->loadStats();
 
@@ -394,7 +398,7 @@ class Calendar extends Component
                 }
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al actualizar el estado.');
+            session()->flash('message.error', 'Error al actualizar el estado.');
         }
     }
 
@@ -618,10 +622,10 @@ class Calendar extends Component
     {
         try {
             // Aquí iría la lógica de sincronización con servidor FHIR
-            session()->flash('message', 'Sincronización completada exitosamente.');
+            session()->flash('message.success', 'Sincronización completada exitosamente.');
             $this->loadAppointments();
         } catch (\Exception $e) {
-            session()->flash('error', 'Error en la sincronización: ' . $e->getMessage());
+            session()->flash('message.error', 'Error en la sincronización: ' . $e->getMessage());
         }
     }
 
@@ -652,7 +656,7 @@ class Calendar extends Component
 
         // Recargar datos
         $this->loadAppointments();
-        session()->flash('message', 'Configuración actualizada exitosamente.');
+        session()->flash('message.success', 'Configuración actualizada exitosamente.');
         $this->showTimeBlockConfig = false;
     }
 

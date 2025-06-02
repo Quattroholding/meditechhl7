@@ -93,20 +93,8 @@
         </div>
     </div>
 
-    <!-- Mensajes Flash -->
-    @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {!! nl2br(session('message')) !!}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    @include('partials.message')
 
-    @if (session()->has('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {!! nl2br(session('error')) !!}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
     <!-- Calendario -->
     <div class="calendar-content">
@@ -123,8 +111,8 @@
                 <span>Llegada</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #FFA500, #d7a323);"></div>
-                <span>Pendiente de Confirmacion</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #dedede, #ededed);"></div>
+                <span>Pendiente de Confirmación</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #ffc107, #fd7e14);"></div>

@@ -125,9 +125,10 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-                @if(auth()->user()->hasRole('paciente'))
+
+                @if(auth()->user()->hasRole('paciente') && auth()->user()->patient)
                     <a class="dropdown-item" href="{{ route('patient.profile',auth()->user()->patient->id) }}">{{__('patient.profile')}}</a>
-                @elseif(auth()->user()->hasRole('doctor'))
+                @elseif(auth()->user()->hasRole('doctor') && auth()->user()->practitioner)
                     <a class="dropdown-item" href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">{{__('patient.profile')}}</a>
                 @endif
                 <a class="dropdown-item" href="{{ url('login') }}">{{__('generic.logout')}}</a>

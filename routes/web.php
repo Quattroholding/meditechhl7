@@ -180,6 +180,8 @@ Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']
 
     Route::get('/', [PractitionerController::class, 'index'])->name('practitioner.index');
 
+    Route::get('/directory', [PractitionerController::class, 'directory'])->name('practitioner.directory');
+
     Route::get('/create', [PractitionerController::class, 'create'])->name('practitioner.create');
 
     Route::post('/store', [PractitionerController::class, 'store'])->name('practitioner.store');

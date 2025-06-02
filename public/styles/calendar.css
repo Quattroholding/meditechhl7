@@ -208,7 +208,7 @@
 }
 
 
-.appointment-proposed { background:linear-gradient(45deg, #FFD700, #20c997); color: white; }
+.appointment-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
 .appointment-pending { background:linear-gradient(45deg, #FFA500, #20c997); color: white; }
 .appointment-booked { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
 .appointment-arrived { background: linear-gradient(45deg, #007bff, #6610f2); color: white; }

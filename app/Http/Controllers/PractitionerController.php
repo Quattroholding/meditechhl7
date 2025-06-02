@@ -29,4 +29,8 @@ class PractitionerController extends Controller
         $data = Practitioner::find($id);
         return view('practitioners.profile',compact('data'));
     }
+
+    public function directory(){
+        return view('practitioners.directory');
+    }
 }

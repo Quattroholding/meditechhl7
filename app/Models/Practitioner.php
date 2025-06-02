@@ -68,4 +68,10 @@ class Practitioner extends BaseModel
         return Carbon::parse($attr)->format('d-m-Y');
     }
 
+    // Scope para obtener solo practicantes activos
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
 }
