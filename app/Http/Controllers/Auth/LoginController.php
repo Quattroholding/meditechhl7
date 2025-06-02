@@ -26,6 +26,8 @@ class LoginController extends Controller
             if(auth()->getUser()->hasRole('doctor'))   $route=route('doctor.dashboard');
             if(auth()->getUser()->hasRole('paciente')) $route=route('patient.dashboard');
 
+            auth()->getUser()->getCurrentClient();
+
             return redirect()->intended($route);
         }
 

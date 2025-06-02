@@ -23,6 +23,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'default_client_id'
     ];
 
     /**
@@ -56,6 +57,16 @@ class User extends Authenticatable
                     $q->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
                 });
             });
+        }
+    }
+
+    public function getCurrentClient(){
+
+        if(session()->has('client')){
+            return session()->get('client');
+        }else{
+            session(['current_client_id' => Client::find($this->default_client_id)]);
+            return  Client::find($this->default_client_id);
         }
     }
 

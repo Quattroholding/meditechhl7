@@ -111,9 +111,7 @@ class Calendar extends Component
             $this->doctor_id = auth()->user()->practitioner->id;
             $practitioner = Practitioner::find($this->doctor_id);
 
-            $clientId=null;
-            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-            if($userClient) $clientId= $userClient->client_id;
+            $clientId =auth()->user()->getCurrentClient();
 
             $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
                 $q->whereClientId($clientId);

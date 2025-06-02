@@ -40,8 +40,8 @@ class UserController extends Controller
 
     public function store(Request $request){
        //dd($request->all(), $request->clients[0]);
-//$medical_speciality_name =  MedicalSpeciality::whereId($request->medical_speciality)->pluck('name')->first();
-//dd($request->medical_speciality,$medical_speciality_name);
+        //$medical_speciality_name =  MedicalSpeciality::whereId($request->medical_speciality)->pluck('name')->first();
+        //dd($request->medical_speciality,$medical_speciality_name);
         $validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -53,7 +53,7 @@ class UserController extends Controller
             'rol' => 'required'
         ]);
 
-        //SE CREA EL USUARIO 
+        //SE CREA EL USUARIO
         $model = new User();
         //$model->dv = $request->dv;
         $model->profile_picture = 'clients/avatar_'.time();
@@ -61,6 +61,8 @@ class UserController extends Controller
         $model->first_name=$request->first_name;
         $model->email = $request->email;
         $model->password = $request->password;
+        $model->default_client_id =  $request->clients[0];
+
         if($model->save()){
 
         //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
@@ -69,13 +71,13 @@ class UserController extends Controller
         $userclient->client_id = $request->clients[0];
         $userclient->save();
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
-        //SE ASIGNA EL ROL SEGÚN EL ID 
+        //SE ASIGNA EL ROL SEGÚN EL ID
             $rol = ($request->rol == 2) ? $model->assignRole('doctor') : $model->assignRole('asistente');
         //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
             $practitioner = new Practitioner();
             //LLamada a Faker para crear el número de identifier
             $faker = Faker::create();
-            
+
             //FORMATEAR FECHA PARA ALMACENARLA EN LA BASE DE DATOS
             $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
             $fecha->setTime(0, 0, 0);
@@ -94,7 +96,7 @@ class UserController extends Controller
             $practitioner->phone = $request->phone;
             $practitioner->active = 1;
             $practitioner->save();
-        //SE CREA EL REGISTRO EN PRACTITIONER_QUALIFICATIONS 
+        //SE CREA EL REGISTRO EN PRACTITIONER_QUALIFICATIONS
         if($request->rol == 2){
            $qualifications = new PractitionerQualification();
            $qualifications->practitioner_id = $practitioner->id;
@@ -105,10 +107,10 @@ class UserController extends Controller
 
            $qualifications->display = $medical_speciality_name;
            $qualifications->save();}
-           
+
         //SE GUARDA EL AVATAR EN LA TABLA DE ARCHIVOS
             $service = new FileService();
-            $file = [$request->file('avatar')]; 
+            $file = [$request->file('avatar')];
             $data['folder'] = 'users';
             $data['type'] ='img';
             $data['name'] ='avatar_'.time();

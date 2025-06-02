@@ -51,7 +51,7 @@ class ClientController extends Controller
         $model->whatsapp = $request->full_phone;
         $model->active = 1;
         //$model->logo = 'clients/logo_'.time();
-        
+
         if($model->save()){
             //SE CREA UN USUARIO ADMIN-CLIENT
             $user = new User();
@@ -60,6 +60,7 @@ class ClientController extends Controller
             $user->email = $request->email;
             $user->password = $request->password;
             $user->profile_picture = $model->logo;
+            $user->default_client_id = $model->id;
             // Asignar rol de usuario administrador del cliente
             $user->assignRole('admin client');
             if($user->save()){
@@ -89,7 +90,7 @@ class ClientController extends Controller
             $user_logo = Client::find($model->id);
             //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
             $service = new FileService();
-            $file = $request->file('logo'); 
+            $file = $request->file('logo');
             $data['folder'] = 'clients';
             $data['type'] ='img';
             $data['name'] ='logo_'.time();

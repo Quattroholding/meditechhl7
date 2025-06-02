@@ -20,4 +20,7 @@ return [
     'roles'=>'Roles',
     'profile_name'=>'Nombre',
     'phone'=>'Teléfono',
+    'address'=>'Dirección',
+    'gender'=>'Genero',
+    'birthdate'=>'Fecha  Nacimiento',
 ];

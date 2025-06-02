@@ -112,7 +112,8 @@
             <a href="javascript:;" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">
                     <h5>{{auth()->user()->full_name}}</h5>
-                    <span>{{auth()->user()->roles()->first()->name}}</span>
+                    <span>
+                        @if(auth()->user()->getCurrentClient()) {{auth()->user()->getCurrentClient()->name}} - @endif {{auth()->user()->roles()->first()->name}}</span>
                 </div>
                 <span class="user-img">
                     @if(!empty(auth()->user()->profile_picture))
