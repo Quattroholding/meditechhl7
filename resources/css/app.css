@@ -9,3 +9,23 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Asegúrate de que este CSS se cargue después del CSS de la librería */
+.iti {
+    width: 100% !important;
+}
+
+.iti__tel-input {
+    width: 100% !important;
+}
+
+/* Ajusta el ancho del contenedor del input */
+.iti__country-container {
+    width: auto !important;
+}
+
+/* Asegúrate de que el input no tenga márgenes adicionales */
+.iti input.iti__tel-input {
+    width: 100%;
+}
+

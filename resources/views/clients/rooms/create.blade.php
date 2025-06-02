@@ -21,7 +21,7 @@
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('client.room.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('client.room.store') }}" enctype="multipart/form-data" id="form">
                             @csrf
                             <!-- Branch -->
                             <div class="input-block  local-forms">

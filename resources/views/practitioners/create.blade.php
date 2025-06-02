@@ -20,7 +20,7 @@
                                     <h4>  {{ __('generic.create') }} {{ __('doctor.title') }}</h4>
                                 </div>
                             </div>
-                            <form method="POST" action="{{ route('practitioner.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('practitioner.store') }}" enctype="multipart/form-data" id="form">
                             @csrf
                             <div class="row">
                                 <!-- ID NUMBER -->
@@ -106,24 +106,22 @@
                             </div>
                             <div class="row">
                                 <!-- PHONE -->
-                                <div class=" col-12 col-md-6 col-xl-6">
+                                <div class=" col-6 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <x-input-label for="phone" :value="__('doctor.phone')" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="email" name="phone" :value="old('phone')"/>
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
                                 <!-- WHATSAPP -->
-                                <div class=" col-12 col-md-6 col-xl-6">
+                               {{--}}<div class=" col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <x-input-label for="whatsapp" :value="__('doctor.whatsapp')" />
                                         <x-text-input id="whatsapp" class="block mt-1 w-full" type="email" name="whatsapp" :value="old('whatsapp')"/>
                                         <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-xl-6">
+                                </div>{{--}}
+                                 <div class="col-6 col-md-6 col-xl-6">
                                     <div class="form-group local-top-form">
                                         <label class="local-top">Avatar <span class="login-danger">*</span></label>
                                         <div class="settings-btn upload-files-avator">
@@ -133,6 +131,17 @@
                                     </div>
                                 </div>
                             </div>
+                           {{--}} <div class="row">
+                                <div class="col-6 col-md-6 col-xl-6">
+                                    <div class="form-group local-top-form">
+                                        <label class="local-top">Avatar <span class="login-danger">*</span></label>
+                                        <div class="settings-btn upload-files-avator">
+                                            <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" class="hide-input">
+                                            <label for="file" class="upload">Choose File</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>{{--}}
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
                                     <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>

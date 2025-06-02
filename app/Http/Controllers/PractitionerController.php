@@ -22,7 +22,21 @@ class PractitionerController extends Controller
         return view('practitioners.edit', compact('data'));
     }
     public function store(Request $request){
+        dd($request->all());
+        $validated = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'id_type' => 'required',
+            'id_number' => 'required',
+            'email' => 'required',
+            'gender' => 'required',
+            'date' => 'required',
+            'physical_address' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
+            'image' => 'required',
 
+        ]);
     }
 
     public function profile(Request $request,$id){
