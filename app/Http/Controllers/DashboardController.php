@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Consultation;
 use App\Models\Encounter;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -70,6 +71,7 @@ class DashboardController extends Controller
     public function patient(Request $request){
 
         $dashboard = array();
-        return view('Dashboard.patient-dashboard',compact('dashboard'));
+        $patient = Patient::find(auth()->user()->patient->id);
+        return view('Dashboard.patient-dashboard',compact('dashboard','patient'));
     }
 }

@@ -18,8 +18,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>Good Morning, <span>{{auth()->user()->full_name}}</span></h2>
-                            <p>Have a nice day at work</p>
+                            <h2>{{__('generic.hello')}}, <span>{{auth()->user()->patient->name}}</span></h2>
+                            <p>{{ auth()->user()->patient->identifier_type }}: {{ auth()->user()->patient->identifier }} •
+                            @if(auth()->user()->patient->age) {{ auth()->user()->patient->age }} años • @endif
+                                {{ ucfirst(__('patient.'.auth()->user()->patient->gender) ?? 'No especificado') }}</p>
                         </div>
                     </div>
                     <div class="col-md-6 position-blk">
@@ -30,7 +32,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-12 col-lg-12 col-xl-7">
+                <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+                    <!-- Con parámetros personalizados -->
+                    {{--}}
+                    <livewire:patient.dashboard.vital-signs-status
+                        :patient-id="auth()->user()->patient->id"
+                        :selected-period="30"
+                        :auto-refresh="true" />
+
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title patient-visit mb-0">
@@ -49,12 +58,14 @@
                             <div id="health-chart"></div>
                         </div>
                     </div>
+                    {{--}}
                 </div>
+                {{--}}
                 <div class="col-12 col-md-12 col-lg-12 col-xl-5 d-flex">
                     <div class="card">
                         <div class="card-body">
                             <div class="chart-title patient-visit">
-                                <h4>Body Mass index</h4>
+                                <h4>{{__('Indice de mas corporal')}}</h4>
                             </div>
                             <div class="body-mass-blk">
                                 <div class="row">
@@ -123,9 +134,12 @@
                         </div>
                     </div>
                 </div>
+                {{--}}
             </div>
+            {{--}}
             <livewire:patient.dashboard-chat/>
             <livewire:patient.dashboard-history/>
+            {{--}}
         </div>
         @component('components.notification-box')
         @endcomponent

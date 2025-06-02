@@ -12,6 +12,8 @@ return [
     'full_id_number' => '#Documento',
     'age'=>'Edad',
     'gender'=>'Genero',
+    'male'=>'Masculino',
+    'female'=>'Femenino',
     'email'=>'Correo Electrónico',
     'whatsapp'=>'Whatsapp',
     'acciones'=>'Acciones',
