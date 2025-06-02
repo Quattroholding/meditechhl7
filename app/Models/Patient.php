@@ -185,6 +185,10 @@ class Patient extends BaseModel
         return Carbon::parse($attr)->format('d-m-Y');
     }
 
+    public function getAgeAttribute($attr){
+        return Carbon::parse($this->birth_date)->age;
+    }
+
     public function getProfileNameAttribute(){
         $path = url('assets/img/profiles/avatar-02.jpg');
         if($this->avatar()) $path = url('storage/'.$this->avatar()->path);

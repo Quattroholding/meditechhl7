@@ -25,6 +25,7 @@
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block local-forms">
                                             <x-input-label for="patient" :value="__('patient.title')" required/>
+                                            @if()
                                             <livewire:patient.search-dropdown/>
                                         </div>
                                     </div>
@@ -103,7 +104,7 @@
                                     </div>
                                     <div class="col-12">
                                         <div class="doctor-submit text-end">
-                                            <button type="submit" class="btn btn-primary submit-form me-2">{{__('generic.regsiter')}}</button>
+                                            <button type="submit" class="btn btn-primary submit-form me-2">{{__('generic.save')}}</button>
                                             <button type="submit" class="btn btn-primary cancel-form">{{__('generic.cancel')}}</button>
                                         </div>
                                     </div>

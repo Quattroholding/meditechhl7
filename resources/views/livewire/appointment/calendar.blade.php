@@ -6,15 +6,18 @@
     <div class="calendar-header">
         <div class="header-controls">
             <div class="view-buttons">
+
                 <button wire:click="changeView('monthly')" class="btn {{ $currentView === 'monthly' ? 'btn-primary active' : 'btn-secondary' }}">
                     Mensual
                 </button>
+                @if(!auth()->user()->hasRole('paciente'))
                 <button wire:click="changeView('weekly')" class="btn {{ $currentView === 'weekly' ? 'btn-primary active' : 'btn-secondary' }}">
                     Semanal
                 </button>
                 <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }}">
                     Diaria
                 </button>
+                @endif
             </div>
 
             <div class="navigation">

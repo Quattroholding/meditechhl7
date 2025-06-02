@@ -9,85 +9,24 @@
     </div>
     @include('partials.message')
     <!-- Filtros -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- Búsqueda -->
-            <div class="md:col-span-2 input-block  local-forms">
-                <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-                    Buscar profesional
-                </label>
-                <div class="relative">
-
-                    <input
-                        type="text"
-                        id="search"
-                        wire:model.live.debounce.300ms="search"
-                        placeholder="Nombre, apellido o cedula..."
-                        class="form-control"
-                    >
-                </div>
+    <div class="calendar-header">
+        <div class="filters-section">
+            <div>
+                <input type="text" id="search" wire:model.live.debounce.300ms="search" placeholder="Nombre, apellido o cedula..." class="form-control">
             </div>
-
-            <!-- Especialidad -->
-            <div class="input-block  local-forms">
-                <label for="specialty" class="block text-sm font-medium text-gray-700 mb-2">
-                    Especialidad
-                </label>
-                <select
-                    id="specialty"
-                    wire:model.live="selectedSpecialty"
-                    class="form-control"
-                >
+            <div>
+                <select  wire:model.live="selectedSpecialty" class="form-control">
                     <option value="">Todas las especialidades</option>
                     @foreach($specialties as $key=>$value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                 </select>
             </div>
-            {{--}}
-            <!-- Registros por página -->
-            <div>
-                <label for="perPage" class="block text-sm font-medium text-gray-700 mb-2">
-                    Mostrar
-                </label>
-                <select
-                    id="perPage"
-                    wire:model.live="perPage"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                    <option value="12">12 por página</option>
-                    <option value="24">24 por página</option>
-                    <option value="48">48 por página</option>
-                </select>
-            </div>
-            {{--}}
+           <div>
+               <button wire:click="clearFilters" class="btn btn-secondary">Limpiar Filtros</button>
+           </div>
         </div>
-        {{--}}
-        <!-- Opciones adicionales -->
-        <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-            <div class="flex items-center space-x-4">
-                <label class="inline-flex items-center">
-                    <input
-                        type="checkbox"
-                        wire:model.live="showInactive"
-                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
-                    >
-                    <span class="ml-2 text-sm text-gray-600">Mostrar profesionales inactivos</span>
-                </label>
-            </div>
-
-            @if($search || $selectedSpecialty)
-                <button
-                    wire:click="clearFilters"
-                    class="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                    Limpiar filtros
-                </button>
-            @endif
-        </div>
-        {{--}}
     </div>
-
     <!-- Resultados -->
     <div class="mb-4">
         <p class="text-sm text-gray-600">
@@ -208,11 +147,12 @@
                 </div>
             @endforeach
         </div>
-
+        <div class="my-3">&nbsp;</div>
         <!-- Paginación -->
-        <div class="flex justify-center">
+            <div class="mt-3" class="float-right">
             {{ $practitioners->links() }}
         </div>
+        <div class="my-3">&nbsp;</div>
     @else
         <!-- Estado vacío -->
         <div class="text-center py-12">
