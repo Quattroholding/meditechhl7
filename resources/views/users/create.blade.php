@@ -29,7 +29,7 @@
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data" id="form">
                             @csrf
                             <div class="row">
                                 <div class="col-12 col-md-6 col-xl-4">

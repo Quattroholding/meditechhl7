@@ -21,7 +21,7 @@
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('client.branch.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('client.branch.store') }}" enctype="multipart/form-data" id="form">
                             @csrf
                             <!-- Client -->
                             <div class="input-block  local-forms">

@@ -32,7 +32,7 @@
                                         {{ session('message') }}
                                     </div>
                                 @endif
-                                <form action="{{ route('patient.public.store') }}" method="POST" id="form_register">
+                                <form action="{{ route('patient.public.store') }}" method="POST" id="form">
                                     @csrf
                                     <div class="form-group">
                                         <label>{{__('user.first_name')}} <span class="login-danger">*</span></label>
