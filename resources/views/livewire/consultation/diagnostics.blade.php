@@ -30,20 +30,19 @@
             </div>
         </div>
     @endif
-
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" >
-
+    <div class="selector-field selector-field-on">
     @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-
+    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px;">
     @if(!empty($results))
-        <ul class="absolute bg-white border w-full mt-1 rounded shadow-lg max-h-40 overflow-y-auto" style="z-index: 1000">
+        <div class="selector-items" style="z-index: 1000">
             @foreach($results as $result)
-                <li  class="p-2 hover:bg-gray-200 cursor-pointer text-sm"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
+                <div  class="sel-list-item"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
                     {{ $result['name'] }}
-                </li>
+                </div>
             @endforeach
-        </ul>
+        </div>
     @endif
+    </div>
 
     <div style="height:200px;">&nbsp;</div>
 </div>

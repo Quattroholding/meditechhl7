@@ -30,51 +30,55 @@
         </div>
     @endif
     @php $id =\Illuminate\Support\Str::uuid();@endphp
-    <table style="width:100%">
-        <tbody><tr>
-            <td style="width:80%">
-                <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
-            </td>
-            <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
-                <div class="general-btn-small" type="button" data-bs-toggle="offcanvas" data-bs-target="#modal_acceso_rapido_{{$id}}"
-                     aria-controls="offcanvasTop">
-                    <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
-                    <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="offcanvas offcanvas-top quick-items quick-items-active" tabindex="-1" id="modal_acceso_rapido_{{$id}}" aria-labelledby="offcanvasTopLabel" style="height: 100vh;overflow-y: scroll;">
-        <div class="offcanvas-body quick-items-content">
-            <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
-                <img src="/images/close-floating.png" alt="">
-            </div>
-            <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
-            @foreach($rapidAccess as $i)
-                <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
-                    <div class="sel-list-item-code">{{$i->cpt->code}}</div>
-                    <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
-                    <div class="preloader-space"></div><div class="preloader-space-2">
+    <div class="selector-field selector-field-on">
+        <table style="width:100%">
+            <tbody>
+            <tr>
+                <td>
+                    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
+                </td>
+            </tr>
+            <tr>
+                <td style="width:80%;padding:0 20px;">
+                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
+                </td>
+                <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
+                    <div class="general-btn-small" type="button" data-bs-toggle="offcanvas" data-bs-target="#modal_acceso_rapido_{{$id}}"
+                         aria-controls="offcanvasTop">
+                        <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
+                        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
                     </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="offcanvas offcanvas-top quick-items quick-items-active" tabindex="-1" id="modal_acceso_rapido_{{$id}}" aria-labelledby="offcanvasTopLabel" style="height: 100vh;overflow-y: scroll;">
+            <div class="offcanvas-body quick-items-content">
+                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
+                    <img src="/images/close-floating.png" alt="">
                 </div>
-            @endforeach
+                <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
+                @foreach($rapidAccess as $i)
+                    <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
+                        <div class="sel-list-item-code">{{$i->cpt->code}}</div>
+                        <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
+                        <div class="preloader-space"></div><div class="preloader-space-2">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
+
+        @if(!empty($results))
+                <div class="selector-items" style="z-index: 1000">
+                    @foreach($results as $result)
+                        <div  class="sel-list-item"  wire:click="selectOption({{ json_encode($result) }})">
+                            {{ $result['name'] }}
+                        </div>
+                    @endforeach
+                </div>
+            @endif
     </div>
-
-    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-
-
-    @if(!empty($results))
-        <ul class="absolute bg-white border w-full mt-1 rounded shadow-lg max-h-40 overflow-y-auto" style="z-index: 1000">
-            @foreach($results as $result)
-                <li  class="p-2 hover:bg-gray-200 cursor-pointer text-sm"  wire:click="selectOption({{ json_encode($result) }})">
-                    {{ $result['name'] }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
 
     <div style="height:200px;">&nbsp;</div>
 </div>

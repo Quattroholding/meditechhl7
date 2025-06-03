@@ -98,19 +98,19 @@
         </table>
     @endif
     <div class="my-3"></div>
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento." >
-
-    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-
-    @if(!empty($results))
-        <ul class="absolute bg-white border w-full mt-1 rounded shadow-lg max-h-40 overflow-y-auto" style="z-index: 1000">
-            @foreach($results as $result)
-                <li  class="p-2 hover:bg-gray-200 cursor-pointer text-sm"  wire:click="selectOption({{ json_encode($result) }})">
-                    {{ $result['name'] }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
+    <div class="selector-field selector-field-on">
+        @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
+        <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento." >
+        @if(!empty($results))
+            <div class="selector-items" style="z-index: 1000">
+                @foreach($results as $result)
+                    <div  class="sel-list-item"  wire:click="selectOption({{ json_encode($result) }})">
+                        {{ $result['name'] }}
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
 
    <div style="height:200px;">&nbsp;</div>
 </div>

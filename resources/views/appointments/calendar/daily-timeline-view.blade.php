@@ -49,30 +49,6 @@
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
         }
 
-        .current-time-indicator {
-            position: absolute;
-            left: 30px;
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-            border: 4px solid white;
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
-            z-index: 100;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.6); }
-            50% { box-shadow: 0 0 30px rgba(231, 76, 60, 0.8); }
-            100% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.6); }
-        }
 
         .timeline-item {
             position: relative;
@@ -463,9 +439,9 @@
 
         .current-time-indicator {
             position: absolute;
-            left: 25px;
-            width: 34px;
-            height: 34px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(45deg, #e74c3c, #c0392b);
             border-radius: 50%;
             display: flex;

@@ -13,7 +13,7 @@
                     <div x-data="{ loaded: false }"
                          x-intersect="setTimeout(() => { loaded = true }, {{ $section->id * 200 }})"
                          class="min-h-[200px]">
-                        <x-accordion-item data-id="{{$section->id}}" title="{{$section->name_esp}}" :isOpen="false">
+                        <x-accordion-item data-id="{{$section->id}}" title="{{$section->name_esp}}" :isOpen="false" >
                         <template x-if="loaded">
                             <div x-transition:enter="transition ease-out duration-300">
                                 @livewire($section->livewire_component_name, ['encounter_id' => $consultation->id,'section_id'=>$section->id,'section_name'=>$section->name_esp])
