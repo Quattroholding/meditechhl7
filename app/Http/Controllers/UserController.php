@@ -55,8 +55,7 @@ class UserController extends Controller
 
         //SE CREA EL USUARIO
         $model = new User();
-        //$model->dv = $request->dv;
-        $model->profile_picture = 'clients/avatar_'.time();
+        //$model->profile_picture = 'clients/avatar_'.time();
         $model->last_name = $request->last_name;
         $model->first_name=$request->first_name;
         $model->email = $request->email;
@@ -66,14 +65,21 @@ class UserController extends Controller
         if($model->save()){
 
         //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
-        $userclient = new UserClient();
+        /*$userclient = new UserClient();
         $userclient->user_id = $model->id;
         $userclient->client_id = $request->clients[0];
-        $userclient->save();
+        $userclient->save();*/
+        $clients = $request->clients;
+        foreach($clients as $client){
+            $userclient = new UserClient();
+            $userclient->user_id = $model->id;
+            $userclient->client_id = $client;
+            $userclient->save();
+        }
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
         //SE ASIGNA EL ROL SEGÚN EL ID
-            //$rol = ($request->rol == 2) ? $model->assignRole('doctor') : $model->assignRole('asistente');
-            $model->assignRole($request->rol);
+            $rol = Rol::find($request->rol);
+            $model->assignRole($rol->name);
         //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
             $practitioner = new Practitioner();
             //LLamada a Faker para crear el número de identifier
