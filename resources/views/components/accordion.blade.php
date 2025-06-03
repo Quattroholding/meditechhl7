@@ -1,4 +1,4 @@
-<div {{ $attributes->merge(['class' => 'w-full space-y-2']) }} x-data="{
+<div {{ $attributes->merge(['class' => 'w-full space-y-2','style'=>'background:#fff;']) }} x-data="{
     allowMultiple: @js($allowMultiple),
     activeItem: new URL(window.location.href).searchParams.get('open') || null,
 

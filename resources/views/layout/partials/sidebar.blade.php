@@ -10,8 +10,10 @@
                     </a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('/dashboard', 'index') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
+                        {{--}}
                         <li><a class="{{ Request::is('dashboard/doctor') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}">Doctor Dashboard</a></li>
                         <li><a class="{{ Request::is('dashboard/patient') ? 'active' : '' }}"  href="{{ route('patient.dashboard') }}">{{ __('patient.titles') }} Dashboard</a></li>
+                        {{--}}
                     </ul>
                 </li>
                 <li class="submenu">
@@ -47,19 +49,22 @@
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
-                        <span>  {{ __('appointment.titles') }} </span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:;">
+                        <span class="menu-side"><img src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
+                        <span>  {{ __('appointment.titles') }} </span>
+                        <span class="menu-arrow"></span>
+                    </a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ route('appointment.index') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('Calendario') }} </a></li>
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt="" style="fill:red !important;">
-                        </span>
-                        <span>  {{ __('encounter.titles') }} </span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:;">
+                        <span class="menu-side"> <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt=""></span>
+                        <span>  {{ __('encounter.titles') }} </span>
+                        <span class="menu-arrow"></span>
+                    </a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
                     </ul>

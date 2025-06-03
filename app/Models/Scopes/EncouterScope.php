@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class AppointmentScope implements Scope
+class EncouterScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -14,7 +14,7 @@ class AppointmentScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         if(auth()->user() && auth()->user()->hasRole('doctor')){  // el doctor solo ve sus citas
-            $builder->where('practitioner_id',auth()->user()->practitioner()->first()->id);
+            $builder->where('practitioner_id',auth()->user()->practitioner->id);
             $builder->whereHas('patient',function ($q){
                 $q->whereHas('clients',function ($q2){
                     $q2->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));

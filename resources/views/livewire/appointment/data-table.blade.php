@@ -4,7 +4,7 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header')
+                    @component('components.table-header',array('show_create'=>$show_create))
                         @slot('title')
 
                         @endslot
@@ -61,9 +61,11 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @if($pagination>0)
                         <div class="mt-3" class="float-right">
                             {{ $data->links() }}
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

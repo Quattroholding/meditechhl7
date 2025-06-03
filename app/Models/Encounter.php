@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Scopes\EncouterScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,11 @@ class Encounter extends Model
         'start' => 'datetime',
         'end' => 'datetime'
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new EncouterScope());
+    }
 
     // Relaciones
     public function patient(): BelongsTo

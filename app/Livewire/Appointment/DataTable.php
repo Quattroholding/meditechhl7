@@ -26,8 +26,10 @@ class DataTable extends Component
     public $title='';
     public $patient_id;
     public $practitioner_id;
+    public $limit;
+    public $show_create=true;
 
-    public function mount($pagination=10,$sortField='appointments.id',$sortDirection='asc',$routename='',$title='')
+    public function mount($pagination=10,$sortField='appointments.id',$sortDirection='desc',$routename='',$title='')
     {
         $this->class = new Appointment();
         $this->pagination = $pagination;
@@ -49,7 +51,7 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = Appointment::selectRaw('appointments.*')
+        $query = Appointment::selectRaw('appointments.*')
             ->leftJoin('patients','patients.id','=','appointments.patient_id')
             ->leftJoin('practitioners','practitioners.id','=','appointments.practitioner_id')
             ->when($this->search, function (Builder $query) {
@@ -68,8 +70,19 @@ class DataTable extends Component
             ->when(!empty($this->practitioner_id),function ($q){
                 $q->where('practitioner_id',$this->practitioner_id);
             })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->pagination);
+            ->when(!empty($this->patient_id),function ($q){
+                $q->wherePatientId($this->patient_id);
+            })
+            ->when(!empty($this->limit),function ($q){
+                $q->take($this->limit);
+            })
+            ->orderBy($this->sortField, $this->sortDirection);
+
+        if($this->pagination>0) {
+            $data = $query->paginate($this->pagination);
+        }else{
+            $data = $query->get();
+        }
 
         return view('livewire.appointment.data-table', [ 'data' => $data, ]);
     }

@@ -85,7 +85,7 @@ class DashboardController extends Controller
         }
 
         $dashboards[] = array(
-            "title" =>__('appointment.title'),
+            "title" =>__('appointment.titles'),
             "icon" => "doctor-dash-01.svg",
             "count" =>$totAppFullFilled,
             "total" => "/".$totApp,

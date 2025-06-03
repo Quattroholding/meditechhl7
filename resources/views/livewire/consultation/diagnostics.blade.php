@@ -30,22 +30,19 @@
             </div>
         </div>
     @endif
-
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
-
-    <!-- Spinner de Carga -->
-    <div wire:loading class="absolute right-2 top-2">
-        <div class="animate-spin rounded-full h-5 w-5 border-t-2 border-blue-500"></div>
+    <div class="selector-field selector-field-on">
+    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
+    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px;">
+    @if(!empty($results))
+        <div class="selector-items" style="z-index: 1000">
+            @foreach($results as $result)
+                <div  class="sel-list-item"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
+                    {{ $result['name'] }}
+                </div>
+            @endforeach
+        </div>
+    @endif
     </div>
 
-
-    @if(!empty($results))
-        <ul class="absolute bg-white border w-full mt-1 rounded shadow-lg max-h-40 overflow-y-auto" style="z-index: 1000">
-            @foreach($results as $result)
-                <li  class="p-2 hover:bg-gray-200 cursor-pointer text-sm"  wire:click="selectOption({{ json_encode($result) }})">
-                    {{ $result['name'] }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
+    <div style="height:200px;">&nbsp;</div>
 </div>

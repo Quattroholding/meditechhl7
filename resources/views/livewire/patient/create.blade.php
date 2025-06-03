@@ -12,7 +12,7 @@
                     <x-input-label for="id_type" :value="__('patient.id_type')" required="true"/>
                     <x-select-input wire:model="id_type" name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
                     <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
-                </div>s
+                </div>
             </div>
             <div class="col-12 col-md-6 col-xl-8">
                 <div class=" input-block  local-forms ">

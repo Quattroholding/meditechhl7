@@ -226,8 +226,9 @@
                 <li class="breadcrumb-item active">{{ $li_1 }}</li>
             </ul>
 
-            @include('partials.message')
+
         </div>
     </div>
 </div>
 <!-- /Page Header -->
+@include('partials.message')
