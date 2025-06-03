@@ -1,4 +1,7 @@
 <!-- Table Header -->
+@php
+if(!isset($show_create)) $show_create=true;
+@endphp
 <div class="page-table-header mb-2">
     <div class="row align-items-center">
         <div class="col">
@@ -7,17 +10,18 @@
                 <div class="doctor-search-blk">
                     <div class="top-nav-search table-search-blk">
                         <form action="javascript:;">
-
                             <input type="text" wire:model.live="search" placeholder="Buscar..." class="form-control" id="search">
                             <a class="btn"><img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt=""></a>
                         </form>
                     </div>
+                    @if($show_create)
                     <div class="add-group">
                         <a href="{{ $li_1 }}" class="btn btn-primary add-pluss ms-2" title="{{__('generic.new')}}">
                             <img src="{{ URL::asset('/assets/img/icons/plus.svg') }}" alt="{{__('generic.new')}}">
                         </a>
                         <a href="#" class="btn btn-primary doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -22,13 +22,17 @@
                                             <h4> {{__('appointment.booking')}} </h4>
                                         </div>
                                     </div>
+                                    @if(!auth()->user()->hasRole('paciente'))
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block local-forms">
                                             <x-input-label for="patient" :value="__('patient.title')" required/>
-                                            @if()
+
                                             <livewire:patient.search-dropdown/>
                                         </div>
                                     </div>
+                                    @else
+                                        <input type="hidden" value="{{auth()->user()->patient->id}}">
+                                    @endif
                                     <div class="col-12">
                                         <div class="form-heading">
                                             <h4>{{ __('generic.detail') }} {{ __('appointment.title') }}</h4>
