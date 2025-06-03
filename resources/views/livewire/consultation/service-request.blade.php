@@ -1,6 +1,5 @@
 <div>
     @if(count($selectedLists)>0)
-        <x-input-label  :value="__($type)" />
         <div id="" class="multiple-field-values mb-3">
             <div class="multivalue-item-container">
                 @foreach($selectedLists as $s)
@@ -64,10 +63,7 @@
         </div>
     </div>
 
-    <!-- Spinner de Carga -->
-    <div wire:loading class="absolute right-2 top-2">
-        <div class="animate-spin rounded-full h-5 w-5 border-t-2 border-blue-500"></div>
-    </div>
+    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
 
 
     @if(!empty($results))
@@ -79,4 +75,6 @@
             @endforeach
         </ul>
     @endif
+
+    <div style="height:200px;">&nbsp;</div>
 </div>

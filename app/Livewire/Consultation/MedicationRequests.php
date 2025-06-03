@@ -25,6 +25,7 @@ class MedicationRequests extends Component
     public $frecuencies=[];
     public $durations=[];
     public $routes=[];
+    public $saved = false;
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
@@ -38,7 +39,6 @@ class MedicationRequests extends Component
             $this->quantitys[$sl->id] = $sl->quantity;
             $this->dosage_texts[$sl->id] = $sl->dosage_text;
         }
-
 
     }
     public function updatedQuery()
@@ -58,6 +58,7 @@ class MedicationRequests extends Component
 
     public function selectOption($option)
     {
+        $this->saved=false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -77,7 +78,9 @@ class MedicationRequests extends Component
                 'dosage_instruction'
             ]);
 
-
+            $this->query='';
+            sleep(1);
+            $this->saved=true;
         }
 
 
@@ -108,19 +111,17 @@ class MedicationRequests extends Component
         $this->dosage_texts[$id] =$dosage_instructions['text'];
     }
 
-    public function setEspecialist($specialist,$referral_id)
-    {
-        $referral = $this->encounter->medicationRequests()->whereId($referral_id)->first();
-        $referral->referred_to_id = $specialist;
-        $referral->save();
-    }
-
     protected function generateDosageInstruction($id)
     {
-        $frequency = $this->frecuencies[$id];
-        $route =$this->routes[$id];
-        $duration = $this->durations[$id];
-        $quantity = $this->quantitys[$id];
+        $frequency ='';
+        $route ='';
+        $duration ='';
+        $quantity ='';
+
+        if(isset($this->frecuencies[$id])) $frequency = $this->frecuencies[$id];
+        if(isset($this->routes[$id])) $route =$this->routes[$id];
+        if(isset($this->durations[$id])) $duration = $this->durations[$id];
+        if(isset($this->quantitys[$id])) $quantity = $this->quantitys[$id];
 
         $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
         $medicine_type='';

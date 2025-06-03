@@ -84,6 +84,13 @@ class Calendar extends Component
         30 => '30 minutos',
         60 => '60 minutos'
     ];
+
+    // Agregar estas propiedades al componente MedicalCalendar
+    public $autoUpdateEnabled = true;
+    public $currentTimePosition = null;
+    public $lastTimeUpdate = null;
+    public $showDebug=true;
+
     public function mount()
     {
         $this->currentDate = Carbon::now();
@@ -100,6 +107,7 @@ class Calendar extends Component
         $this->loadAppointments();
         $this->loadStats();
 
+        $this->updateCurrentTimePosition();
 
     }
 
@@ -777,6 +785,67 @@ class Calendar extends Component
             return 'next';
         } else {
             return 'scheduled';
+        }
+    }
+
+    public function updateCurrentTimePosition()
+    {
+        if (!$this->currentDate->isToday()) {
+            $this->currentTimePosition = null;
+            return;
+        }
+
+        $now = Carbon::now();
+        $dayStart = Carbon::today()->addHours($this->startHour);
+        $dayEnd = Carbon::today()->addHours($this->endHour);
+
+        if ($now->lt($dayStart) || $now->gt($dayEnd)) {
+            $this->currentTimePosition = null;
+            return;
+        }
+
+        $totalMinutes = $dayEnd->diffInMinutes($dayStart);
+        $currentMinutes = $now->diffInMinutes($dayStart);
+
+        // Calcular posición como porcentaje
+        $this->currentTimePosition = ($currentMinutes / $totalMinutes) * 100;
+        $this->lastTimeUpdate = $now->format('H:i:s');
+
+        // Emitir evento con la nueva posición
+        $this->dispatch('timePositionUpdated', [
+            'position' => $this->currentTimePosition,
+            'currentTime' => $now->format('H:i'),
+            'timestamp' => $now->timestamp,
+            'debug' => [
+                'now' => $now->format('H:i:s'),
+                'dayStart' => $dayStart->format('H:i:s'),
+                'dayEnd' => $dayEnd->format('H:i:s'),
+                'totalMinutes' => $totalMinutes,
+                'currentMinutes' => $currentMinutes,
+                'positionPercent' => $this->currentTimePosition
+            ]
+        ]);
+    }
+
+    // Método mejorado para refrescar automáticamente
+    public function refreshTimePosition()
+    {
+        // Solo actualizar si estamos en daily view y es hoy
+        if ($this->currentView === 'daily' && $this->currentDate->isToday()) {
+            $this->updateCurrentTimePosition();
+        }
+    }
+
+// Método para toggle auto-update
+    public function toggleAutoUpdate()
+    {
+        $this->autoUpdateEnabled = !$this->autoUpdateEnabled;
+
+        if ($this->autoUpdateEnabled) {
+            $this->updateCurrentTimePosition();
+            $this->dispatch('startAutoUpdate');
+        } else {
+            $this->dispatch('stopAutoUpdate');
         }
     }
 

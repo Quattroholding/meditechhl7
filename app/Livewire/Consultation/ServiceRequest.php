@@ -19,6 +19,7 @@ class ServiceRequest extends Component
     public $selectedLists=[];
     public $rapidAccess=[];
     public $section_id;
+    public $saved = false;
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
@@ -53,6 +54,7 @@ class ServiceRequest extends Component
 
     public function selectOption($option)
     {
+        $this->saved=false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -78,6 +80,10 @@ class ServiceRequest extends Component
                 'last_updated' =>now(),
             ]);
         }
+
+        $this->query='';
+        sleep(1);
+        $this->saved=true;
 
         $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
     }

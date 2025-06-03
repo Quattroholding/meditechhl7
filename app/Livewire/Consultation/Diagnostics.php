@@ -18,6 +18,8 @@ class Diagnostics extends Component
     public $encounter_id;
     public $encounter;
     public $selectedLists=[];
+    public $saving = false;
+    public $saved = false;
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
@@ -42,6 +44,7 @@ class Diagnostics extends Component
 
     public function selectOption($option)
     {
+        $this->saved = false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -68,6 +71,9 @@ class Diagnostics extends Component
             'use' => 'principal',
         ]);
 
+        $this->query='';
+        sleep(1);
+        $this->saved = true;
         $this->selectedLists = $this->encounter->diagnoses()->get();
     }
 

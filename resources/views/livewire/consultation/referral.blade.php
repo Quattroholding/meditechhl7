@@ -14,7 +14,8 @@
                 <td>
                     <div class="input-block local-forms">
                         <x-input-label for="physical_address" :value="__('Nota de Referencia')" />
-                        <x-textarea-input wire:keyup="setReason($event.target.value,{{$s->id}})" class="block mt-1 w-full">{{$selectedReason[$s->code]}}</x-textarea-input>
+                        <x-textarea-input wire:keyup.debounce.1000ms="setReason($event.target.value,{{$s->id}})" class="block mt-1 w-full">{{$selectedReason[$s->code]}}</x-textarea-input>
+                        @include('partials.input_saving',['function'=>'setReason','saved'=>$savedNota])
                     </div>
                     {{--}}
                     <div style="color:#0659d7;font-size: 11px;position: relative"> Límite: <span id="char_count_6825f4383fe80">207</span> de 1000 </div>
@@ -28,12 +29,13 @@
                     <div class="multivalue-item-sustento-container">
                         <div class="input-block local-forms">
                             <x-input-label for="especialist" :value="__('Especialista')" />
-                            <select wire:change="setEspecialist($event.target.value,{{$s->id}})" class="form-control">
+                            <select wire:change.debounce.500ms="setEspecialist($event.target.value,{{$s->id}})" class="form-control">
                                     <option value="" selected="">Seleccione un especialista</option>
                                     @foreach($especialistas[$s->code] as $especialista)
                                         <option value="{{$especialista['id']}}" @if($selectedEspecialist[$s->code] == $especialista['id']) selected @endif>{{$especialista['name']}}</option>
                                     @endforeach
                             </select>
+                            @include('partials.input_saving',['function'=>'setEspecialist','saved'=>$savedEspecialist])
                         </div>
                     </div>
                 </td>
@@ -49,13 +51,9 @@
     </table>
     @endif
     <div class="my-3"></div>
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
+    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar especialidad." >
 
-    <!-- Spinner de Carga -->
-    <div wire:loading class="absolute right-2 top-2">
-        <div class="animate-spin rounded-full h-5 w-5 border-t-2 border-blue-500"></div>
-    </div>
-
+    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
 
     @if(!empty($results))
         <ul class="absolute bg-white border w-full mt-1 rounded shadow-lg max-h-40 overflow-y-auto" style="z-index: 1000">
@@ -66,4 +64,6 @@
             @endforeach
         </ul>
     @endif
+
+    <div style="height:200px;">&nbsp;</div>
 </div>

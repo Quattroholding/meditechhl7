@@ -1,4 +1,5 @@
-<div class="daily-timeline-container">
+<div class="daily-timeline-container" x-data="timelineManager()" x-init="init()">
+
     <style>
         .daily-timeline-container {
             max-height: 700px;
@@ -383,15 +384,197 @@
         }
     </style>
 
+    <style>
+        .daily-timeline-container {
+            max-height: 700px;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .auto-update-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auto-update-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .auto-update-toggle.active {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.5);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse-live 2s infinite;
+        }
+
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .time-display {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .current-time-indicator {
+            position: absolute;
+            left: 25px;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            border: 4px solid white;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+            z-index: 100;
+            transition: top 0.5s ease-in-out;
+        }
+
+        .current-time-indicator.updating {
+            animation: pulse-update 0.8s ease-in-out;
+        }
+
+        @keyframes pulse-update {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); box-shadow: 0 0 30px rgba(231, 76, 60, 0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .timeline-main {
+            position: relative;
+            padding-left: 80px;
+            min-height: 600px; /* Asegurar altura mínima para el cálculo */
+        }
+
+        .timeline-axis {
+            position: absolute;
+            left: 40px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Resto de estilos del timeline igual que antes... */
+
+        .update-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .update-notification.show {
+            transform: translateX(0);
+        }
+
+        .next-appointment-pulse {
+            animation: next-appointment-glow 3s infinite;
+        }
+
+        @keyframes next-appointment-glow {
+            0%, 100% { box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4); }
+            50% { box-shadow: 0 15px 40px rgba(0, 123, 255, 0.6); }
+        }
+
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 9999;
+            display: none;
+        }
+
+        .debug-info.show {
+            display: block;
+        }
+    </style>
+    <!-- Debug Info (opcional, para testing) -->
+    <div class="debug-info" x-show="showDebug" x-transition>
+        <div>Tiempo actual: <span x-text="currentTime"></span></div>
+        <div>Posición: <span x-text="timePosition + '%'"></span></div>
+        <div>Timeline height: <span x-text="timelineHeight + 'px'"></span></div>
+        <div>Top calculado: <span x-text="Math.round((timePosition / 100) * timelineHeight) + 'px'"></span></div>
+        <div>Auto-update: <span x-text="autoUpdateEnabled ? 'ON' : 'OFF'"></span></div>
+    </div>
+
     <!-- Header del Timeline -->
     <div class="timeline-header">
         <div>
             <div class="timeline-date">
-                {{ $calendarData['date']->format('l, d \d\e F Y') }}
+                {{ $currentPeriod }}
             </div>
             @if($calendarData['isToday'])
-                <div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">
-                    📅 Hoy • {{ now()->format('H:i') }}
+                <div style="font-size: 14px; opacity: 0.9; margin-top: 5px; display: flex; align-items: center; gap: 10px;">
+                    📅 Hoy
+                    <div class="time-display" x-text="currentTime">{{ now()->format('H:i:s') }}</div>
                 </div>
             @endif
         </div>
@@ -403,6 +586,35 @@
                 </div>
             @endif
         </div>
+        @if($calendarData['isToday'])
+            <div class="timeline-controls">
+                <button
+                    wire:click="toggleAutoUpdate"
+                    class="auto-update-toggle {{ $autoUpdateEnabled ? 'active' : '' }}"
+                    title="{{ $autoUpdateEnabled ? 'Desactivar actualización automática' : 'Activar actualización automática' }}">
+                    @if($autoUpdateEnabled)
+                        <div class="live-indicator"></div>
+                        <span>EN VIVO</span>
+                    @else
+                        <span>⏸️ PAUSADO</span>
+                    @endif
+                </button>
+
+                <button
+                    wire:click="refreshTimePosition"
+                    class="auto-update-toggle"
+                    title="Actualizar ahora">
+                    🔄 Actualizar
+                </button>
+
+                <button
+                    @click="showDebug = !showDebug"
+                    class="auto-update-toggle"
+                    title="Mostrar debug info">
+                    🐛 Debug
+                </button>
+            </div>
+        @endif
     </div>
 
     <!-- Leyenda -->
@@ -446,13 +658,17 @@
             <div class="timeline-axis"></div>
 
             <!-- Indicador de tiempo actual -->
-            {{--}}
-            @if($calendarData['isToday'] && $calendarData['currentTimePosition'])
-                <div class="current-time-indicator" style="top: {{ $calendarData['currentTimePosition'] }}%;">
-                    {{ now()->format('H:i') }}
+
+            <!-- Indicador de tiempo actual -->
+            @if($calendarData['isToday'] && $calendarData['currentTimePosition'] !== null)
+                <div
+                    class="current-time-indicator"
+                    x-bind:class="{ 'updating': isUpdating }"
+                    x-bind:style="`top: ${Math.round((timePosition / 100) * timelineHeight)}px`"
+                    x-text="currentTime.substring(0, 5)">
                 </div>
             @endif
-            {{--}}
+
 
             <!-- Citas del día -->
             @foreach($calendarData['appointments'] as $index => $appointment)
@@ -462,11 +678,10 @@
                     $appModel = \App\Models\Appointment::find($appointment['id']);
                 @endphp
 
-                <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-highlight' : '' }}"
-                     wire:click="editAppointment({{ $appointment['id'] }})">
+                <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-pulse' : '' }}" wire:click="editAppointment({{ $appointment['id'] }})">
 
                     <div class="timeline-time">
-                        {{ date('H:i', strtotime($appointment['start'])) }}
+                        {{ $appointment['formatted_time']  }}
                     </div>
 
                     <div class="appointment-header">
@@ -602,5 +817,172 @@
             </button>
         </div>
     @endif
+    <!-- Script Alpine.js para manejo del tiempo -->
+    <script>
+        function timelineManager() {
+            return {
+                currentTime: '{{ now()->format("H:i:s") }}',
+                timePosition: {{ $calendarData['currentTimePosition'] ?? 50 }},
+                timelineHeight: 600,
+                isUpdating: false,
+                updateInterval: null,
+                showNotification: false,
+                notificationMessage: '',
+                showDebug: false,
+                autoUpdateEnabled: @entangle('autoUpdateEnabled'),
 
+                init() {
+                    console.log('Timeline Manager initialized');
+
+                    // Calcular altura del timeline
+                    this.calculateTimelineHeight();
+
+                    // Inicializar tiempo
+                    this.updateTime();
+
+                    // Escuchar eventos de Livewire
+                    this.$wire.on('timePositionUpdated', (data) => {
+                        console.log('Time position update received:', data);
+                        this.handleTimeUpdate(data);
+                    });
+
+                    this.$wire.on('startAutoUpdate', () => {
+                        this.startAutoUpdate();
+                    });
+
+                    this.$wire.on('stopAutoUpdate', () => {
+                        this.stopAutoUpdate();
+                    });
+
+                    // Iniciar auto-update si está habilitado
+                    if (this.autoUpdateEnabled) {
+                        this.startAutoUpdate();
+                    }
+
+                    // Recalcular altura cuando cambie el tamaño
+                    window.addEventListener('resize', () => {
+                        this.calculateTimelineHeight();
+                    });
+                },
+
+                calculateTimelineHeight() {
+                    this.$nextTick(() => {
+                        if (this.$refs.timelineContainer) {
+                            this.timelineHeight = this.$refs.timelineContainer.offsetHeight;
+                            console.log('Timeline height calculated:', this.timelineHeight);
+                        }
+                    });
+                },
+
+                updateTime() {
+                    const now = new Date();
+                    this.currentTime = now.toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+
+                    // Calcular posición manualmente también (como backup)
+                    this.calculateCurrentPosition();
+                },
+
+                calculateCurrentPosition() {
+                    const now = new Date();
+                    const startHour = {{ $this->startHour }};
+                    const endHour = {{ $this->endHour }};
+
+                    const dayStart = new Date();
+                    dayStart.setHours(startHour, 0, 0, 0);
+
+                    const dayEnd = new Date();
+                    dayEnd.setHours(endHour, 0, 0, 0);
+
+                    if (now >= dayStart && now <= dayEnd) {
+                        const totalMinutes = (dayEnd - dayStart) / (1000 * 60);
+                        const currentMinutes = (now - dayStart) / (1000 * 60);
+                        const newPosition = (currentMinutes / totalMinutes) * 100;
+
+                        // Solo actualizar si hay diferencia significativa
+                        if (Math.abs(newPosition - this.timePosition) > 0.1) {
+                            this.timePosition = newPosition;
+                            console.log('Position updated locally:', this.timePosition);
+                        }
+                    }
+                },
+
+                startAutoUpdate() {
+                    if (this.updateInterval) {
+                        clearInterval(this.updateInterval);
+                    }
+
+                    // Actualizar cada segundo para el reloj y cada minuto para la posición
+                    this.updateInterval = setInterval(() => {
+                        this.updateTime();
+
+                        // Actualizar posición en el servidor cada minuto
+                        if (new Date().getSeconds() === 0) {
+                            console.log('Triggering server time position update');
+                            this.$wire.call('refreshTimePosition');
+                        }
+                    }, 1000);
+
+                    this.showNotificationMessage('⏰ Actualización automática activada');
+                },
+
+                stopAutoUpdate() {
+                    if (this.updateInterval) {
+                        clearInterval(this.updateInterval);
+                        this.updateInterval = null;
+                    }
+                    this.showNotificationMessage('⏸️ Actualización automática pausada');
+                },
+
+                handleTimeUpdate(data) {
+                    console.log('Handling time update:', data);
+
+                    this.isUpdating = true;
+
+                    // Actualizar posición con los datos del servidor
+                    if (data.position !== undefined && data.position !== null) {
+                        this.timePosition = parseFloat(data.position);
+                        console.log('Position updated from server:', this.timePosition);
+                    }
+
+                    // Actualizar tiempo
+                    if (data.currentTime) {
+                        const seconds = new Date().getSeconds().toString().padStart(2, '0');
+                        this.currentTime = data.currentTime + ':' + seconds;
+                    }
+
+                    // Debug info
+                    if (data.debug) {
+                        console.log('Debug info:', data.debug);
+                    }
+
+                    // Remover indicador de actualización
+                    setTimeout(() => {
+                        this.isUpdating = false;
+                    }, 800);
+
+                    this.showNotificationMessage(`🔄 Posición actualizada: ${this.timePosition.toFixed(1)}%`);
+                },
+
+                showNotificationMessage(message) {
+                    this.notificationMessage = message;
+                    this.showNotification = true;
+
+                    setTimeout(() => {
+                        this.showNotification = false;
+                    }, 3000);
+                },
+
+                // Cleanup al destruir el componente
+                destroy() {
+                    if (this.updateInterval) {
+                        clearInterval(this.updateInterval);
+                    }
+                }
+            }
+        }
+    </script>
 </div>

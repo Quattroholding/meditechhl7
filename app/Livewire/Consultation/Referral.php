@@ -19,6 +19,10 @@ class Referral extends Component
     public $especialistas=[];
     public $selectedEspecialist=[];
     public $selectedReason=[];
+    public $saving = false;
+    public $saved = false;
+    public $savedNota=false;
+    public $savedEspecialist=false;
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
@@ -47,6 +51,7 @@ class Referral extends Component
     }
     public function selectOption($option)
     {
+        $this->saved=false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -79,6 +84,9 @@ class Referral extends Component
             $this->selectedReason[$specialty->id]=null;
         }
 
+        $this->query='';
+        sleep(1);
+        $this->saved=true;
 
         $this->selectedLists = $this->encounter->referrals()->get();
     }
@@ -88,18 +96,29 @@ class Referral extends Component
         $this->selectedLists = $this->encounter->referrals()->get();
     }
 
+    public function updatedReason(){
+        $this->savedNota=false;
+    }
+
      public function setReason($reason,$referral_id)
      {
+         $this->savedNota=false;
          $referral = $this->encounter->referrals()->whereId($referral_id)->first();
          $referral->reason = htmlspecialchars($reason);
          $referral->save();
+         sleep(1);
+         $this->savedNota=true;
+
      }
 
     public function setEspecialist($specialist,$referral_id)
     {
+        $this->savedEspecialist=false;
         $referral = $this->encounter->referrals()->whereId($referral_id)->first();
         $referral->referred_to_id = $specialist;
         $referral->save();
+        sleep(1);
+        $this->savedEspecialist=true;
     }
 
     public function render()
