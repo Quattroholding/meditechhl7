@@ -214,8 +214,9 @@ function changeByType(type) {
        
 
         switch(type) {
-            /*-----FORMULARIO PARA ROLE ADMIN-----*/
+            /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
             case '5':
+            /*-----FORMULARIO PARA ROLE ADMIN-----*/
             case '1':
                 $("#client").show();
                 $('#first_name').show();
@@ -225,6 +226,7 @@ function changeByType(type) {
                 $("#password").show();
                 $("#confirm_password").show();
                 break;
+            /*-----FORMULARIO PARA ROLE DOCTOR-----*/
             case '2':
                 $("#client").show();
                 $("#id_type").show();
@@ -241,6 +243,7 @@ function changeByType(type) {
                 $("#password").show();
                 $("#confirm_password").show();
                 break;
+            /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
             case '3':
                 $("#client").show();
                 $("#id_type").show();
@@ -257,6 +260,7 @@ function changeByType(type) {
                 $("#password").show();
                 $("#confirm_password").show();
                 break;
+                /*-----FORMULARIO PARA ROLE PACIENTE-----*/
             case '4':
                 //$("#client").show();
                 $("#id_type").show();

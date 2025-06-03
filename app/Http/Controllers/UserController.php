@@ -39,6 +39,7 @@ class UserController extends Controller
     }
 
     public function store(Request $request){
+        dd($request->all());
        //dd($request->all(), $request->clients[0]);
         //$medical_speciality_name =  MedicalSpeciality::whereId($request->medical_speciality)->pluck('name')->first();
         //dd($request->medical_speciality,$medical_speciality_name);
