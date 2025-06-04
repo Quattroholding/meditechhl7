@@ -92,7 +92,9 @@ class MedicalDirectory extends Component
 
     public function render()
     {
-        $this->patient_id = auth()->user()->patient->id;
+        if(auth()->user()->patient)
+            $this->patient_id = auth()->user()->patient->id;
+
         $practitioners = Practitioner::query()
             ->with('qualifications')
             ->when(!$this->showInactive, fn($query) => $query->active())

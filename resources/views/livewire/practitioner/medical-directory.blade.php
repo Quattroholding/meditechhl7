@@ -101,6 +101,24 @@
                         </div>
                     @endif
 
+                    <!-- Working Hours -->
+                    @if($practitioner->user->workingHours->count() > 0)
+                        <div class="border-t border-gray-200 px-6 py-4">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">{{__('Horario Laboral')}}</h4>
+                            <div class="space-y-2">
+                                @foreach($practitioner->user->workingHours()->get() as $wh)
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">
+                                                {{ $wh->day_of_week }} :  {{ substr($wh->start_time,0,5) }} -  {{ substr($wh->end_time,0,5) }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Calificaciones -->
                     @if($practitioner->qualifications->count() > 0)
                         <div class="border-t border-gray-200 px-6 py-4">
@@ -137,12 +155,16 @@
                         </div>
                     @endif
 
+
+
+                    @if(auth()->user()->hasRole('paciente'))
                     <!-- Acciones -->
                     <div class="bg-gray-50 px-6 py-3 rounded-b-lg">
                         <button class="btn btn-primary" wire:click="requestAppointment({{$practitioner->id}})">
                           <i class="fa fa-calendar"></i> {{__('patient.request_appointment')}}
                         </button>
                     </div>
+                    @endif
 
                 </div>
             @endforeach

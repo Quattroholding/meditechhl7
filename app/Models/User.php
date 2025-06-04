@@ -105,4 +105,8 @@ class User extends Authenticatable
                     </div>';
     }
 
+    public function workingHours(){
+        return $this->hasMany(UserWorkingHour::class);
+    }
+
 }
