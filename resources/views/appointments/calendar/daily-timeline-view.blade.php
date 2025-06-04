@@ -115,6 +115,12 @@
             animation: pulse 1.5s infinite;
         }
 
+
+        .timeline-item.checked-in .profile-image a ,.timeline-item.checked-in .appointment-doctor , .timeline-item.checked-in .appointment-specialty,
+        .timeline-item.checked-in .appointment-phone,.timeline-item.checked-in appointment-duration{
+            color:#fff;
+        }
+
         .timeline-item.next {
             background: linear-gradient(135deg, #cce5ff, #b3d9ff);
             border-left-color: #007bff;
@@ -605,6 +611,10 @@
                 <span>En Progreso</span>
             </div>
             <div class="legend-item">
+                <div class="legend-dot" style="background: #2E37A4;"></div>
+                <span>En Curso</span>
+            </div>
+            <div class="legend-item">
                 <div class="legend-dot" style="background: #28a745;"></div>
                 <span>Completada</span>
             </div>
@@ -674,7 +684,7 @@
                             @if($status === 'next') 🔔 PRÓXIMA
                             @elseif($status === 'pending') 🕐 PENDIENTE DE CONFIRMACION
                             @elseif($status === 'current') ⏱️ EN PROGRESO
-                            @elseif($status === 'checked-in') 🏥 CONSULTA INICIADA
+                            @elseif($status === 'checked-in') 🏥 CONSULTA EN CURSO
                             @elseif($status === 'fulfilled') ✅ COMPLETADA
                             @elseif($status === 'overdue') ⚠️ RETRASADA
                             @elseif($status === 'upcoming') 🕐 PRÓXIMA (15min)
