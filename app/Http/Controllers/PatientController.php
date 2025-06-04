@@ -96,7 +96,13 @@ class PatientController extends Controller
         $model->last_name = $request->last_name;
         $model->email = $request->email;
         $model->password = $request->password;
-        $model->save();
+
+        if($model->save()){
+            $request->session()->flash('message.success','Se ha creado el usuario con éxito.');
+        }else{
+            $request->session()->flash('message.error','Hubo un error y no se puso completar con la creación de este usuario');
+             return redirect(route('patient.register'));
+        }
 
         // Asignar rol de paciente
         $model->assignRole('paciente');
@@ -109,7 +115,7 @@ class PatientController extends Controller
         $patient->name = $request->first_name .' '. $request->last_name;
         $patient->user_id = $model->id;
         $patient->fhir_id = 'patient-' . Str::uuid();
-        $patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        //$patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
         if($patient->save()){
 
             session()->flash('message', 'Se ha registrado exitósamente el paciente');
@@ -122,9 +128,13 @@ class PatientController extends Controller
             $route=route('patient.dashboard');
             return redirect()->intended($route);
         }
-        }
+        }else{
+            $user_created = User::find($model->id);
+            $user_created->delete();
             session()->flash('message', 'Ha habido un error con el registro del paciente');
-            return back();
+            return redirect(route('patient.register'));
+        }
+            
 
 
 
