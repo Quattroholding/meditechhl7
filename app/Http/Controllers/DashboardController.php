@@ -19,7 +19,6 @@ class DashboardController extends Controller
     public function doctor(Request $request){
 
         $dashboards=array();
-        dd(auth()->user());
 
         $totApp = Appointment::count();
         $totAppFullFilled = Appointment::fullFilled()->count();
