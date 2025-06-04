@@ -125,7 +125,7 @@ class PatientController extends Controller
         ]);
              if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $route=route('patient.dashboard');
+            $route=route('patient.profile', $patient->id);
             return redirect()->intended($route);
         }
         }else{
