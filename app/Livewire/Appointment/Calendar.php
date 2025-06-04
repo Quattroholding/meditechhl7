@@ -75,7 +75,7 @@ class Calendar extends Component
 
     // NUEVAS PROPIEDADES PARA CONFIGURACIÓN DE TIEMPO
     public $timeBlockMinutes = 30; // Bloques de 30 minutos por defecto
-    public $startHour = 7; // Hora de inicio del calendario
+    public $startHour = 6; // Hora de inicio del calendario
     public $endHour = 21; // Hora de fin del calendario
     public $showTimeBlockConfig = false; // Para mostrar/ocultar configuración
 
@@ -97,7 +97,7 @@ class Calendar extends Component
         $this->appointment_date = Carbon::now()->format('Y-m-d');
 
         $this->timeBlockMinutes = session('calendar.time_block_minutes', 30);
-        $this->startHour = session('calendar.start_hour', 7);
+        $this->startHour = session('calendar.start_hour', 6);
         $this->endHour = session('calendar.end_hour', 21);
         if(auth()->user()->hasRole('paciente')){
             $this->patient_id = auth()->user()->patient->id;
@@ -562,18 +562,39 @@ class Calendar extends Component
         $nextAppointmentIndex = -1;
 
         foreach ($sortedAppointments as $index => $appointment) {
-            $appointmentDateTime = Carbon::parse($appointment['start'] );
+            $appointmentStart = Carbon::parse($appointment['start']);
+            $appointmentEnd = Carbon::parse($appointment['end']);
 
             // Si es hoy y la cita es futura, o si la cita está en progreso
-            if ($appointmentDateTime->isToday() &&
-                ($appointmentDateTime->isFuture() || $appointment['status'] === 'checked-in')) {
-                $nextAppointment = $appointment;
-                $nextAppointmentIndex = $index;
-                break;
+            if ($this->currentDate->isToday()) {
+                // Si la cita está en progreso
+                if ($now->between($appointmentStart, $appointmentEnd)) {
+                    $nextAppointment = $appointment;
+                    $nextAppointmentIndex = $index;
+                    break;
+                }
+                // Si la cita es futura
+                elseif ($appointmentStart->isFuture()) {
+                    $nextAppointment = $appointment;
+                    $nextAppointmentIndex = $index;
+                    break;
+                }
             }
         }
 
-        // Generar timeline con indicador de tiempo actual
+        // Agregar información de formato para cada cita
+        $sortedAppointments = collect($sortedAppointments)->map(function($appointment) {
+            $start = Carbon::parse($appointment['start']);
+            $end = Carbon::parse($appointment['end']);
+
+            $appointment['formatted_start_time'] = $appointment['formatted_time'];
+            $appointment['formatted_time'] = $start->format('H:i') . ' - ' . $end->format('H:i');
+            $appointment['formatted_date'] = $start->format('Y-m-d');
+
+            return $appointment;
+        })->toArray();
+
+        // Calcular posición del indicador de tiempo
         $currentTimePosition = $this->calculateCurrentTimePosition();
 
         return [
@@ -738,6 +759,9 @@ class Calendar extends Component
     // NUEVO MÉTODO: calculateCurrentTimePosition()
     // ===========================================
 
+    /**
+     * Calcula la posición actual del tiempo basándose en las citas del día
+     */
     private function calculateCurrentTimePosition()
     {
         if (!$this->currentDate->isToday()) {
@@ -745,19 +769,38 @@ class Calendar extends Component
         }
 
         $now = Carbon::now();
-        $dayStart = Carbon::parse($this->startHour . ':00');
-        $dayEnd = Carbon::parse($this->endHour . ':00');
 
-        if ($now->lt($dayStart) || $now->gt($dayEnd)) {
+        // Obtener las citas del día actual
+        $todayAppointments = collect($this->appointments)->filter(function($appointment) {
+            return Carbon::parse($appointment['start'])->isToday();
+        })->sortBy('start');
+
+        if ($todayAppointments->isEmpty()) {
             return null;
         }
 
-        $totalMinutes = $dayEnd->diffInMinutes($dayStart);
-        $currentMinutes = $now->diffInMinutes($dayStart);
+        // Encontrar la primera y última cita del día
+        $firstAppointment = $todayAppointments->first();
+        $lastAppointment = $todayAppointments->last();
 
-        $caculate =($currentMinutes / $totalMinutes) * 100;
+        $firstStart = Carbon::parse($firstAppointment['start']);
+        $lastEnd = Carbon::parse($lastAppointment['end']);
 
-        return  $caculate;// Porcentaje de posición
+        // Si el tiempo actual está antes de la primera cita
+        if ($now->lt($firstStart)) {
+            return 0;
+        }
+
+        // Si el tiempo actual está después de la última cita
+        if ($now->gt($lastEnd)) {
+            return 100;
+        }
+
+        // Calcular la posición relativa entre la primera y última cita
+        $totalMinutes = $lastEnd->diffInMinutes($firstStart);
+        $currentMinutes = $now->diffInMinutes($firstStart);
+
+        return ($currentMinutes / $totalMinutes) * 100;
     }
 
     // ===========================================
@@ -766,7 +809,12 @@ class Calendar extends Component
 
     public function getAppointmentStatus($appointment, $isNext = false)
     {
-        $appointmentDateTime = Carbon::parse($appointment['formatted_date'] . ' ' . $appointment['formatted_time']);
+
+        //$appointmentDateTime = Carbon::parse($appointment['start']);
+        //$now = Carbon::now();
+
+        $start = Carbon::parse($appointment['start']);
+        $end = Carbon::parse($appointment['end']);
         $now = Carbon::now();
 
         if ($appointment['status'] === 'fulfilled') {
@@ -776,10 +824,13 @@ class Calendar extends Component
         } elseif ($appointment['status'] === 'cancelled') {
             return 'cancelled';
         } elseif ($appointment['status'] === 'checked-in') {
+            return 'checked-in';
+        } if ($now->between($start, $end)) {
+            // La cita está en progreso ahora mismo
             return 'current';
-        } elseif ($appointmentDateTime->isPast() && $appointment['status'] !== 'fulfilled') {
+        }elseif ($start->isPast() && $appointment['status'] !== 'fulfilled') {
             return 'overdue';
-        }elseif ($now->diffInMinutes($appointmentDateTime, false) <= 15 && $appointmentDateTime->isFuture()) {
+        }elseif ($now->diffInMinutes($start, false) <= 15 && $start->isFuture()) {
             return 'upcoming';
         } elseif ($isNext) {
             return 'next';
@@ -795,35 +846,19 @@ class Calendar extends Component
             return;
         }
 
-        $now = Carbon::now();
-        $dayStart = Carbon::today()->addHours($this->startHour);
-        $dayEnd = Carbon::today()->addHours($this->endHour);
+        $position = $this->calculateCurrentTimePosition();
+        $this->currentTimePosition = $position;
+        $this->lastTimeUpdate = now()->format('H:i:s');
 
-        if ($now->lt($dayStart) || $now->gt($dayEnd)) {
-            $this->currentTimePosition = null;
-            return;
-        }
-
-        $totalMinutes = $dayEnd->diffInMinutes($dayStart);
-        $currentMinutes = $now->diffInMinutes($dayStart);
-
-        // Calcular posición como porcentaje
-        $this->currentTimePosition = ($currentMinutes / $totalMinutes) * 100;
-        $this->lastTimeUpdate = $now->format('H:i:s');
+        // Obtener información adicional para debug
+        $debugInfo = $this->getTimelineDebugInfo();
 
         // Emitir evento con la nueva posición
         $this->dispatch('timePositionUpdated', [
             'position' => $this->currentTimePosition,
-            'currentTime' => $now->format('H:i'),
-            'timestamp' => $now->timestamp,
-            'debug' => [
-                'now' => $now->format('H:i:s'),
-                'dayStart' => $dayStart->format('H:i:s'),
-                'dayEnd' => $dayEnd->format('H:i:s'),
-                'totalMinutes' => $totalMinutes,
-                'currentMinutes' => $currentMinutes,
-                'positionPercent' => $this->currentTimePosition
-            ]
+            'currentTime' => now()->format('H:i'),
+            'timestamp' => now()->timestamp,
+            'debug' => $debugInfo
         ]);
     }
 
@@ -835,6 +870,40 @@ class Calendar extends Component
             $this->updateCurrentTimePosition();
         }
     }
+
+    private function getTimelineDebugInfo()
+    {
+        $now = Carbon::now();
+        $todayAppointments = collect($this->appointments)->filter(function($appointment) {
+            return Carbon::parse($appointment['start'])->isToday();
+        })->sortBy('start');
+
+        if ($todayAppointments->isEmpty()) {
+            return [
+                'message' => 'No hay citas hoy',
+                'currentTime' => $now->format('H:i:s')
+            ];
+        }
+
+        $firstAppointment = $todayAppointments->first();
+        $lastAppointment = $todayAppointments->last();
+
+        return [
+            'now' => $now->format('H:i:s'),
+            'firstAppointmentStart' => Carbon::parse($firstAppointment['start'])->format('H:i:s'),
+            'lastAppointmentEnd' => Carbon::parse($lastAppointment['end'])->format('H:i:s'),
+            'totalAppointments' => $todayAppointments->count(),
+            'positionPercent' => $this->currentTimePosition,
+            'appointments' => $todayAppointments->map(function($apt) {
+                return [
+                    'start' => Carbon::parse($apt['start'])->format('H:i'),
+                    'end' => Carbon::parse($apt['end'])->format('H:i'),
+                    'status' => $apt['status']
+                ];
+            })->values()->toArray()
+        ];
+    }
+
 
 // Método para toggle auto-update
     public function toggleAutoUpdate()

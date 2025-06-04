@@ -27,21 +27,21 @@
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Agravantes')}}" />
             <x-text-input class="block w-full" wire:model.live="aggravating_factors"
-                          wire:keyup.debounce.1000ms="saveAggravatingFactors()"
+                          wire:keyup.debounce.300ms="saveAggravatingFactors()"
                           :value="$aggravating_factors" type="text"/>
             @include('partials.input_saving',['function'=>'saveAggravatingFactors','saved'=>$savedAggravatingFactors])
         </div>
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Atenuantes')}}" />
             <x-text-input class="block w-full" wire:model.live="alleviating_factors"
-                          wire:keyup.debounce.1000ms="saveAlleviatingFactors()"
+                          wire:keyup.debounce.300ms="saveAlleviatingFactors()"
                           :value="$alleviating_factors" type="text"/>
             @include('partials.input_saving',['function'=>'saveAlleviatingFactors','saved'=>$savedAlleviatingFactors])
         </div>
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Sintomas Asociados')}}" />
             <x-text-input class="block w-full" wire:model.live="associated_symptoms"
-                          wire:keyup.debounce.1000ms="saveAssociatedSymptoms()"
+                          wire:keyup.debounce.300ms="saveAssociatedSymptoms()"
                           :value="$associated_symptoms" type="text"/>
             @include('partials.input_saving',['function'=>'saveAssociatedSymptoms','saved'=>$savedAssociatedSymptoms])
         </div>
@@ -49,7 +49,7 @@
             <x-input-label  value="{{__('Descripcion')}}" />
             <x-textarea-input
                 wire:model.live="description"
-                wire:keyup.debounce.1000ms="saveDescription()"
+                wire:keyup.debounce.300ms="saveDescription()"
                 class="mt-1 block w-full bottom-0" rows="2">{{$description}}</x-textarea-input>
             @include('partials.input_saving',['function'=>'saveDescription','saved'=>$savedDescription])
         </div>

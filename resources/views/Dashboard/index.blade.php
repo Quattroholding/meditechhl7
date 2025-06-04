@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>Good Morning, <span>Daniel Bruk</span></h2>
+                            <h2>{{__('generic.hello')}}, <span>{{auth()->user()->patient->name}}</span></h2>
                             <p>Have a nice day at work</p>
                         </div>
                     </div>

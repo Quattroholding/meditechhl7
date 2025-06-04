@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-       //Paginator::useBootstrapFour();
+       //Paginator::useTailwind();
        Appointment::observe(AppointmentObserver::class);
        Gate::policy(Appointment::class,AppointmentPolicy::class);
     }

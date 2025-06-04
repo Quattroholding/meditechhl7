@@ -54,13 +54,13 @@ class PhysicalExam extends Component
                     'status' => 'final',
                     'category' => 'exam',
                     'description' => $vsType->name . ' realizado durante la consulta',
-                    'finding' => array('text'=> $this->saved[$code]),
+                    'finding' => array('text'=> $this->values[$code]),
                     'effective_date' => now(),
                     'patient_id' => $this->encounter->patient_id,
                     'practitioner_id' => $this->encounter->practitioner_id,
                 ]);
             }else{
-                $vs->finding = array('text'=> $this->saved[$code]);
+                $vs->finding = array('text'=> $this->values[$code]);
                 $vs->save();
             }
             // Simular tiempo de guardado

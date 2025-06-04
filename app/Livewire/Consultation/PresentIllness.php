@@ -54,6 +54,19 @@ class PresentIllness extends Component
         return view('livewire.consultation.present-illness');
     }
 
+    public function create(){
+        $this->present_illness = $this->encounter->presentIllnesses()->create([
+            'fhir_id' => 'condition-' . fake()->uuid(),
+            'description' => '',
+            'location' => $this->location,
+            'severity' => $this->severity,
+            'duration' => $this->duration,
+            'timing'   => $this->timing,
+            'patient_id' => $this->encounter->patient_id,
+            'practitioner_id' => $this->encounter->practitioner_id,
+        ]);
+    }
+
     public function save($type,$value){
 
         if($type=='location') $this->location = $value;
@@ -62,16 +75,7 @@ class PresentIllness extends Component
         if($type=='timing') $this->timing = $value;
 
         if(!$this->encounter->presentIllnesses){
-            $this->present_illness = $this->encounter->presentIllnesses()->create([
-                'fhir_id' => 'condition-' . fake()->uuid(),
-                'description' => '',
-                'location' => $this->location,
-                'severity' => $this->severity,
-                'duration' => $this->duration,
-                'timing'   => $this->timing,
-                'patient_id' => $this->encounter->patient_id,
-                'practitioner_id' => $this->encounter->practitioner_id,
-            ]);
+          $this->create();
         }else{
             $this->encounter->presentIllnesses->location = $this->location;
             $this->encounter->presentIllnesses->severity = $this->severity;
@@ -99,11 +103,15 @@ class PresentIllness extends Component
         // Simular guardado en base de datos
         // Aquí puedes guardar en tu modelo específico
         try {
-            $this->present_illness->description = $this->description;
-            $this->present_illness->save();
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->savedDescription = true;
+            if(!$this->encounter->presentIllnesses){
+                $this->create();
+            }else {
+                $this->present_illness->description = $this->description;
+                $this->present_illness->save();
+                // Simular tiempo de guardado
+                sleep(1);
+                $this->savedDescription = true;
+            }
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
@@ -115,11 +123,15 @@ class PresentIllness extends Component
         // Simular guardado en base de datos
         // Aquí puedes guardar en tu modelo específico
         try {
-            $this->present_illness->aggravating_factors = $this->aggravating_factors;
-            $this->present_illness->save();
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->savedAggravatingFactors = true;
+            if(!$this->encounter->presentIllnesses){
+                $this->create();
+            }else{
+                $this->present_illness->aggravating_factors = $this->aggravating_factors;
+                $this->present_illness->save();
+                // Simular tiempo de guardado
+                sleep(1);
+                $this->savedAggravatingFactors = true;
+            }
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
@@ -131,11 +143,15 @@ class PresentIllness extends Component
         // Simular guardado en base de datos
         // Aquí puedes guardar en tu modelo específico
         try {
-            $this->present_illness->alleviating_factors = $this->alleviating_factors;
-            $this->present_illness->save();
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->savedAlleviatingFactors = true;
+            if(!$this->encounter->presentIllnesses){
+                $this->create();
+            }else {
+                $this->present_illness->alleviating_factors = $this->alleviating_factors;
+                $this->present_illness->save();
+                // Simular tiempo de guardado
+                sleep(1);
+                $this->savedAlleviatingFactors = true;
+            }
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
@@ -147,11 +163,15 @@ class PresentIllness extends Component
         // Simular guardado en base de datos
         // Aquí puedes guardar en tu modelo específico
         try {
-            $this->present_illness->associated_symptoms = $this->associated_symptoms;
-            $this->present_illness->save();
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->savedAssociatedSymptoms = true;
+            if(!$this->encounter->presentIllnesses){
+                $this->create();
+            }else {
+                $this->present_illness->associated_symptoms = $this->associated_symptoms;
+                $this->present_illness->save();
+                // Simular tiempo de guardado
+                sleep(1);
+                $this->savedAssociatedSymptoms = true;
+            }
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());

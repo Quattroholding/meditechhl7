@@ -49,7 +49,6 @@
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
         }
 
-
         .timeline-item {
             position: relative;
             margin-bottom: 25px;
@@ -63,7 +62,7 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -60px;
+            left: -52px;
             top: 50%;
             transform: translateY(-50%);
             width: 18px;
@@ -105,6 +104,17 @@
             animation: pulse 1.5s infinite;
         }
 
+        .timeline-item.checked-in {
+            background: linear-gradient(135deg, #2E37A4, #0d6efd);
+            border-left-color: #1621a1;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            transform: scale(1.02);
+        }
+        .timeline-item.checked-in::before {
+            background: #0d6efd;
+            animation: pulse 1.5s infinite;
+        }
+
         .timeline-item.next {
             background: linear-gradient(135deg, #cce5ff, #b3d9ff);
             border-left-color: #007bff;
@@ -113,6 +123,8 @@
             border: 2px solid #007bff;
         }
         .timeline-item.next::before {
+            position: absolute;
+            left:-15px;
             background: #007bff;
             width: 24px;
             height: 24px;
@@ -532,14 +544,6 @@
             display: block;
         }
     </style>
-    <!-- Debug Info (opcional, para testing) -->
-    <div class="debug-info" x-show="showDebug" x-transition>
-        <div>Tiempo actual: <span x-text="currentTime"></span></div>
-        <div>Posición: <span x-text="timePosition + '%'"></span></div>
-        <div>Timeline height: <span x-text="timelineHeight + 'px'"></span></div>
-        <div>Top calculado: <span x-text="Math.round((timePosition / 100) * timelineHeight) + 'px'"></span></div>
-        <div>Auto-update: <span x-text="autoUpdateEnabled ? 'ON' : 'OFF'"></span></div>
-    </div>
 
     <!-- Header del Timeline -->
     <div class="timeline-header">
@@ -575,19 +579,11 @@
                         <span>⏸️ PAUSADO</span>
                     @endif
                 </button>
-
                 <button
                     wire:click="refreshTimePosition"
                     class="auto-update-toggle"
                     title="Actualizar ahora">
                     🔄 Actualizar
-                </button>
-
-                <button
-                    @click="showDebug = !showDebug"
-                    class="auto-update-toggle"
-                    title="Mostrar debug info">
-                    🐛 Debug
                 </button>
             </div>
         @endif
@@ -640,7 +636,7 @@
                 <div
                     class="current-time-indicator"
                     x-bind:class="{ 'updating': isUpdating }"
-                    x-bind:style="`top: ${Math.round((timePosition / 100) * timelineHeight)}px`"
+                    x-bind:style="`top: ${calculateIndicatorPosition()}px`"
                     x-text="currentTime.substring(0, 5)">
                 </div>
             @endif
@@ -657,7 +653,8 @@
                 <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-pulse' : '' }}" wire:click="editAppointment({{ $appointment['id'] }})">
 
                     <div class="timeline-time">
-                        {{ $appointment['formatted_time']  }}
+
+                        {{ $appointment['formatted_start_time']  }}
                     </div>
 
                     <div class="appointment-header">
@@ -677,6 +674,7 @@
                             @if($status === 'next') 🔔 PRÓXIMA
                             @elseif($status === 'pending') 🕐 PENDIENTE DE CONFIRMACION
                             @elseif($status === 'current') ⏱️ EN PROGRESO
+                            @elseif($status === 'checked-in') 🏥 CONSULTA INICIADA
                             @elseif($status === 'fulfilled') ✅ COMPLETADA
                             @elseif($status === 'overdue') ⚠️ RETRASADA
                             @elseif($status === 'upcoming') 🕐 PRÓXIMA (15min)
@@ -798,7 +796,7 @@
         function timelineManager() {
             return {
                 currentTime: '{{ now()->format("H:i:s") }}',
-                timePosition: {{ $calendarData['currentTimePosition'] ?? 50 }},
+                timePosition: {{ $calendarData['currentTimePosition'] ?? 0 }},
                 timelineHeight: 600,
                 isUpdating: false,
                 updateInterval: null,
@@ -810,11 +808,11 @@
                 init() {
                     console.log('Timeline Manager initialized');
 
-                    // Calcular altura del timeline
-                    this.calculateTimelineHeight();
-
-                    // Inicializar tiempo
-                    this.updateTime();
+                    // Esperar a que el DOM esté listo
+                    this.$nextTick(() => {
+                        this.calculateTimelineHeight();
+                        this.updateTime();
+                    });
 
                     // Escuchar eventos de Livewire
                     this.$wire.on('timePositionUpdated', (data) => {
@@ -842,12 +840,39 @@
                 },
 
                 calculateTimelineHeight() {
-                    this.$nextTick(() => {
-                        if (this.$refs.timelineContainer) {
-                            this.timelineHeight = this.$refs.timelineContainer.offsetHeight;
-                            console.log('Timeline height calculated:', this.timelineHeight);
+                    const timelineMain = document.querySelector('.timeline-main');
+                    if (timelineMain) {
+                        const items = timelineMain.querySelectorAll('.timeline-item');
+                        if (items.length > 0) {
+                            const firstItem = items[0];
+                            const lastItem = items[items.length - 1];
+                            this.timelineHeight = (lastItem.offsetTop + lastItem.offsetHeight) - firstItem.offsetTop;
                         }
-                    });
+                    }
+                },
+
+                calculateIndicatorPosition() {
+                    const timelineItems = document.querySelectorAll('.timeline-item');
+
+                    if (!timelineItems.length) {
+                        return 0;
+                    }
+
+                    // Obtener posición del primer y último elemento
+                    const firstItem = timelineItems[0];
+                    const lastItem = timelineItems[timelineItems.length - 1];
+
+                    const startY = firstItem.offsetTop;
+                    const endY = lastItem.offsetTop + lastItem.offsetHeight;
+                    const totalHeight = endY - startY;
+
+                    // Calcular posición basada en el porcentaje
+                    const indicatorY = startY + (totalHeight * (this.timePosition / 100));
+
+                    // Ajustar para centrar el indicador en la cita actual
+                    const adjustedY = indicatorY - 22; // 22px es la mitad del tamaño del indicador
+
+                    return Math.max(0, Math.round(adjustedY));
                 },
 
                 updateTime() {
@@ -857,33 +882,6 @@
                         minute: '2-digit',
                         second: '2-digit'
                     });
-
-                    // Calcular posición manualmente también (como backup)
-                    this.calculateCurrentPosition();
-                },
-
-                calculateCurrentPosition() {
-                    const now = new Date();
-                    const startHour = {{ $this->startHour }};
-                    const endHour = {{ $this->endHour }};
-
-                    const dayStart = new Date();
-                    dayStart.setHours(startHour, 0, 0, 0);
-
-                    const dayEnd = new Date();
-                    dayEnd.setHours(endHour, 0, 0, 0);
-
-                    if (now >= dayStart && now <= dayEnd) {
-                        const totalMinutes = (dayEnd - dayStart) / (1000 * 60);
-                        const currentMinutes = (now - dayStart) / (1000 * 60);
-                        const newPosition = (currentMinutes / totalMinutes) * 100;
-
-                        // Solo actualizar si hay diferencia significativa
-                        if (Math.abs(newPosition - this.timePosition) > 0.1) {
-                            this.timePosition = newPosition;
-                            console.log('Position updated locally:', this.timePosition);
-                        }
-                    }
                 },
 
                 startAutoUpdate() {
@@ -891,12 +889,12 @@
                         clearInterval(this.updateInterval);
                     }
 
-                    // Actualizar cada segundo para el reloj y cada minuto para la posición
+                    // Actualizar cada segundo
                     this.updateInterval = setInterval(() => {
                         this.updateTime();
 
-                        // Actualizar posición en el servidor cada minuto
-                        if (new Date().getSeconds() === 0) {
+                        // Actualizar posición cada 30 segundos
+                        if (new Date().getSeconds() % 30 === 0) {
                             console.log('Triggering server time position update');
                             this.$wire.call('refreshTimePosition');
                         }
@@ -952,7 +950,6 @@
                     }, 3000);
                 },
 
-                // Cleanup al destruir el componente
                 destroy() {
                     if (this.updateInterval) {
                         clearInterval(this.updateInterval);

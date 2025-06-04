@@ -4,31 +4,37 @@ namespace App\Livewire;
 
 use App\Models\Appointment;
 use Livewire\Component;
+use Livewire\WithPagination;
+
 //use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardAppointments extends Component
 {
-    
-    public $appointments;
+
+    use WithPagination;
 
     public function mount()
     {
         //$user = Auth::user();
         //dd(auth()->user());
         //dd(auth()->user()->hasRole('admin'));
-        if(auth()->user()->hasRole('admin')){
-        $this->appointments = Appointment::orderBy('created_at')->get();}
-        elseif(auth()->user()->hasRole('paciente')){
-            $this->appointments = Appointment::where('patient_id', auth()->user()->id)->orderBy('created_at')->get();
-        }elseif(auth()->user()->hasRole('doctor')){
-            $this->appointments = Appointment::where('practitioner_id', auth()->user()->id)->orderBy('created_at')->get();
-        }else{
-            $this->appointments = collect();
-        }
+
+
     }
 
     public function render()
     {
-        return view('livewire.admin-dashboard-appointments');
+
+        if(auth()->user()->hasRole('admin')){
+            $data = Appointment::whereRaw("date_format(start,'%Y-%m-%d')>='".now()->format('Y-m-d')."'")->orderBy('start')->paginate(5);
+        }elseif(auth()->user()->hasRole('paciente')){
+            $data = Appointment::whereRaw("date_format(start,'%Y-%m-%d')>='".now()->format('Y-m-d')."'")->where('patient_id', auth()->user()->id)->orderBy('start')->paginate(5);
+        }elseif(auth()->user()->hasRole('doctor')){
+            $data = Appointment::whereRaw("date_format(start,'%Y-%m-%d')>='".now()->format('Y-m-d')."'")->where('practitioner_id', auth()->user()->id)->orderBy('start')->paginate(5);
+        }else{
+            $data = collect();
+        }
+
+        return view('livewire.admin-dashboard-appointments',['data'=>$data]);
     }
 }

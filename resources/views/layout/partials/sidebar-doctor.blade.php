@@ -42,6 +42,12 @@
                         <li><a class="{{ Request::is('client/room/create') ? 'active' : '' }}"   href="{{ route('client.room.create') }}">{{ __('generic.create') }} {{ __('client.room') }}</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
+                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;
+                        <span>{{ __('patient.medical_directory') }}</span>
+                    </a>
+                </li>
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('login') }}">

@@ -78,7 +78,9 @@
                     {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENST SEGÚN EL ROL DEL USUARIO {{--}}
                     @livewire('admin-dashboard-appointments')
                 </div>
+                {{--}}
                 @livewire('admin-dashboard-patinets')
+                {{--}}
             </div>
             @component('components.notification-box')
             @endcomponent
