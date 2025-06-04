@@ -15,6 +15,7 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
-        "intl-tel-input": "^25.3.1"
+        "intl-tel-input": "^25.3.1",
+        "jquery": "^3.7.1"
     }
 }
