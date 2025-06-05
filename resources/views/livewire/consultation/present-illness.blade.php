@@ -12,7 +12,12 @@
                             $pic = str_replace('/','',$pic);
                              $pic = str_replace('-','',$pic);
                         @endphp
-                        <div wire:click="save('{{$key}}','{{$i->value}}')" class="sel-list-item @if(in_array($this->$key,[$i->value,$i->value_esp])) location-active @endif">
+                        <div @if($key=='location')
+                                wire:click="save('{{$key}}','{{$i->value}}',true)"
+                            @else
+                                wire:click="save('{{$key}}','{{$i->value}}')"
+                            @endif
+                            class="sel-list-item @if(in_array($this->$key,[$i->value,$i->value_esp])) location-active @endif">
                             <div>
                                 <img src="/items/{{$pic}}.png" style="width:60px">
                             </div>

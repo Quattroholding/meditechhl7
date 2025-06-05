@@ -1,7 +1,7 @@
 <div class="header">
     <div class="header-left">
         <a href="{{ url('/') }}" class="logo">
-            <img src="{{ URL::asset('/assets/img/logo.png') }}" width="35" height="35" alt=""> <span>Pre  Clinic</span>
+            Meditech
         </a>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><img src="{{ URL::asset('/assets/img/icons/bar-icon.svg') }}"

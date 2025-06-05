@@ -17,7 +17,7 @@
         </svg>
     </button>
 
-    <div id="section_marker_{{ $attributes->whereStartsWith('data-id')->first() }}"
+    <div id="section_marker_{{ $attributes->whereStartsWith('data-id')->first() }}" style="background: #fff;"
         x-ref="accordion-{{ $attributes->whereStartsWith('data-id')->first() }}"
         data-accordion-content="accordion-{{ $attributes->whereStartsWith('data-id')->first() }}"
         class="{{ $isOpen ? '' : 'hidden' }} px-4 py-3 bg-white-50"
