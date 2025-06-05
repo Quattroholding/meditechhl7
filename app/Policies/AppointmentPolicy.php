@@ -21,7 +21,7 @@ class AppointmentPolicy
 
     public function booked(User $user, Appointment $appointment): bool
     {
-        return $appointment->status=='pending';
+        return $appointment->status=='pending' || $appointment->status=='proposed';
     }
 
     public function arrived(User $user, Appointment $appointment): bool

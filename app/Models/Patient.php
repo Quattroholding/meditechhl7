@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Notifications\Notifiable;
 
 class Patient extends BaseModel
 {
-    use HasFactory;
+    use HasFactory,Notifiable;
+
     protected $fillable = [
         'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name',
         'family_name', 'gender', 'birth_date', 'deceased', 'deceased_date',
@@ -33,6 +35,16 @@ class Patient extends BaseModel
     protected static function booted(): void
     {
         static::addGlobalScope(new PatientScope());
+    }
+
+    public function routeNotificationForMail($notification = null)
+    {
+        // Si estamos en testing, usar correo específico
+        if (config('app.env') === 'local' || config('mail.testing_mode', false)) {
+            return config('mail.testing_patient_email', 'patient.test@example.com');
+        }
+
+        return $this->email;
     }
 
     public function getCompleteHistory(): array

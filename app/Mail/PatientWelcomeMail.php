@@ -24,7 +24,7 @@ class PatientWelcomeMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(Patient $patient,Client $client, array $registrationData = [])
+    public function __construct(Patient $patient,Client $client, array $registrationData = [],$register_by='doctor')
     {
         $this->patient = $patient;
         $this->client = $client;

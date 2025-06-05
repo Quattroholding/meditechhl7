@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             background-color: #f8f9fa;
         }
@@ -21,7 +21,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2E37A4;
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -40,7 +40,7 @@
             padding: 40px 30px;
         }
         .welcome-message {
-            background: linear-gradient(135deg, #f8f9ff 0%, #e2e8f0 100%);
+            background:#f8f9ff;
             padding: 25px;
             border-radius: 12px;
             margin-bottom: 30px;
@@ -61,7 +61,7 @@
         .info-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
         .info-label {
             font-weight: 600;
@@ -69,7 +69,7 @@
             min-width: 80px;
         }
         .highlight-box {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            background: #d4edda;
             border: 1px solid #b8dabc;
             border-radius: 10px;
             padding: 20px;
@@ -142,7 +142,7 @@
         }
         .btn {
             display: inline-block;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background:#2E37A4;
             color: white;
             padding: 12px 25px;
             text-decoration: none;
@@ -193,46 +193,46 @@
             </h3>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">{{__('patient.name')}}:</span>
+                    <span class="info-label">{{__('patient.full_name')}}:</span>
                     <span>{{ $patient->name }}</span>
-                </div>
+                </div><br/>
                 <div class="info-item">
                     <span class="info-label">ID {{__('patient.title')}}:</span>
-                    <span><strong>{{ $patient->patient_id ?? 'Se asignará próximamente' }}</strong></span>
-                </div>
+                    <span><strong>{{ $patient->id ?? 'Se asignará próximamente' }}</strong></span>
+                </div><br/>
                 @if($patient->identifier)
                     <div class="info-item">
                         <span class="info-label">{{__('patient.full_id_number')}}:</span>
                         <span>{{ $patient->identifier_type }} : {{ $patient->identifier }}</span>
-                    </div>
+                    </div><br/>
                 @endif
                 @if($patient->email)
                     <div class="info-item">
                         <span class="info-label">{{__('patient.email')}}:</span>
                         <span>{{ $patient->email }}</span>
-                    </div>
+                    </div><br/>
                 @endif
                 @if($patient->phone)
                     <div class="info-item">
                         <span class="info-label">{{__('patient.phone')}}:</span>
                         <span>{{ $patient->phone }}</span>
-                    </div>
+                    </div><br/>
                 @endif
                 @if($patient->birth_date)
                     <div class="info-item">
                         <span class="info-label">{{__('patient.birthdate')}}:</span>
                         <span>{{ \Carbon\Carbon::parse($patient->birth_date)->format('d/m/Y') }}</span>
-                    </div>
+                    </div><br/>
                 @endif
                 @if($patient->address)
                     <div class="info-item">
                         <span class="info-label">{{__('patient.physical_address')}}:</span>
                         <span>{{ $patient->address }}</span>
-                    </div>
+                    </div><br/>
                 @endif
                 <div class="info-item">
                     <span class="info-label">Registrado:</span>
-                    <span>{{ \Carbon\Carbon::parse($patient->created_at)->format('d/m/Y H:i') }}</span>
+                    <span>{{ \Carbon\Carbon::parse($patient->created_at)->format('d/m/Y') }}</span>
                 </div>
             </div>
         </div>
@@ -249,8 +249,8 @@
             </p>
             <p style="margin: 0; color: #155724;">
                Sus datos de acceso son :<br/>
-                usuario :{{$registrationData['username']}} <br/>
-                contraseña:{{$registrationData['password']}}
+                <p style="font-size: 14px">USUARIO :<b>{{$registrationData['username']}}</b></p>
+                <p style="font-size: 14px">CONTRASEÑA:<b>{{$registrationData['password']}}</b></p>
             </p>
         </div>
 
@@ -305,7 +305,7 @@
                 </a>
             @endif
             @if($clinicInfo['website'])
-                <a href="{{ $clinicInfo['website'] }}?username={{$registrationData['username']}}" class="btn" style="margin-left: 10px;">
+                <a href="{{ $clinicInfo['website'] }}/login?username={{$registrationData['username']}}" class="btn" style="margin-left: 10px;">
                     🌐 Visitar Sitio Web
                 </a>
             @endif

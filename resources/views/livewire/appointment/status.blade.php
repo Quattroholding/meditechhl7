@@ -1,5 +1,5 @@
 <div>
-    @if(in_array($appointment->status,['booked','arrived','fulfilled','proposed','pending','checked-in']))
+    @if(in_array($appointment->status,['booked','arrived','fulfilled','pending','checked-in']))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop1"
                     type="button" class="badge  dropdown-toggle"

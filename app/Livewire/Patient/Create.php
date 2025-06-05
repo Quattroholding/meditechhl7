@@ -58,7 +58,7 @@ class Create extends Component
 
     public function render()
     {
-        if(auth()->user()->clients()->first()) $this->client_id = auth()->user()->clients()->first()->id;
+        $this->client_id = auth()->user()->getCurrentClient()->id;
         return view('livewire.patient.create');
     }
 
@@ -144,18 +144,18 @@ class Create extends Component
                 'patient_id'=>$patient->id,
             ]);
             $client = Client::find($this->client_id);
-            session()->flash('message', 'Paciente registrado exitosamente.');
+            session()->flash('message.success', 'Paciente registrado exitosamente.');
 
             $registrationData=[
-                'username'=>$this->email,
+                'username'=>$model->email,
                 'password'=>$this->password,
             ];
 
             //Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
-            Mail::to('rgasperi@smarcarebilling.com')->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient,$client,$registrationData));
 
         }else{
-            session()->flash('error', 'Hubo un error y no se pudo actualizar el paciente.');
+            session()->flash('message.error', 'Hubo un error y no se pudo actualizar el paciente.');
         }
 
     }

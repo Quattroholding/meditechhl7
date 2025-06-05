@@ -27,11 +27,7 @@
                                     </a>
                                 </div>
                                 <!-- Form -->
-                                @if (session('message'))
-                                    <div style="color: blue;">
-                                        {{ session('message') }}
-                                    </div>
-                                @endif
+                                @include('partials.message')
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form">
                                     @csrf
                                     <div class="form-group">
