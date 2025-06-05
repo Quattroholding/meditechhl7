@@ -79,7 +79,7 @@ class PatientController extends Controller
             'last_name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            //'full_phone' => 'required',
+            'full_phone' => 'required',
             'password' => "required",
             'terms_and_privacy' => "required"
         ]);
@@ -98,7 +98,13 @@ class PatientController extends Controller
         $model->last_name = $request->last_name;
         $model->email = $request->email;
         $model->password = $request->password;
-        $model->save();
+
+        if($model->save()){
+            $request->session()->flash('message.success','Se ha creado el usuario con éxito.');
+        }else{
+            $request->session()->flash('message.error','Hubo un error y no se puso completar con la creación de este usuario');
+             return redirect(route('patient.register'));
+        }
 
         // Asignar rol de paciente
         $model->assignRole('paciente');
@@ -129,16 +135,17 @@ class PatientController extends Controller
                 'email' => $model->email,
                 'password' => $request->password,
             ]);
-             if (Auth::attempt($credentials)) {
+            if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
-                $route=route('patient.dashboard');
+                $route=route('patient.profile', $patient->id);
                 return redirect()->intended($route);
             }
-        }
-
-        session()->flash('message', 'Ha habido un error con el registro del paciente');
-
-        return back();
+            }else{
+                $user_created = User::find($model->id);
+                $user_created->delete();
+                session()->flash('message', 'Ha habido un error con el registro del paciente');
+                return redirect(route('patient.register'));
+            }
     }
 
     public function profile(Request $request,$id){

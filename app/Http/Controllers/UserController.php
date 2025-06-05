@@ -39,11 +39,9 @@ class UserController extends Controller
     }
 
     public function store(Request $request){
-        dd($request->all());
+        //dd($request->all());
        //dd($request->all(), $request->clients[0]);
-        //$medical_speciality_name =  MedicalSpeciality::whereId($request->medical_speciality)->pluck('name')->first();
-        //dd($request->medical_speciality,$medical_speciality_name);
-        $validated = $request->validate([
+        /*$validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
             'clients' => 'required',
@@ -52,8 +50,89 @@ class UserController extends Controller
             'password_confirmation' => 'required',
             'avatar' => 'required',
             'rol' => 'required'
-        ]);
+        ]);*/
+          $rol = $request->rol;
+        //dd($rol);
+    // Reglas de validación base
+    $rules = [
+        'rol' => 'required',
+    ];
 
+    
+    switch ($rol) {
+        /*------VALIDACIÓN PARA ADMIN------*/
+        case '1': 
+        /*------VALIDACIÓN PARA ADMIN-CLIENT------*/
+        case '5':
+            $rules += [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'clients' => 'required|array|min:1',
+            ];
+            break;
+        /*------VALIDACIÓN PARA DOCTOR------*/
+        case '2':
+            $rules += [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'id_type' => 'required|string',
+                'id_number' => 'required|string',
+                'medical_speciality' => 'required|array|min:1',
+                'gender' => 'required|string',
+                'birth_date' => 'required|date',
+                'physical_address' => 'required|string',
+                'phone' => 'required|string',
+                'clients' => 'required|array|min:1',
+            ];
+            break;
+            /*------VALIDACIÓN PARA ASISTENTE------*/
+        case '3':
+            $rules += [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'id_type' => 'required|string',
+                'id_number' => 'required|string',
+                'gender' => 'required|string',
+                'birth_date' => 'required|date',
+                'physical_address' => 'required|string',
+                'phone' => 'required|string',
+                'clients' => 'required|array|min:1',
+            ];
+            break;
+
+        /*------VALIDACIÓN PARA PACIENTE------*/
+        case '4': 
+            $rules += [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'id_type' => 'required|string',
+                'id_number' => 'required|string',
+                'marital_status' => 'required|string',
+                'gender' => 'required|string',
+                'birth_date' => 'required|date',
+                'physical_address' => 'required|string',
+                'phone' => 'required|string',
+            ];
+            break;
+
+        default:
+            break;
+    }
+    $request->validate($rules);
+    //$validatedData = $request->validate($rules);
+    //dd($validatedData);
         //SE CREA EL USUARIO
         $model = new User();
         //$model->profile_picture = 'clients/avatar_'.time();
@@ -61,28 +140,80 @@ class UserController extends Controller
         $model->first_name=$request->first_name;
         $model->email = $request->email;
         $model->password = $request->password;
-        $model->default_client_id =  $request->clients[0];
+        $model->default_client_id =  $request->clients[0] ?? 1;
 
         if($model->save()){
 
         //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
-        /*$userclient = new UserClient();
-        $userclient->user_id = $model->id;
-        $userclient->client_id = $request->clients[0];
-        $userclient->save();*/
-        $clients = $request->clients;
-        foreach($clients as $client){
-            $userclient = new UserClient();
-            $userclient->user_id = $model->id;
-            $userclient->client_id = $client;
-            $userclient->save();
-        }
+        if($request->has('clients')){
+            $clients = $request->clients;
+            foreach($clients as $client){
+                $userclient = new UserClient();
+                $userclient->user_id = $model->id;
+                $userclient->client_id = $client;
+                $userclient->save();
+            }}
+        
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
+    //FORMATEAR FECHA PARA ALMACENARLA EN LA BASE DE DATOS
+            $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
+            $fecha->setTime(0, 0, 0);
+            $birthdate = $fecha->format('Y-m-d H:i:s');
         //SE ASIGNA EL ROL SEGÚN EL ID
             $rol = Rol::find($request->rol);
             $model->assignRole($rol->name);
-        //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
+        switch($request->rol){
+            case '2':
+            //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
             $practitioner = new Practitioner();
+            //ASIGNACIÓN DE DATOS AL MODELO
+            $practitioner->fhir_id = 'practitioner-' . Str::uuid();
+            $practitioner->user_id = $model->id;
+            $practitioner->identifier = $request->id_number;
+            $practitioner->name = $request->first_name.' '.$request->last_name;
+            $practitioner->given_name = $request->first_name;
+            $practitioner->family_name = $request->last_name;
+            $practitioner->gender = $request->gender;
+            $practitioner->birth_date = $birthdate;
+            $practitioner->address = $request->address;
+            $practitioner->email = $request->email;
+            $practitioner->phone = $request->phone;
+            $practitioner->active = 1;
+            $practitioner->save();
+             //SE CREA EL REGISTRO EN PRACTITIONER_QUALIFICATIONS
+           $qualifications = new PractitionerQualification();
+           $qualifications->practitioner_id = $practitioner->id;
+           $qualifications->code = $request->medical_speciality;
+           $qualifications->medical_speciality_id = $request->medical_speciality;
+         //SE BUSCA EL NOMBRE DE MEDICAL SPECIALITY
+           $medical_speciality_name =  MedicalSpeciality::find($request->medical_speciality)->first();
+           $qualifications->display = $medical_speciality_name->name;
+           $qualifications->save();
+            $request->session()->flash('message.success','Personal Médico registrado con éxito.');
+                break;
+            case '3':
+                break;
+            case '4':
+        $patient = new Patient();
+        $patient->given_name = $request->first_name;
+        $patient->family_name = $request->last_name;
+        $patient->email = $request->email;
+        $patient->phone = $request->full_phone;
+        $patient->name = $request->first_name .' '. $request->last_name;
+        $patient->user_id = $model->id;
+        $patient->gender = $request->gender;
+        $patient->fhir_id = 'patient-' . Str::uuid();
+        $patient->identifier_type = $request->id_type;
+        $patient->identifier = $request->id_number;  
+        $patient->birth_date = $birthdate;  
+        $patient->address = $request->physical_address;
+        $patient->marital_status = $request->marital_status;
+        $patient->save();
+         $request->session()->flash('message.success','Ppaciente registrado con éxito.');
+                break;
+        }
+        //SE CREA EL DOCTOR EN LA TABLA DE PRACTITIONER
+       /*     $practitioner = new Practitioner();
             //LLamada a Faker para crear el número de identifier
             $faker = Faker::create();
 
@@ -127,8 +258,10 @@ class UserController extends Controller
             $request->session()->flash('message.success','Personal Médico registrado con éxito.');
         }else{
             $request->session()->flash('message.success','Hubo un error y no se pudo crear.');
+        }*/
+        }else{
+            $request->session()->flash('message.success','Hubo un error y no se pudo crear.');
         }
-
         return redirect(route('client.index'));
 
     }
