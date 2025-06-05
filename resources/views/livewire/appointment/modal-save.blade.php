@@ -99,7 +99,7 @@
                             </button>
                         @endif
                         <button type="button" wire:click="closeModal" class="btn btn-secondary">Cancelar</button>
-                        @if($appointment)
+                        @if(auth()->user()->can('delete',$appointment))
                             <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" onclick="return confirm('¿Está seguro de eliminar esta cita?')">Eliminar</button>
                         @endif
                     </div>

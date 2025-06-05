@@ -86,6 +86,15 @@ centered::before, .centered::after {
 .appointment-cancelled { background: linear-gradient(45deg, #dc3545, #e83e8c); color: white; }
 .appointment-noshow { background: linear-gradient(45deg, #6f42c1, #e83e8c); color: white; }
 
+.appointment-status-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
+.appointment-status-pending { background:linear-gradient(45deg, #FFA500, #FFA500); color: white; }
+.appointment-status-booked { background: linear-gradient(45deg, #28a745, #28a745); color: white; }
+.appointment-status-arrived { background: linear-gradient(45deg, #007bff, #007bff); color: white; }
+.appointment-status-checked-in { background:linear-gradient(45deg, #ffc107, #ffc107); color: white; }
+.appointment-status-fulfilled { background: linear-gradient(45deg, #6c757d, #6c757d); color: white; }
+.appointment-status-cancelled { background: linear-gradient(45deg, #dc3545, #dc3545); color: white; }
+.appointment-status-noshow { background: linear-gradient(45deg, #6f42c1, #6f42c1); color: white; }
+
 
 
 /* Modal */

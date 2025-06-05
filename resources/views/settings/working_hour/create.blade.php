@@ -7,7 +7,7 @@
                     {{ __('Configuraciones') }}
                 @endslot
                 @slot('li_1')
-                   {{ __('Plantilla Consulta') }}
+                   {{ __('Horario laboral') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->

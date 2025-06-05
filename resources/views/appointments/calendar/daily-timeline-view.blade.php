@@ -34,13 +34,14 @@
 
         .timeline-main {
             position: relative;
-            padding-left: 100px;
-            width: 97%;
+            padding-left: 80px;
+            min-height: 600px; /* Asegurar altura mínima para el cálculo */
+            width: 98%;
         }
 
         .timeline-axis {
             position: absolute;
-            left: 50px;
+            left: 40px;
             top: 0;
             bottom: 0;
             width: 4px;
@@ -349,36 +350,6 @@
             height: 12px;
             border-radius: 50%;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .timeline-main {
-                padding-left: 60px;
-            }
-
-            .timeline-time {
-                left: -110px;
-                font-size: 12px;
-            }
-
-            .appointment-details {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .appointment-contact {
-                text-align: left;
-            }
-
-            .timeline-header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-        }
-    </style>
-
-    <style>
         .daily-timeline-container {
             max-height: 700px;
             overflow-y: auto;
@@ -484,22 +455,7 @@
             100% { transform: scale(1); }
         }
 
-        .timeline-main {
-            position: relative;
-            padding-left: 80px;
-            min-height: 600px; /* Asegurar altura mínima para el cálculo */
-        }
 
-        .timeline-axis {
-            position: absolute;
-            left: 40px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(to bottom, #667eea, #764ba2);
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-        }
 
         /* Resto de estilos del timeline igual que antes... */
 
@@ -548,6 +504,43 @@
 
         .debug-info.show {
             display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline-main {
+                padding-left: 0px;
+            }
+
+            .timeline-time {
+                left: -110px;
+                font-size: 12px;
+                display: none;
+            }
+
+            .timeline-legend{
+                position: relative;
+            }
+
+            .appointment-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .appointment-contact {
+                text-align: left;
+            }
+
+            .timeline-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .timeline-axis ,  .current-time-indicator {
+                display: none;
+            }
+
         }
     </style>
 

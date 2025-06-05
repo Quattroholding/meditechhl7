@@ -152,6 +152,7 @@ class Calendar extends Component
     #[On('loadAppointments')]
     public function loadAppointments()
     {
+       $notStatuses =
         $query = Appointment::with('practitioner:id,name')
             ->with('patient:id,name,phone')
             ->with('medicalSpeciality:id,name')
@@ -191,7 +192,9 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%" . $this->searchTerm . "%'");
             });
         }
-        $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
+        if($this->currentView=='daily')
+            $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
+
         $this->appointments = $query->orderBy('start')->get()->toArray();
     }
     #[On('loadStats')]
@@ -214,10 +217,10 @@ class Calendar extends Component
     // MÉTODOS DEL MODAL Y FORMULARIO
     // ===========================================
 
-    public function openModal($date = null, $time = null,$appointment_id=null)
+    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
     {
         $this->showModal = true;
-        $this->modalTitle = 'Nueva Cita';
+        $this->modalTitle = $modalTitle;
 
         if ($date) {
             $this->appointment_date = $date;
