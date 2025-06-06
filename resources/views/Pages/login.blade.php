@@ -38,7 +38,7 @@
                                     @csrf
                                     <div class="form-group">
                                         <label>Email <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="email" value=""
+                                        <input class="form-control" type="text" id="email" value="{{request()->get('username')}}"
                                             name="email">
                                         <div class="text-danger pt-2">
                                             @error('0')

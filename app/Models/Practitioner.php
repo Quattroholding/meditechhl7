@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Notifications\Notifiable;
 
 class Practitioner extends BaseModel
 {
 
-    use HasFactory;
+    use HasFactory,Notifiable;
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name',
         'gender', 'birth_date', 'address', 'phone', 'email', 'active'
@@ -21,6 +22,16 @@ class Practitioner extends BaseModel
         'birth_date' => 'date',
         'active' => 'boolean'
     ];
+
+    public function routeNotificationForMail($notification = null)
+    {
+        // Si estamos en testing, usar correo específico
+        if (config('app.env') === 'testing' || config('mail.testing_mode', false)) {
+            return config('mail.testing_practitioner_email', 'doctor.test@example.com');
+        }
+
+        return $this->email;
+    }
 
     // Relaciones
     public function appointments(): HasMany

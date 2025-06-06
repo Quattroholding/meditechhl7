@@ -9,8 +9,8 @@
         @endslot
     @endcomponent
     <!-- /Table Header -->
-
-    <table class="table border-0 custom-table comman-table mb-0">
+    <div class="table-responsive">
+        <table class="table border-0 custom-table comman-table mb-0">
         <thead>
         <tr>
             @foreach ($columns as $column)
@@ -51,9 +51,9 @@
         @endforeach
         </tbody>
     </table>
-
-    <div class="mt-3" class="float-right">
-        {{ $data->links() }}
+        <div class="mt-3" class="float-right">
+            {{ $data->links() }}
+        </div>
     </div>
     <p>&nbsp;</p>
 </div>

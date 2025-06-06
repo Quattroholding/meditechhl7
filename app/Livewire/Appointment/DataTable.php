@@ -28,6 +28,8 @@ class DataTable extends Component
     public $practitioner_id;
     public $limit;
     public $show_create=true;
+    public $showModal=false;
+    public $modalTitle='Confirmar Cita';
 
     public function mount($pagination=10,$sortField='appointments.id',$sortDirection='desc',$routename='',$title='')
     {
@@ -85,5 +87,11 @@ class DataTable extends Component
         }
 
         return view('livewire.appointment.data-table', [ 'data' => $data, ]);
+    }
+
+    public function editAppointment($appointmentId)
+    {
+        $this->modalTitle = 'Actualizar Cita';
+        $this->dispatch('editAppointmentModal',$appointmentId);
     }
 }

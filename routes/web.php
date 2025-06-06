@@ -25,7 +25,11 @@ Route::get('/register', function () {
 })->name('patient.register');
 
 Route::get('/login', function () {
+
+    if(auth()->check()) return redirect(route('appointment.calendar'));
+
     return view('Pages/login');
+
 })->name('login');
 
 Route::get('/forgot-password', function () {

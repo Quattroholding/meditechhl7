@@ -67,7 +67,7 @@ class PresentIllness extends Component
         ]);
     }
 
-    public function save($type,$value){
+    public function save($type,$value,$multiple=false){
 
         if($type=='location') $this->location = $value;
         if($type=='severity') $this->severity = $value;
@@ -77,7 +77,9 @@ class PresentIllness extends Component
         if(!$this->encounter->presentIllnesses){
           $this->create();
         }else{
+
             $this->encounter->presentIllnesses->location = $this->location;
+            $this->encounter->presentIllnesses->extension = array_merge((array)json_decode($this->encounter->presentIllnesses->extension),['location'=>$this->location]);
             $this->encounter->presentIllnesses->severity = $this->severity;
             $this->encounter->presentIllnesses->duration = $this->duration;
             $this->encounter->presentIllnesses->timing = $this->timing;

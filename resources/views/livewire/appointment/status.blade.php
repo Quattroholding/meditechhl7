@@ -1,9 +1,8 @@
 <div>
-    @if(in_array($appointment->status,['booked','arrived','fulfilled','proposed','pending','checked-in']))
+    @if(in_array($appointment->status,['booked','arrived','fulfilled','pending','checked-in']))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop1"
-                    type="button" class="badge  dropdown-toggle"
-                    style="background-color: #{{$color}}"
+                    type="button" class="badge  dropdown-toggle appointment-status-{{$status}}"
                     data-bs-toggle="dropdown" aria-expanded="false">
                 {{ __('appointment.status.'.$status) }}
             </button>
@@ -37,7 +36,7 @@
             @endif
         </div>
     @else
-        <button type="button" class="badge" style="background-color: #{{$color}};color:#fff;">   {{ __('appointment.status.'.$status) }}  </button>
+        <button type="button" class="badge appointment-status-{{$status}}" >   {{ __('appointment.status.'.$status) }}  </button>
     @endif
     <script>
     document.addEventListener('livewire:initialized', () => {

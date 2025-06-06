@@ -23,6 +23,7 @@
                                 <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">{{__('appointment.doctor')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.status')">{{__('appointment.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th>{{__('appointment.type')}}</th>
+                                <th>{{__('appointment.branch')}}</th>
                                 <th>{{__('appointment.consultorio')}}</th>
                                 <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.start')">{{__('appointment.date')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th>{{__('appointment.time')}}</th>
@@ -37,6 +38,7 @@
                                     <td>{!!  $appointment->practitioner->profile_name !!} </td>
                                     <td><livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/> </td>
                                     <td>{{ $appointment->service_type }}</td>
+                                    <td>{{ $appointment->consultingRoom->branch->name }}</a></td>
                                     <td>{{ $appointment->consultingRoom->name }}</a></td>
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</td>
@@ -45,6 +47,12 @@
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
+                                            @if(auth()->user()->can('booked',$appointment))
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item"  wire:click="editAppointment({{$appointment->id}})">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                        {{__('appointment.status.confirm')}}
+                                                    </a>
+                                                    @endif
                                             @if(auth()->user()->can('edit',$appointment))
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item"  href="{{ route('appointment.edit',$appointment->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
@@ -71,4 +79,5 @@
             </div>
         </div>
     </div>
+    <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"/>
 </div>

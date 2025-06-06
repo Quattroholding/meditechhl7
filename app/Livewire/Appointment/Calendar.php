@@ -4,11 +4,13 @@ namespace App\Livewire\Appointment;
 
 use App\Models\Appointment;
 use App\Models\ConsultingRoom;
+use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\UserClient;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Calendar extends Component
@@ -20,26 +22,9 @@ class Calendar extends Component
 
     // Modal y formulario
     public $showModal = false;
-    public $editingAppointment = null;
-    public $modalTitle = 'Nueva Cita';
-
-    // Campos del formulario
-    public $patient_name = '';
-    public $patient_phone = '';
-    public $doctor_id = '';
-    public $patient_id = '';
     public $appointment_date = '';
     public $appointment_time = '';
-    public $duration = 30;
-    public $status = 'scheduled';
-    public $description = '';
-    public $reason = '';
-    public $notes = '';
-    public $consulting_room_id;
-    public $consultorios=[];
-    public $service_type;
-    public $medical_speciality_id='';
-    public $especialidades=[];
+    public $modalTitle='Nueva Cita';
 
     // Filtros
     public $selectedDoctor = '';
@@ -51,27 +36,7 @@ class Calendar extends Component
     public $doctors = [];
     public $stats = [];
 
-    protected $rules = [
-        'patient_id' => 'required|exists:patients,id',
-        'doctor_id' => 'required|exists:practitioners,id',
-        'appointment_date' => 'required|date|after_or_equal:today',
-        'appointment_time' => 'required',
-        'duration' => 'required|integer|min:15|max:240',
-        'status' => 'required|in:booked,confirmed,in-progress,fullfilled,cancelled,noshow',
-        'consulting_room_id' => 'required|exists:consulting_rooms,id',
-        'medical_speciality_id' => 'required|exists:medical_specialties,id',
-        'service_type' => 'required|string',
-        'description' => 'nullable|string',
-        'notes' => 'nullable|string'
-    ];
 
-    protected $messages = [
-       // 'patient_id.required' => 'Debe seleccionar un paciente.',
-        'doctor_id.required' => 'Debe seleccionar un doctor.',
-        'appointment_date.required' => 'La fecha es obligatoria.',
-        'appointment_time.required' => 'La hora es obligatoria.',
-        'appointment_date.after_or_equal' => 'La fecha no puede ser anterior a hoy.'
-    ];
 
     // NUEVAS PROPIEDADES PARA CONFIGURACIÓN DE TIEMPO
     public $timeBlockMinutes = 30; // Bloques de 30 minutos por defecto
@@ -103,6 +68,7 @@ class Calendar extends Component
             $this->patient_id = auth()->user()->patient->id;
             $this->currentView = 'monthly';
         }
+        $this->loadEspecialidades();
         $this->loadDoctors();
         $this->loadAppointments();
         $this->loadStats();
@@ -123,7 +89,9 @@ class Calendar extends Component
             $this->doctor_id = auth()->user()->practitioner->id;
             $practitioner = Practitioner::find($this->doctor_id);
 
-            $clientId =auth()->user()->getCurrentClient();
+            $clientId=null;
+            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
+            if($userClient) $clientId= $userClient->client_id;
 
             $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
                 $q->whereClientId($clientId);
@@ -173,13 +141,18 @@ class Calendar extends Component
 
     public function loadDoctors()
     {
-        $this->doctors = Practitioner::select('id', 'name', 'email')
-            ->get()
-            ->toArray();
+        $this->doctors = Practitioner::get()->pluck('name','id')->toArray();
     }
 
+    public function loadEspecialidades()
+    {
+        $this->especialidades = MedicalSpeciality::pluck('name','id')->toArray();
+    }
+
+    #[On('loadAppointments')]
     public function loadAppointments()
     {
+       $notStatuses =
         $query = Appointment::with('practitioner:id,name')
             ->with('patient:id,name,phone')
             ->with('medicalSpeciality:id,name')
@@ -219,10 +192,12 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%" . $this->searchTerm . "%'");
             });
         }
-        $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
+        if($this->currentView=='daily')
+            $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
+
         $this->appointments = $query->orderBy('start')->get()->toArray();
     }
-
+    #[On('loadStats')]
     public function loadStats()
     {
         $startOfMonth = $this->currentDate->copy()->startOfMonth();
@@ -242,11 +217,10 @@ class Calendar extends Component
     // MÉTODOS DEL MODAL Y FORMULARIO
     // ===========================================
 
-    public function openModal($date = null, $time = null)
+    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
     {
-        $this->resetForm();
         $this->showModal = true;
-        $this->modalTitle = 'Nueva Cita';
+        $this->modalTitle = $modalTitle;
 
         if ($date) {
             $this->appointment_date = $date;
@@ -258,118 +232,10 @@ class Calendar extends Component
 
     public function editAppointment($appointmentId)
     {
-        $appointment = Appointment::find($appointmentId);
-
-        if ($appointment) {
-            $this->editingAppointment = $appointmentId;
-            $this->modalTitle = 'Editar Cita';
-            $this->patient_id = $appointment->patient_id;
-            $this->doctor_id = $appointment->practitioner_id;
-            $this->appointment_date = $appointment->start->format('Y-m-d');
-            $this->appointment_time = $appointment->start->format('H:i');
-            $this->duration = $appointment->minutes_duration;
-            $this->status = $appointment->status;
-            $this->medical_speciality_id = $appointment->medical_speciality_id;
-            $this->consulting_room_id = $appointment->consulting_room_id;
-            $this->service_type = $appointment->service_type;
-            $this->reason = $appointment->description;
-            $this->description = $appointment->description;
-            //$this->notes = $appointment->notes;
-            $practitioner = Practitioner::find($appointment->practitioner_id);
-
-            $clientId=null;
-            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-            if($userClient) $clientId= $userClient->client_id;
-
-            $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
-                $q->whereClientId($clientId);
-            })->pluck('name','id')->toArray();
-
-            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
-
-            $this->showModal = true;
-        }else{
-
-        }
+        $this->modalTitle = 'Actualizar Cita';
+        $this->dispatch('editAppointmentModal',$appointmentId);
     }
 
-    public function closeModal()
-    {
-        $this->showModal = false;
-        $this->resetForm();
-        $this->resetValidation();
-    }
-
-    public function resetForm()
-    {
-        $this->editingAppointment = null;
-        $this->patient_id = '';
-        $this->doctor_id = '';
-        $this->description = '';
-        $this->appointment_date = Carbon::now()->format('Y-m-d');
-        $this->appointment_time = '';
-        $this->duration = 30;
-        $this->status = 'booked';
-        if(auth()->user()->hasRole('paciente')) $this->status = 'pending';
-
-        $this->consulting_room_id = '';
-        $this->medical_speciality_id = '';
-        $this->service_type='';
-    }
-
-    public function saveAppointment()
-    {
-        $this->validate();
-
-        try {
-            // Obtener información del doctor
-            $doctor = Practitioner::find($this->doctor_id);
-
-            $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
-
-            $appointmentData = [
-                'fhir_id'=> 'appointment-' . Str::uuid(),
-                'identifier' => 'APT-' . fake()->unique()->numerify('#######'),
-                'patient_id' => $this->patient_id,
-                'practitioner_id' => $this->doctor_id,
-                'medical_speciality_id' =>$this->medical_speciality_id,
-                'start' =>$start->format('Y-m-d H:i'),
-                'end' => $start->addMinutes($this->duration)->format('Y-m-d H:i'),
-                'minutes_duration' => $this->duration,
-                'consulting_room_id'=>$this->consulting_room_id,
-                'service_type'=>$this->service_type,
-                'status' => $this->status,
-                'description' => $this->description,
-                //'notes' => $this->notes
-            ];
-
-            // Verificar disponibilidad
-            if (!$this->checkAvailability()) {
-                $this->closeModal();
-                session()->flash('error', 'El doctor no está disponible en ese horario.');
-                return;
-            }
-
-            if ($this->editingAppointment) {
-                // Actualizar cita existente
-                $appointment = Appointment::find($this->editingAppointment);
-                $appointment->update($appointmentData);
-                session()->flash('message.success', 'Cita actualizada exitosamente.');
-            } else {
-                // Crear nueva cita
-                Appointment::create($appointmentData);
-                session()->flash('message.success', 'Cita creada exitosamente.');
-            }
-
-            $this->closeModal();
-            $this->loadAppointments();
-            $this->loadStats();
-
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            session()->flash('message.error', 'Error al guardar la cita: ' . $e->getMessage());
-        }
-    }
 
     public function deleteAppointment($appointmentId)
     {
@@ -391,12 +257,17 @@ class Calendar extends Component
 
         try {
             $appointment = Appointment::find($appointmentId);
+            $current_status = $appointment->status;
             if ($appointment) {
 
                 $appointment->update(['status' => $newStatus]);
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
                 $this->loadStats();
+
+                if($current_status=='proposed' && $newStatus=='booked'){
+                   $appointment->notifyPatientAboutConfirmation();
+                }
 
                 if($newStatus=='checked-in'){
                     $this->dispatch('showToastr'.$appointmentId,
@@ -441,27 +312,7 @@ class Calendar extends Component
     // MÉTODOS AUXILIARES
     // ===========================================
 
-    private function checkAvailability()
-    {
-        $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
-        $endTime = $startTime->copy()->addMinutes($this->duration);
 
-        $query = Appointment::where('practitioner_id', $this->doctor_id)
-            ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")
-            ->where('status', '!=', 'cancelled')
-            ->where(function($q) use ($startTime, $endTime) {
-                $q->where(function($q2) use ($startTime, $endTime) {
-                    $q2->where('start', '<', $endTime)
-                        ->where('end', '>', $startTime);
-                });
-            });
-
-        if ($this->editingAppointment) {
-            $query->where('id', '!=', $this->editingAppointment);
-        }
-
-        return $query->count() === 0;
-    }
 
     private function getCurrentPeriod()
     {
@@ -607,25 +458,7 @@ class Calendar extends Component
         ];
     }
 
-    public function changeDoctor(){
 
-        $practitioner= Practitioner::find($this->doctor_id);
-        if($practitioner){
-            $clientId=null;
-            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-            if($userClient) $clientId= $userClient->client_id;
-
-            $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
-                $q->whereClientId($clientId);
-            })->pluck('name','id')->toArray();
-
-            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
-        }else{
-            $this->consultorios=[];
-            $this->especialidades=[];
-        }
-
-    }
 
     // ===========================================
     // EXPORTACIÓN Y SINCRONIZACIÓN

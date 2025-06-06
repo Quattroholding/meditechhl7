@@ -22,6 +22,7 @@
                                         @endforeach
                                     </ul>
                                 @endif
+                                @error('cpt_id') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <!-- PRICE -->
@@ -29,6 +30,7 @@
                             <div class="input-block local-forms">
                                 <x-input-label for="current_price" :value="__('Precio')" />
                                 <x-text-input wire:model="current_price_cpt" class="block mt-1 w-full" type="number" step="any" name="current_price_cpt" :value="old('current_price_cpt')"/>
+                                @error('current_price_cpt') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="flex items-center justify-end mt-4">
@@ -53,6 +55,7 @@
                             <div class="input-block local-forms">
                                 <x-input-label for="description" :value="__('Descripcion')" />
                                 <x-text-input wire:model="description" class="block mt-1 w-full" type="text" name="description" :value="old('description')"/>
+                                @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <!-- BLOOD TYPE -->
@@ -60,6 +63,7 @@
                             <div class="input-block local-forms">
                                 <x-input-label for="type" :value="__('Type')" class="local-top"/>
                                 <x-select-input wire:model="type" name="type" :options="\App\Models\Lista::userProcedureTypes()" :selected="[null]" class="block w-full"/>
+                                @error('type') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <!-- PRICE -->
@@ -67,6 +71,7 @@
                             <div class="input-block local-forms">
                                 <x-input-label for="current_price" :value="__('Precio')" />
                                 <x-text-input wire:model="current_price" class="block mt-1 w-full" type="number" step="any" name="current_price" :value="old('current_price')"/>
+                                @error('current_price') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="flex items-center justify-end mt-4">

@@ -188,95 +188,7 @@
     border: 2px solid #667eea;
 }
 
-.appointment {
-    position: absolute;
-    left: 2px;
-    right: 2px;
-    border-radius: 8px;
-    padding: 4px 8px;
-    font-size: 11px;
-    line-height: 1.2;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 2px;
-}
 
-.appointment:hover {
-    transform: scale(1.05);
-    z-index: 10;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-
-.appointment-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
-.appointment-pending { background:linear-gradient(45deg, #FFA500, #20c997); color: white; }
-.appointment-booked { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
-.appointment-arrived { background: linear-gradient(45deg, #007bff, #6610f2); color: white; }
-.appointment-checked-in { background:linear-gradient(45deg, #ffc107, #fd7e14); color: white; }
-.appointment-fulfilled { background: linear-gradient(45deg, #6c757d, #495057); color: white; }
-.appointment-cancelled { background: linear-gradient(45deg, #dc3545, #e83e8c); color: white; }
-.appointment-noshow { background: linear-gradient(45deg, #6f42c1, #e83e8c); color: white; }
-
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.modal-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
-}
-
-.form-control-full {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
 
 .status-buttons {
     display: grid;
@@ -301,14 +213,6 @@
     opacity: 1;
     transform: scale(1.05);
 }
-
-
-.status-booked { background:linear-gradient(45deg, #28a745, #20c997); color: white; }
-.status-arrived { background: linear-gradient(45deg, #007bff, #6610f2); color: white; }
-.status-checked-in { background:linear-gradient(45deg, #ffc107, #fd7e14);  color: #333; }
-.status-fulfilled { background: linear-gradient(45deg, #6c757d, #495057); color: white; }
-.status-cancelled { background: linear-gradient(45deg, #dc3545, #e83e8c); color: white; }
-.status-noshow { background:linear-gradient(45deg, #6f42c1, #e83e8c); color: white; }
 
 .status-btn:hover {
     transform: translateY(-2px);

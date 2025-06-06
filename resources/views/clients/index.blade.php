@@ -17,12 +17,11 @@
                 <div class="col-sm-12">
                     <div class="card card-table show-entire">
                         <div class="card-body">
-
-                    <livewire:data-table model="{{$model}}"
-                                         :columns="['id', 'name', 'ruc','dv','email','whatsapp','acciones']"
-                                         :actions="['edit','delete']"
-                                         routename="client"
-                                         wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
+                            <livewire:data-table model="{{$model}}"
+                                                 :columns="['id', 'name', 'ruc','dv','email','whatsapp','acciones']"
+                                                 :actions="['edit','delete']"
+                                                 routename="client"
+                                                 wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
                         </div>
                     </div>
                 </div>

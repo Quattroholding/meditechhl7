@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Scopes\AppointmentScope;
+use App\Notifications\AppointmentConfirmedNotification;
+use App\Notifications\AppointmentProposedNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,13 +16,16 @@ class Appointment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'fhir_id', 'patient_id', 'practitioner_id', 'identifier', 'status',
-        'service_type', 'description', 'start', 'end', 'minutes_duration','medical_speciality_id','consulting_room_id'
+        'fhir_id', 'patient_id', 'practitioner_id','client_id', 'identifier', 'status',
+        'service_type', 'description', 'start', 'end', 'minutes_duration','medical_speciality_id','consulting_room_id',
+        'original_requested_datetime','practitioner_suggested_datetime','comment'
     ];
 
     protected $casts = [
         'start' => 'datetime',
         'end' => 'datetime',
+        'original_requested_datetime' => 'datetime',
+        'practitioner_suggested_datetime' => 'datetime',
         'minutes_duration' => 'integer',
     ];
 
@@ -52,6 +57,11 @@ class Appointment extends Model
     public function encounter(): HasOne
     {
         return $this->hasOne(Encounter::class);
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 
     public function medicalSpeciality(): BelongsTo
@@ -92,7 +102,7 @@ class Appointment extends Model
 
     public static function statusColors(){
           return [
-              'proposed'=>'FFD700',
+              'proposed'=>'dedede',
               'pending'=>'FFA500',
               'booked'=>'4CAF50',
               'arrived'=>'00BCD4',
@@ -238,6 +248,31 @@ class Appointment extends Model
     {
         return $query->where('start', '>=', now()->toDateString())
             ->orderBy('start');
+    }
+
+    public function addPatientToPractitionerClient(){
+        $this->patient->clients()->sync($this->client_id,array('created_at'=>now(),'updated_at'=>now()));
+    }
+
+    // Notificación al practitioner sobre propuesta
+    public function notifyPractitionerAboutProposal()
+    {
+        $this->practitioner->notify(
+            new AppointmentProposedNotification($this)
+        );
+    }
+
+    public function notifyPatientAboutConfirmation()
+    {
+        $this->patient->notify(
+            new AppointmentConfirmedNotification($this)
+        );
+    }
+
+    public function wasDateTimeChanged(): bool
+    {
+        return $this->practitioner_suggested_datetime &&
+            !$this->practitioner_suggested_datetime->eq($this->original_requested_datetime);
     }
 
 }

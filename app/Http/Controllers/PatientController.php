@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PatientWelcomeMail;
+use App\Models\Client;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Faker\Factory as Faker;
@@ -70,7 +73,7 @@ class PatientController extends Controller
         $patient->identifier = $request->id_number;
     }
     public function store_public(Request $request){
-       //dd($request->all());
+
         $validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -79,18 +82,17 @@ class PatientController extends Controller
             'full_phone' => 'required',
             'password' => "required",
             'terms_and_privacy' => "required"
-
         ]);
+
         // Verificar si el correo ya está registrado
         $email_validation = User::where('email', $request->email)->first();
-
-
 
         if (!empty($email_validation)) {
             // El correo ya está registrado
             session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
             return redirect('/login');
         }
+
         $model = new User();
         $model->first_name = $request->first_name;
         $model->last_name = $request->last_name;
@@ -119,26 +121,31 @@ class PatientController extends Controller
         if($patient->save()){
 
             session()->flash('message', 'Se ha registrado exitósamente el paciente');
+
+            $registrationData=[
+                'username'=>$model->email,
+                'password'=>$request->password,
+            ];
+
+            //Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            $client = Client::find(1);
+            Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient,$client,$registrationData,'patient'));
+
             $credentials = ([
-            'email' => $model->email,
-            'password' => $request->password,
-        ]);
-             if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $route=route('patient.profile', $patient->id);
-            return redirect()->intended($route);
-        }
-        }else{
-            $user_created = User::find($model->id);
-            $user_created->delete();
-            session()->flash('message', 'Ha habido un error con el registro del paciente');
-            return redirect(route('patient.register'));
-        }
-            
-
-
-
-
+                'email' => $model->email,
+                'password' => $request->password,
+            ]);
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                $route=route('patient.profile', $patient->id);
+                return redirect()->intended($route);
+            }
+            }else{
+                $user_created = User::find($model->id);
+                $user_created->delete();
+                session()->flash('message', 'Ha habido un error con el registro del paciente');
+                return redirect(route('patient.register'));
+            }
     }
 
     public function profile(Request $request,$id){

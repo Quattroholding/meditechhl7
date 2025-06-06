@@ -24,7 +24,7 @@
                     <input type="checkbox"  wire:model="workingHours.{{$day}}.enabled" wire:click="changeEnabled('{{$day}}')" style="display: inline-block">
                     <label>{{ucfirst($day)}}</label>
                 </div>
-                <div class="col-12 col-md-6 col-xl-4">
+                <div class="col-12 col-md-6 col-xl-4 col-xs-12">
                     <div class="input-block local-forms">
                         <x-input-label for="patient" :value="__('Hora Entrada')" required/>
 
