@@ -22,8 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ClinicalObservationTypeSeeder::class);
         $this->call(MedicineSeeder::class);
         $this->call(DiagnosticSeeder::class);
-
-        //$this->call(ClientSeeder::class);
+        $this->call(EncounterSecctionSeeder::class);
         //$this->call(UserSeeder::class);
     }
 }

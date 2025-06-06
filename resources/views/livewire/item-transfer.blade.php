@@ -3,9 +3,9 @@
     <script src="{{ url('assets/plugins/dragula/js/dragula.min.js') }}"></script>
     <script src="{{ url('assets/plugins/dragula/js/drag-drop.min.js') }}"></script>
     {{-- Nothing in the world is as soft and yielding as water. --}}
-    <div class="flex" x-data>
+    <div class="row" x-data>
         <!-- Tabla de disponibles -->
-        <div class="w-10/12" style="border: 3px solid #2E37A4;padding: 20px;">
+        <div class="col-xl-5" style="border: 3px solid #2E37A4;padding: 20px;">
             <h2 class="text-center">{{__('Secciones Disponibles')}}</h2>
             <ul class="list-group" id="basic-list-group">
                 @foreach($availableItems as $item)
@@ -22,9 +22,10 @@
                 @endforeach
             </ul>
         </div>
-        <div class="w-10/12 top-2"><i class="fa fa-exchange fa-4x" style="margin:0.5em;"></i> </div>
+        <div class="col-xl-2  text-center d-none d-lg-block"><i class="fa fa-arrow-right fa-4x" ></i><br/><i class="fa fa-arrow-left fa-4x" ></i> </div>
+        <div class="col-xl-2  text-center d-block d-md-none"><i class="fa fa-arrow-down fa-4x" style="margin:0.1em;"></i><i class="fa fa-arrow-up fa-4x" style="margin:0.1em;"></i> </div>
         <!-- Tabla de seleccionados -->
-        <div class="w-10/12" style="border: 3px solid #2E37A4;padding: 20px;">
+        <div class="col-xl-5" style="border: 3px solid #2E37A4;padding: 20px;">
             <h2 class="text-center">{{__('Secciones Seleccionados')}}</h2>
             <ul  class="list-group" id="basic-list-group">
                 @foreach($selectedItems as $item)
