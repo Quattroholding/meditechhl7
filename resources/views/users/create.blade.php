@@ -104,11 +104,12 @@
                                     </div>
                                 </div>     
                                 <!-- BIRTHDATE -->
-                                <div class=" col-12 col-md-6 col-xl-6" style="display: none" id="birth_date">
+                                <div class=" col-12 col-md-6 col-xl-6" style="display: none" id="birthdate_user">
                                     <div class="input-block local-forms">
                                         <div class="form-group local-forms cal-icon">
-                                            <x-input-label for="birthdate" :value="__('user.birthdate')" />
+                                            <x-input-label for="birthdate" :value="__('user.birthdate')" /> 
                                             <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="old('birthdate')"/>
+                                            <x-input-error class="mt-2" :messages="$errors->get('birth_date')" />
                                         </div>
                                     </div>
                                 </div>  
@@ -142,7 +143,7 @@
                                 <!-- PICTURE -->
                                 <div class="col-12 col-md-6 col-xl-12">
                                     <div class="form-group local-top-form">
-                                        <label class="local-top">Avatar <span class="login-danger">*</span></label>
+                                        <label class="local-top" for="avatar">Avatar <span class="login-danger">*</span></label>
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="avatar" id="file"    onchange="loadFile(event)" class="hide-input">
                                             <label for="file" class="upload">Buscar Archivo</label>
@@ -204,13 +205,15 @@ function changeByType(type) {
         $('#id_number').hide();
         $('#medical_speciality').hide();
         $('#gender').hide();
-        $('#birth_date').hide();;
+        $('#birthdate_user').hide();;
         $('#physical_address').hide();
         $('#client_id').hide();
         $('#image').hide();
         $('#password').hide();
         $('#confirm_password').hide();
         $('#maritalstatus').hide();
+        $('#whatsapp').hide();
+        
        
 
         switch(type) {
@@ -218,7 +221,7 @@ function changeByType(type) {
             case '5':
             /*-----FORMULARIO PARA ROLE ADMIN-----*/
             case '1':
-                $("#client").show();
+                //$("#client").show();
                 $('#first_name').show();
                 $("#last_name").show();
                 $("#email").show();
@@ -229,12 +232,12 @@ function changeByType(type) {
                 break;
             /*-----FORMULARIO PARA ROLE DOCTOR-----*/
             case '2':
-                $("#client").show();
+                $("#client_id").show();
                 $("#id_type").show();
                 $("#id_number").show();
                 $("#medical_speciality").show();
                 $("#gender").show();
-                $("#birth_date").show();
+                $("#birthdate_user").show();
                 $("#physical_address").show();
                 $("#whatsapp").show();
                 $('#first_name').show();
@@ -246,12 +249,12 @@ function changeByType(type) {
                 break;
             /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
             case '3':
-                $("#client").show();
+                $("#client_id").show();
                 $("#id_type").show();
                 $("#id_number").show();
                 //$("#medical_speciality").show();
                 $("#gender").show();
-                $("#birth_date").show();
+                $("#birthdate_user").show();
                 $("#physical_address").show();
                 $("#whatsapp").show();
                 $('#first_name').show();
@@ -269,7 +272,7 @@ function changeByType(type) {
                 $('#maritalstatus').show();
                 //$("#medical_speciality").show();
                 $("#gender").show();
-                $("#birth_date").show();
+                $("#birthdate_user").show();
                 $("#physical_address").show();
                 $("#whatsapp").show();
                 $('#first_name').show();

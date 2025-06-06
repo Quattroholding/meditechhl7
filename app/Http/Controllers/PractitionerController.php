@@ -155,7 +155,7 @@ class PractitionerController extends Controller
             $user = User::find($model->id);
             $user->delete();
 
-                $request->session()->flash('message.error','Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+                $request->session()->flash('message.error','Hubo un error y no se pudo almacenar la imagen.');
                 return redirect(route('practitioner.create'));
             }
             if (!$user_profile->profile_picture) {
