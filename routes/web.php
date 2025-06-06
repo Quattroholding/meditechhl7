@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ClientController;
 use \App\Http\Controllers\BranchController;
@@ -15,6 +16,9 @@ use \App\Http\Controllers\SettingController;
 use \App\Http\Controllers\Auth\LoginController;
 use \App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+
+// Incluir el archivo de rutas de autenticación
+require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +39,11 @@ Route::get('/login', function () {
 Route::get('/forgot-password', function () {
     return view('Pages/forgot-password');
 })->name('forgot-password');
+
+Route::get('/reset-password', function () {
+    return view('auth/reset-password');
+})->name('reset-password');
+
 
 Route::get('/autologin', function () {
 

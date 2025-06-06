@@ -25,10 +25,17 @@
                                 </div>
                                 <h2>Reset Password</h2>
                                 <!-- Form -->
-                                <form action="{{ url('login') }}">
+                                <form method="POST" enctype="multipart/form-data" action="{{ route('password.email') }}">
+                                    @csrf
+                                    @if(session('message.success'))
+                                        <div class="alert alert-success">
+                                            {{ session('message.success') }}
+                                        </div>
+                                    @endif
                                     <div class="form-group">
                                         <label>Email <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text">
+                                        <x-text-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" autofocus/>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2" /><p>&nbsp;</p>
                                     </div>
                                     <div class="form-group login-btn">
                                         <button class="btn btn-primary btn-block" type="submit">Reset Password</button>

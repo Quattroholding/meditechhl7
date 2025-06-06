@@ -133,7 +133,13 @@
                 @elseif(auth()->user()->hasRole('doctor') && auth()->user()->practitioner)
                     <a class="dropdown-item" href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">{{__('patient.profile')}}</a>
                 @endif
-                <a class="dropdown-item" href="{{ url('login') }}">{{__('generic.logout')}}</a>
+                {{--}}<a class="dropdown-item" href="{{ url('logout') }}">{{__('generic.logout')}}</a>{{--}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item">
+                        {{ __('generic.logout') }}
+                    </button>
+                </form>
             </div>
         </li>
         {{--}}
