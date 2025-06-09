@@ -88,7 +88,7 @@
                                             id="confirm-password" name="password_confirmed">
                                         <span class="profile-views feather-eye-off confirm-password"></span>
                                         <div class="text-danger pt-2">
-                                            @error('password')
+                                            @error('password_confirmed')
                                                 {{ $message }}
                                             @enderror
                                         </div>
@@ -116,7 +116,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">{{(__('¿ Ya tienes una cuenta ?'))}} <a  href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
+                                    <p class="account-subtitle">{{(__('¿Ya tienes una cuenta?'))}} <a  href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
                                 </div>
                             </div>
                         </div>
