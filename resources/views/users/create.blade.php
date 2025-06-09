@@ -33,41 +33,46 @@
                             <div class="row">
                                 <div class="col-12 col-md-6 col-xl-4" id="role">
                                     <!-- ROL -->
+
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="rol" :value="__('user.rol')"/>
-                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" wire:model="rol"/>
-                                        <x-input-error :messages="$errors->get('rol')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-label for="rol" :value="__('user.rol')" required/>
+                                        @if(!request()->has('role_id'))
+                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" wire:model="rol" :selected="[old('rol')]"/>
+                                        @else
+                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" wire:model="rol" :selected="[(int)request()->get('role_id')]"/>
+                                        @endif
+                                        <x-input-error :messages="$errors->get('rol')" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="email">
                                     <!-- EMAIL -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="email" :value="__('user.email')"/>
+                                        <x-input-label for="email" :value="__('user.email')" required/>
                                         <x-text-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" autofocus/>
-                                        <x-input-error :messages="$errors->get('email')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="first_name">
                                     <!-- First Name -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="first_name" :value="__('user.first_name')"/>
+                                        <x-input-label for="first_name" :value="__('user.first_name')" required/>
                                         <x-text-input class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')"  />
-                                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="last_name">
                                     <!-- Last Name -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="last_name" :value="__('user.last_name')" />
+                                        <x-input-label for="last_name" :value="__('user.last_name')" required/>
                                         <x-text-input class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" />
-                                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                                     </div>
                                 </div>
-                          
+
                                 <!-- ID NUMBER -->
                                 <div class="col-4 col-md-4 col-xl-4" style="display: none" id="id_type">
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="id_type" :value="__('doctor.id_type')"/>
+                                        <x-input-label for="id_type" :value="__('doctor.id_type')" />
                                         <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
                                         <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                     </div>
@@ -84,7 +89,7 @@
                                     <div class="input-block  local-forms">
                                         <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" />
                                         <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                        <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="maritalstatus">
@@ -92,7 +97,7 @@
                                     <div class="input-block  local-forms">
                                         <x-input-label for="marital_status" :value="__('patient.marital_status')" />
                                         <x-select-input name="marital_status" :options="\App\Models\Lista::maritalStatus()" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('marital_status')" /><p>&nbsp;</p>
+                                        <x-input-error class="mt-2" :messages="$errors->get('marital_status')" />
                                     </div>
                                 </div>
                                     <div class="col-12 col-md-6 col-xl-6" style="display: none" id="gender">
@@ -100,25 +105,25 @@
                                     <div class="input-block  local-forms">
                                         <x-input-label for="gender" :value="__('user.gender')" />
                                         <x-select-input name="gender" :options="['male'=> 'male', 'female'=>'female', 'other'=>'other', 'unknow'=>'unknow']" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('gender')" /><p>&nbsp;</p>
+                                        <x-input-error class="mt-2" :messages="$errors->get('gender')" />
                                     </div>
-                                </div>     
+                                </div>
                                 <!-- BIRTHDATE -->
                                 <div class=" col-12 col-md-6 col-xl-6" style="display: none" id="birthdate_user">
                                     <div class="input-block local-forms">
                                         <div class="form-group local-forms cal-icon">
-                                            <x-input-label for="birthdate" :value="__('user.birthdate')" /> 
+                                            <x-input-label for="birthdate" :value="__('user.birthdate')" />
                                             <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="old('birthdate')"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('birth_date')" />
                                         </div>
                                     </div>
-                                </div>  
+                                </div>
                                     <div class="col-12 col-md-6 col-xl-6" style="display: none" id="physical_address">
                                         <!-- ADDRESS -->
                                         <div class="input-block  local-forms">
                                             <x-input-label for="address" :value="__('user.address')" />
                                             <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" />
-                                            <x-input-error :messages="$errors->get('address')" class="mt-2" /><p>&nbsp;</p>
+                                            <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                         </div>
                                     </div>
 
@@ -135,7 +140,7 @@
                                     <div class="input-block  local-forms">
                                         <x-input-label for="client" :value="__('user.client')" />
                                         <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('clients')" /><p>&nbsp;</p>
+                                        <x-input-error class="mt-2" :messages="$errors->get('clients')" />
                                     </div>
                                 </div>
                             </div>
@@ -185,107 +190,112 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     @push('scripts')
     <script>
         $( document ).ready(function() {
+
             $("#rol").change(function() {
                 var type = this.value;
                 console.log(type);
                 changeByType(type);
-        
-    });
-function changeByType(type) {
+            });
 
-        $("#email").hide();
-        $("#first_name").hide();
-        $('#last_name').hide();
-        $('#id_type').hide();
-        $('#id_number').hide();
-        $('#medical_speciality').hide();
-        $('#gender').hide();
-        $('#birthdate_user').hide();;
-        $('#physical_address').hide();
-        $('#client_id').hide();
-        $('#image').hide();
-        $('#password').hide();
-        $('#confirm_password').hide();
-        $('#maritalstatus').hide();
-        $('#whatsapp').hide();
-        
-       
+            function changeByType(type) {
 
-        switch(type) {
-            /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
-            case '5':
-            /*-----FORMULARIO PARA ROLE ADMIN-----*/
-            case '1':
-                //$("#client").show();
-                $('#first_name').show();
-                $("#last_name").show();
-                $("#email").show();
-                $("#image").show();
-                $("#password").show();
-                $("#client_id").show();
-                $("#confirm_password").show();
-                break;
-            /*-----FORMULARIO PARA ROLE DOCTOR-----*/
-            case '2':
-                $("#client_id").show();
-                $("#id_type").show();
-                $("#id_number").show();
-                $("#medical_speciality").show();
-                $("#gender").show();
-                $("#birthdate_user").show();
-                $("#physical_address").show();
-                $("#whatsapp").show();
-                $('#first_name').show();
-                $("#last_name").show();
-                $("#email").show();
-                $("#image").show();
-                $("#password").show();
-                $("#confirm_password").show();
-                break;
-            /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
-            case '3':
-                $("#client_id").show();
-                $("#id_type").show();
-                $("#id_number").show();
-                //$("#medical_speciality").show();
-                $("#gender").show();
-                $("#birthdate_user").show();
-                $("#physical_address").show();
-                $("#whatsapp").show();
-                $('#first_name').show();
-                $("#last_name").show();
-                $("#email").show();
-                $("#image").show();
-                $("#password").show();
-                $("#confirm_password").show();
-                break;
-                /*-----FORMULARIO PARA ROLE PACIENTE-----*/
-            case '4':
-                //$("#client").show();
-                $("#id_type").show();
-                $("#id_number").show();
-                $('#maritalstatus').show();
-                //$("#medical_speciality").show();
-                $("#gender").show();
-                $("#birthdate_user").show();
-                $("#physical_address").show();
-                $("#whatsapp").show();
-                $('#first_name').show();
-                $("#last_name").show();
-                $("#email").show();
-                $("#image").show();
-                $("#password").show();
-                $("#confirm_password").show();
-                break;
-            default:
-            // code block
+                $("#email").hide();
+                $("#first_name").hide();
+                $('#last_name').hide();
+                $('#id_type').hide();
+                $('#id_number').hide();
+                $('#medical_speciality').hide();
+                $('#gender').hide();
+                $('#birthdate_user').hide();;
+                $('#physical_address').hide();
+                $('#client_id').hide();
+                $('#image').hide();
+                $('#password').hide();
+                $('#confirm_password').hide();
+                $('#maritalstatus').hide();
+                $('#whatsapp').hide();
+
+                console.log("tipo :"+type);
+
+                switch(parseInt(type)) {
+                    /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
+                    case 5:
+                    /*-----FORMULARIO PARA ROLE ADMIN-----*/
+                    case 1:
+                        //$("#client").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#client_id").show();
+                        $("#confirm_password").show();
+                        break;
+                    /*-----FORMULARIO PARA ROLE DOCTOR-----*/
+                    case 2:
+                        $("#client_id").show();
+                        $("#id_type").show();
+                        $("#id_number").show();
+                        $("#medical_speciality").show();
+                        $("#gender").show();
+                        $("#birthdate_user").show();
+                        $("#physical_address").show();
+                        $("#whatsapp").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#confirm_password").show();
+                        break;
+                    /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
+                    case 3:
+                        console.log('es un rol asistente');
+                        $("#client_id").show();
+                        $("#id_type").show();
+                        $("#id_number").show();
+                        //$("#medical_speciality").show();
+                        $("#gender").show();
+                        $("#birthdate_user").show();
+                        $("#physical_address").show();
+                        $("#whatsapp").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#confirm_password").show();
+                        break;
+                        /*-----FORMULARIO PARA ROLE PACIENTE-----*/
+                    case 4:
+                        //$("#client").show();
+                        $("#id_type").show();
+                        $("#id_number").show();
+                        $('#maritalstatus').show();
+                        //$("#medical_speciality").show();
+                        $("#gender").show();
+                        $("#birthdate_user").show();
+                        $("#physical_address").show();
+                        $("#whatsapp").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#confirm_password").show();
+                        break;
+                    default:
+                // code block
+                }
         }
-    }
+
+            changeByType({{old('rol')}})
+            changeByType({{request()->get('role_id')}})
         });
     </script>
     @endpush
