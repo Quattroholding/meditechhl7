@@ -12,7 +12,7 @@
                         <div class="input-block local-forms">
                             <x-input-label for="patient_id" :value="__('patient.title')" required/>
                             <x-select-input  wire:model="patient_id" id="patient_id" name="patient_id" :options="\App\Models\Patient::get()->pluck('name','id')->toArray()"  class="block w-full"/>
-                            @error('patient_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                            <x-input-error :messages="$errors->get('patient_id')"/>
                         </div>
                     @else
                         <input type="hidden" wire:model="patient_id" value="{{$patient_id}}">
@@ -20,13 +20,13 @@
                     <div class="input-block local-forms">
                         <x-input-label for="medical_speciality_id" :value="__('appointment.speciality')" required/>
                         <x-select-input wire:model="medical_speciality_id" wire:change="changeSpeciality()" id="medical_speciality_id" name="medical_speciality_id" :options="$especialidades"  class="block w-full"/>
-                        @error('medical_speciality_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('medical_speciality_id')"/>
                     </div>
                     @if(!auth()->user()->hasRole('doctor'))
                         <div class="input-block local-forms">
                             <x-input-label for="doctor_id" :value="__('doctor.title')" required/>
-                            <x-select-input wire:change="changeDoctor()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full" required/>
-                            @error('doctor_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                            <x-select-input wire:change="changeDoctor()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full"/>
+                            <x-input-error :messages="$errors->get('doctor_id')"/>
                         </div>
                     @else
                         <input type="hidden" wire:model="doctor_id" value="{{$doctor_id}}">
@@ -34,13 +34,13 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
                             <x-input-label for="Fecha" :value="__('appointment.date')" required/>
-                            <input wire:model="appointment_date" type="date" class="form-control-full" required>
-                            @error('appointment_date') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                            <input wire:model="appointment_date" type="date" class="form-control-full">
+                            <x-input-error :messages="$errors->get('appointment_date')"/>
                         </div>
                         <div class="input-block local-forms">
                             <x-input-label for="appointment_time" :value="__('appointment.time')" required/>
-                            <input wire:model="appointment_time" type="time" class="form-control-full" required>
-                            @error('appointment_time') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                            <input wire:model="appointment_time" type="time" class="form-control-full">
+                            <x-input-error :messages="$errors->get('appointment_time')"/>
                         </div>
                     </div>
                     <div  class="input-block local-forms">
@@ -52,22 +52,22 @@
                             <option value="60">60 minutos</option>
                             <option value="90">90 minutos</option>
                         </select>
-                        @error('duration') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('duration')"/>
                     </div>
                     <div class="input-block local-forms">
-                        <x-input-label for="consulting_room_id" :value="__('appointment.consulting_room')"/>
+                        <x-input-label for="consulting_room_id" :value="__('appointment.consulting_room')" required/>
                         <x-select-input  wire:model="consulting_room_id" name="consulting_room_id" :options="$consultorios"  class="block w-full"/>
-                        @error('consulting_room_id') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('consulting_room_id')"/>
                     </div>
                     <div class="input-block local-forms">
                         <x-input-label for="service_type" :value="__('appointment.service_type')" required/>
                         <x-text-input wire:model="service_type" id="service_type" class="block mt-1 w-full" type="text" name="service_type" placeholder="EJ:Consulta Especializada"/>
-                        @error('service_type') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('service_type')"/>
                     </div>
                     <div class="input-block local-forms">
                         <label class="form-label">{{__('appointment.reason')}}</label>
                         <textarea wire:model="description" class="form-control-full" rows="3" placeholder="Describir el motivo de la consulta">{{$description}}</textarea>
-                        @error('description') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('description')"/>
                     </div>
                     {{--}}
                     <div class="form-group">

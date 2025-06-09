@@ -179,7 +179,7 @@ class ModalSave extends Component
                 'description' => $this->description,
                 'original_requested_datetime'=>$original_requested_datetime,
                 'practitioner_suggested_datetime'=>$practitioner_suggested_datetime,
-                //'notes' => $this->notes
+                'comment' => $this->notes
             ];
             // Verificar disponibilidad
             if (!$this->checkAvailability()) {
@@ -214,10 +214,19 @@ class ModalSave extends Component
             //$this->dispatch('loadStats');
 
         } catch (\Exception $e) {
-            dd( $e->getMessage());
             $this->closeModal();
             session()->flash('message.error', 'Error al guardar la cita: ' . $e->getMessage());
         }
+    }
+
+    public function rejectAppointment(){
+        $this->appointment->status ='cancelled';
+        $this->appointment->comment = $this->notes;
+        $this->appointment->save();
+        $this->appointment->notifyPatientAboutRejection($this->notes);
+        session()->flash('message.success','Cita cancelada exitosamente , se le envio notificacion al paciente.');
+        $this->closeModal();
+        $this->dispatch('loadAppointments');
     }
 
     #[On('editAppointmentModal')]
@@ -264,7 +273,7 @@ class ModalSave extends Component
             $this->service_type =  $this->appointment->service_type;
             $this->reason =  $this->appointment->description;
             $this->description =  $this->appointment->description;
-            //$this->notes = $appointment->notes;
+            $this->notes = $this->appointment->comment;
             $this->canEdit = auth()->user()->can('edit',$this->appointment);
             $this->showModal = true;
         }

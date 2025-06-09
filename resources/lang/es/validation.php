@@ -131,6 +131,23 @@ return [
         'service_type' => [
             'required' => 'El tipo de servicio es requerido',
         ],
+        'first_name' => [
+            'required' => 'El nombre es obligatorio.',
+        ],
+        'last_name' => [
+            'required' => 'El tipo de servicio es obligatorio',
+        ],
+        'phone' => [
+            'required' => 'El telefono es obligatorio',
+        ],
+        'password' => [
+            'required' => 'La contraseña es obligatoria',
+        ],
+        'terms_and_privacy' => [
+            'required' => 'Los terminos de servicions y politicas de privacidad son obligatorios',
+        ],
+
+
     ],
 
     /*

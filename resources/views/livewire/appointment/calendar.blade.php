@@ -8,7 +8,7 @@
             <div class="view-buttons">
 
                 <button wire:click="changeView('monthly')" class="btn {{ $currentView === 'monthly' ? 'btn-primary active' : 'btn-secondary' }}">
-                    Mensual
+                    {{__('Mensual')}}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
                     {{--}}
@@ -17,7 +17,7 @@
                 </button>
                 {{--}}
                 <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }}">
-                    Diaria
+                    {{__('Hoy')}}
                 </button>
                 @endif
             </div>
@@ -30,7 +30,6 @@
                 <button wire:click="goToToday" class="btn btn-secondary" style="margin-left: 10px;">Hoy</button>
                 {{--}}
             </div>
-
             <button wire:click="openModal" class="btn btn-primary">+ Nueva Cita</button>
         </div>
         <!-- Estadísticas -->
@@ -56,53 +55,49 @@
         {{--}}
         <!-- Filtros -->
         <div class="filters-section">
-        <div>
-            <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control">
+            <div>
+                <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control">
+            </div>
+            <div>
+                <select wire:model.live="selectedDoctor" class="form-control">
+                    <option value="">Todos los doctores</option>
+                    @foreach($doctors as $key=>$val)
+                        <option value="{{ $key }}">{{ $val }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <select wire:model.live="selectedStatus" class="form-control">
+                    <option value="">Todos los estados</option>
+                    <option value="booked">Programada</option>
+                    <option value="arrived">Llegada</option>
+                    <option value="checked-in">En Progreso</option>
+                    <option value="fullfilled">Completada</option>
+                    <option value="cancelled">Cancelada</option>
+                    <option value="noshow">No Asistió</option>
+                </select>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <button wire:click="clearFilters" class="btn btn-secondary w-full">Limpiar Filtros</button>
+            </div>
+            {{--}}
+            <div>
+                <button wire:click="exportFHIR" class="btn btn-secondary">Exportar FHIR</button>
+            </div>
+            {{--}}
+            <div class="col-xl-3 col-md-6 text-end">
+                <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full">
+                    ⚙️ Configurar Bloques
+                </button>
+            </div>
         </div>
-        <div>
-            <select wire:model.live="selectedDoctor" class="form-control">
-                <option value="">Todos los doctores</option>
-                @foreach($doctors as $key=>$val)
-                    <option value="{{ $key }}">{{ $val }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <select wire:model.live="selectedStatus" class="form-control">
-                <option value="">Todos los estados</option>
-                <option value="booked">Programada</option>
-                <option value="arrived">Llegada</option>
-                <option value="checked-in">En Progreso</option>
-                <option value="fullfilled">Completada</option>
-                <option value="cancelled">Cancelada</option>
-                <option value="noshow">No Asistió</option>
-            </select>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <button wire:click="clearFilters" class="btn btn-secondary w-full">Limpiar Filtros</button>
-        </div>
-        {{--}}
-        <div>
-            <button wire:click="exportFHIR" class="btn btn-secondary">Exportar FHIR</button>
-        </div>
-        {{--}}
-        <div class="col-xl-3 col-md-6 text-end">
-            <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full">
-                ⚙️ Configurar Bloques
-            </button>
-        </div>
-
-    </div>
 
         <!-- NUEVA SECCIÓN: Configuración de Bloques de Tiempo -->
         <div>
 
         </div>
     </div>
-
     @include('partials.message')
-
-
     <!-- Calendario -->
     <div class="calendar-content">
 

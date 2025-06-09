@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Scopes\AppointmentScope;
+use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
+use App\Notifications\AppointmentRejectedNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -275,5 +277,20 @@ class Appointment extends Model
             !$this->practitioner_suggested_datetime->eq($this->original_requested_datetime);
     }
 
+    public function notifyPatientAboutRejection($rejectionReason = null, $alternatives = [])
+    {
+        $this->patient->notify(
+            new AppointmentRejectedNotification($this, $rejectionReason)
+        );
+    }
+
+
+    // Notificación al paciente sobre cancelación de cita confirmada
+    public function notifyPatientAboutCancellation($cancellationReason = null)
+    {
+        $this->patient->notify(
+            new AppointmentCancelledNotification($this, $cancellationReason, 'practitioner')
+        );
+    }
 }
 

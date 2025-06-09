@@ -27,86 +27,48 @@
                                     </a>
                                 </div>
                                 <!-- Form -->
-                                @include('partials.message')
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form">
                                     @csrf
-                                    <div class="form-group">
-                                        <label>{{__('user.first_name')}} <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="first_name"
-                                            value="{{ old('name') }}" name="first_name">
-                                        <div class="text-danger pt-2">
-                                            @error('first_name')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="first_name" :value="__('user.first_name')" required/>
+                                        <x-text-input  id="first_name" name="first_name"  class="block w-full" type="text"  value="{{ old('first_name') }}"/>
+                                        <x-input-error :messages="$errors->get('first_name')"/>
                                     </div>
-                                    <div class="form-group">
-                                        <label>{{__('user.last_name')}} <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="last_name"
-                                            value="{{ old('name') }}" name="last_name">
-                                        <div class="text-danger pt-2">
-                                            @error('last_name')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="last_name" :value="__('user.last_name')" required/>
+                                        <x-text-input  id="last_name" name="last_name"  class="block w-full" type="text"  value="{{ old('last_name') }}"/>
+                                        <x-input-error :messages="$errors->get('last_name')"/>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Email <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="email" name="email">
-                                        <div class="text-danger pt-2">
-                                            @error('email')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="email" :value="__('user.email')" required/>
+                                        <x-text-input  id="email" name="first_name"  class="block w-full" type="email"  value="{{ old('email') }}"/>
+                                        <x-input-error :messages="$errors->get('email')"/>
                                     </div>
-                                    <div class="form-group">
-                                        <label>{{__('user.phone')}}<span class="login-danger w-full">*</span></label>
-                                        <input class="form-control" type="tel" id="phone" name="phone"
-                                            required>
-                                        <p id="message"></p>
-                                        <div class="text-danger pt-2">
-                                            @error('phone')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="phone" :value="__('user.phone')" required/>
+                                        <x-text-input  id="phone" name="first_name"  class="block w-full" type="tel" value="{{ old('phone') }}"/>
+                                        <x-input-error :messages="$errors->get('phone')"/>
                                     </div>
-                                    <div id="passwordError" style="color: red;"></div>
-                                    <div class="form-group">
-                                        <label>{{__('user.password')}} <span class="login-danger">*</span></label>
-                                        <input class="form-control pass-input" type="password" id="password"
-                                            name="password" value="{{ old('password') }}">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="password" :value="__('user.password')" required/>
+                                        <x-text-input  id="password" name="first_name"  class="block w-full pass-input" type="password"/>
                                         <span class="profile-views feather-eye-off toggle-password"></span>
-                                        <div class="text-danger pt-2">
-                                            @error('password')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                        <x-input-error :messages="$errors->get('password')"/>
                                     </div>
-                                    <div class="form-group">
-                                        <label>{{__('user.new_password')}} <span class="login-danger">*</span></label>
-                                        <input class="form-control pass-input-confirm" type="password"
-                                            id="confirm-password" name="password_confirmed">
-                                        <span class="profile-views feather-eye-off confirm-password"></span>
-                                        <div class="text-danger pt-2">
-                                            @error('password')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="password_confirmed" :value="__('user.new_password')" required/>
+                                        <x-text-input  id="password_confirmed" name="password_confirmed"  class="block w-full pass-input-confirm" type="password"/>
+                                        <x-input-error :messages="$errors->get('password_confirmed')"/>
                                     </div>
-
                                     <div class="forgotpass">
                                         <div class="remember-me">
-                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
+                                            <x-input-label class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
                                                 <a href="javascript:;">&nbsp {{__('Terminos de Servicios')}} </a>&nbsp y <a
                                                     href="javascript:;">&nbsp {{__('Politicas de Privacidad')}} </a>
                                                 <input type="checkbox" name="terms_and_privacy">
                                                 <span class="checkmark"></span>
-                                            </label>
-                                            <div class="text-danger pt-2">
-                                                @error('terms_and_privacy')
-                                                    {{ $message }}
-                                                @enderror
-                                            </div>
+                                            </x-input-label>
+                                            <x-input-error :messages="$errors->get('terms_and_privacy')"/>
                                         </div>
                                     </div>
                                     <div class="form-group login-btn">

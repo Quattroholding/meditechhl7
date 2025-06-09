@@ -67,4 +67,14 @@ class AppointmentPolicy
         return $this->booked($user,$appointment);
     }
 
+    public function reject(User $user, Appointment $appointment): bool
+    {
+        return $this->booked($user,$appointment);
+    }
+
+    public function addNote(User $user, Appointment $appointment): bool
+    {
+        return !$user->hasRole('paciente');
+    }
+
 }

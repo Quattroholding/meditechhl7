@@ -1,4 +1,16 @@
-<div>
+<div x-data="{
+    activeOffcanvas: null,
+    showMessage: false,
+    message: '',
+    messageType: 'success'
+}"
+     x-init="
+        // Escuchar eventos de Livewire
+        $wire.on('option-selected', (data) => {
+           document.body.removeAttribute('style');
+        });
+
+     ">
     @if(count($selectedLists)>0)
         <div id="" class="multiple-field-values mb-3">
             <div class="multivalue-item-container">
@@ -43,8 +55,11 @@
                     <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
                 </td>
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
-                    <div class="general-btn-small" type="button" data-bs-toggle="offcanvas" data-bs-target="#modal_acceso_rapido_{{$id}}"
-                         aria-controls="offcanvasTop">
+                    <div class="general-btn-small"
+                            type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight{{$id}}"
+                            aria-controls="offcanvasRight">
                         <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
                         <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
                     </div>
@@ -52,33 +67,93 @@
             </tr>
             </tbody>
         </table>
-        <div class="offcanvas offcanvas-top quick-items quick-items-active" tabindex="-1" id="modal_acceso_rapido_{{$id}}" aria-labelledby="offcanvasTopLabel" style="height: 100vh;overflow-y: scroll;">
-            <div class="offcanvas-body quick-items-content">
+        {{--}}
+     <x-offcanvas id="offcanvasRight{{$id}}" title="Listado de acceso rapido" position="right" size="xl" wire:ignore.self>
+
+         @foreach($rapidAccess as $i)
+             <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
+                 <div class="sel-list-item-code">{{$i->cpt->code}}</div>
+                 <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
+                 <div class="preloader-space"></div><div class="preloader-space-2">
+                 </div>
+             </div>
+         @endforeach
+     </x-offcanvas>
+     {{--}}
+        <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel">
+
+
+            <div class="offcanvas-body  quick-items-content">
                 <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
                     <img src="/images/close-floating.png" alt="">
                 </div>
                 <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
-                @foreach($rapidAccess as $i)
-                    <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
-                        <div class="sel-list-item-code">{{$i->cpt->code}}</div>
-                        <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
-                        <div class="preloader-space"></div><div class="preloader-space-2">
+                @if(count($rapidAccess) > 0)
+                    @foreach($rapidAccess as $i)
+                        <div class="sel-list-item sel-code-{{$i->cpt->code}} mb-2"
+                             style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
+
+                            {{-- Contenido principal clickeable --}}
+                            <div wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
+                                <div class="sel-list-item-code fw-bold">{{$i->cpt->code}}</div>
+                                <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
+                            </div>
                         </div>
+                    @endforeach
+                @else
+                    <div class="text-center text-muted py-4">
+                        <p>No hay accesos rápidos configurados</p>
+                    </div>
+                @endif
+                {{-- Botones de control del panel --}}
+                <div class="mt-4 d-flex gap-2 border-top pt-3">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            wire:click="clearSearch">
+                        <i class="fas fa-eraser"></i> Limpiar búsqueda
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-sm btn-secondary"
+                            data-bs-dismiss="offcanvas">
+                        <i class="fas fa-times"></i> Cerrar Panel
+                    </button>
+                </div>
+            </div>
+        </div> <!-- end offcanvas-body-->
+
+        {{-- RESULTADOS DE BÚSQUEDA --}}
+        @if(!empty($results))
+            <div class="selector-items" style="z-index: 1000">
+                @foreach($results as $result)
+                    <div class="sel-list-item d-flex justify-content-between align-items-center"
+                         style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee;">
+                        <div class="flex-grow-1" wire:click="selectOption({{ json_encode($result) }})">
+                            {{ $result['name'] }}
+                        </div>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                wire:click="addToRapidAccess({{ $result['id'] }})"
+                                title="Agregar a accesos rápidos">
+                            <i class="fas fa-star"></i>
+                        </button>
                     </div>
                 @endforeach
             </div>
-        </div>
-
-        @if(!empty($results))
-                <div class="selector-items" style="z-index: 1000">
-                    @foreach($results as $result)
-                        <div  class="sel-list-item"  wire:click="selectOption({{ json_encode($result) }})">
-                            {{ $result['name'] }}
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+        @endif
     </div>
 
     <div style="height:200px;">&nbsp;</div>
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('showToastr', (event) => {
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                });
+            });
+        </script>
 </div>

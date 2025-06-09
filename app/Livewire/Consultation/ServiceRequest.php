@@ -27,14 +27,8 @@ class ServiceRequest extends Component
         if($this->section_id==6) $this->type='laboratory';
         if($this->section_id==7) $this->type='images';
         if($this->section_id==8) $this->type='procedure';
-
-        $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
-
-        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())->whereType('CLIENT')->whereEncounterSectionId($this->section_id)->get();
-
-        if($this->rapidAccess->count()==0) $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')->whereEncounterSectionId($this->section_id)->get();
-
-
+        $this->loadSelectedLists();
+        $this->loadRapidAccess();
     }
 
     public function updatedQuery()
@@ -85,12 +79,80 @@ class ServiceRequest extends Component
         sleep(1);
         $this->saved=true;
 
-        $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
+        $this->dispatch('option-selected');
+        $this->loadSelectedLists();
+    }
+
+    private function loadSelectedLists()
+    {
+        $this->selectedLists = $this->encounter->serviceRequests()
+            ->where('service_type', $this->type)
+            ->get();
+    }
+
+    private function loadRapidAccess()
+    {
+        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
+            ->whereType('CLIENT')
+            ->whereEncounterSectionId($this->section_id)
+            ->get();
+
+        if ($this->rapidAccess->count() == 0) {
+            $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
+                ->whereEncounterSectionId($this->section_id)
+                ->get();
+        }
     }
 
     public function delete($id){
         $this->encounter->serviceRequests()->whereId($id)->delete();
-        $this->selectedLists = $this->encounter->serviceRequests()->whereServiceType($this->type)->get();
+        $this->loadRapidAccess();
+    }
+
+    public function clearSearch()
+    {
+        $this->query = '';
+        $this->results = [];
+        $this->dispatch('option-selected');
+    }
+
+    public function addToRapidAccess($cptId)
+    {
+
+        try {
+            $existing = \App\Models\RapidAccess::whereUserId(auth()->id())
+                ->whereType('CLIENT')
+                ->whereEncounterSectionId($this->section_id)
+                ->where('cpt_id', $cptId)
+                ->first();
+
+            if (!$existing) {
+                \App\Models\RapidAccess::create([
+                    'user_id' => auth()->id(),
+                    'type' => 'CLIENT',
+                    'encounter_section_id' => $this->section_id,
+                    'cpt_id' => $cptId
+                ]);
+
+                $this->loadRapidAccess();
+
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: 'Agregado a accesos rápidos'
+                );
+
+            } else {
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'Ya está en accesos rápidos'
+                );
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al agregar a accesos rápidos'
+            );
+        }
     }
     public function render()
     {

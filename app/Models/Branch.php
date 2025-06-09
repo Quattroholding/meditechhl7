@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\BranchScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,13 +11,12 @@ class Branch extends BaseModel
     use HasFactory;
 
     // ESTE ES EL FILTRO GLOBAL POR TIPO DE ROL DE USUARIO
-    protected static function booted()
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
     {
-        if(auth()->user() && (auth()->user()->hasRole('cliente') OR auth()->user()->hasRole('usuario'))){
-            self::addGlobalScope('client_filter', function ($query){
-                $query->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
-            });
-        }
+        static::addGlobalScope(new BranchScope());
     }
 
     public function client(){

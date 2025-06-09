@@ -1420,7 +1420,7 @@ textarea {
 .selector-items {
 
     position: absolute;
-    top: 40px;
+    top: 50px;
     left: 0px;
     max-height: 132px;
     overflow-y: scroll;
@@ -2197,16 +2197,16 @@ w
 }
 
 .quick-items {
-    position: fixed;
+   /* position: fixed;
     top: 0px;
     left: 0px;
     width: 100vw;
     height: 0vh;
     background-color: #F8F8F8; /* a light, neutral color */
-    z-index: 94949499;
+    /*z-index: 94949499;
     transition: 0s all;
     overflow: auto;
-    padding: 0px;
+    padding: 0px;*/
 
 }
 
@@ -2237,7 +2237,7 @@ w
 }
 
 .quick-items-content .sel-list-item {
-    width: 70%;
+    width: 100%;
     background-color: rgb(255, 255, 255);
     margin-bottom: 5px;
     cursor: hand;
@@ -2247,7 +2247,7 @@ w
     transition: 0.3s all;
     margin: 0px;
     display: flex;
-    margin-left: 15% !important;
+    /*margin-left: 15% !important;*/
 }
 
 .sel-item-list-category {
