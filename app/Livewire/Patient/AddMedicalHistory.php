@@ -68,4 +68,8 @@ class AddMedicalHistory extends Component
     {
         return view('livewire.patient.add-medical-history');
     }
+
+    public function closeModal(){
+        $this->showModal=false;
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -149,23 +150,42 @@ class PatientController extends Controller
     }
 
     public function profile(Request $request,$id){
-        return view('patients.profile',compact('id'));
+        $patient = Patient::findOrFail($id);
+
+        return view('patients.profile',compact('patient'));
     }
 
     public function edit($id){
 
-        $data = Patient::find($id);
+        $data = Patient::findOrFail($id);
+        if(!$data) return view('Pages.error-403');
 
         return view('patients.edit',compact('data'));
     }
 
     public function update(Request $request,$id){
 
-        $model = Patient::find($id);
-        $model->fill($request->all());
+        $validated = $request->validate([
+            'id_number' => 'required',
+            'id_type' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'gender' => 'required',
+            'birth_date' => 'required',
+            'physical_address' => 'required',
+            'marital_status'=>'required',
+            //'billing_address' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            //'blood_type' => 'required',
+        ]);
+
+        $model = Patient::findOrFail($id);
+
+        $model->fill($request->except('birth_date'));
+        $model->birth_date = substr($request->birth_date,6,4).'-'.substr($request->birth_date,3,2).'-'.substr($request->birth_date,0,2);
 
         if($model->save()){
-
 
             if($request->file('image')){
                 $service = new FileService();
@@ -174,10 +194,12 @@ class PatientController extends Controller
                 $data['type']='avatar';
                 $service->guardarArchivos([$request->file('image')],$data);
             }
-            $request->session()->flash('message.success','Actualización co exito.');
+            session()->flash('message.success','Actualización con exito.');
         }else{
-            $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
+           session()->flash('message.success','Hubo un error y no se pudo actualizar.');
         }
+
+        if($request->has('redirect'))  return redirect($request->redirect);
 
         return redirect(route('patient.edit',array($id)));
     }
@@ -192,7 +214,8 @@ class PatientController extends Controller
 
     public function medicalHistory(Request $request,$id){
 
-        return view('patients.medicalHistory.index',compact('id'));
+        $patient = Patient::findOrFail($id);
+        return view('patients.medicalHistory.index',compact('patient'));
     }
 
     public function check($idNumber){
