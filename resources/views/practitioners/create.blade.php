@@ -98,7 +98,7 @@
                                 <!-- PHYSICAL ADDRESS -->
                                 <div class=" col-6 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <x-input-label for="physical_address" :value="__('doctor.physical_address')" />
+                                        <x-input-label for="physical_address" :value="__('doctor.physical_address')" required="true" />
                                         <x-textarea-input id="physical_address" class="block mt-1 w-full" type="email" name="physical_address" :value="old('physical_address')"/>
                                         <x-input-error :messages="$errors->get('physical_address')" class="mt-2" />
                                     </div>
@@ -124,7 +124,7 @@
                                 <!-- PHONE -->
                                 <div class=" col-6 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <x-input-label for="phone" :value="__('doctor.phone')" />
+                                        <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
                                         <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
@@ -139,7 +139,7 @@
                                 </div>{{--}}
                                  <div class="col-6 col-md-6 col-xl-6">
                                     <div class="form-group local-top-form">
-                                        <label class="local-top">Avatar <span class="login-danger">*</span></label>
+                                        <x-input-label for="image" class="local-top" :value="__('Avatar')" required="true" />
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" class="hide-input">
                                             <label for="file" class="upload">Choose File</label>
