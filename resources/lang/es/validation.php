@@ -119,6 +119,12 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'name' => [
+            'required' => 'El nombre es obligatorio',
+        ],
+        'long_name' => [
+            'required' => 'El nombre completo es obligatorio',
+        ],
         'patient_id' => [
             'required' => 'Debe seleccionar un paciente',
         ],
@@ -146,7 +152,21 @@ return [
         'terms_and_privacy' => [
             'required' => 'Los terminos de servicions y politicas de privacidad son obligatorios',
         ],
-
+        'ruc' => [
+            'required' => 'El ruc es obligatorio',
+        ],
+        'dv' => [
+            'required' => 'El digito verificador es obligatorio',
+        ],
+        'birthdate' => [
+            'required' => 'La fecha de nacimiento es obligatoria',
+        ],
+        'physical_address' => [
+            'required' => 'La dirección es obligatoria',
+        ],
+        'billing_address' => [
+            'required' => 'La dirección fiscal es obligatoria',
+        ],
 
     ],
 

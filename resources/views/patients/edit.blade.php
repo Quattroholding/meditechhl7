@@ -78,7 +78,8 @@
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="form-group local-forms cal-icon">
                                             <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                                            <x-text-input id="birthdate" type="text" name="text" :value="$data->birth_date" class="block mt-1 w-full datetimepicker" />
+                                            <x-text-input id="birthdate" type="text" name="birthdate" :value="$data->birth_date" class="block mt-1 w-full datetimepicker" />
+                                            <x-input-error :messages="$errors->get('birthdate')" class="mt-2" />
                                         </div>
                                     </div>
                                 </div>

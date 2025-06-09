@@ -42,18 +42,20 @@ class Create extends Component
         'gender' => 'required',
         'birthdate' => 'required',
         'physical_address' => 'required',
-        'billing_address' => 'required',
+        'marital_status'=>'required',
+        //'billing_address' => 'required',
         'email' => 'required|unique:'.Patient::class,
         'phone' => 'required',
-        'blood_type' => 'required',
+        //'blood_type' => 'required',
     ];
 
     protected $messages = [
         // 'patient_id.required' => 'Debe seleccionar un paciente.',
-        'id_type.required' => 'El tipo de documento es requerido.',
-        'id_number.required' => 'El numero de documento es requerido.',
-        'first_name.required' => 'El nombre es requerido.',
-        'last_name.required' => 'El apellido es requerido.'
+        'id_type.required' => 'El tipo de documento es obligatorio',
+        'id_number.required' => 'El numero de documento es obligatorio.',
+        'first_name.required' => 'El nombre es obligatorio',
+        'last_name.required' => 'El apellido es obligatorio',
+        'marital_status.required' => 'El estado civil es obligatorio'
     ];
 
     public function render()
@@ -96,7 +98,7 @@ class Create extends Component
 
     public function savePatient(){
 
-        //$this->validate();
+        $this->validate();
 
         // Verificar si el correo ya está registrado
         $email_validation = User::where('email', $this->email)->first();

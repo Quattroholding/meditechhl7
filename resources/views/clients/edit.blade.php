@@ -27,7 +27,7 @@
                             <!-- SHORT NAME -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="name" :value="__('Nombre Corto')" required="true"/>
-                                <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="$data->name" required autofocus/>
+                                <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="$data->name" autofocus/>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                             <!-- RUC/DV -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="ruc" :value="__('Ruc')" />
-                                <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="$data->ruc" required/>
+                                <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="$data->ruc"/>
                                 <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                             <!-- RUC/DV -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="ruc" :value="__('DV')" />
-                                <x-text-input id="dv" class="block mt-1 w-full" type="number" name="dv" :value="$data->dv" required maxlength="2"  min="1"/>
+                                <x-text-input id="dv" class="block mt-1 w-full" type="number" name="dv" :value="$data->dv" maxlength="2"  min="1"/>
                                 <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                         <div class=" col-12 col-md-6 col-xl-4">
                             <!-- WHATSAPP -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="whatsapp" :value="__('Whatsapp')" />
+                                <x-input-label for="whatsapp" :value="__('Telefono')" />
                                 <x-text-input id="whatsapp" class="block mt-1 w-full" type="text" name="whatsapp" :value="$data->whatsapp"/>
                                 <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                             </div>

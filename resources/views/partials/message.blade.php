@@ -1,5 +1,6 @@
 <div class="row" id="alert_messages">
     <div class="col-md-12">
+        {{--}}
         @if (count($errors->all()) > 0)
             <div class="alert alert-danger">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -10,6 +11,7 @@
                 </ul>
             </div>
         @endif
+        {{--}}
         @if (session('message.error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {!! nl2br(session('message.error')) !!}

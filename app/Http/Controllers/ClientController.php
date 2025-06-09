@@ -137,6 +137,17 @@ class ClientController extends Controller
 
     public function update(Request $request,$id){
 
+        $validated = $request->validate([
+            'name' => 'required',
+            'long_name' => 'required',
+            'ruc' => 'required',
+            'email' => 'required',
+            'dv' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
+            'logo' => 'required',
+        ]);
+
         $model = Client::find($id);
         $model->fill($request->all());
 

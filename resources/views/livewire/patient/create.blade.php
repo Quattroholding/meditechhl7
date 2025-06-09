@@ -2,7 +2,6 @@
     @section('scripts')
         <script src="{{ URL::asset('/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
     @stop
-    @include('partials.message')
     <form wire:submit="savePatient">
         @csrf
         <div class="row">
@@ -35,24 +34,24 @@
                     <!-- First Name -->
                     <div class="input-block local-forms">
                         <x-input-label for="first_name" :value="__('patient.first_name')" required="true"/>
-                        <x-text-input wire:model="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required />
-                        @error('first_name') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-text-input wire:model="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" />
+                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-xl-4">
                     <!-- Last Name -->
                     <div class="input-block local-forms">
                         <x-input-label for="last_name" :value="__('patient.last_name')" required="true"/>
-                        <x-text-input wire:model="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required/>
-                        @error('last_name') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-text-input wire:model="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')"/>
+                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-xl-4">
                     <!-- EMAIL -->
                     <div class="input-block local-forms">
                         <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true"/>
-                        <x-text-input wire:model="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required/>
-                        @error('email') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-text-input wire:model="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
                 </div>
             </div>
@@ -62,18 +61,16 @@
                 <div class="col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms ">
                         <x-input-label for="gender" :value="__('patient.gender')" required="true"/>
-                        <x-select-input wire:model="gender" name="gender" :options="\App\Models\Lista::gender()" :selected="[null]" class="block w-full" required/>
-                        @error('gender') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-select-input wire:model="gender" name="gender" :options="\App\Models\Lista::gender()" :selected="[null]" class="block w-full"/>
+                        <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                     </div>
                 </div>
                 <!-- BIRTHDATE -->
-                <div class=" col-12 col-md-6 col-xl-6">
-                    <div class="input-block local-forms">
-                        <div class="form-group local-forms cal-icon">
-                            <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                            <x-text-input wire:model="birthdate" name="birthdate" class="block mt-1 w-full " type="date" id="birthdate" name="birthdate" required/>
-                            @error('birthdate') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
-                        </div>
+                <div class="col-12 col-md-6 col-xl-6">
+                    <div class="form-group local-forms {{--}}cal-icon{{--}}">
+                        <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
+                        <x-text-input id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" />
+                        <x-input-error :messages="$errors->get('birthdate')" class="mt-2" />
                     </div>
                 </div>
 
@@ -82,9 +79,9 @@
                 <!-- PHYSICAL ADDRESS -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
-                        <x-input-label for="physical_address" :value="__('patient.physical_address')" />
+                        <x-input-label for="physical_address" :value="__('patient.physical_address')" required/>
                         <x-textarea-input wire:model="physical_address" class="block mt-1 w-full" type="email" name="physical_address"/>
-                        @error('physical_address') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('physical_address')" class="mt-2" />
                     </div>
                 </div>
                 <!-- BILLING ADDRESS -->
@@ -92,7 +89,7 @@
                     <div class="input-block local-forms">
                         <x-input-label for="marital_status" :value="__('patient.billing_address')" />
                         <x-textarea-input wire:model="billing_address" class="block mt-1 w-full" type="email" name="billing_address"/>
-                        @error('billing_address') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('billing_address')" class="mt-2" />
                     </div>
                 </div>
             </div>
@@ -101,16 +98,16 @@
                 <!-- PHONE -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
-                        <x-input-label for="phone" :value="__('patient.phone')" />
+                        <x-input-label for="phone" :value="__('patient.phone')" required/>
                         <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
-                        @error('phone') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                     </div>
                 </div>
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
-                        <x-input-label for="marital_status" :value="__('patient.marital_status')" />
-                        <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[null]" class="block w-full" required/>
-                        @error('marital_status') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-label for="marital_status" :value="__('patient.marital_status')" required/>
+                        <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[null]" class="block w-full"/>
+                        <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
                     </div>
                 </div>
             </div>
@@ -120,7 +117,7 @@
                     <div class="input-block local-forms">
                         <x-input-label for="blood_type" :value="__('patient.blood_type')" class="local-top"/>
                         <x-select-input wire:model="blood_type" name="blood_type" :options="\App\Models\Lista::bloodTypes()" :selected="[null]" class="block w-full"/>
-                        @error('blood_type') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                        <x-input-error :messages="$errors->get('blood_type')" class="mt-2" />
                     </div>
                 </div>
                 {{--}}
