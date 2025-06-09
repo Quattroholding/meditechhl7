@@ -35,31 +35,15 @@
                                 <form action="{{ route('login') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
-                                        <label>Email <span class="login-danger">*</span></label>
-                                        <input class="form-control" type="text" id="email" value="{{request()->get('username')}}"
-                                            name="email">
-                                        <div class="text-danger pt-2">
-                                            @error('0')
-                                                {{ $message }}
-                                            @enderror
-                                            @error('email')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
+                                        <x-input-label for="email" :value="__('Email')" required="true" />
+                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                     <div class="form-group">
-                                        <label>{{__('Contraseña')}} <span class="login-danger">*</span></label>
-                                        <input class="form-control pass-input" type="password" id="password"
-                                            name="password" value="">
+                                        <x-input-label for="password" :value="__('Password')" required="true" />
+                                        <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" />
+                                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                         <span class="profile-views feather-eye-off toggle-password"></span>
-                                        <div class="text-danger pt-2">
-                                            @error('0')
-                                                {{ $message }}
-                                            @enderror
-                                            @error('password')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
                                     </div>
                                     <div class="forgotpass">
                                         <div class="remember-me">
@@ -101,4 +85,4 @@
             <!-- /Login Content -->
         </div>
     </div>
-</x-guest-layout>>
+</x-guest-layout>
