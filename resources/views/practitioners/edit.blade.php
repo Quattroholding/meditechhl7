@@ -20,7 +20,7 @@
                                     <h4>  {{ __('generic.edit') }} {{ __('doctor.title') }}</h4>
                                 </div>
                             </div>
-                            <form method="POST" action="{{ route('practitioner.store') }}" enctype="multipart/form-data" id="form">
+                            <form method="POST" action="{{ route('practitioner.update', $data->id) }}" enctype="multipart/form-data" id="form">
                             @csrf
                             <div class="row">
                                 <!-- ID NUMBER -->
@@ -38,12 +38,12 @@
                                         <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-4 col-md-4 col-xl-4">
-                                    <!-- CLIENTS -->
-                                    <div class="input-block  local-forms">
-                                        <x-input-label for="client" :value="__('user.client')" required/>
-                                        <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
+                                <!-- PHONE -->
+                                <div class=" col-4 col-md-4 col-xl-4">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
                             </div>
@@ -96,26 +96,10 @@
                             </div>
                             <div class="row">
                                 <!-- PHYSICAL ADDRESS -->
-                                <div class=" col-4 col-md-4 col-xl-4">
+                                <div class=" col-12 col-md-12 col-xl-12">
                                     <div class="input-block local-forms">
                                         <x-input-label for="physical_address" :value="__('doctor.physical_address')" required="true" />
                                         <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="physical_address" :value="$data->address"/>
-                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-                                    </div>
-                                </div>
-                                <div class="col-4 col-md-4 col-xl-4">
-                                    <!-- SPECIALTY -->
-                                    <div class="input-block  local-forms">
-                                        <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" required/>
-                                        <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block  w-full"/>
-                                        <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
-                                    </div>
-                                </div>
-                                 <!-- PHONE -->
-                                <div class=" col-4 col-md-4 col-xl-4">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
@@ -129,7 +113,22 @@
                                 </div>{{--}}
                             </div>
                             <div class="row">
-                               
+                            <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- SPECIALTY -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" required/>
+                                    <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block w-full" :selected="$specialties"  multiple aria-label="multiple select example" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- CLIENTS -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="client" :value="__('user.client')" required/>
+                                    <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block w-full"  :selected="$practitioner_clients" multiple aria-label="multiple select example" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
+                                </div>
+                            </div>
                                 <!-- WHATSAPP -->
                                {{--}} <div class=" col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
@@ -140,7 +139,7 @@
                                 </div>{{--}}
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-6">
+                                <div class="col-12 col-md-12 col-xl-12">
                                     <div class="form-group local-top-form">
                                         <x-input-label for="image" class="local-top" :value="__('Avatar')" required="true" />
                                         <div class="settings-btn upload-files-avator">
@@ -152,7 +151,7 @@
                             </div>
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
-                                    <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
+                                    <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.update') }} </button>
                                     <a class="btn btn-primary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                                 </div>
                             </div>

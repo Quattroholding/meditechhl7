@@ -9,6 +9,7 @@ use App\Models\MedicalSpeciality;
 use App\Services\FileService;
 use Illuminate\Support\Str;
 use DateTime;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PractitionerController extends Controller
@@ -25,7 +26,11 @@ class PractitionerController extends Controller
 
      public function edit($id){
         $data = Practitioner::find($id);
-        return view('practitioners.edit', compact('data'));
+        //dd($data->specialties);
+        $practitioner_clients = $data->user->clients->pluck('id')->toArray();
+        $specialties = $data->qualifications->pluck('id')->toArray();
+        //dd($qualifications, $practitioner_clients);
+        return view('practitioners.edit', compact('data', 'practitioner_clients', 'specialties'));
     }
     public function store(Request $request){
         //dd($request->all());
@@ -170,6 +175,79 @@ class PractitionerController extends Controller
         return redirect(route('practitioner.create'));
 
     }
+
+    public function update(Request $request,$id){
+
+        //FORMATEAR FECHA PARA ALMACENARLA EN LA BASE DE DATOS
+        $fecha = DateTime::createFromFormat('d/m/Y', $request->date);
+        $fecha->setTime(0, 0, 0);
+        $birthdate = $fecha->format('Y-m-d H:i:s');
+
+        $practitioner = Practitioner::find($id);
+        $user_id = $practitioner->user->id;
+        $practitioner->identifier = $request->id_number;
+        $practitioner->name = 'Dr. '.$request->first_name.' '.$request->last_name;
+        $practitioner->given_name = $request->first_name;
+        $practitioner->family_name = $request->last_name;
+        $practitioner->gender = $request->gender;
+        $practitioner->birth_date = $birthdate;
+        $practitioner->address = $request->physical_address;
+        $practitioner->email = $request->email;
+        $practitioner->phone = $request->full_phone;
+
+        if($practitioner->save()){
+
+        //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
+            $clients = $request->clients;
+           /* foreach($clients as $client){
+                $existing_clients = UserClient::whereCode($speciality)->whereUserId($user_id)->first();
+                if(!$existing_clients){
+                $userclient = new UserClient();
+                $userclient->user_id = $user_id;
+                $userclient->client_id = $client;
+                $userclient->save();}
+            }*/
+            $sync=[];
+            foreach($clients as $client){
+            $sync[$client]=array('client_id' => $client, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'user_id' => $user_id);
+            }
+            $practitioner->user->clients()->sync($sync);
+
+            //SE ASOCIA LAS ESPECIALIDADES DEL USUARIO QUE SELECCIONÓ EN EL FORMULARIO
+            $specialties = $request->medical_speciality;
+            /*foreach($specialties as $speciality){
+                $existing_spepeciality = PractitionerQualification::whereCode($speciality)->wherePractitionerId($practitioner->id)->first();
+                if(!$existing_spepeciality){
+                $qualification = new PractitionerQualification();
+                $qualification->practitioner_id = $practitioner->id;
+                $qualification->code = $speciality;
+                $qualification->medical_speciality_id = $speciality;
+                $medical_speciality_name =  MedicalSpeciality::find($speciality);
+                $qualification->display = $medical_speciality_name->name;
+                $qualification->save();}
+            }*/
+            $syn=[];
+            foreach($specialties as $speciality){
+            $medical_speciality_name =  MedicalSpeciality::find($speciality);
+            $syn[$speciality]=array('code' => $speciality, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+            }
+            $practitioner->specialties()->sync($syn);
+
+            if($request->file('image')){
+                $service = new FileService();
+                $data['record_id'] = $practitioner->id;
+                $data['folder'] = 'patients';
+                $data['type']='avatar';
+                $service->guardarArchivos([$request->file('image')],$data);
+            }
+            $request->session()->flash('message.success','Actualización con éxito.');
+        }else{
+            $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
+        }
+
+        return redirect(route('practitioner.edit',array($id)));
+    }
+
 
     public function profile(Request $request,$id){
         $data = Practitioner::find($id);

@@ -49,6 +49,12 @@ class Practitioner extends BaseModel
         return $this->hasMany(PractitionerQualification::class);
     }
 
+    public function specialties()
+    {
+        return $this->belongsToMany(MedicalSpeciality::class, 'practitioner_qualifications');
+    }
+
+
     public function medicationRequests(): HasMany
     {
         return $this->hasMany(MedicationRequest::class);
