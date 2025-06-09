@@ -67,7 +67,7 @@
                 </div>
                 <!-- BIRTHDATE -->
                 <div class="col-12 col-md-6 col-xl-6">
-                    <div class="form-group local-forms {{--}}cal-icon{{--}}">
+                    <div class="input-block local-forms {{--}}cal-icon{{--}}">
                         <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
                         <x-text-input id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" />
                         <x-input-error :messages="$errors->get('birthdate')" class="mt-2" />
@@ -135,9 +135,9 @@
                 {{--}}
             </div>
             <div class="flex items-center justify-end mt-4">
-                <div class="text-end">
+                <div class="doctor-submit text-end">
                     <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
-                    <a class="btn btn-primary cancel-form" href="{{ route('patient.index') }}">  {{ __('button.cancel') }}</a>
+                    <a class="btn btn-primary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                 </div>
             </div>
         </div>

@@ -17,6 +17,8 @@ class PatientScope implements Scope
             $builder->whereHas("clients",function ($q){
                 $q->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
             });
+        }elseif(auth()->user() && auth()->user()->hasRole('paciente')){
+            $builder->where('user_id',auth()->user()->id);
         }
     }
 }

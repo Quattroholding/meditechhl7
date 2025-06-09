@@ -11,7 +11,7 @@
                 @endslot
             @endcomponent
             <!-- /Page Header -->
-            <livewire:patient.medical-history2 :patient_id="$id"/>
+            <livewire:patient.medical-history2 :patient_id="$patient->id"/>
         </div>
     </div>
 </x-app-layout>

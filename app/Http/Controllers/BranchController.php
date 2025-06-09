@@ -42,7 +42,7 @@ class BranchController extends Controller
 
     public function edit($id){
 
-        $data = Branch::find($id);
+        $data = Branch::findOrFail($id);
 
         return view('clients.branchs.edit',compact('data'));
     }
@@ -53,7 +53,7 @@ class BranchController extends Controller
 
     public function destroy($id){
 
-        $data = Branch::find($id);
+        $data = Branch::findOrFail($id);
         $data->delete();
 
         return redirect(route('clients.index'));

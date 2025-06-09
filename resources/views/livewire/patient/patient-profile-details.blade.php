@@ -76,36 +76,54 @@
                             <!-- BIRTHDATE -->
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="form-group local-forms cal-icon">
-                                    <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                                    <x-text-input id="birthdate" type="text" name="text" :value="$patient->birthdate" class="block mt-1 w-full datetimepicker" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <!-- PHONE -->
-                                <div class="input-block local-forms ">
-                                    <x-input-label for="phone" :value="__('patient.phone')" />
-                                    <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$patient->phone"/>
-                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class=" col-12 col-md-6 col-xl-6">
-                                <!-- BLOOD TYPE -->
-                                <div class="input-block local-forms">
-                                    <x-input-label for="blood_type" :value="__('patient.blood_type')" />
-                                    <x-select-input name="blood_type" :options="\App\Models\Lista::bloodTypes()" :selected="[$patient->blood_type]" class="block w-full"/>
-                                    <x-input-error :messages="$errors->get('blood_type')" class="mt-2" />
+                                    <x-input-label for="birth_date" :value="__('patient.birthdate')" required="true"/>
+                                    <x-text-input id="birth_date" type="text" name="birth_date" :value="$patient->birth_date" class="block mt-1 w-full datetimepicker" />
+                                    <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <!-- PHYSICAL ADDRESS -->
-                            <div class=" col-12 col-md-6 col-xl-12">
+                            <div class=" col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <x-input-label for="physical_address" :value="__('patient.physical_address')" />
+                                    <x-input-label for="physical_address" :value="__('patient.physical_address')" required/>
                                     <x-textarea-input id="physical_address" class="block mt-1 w-full" type="email" name="physical_address">{{$patient->address}}</x-textarea-input>
                                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <!-- BILLING ADDRESS -->
+                                <div class="input-block local-forms">
+                                    <x-input-label for="billing_address" :value="__('patient.billing_address')" />
+                                    <x-textarea-input id="billing_address" class="block mt-1 w-full" type="email" name="billing_address">{{$patient->billing_address}}</x-textarea-input>
+                                    <x-input-error :messages="$errors->get('billing_address')" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- PHONE -->
+                            <div class=" col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="phone" :value="__('patient.phone')" required/>
+                                    <x-text-input class="block mt-1 w-full" type="tel" name="phone" :value="$patient->phone"/>
+                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                </div>
+                            </div>
+                            <div class=" col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="marital_status" :value="__('patient.marital_status')" required/>
+                                    <x-select-input name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[$patient->marital_status]" class="block w-full"/>
+                                    <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class=" col-12 col-md-12 col-xl-12">
+                                <!-- BLOOD TYPE -->
+                                <div class="input-block local-forms">
+                                    <x-input-label for="blood_type" :value="__('patient.blood_type')" />
+                                    <x-select-input name="blood_type" :options="\App\Models\Lista::bloodTypes()" :selected="[$patient->blood_type]" class="block w-full"/>
+                                    <x-input-error :messages="$errors->get('blood_type')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
