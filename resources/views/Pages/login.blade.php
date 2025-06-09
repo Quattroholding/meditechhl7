@@ -26,22 +26,6 @@
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
                                 </div>
-
-                                <!-- Form -->
-                                @if(session('message.success'))
-                                    <div class="alert alert-success">
-                                        {{ session('message.success') }}
-                                    </div>
-                                @endif
-                                @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
                                 @if (session('message'))
                                     <div style="color: blue;">
                                         {{ session('message') }}
@@ -64,7 +48,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>{{__('Contraeña')}} <span class="login-danger">*</span></label>
+                                        <label>{{__('Contraseña')}} <span class="login-danger">*</span></label>
                                         <input class="form-control pass-input" type="password" id="password"
                                             name="password" value="">
                                         <span class="profile-views feather-eye-off toggle-password"></span>
@@ -79,12 +63,12 @@
                                     </div>
                                     <div class="forgotpass">
                                         <div class="remember-me">
-                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> {{__('Recurdame')}}
+                                            <label class="custom_check mr-2 mb-0 d-inline-flex remember-me"> {{__('Recuérdame')}}
                                                 <input type="checkbox" name="radio">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        <a href="{{ url('forgot-password') }}">{{__('¿ Se te olvido la contraseña ?')}}</a>
+                                        <a href="{{ url('forgot-password') }}">{{__('¿Se te olvidó la contraseña?')}}</a>
                                     </div>
                                     <div class="form-group login-btn">
                                         <button class="btn btn-primary btn-block" type="submit">{{__('Ingresar')}}</button>
@@ -93,7 +77,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">{{__('¿ Necesitas una cuenta ?')}} <a href="{{ url('register') }}">{{__('Registrarse')}}</a></p>
+                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}">{{__('Regístrate')}}</a></p>
                                     <!-- Social Login -->
                                     <div class="social-login">
 

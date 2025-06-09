@@ -78,7 +78,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">{{(__('¿ Ya tienes una cuenta ?'))}} <a  href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
+                                    <p class="account-subtitle">{{(__('¿Ya tienes una cuenta?'))}} <a  href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
                                 </div>
                             </div>
                         </div>
