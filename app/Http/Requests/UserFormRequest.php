@@ -32,6 +32,8 @@ class UserFormRequest extends FormRequest
     switch ($rol) {
         /*------VALIDACIÓN PARA ADMIN------*/
         case '1': 
+        /*------VALIDACIÓN PARA ASISTENTE------*/
+        case '3':
         /*------VALIDACIÓN PARA ADMIN-CLIENT------*/
         case '5':
                 $rules['first_name'] = 'required|string|max:255';
@@ -55,21 +57,6 @@ class UserFormRequest extends FormRequest
                 $rules['birth_date'] = 'required';
                 $rules['address'] = 'required|string';
                 $rules['phone'] = 'required';
-                $rules['clients'] = 'required|array|min:1';
-            break;
-            /*------VALIDACIÓN PARA ASISTENTE------*/
-        case '3':
-                $rules['first_name'] = 'required|string|max:255';
-                $rules['last_name'] = 'required|string|max:255';
-                $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = 'required|string|confirmed';//'required|string|min:8|confirmed'
-                $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
-                $rules['id_type'] = 'required|string';
-                $rules['id_number'] = 'required|string';
-                $rules['gender'] = 'required|string';
-                $rules['birth_date'] = 'required|date';
-                $rules['address'] = 'required|string';
-                $rules['phone'] = 'required|string';
                 $rules['clients'] = 'required|array|min:1';
             break;
 
