@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function admin(Request $request){
 
         $dashboard = array();
-        return view('dashboard',compact('dashboard'));
+        return view('Dashboard.index',compact('dashboard'));
     }
 
     public function doctor(Request $request){

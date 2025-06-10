@@ -37,6 +37,8 @@
                             @include('layout.partials.header')
                             @if(auth()->user()->hasRole('doctor'))
                                 @include('layout.partials.sidebar-doctor')
+                            @elseif(auth()->user()->hasRole('admin client'))
+                                @include('layout.partials.sidebar-adminclient')
                             @elseif(auth()->user()->hasRole('asistente'))
                                 @include('layout.partials.sidebar-asistente')
                             @elseif(auth()->user()->hasRole('paciente'))

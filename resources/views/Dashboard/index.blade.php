@@ -1,7 +1,5 @@
-<?php $page = 'index'; ?>
-@extends('layout.mainlayout')
-@section('content')
-    <div class="page-wrapper">
+<x-app-layout>
+ <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
             @component('components.page-header')
@@ -17,8 +15,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>{{__('generic.hello')}}, <span>{{auth()->user()->patient->name}}</span></h2>
-                            <p>Have a nice day at work</p>
+                            <h2>{{__('generic.hi')}}, <span>{{auth()->user()->full_name}}</span></h2>
+                            <p>{{__('generic.welcome')}}</p>
                         </div>
                     </div>
                     <div class="col-md-6 position-blk">
@@ -29,32 +27,12 @@
                 </div>
             </div>
             <div class="row">
-                @php
-                    $json = file_get_contents(public_path('../public/assets/json/admin-dashboard.json'));
-                    $dashboards = json_decode($json, true);
-                @endphp
-                @foreach ($dashboards as $dashboard)
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                        <div class="dash-widget">
-                            <div class="dash-boxs comman-flex-center">
-                                <img src="{{ URL::asset('/assets/img/icons/' . $dashboard['Image']) }}" alt="">
-                            </div>
-                            <div class="dash-content dash-count">
-                                <h4>{{ $dashboard['type'] }}</h4>
-                                @if ($dashboard['type'] === 'Earnings')
-                                    <h2>$<span class="counter-up">{{ $dashboard['count'] }}</span></h2>
-                                @else
-                                    <h2><span class="counter-up">{{ $dashboard['count'] }}</span></h2>
-                                @endif
-                                <p><span class="{{ $dashboard['class'] }}"><i
-                                            class="{{ $dashboard['arrowclass'] }}"></i>{{ $dashboard['change'] }}</span> vs
-                                    last
-                                    month</p>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                <livewire:dashboard.counter function="appointments" wire:key="counter_appointments"/>
+                <livewire:dashboard.counter function="patients" wire:key="counter_patients"/>
+                <livewire:dashboard.counter function="encounters" wire:key="counter_encounters"/>
+                <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
             </div>
+            {{--}}
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-6 col-xl-9">
                     <div class="card">
@@ -88,40 +66,21 @@
                     </div>
                 </div>
             </div>
+            {{--}}
             <div class="row">
-                <div class="col-12 col-md-12  col-xl-4">
-                    <div class="card top-departments">
-                        <div class="card-header">
-                            <h4 class="card-title mb-0">Top Departments</h4>
-                        </div>
-                        <div class="card-body">
-                            @php
-                                $json = file_get_contents(public_path('../public/assets/json/admin-dashboard-departments.json'));
-                                $departments = json_decode($json, true);
-                            @endphp
-                            @foreach ($departments as $department)
-                                @if ($department['name'] === 'Opthomology')
-                                    <div class="activity-top mb-0">
-                                    @else
-                                        <div class="activity-top">
-                                @endif
-                                <div class="activity-boxs comman-flex-center">
-                                    <img src="{{ URL::asset('/assets/img/icons/' . $department['icon']) }}" alt="">
-                                </div>
-                                <div class="departments-list">
-                                    <h4>{{ $department['name'] }}</h4>
-                                    <p>{{ $department['percentage'] }}</p>
-                                </div>
-                        </div>
-                        @endforeach
-                    </div>
+                <div class="col-xl-4 col-md-12  col-xs-12">
+                    {{--}}COMPONENTE DE TOP 5 DE ESPECIALIDADES {{--}}
+                    @livewire('dashboard.top-specialties')
                 </div>
+                <div class="col-xl-8 col-xs-12">
+                    {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENST SEGÚN EL ROL DEL USUARIO {{--}}
+                    @livewire('admin-dashboard-appointments')
+                </div>
+                {{--}}
+                @livewire('admin-dashboard-patinets')
+                {{--}}
             </div>
-            @livewire('admin-dashboard-appointments')
+            @component('components.notification-box')
+            @endcomponent
         </div>
-        @livewire('admin-dashboard-patinets')
-    </div>
-    @component('components.notification-box')
-    @endcomponent
-    </div>
-@endsection
+</x-app-layout>
