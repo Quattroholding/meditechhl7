@@ -51,7 +51,7 @@ class UserFormRequest extends FormRequest
                 $rules['password'] = 'required|string|confirmed';//'required|string|min:8|confirmed'
                 $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
                 $rules['id_type'] = 'required|string';
-                $rules['id_number'] = 'required|integer';
+                $rules['id_number'] = 'required';
                 $rules['medical_speciality'] = 'required|array|min:1';
                 $rules['gender'] = 'required|string';
                 $rules['birth_date'] = 'required';
