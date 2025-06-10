@@ -28,7 +28,7 @@ class PractitionerController extends Controller
         $data = Practitioner::find($id);
         //dd($data->specialties);
         $practitioner_clients = $data->user->clients->pluck('id')->toArray();
-        $specialties = $data->qualifications->pluck('id')->toArray();
+        $specialties = $data->qualifications->pluck('medical_speciality_id')->toArray();
         //dd($qualifications, $practitioner_clients);
         return view('practitioners.edit', compact('data', 'practitioner_clients', 'specialties'));
     }
@@ -68,12 +68,17 @@ class PractitionerController extends Controller
         if($model->save()){
         //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
         $clients = $request->clients;
-        foreach($clients as $client){
+        /*foreach($clients as $client){
             $userclient = new UserClient();
             $userclient->user_id = $model->id;
             $userclient->client_id = $client;
             $userclient->save();
+        }*/
+        $sync=[];
+        foreach($clients as $client){
+            $sync[$client]=array('client_id' => $client, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'user_id' => $model->id);
         }
+        $model->clients()->sync($sync);
         
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
         //SE ASIGNA EL ROL SEGÚN EL ID
@@ -100,26 +105,34 @@ class PractitionerController extends Controller
             if($practitioner->save()){  
             $request->session()->flash('message.success','Personal Médico registrado con éxito.');
             }else{
-            foreach($clients as $client){
-                $userclient = UserClient::find($client);
-                $userclient->delete();
-            }
-            $user = User::find($model->id);
-            $user->delete();
+                foreach($clients as $client){
+                    $userclient = UserClient::whereClientId($client)->whereUserId($model->id)->first();
+                    if ($userclient) {
+                        $userclient->delete();
+                    }
+                }
+                $user = User::find($model->id);
+                $user->delete();
 
-            $request->session()->flash('message.error','Hubo un error y no se pudo crear.');
+                $request->session()->flash('message.error','Hubo un error y no se pudo crear.');
         }
         //SE CREA EL REGISTRO EN PRACTITIONER_QUALIFICATIONS
-           $qualifications = new PractitionerQualification();
-           $qualifications->practitioner_id = $practitioner->id;
-           //----------------------------MEJORAR PARA TRABAJAR CON MULTIPLES MEDICAL SPECIALITIES
+           /*$qualifications = new PractitionerQualification();
+           $qualifications->practitioner_id = $practitioner->id;S
            $qualifications->code = $request->medical_speciality[0];
            $qualifications->medical_speciality_id = $request->medical_speciality[0];
          //SE BUSCA EL NOMBRE DE MEDICAL SPECIALITY
            $medical_speciality_name =  MedicalSpeciality::find($request->medical_speciality[0]);
 
-           $qualifications->display = $medical_speciality_name->name;
-           if($qualifications->save()){
+           $qualifications->display = $medical_speciality_name->name;*/
+           $specialties = $request->medical_speciality;
+            $syn=[];
+            foreach($specialties as $speciality){
+            $medical_speciality_name =  MedicalSpeciality::find($speciality);
+            $syn[$speciality]=array('code' => $speciality, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+            }
+            $practitioner->specialties()->sync($syn);
+           /*if($qualifications->save()){
                 $request->session()->flash('message.success','Personal Médico registrado con éxito.');
             }else{
             $doc = Practitioner::find($practitioner->id);
@@ -134,7 +147,7 @@ class PractitionerController extends Controller
 
             $request->session()->flash('message.error','Hubo un error y no se pudo crear.');
             return redirect(route('practitioner.create'));
-        }
+        }*/
         //SE BUSCA EL REGISTRO PARA ASIGNAR EL NOMBRE DEL LOGO
             $user_profile = User::find($model->id);
         //SE GUARDA EL AVATAR EN LA TABLA DE ARCHIVOS
@@ -153,12 +166,14 @@ class PractitionerController extends Controller
                 $doc = Practitioner::find($practitioner->id);
                 $doc->delete();
                 foreach($clients as $client){
-                $userclient = UserClient::find($client);
-                $userclient->delete();
+                $userclient = UserClient::whereClientId($client)->whereUserId($model->id)->first();
+                if ($userclient) {
+                    $userclient->delete();
+                }
                 }
 
-            $user = User::find($model->id);
-            $user->delete();
+                $user = User::find($model->id);
+                $user->delete();
 
                 $request->session()->flash('message.error','Hubo un error y no se pudo almacenar la imagen.');
                 return redirect(route('practitioner.create'));

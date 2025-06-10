@@ -24,26 +24,18 @@
                             @csrf
                             <div class="row">
                                 <!-- ID NUMBER -->
-                                <div class="col-4 col-md-4 col-xl-4">
+                                <div class="col-6 col-md-6 col-xl-6">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="id_type" :value="__('doctor.id_type')" required="true"/>
                                         <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="[$data->identifier_type]" class="block mt-1 w-full"/>
                                         <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-4 col-md-4 col-xl-4">
+                                <div class="col-6 col-md-6 col-xl-6">
                                     <div class=" input-block  local-forms ">
                                         <x-input-label for="id_number" :value="__('doctor.full_id_number')" required="true"/>
                                         <x-text-input id="id_number" class="block mt-1 w-full" type="text" name="id_number" :value="$data->identifier" autofocus/>
                                         <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
-                                    </div>
-                                </div>
-                                <!-- PHONE -->
-                                <div class=" col-4 col-md-4 col-xl-4">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
-                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
                             </div>
@@ -64,16 +56,7 @@
                                         <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <!-- EMAIL -->
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="email" value="{{__('doctor.email').'/usuario'}}" required="true"/>
-                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
-                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                    </div>
-                                </div>
                             </div>
-
                             <div class="row">
                                 <!-- GENDER -->
                                 <div class="col-12 col-md-6 col-xl-6">
@@ -95,12 +78,30 @@
 
                             </div>
                             <div class="row">
+                                <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- EMAIL -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="email" value="{{__('doctor.email').'/usuario'}}" required="true"/>
+                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <!-- PHONE -->
+                                <div class=" col-6 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <!-- PHYSICAL ADDRESS -->
                                 <div class=" col-12 col-md-12 col-xl-12">
                                     <div class="input-block local-forms">
                                         <x-input-label for="physical_address" :value="__('doctor.physical_address')" required="true" />
-                                        <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="physical_address" :value="$data->address"/>
-                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                        <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="physical_address" >{{$data->address}}</x-textarea-input>
+                                        <x-input-error :messages="$errors->get('physical_address')" class="mt-2" />
                                     </div>
                                 </div>
                                 {{--}}<!-- BILLING ADDRESS-->
