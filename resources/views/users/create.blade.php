@@ -225,6 +225,8 @@
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
                     case 5:
+                    /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
+                    case 3:
                     /*-----FORMULARIO PARA ROLE ADMIN-----*/
                     case 1:
                         //$("#client").show();
@@ -242,24 +244,6 @@
                         $("#id_type").show();
                         $("#id_number").show();
                         $("#medical_speciality").show();
-                        $("#gender").show();
-                        $("#birthdate_user").show();
-                        $("#physical_address").show();
-                        $("#whatsapp").show();
-                        $('#first_name').show();
-                        $("#last_name").show();
-                        $("#email").show();
-                        $("#image").show();
-                        $("#password").show();
-                        $("#confirm_password").show();
-                        break;
-                    /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
-                    case 3:
-                        console.log('es un rol asistente');
-                        $("#client_id").show();
-                        $("#id_type").show();
-                        $("#id_number").show();
-                        //$("#medical_speciality").show();
                         $("#gender").show();
                         $("#birthdate_user").show();
                         $("#physical_address").show();

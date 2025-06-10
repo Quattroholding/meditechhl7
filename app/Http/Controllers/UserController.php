@@ -137,8 +137,6 @@ class UserController extends Controller
             }
                 $request->session()->flash('message.success','Personal Médico registrado con éxito.');
                 break;
-            case '3':
-                break;
             case '4':
                 $patient = new Patient();
                 $patient->given_name = $request->first_name;
