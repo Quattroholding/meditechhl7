@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
+    public function index(){
+        $model = ConsultingRoom::class;
+
+        return view('clients.rooms.index',compact('model'));
+    }
     public function create(){
         return view('clients.rooms.create');
     }
@@ -43,6 +48,25 @@ class RoomController extends Controller
 
     public function update(Request $request,$id){
 
+        $validated = $request->validate([
+            "branch_id" => "required",
+            "name" => "required",
+            "number" => "required",
+            "floor" => "required"
+        ]);
+        $model = ConsultingRoom::findOrFail($id);
+        $model->branch_id = $request->branch_id;
+        $model->name = $request->name;
+        $model->number = $request->number;
+        $model->floor = $request->floor;
+
+        if($model->save()){
+            $request->session()->flash('message.success','Consultorio actualizado con éxito.');
+        }else{
+            $request->session()->flash('message.success','Hubo un error y no se pudo crear el consultorio.');
+        }
+
+        return redirect(route('client.room.edit',$id));
     }
 
     public function destroy($id){

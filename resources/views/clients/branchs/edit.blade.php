@@ -1,63 +1,67 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight inline-block" >
-            {{ __('client.titles') }}
+    <div class="page-wrapper">
+        <div class="content">
+            <!-- Page Header -->
+            @component('components.page-header')
+                @slot('title')
+                    {{ __('client.branch') }}
+                @endslot
+                @slot('li_1')
+                    {{ __('generic.edit') }} {{ __('client.branch') }}
+                @endslot
+            @endcomponent
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="col-12">
+                                <div class="form-heading">
+                                    <h4>  {{ __('generic.edit') }} {{ __('client.branch') }}</h4>
+                                </div>
+                            </div>
+                            <form method="POST" action="{{ route('client.branch.update',$data->id) }}">
+                                @csrf
+                                <!-- Client -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="client_id" :value="__('client.title')" required/>
+                                    <x-select-input name="client_id" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="[$data->client_id]" class="block w-full" autofocus/>
+                                    <x-input-error :messages="$errors->get('client_id')" class="mt-2" />
+                                </div>
+                                <!-- TYPE -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="type" :value="__('client.branch.type')" required/>
+                                    <x-select-input name="type" :options="\App\Models\Lista::branchType()" :selected="[$data->type]" class="block w-full"/>
+                                    <x-input-error :messages="$errors->get('type')" class="mt-2" />
+                                </div>
+                                <!-- Name -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="name" :value="__('client.branch.name')" required/>
+                                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="$data->name" />
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                </div>
+                                <!-- PHONE -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="phone" :value="__('client.branch.phone')" required/>
+                                    <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                </div>
+                                <!-- ADDRESS -->
+                                <div class="input-block  local-forms">
+                                    <x-input-label for="address" :value="__('client.branch.address')" />
+                                    <x-textarea-input id="address" class="block mt-1 w-full" type="text" name="address" :value="$data->address">{{$data->address}}</x-textarea-input>
+                                    <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                                </div>
 
-        </h2>
-    </x-slot>
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('client.update',$data->id) }}" enctype="multipart/form-data">
-                    @csrf
-                        <!-- Name -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="name" :value="__('client.name')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="$data->name" required autofocus/>
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                <div class="flex items-center justify-end mt-4">
+                                    <div class="doctor-submit text-end">
+                                        <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.update') }} </button>
+                                        <a class="btn btn-primary cancel-form" href="{{ route('client.branch.index') }}">  {{ __('button.cancel') }}</a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <!-- RUC/DV -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="ruc" :value="__('client.ruc')" />
-                            <x-text-input id="ruc" class="mt-1 w-8/12 in" type="number" name="ruc" :value="$data->ruc" required/>
-                            <x-text-input id="dv" class="mt-1 w-4/12" type="number" name="dv" :value="$data->dv" required maxlength="2" placeholder="{{__('client.dv')}}" min="1"/>
-                            <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
-                        </div>
-                        <!-- LONG NAME -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="long_name" :value="__('client.long_name')" />
-                            <x-text-input id="long_name" class="block mt-1 w-full" type="text" name="long_name" :value="$data->long_name"/>
-                            <x-input-error :messages="$errors->get('long_name')" class="mt-2" />
-                        </div>
-                        <!-- EMAIL -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="email" :value="__('client.email')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                        </div>
-                        <!-- WHATSAPP -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="whatsapp" :value="__('client.whatsapp')" />
-                            <x-text-input id="whatsapp" class="block mt-1 w-full" type="email" name="whatsapp" :value="$data->whatsapp"/>
-                            <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
-                        </div>
-                        <!-- IMAGE -->
-                        <div class="input-block  local-forms">
-                            <x-input-label for="logo" :value="__('client.logo')" />
-                            <x-text-input id="logo" class="block mt-1 w-full" type="file" name="logo" value="" accept="image/*"/>
-                            <x-input-error :messages="$errors->get('logo')" class="mt-2" />
-                        </div>
-                        <div class="flex items-center justify-end mt-4">
-                            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('client.index') }}">
-                                {{ __('button.cancel') }}
-                            </a>
-                            <x-primary-button class="ms-4">
-                                {{ __('button.update') }}
-                            </x-primary-button>
-                        </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

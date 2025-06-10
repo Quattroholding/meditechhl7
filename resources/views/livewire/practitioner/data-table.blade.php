@@ -12,7 +12,6 @@
                     @endslot
                 @endcomponent
                 <!-- /Table Header -->
-                @include('partials.message')
                 <table class="table border-0 custom-table comman-table mb-0">
                     <thead>
                     <tr>

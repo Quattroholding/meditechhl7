@@ -66,12 +66,14 @@ class Create extends Component
 
     public function updatedIdNumber(){
 
+        $this->patientDontExists=false;
         $this->patientExists=false;
         $this->patient_id =null;
         $query = DB::table('patients')->whereIdentifier($this->id_number)->first();
         if($query){
             $this->patientExists=true;
             $this->patient_id = $query->id;
+
         }else if(strlen($this->id_number)>5){
             $this->patientDontExists=true;
         }
@@ -87,9 +89,9 @@ class Create extends Component
                 'patient_id'=>$this->patient_id
             ]);
 
-            session()->flash('message', 'Paciente asociado exitosamente.');
+            session()->flash('message.success', 'Paciente asociado exitosamente.');
         }else{
-            session()->flash('message', 'Este paciente ya se encuentra asociado a su cuenta.');
+            session()->flash('message.error', 'Este paciente ya se encuentra asociado a su cuenta.');
         }
 
         $this->id_number=null;

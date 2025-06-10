@@ -70,8 +70,9 @@
                                 <div class=" col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <div class="form-group local-forms cal-icon">
-                                            <x-input-label for="birthdate" :value="__('doctor.birthdate')" required="true"/>
-                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="date" :value="$data->birth_date"/>
+                                            <x-input-label for="birth_date" :value="__('doctor.birthdate')" required="true"/>
+                                            <x-text-input id="birth_date" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="$data->birth_date"/>
+                                            <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +83,7 @@
                                     <!-- EMAIL -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="email" value="{{__('doctor.email').'/usuario'}}" required="true"/>
-                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
+                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email" readonly/>
                                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                 </div>
@@ -99,9 +100,9 @@
                                 <!-- PHYSICAL ADDRESS -->
                                 <div class=" col-12 col-md-12 col-xl-12">
                                     <div class="input-block local-forms">
-                                        <x-input-label for="physical_address" :value="__('doctor.physical_address')" required="true" />
-                                        <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="physical_address" >{{$data->address}}</x-textarea-input>
-                                        <x-input-error :messages="$errors->get('physical_address')" class="mt-2" />
+                                        <x-input-label for="address" :value="__('doctor.physical_address')" required="true" />
+                                        <x-textarea-input id="address" class="block mt-1 w-full" type="text" name="address" >{{$data->address}}</x-textarea-input>
+                                        <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                     </div>
                                 </div>
                                 {{--}}<!-- BILLING ADDRESS-->
@@ -126,7 +127,7 @@
                                     <!-- CLIENTS -->
                                 <div class="input-block  local-forms">
                                     <x-input-label for="client" :value="__('user.client')" required/>
-                                    <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block w-full"  :selected="$practitioner_clients" multiple aria-label="multiple select example" />
+                                    <x-select-input name="clients[]" :options="$clients" class="block w-full"  :selected="$practitioner_clients" multiple aria-label="multiple select example" />
                                     <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
                                 </div>
                             </div>
@@ -142,7 +143,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-12 col-xl-12">
                                     <div class="form-group local-top-form">
-                                        <x-input-label for="image" class="local-top" :value="__('Avatar')" required="true" />
+                                        <x-input-label for="image" class="local-top" :value="__('Avatar')"/>
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" class="hide-input">
                                             <label for="file" class="upload">Choose File</label>

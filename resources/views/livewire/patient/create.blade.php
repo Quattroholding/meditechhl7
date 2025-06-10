@@ -2,6 +2,7 @@
     @section('scripts')
         <script src="{{ URL::asset('/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
     @stop
+    @include('partials.message')
     <form wire:submit="savePatient">
         @csrf
         <div class="row">
@@ -24,7 +25,7 @@
         @if($patientExists)
         <div class="row">
             <p>Este usuario ya se encuentra registrado en el sistema, ¿Desea asociarlo a su empresa?</p>
-            <button class="btn btn-primary cancel-form" id="associate-yes" wire:click="asociar()">  Asociar </button>
+            <a class="btn btn-primary cancel-form" id="associate-yes" wire:click.stop="asociar()">  Asociar </a>
         </div>
         @endif
         @if($patientDontExists)

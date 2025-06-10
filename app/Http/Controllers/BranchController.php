@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
+    public function index(){
+        $model = Branch::class;
+        return view('clients.branchs.index',compact('model'));
+    }
 
     public function create(){
         return view('clients.branchs.create');
@@ -49,6 +53,26 @@ class BranchController extends Controller
 
     public function update(Request $request,$id){
 
+        dd($request->all());
+        $validated = $request->validate([
+            "client_id" => "required",
+            "name" => "required",
+            "phone" => "required",
+            "full_phone" => "required",
+            "address" => "required",
+            "type" => "required"
+        ]);
+
+        $model =  Branch::findOrFail($id);
+        $model->fill($request->all());
+
+        if($model->save()){
+            $request->session()->flash('message.success','Sucursal actualizada con éxito.');
+        }else{
+            $request->session()->flash('message.success','Hubo un error y no se pudo crear la sucursal.');
+        }
+
+        return redirect(route('client.branch.edit',$id));
     }
 
     public function destroy($id){

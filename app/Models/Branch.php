@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends BaseModel
 {
-    use HasFactory;
+    protected $fillable=['client_id','name','phone','address','type','active'];
 
     // ESTE ES EL FILTRO GLOBAL POR TIPO DE ROL DE USUARIO
     /**
@@ -25,5 +25,9 @@ class Branch extends BaseModel
 
     public function consultingRooms(){
         return $this->hasMany(ConsultingRoom::class);
+    }
+
+    public function getClientNameAttribute(){
+        return $this->client->name;
     }
 }

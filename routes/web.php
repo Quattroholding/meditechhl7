@@ -109,6 +109,8 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), fun
 
     Route::group(array('prefix' => 'branch','middleware'=>['auth','verified']), function() {
 
+        Route::get('/', [BranchController::class, 'index'])->name('client.branch.index');
+
         Route::get('/create', [BranchController::class, 'create'])->name('client.branch.create');
 
         Route::post('/store', [BranchController::class, 'store'])->name('client.branch.store');
@@ -121,6 +123,8 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), fun
     });
 
     Route::group(array('prefix' => 'consulting_rooms','middleware'=>['auth','verified']), function() {
+
+        Route::get('/', [RoomController::class, 'index'])->name('client.room.index');
 
         Route::get('/create', [RoomController::class, 'create'])->name('client.room.create');
 
