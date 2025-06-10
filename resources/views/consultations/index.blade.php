@@ -16,9 +16,7 @@
                 <div class="col-sm-12">
                     <div class="card card-table show-entire p-0 table-dash">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <livewire:consultation.data-table/>
-                            </div>
+                            <livewire:consultation.data-table/>
                         </div>
                     </div>
                 </div>

@@ -706,10 +706,18 @@
                             </div>
                         </div>
                     </div>
-
-                    @if($appointment['description'])
-                        <div class="appointment-reason">
-                            <strong>Motivo:</strong> {{ $appointment['description'] }}
+                    @if($appointment['service_type'] || $appointment['description'])
+                        <div class="row">
+                            <div class="col-6 col-xs-12">
+                                <div class="appointment-reason">
+                                    <strong>{{__('appointment.service_type')}}:</strong> {{ $appointment['service_type'] }}
+                                </div>
+                            </div>
+                            <div class="col-6 col-xs-12">
+                                <div class="appointment-reason">
+                                    <strong>{{__('appointment.reason')}}:</strong> {{ $appointment['description'] }}
+                                </div>
+                            </div>
                         </div>
                     @endif
 
@@ -727,6 +735,9 @@
                         @endif
 
                         @if(auth()->user()->can('fulfilled',$appModel))
+                            <a href="{{route('consultation.show',$appointment['id'])}}" class="action-btn btn-warning">
+                                <i class="fa fa-eye"></i> Editar
+                            </a>
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'fulfilled')" class="action-btn btn-complete">
                                 ✅ Finalizar
                             </button>

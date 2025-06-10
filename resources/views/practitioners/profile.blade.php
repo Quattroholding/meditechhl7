@@ -1,6 +1,4 @@
-<?php $page = 'doctor-profile'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -26,4 +24,5 @@
         @component('components.notification-box')
         @endcomponent
     </div>
-@endsection
+</x-app-layout>
+

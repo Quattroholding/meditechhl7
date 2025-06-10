@@ -20,10 +20,13 @@
                         <div class="login-right">
                             <div class="login-right-wrap">
                                 <div class="account-logo">
-                                    <a href="{{ url('/') }}"><img src="{{ URL::asset('/assets/img/login-logo.png') }}"
-                                            alt=""></a>
+                                    <a href="{{ url('/') }}">
+                                        {{--}}
+                                        <img  src="{{ URL::asset('/assets/img/login-logo.png') }}" alt="">
+                                        {{--}}
+                                        <div class="logo">Meditech</div>
+                                    </a>
                                 </div>
-                                <h2>Reset Password</h2>
                                 <!-- Form -->
                                 <form method="POST" enctype="multipart/form-data" action="{{ route('password.email') }}">
                                     @csrf
@@ -32,20 +35,20 @@
                                             {{ session('message.success') }}
                                         </div>
                                     @endif
-                                    <div class="form-group">
+                                    <div class="input-block local-forms">
                                         <label>Email <span class="login-danger">*</span></label>
                                         <x-text-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" autofocus/>
-                                        <x-input-error :messages="$errors->get('email')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                     <div class="form-group login-btn">
-                                        <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
+                                        <button class="btn btn-primary btn-block" type="submit">{{__('Resetear Contraseña')}}</button>
                                     </div>
                                 </form>
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">Need an account? <a href="{{ url('login') }}">Login</a></p>
-
+                                    <p class="account-subtitle">{{__('¿ Ya tiene una cuenta ?')}} <a href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
+                                    {{--}}
                                     <!-- Social Login -->
                                     <div class="social-login">
                                         <a href="javascript:;"><img
@@ -59,6 +62,7 @@
                                                 alt=""></a>
                                     </div>
                                     <!-- /Social Login -->
+                                    {{--}}
 
                                 </div>
                             </div>

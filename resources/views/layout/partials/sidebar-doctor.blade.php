@@ -15,7 +15,7 @@
                         <span>  {{ __('appointment.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ url('appointments') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
-                        <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('appointment.calendar') }} </a></li>
+                        <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('appointment.scheduler') }} </a></li>
                     </ul>
                 </li>
                 <li class="submenu">
@@ -28,7 +28,16 @@
                         <li><a class="{{ Request::is('patients/create') ? 'active' : '' }}"   href="{{ route('patient.create') }}">{{ __('generic.create') }} {{ __('patient.title') }}</a></li>
                     </ul>
                 </li>
-
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side"> <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt=""></span>
+                        <span>  {{ __('encounter.titles') }} </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
+                    </ul>
+                </li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
@@ -46,6 +55,12 @@
                     <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;
                         <span>{{ __('patient.medical_directory') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="{{ Request::is('practitioners/') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">
+                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>&nbsp;
+                        <span>{{ __('doctor.profile') }}</span>
                     </a>
                 </li>
             </ul>

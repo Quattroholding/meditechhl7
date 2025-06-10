@@ -50,12 +50,12 @@ class ConsultationController extends Controller
                 'end' => now()]);
         }
 
-        $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->pluck('encounter_section_id');
+        $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
 
-        if(!$encounter_sections_user){
-            $encounter_sections = EncounterSection::get();
+        if($encounter_sections_user->count()>0){
+            $encounter_sections = EncounterSection::whereIn('id',$encounter_sections_user->pluck('encounter_section_id'))->get();
         }else{
-            $encounter_sections = EncounterSection::whereIn('id',$encounter_sections_user)->get();
+            $encounter_sections = EncounterSection::whereNull('category')->get();
         }
 
        $secciones= $encounter_sections->pluck('name_esp','id');

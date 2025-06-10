@@ -64,6 +64,7 @@ class ModalSave extends Component
     public function mount(){
         $this->loadEspecialidades();
         $this->loadDoctors();
+        $this->loadConsultorios();
         if(auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
             $this->status='proposed';
@@ -86,8 +87,11 @@ class ModalSave extends Component
     public function resetForm()
     {
         $this->appointment = null;
-        $this->patient_id = '';
-        $this->doctor_id = '';
+        if(!auth()->user()->hasRole('paciente'))
+            $this->patient_id = '';
+        if(!auth()->user()->hasRole('doctor'))
+            $this->doctor_id = '';
+
         $this->description = '';
         $this->appointment_date = Carbon::now()->format('Y-m-d');
         $this->appointment_time = '';
@@ -108,7 +112,27 @@ class ModalSave extends Component
 
     public function loadEspecialidades()
     {
-        $this->especialidades = MedicalSpeciality::pluck('name','id')->toArray();
+        $esp= MedicalSpeciality::when(auth()->user()->hasRole('doctor'),function ($q){
+            $q->whereIn('id',auth()->user()->practitioner->qualifications->pluck('medical_speciality_id'));
+        })->get();
+
+        $this->especialidades = $esp->pluck('name','id')->toArray();
+
+        if($esp->count()==1){
+            $this->medical_speciality_id=$esp->first()->id;
+        }
+
+    }
+
+    public function loadConsultorios()
+    {
+        $this->consultorios =   ConsultingRoom::when(auth()->user()->hasRole('doctor'),function ($q){
+            $q->whereHas('branch',function ($q){
+                $q->whereClientId(auth()->user()->getCurrentClient()->id);
+            });
+        })
+        ->pluck('name','id')->toArray();
+
     }
 
     public function changeSpeciality(){
