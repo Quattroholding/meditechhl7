@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Client;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\PractitionerQualification;
@@ -21,7 +22,8 @@ class PractitionerController extends Controller
     }
 
     public function create(){
-        return view('practitioners.create');
+        $clients = Client::whereIn('id',auth()->user()->clients->pluck('id'))->pluck('id','name')->toArray();
+        return view('practitioners.create',compact('clients'));
     }
 
      public function edit($id){
@@ -29,6 +31,7 @@ class PractitionerController extends Controller
         //dd($data->specialties);
         $practitioner_clients = $data->user->clients->pluck('id')->toArray();
         $specialties = $data->qualifications->pluck('medical_speciality_id')->toArray();
+
         //dd($qualifications, $practitioner_clients);
         return view('practitioners.edit', compact('data', 'practitioner_clients', 'specialties'));
     }
@@ -79,7 +82,7 @@ class PractitionerController extends Controller
             $sync[$client]=array('client_id' => $client, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'user_id' => $model->id);
         }
         $model->clients()->sync($sync);
-        
+
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
         //SE ASIGNA EL ROL SEGÚN EL ID
             $model->assignRole('doctor');
@@ -102,7 +105,7 @@ class PractitionerController extends Controller
             $practitioner->email = $request->email;
             $practitioner->phone = $request->full_phone;
             $practitioner->active = 1;
-            if($practitioner->save()){  
+            if($practitioner->save()){
             $request->session()->flash('message.success','Personal Médico registrado con éxito.');
             }else{
                 foreach($clients as $client){
