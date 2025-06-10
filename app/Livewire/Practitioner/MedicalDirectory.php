@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\Practitioner;
 use App\Models\PractitionerQualification;
+use App\Models\Scopes\PractitionerScope;
 use App\Models\UserClient;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -95,8 +96,7 @@ class MedicalDirectory extends Component
         if(auth()->user()->patient)
             $this->patient_id = auth()->user()->patient->id;
 
-        $practitioners = Practitioner::query()
-            ->with('qualifications')
+        $practitioners = Practitioner::withoutGlobalScope(PractitionerScope::class)->with('qualifications')
             ->when(!$this->showInactive, fn($query) => $query->active())
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {

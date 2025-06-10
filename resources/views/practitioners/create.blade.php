@@ -120,7 +120,7 @@
                                     <!-- CLIENTS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="client" :value="__('user.client')" required/>
-                                        <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full" multiple aria-label="multiple select example" />
+                                        <x-select-input name="clients[]" :options="$clients" class="block  w-full" multiple aria-label="multiple select example" />
                                         <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
                                     </div>
                                 </div>

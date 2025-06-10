@@ -38,6 +38,7 @@
     @if($practitioners->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             @foreach($practitioners as $practitioner)
+
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
                     <!-- Header de la tarjeta -->
                     <div class="p-6 pb-4">
@@ -66,7 +67,7 @@
                                     <span class="inline-flex items-center justify-center w-10 h-10 rounded-full {{ $practitioner->gender === 'female' ? 'bg-pink-100 text-pink-600' : 'bg-blue-100 text-blue-600' }}">
                                          <span>
                                         @if($practitioner->avatar())
-                                            <img width="56" height="56" src="{{url('storage/'.$this->avatar()->path)}}" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
+                                            <img width="56" height="56" src="{{url('storage/'.$practitioner->avatar()->path)}}" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                          @else
                                             <img width="56" height="56" src="{{url('assets/img/profiles/avatar-02.jpg')}}" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         @endif

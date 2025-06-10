@@ -15,6 +15,8 @@ class ClientScope implements Scope
     {
         if(auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {  // el doctor solo ve los clientes que tiene asociados
             $builder->whereIn('id',auth()->user()->clients()->pluck('client_id'));
+        }elseif(auth()->user() && auth()->user()->hasRole('admin client')){
+            $builder->whereIn('idss',auth()->user()->clients()->pluck('client_id'));
         }
     }
 }
