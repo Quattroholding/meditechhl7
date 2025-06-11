@@ -44,9 +44,9 @@ class PatientsByGender extends Component
         $allpatients = PatientClient::whereIn('client_id', $userclient)
         ->whereNull('deleted_at')
         ->count();
-        $this->femalePatientsPercentage = ($femalepatients > 0) ? (($femalepatients/$allpatients) * 100) : 0;
-        $this->malePatientsPercentage = ($malepatients > 0) ? (($malepatients/$allpatients) * 100) : 0;
-        $this->unknownGenderPercentage = ($unknownGenderPatients > 0) ? (($unknownGenderPatients/$allpatients) * 100) : 0;
+        $this->femalePatientsPercentage = ($femalepatients > 0) ? number_format((($femalepatients/$allpatients) * 100), 1) : 0;
+        $this->malePatientsPercentage = ($malepatients > 0) ? number_format((($malepatients/$allpatients) * 100), 1) : 0;
+        $this->unknownGenderPercentage = ($unknownGenderPatients > 0) ? number_format((($unknownGenderPatients/$allpatients) * 100), 1) : 0;
         
 
         //dd($allpatients, $femalepatients, $malepatients);
