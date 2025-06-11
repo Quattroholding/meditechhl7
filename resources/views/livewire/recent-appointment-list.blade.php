@@ -13,7 +13,7 @@
                     <div class="teaching-card">
                         <ul class="steps-history">
                             @foreach ($appointments->groupBy('start') as $time => $group)
-                                <li>{{ \Carbon\Carbon::parse($time)->format('h:i') }}</li>
+                                <li>{{ \Carbon\Carbon::parse($time)->format('h:i A') }}</li>
                             @endforeach
                         </ul>
                         <ul class="activity-feed">
@@ -37,7 +37,7 @@
                                                     <a href="#" class="dropdown-toggle  active-doctor"
                                                         data-bs-toggle="dropdown">
                                                         <i
-                                                            class="fas fa-circle me-2 active-circles"></i>{{ \Carbon\Carbon::parse($time)->format('h:i') }}
+                                                            class="fas fa-circle me-2 active-circles"></i>{{--}}{{ \Carbon\Carbon::parse($time)->format('h:i') }}{{--}}
                                                         <span class='mx-2'>{{ $appointment->patient->name }}</span><span
                                                             class="ongoing-drapt">Checked in<i
                                                                 class="feather-chevron-down ms-2"></i></span>

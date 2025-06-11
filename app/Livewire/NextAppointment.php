@@ -17,22 +17,17 @@ class NextAppointment extends Component
 
     public function getNextAppointment()
     {
-        $doctorId = auth()->user()->id; 
+        $doctorId = auth()->user()->practitioner->id; 
 
-        $nextAppointment = Appointment::selectRaw('DATE(start) as start_date, start')
-            ->where('practitioner_id', $doctorId)
+        $nextAppointment = Appointment::where('practitioner_id', $doctorId)
             ->whereIn('status', ['booked', 'arrived']) 
-            ->where('start', '>=', now())
+            ->where('start', '>=', Carbon::now())
             ->orderBy('start', 'asc')
             ->first();
-       //dd($nextAppointment, now(), today());
-
+        //dd($nextAppointment, Carbon::now());
         if ($nextAppointment && $nextAppointment->start) {
-            //$startDate = Carbon::parse($nextAppointment->start);
-            
             $startDate = Carbon::parse($nextAppointment->start);
             $this->nextAppointmentTime = $startDate->diffForHumans();
-            //dd($nextAppointment->start->diffForHumans());
             $this->calculateTimeRemainingPercentage($startDate);
         } else {
             $this->nextAppointmentTime = 'No upcoming appointments';
