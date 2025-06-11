@@ -30,6 +30,6 @@ return [
     'room.name'=>'Nombre',
     'room.number'=>'Numero',
     'room.floor'=>'Piso',
-    'room.activo'=>'Activo',
+    'room.active'=>'Activo',
     'room.acciones'=>'Acciones',
 ];

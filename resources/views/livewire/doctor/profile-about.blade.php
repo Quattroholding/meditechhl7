@@ -34,7 +34,7 @@
                 <div class="heading-detail">
                     <h4>{{__('doctor.qualifications')}}</h4>
                 </div>
-                @foreach($data->qualifications()->get() as $q)
+                @foreach($qualifications as $q)
                     <div class="personal-activity">
                         <div class="personal-icons status-grey">
                             <img src="{{ URL::asset('/assets/img/icons/medal-01.svg') }}"

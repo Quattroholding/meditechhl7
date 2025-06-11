@@ -108,7 +108,6 @@ class PractitionerController extends Controller
 
     public function update(Request $request,$id){
 
-
         $validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -119,7 +118,7 @@ class PractitionerController extends Controller
             'birth_date' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'full_phone' => 'required',
+            //'full_phone' => 'required',
             //'image' => 'required',
             'clients' => 'required'
         ]);
@@ -156,13 +155,15 @@ class PractitionerController extends Controller
                     //$practitioner->fhir_id = 'practitioner-' . Str::uuid();
                     //$practitioner->user_id = $model->id;
                     if($practitioner->save()){
-                        $specialties = $request->medical_speciality;
-                        $syn=[];
-                        foreach($specialties as $speciality){
-                            $medical_speciality_name =  MedicalSpeciality::find($speciality);
-                            $syn[$speciality]=array('code' => $speciality, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+                        if($request->has('medical_speciality')){
+                            $specialties = $request->medical_speciality;
+                            $syn=[];
+                            foreach($specialties as $speciality){
+                                $medical_speciality_name =  MedicalSpeciality::find($speciality);
+                                $syn[$speciality]=array('code' => $speciality, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+                            }
+                            $practitioner->specialties()->sync($syn);
                         }
-                        $practitioner->specialties()->sync($syn);
                     }
 
 
@@ -177,12 +178,13 @@ class PractitionerController extends Controller
 
             session()->flash('message.success','Actualizado con exito.');
 
-            return redirect(route('practitioner.edit',$id));
-
         }catch (\Exception $e){
             session()->flash('message.error',$e->getMessage());
-            return redirect(route('practitioner.edit',$id))->withInput($request->all());
         }
+
+        if($request->has('redirect'))  return redirect($request->redirect);
+
+        return redirect(route('practitioner.edit',$id));
     }
 
 

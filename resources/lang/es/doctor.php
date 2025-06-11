@@ -42,8 +42,12 @@ return [
     'services'=>'Servicios',
     'procedures'=>'Procedimientos',
     'referrals'=>'Referencias',
+    'qualification'=>'Especialidad',
     'qualifications'=>'Especialidades',
     'add_qualification'=>'Agregar Especialidad',
     'about_me'=>'Acerca de mi',
     'period'=>'Periodo',
+    'qualification_period'=>'Tiempo de estudio',
+    'qualification_start'=>'Inicio',
+    'qualification_end'=>'Fin',
 ];

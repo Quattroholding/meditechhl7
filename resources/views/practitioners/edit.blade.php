@@ -131,14 +131,6 @@
                                     <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
                                 </div>
                             </div>
-                                <!-- WHATSAPP -->
-                               {{--}} <div class=" col-12 col-md-6 col-xl-6">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="whatsapp" :value="__('doctor.whatsapp')" />
-                                        <x-text-input id="whatsapp" class="block mt-1 w-full" type="email" name="whatsapp" :value="old('whatsapp')"/>
-                                        <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
-                                    </div>
-                                </div>{{--}}
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-12 col-xl-12">

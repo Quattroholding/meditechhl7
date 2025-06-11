@@ -118,7 +118,7 @@
                 </div>
             </div>
             <div class="data-actions">
-                <livewire:patient.add-medical-history :patient_id="$data->id"/>
+                <livewire:practitioner.add-qualification :practitioner_id="$data->id"/>
             </div>
         </div>
     </div>

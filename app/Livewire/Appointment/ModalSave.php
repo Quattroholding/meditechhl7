@@ -37,6 +37,7 @@ class ModalSave extends Component
     public $especialidades=[];
     public $practitioners=[];
     public $confirm=false;
+    public $client_id;
 
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
@@ -70,6 +71,8 @@ class ModalSave extends Component
             $this->status='proposed';
         }
         if(auth()->user()->hasRole('doctor'))  $this->doctor_id = auth()->user()->practitioner->id;
+
+        if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
     }
 
     public function render()
@@ -126,7 +129,7 @@ class ModalSave extends Component
 
     public function loadConsultorios()
     {
-        $this->consultorios =   ConsultingRoom::when(auth()->user()->hasRole('doctor'),function ($q){
+        $this->consultorios =   ConsultingRoom::when(auth()->user()->hasRole('doctor') && $this->client_id,function ($q){
             $q->whereHas('branch',function ($q){
                 $q->whereClientId(auth()->user()->getCurrentClient()->id);
             });
