@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class OldPatients extends Component
 {
     public $userclient;
-    public $patients;
+    //public $patients;
     public $percentageChange;
     public $statusClass;
     public $icon;
@@ -28,26 +28,26 @@ class OldPatients extends Component
     public function getOldPatients(){
 
         $currentMonth = Carbon::now()->month;
-        $lastMonth = Carbon::now()->subMonth()->month;
+        $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $currentYear = Carbon::now()->year;
         //TRAE LOS CLIENTES A LOS CUALES EL PRACTITIONER ESTÁ ASOCIADO
         $this->userclient=auth()->user()->clients->pluck('id')->toArray();
         //QUERY PARA TRAER LOS PACIENTES ASOCIADOS/REGISTRADOS ESTE MES
-        $this->patients = PatientClient::whereMonth('created_at', $currentMonth)
+        $patients = PatientClient::whereMonth('created_at', $currentMonth)
         ->whereYear('created_at', $currentYear)
         ->whereIn('client_id', $this->userclient)
         ->count();
         //TRAE TODOS LOS PACIENTES REGISTRADOS POR CLIENTE QUE NO ESTÉN ELIMINADOS
         $this->oldPatients = PatientClient::whereIn('client_id', $this->userclient)
         ->whereNull('deleted_at')
-        ->whereDate('created_at', '<=', Carbon::now()->subMonth())
+        ->whereDate('created_at', '<=', Carbon::now()->subMonthNoOverflow())
         ->count();
         //TRAE TODOS LOS PACIENTES REGISTRADOS POR CLIENTE
         $allPatients = PatientClient::whereIn('client_id', $this->userclient)
         //->whereNull('deleted_at')
         ->count();
         //SE RESTAN LOS PACIENTES DE ESTE MES PARA OBTENER LOS OLD PATIENTS
-        $this->allOldPatients = $allPatients - $this->patients;
+        $this->allOldPatients = $allPatients - $patients;
         //$oldPatientsActive = ($oldPatientsActive < 0) ? 0 : $oldPatientsActive;
         //QUERY PARA OBTENER LOS PACIENTES ELIMINADOS Y SACAR EL PORCENTAJE
         $oldPatientsDeleted = PatientClient::whereIn('client_id', $this->userclient)
@@ -55,7 +55,7 @@ class OldPatients extends Component
         ->whereDate('deleted_at', '<=', Carbon::now())
         ->count();
         //SACAR PORCENTAJE DE PACIENTES ACTIVOS
-        if ($oldPatientsDeleted > 0 && $this->allOldPatients > 0) {
+        if ($this->allOldPatients > 0) {
             $this->percentageChange = ($oldPatientsDeleted/$this->allOldPatients) * 100;
         } else {
             $this->percentageChange = $this->allOldPatients > 0 ? 100 : 0;
