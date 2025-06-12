@@ -3,12 +3,12 @@
     <div class="col-12 col-lg-12 col-xl-12 d-flex">
         <div class="card flex-fill comman-shadow">
             <div class="card-header">
-                <h4 class="card-title d-inline-block" style="color: white">Recent Appointments</h4> <a
-                    href="{{route('appointment.index')}}" class="patient-views float-end">Show all</a>
+                <h4 class="card-title d-inline-block" style="color: white">{{__('Citas recientes')}}</h4> <a
+                    href="{{route('appointment.index')}}" class="patient-views float-end">{{__('Ver todas')}}</a>
             </div>
             <div class="card-body">
                 @if ($appointments->isEmpty())
-                    <p class="px-2">No appointments found for today.</p>
+                    <p class="px-2">{{__('Sin citas programadas para hoy')}}</p>
                 @else
                     <div class="teaching-card">
                         <ul class="steps-history">
@@ -44,14 +44,13 @@
                                                     </a>
                                                     <ul class="doctor-sub-list dropdown-menu">
                                                         <li class="patient-new-list dropdown-item">
-                                                            Patient<span>{{ $appointment->patient->name }}</span><a
+                                                            {{__('patient.title')}}<span>{{ $appointment->patient->name }}</span><a
                                                                 href="javascript:;" class="new-dot status-green"><i
-                                                                    class="fas fa-circle me-1 fa-2xs"></i>New</a></li>
-                                                        <li class="dropdown-item">Reason for
-                                                            Visit<span>{{ $appointment->service_type }}</span><a
+                                                                    class="fas fa-circle me-1 fa-2xs"></i>{{__('generic.new')}}</a></li>
+                                                        <li class="dropdown-item">{{__('appointment.reason')}}<span>{{ $appointment->service_type }}</span><a
                                                                 href="javascript:;"></li>
                                                         <li class="dropdown-item">
-                                                            Time<span>{{ \Carbon\Carbon::parse($appointment->start)->format('h:i') }}
+                                                            {{__('Hora')}}<span>{{ \Carbon\Carbon::parse($appointment->start)->format('h:i') }}
                                                                 -
                                                                 {{ \Carbon\Carbon::parse($appointment->end)->format('h:i A') }}
                                                                 ({{ $appointment->minutes_duration }} min)</span></li>
@@ -67,8 +66,7 @@
                                                                             src="../assets/img/icons/edit.svg"
                                                                             alt=""></a></li>
                                                             </ul>
-                                                            <a class="btn btn-primary appoint-start">Start
-                                                                Appointment</a>
+                                                            <a class="btn btn-primary appoint-start">Start Appointment</a>
                                                         </li>
                                                     </ul>
                                                 @endif

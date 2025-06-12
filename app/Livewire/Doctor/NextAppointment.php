@@ -17,10 +17,10 @@ class NextAppointment extends Component
 
     public function getNextAppointment()
     {
-        $doctorId = auth()->user()->practitioner->id; 
+        $doctorId = auth()->user()->practitioner->id;
 
         $nextAppointment = Appointment::where('practitioner_id', $doctorId)
-            ->whereIn('status', ['booked', 'arrived']) 
+            ->whereIn('status', ['booked', 'arrived'])
             ->where('start', '>=', Carbon::now())
             ->orderBy('start', 'asc')
             ->first();
@@ -30,7 +30,7 @@ class NextAppointment extends Component
             $this->nextAppointmentTime = $startDate->diffForHumans();
             $this->calculateTimeRemainingPercentage($startDate);
         } else {
-            $this->nextAppointmentTime = 'No upcoming appointments';
+            $this->nextAppointmentTime = __('No hay citas próximas');
             $this->timeRemainingPercentage = 0;
         }
 

@@ -1,6 +1,6 @@
 <div class="card patient-structure">
     <div class="card-body">
-        <h5>Old Patients</h5>
+        <h5>{{__('Pacientes antiguos')}}</h5>
         <h3>{{ $oldPatients }}<span class="{{ $statusClass }}"><img src="{{ URL::asset('/assets/img/icons/' . $icon) }}"
                     alt="" class="me-1">{{ number_format($percentageChange, 1) }}%</span></h3>
     </div>

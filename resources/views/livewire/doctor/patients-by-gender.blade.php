@@ -1,6 +1,6 @@
  <div class="card patient-structure">
     <div class="card-body">
-        <h5>Patients by Gender</h5>
+        <h5>{{__('Pacientes por genero')}}</h5>
         <div id="radial-patients-active"></div>
     </div>
 </div>
@@ -25,7 +25,7 @@ var donutChart = {
 	dataLabels: {
         enabled: false
     },
-	
+
     series: [{{$malePatientsPercentage}}, {{$femalePatientsPercentage}}, {{$unknownGenderPercentage}}],
 	labels: [
         'Male',
