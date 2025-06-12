@@ -237,20 +237,7 @@ class Calendar extends Component
     }
 
 
-    public function deleteAppointment($appointmentId)
-    {
-        try {
-            $appointment = Appointment::find($appointmentId);
-            if ($appointment) {
-                $appointment->delete();
-                session()->flash('message.success', 'Cita eliminada exitosamente.');
-                $this->loadAppointments();
-                $this->loadStats();
-            }
-        } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al eliminar la cita.');
-        }
-    }
+
 
     public function updateStatus($appointmentId, $newStatus)
     {

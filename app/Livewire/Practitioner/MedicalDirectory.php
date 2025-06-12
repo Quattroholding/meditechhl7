@@ -120,20 +120,16 @@ class MedicalDirectory extends Component
     }
 
     public function requestAppointment($practitioner_id){
-        /*$this->resetForm();
+        $this->resetForm();
         $this->doctor_id  = $practitioner_id;
         $practitioner= Practitioner::find($this->doctor_id);
         $this->doctor_name = $practitioner->name;
         $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
-        $clientId=null;
-        $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-        if($userClient) $clientId= $userClient->client_id;
-          $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
-            $q->whereClientId($clientId);
-          })->pluck('name','id')->toArray();
-          $this->showModal=true;*/
 
-        $this->showModal=true;
+          $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($practitioner){
+            $q->whereIn('client_id',$practitioner->user->clients->pluck('id'));
+          })->get()->pluck('full_name_branch','id')->toArray();
+          $this->showModal=true;
     }
 
     public function saveAppointment()
@@ -144,11 +140,17 @@ class MedicalDirectory extends Component
             // Obtener información del doctor
             $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
 
+            $rooms = ConsultingRoom::find($this->consulting_room_id);
+            $client_id = $rooms->branch->client_id;
+
+            $original_requested_datetime = $start->format('Y-m-d H:i');
+
             $appointmentData = [
                 'fhir_id'=> 'appointment-' . Str::uuid(),
                 'identifier' => 'APT-' . fake()->unique()->numerify('#######'),
                 'patient_id' => $this->patient_id,
                 'practitioner_id' => $this->doctor_id,
+                'client_id'=>$client_id,
                 'medical_speciality_id' =>$this->medical_speciality_id,
                 'start' =>$start->format('Y-m-d H:i'),
                 'end' => $start->addMinutes($this->duration)->format('Y-m-d H:i'),
@@ -157,6 +159,7 @@ class MedicalDirectory extends Component
                 'service_type'=>$this->service_type,
                 'status' => $this->status,
                 'description' => $this->description,
+                'original_requested_datetime'=>$original_requested_datetime,
                 //'notes' => $this->notes
             ];
 
@@ -168,7 +171,13 @@ class MedicalDirectory extends Component
             }
 
             // Crear nueva cita
-            Appointment::create($appointmentData);
+            $app = Appointment::create($appointmentData);
+
+            if($this->status=='proposed'){
+                $app->addPatientToPractitionerClient();
+                $app->notifyPractitionerAboutProposal();
+            }
+
             session()->flash('message.success', 'Su cita fue enviada al medico exitosamente , debe esperar un correo de confirmacion de la misma con la fecha y hora para su asistencia.');
 
 

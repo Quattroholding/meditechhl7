@@ -21,7 +21,7 @@ class AppointmentPolicy
 
     public function booked(User $user, Appointment $appointment): bool
     {
-        return $appointment->status=='pending' || $appointment->status=='proposed';
+        return in_array($appointment->status,['pending','proposed']) && ($user->hasRole('doctor') && $user->practitioner->id == $appointment->practitioner_id);
     }
 
     public function arrived(User $user, Appointment $appointment): bool
@@ -41,7 +41,7 @@ class AppointmentPolicy
 
     public function cancelled(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status,['pending','booked','arrived']) && now()->isBefore(Carbon::parse($appointment->start));
+        return in_array($appointment->status,['proposed','pending','booked','arrived']) && now()->isBefore(Carbon::parse($appointment->start));
     }
 
     public function noshow(User $user, Appointment $appointment): bool

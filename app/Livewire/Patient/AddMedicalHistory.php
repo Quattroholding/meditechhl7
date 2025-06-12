@@ -45,6 +45,7 @@ class AddMedicalHistory extends Component
         $this->patient->medicalHistories()->create([
             'fhir_id' => 'medicalhistory-' . Str::uuid(),
             'category'=>$this->category,
+            'clinical_status'=>'active',
             'title'=>$this->title,
             'description'=>$this->description,
             'recorded_date'=>now(),

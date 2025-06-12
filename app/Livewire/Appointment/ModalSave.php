@@ -248,7 +248,7 @@ class ModalSave extends Component
 
         if ($this->appointment) {
 
-            if($this->appointment->status=='proposed') {
+            if($this->appointment->status=='proposed' && auth()->user()->can('booked',$this->appointment)) {
                 $this->title='Confirmar Cita';
                 $this->buttonSaveTitle = 'Confirmar Cita';
                 $this->confirm=true;
@@ -286,6 +286,20 @@ class ModalSave extends Component
             $this->notes = $this->appointment->comment;
             $this->canEdit = auth()->user()->can('edit',$this->appointment);
             $this->showModal = true;
+        }
+    }
+
+    public function deleteAppointment($appointmentId)
+    {
+        try {
+            $appointment = Appointment::find($appointmentId);
+            if ($appointment) {
+                $appointment->delete();
+                session()->flash('message.success', 'Cita eliminada exitosamente.');
+                $this->dispatch('loadAppointments');
+            }
+        } catch (\Exception $e) {
+            session()->flash('message.error', 'Error al eliminar la cita.');
         }
     }
 

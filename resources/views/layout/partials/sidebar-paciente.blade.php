@@ -26,13 +26,13 @@
                     </a>
                 </li>
                 <li>
-                    <a class="{{ Request::is('patient/') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
+                    <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-13.svg') }}" alt=""></span>&nbsp;
                         <span>{{ __('patient.medical_history') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a class="{{ Request::is('patient/') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
+                    <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/profile') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>&nbsp;
                         <span>{{ __('patient.profile') }}</span>
                     </a>
