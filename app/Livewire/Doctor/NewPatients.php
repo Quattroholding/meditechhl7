@@ -25,9 +25,9 @@ class NewPatients extends Component
     public function getNewPatients(){
         
         $currentMonth = Carbon::now()->month;
-        $lastMonth = Carbon::now()->subMonth()->month;
+        $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $currentYear = Carbon::now()->year;
-        $lastYear = Carbon::now()->subMonth()->year;
+        $lastYear = Carbon::now()->subMonthNoOverflow()->year;
         //CLIENTES ASOCIADOS AL PRACTITIONER
         $this->userclient=auth()->user()->clients->pluck('id')->toArray();
         //QUERY PARA MOSTRAR PACEINTES REGISTRADOS EN EL MES ACTUAL

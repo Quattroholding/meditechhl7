@@ -40,11 +40,10 @@ class OldPatients extends Component
         //TRAE TODOS LOS PACIENTES REGISTRADOS POR CLIENTE QUE NO ESTÉN ELIMINADOS
         $this->oldPatients = PatientClient::whereIn('client_id', $this->userclient)
         ->whereNull('deleted_at')
-        ->whereDate('created_at', '<=', Carbon::now()->subMonthNoOverflow())
+        ->whereMonth('created_at', '<=', Carbon::now()->subMonthNoOverflow()->month)
         ->count();
         //TRAE TODOS LOS PACIENTES REGISTRADOS POR CLIENTE
         $allPatients = PatientClient::whereIn('client_id', $this->userclient)
-        //->whereNull('deleted_at')
         ->count();
         //SE RESTAN LOS PACIENTES DE ESTE MES PARA OBTENER LOS OLD PATIENTS
         $this->allOldPatients = $allPatients - $patients;
