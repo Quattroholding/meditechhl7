@@ -12,6 +12,7 @@
                         {{__('patient.security_settings')}}
                     </a>
                 </li>
+
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="account_settings" role="tabpanel">

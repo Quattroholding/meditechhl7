@@ -23,6 +23,10 @@ class ConsultingRoom extends BaseModel
         ]);
     }
 
+    public function getFullNameBranchAttribute(){
+        return $this->name.' ('.$this->branch->name.')';
+    }
+
     public function getBranchNameAttribute(){
         return $this->branch->name;
     }

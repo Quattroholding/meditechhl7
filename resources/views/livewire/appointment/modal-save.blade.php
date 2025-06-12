@@ -19,13 +19,13 @@
                     @endif
                     <div class="input-block local-forms">
                         <x-input-label for="medical_speciality_id" :value="__('appointment.speciality')" required/>
-                        <x-select-input wire:model="medical_speciality_id" wire:change="changeSpeciality()" id="medical_speciality_id" name="medical_speciality_id" :options="$especialidades"  class="block w-full"/>
+                        <x-select-input wire:model="medical_speciality_id" wire:change="loadDoctors()" id="medical_speciality_id" name="medical_speciality_id" :options="$especialidades"  class="block w-full"/>
                         <x-input-error :messages="$errors->get('medical_speciality_id')"/>
                     </div>
                     @if(!auth()->user()->hasRole('doctor'))
                         <div class="input-block local-forms">
                             <x-input-label for="doctor_id" :value="__('doctor.title')" required/>
-                            <x-select-input wire:change="changeDoctor()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full"/>
+                            <x-select-input wire:change="loadConsultorios()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full"/>
                             <x-input-error :messages="$errors->get('doctor_id')"/>
                         </div>
                     @else

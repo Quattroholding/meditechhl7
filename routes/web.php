@@ -62,6 +62,13 @@ Route::get('/autologin', function () {
 
 })->name('autologin');
 
+Route::get('/dash', function () {
+    if(auth()->user()->hasRole('admin')) $route=route('admin.dashboard');
+    if(auth()->user()->hasRole('doctor'))   $route=route('doctor.dashboard');
+    if(auth()->user()->hasRole('paciente')) $route=route('patient.dashboard');
+    return redirect($route);
+})->name('dash')->middleware(['auth','verified']);
+
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 
 Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), function() {
@@ -168,6 +175,8 @@ Route::group(array('prefix' => 'users','middleware'=>['auth','verified']), funct
     Route::get('/', [UserController::class, 'index'])->name('user.index');
 
     Route::get('/create', [UserController::class, 'create'])->name('user.create');
+
+    Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->name('user.change_client');
 
     Route::post('/store', [UserController::class, 'store'])->name('user.store');
 

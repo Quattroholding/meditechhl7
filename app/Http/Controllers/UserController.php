@@ -56,7 +56,7 @@ class UserController extends Controller
         if($model->save()){
 
         //SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
-        
+
         if($request->has('clients')){
             $clients = $request->clients;
             foreach($clients as $client){
@@ -95,7 +95,7 @@ class UserController extends Controller
                 session()->flash('message.error', 'Hubo un error al subir el logo.');
                 return redirect(route('user.create'));
             }
-        
+
         //SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
     //FORMATEAR FECHA PARA ALMACENARLA EN LA BASE DE DATOS
     if($request->birth_date){
@@ -148,16 +148,16 @@ class UserController extends Controller
                 $patient->gender = $request->gender;
                 $patient->fhir_id = 'patient-' . Str::uuid();
                 $patient->identifier_type = $request->id_type;
-                $patient->identifier = $request->id_number;  
-                $patient->birth_date = $birthdate;  
+                $patient->identifier = $request->id_number;
+                $patient->birth_date = $birthdate;
                 $patient->address = $request->address;
                 $patient->marital_status = $request->marital_status;
                 $patient->save();
                 $request->session()->flash('message.success','Paciente registrado con éxito.');
                 break;
         }
-        
-       /*    
+
+       /*
         //SE GUARDA EL AVATAR EN LA TABLA DE ARCHIVOS
             $service = new FileService();
             $file = [$request->file('avatar')];
@@ -217,5 +217,15 @@ class UserController extends Controller
         $data->delete();
 
         return redirect(route('user.index'));
+    }
+
+    public function changeClient($client_id){
+
+
+        session(['client' => Client::find($client_id)]);
+
+        session()->flash('message.succes','Client Actualizado con exito.');
+
+        return back();
     }
 }

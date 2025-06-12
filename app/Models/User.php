@@ -65,7 +65,7 @@ class User extends Authenticatable
         if(session()->has('client')){
             return session()->get('client');
         }else{
-            session(['current_client_id' => Client::find($this->default_client_id)]);
+            session(['client' => Client::find($this->default_client_id)]);
             return  Client::find($this->default_client_id);
         }
     }

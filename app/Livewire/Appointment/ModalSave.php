@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
+use App\Models\Scopes\ConsultingRoomScope;
 use App\Models\UserClient;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -63,20 +64,23 @@ class ModalSave extends Component
     ];
 
     public function mount(){
+
         $this->loadEspecialidades();
         $this->loadDoctors();
         $this->loadConsultorios();
+
         if(auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
             $this->status='proposed';
         }
         if(auth()->user()->hasRole('doctor'))  $this->doctor_id = auth()->user()->practitioner->id;
 
-        if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
+
     }
 
     public function render()
     {
+        if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
         return view('livewire.appointment.modal-save');
     }
 
@@ -110,14 +114,20 @@ class ModalSave extends Component
 
     public function loadDoctors()
     {
-        $this->practitioners = Practitioner::get()->pluck('name','id')->toArray();
+        $this->practitioners = Practitioner::when($this->medical_speciality_id,function ($q){
+            $q->whereHas('qualifications',function ($q){
+                $q->where('medical_speciality_id',$this->medical_speciality_id);
+            });
+        })->get()->pluck('name','id')->toArray();
+
+        $this->doctor_id='';
     }
 
     public function loadEspecialidades()
     {
         $esp= MedicalSpeciality::when(auth()->user()->hasRole('doctor'),function ($q){
             $q->whereIn('id',auth()->user()->practitioner->qualifications->pluck('medical_speciality_id'));
-        })->get();
+        })->orderBy('name')->get();
 
         $this->especialidades = $esp->pluck('name','id')->toArray();
 
@@ -129,40 +139,12 @@ class ModalSave extends Component
 
     public function loadConsultorios()
     {
-        $this->consultorios =   ConsultingRoom::when(auth()->user()->hasRole('doctor') && $this->client_id,function ($q){
-            $q->whereHas('branch',function ($q){
-                $q->whereClientId(auth()->user()->getCurrentClient()->id);
+        $this->consultorios =   ConsultingRoom::when($this->doctor_id,function ($q){
+            $q->whereHas('branch',function ($q2){
+                $practitioner = Practitioner::find($this->doctor_id);
+                $q2->whereIn('client_id',$practitioner->user->clients->pluck('id'));
             });
-        })
-        ->pluck('name','id')->toArray();
-
-    }
-
-    public function changeSpeciality(){
-        $this->practitioners = Practitioner::whereHas('qualifications',function ($q){
-            $q->where('medical_speciality_id',$this->medical_speciality_id);
-        })->get()->pluck('name','id')->toArray();
-
-    }
-
-    public function changeDoctor(){
-
-        $practitioner= Practitioner::find($this->doctor_id);
-        if($practitioner){
-            $clientId=null;
-            $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-            if($userClient) $clientId= $userClient->client_id;
-
-            $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
-                $q->whereClientId($clientId);
-            })->pluck('name','id')->toArray();
-
-            //$this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
-        }else{
-            //$this->consultorios=[];
-            //$this->especialidades=[];
-        }
-
+        })->get()->pluck('full_name_branch','id')->toArray();
     }
 
     public function saveAppointment()

@@ -1,6 +1,6 @@
 <div class="header">
     <div class="header-left">
-        <a href="{{ url('/') }}" class="logo">
+        <a href="{{ route('dash') }}" class="logo">
             Meditech
         </a>
     </div>
@@ -115,7 +115,11 @@
                 <div class="user-names">
                     <h5>{{auth()->user()->full_name}}</h5>
                     <span>
-                        @if(auth()->user()->getCurrentClient() && !auth()->user()->hasRole('paciente')) {{auth()->user()->getCurrentClient()->name}} - @endif {{auth()->user()->roles()->first()->name}}</span>
+                        @if(auth()->user()->getCurrentClient() && !auth()->user()->hasRole('paciente'))
+                                {{auth()->user()->getCurrentClient()->name}} -
+                        @endif
+                            {{auth()->user()->roles()->first()->name}}
+                    </span>
                 </div>
                 <span class="user-img">
                     @if(!empty(auth()->user()->profile_picture))
@@ -127,17 +131,21 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-
+                @if(auth()->user()->getCurrentClient() && !auth()->user()->hasRole('paciente'))
+                @foreach(auth()->user()->clients()->whereNot('client_id',auth()->user()->getCurrentClient()->id)->get() as $client)
+                    <a class="dropdown-item" href="{{route('user.change_client',$client->id)}}"><i class="fa fa-exchange"></i> {{$client->name}}</a>
+                @endforeach
+                @endif
                 @if(auth()->user()->hasRole('paciente') && auth()->user()->patient)
-                    <a class="dropdown-item" href="{{ route('patient.profile',auth()->user()->patient->id) }}">{{__('patient.profile')}}</a>
+                    <a class="dropdown-item" href="{{ route('patient.profile',auth()->user()->patient->id) }}"> <i class="fa fa-user"></i> {{__('patient.profile')}}</a>
                 @elseif(auth()->user()->hasRole('doctor') && auth()->user()->practitioner)
-                    <a class="dropdown-item" href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">{{__('patient.profile')}}</a>
+                    <a class="dropdown-item" href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}"> <i class="fa fa-user-md"></i> {{__('patient.profile')}}</a>
                 @endif
                 {{--}}<a class="dropdown-item" href="{{ url('logout') }}">{{__('generic.logout')}}</a>{{--}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="dropdown-item">
-                        {{ __('generic.logout') }}
+                        <i class="fa fa-unlock"></i> {{ __('generic.logout') }}
                     </button>
                 </form>
             </div>
