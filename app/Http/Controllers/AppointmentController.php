@@ -55,7 +55,7 @@ class AppointmentController extends Controller
 
     public function edit($id){
 
-        $data = Client::findOFail($id);
+        $data = Client::findOrFail($id);
 
         return view('clients.edit',compact('data'));
     }
