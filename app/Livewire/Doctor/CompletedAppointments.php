@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
@@ -14,7 +14,7 @@ class CompletedAppointments extends Component
     }
     public function render()
     {
-        return view('livewire.completed-appointments');
+        return view('livewire.doctor.completed-appointments');
     }
 
     public function getCompletedAppointments(){

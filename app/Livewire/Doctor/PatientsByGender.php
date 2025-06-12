@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Doctor;
 
 use Livewire\Component;
 
@@ -17,7 +17,7 @@ class PatientsByGender extends Component
     }
     public function render()
     {
-        return view('livewire.patients-by-gender');
+        return view('livewire.doctor.patients-by-gender');
     }
 
     public function getPercentageByGender(){

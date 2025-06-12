@@ -77,23 +77,23 @@
                 {{--}}
                 <div class="row">
                     <div class="col-lg-4">
-                        @livewire('new-patients')
+                        @livewire('doctor.new-patients')
                     </div>
                     <div class="col-lg-4">
-                        @livewire('old-patients')
+                        @livewire('doctor.old-patients')
                     </div>
                     <div class="col-lg-4">
-                        @livewire('active-patients')
+                        @livewire('doctor.active-patients')
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-3">
-                        @livewire('next-appointment')
-                        @livewire('patients-by-gender')
+                        @livewire('doctor.next-appointment')
+                        @livewire('doctor.patients-by-gender')
                     </div>
                     <div class="col-lg-9">
-                        @livewire('completed-appointments')
-                        @livewire('recent-appointment-list')
+                        @livewire('doctor.completed-appointments')
+                        @livewire('doctor.recent-appointment-list')
                     </div>
                 </div>
             </div>

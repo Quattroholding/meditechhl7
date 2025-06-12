@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Doctor;
 use App\Models\PatientClient;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -19,7 +19,7 @@ class NewPatients extends Component
     }
     public function render()
     {
-        return view('livewire.new-patients');
+        return view('livewire.doctor.new-patients');
     }
 
     public function getNewPatients(){

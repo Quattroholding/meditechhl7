@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Doctor;
 
 use App\Models\PatientClient;
 use Livewire\Component;
@@ -15,7 +15,7 @@ class ActivePatients extends Component
 
     public function render()
     {
-        return view('livewire.active-patients');
+        return view('livewire.doctor.active-patients');
     } 
 
     public function getActivePatients(){

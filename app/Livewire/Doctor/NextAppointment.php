@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Doctor;
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -52,6 +52,6 @@ class NextAppointment extends Component
 
     public function render()
     {
-        return view('livewire.next-appointment');
+        return view('livewire.doctor.next-appointment');
     }
 }
