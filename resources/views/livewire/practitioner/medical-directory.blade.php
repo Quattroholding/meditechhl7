@@ -210,6 +210,11 @@
             </div>
         </div>
     </div>
+        <livewire:appointment.modal-save wire:model="showModal"
+                                         title="Solicitar Cita"
+                                         appointment_date="{{now()->format('Y-m-d')}}"
+                                         appointment_time="{{now()->format('h:i')}}"/>
+        {{--}}
     <!-- Modal -->
     @if($showModal)
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
@@ -272,6 +277,7 @@
             </div>
         </div>
     @endif
+    {{--}}
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastr', (event) => {

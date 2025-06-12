@@ -1,13 +1,8 @@
 <div class="row">
-    <div class="col-12 col-md-12  col-xl-7">
-       <livewire:activity-chart />
-        <div class="row">
-            <div class="col-12 col-md-12  col-xl-8">
-                @livewire('completed-appointments')
-            </div>
-
-            @livewire('next-appointment')
-        </div>
+    <div class="col-lg-6">
+        @livewire('next-appointment')
+        @livewire('completed-appointments')
+        @livewire('recent-appointment-list')
     </div>
-    @livewire('recent-appointment-list')
+
 </div>

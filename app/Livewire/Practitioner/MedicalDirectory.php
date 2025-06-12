@@ -120,7 +120,7 @@ class MedicalDirectory extends Component
     }
 
     public function requestAppointment($practitioner_id){
-        $this->resetForm();
+        /*$this->resetForm();
         $this->doctor_id  = $practitioner_id;
         $practitioner= Practitioner::find($this->doctor_id);
         $this->doctor_name = $practitioner->name;
@@ -131,7 +131,9 @@ class MedicalDirectory extends Component
           $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
             $q->whereClientId($clientId);
           })->pluck('name','id')->toArray();
-          $this->showModal=true;
+          $this->showModal=true;*/
+
+        $this->showModal=true;
     }
 
     public function saveAppointment()

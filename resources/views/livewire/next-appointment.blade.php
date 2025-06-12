@@ -1,4 +1,4 @@
-<div class="col-12 col-md-12  col-xl-4 d-flex">
+<div class="col-12 col-md-12  col-xl-12 d-flex">
     <div class="card wallet-widget">
         <div class="circle-bar circle-bar2">
             <div class="circle-graph2" data-percent="{{ $timeRemainingPercentage }}">

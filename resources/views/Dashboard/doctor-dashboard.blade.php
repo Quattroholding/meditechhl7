@@ -55,6 +55,7 @@
                 </div>
             </div>
             <div class="row">
+                {{--}}
                 <div class="col-12 col-md-12 col-lg-12 col-xl-7">
                     <div class="card">
                         <div class="card-body">
@@ -73,18 +74,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-12 col-lg-6 col-xl-3 d-flex">
-                   @livewire('patients-by-gender')
-                </div>
-                <div class="col-12 col-md-12 col-lg-6 col-xl-2 d-flex">
-                    <div class="struct-point">
+                {{--}}
+                <div class="row">
+                    <div class="col-lg-4">
                         @livewire('new-patients')
+                    </div>
+                    <div class="col-lg-4">
                         @livewire('old-patients')
+                    </div>
+                    <div class="col-lg-4">
                         @livewire('active-patients')
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        @livewire('next-appointment')
+                        @livewire('patients-by-gender')
+                    </div>
+                    <div class="col-lg-9">
+                        @livewire('completed-appointments')
+                        @livewire('recent-appointment-list')
+                    </div>
+                </div>
             </div>
-            <livewire:doctor.dashboard/>
         </div>
         @component('components.notification-box')
         @endcomponent

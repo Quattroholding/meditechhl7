@@ -1,6 +1,6 @@
     {{-- In work, do what you enjoy. --}}
 
-    <div class="col-12 col-lg-12 col-xl-5 d-flex">
+    <div class="col-12 col-lg-12 col-xl-12 d-flex">
         <div class="card flex-fill comman-shadow">
             <div class="card-header">
                 <h4 class="card-title d-inline-block" style="color: white">Recent Appointments</h4> <a
@@ -40,7 +40,7 @@
                                                             class="fas fa-circle me-2 active-circles"></i>{{--}}{{ \Carbon\Carbon::parse($time)->format('h:i') }}{{--}}
                                                         <span class='mx-2'>{{ $appointment->patient->name }}</span><span
                                                             class="ongoing-drapt">Checked in<i
-                                                                class="feather-chevron-down ms-2"></i></span>
+                                                                class="fa fa-chevron-down ms-2"></i></span>
                                                     </a>
                                                     <ul class="doctor-sub-list dropdown-menu">
                                                         <li class="patient-new-list dropdown-item">
@@ -58,13 +58,13 @@
                                                         <li class="schedule-blk mb-0 pt-2 dropdown-item">
                                                             <ul class="nav schedule-time">
                                                                 <li><a href="javascript:;"><img
-                                                                            src="assets/img/icons/trash.svg"
+                                                                            src="../assets/img/icons/trash.svg"
                                                                             alt=""></a></li>
                                                                 <li><a href="javascript:;"><img
-                                                                            src="assets/img/icons/profile.svg"
+                                                                            src="../assets/img/icons/profile.svg"
                                                                             alt=""></a></li>
                                                                 <li><a href="javascript:;"><img
-                                                                            src="assets/img/icons/edit.svg"
+                                                                            src="../assets/img/icons/edit.svg"
                                                                             alt=""></a></li>
                                                             </ul>
                                                             <a class="btn btn-primary appoint-start">Start
@@ -83,7 +83,7 @@
             </div>
         </div>
     </div>
-    </div>
+
     <script>
         document.addEventListener('livewire:load', function() {
             setInterval(function() {
