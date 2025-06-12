@@ -83,7 +83,7 @@ class Appointment extends Model
      */
     public function scopeFullFilled(Builder $query): void
     {
-        $query->where('status', 'fullfilled');
+        $query->where('status', 'fulfilled');
     }
 
     /**

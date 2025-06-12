@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="main-limit">
-            <p>Next Appointment in</p>
+            <p>Next Appointment</p>
             <h4>{{ $nextAppointmentTime }}</h4>
         </div>
     </div>

@@ -74,30 +74,13 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-12 col-lg-6 col-xl-3 d-flex">
-                    <div class="card">
-                        <div class="card-body">
-                            <div id="radial-patients"></div>
-                        </div>
-                    </div>
+                   @livewire('patients-by-gender')
                 </div>
                 <div class="col-12 col-md-12 col-lg-6 col-xl-2 d-flex">
                     <div class="struct-point">
-                        <div class="card patient-structure">
-                            <div class="card-body">
-                                <h5>New Patients</h5>
-                                <h3>56<span class="status-green"><img
-                                            src="{{ URL::asset('/assets/img/icons/sort-icon-01.svg') }}" alt=""
-                                            class="me-1">60%</span></h3>
-                            </div>
-                        </div>
-                        <div class="card patient-structure">
-                            <div class="card-body">
-                                <h5>Old Patients</h5>
-                                <h3>35<span class="status-pink"><img
-                                            src="{{ URL::asset('/assets/img/icons/sort-icon-02.svg') }}" alt=""
-                                            class="me-1">-20%</span></h3>
-                            </div>
-                        </div>
+                        @livewire('new-patients')
+                        @livewire('old-patients')
+                        @livewire('active-patients')
                     </div>
                 </div>
             </div>
