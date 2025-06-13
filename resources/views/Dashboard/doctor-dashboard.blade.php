@@ -96,7 +96,7 @@
                         @livewire('doctor.recent-appointment-list')
                         
                     </div>
-                    @livewire('doctor.notes-by-practitioner')
+                    {{--}}@livewire('doctor.notes-by-practitioner'){{--}}
                 </div>
             </div>
         </div>

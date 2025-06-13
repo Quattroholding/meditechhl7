@@ -5,6 +5,7 @@ namespace App\Livewire\Patient;
 use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
+use App\Models\ClinicalImpression;
 use App\Models\Patient;
 use App\Models\PhysicalExam;
 use App\Models\PresentIllness;
@@ -46,6 +47,7 @@ class MedicalHistory2 extends Component
     public $medicalRequests = [];
     public $serviceRequests = [];
     public $medicalHistories = [];
+    public $medicalNotes = [];
 
     // Configuración de paginación
     public $perPage = 10;
@@ -82,6 +84,7 @@ class MedicalHistory2 extends Component
     {
         $this->isLoading = true;
         $current_medications = [];
+        $totalNotes = auth()->user()->hasRole('doctor') || auth()->user()->hasRole('asistente') ? ClinicalImpression::where('patient_id', $this->patientId)->wherePractitionerId(auth()->user()->practitioner->id)->count() : ClinicalImpression::where('patient_id', $this->patientId)->count();
         if(Encounter::where('patient_id', $this->patientId)->count()>0)
             $current_medications = $this->patient->current_medications;
 
@@ -94,6 +97,7 @@ class MedicalHistory2 extends Component
             'vital_signs_count' => VitalSign::where('patient_id', $this->patientId)->count(),
             'allergies' => $this->patient->allergies ?? [],
             'medications' =>$current_medications,
+            'total_notes' => $totalNotes,
             'recent_activity' => $this->getRecentActivity()
         ];
 
@@ -120,6 +124,7 @@ class MedicalHistory2 extends Component
             'medical-requests' => $this->loadMedicalRequests(),
             'service-requests' => $this->loadServiceRequests(),
             'medical-histories' => $this->loadMedicalHistories(),
+            'medical-notes' => $this->loadMedicalNotes(),
             default => null
         };
 
@@ -210,6 +215,14 @@ class MedicalHistory2 extends Component
         //$this->medicalHistories = $this->applyFilters($query, 'recorded_date')->paginate($this->perPage);
 
         $this->medicalHistories = $this->applyFilters($query, 'recorded_date')->get();
+    }
+
+        private function loadMedicalNotes()
+    {
+        $query = \App\Models\ClinicalImpression::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
+        //$this->medicalHistories = $this->applyFilters($query, 'recorded_date')->paginate($this->perPage);
+
+        $this->medicalNotes = $this->applyFilters($query, 'created_at')->get();
     }
 
     // ===========================================
@@ -358,6 +371,7 @@ class MedicalHistory2 extends Component
             'medical-requests' => $this->medicalRequests,
             'service-requests' => $this->serviceRequests,
             'medical-histories' => $this->medicalHistories,
+            'medical-notes' => $this->medicalNotes,
             default => null
         };
     }
