@@ -92,9 +92,10 @@
                         @livewire('doctor.patients-by-gender')
                     </div>
                     <div class="col-lg-9">
-                        @livewire('doctor.completed-appointments')
                         @livewire('doctor.recent-appointment-list')
-                        
+                        @livewire('doctor.completed-appointments')
+
+
                     </div>
                     {{--}}@livewire('doctor.notes-by-practitioner'){{--}}
                 </div>

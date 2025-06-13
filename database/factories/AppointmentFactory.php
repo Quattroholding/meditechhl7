@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Appointment;
 use App\Models\Encounter;
 use App\Models\Patient;
+use App\Models\PatientClient;
 use App\Models\Practitioner;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -88,6 +89,22 @@ class AppointmentFactory extends Factory
         ];
     }
 
+    public function configure()
+    {
+        return $this->afterCreating(function (Appointment $appointment) {
+            // Asignar rol de paciente por defecto si no tiene ningún rol
+            $client_id = $appointment->practitioner->user->default_client_id;
+            $patientClient = PatientClient::wherePatientId($appointment->patient_id)->whereClientId($client_id)->first();
+
+            if(!$patientClient){
+                PatientClient::create([
+                    'patient_id'=>$appointment->patient_id,
+                    'client_id'=>$client_id
+                ]);
+            }
+        });
+    }
+
     // States adicionales para diferentes estados de cita
     public function booked()
     {
@@ -127,6 +144,7 @@ class AppointmentFactory extends Factory
             ];
         });
     }
+
 
     // State para citas pasadas
     public function past()

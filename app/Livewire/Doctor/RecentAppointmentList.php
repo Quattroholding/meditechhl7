@@ -24,7 +24,6 @@ class RecentAppointmentList extends Component
         $today =  \Carbon\Carbon::today();
         $doctor_id = auth()->user()->practitioner->id;
         $this->appointments = Appointment::whereDate('start', $today)
-                                        ->wherePractitionerId($doctor_id)
                                         ->orderBy('start')
                                         ->get();
     }
@@ -66,5 +65,11 @@ class RecentAppointmentList extends Component
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al actualizar el estado.');
         }
+    }
+
+    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    {
+        $this->showModal = true;
+        $this->modalTitle = 'Actualizar Cita';
     }
 }

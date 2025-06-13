@@ -1,4 +1,4 @@
-<div>
+<div style="display: inline-block" >
     @if(in_array($appointment->status,['booked','arrived','fulfilled','pending','checked-in']))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop1"
