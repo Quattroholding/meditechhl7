@@ -575,6 +575,14 @@
                         <span class="nav-text">Historial Previo</span>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <div wire:click="changeSection('medical-notes')"
+                         class="nav-link {{ $activeSection === 'medical-notes' ? 'active' : '' }}">
+                        <span class="nav-icon">📒</span>
+                        <span class="nav-text">Notas Médicas</span>
+                         <span class="nav-count">{{ $overviewData['total_notes'] ?? 0 }}</span>
+                    </div>
+                </li>
             </ul>
         </div>
 
@@ -611,6 +619,9 @@
                             @case('medical-histories')
                                 📚 Historial Médico Previo
                                 @break
+                            @case('medical-notes')
+                                📒 Notas Médicas
+                            @break
                         @endswitch
                     </h2>
 
@@ -700,6 +711,9 @@
                             @break
                         @case('medical-histories')
                             @include('patients.medicalHistory.medical-histories')
+                            @break
+                        @case('medical-notes')
+                            @include('patients.medicalHistory.medical-notes')
                             @break
                     @endswitch
                 @endif

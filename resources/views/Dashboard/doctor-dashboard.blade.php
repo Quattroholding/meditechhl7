@@ -97,7 +97,7 @@
 
 
                     </div>
-                    @livewire('doctor.notes-by-practitioner')
+                    {{--}}@livewire('doctor.notes-by-practitioner'){{--}}
                 </div>
             </div>
         </div>
