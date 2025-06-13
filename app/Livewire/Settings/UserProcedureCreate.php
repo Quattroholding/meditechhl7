@@ -63,7 +63,7 @@ class UserProcedureCreate extends Component
             'current_price_cpt.required' => 'El precio es obligatorio.',
         ]);
 
-        $cpt = CptCode::whereId($this->selectedOption)->first();
+        $cpt = CptCode::whereId($this->cpt_id)->first();
 
         UserProcedure::create([
             'user_id'=>auth()->id(),
@@ -81,7 +81,7 @@ class UserProcedureCreate extends Component
 
         $this->created = UserProcedure::whereUserId(auth()->user()->id)->get();
 
-        $this->reset(['selectedOption', 'current_price_cpt']);
+        $this->reset(['cpt_id', 'current_price_cpt']);
 
     }
 
