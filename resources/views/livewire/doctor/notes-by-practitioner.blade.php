@@ -6,6 +6,9 @@
     <div class="card-body p-0 table-dash">
         <div class="table-responsive">
             <table class="table mb-0 border-0 custom-table">
+            @if ($notes->isEmpty())
+                    <p class="px-2 py-2">{{__('No ha creado notas')}}</p>
+                @else
                 <thead>
                     <tr>
                         <th>Paciente</th>
@@ -14,9 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @if ($notes->isEmpty())
-                    <p class="px-2 py-2">{{__('No ha creado notas')}}</p>
-                @else
+
                     @foreach ($notes as $note)
                     <tr>
                         <td class=" appoint-doctor">
