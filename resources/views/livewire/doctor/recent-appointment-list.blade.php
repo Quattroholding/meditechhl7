@@ -27,13 +27,13 @@
                                                     $isPast = $appointmentTime->isPast();
                                                 @endphp
                                                 <li
-                                                    class="{{ in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'dropdown ongoing-blk' : ($isPast ? 'past-appointment' : 'stick-line') }}">
+                                                    class="{{ in_array($appointment->status, ['booked', 'arrived']) ? 'dropdown ongoing-blk' : ($isPast ? 'past-appointment' : 'stick-line') }}">
                                                     <i
                                                         class="fas fa-circle me-2 {{ $appointment->status == 'fulfilled' ? 'active-circles' : '' }}"></i>{{ \Carbon\Carbon::parse($time)->format('h:i') }}
                                                     <span
                                                         title="{{ !in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' . $appointment->status : '' }}">{{ $appointment->patient->name }}</span>
                                                 </li>
-                                                @if (in_array($appointment->status, ['booked', 'arrived', 'fulfilled']))
+                                                @if (in_array($appointment->status, ['booked', 'arrived']))
                                                     <a href="#" class="dropdown-toggle  active-doctor"
                                                         data-bs-toggle="dropdown">
                                                         <i
@@ -56,10 +56,10 @@
                                                                 ({{ $appointment->minutes_duration }} min)</span></li>
                                                         <li class="schedule-blk mb-0 pt-2 dropdown-item">
                                                             <ul class="nav schedule-time">
-                                                                <li><a href="javascript:;"><img
+                                                                <li><a href=""><img
                                                                             src="../assets/img/icons/trash.svg"
                                                                             alt=""></a></li>
-                                                                <li><a href="javascript:;"><img
+                                                                <li><a href="{{route('patient.profile', $appointment->patient->id)}}"><img
                                                                             src="../assets/img/icons/profile.svg"
                                                                             alt=""></a></li>
                                                                 <li><a href="javascript:;"><img
