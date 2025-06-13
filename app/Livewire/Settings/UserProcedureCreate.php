@@ -81,7 +81,7 @@ class UserProcedureCreate extends Component
 
         $this->created = UserProcedure::whereUserId(auth()->user()->id)->get();
 
-        $this->reset(['selectedOption', 'current_price_cpt']);
+        $this->reset(['cpt_id', 'current_price_cpt']);
 
     }
 
