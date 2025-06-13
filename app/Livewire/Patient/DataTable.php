@@ -5,6 +5,7 @@ namespace App\Livewire\Patient;
 use App\Models\Patient;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -50,15 +51,18 @@ class DataTable extends Component
     public function saveNote()
     {
         $this->validate(['note' => 'required|string|max:1000']);
-
+        if(auth()->user()->hasRole('doctor')){
         $this->selectedPatient->notes()->create([
-            'user_id'=>auth()->id(),
-            'note'=>$this->note,
-            'type'=>'enfermeria',
+            'practitioner_id'=>auth()->user()->practitioner->id,
+            'description'=>$this->note,
+            //'type'=>'enfermeria',
+            'fhir_id' => 'clinicalimpresion-' . Str::uuid(),
+            'status' => 'completed',
         ]);
 
         $this->showModal = false;
-        session()->flash('message', 'Nota guardada correctamente.');
+        session()->flash('message.success', 'Nota del Paciente '.$this->selectedPatient->name.' guardada correctamente.');
+    }else{session()->flash('message.error', 'No se pudo guardar la nota porque no está autorizado para hacer este procedimiento.');}
     }
 
     public function sortBy($field)

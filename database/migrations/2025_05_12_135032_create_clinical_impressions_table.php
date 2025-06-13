@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR ClinicalImpression resource ID');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
-            $table->foreignId('encounter_id')->constrained('encounters');
+            $table->foreignId('encounter_id')->constrained('encounters')->nullable();
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->enum('status', ['in-progress', 'completed', 'entered-in-error']);
             $table->text('description')->nullable();
