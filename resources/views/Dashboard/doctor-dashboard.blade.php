@@ -94,7 +94,9 @@
                     <div class="col-lg-9">
                         @livewire('doctor.completed-appointments')
                         @livewire('doctor.recent-appointment-list')
+                        
                     </div>
+                    @livewire('doctor.notes-by-practitioner')
                 </div>
             </div>
         </div>
