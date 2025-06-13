@@ -2303,14 +2303,14 @@ table.dataTable thead .sorting_desc_disabled:after {
 }
 .schedule-blk {
 	display: -webkit-box;
-    display: -ms-flexbox;
+    /*display: -ms-flexbox;*/
     display: flex;
 	-webkit-box-align: center;
-	-ms-flex-align: center;
+	/*-ms-flex-align: center;*/
 	align-items: center;
-	justify-content: space-between;
-	-webkit-justify-content: space-between;
-	-ms-flex-pack: space-between;
+	/*justify-content: space-between;
+	-webkit-justify-content: space-between;*/
+	/*-ms-flex-pack: space-between;*/
 	border-top: 1px solid rgba(51, 52, 72, 0.2);
 	padding-top: 10px;
 	flex-wrap: wrap;

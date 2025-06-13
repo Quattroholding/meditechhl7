@@ -62,7 +62,7 @@
                                                                 <li><a href="{{route('patient.profile', $appointment->patient->id)}}"><img
                                                                             src="../assets/img/icons/profile.svg"
                                                                             alt=""></a></li>
-                                                                <li><a href="javascript:;"><img
+                                                                <li><a wire:click="editAppointment({{$appointment->id}})"><img
                                                                             src="../assets/img/icons/edit.svg"
                                                                             alt=""></a></li>
                                                             </ul>
@@ -79,6 +79,10 @@
                 </ul>
                 @endif
             </div>
+            <livewire:appointment.modal-save wire:model="showModal"
+                                     :title="$modalTitle"
+                                     :appointment_date="$appointment_date"
+                                     :appointment_time="$appointment_time"/>
         </div>
     </div>
 

@@ -8,6 +8,10 @@ use App\Models\Appointment;
 class RecentAppointmentList extends Component
 {
     public $appointments;
+    public $appointment_date;
+    public $appointment_time;
+    public $modalTitle;
+    public $showModal;
     protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
     public function mount()
     {
@@ -28,5 +32,11 @@ class RecentAppointmentList extends Component
     public function render()
     {
         return view('livewire.doctor.recent-appointment-list');
+    }
+
+    public function editAppointment($appointmentId){
+        //dd('aqui');
+        $this->modalTitle = 'Actualizar Cita';
+        $this->dispatch('editAppointmentModal',$appointmentId);
     }
 }
