@@ -2,8 +2,8 @@
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item active show" role="presentation">
-                    <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
+                <li class="nav-item" role="presentation">
+                    <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
                         {{__('patient.account_settings')}}
                     </a>
                 </li>
@@ -12,9 +12,10 @@
                         {{__('patient.security_settings')}}
                     </a>
                 </li>
+
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active show" id="account_settings" role="tabpanel">
+                <div class="tab-pane active" id="account_settings" role="tabpanel">
                     <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">

@@ -122,7 +122,7 @@
                     </form>
                 </div>
                 <div class="tab-pane" id="security_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('patient.update',$data->id) }}">
+                    <form method="POST" action="{{ route('practitioner.update',$data->id) }}">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$data->id)}}">
                         <div class="form-heading">

@@ -39,4 +39,32 @@ class RecentAppointmentList extends Component
         $this->modalTitle = 'Actualizar Cita';
         $this->dispatch('editAppointmentModal',$appointmentId);
     }
+
+    public function updateStatus($appointmentId, $newStatus)
+    {
+
+        try {
+            $appointment = Appointment::find($appointmentId);
+            $current_status = $appointment->status;
+            if ($appointment) {
+
+                $appointment->update(['status' => $newStatus]);
+                session()->flash('message.success', 'Estado actualizado exitosamente.');
+                $this->refreshAppointments();
+
+                if($current_status=='proposed' && $newStatus=='booked'){
+                    $appointment->notifyPatientAboutConfirmation();
+                }
+
+                if($newStatus=='checked-in'){
+                    $this->dispatch('showToastr'.$appointmentId,
+                        type: 'success',
+                        message: '¡Espere por favor en unos segundos empezara su consulta!'
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            session()->flash('message.error', 'Error al actualizar el estado.');
+        }
+    }
 }

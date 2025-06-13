@@ -7,7 +7,7 @@
                     {{ __('patient.title') }}
                 @endslot
                 @slot('li_1')
-                    {{ __('generic.create') }} {{ __('patient.title') }}
+                    {{ __('patient.medical_history') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->
