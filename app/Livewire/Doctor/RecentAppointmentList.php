@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Doctor;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\Appointment;
 
@@ -15,11 +16,12 @@ class RecentAppointmentList extends Component
     protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
     public function mount()
     {
-       $this->refreshAppointments();
+       $this->loadAppointments();
     }
 
     // app/Http/Livewire/AppointmentList.php
-    public function refreshAppointments()
+    #[On('loadAppointments')]
+    public function loadAppointments()
     {
         $today =  \Carbon\Carbon::today();
         $doctor_id = auth()->user()->practitioner->id;
@@ -49,7 +51,7 @@ class RecentAppointmentList extends Component
 
                 $appointment->update(['status' => $newStatus]);
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
-                $this->refreshAppointments();
+                $this->loadAppointments();
 
                 if($current_status=='proposed' && $newStatus=='booked'){
                     $appointment->notifyPatientAboutConfirmation();

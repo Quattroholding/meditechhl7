@@ -27,7 +27,7 @@
     </style>
     <div  class="card flex-fill comman-shadow" >
         <div class="card-header">
-            <h4 class="card-title d-inline-block" style="color: white">{{__('Citas recientes')}}</h4>
+            <h4 class="card-title d-inline-block" style="color: white">{{__('Citas para hoy')}}</h4>
             <button wire:click="openModal" class="btn btn-success float-end">+ Nueva Cita</button>
         </div>
         <div class="card-body" >
@@ -56,12 +56,16 @@
                                 <li class="{{ in_array($appointment->status, ['booked', 'arrived']) ? 'dropdown ongoing-blk' : ($isPast ? 'past-appointment' : 'stick-line') }}">
                                     <i class="fas fa-circle me-2 {{ $appointment->status == 'fulfilled' ? 'active-circles' : '' }}"></i>
                                     {{ \Carbon\Carbon::parse($time)->format('h:i') }}
-                                    <span title="{{ !in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}">
+                                    <a href="" title="{{ !in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
+                                          data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight">
                                         {{ $appointment->patient->name }}
-
-                                        <div class="float-end"><livewire:appointment.status :appointment_id="$appointment->id"/></div>
-                                    </span>
-
+                                    </a>
+                                    <div class="float-end">
+                                        <span class="badge appointment-status-{{$status}}" style="color:#fff;">  {{ __('appointment.status.'.$status) }}</span>
+                                    {{--}}
+                                        <livewire:appointment.status :appointment_id="$appointment->id"/>
+                                    {{--}}
+                                    </div>
                                 </li>
 
                                 @endif
@@ -70,7 +74,7 @@
                                 <a id="destino" class="dropdown-toggle active-doctor"
                                    data-bs-toggle="dropdown">
                                     <i class="fas fa-circle me-2 active-circles"></i>
-                                    <span class='mx-2'>{{ $appointment->patient->name }}</span>
+                                    <span class='mx-2' >{{ $appointment->patient->name }}</span>
 
                                     <span   class="ongoing-drapt">
                                       {{__('En Curso')}}
@@ -80,7 +84,7 @@
                                 @endif
                                 <ul class="doctor-sub-list dropdown-menu">
                                     <li class="patient-new-list dropdown-item">
-                                        {{__('patient.title')}}<span>{{ $appointment->patient->name }}</span>
+                                        {{__('patient.title')}}<button >{{ $appointment->patient->name }}</button>
                                         <a href="javascript:;" class="new-dot status-green">
                                             <i  class="fas fa-circle me-1 fa-2xs"></i>{{__('generic.new')}}
                                         </a>
@@ -99,13 +103,13 @@
                                     <li class="schedule-blk mb-0 pt-2 dropdown-item">
                                         <ul class="nav schedule-time">
                                             <li>
-                                                <a href=""><img src="../assets/img/icons/trash.svg" alt=""></a>
+                                                <a href=""><img src="../assets/img/icons/trash.svg" alt="" style="cursor: pointer;"></a>
                                             </li>
-                                            <li><a href="{{route('patient.medical_history', $appointment->patient->id)}}">
-                                                    <img src="../assets/img/icons/profile.svg" alt=""></a>
+                                            <li><a href="{{route('patient.medical_history', $appointment->patient->id)}}" >
+                                                    <img src="../assets/img/icons/profile.svg" alt="" style="cursor: pointer;"></a>
                                             </li>
                                             <li>
-                                                <a wire:click="editAppointment({{$appointment->id}})"><img src="../assets/img/icons/edit.svg" alt=""></a>
+                                                <a wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;"><img src="../assets/img/icons/edit.svg" alt=""></a>
                                             </li>
                                         </ul>
                                         @if(auth()->user()->can('arrived',$appointment))
@@ -153,6 +157,7 @@
                             });
                         });
                     </script>
+                     @include('consultations.partials.patient_info',array('id'=>$appointment->patient_id))
                     @endforeach
                 </ul>
             </div>
@@ -167,7 +172,7 @@
     <script>
         document.addEventListener('livewire:load', function() {
             setInterval(function() {
-                Livewire.emit('refreshAppointments');
+                Livewire.dispatch('loadAppointments');
             }, 60000);
             console.log('actualizó'); // Actualizar cada minuto
 
