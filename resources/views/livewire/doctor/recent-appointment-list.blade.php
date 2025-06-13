@@ -39,7 +39,10 @@
                                                         <i
                                                             class="fas fa-circle me-2 active-circles"></i>{{--}}{{ \Carbon\Carbon::parse($time)->format('h:i') }}{{--}}
                                                         <span class='mx-2'>{{ $appointment->patient->name }}</span><span
-                                                            class="ongoing-drapt">Checked in<i
+                                                            class="ongoing-drapt"> <button
+                    type="button" class="badge appointment-status-{{$appointment->status}}" >
+                {{ __('appointment.status.'.$appointment->status) }}
+            </button><i
                                                                 class="fa fa-chevron-down ms-2"></i></span>
                                                     </a>
                                                     <ul class="doctor-sub-list dropdown-menu">
