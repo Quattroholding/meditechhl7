@@ -163,6 +163,9 @@ class Patient extends BaseModel
         return $this->hasMany(Referral::class);
     }
 
+    public function notes(){
+        return $this->hasMany(ClinicalImpression::class);
+    }
 
 
     // Accesor para FHIR
