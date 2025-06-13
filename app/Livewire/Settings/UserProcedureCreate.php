@@ -63,7 +63,7 @@ class UserProcedureCreate extends Component
             'current_price_cpt.required' => 'El precio es obligatorio.',
         ]);
 
-        $cpt = CptCode::whereId($this->selectedOption)->first();
+        $cpt = CptCode::whereId($this->cpt_id)->first();
 
         UserProcedure::create([
             'user_id'=>auth()->id(),
