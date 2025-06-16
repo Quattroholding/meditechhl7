@@ -49,7 +49,7 @@ class DashboardController extends Controller
         }
 
         $dashboards[] = array(
-            "title" => "Consultations",
+            "title" => "Consultas",
             "icon" => "doctor-dash-02.svg",
             "count" =>$totConCompleted,
             "total" => "/".$totCon,
@@ -57,7 +57,7 @@ class DashboardController extends Controller
             "percentageChange" =>$signCon.$porcCompleted.'%');
 
         $dashboards[] = array(
-            "title" => "Ganacias",
+            "title" => "Ganancias",
             "icon" => "doctor-dash-04.svg",
             "count" => "530",
             "total" => "",

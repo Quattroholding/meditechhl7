@@ -48,7 +48,7 @@ return [
     'location' => 'Ubicación',
     'lymphatic' => 'Linfático',
     'medicine' => 'Medicamentos',
-    'medical_history' => 'Historia médica',
+    'medical_history' => 'Historia médico',
     'medical_indication' => 'Indicación médica',
     'medical_necessity' => 'Necesidad médica',
     'medical_prescriptions' => 'Recetas médicas',

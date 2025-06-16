@@ -1,6 +1,6 @@
  <div class="card patient-structure">
     <div class="card-body">
-        <h5>{{__('Pacientes por genero')}}</h5>
+        <h5>{{__('Pacientes por género')}}</h5>
         <div id="radial-patients-active"></div>
     </div>
 </div>

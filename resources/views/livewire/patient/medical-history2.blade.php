@@ -173,6 +173,10 @@
             color: white;
         }
 
+        .nav-link.active .nav-text {
+            color: white;
+        }
+
         .content-area {
             background: white;
             border-radius: 20px;

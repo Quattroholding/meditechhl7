@@ -2244,7 +2244,7 @@ table.dataTable thead .sorting_desc_disabled:after {
 	color: rgba(51, 53, 72, 0.5);
 	font-size: 12px;
 	font-weight: 500;
-	padding-left: 15px;
+	/*padding-left: 15px;*/
 }
 .doctor-date-list li i {
 	font-size: 6px;
