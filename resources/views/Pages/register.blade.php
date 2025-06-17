@@ -41,17 +41,17 @@
                                     </div>
                                     <div class="input-block local-forms">
                                         <x-input-label for="email" :value="__('user.email')" required/>
-                                        <x-text-input  id="email" name="first_name"  class="block w-full" type="email"  value="{{ old('email') }}"/>
+                                        <x-text-input  id="email" name="email"  class="block w-full" type="email"  value="{{ old('email') }}"/>
                                         <x-input-error :messages="$errors->get('email')"/>
                                     </div>
                                     <div class="input-block local-forms">
                                         <x-input-label for="phone" :value="__('user.phone')" required/>
-                                        <x-text-input  id="phone" name="first_name"  class="block w-full" type="tel" value="{{ old('phone') }}"/>
+                                        <x-text-input  id="phone" name="phone"  class="block w-full" type="tel" value="{{ old('phone') }}"/>
                                         <x-input-error :messages="$errors->get('phone')"/>
                                     </div>
                                     <div class="input-block local-forms">
                                         <x-input-label for="password" :value="__('user.password')" required/>
-                                        <x-text-input  id="password" name="first_name"  class="block w-full pass-input" type="password"/>
+                                        <x-text-input  id="password" name="password"  class="block w-full pass-input" type="password"/>
                                         <span class="profile-views feather-eye-off toggle-password"></span>
                                         <x-input-error :messages="$errors->get('password')"/>
                                     </div>
