@@ -103,7 +103,10 @@
 
         @if(in_array($currentView ,['monthly','weekly']))
         <div class="legend">
-
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #dedede, #ededed);"></div>
+                <span>Pendiente de Confirmación</span>
+            </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #28a745, #20c997);"></div>
                 <span>Programada</span>
@@ -111,10 +114,6 @@
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #007bff, #6610f2);"></div>
                 <span>Llegada</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #dedede, #ededed);"></div>
-                <span>Pendiente de Confirmación</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(45deg, #ffc107, #fd7e14);"></div>
