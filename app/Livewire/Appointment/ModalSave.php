@@ -76,7 +76,6 @@ class ModalSave extends Component
         }
         if(auth()->user()->hasRole('doctor'))  $this->doctor_id = auth()->user()->practitioner->id;
 
-
     }
 
     public function render()
@@ -121,7 +120,7 @@ class ModalSave extends Component
             });
         })->get()->pluck('name','id')->toArray();
 
-        $this->doctor_id='';
+        //$this->doctor_id='';
     }
 
     public function loadEspecialidades()
@@ -150,6 +149,7 @@ class ModalSave extends Component
 
     public function saveAppointment()
     {
+        //dd(gettype($this->duration),$this->duration);
         $this->validate();
 
         try {
@@ -172,7 +172,7 @@ class ModalSave extends Component
             }else if($this->status=='proposed'){
                 $original_requested_datetime = $start->format('Y-m-d H:i');
             }
-
+            $minutes=(int) $this->duration;
             $appointmentData = [
                 'fhir_id'=> 'appointment-' . Str::uuid(),
                 'identifier' => 'APT-' . fake()->unique()->numerify('#######'),
@@ -181,7 +181,7 @@ class ModalSave extends Component
                 'client_id'=>$client_id,
                 'medical_speciality_id' =>$this->medical_speciality_id,
                 'start' =>$start->format('Y-m-d H:i'),
-                'end' => $start->addMinutes($this->duration)->format('Y-m-d H:i'),
+                'end' => $start->addMinutes($minutes)->format('Y-m-d H:i'),
                 'minutes_duration' => $this->duration,
                 'consulting_room_id'=>$this->consulting_room_id,
                 'service_type'=>$this->service_type,
@@ -305,8 +305,9 @@ class ModalSave extends Component
 
     private function checkAvailability()
     {
+        $minutes=(int) $this->duration;
         $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
-        $endTime = $startTime->copy()->addMinutes($this->duration);
+        $endTime = $startTime->copy()->addMinutes($minutes);
 
         $query = Appointment::where('practitioner_id', $this->doctor_id)
             ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")

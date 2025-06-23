@@ -29,7 +29,7 @@
                             <x-input-error :messages="$errors->get('doctor_id')"/>
                         </div>
                     @else
-                        <input type="hidden" wire:model="doctor_id" value="{{$doctor_id}}">
+                        <input type="hidden" wire:model="doctor_id" value="{{$doctor_id}}" id="doctor_id" name="doctor_id">
                     @endif
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
