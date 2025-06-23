@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\Practitioner;
+use App\Models\PractitionerQualification;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -21,5 +22,16 @@ class ProfileAbout extends Component
     #[On('loadQualifications')]
     public function loadQualifications(){
         $this->qualifications = $this->data->qualifications()->get();
+    }
+
+    public function setDefaultSpecialty($id){
+        // Quitar el default de todas las especialidades del doctor
+        PractitionerQualification::where('practitioner_id',$this->practitioner_id)->update(['default' => 0]);
+        // Marcar la especialidad seleccionada como default
+        PractitionerQualification::where('id', $id) ->update(['default' => 1]);
+
+        $this->loadQualifications();
+
+        session()->flash('message.success', 'Especialidad predeterminada actualizada correctamente.');
     }
 }

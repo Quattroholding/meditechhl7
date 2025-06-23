@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <div class="col-12">
                         <div class="form-heading">
-                            <h4>  {{ __('Agregar Cpt') }}</h4>
+                            <h4>  {{ __('Agregar precio procedimiento') }}</h4>
                         </div>
                     </div>
                     <form wire:submit="saveCpt">
