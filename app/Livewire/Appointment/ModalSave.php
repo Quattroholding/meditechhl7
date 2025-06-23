@@ -76,7 +76,6 @@ class ModalSave extends Component
         }
         if(auth()->user()->hasRole('doctor'))  $this->doctor_id = auth()->user()->practitioner->id;
 
-
     }
 
     public function render()
@@ -121,7 +120,7 @@ class ModalSave extends Component
             });
         })->get()->pluck('name','id')->toArray();
 
-        $this->doctor_id='';
+        //$this->doctor_id='';
     }
 
     public function loadEspecialidades()
@@ -150,6 +149,7 @@ class ModalSave extends Component
 
     public function saveAppointment()
     {
+        //dd($this->doctor_id,$this->duration);
         $this->validate();
 
         try {
