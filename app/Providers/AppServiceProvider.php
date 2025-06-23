@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Appointment;
+use App\Models\Patient;
 use App\Observers\AppointmentObserver;
 use App\Policies\AppointmentPolicy;
+use App\Policies\PatientPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -27,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
        //Paginator::useTailwind();
        Appointment::observe(AppointmentObserver::class);
        Gate::policy(Appointment::class,AppointmentPolicy::class);
+        Gate::policy(Patient::class,PatientPolicy::class);
     }
 }

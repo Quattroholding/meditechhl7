@@ -92,4 +92,12 @@ class DataTable extends Component
         return view('livewire.patient.data-table', [ 'data' => $data, ]);
     }
 
+    public function openModalNote($patientId){
+        $practitioner_id=null;
+        if(auth()->user()->hasRole('doctor'))
+            $practitioner_id = auth()->user()->practitioner->id;
+
+        $this->dispatch('openModal',$patientId,$practitioner_id);
+    }
+
 }

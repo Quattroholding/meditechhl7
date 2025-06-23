@@ -14,6 +14,7 @@
                     @endcomponent
                     <!-- /Table Header -->
                     @include('partials.message')
+                    <livewire:modal-add-notes wire:model="showModal"/>
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
@@ -42,15 +43,17 @@
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item"  wire:click="openModal({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
+                                                <a class="dropdown-item"  wire:click="openModalNote({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                     {{__('patient.add_note')}}
                                                 </a>
                                                 <a class="dropdown-item"  href="{{route('patient.medical_history',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.medical_history')}}
                                                 </a>
+                                                @if(auth()->user()->can('profile',$patient))
                                                 <a class="dropdown-item"  href="{{route('patient.profile',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.profile')}}
                                                 </a>
+                                                @endif
                                                 <a class="dropdown-item"  href="{{ route('patient.edit',$patient->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>
@@ -69,25 +72,7 @@
                 </div>
             </div>
         </div>
-        @if($showModal)
-        <!-- Modal -->
-        <div class="modal fade show" id="bs-example-modal-lg" tabindex="-1" aria-labelledby="myLargeModalLabel" style="display: block;" aria-modal="true" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <textarea wire:model.defer="note" rows="5" class="w-full border p-2 rounded mb-4"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button  wire:click="$set('showModal', false)" type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('generic.cancel') }}</button>
-                        <button  wire:click="saveNote" type="button" class="btn btn-primary">{{ __('generic.save') }}</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-        @endif
+
+
     </div>
 </div>
