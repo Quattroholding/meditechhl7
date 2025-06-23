@@ -21,8 +21,8 @@ class PatientPolicy
 
     public function profile(User $user,Patient $patient){
 
-        return ($user->hasRole('paciente') && $patient->user_id = $user->id) or
-               ($user->hasRole('doctor') && $patient->user_id = $user->id)
+        return ($user->hasRole('paciente') && $patient->user_id == $user->id) or
+               ($user->hasRole('doctor') && $patient->user_id == $user->id)
             or $user->hasRole('admin');
     }
 }
