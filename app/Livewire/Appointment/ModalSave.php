@@ -193,8 +193,9 @@ class ModalSave extends Component
             ];
             // Verificar disponibilidad
             if (!$this->checkAvailability()) {
-                $this->closeModal();
-                session()->flash('error', 'El doctor no está disponible en ese horario.');
+                //$this->closeModal();
+                //session()->flash('message.error', 'El doctor no está disponible en ese horario.');
+                $this->dispatch('cita-message', message: 'El doctor no está disponible en ese horario.');
                 return;
             }
 
