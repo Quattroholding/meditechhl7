@@ -149,7 +149,7 @@ class ModalSave extends Component
 
     public function saveAppointment()
     {
-        //dd($this->doctor_id,$this->duration);
+        //dd(gettype($this->duration),$this->duration);
         $this->validate();
 
         try {
@@ -172,7 +172,7 @@ class ModalSave extends Component
             }else if($this->status=='proposed'){
                 $original_requested_datetime = $start->format('Y-m-d H:i');
             }
-
+            $minutes=(int) $this->duration;
             $appointmentData = [
                 'fhir_id'=> 'appointment-' . Str::uuid(),
                 'identifier' => 'APT-' . fake()->unique()->numerify('#######'),
@@ -181,7 +181,7 @@ class ModalSave extends Component
                 'client_id'=>$client_id,
                 'medical_speciality_id' =>$this->medical_speciality_id,
                 'start' =>$start->format('Y-m-d H:i'),
-                'end' => $start->addMinutes($this->duration)->format('Y-m-d H:i'),
+                'end' => $start->addMinutes($minutes)->format('Y-m-d H:i'),
                 'minutes_duration' => $this->duration,
                 'consulting_room_id'=>$this->consulting_room_id,
                 'service_type'=>$this->service_type,
