@@ -305,8 +305,9 @@ class ModalSave extends Component
 
     private function checkAvailability()
     {
+        $minutes=(int) $this->duration;
         $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
-        $endTime = $startTime->copy()->addMinutes($this->duration);
+        $endTime = $startTime->copy()->addMinutes($minutes);
 
         $query = Appointment::where('practitioner_id', $this->doctor_id)
             ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")
