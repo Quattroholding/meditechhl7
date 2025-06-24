@@ -36,7 +36,12 @@
                                     @csrf
                                     <div class="input-block local-forms">
                                         <x-input-label for="email" :value="__('Email')" required="true" />
-                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                                        @if(request()->has('username'))
+                                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="request()->get('username')"/>
+                                        @else
+                                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                                        @endif
+
                                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                     <div class="input-block local-forms">
