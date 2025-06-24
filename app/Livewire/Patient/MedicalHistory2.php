@@ -90,6 +90,7 @@ class MedicalHistory2 extends Component
     {
         $this->isLoading = true;
         $current_medications = [];
+        $total_personal_notes=0;
         $totalNotes = auth()->user()->hasRole('doctor') || auth()->user()->hasRole('asistente') ? ClinicalImpression::where('patient_id', $this->patientId)->wherePractitionerId(auth()->user()->practitioner->id)->count() : ClinicalImpression::where('patient_id', $this->patientId)->count();
         if(Encounter::where('patient_id', $this->patientId)->count()>0)
             $current_medications = $this->patient->current_medications;

@@ -9,7 +9,7 @@
             @if(auth()->user()->can('changeStatus',$appointment))
             <div class="dropdown-menu" aria-labelledby="btngroupverticaldrop1" style="">
                 @if(auth()->user()->can('booked',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('booked')" ><i class="fa fa-door-open"></i> {{__('Confirmar')}}</a>
+                    <a class="dropdown-item" wire:click="changeStatus('booked')" >✅ {{__('Confirmar')}}</a>
                 @endif
                 @if(auth()->user()->can('arrived',$appointment))
                     <a class="dropdown-item" wire:click="changeStatus('arrived')" > 🚪 {{__('Registrar Llegada')}}</a>
@@ -30,7 +30,7 @@
                     <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}"><i class="fa fa-clock-o"></i> {{__('Finalizar Consulta')}}</a>
                 @endif
                 @if(auth()->user()->can('viewConsultation',$appointment))
-                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" > ▶️ {{__('Ver Consulta')}}</a>
+                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" > 👁️ {{__('Ver Consulta')}}</a>
                 @endif
             </div>
             @endif
@@ -47,7 +47,9 @@
                 positionClass: 'toast-top-right',
                 timeOut: 5000,
                 onHidden: function() {
-                    window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
+                    @if($appointment->status =='checked-in')
+                        window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
+                    @endif
                 }
             });
         });
