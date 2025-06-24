@@ -6,6 +6,7 @@ use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\ClinicalImpression;
+use App\Models\Note;
 use App\Models\Patient;
 use App\Models\PhysicalExam;
 use App\Models\PresentIllness;
@@ -48,6 +49,7 @@ class MedicalHistory2 extends Component
     public $serviceRequests = [];
     public $medicalHistories = [];
     public $medicalNotes = [];
+    public $personalNotes = [];
 
     // Configuración de paginación
     public $perPage = 10;
@@ -65,12 +67,16 @@ class MedicalHistory2 extends Component
     {
         $this->patientId = $patientId;
         $this->patient = Patient::findOrFail($patientId);
-        if(request()->has('activeSection')) $this->activeSection = request()->get('activeSection');
         $this->loadOverviewData();
     }
 
     public function render()
     {
+        if(request()->has('activeSection')){
+            $this->activeSection = request()->get('activeSection');
+            $this->loadSection($this->activeSection);
+        }
+
         return view('livewire.patient.medical-history2' ,[
             'sectionData' => $this->getSectionData(),
             'timelineData' => $this->getTimelineData(),
@@ -88,6 +94,9 @@ class MedicalHistory2 extends Component
         if(Encounter::where('patient_id', $this->patientId)->count()>0)
             $current_medications = $this->patient->current_medications;
 
+        if(auth()->user()->hasRole('doctor'))
+            $total_personal_notes = Note::wherePractitionerId(auth()->user()->practitioner->id)->where('patient_id', $this->patientId)->count();
+
         // Resumen general del paciente
         $this->overviewData = [
             'total_encounters' => Encounter::where('patient_id', $this->patientId)->count(),
@@ -98,6 +107,7 @@ class MedicalHistory2 extends Component
             'allergies' => $this->patient->allergies ?? [],
             'medications' =>$current_medications,
             'total_notes' => $totalNotes,
+            'total_personal_notes' => $total_personal_notes,
             'recent_activity' => $this->getRecentActivity()
         ];
 
@@ -125,6 +135,7 @@ class MedicalHistory2 extends Component
             'service-requests' => $this->loadServiceRequests(),
             'medical-histories' => $this->loadMedicalHistories(),
             'medical-notes' => $this->loadMedicalNotes(),
+            'personal-notes' => $this->loadPersonalNotes(),
             default => null
         };
 
@@ -217,12 +228,20 @@ class MedicalHistory2 extends Component
         $this->medicalHistories = $this->applyFilters($query, 'recorded_date')->get();
     }
 
-        private function loadMedicalNotes()
+    private function loadMedicalNotes()
     {
         $query = \App\Models\ClinicalImpression::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
         //$this->medicalHistories = $this->applyFilters($query, 'recorded_date')->paginate($this->perPage);
 
         $this->medicalNotes = $this->applyFilters($query, 'created_at')->get();
+    }
+
+    private function loadPersonalNotes()
+    {
+        if(auth()->user()->hasRole('doctor'))
+            $query = Note::wherePractitionerId(auth()->user()->practitioner->id)->where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
+
+        $this->personalNotes = $this->applyFilters($query, 'created_at')->get();
     }
 
     // ===========================================
@@ -360,8 +379,6 @@ class MedicalHistory2 extends Component
 
     private function getSectionData()
     {
-
-
         return match($this->activeSection) {
             'encounters' => $this->encounters,
             'vital-signs' => $this->vitalSigns,
@@ -372,6 +389,7 @@ class MedicalHistory2 extends Component
             'service-requests' => $this->serviceRequests,
             'medical-histories' => $this->medicalHistories,
             'medical-notes' => $this->medicalNotes,
+            'personal-notes' => $this->personalNotes,
             default => null
         };
     }

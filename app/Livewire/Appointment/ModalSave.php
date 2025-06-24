@@ -90,6 +90,13 @@ class ModalSave extends Component
         $this->resetForm();
         $this->resetValidation();
     }
+    #[On('openAppointmentModal')]
+    public function openModal($title)
+    {
+        $this->resetForm();
+        $this->showModal = true;
+        $this->title=$title;
+    }
 
     public function resetForm()
     {

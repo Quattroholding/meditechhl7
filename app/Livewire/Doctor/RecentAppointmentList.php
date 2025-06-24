@@ -71,7 +71,6 @@ class RecentAppointmentList extends Component
 
     public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
     {
-        $this->showModal = true;
-        $this->modalTitle = 'Actualizar Cita';
+        $this->dispatch('openAppointmentModal','Nueva Cita');
     }
 }

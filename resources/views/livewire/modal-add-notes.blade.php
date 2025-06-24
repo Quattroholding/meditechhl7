@@ -4,18 +4,16 @@
         <div class="modal-content" wire:click.stop>
             <div class="modal-header">
                 <h2 class="modal-title">Agregar nota</h2>
-                <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;color: #0c0c0c;">&times;</button>
             </div>
             <form wire:submit="saveNote">
                 <div class="input-block local-forms">
-                    <label class="form-label">{{__('Nota')}}</label>
-                    <textarea wire:model="note" class="form-control-full" rows="3" placeholder="Escribir nota"></textarea>
+                    <textarea wire:model="note" class="form-control-full" rows="3" placeholder="Escribir nota" style="color: #0c0c0c"></textarea>
                     <x-input-error :messages="$errors->get('note')"/>
                 </div>
-                <div style="margin-top: 30px; display: flex; gap: 15px;">
-                    <button type="submit" class="btn btn-primary" style="flex: 1;">
-                       {{__('generic.save')}}
-                    </button>
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <button  type="submit" class="btn btn-primary" style="flex: 1;">{{ __('generic.save') }}</button>
+                    <button type="button" wire:click="$set('showModal', false)" class="btn btn-secondary">{{ __('generic.cancel') }}</button>
                 </div>
             </form>
         </div>

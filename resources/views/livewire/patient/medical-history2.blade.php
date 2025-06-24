@@ -587,6 +587,14 @@
                          <span class="nav-count">{{ $overviewData['total_notes'] ?? 0 }}</span>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <div wire:click="changeSection('personal-notes')"
+                         class="nav-link {{ $activeSection === 'personal-notes' ? 'active' : '' }}">
+                        <span class="nav-icon"><i class="fa fa-sticky-note"></i> </span>
+                        <span class="nav-text">Notas</span>
+                        <span class="nav-count">{{ $overviewData['total_personal_notes'] ?? 0 }}</span>
+                    </div>
+                </li>
             </ul>
         </div>
 
@@ -625,6 +633,8 @@
                                 @break
                             @case('medical-notes')
                                 📒 Notas Médicas
+                            @case('personal-notes')
+                                 Notas
                             @break
                         @endswitch
                     </h2>
@@ -718,6 +728,9 @@
                             @break
                         @case('medical-notes')
                             @include('patients.medicalHistory.medical-notes')
+                            @break
+                        @case('personal-notes')
+                            @include('patients.medicalHistory.personal-notes')
                             @break
                     @endswitch
                 @endif

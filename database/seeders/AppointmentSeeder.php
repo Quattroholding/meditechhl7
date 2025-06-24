@@ -80,7 +80,7 @@ class AppointmentSeeder extends Seeder
                 break;
             }
             Appointment::factory()->create([
-                'practitioner_id' =>49,
+                'practitioner_id' =>23,
                 'start'  =>$inicioActual->format('Y-m-d H:i'),
                 'end' =>  $horaInicio->format('Y-m-d H:i'),
                 'minutes_duration'=>$duracion,

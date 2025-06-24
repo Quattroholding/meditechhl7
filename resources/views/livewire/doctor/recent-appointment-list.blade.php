@@ -53,7 +53,7 @@
                                 $status = $appointment->status;
                                 @endphp
                                 @if(!$ongoing)
-                                <li class="{{ in_array($appointment->status, ['booked', 'arrived']) ? 'dropdown ongoing-blk' : ($isPast ? 'past-appointment' : 'stick-line') }}">
+                                <li class="{{ in_array($appointment->status, ['booked', 'arrived']) ? 'dropdown ' : ($isPast ? 'past-appointment' : 'stick-line') }}">
                                     <i class="fas fa-circle me-2 {{ $appointment->status == 'fulfilled' ? 'active-circles' : '' }}"></i>
                                     {{ \Carbon\Carbon::parse($time)->format('h:i') }}
                                     <a href="" title="{{ !in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
@@ -61,18 +61,19 @@
                                         {{ $appointment->patient->name }}
                                     </a>
                                     <div class="float-end">
+                                        {{--}}
                                         <span class="badge appointment-status-{{$status}}" style="color:#fff;">  {{ __('appointment.status.'.$status) }}</span>
-                                    {{--}}
+                                        {{--}}
+
                                         <livewire:appointment.status :appointment_id="$appointment->id"/>
-                                    {{--}}
+
                                     </div>
                                 </li>
 
                                 @endif
                                 @if (in_array($appointment->status, ['booked', 'arrived']))
                                 @if($ongoing)
-                                <a id="destino" class="dropdown-toggle active-doctor"
-                                   data-bs-toggle="dropdown">
+                                <a id="destino" class="dropdown-toggle active-doctor"  data-bs-toggle="dropdown">
                                     <i class="fas fa-circle me-2 active-circles"></i>
                                     <span class='mx-2' >{{ $appointment->patient->name }}</span>
 
@@ -84,9 +85,9 @@
                                 @endif
                                 <ul class="doctor-sub-list dropdown-menu">
                                     <li class="patient-new-list dropdown-item">
-                                        {{__('patient.title')}}<button >{{ $appointment->patient->name }}</button>
-                                        <a href="javascript:;" class="new-dot status-green">
-                                            <i  class="fas fa-circle me-1 fa-2xs"></i>{{__('generic.new')}}
+                                        {{__('patient.title')}} : <button >{{ $appointment->patient->name }}</button>
+                                        <a href="javascript:;" class="new-dot badge appointment-status-{{$status}}">
+                                             {{ __('appointment.status.'.$status) }}
                                         </a>
                                     </li>
                                     <li class="dropdown-item">{{__('appointment.reason')}}
@@ -119,7 +120,7 @@
                                         @endif
                                         @if(auth()->user()->can('checked_in',$appointment))
                                             <button wire:click.stop="updateStatus({{ $appointment->id }}, 'checked-in')" class="action-btn btn-start">
-                                                ▶️ Iniciar
+                                                ▶️ Iniciar Consulta
                                             </button>
                                         @endif
                                         @if(auth()->user()->can('viewConsultation',$appointment))

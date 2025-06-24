@@ -74,6 +74,9 @@ Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), function() {
 
     Route::get('/admin', [DashboardController::class, 'admin'])->name('admin.dashboard');
+    Route::get('/admin-kpis', function() {
+        return view('dashboard.admin-kpis');
+    })->name('admin.dashboard.kpis')->middleware('role:admin');
     Route::get('/doctor', [DashboardController::class, 'doctor'])->name('doctor.dashboard');
     Route::get('/patient', [DashboardController::class, 'patient'])->name('patient.dashboard');
 

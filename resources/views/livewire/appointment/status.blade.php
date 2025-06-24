@@ -12,25 +12,25 @@
                     <a class="dropdown-item" wire:click="changeStatus('booked')" ><i class="fa fa-door-open"></i> {{__('Confirmar')}}</a>
                 @endif
                 @if(auth()->user()->can('arrived',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('arrived')" ><i class="fa fa-door-open"></i> {{__('Llegada')}}</a>
+                    <a class="dropdown-item" wire:click="changeStatus('arrived')" > 🚪 {{__('Registrar Llegada')}}</a>
                 @endif
                 @if(auth()->user()->can('noshow',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('noshow')" ><i class="fa fa-door-closed"></i> {{__('No Asistio')}}</a>
+                    <a class="dropdown-item" wire:click="changeStatus('noshow')" > 👻 {{__('No aparecio')}}</a>
                 @endif
                 @if(auth()->user()->can('cancelled',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('cancelled')" ><i class="fa fa-close"></i> {{__('Cancelar')}}</a>
+                    <a class="dropdown-item" wire:click="changeStatus('cancelled')" > ❌ {{__('Cancelar')}}</a>
                 @endif
                 @if(auth()->user()->can('entered-in-error',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('entered-in-error')" ><i class="fa fa-warning"></i> {{__('Ingresado por error')}}</a>
+                    <a class="dropdown-item" wire:click="changeStatus('entered-in-error')" > ❌ {{__('Ingresado por error')}}</a>
                 @endif
-                @if(auth()->user()->can('checked-in',$appointment))
-                    <a class="dropdown-item" wire:click="changeStatus('checked-in')" ><i class="fa fa-clock-o"></i> {{__('Iniciar Consulta')}}</a>
+                @if(auth()->user()->can('checked_in',$appointment))
+                    <a class="dropdown-item" wire:click="changeStatus('checked-in')" >  ▶️ {{__('Iniciar Consulta')}}</a>
                 @endif
                 @if(auth()->user()->can('fulfilled',$appointment))
                     <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}"><i class="fa fa-clock-o"></i> {{__('Finalizar Consulta')}}</a>
                 @endif
                 @if(auth()->user()->can('viewConsultation',$appointment))
-                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" ><i class="fa fa-eye"></i> {{__('Ver Consulta')}}</a>
+                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" > ▶️ {{__('Ver Consulta')}}</a>
                 @endif
             </div>
             @endif

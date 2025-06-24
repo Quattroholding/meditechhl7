@@ -48,4 +48,8 @@ class ModalAddNotes extends Component
             message: '¡Guardado exitosamente!'
         );
     }
+
+    public function closeModal(){
+        $this->showModal=false;
+    }
 }

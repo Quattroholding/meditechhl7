@@ -117,6 +117,8 @@
                 </div>
             </div>
             <div class="data-actions">
+                <button wire:click="openModalNote({{ $data->id }})" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
+                <livewire:modal-add-notes wire:model="showModal"/>
                 <livewire:patient.add-medical-history :patient_id="$data->id"/>
                 {{--}}
                 <button wire:click="exportToPDF" class="btn btn-light">

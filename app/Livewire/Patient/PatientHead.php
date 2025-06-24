@@ -35,4 +35,12 @@ class PatientHead extends Component
         $this->data->user->profile_picture = $this->data->avatar()->path;
         $this->data->user->save();
     }
+
+    public function openModalNote($patientId){
+        $practitioner_id=null;
+        if(auth()->user()->hasRole('doctor'))
+            $practitioner_id = auth()->user()->practitioner->id;
+
+        $this->dispatch('openModal',$patientId,$practitioner_id);
+    }
 }
