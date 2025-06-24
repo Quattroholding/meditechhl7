@@ -29,7 +29,7 @@
             </div>
             <div class="row">
                 <div class="col-12 col-lg-12 col-xl-12">
-                    @livewire('doctor.recent-appointment-list')
+
                 </div>
             </div>
             <div class="doctor-list-blk">
@@ -79,22 +79,8 @@
                     </div>
                 </div>
                 {{--}}
-                {{--}}<div class="row">
-                    <div class="col-lg-4">
-                        @livewire('doctor.new-patients')
-                    </div>
-                    <div class="col-lg-4">
-                        @livewire('doctor.old-patients')
-                    </div>
-                    <div class="col-lg-4">
-                        @livewire('doctor.active-patients')
-                    </div>
-                </div>{{--}}
+
                 <div class="row">
-                    <div class="col-lg-3">
-                        @livewire('doctor.next-appointment')
-                        @livewire('doctor.patients-by-gender')
-                    </div>
                     <div class="col-lg-9">
                         {{--}}<div class="row">
                             <div class="col-lg-6">
@@ -105,12 +91,20 @@
                             </div>
                         </div>
                         @livewire('doctor.active-patients'){{--}}
+                        @livewire('doctor.recent-appointment-list')
+                        {{--}}
+                        @livewire('doctor.completed-appointments')
+                        {{--}}
+
+                    </div>
+                    <div class="col-lg-3">
+                        @livewire('doctor.next-appointment')
                         @livewire('doctor.new-patients')
                         @livewire('doctor.old-patients')
                         @livewire('doctor.active-patients')
-                        @livewire('doctor.completed-appointments')
-
+                        @livewire('doctor.patients-by-gender')
                     </div>
+
                     {{--}}@livewire('doctor.notes-by-practitioner'){{--}}
                 </div>
             </div>

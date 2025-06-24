@@ -29,8 +29,8 @@
                         <x-input-label for="patient" :value="__('Hora Entrada')" required/>
 
                             <input id="start-{{ $day }}"
-                                   type="text" wire:model="workingHours.{{$day}}.start"
-                                   class="form-control p-2 datetimepicker3" {{ $config['enabled'] ? '' : 'disabled' }}>
+                                   type="time" wire:model="workingHours.{{$day}}.start"
+                                   class="form-control p-2 " {{ $config['enabled'] ? '' : 'disabled' }}>
 
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                         <x-input-label for="patient" :value="__('Hora Salida')" required/>
 
                             <input type="time"    wire:model="workingHours.{{$day}}.end"
-                                   class="form-control" {{ $config['enabled'] ? '' : 'disabled' }} >
+                                   class="form-control p-2 " {{ $config['enabled'] ? '' : 'disabled' }} >
 
                     </div>
                 </div>

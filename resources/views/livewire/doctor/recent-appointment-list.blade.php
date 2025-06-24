@@ -65,7 +65,7 @@
                                         <span class="badge appointment-status-{{$status}}" style="color:#fff;">  {{ __('appointment.status.'.$status) }}</span>
                                         {{--}}
 
-                                        <livewire:appointment.status :appointment_id="$appointment->id"/>
+                                        <livewire:appointment.status :appointment_id="$appointment->id" wire:key="{{$appointment->id}}"/>
 
                                     </div>
                                 </li>
@@ -170,6 +170,7 @@
         <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
             :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
     </div>
+</div>
     <script>
         document.addEventListener('livewire:load', function() {
             setInterval(function() {

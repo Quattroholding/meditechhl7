@@ -12,7 +12,7 @@
                     <livewire:consultation.patient-history patient_id="{{$id}}"/>
                     {{--}}
 
-                    <livewire:patient.medical-history2 patient_id="{{$id}}"/>
+                    <livewire:patient.medical-history2 patient_id="{{$id}}" wire:key="{{time().$id}}"/>
                 </div>
             </div>
         </div>
