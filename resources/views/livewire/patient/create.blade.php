@@ -10,15 +10,18 @@
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="input-block  local-forms">
                     <x-input-label for="id_type" :value="__('patient.id_type')" required="true"/>
-                    <x-select-input wire:model="id_type" name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
+                    <x-select-input wire:model.live="id_type" name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
                     <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                 </div>
             </div>
             <div class="col-12 col-md-6 col-xl-8">
                 <div class=" input-block  local-forms ">
                     <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
-                    <x-text-input wire:model.live="id_number" id="id_number" class="block mt-1 w-full" type="number"  value="" autofocus/>
+                    <x-text-input wire:model.live="id_number" id="id_number" class="block mt-1 w-full" type="text" placeholder="{{ $this->getIdPlaceholder() }}" value="" autofocus/>
                     <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
+                    {{--}}
+                    <small class="text-muted">{{ $this->getIdPlaceholder() }}</small>
+                    {{--}}
                 </div>
             </div>
         </div>
@@ -144,6 +147,7 @@
         </div>
         @endif
     </form>
+        {{--}}
     <script>
 
         jQuery(function () {
@@ -152,4 +156,5 @@
             });
         });
     </script>
+    {{--}}
 </div>

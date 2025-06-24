@@ -32,7 +32,7 @@ class Create extends Component
     public $password;
     public $marital_status;
     public $patientExists=false;
-    public $patientDontExists=false;
+    public $patientDontExists=true;
 
     protected $rules = [
         'id_number' => 'required',
@@ -49,10 +49,27 @@ class Create extends Component
         //'blood_type' => 'required',
     ];
 
+    public function rules()
+    {
+        return [
+            'id_number' => ['required', 'regex:' . $this->getIdPattern()],
+            'id_type' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'gender' => 'required',
+            'birthdate' => 'required',
+            'physical_address' => 'required',
+            'marital_status'=>'required',
+            'email' => 'required|unique:'.Patient::class,
+            'phone' => 'required',
+        ];
+    }
+
     protected $messages = [
         // 'patient_id.required' => 'Debe seleccionar un paciente.',
         'id_type.required' => 'El tipo de documento es obligatorio',
         'id_number.required' => 'El numero de documento es obligatorio.',
+        'id_number.regex' => 'El formato del número de documento no es válido.',
         'first_name.required' => 'El nombre es obligatorio',
         'last_name.required' => 'El apellido es obligatorio',
         'marital_status.required' => 'El estado civil es obligatorio'
@@ -66,16 +83,15 @@ class Create extends Component
 
     public function updatedIdNumber(){
 
-        $this->patientDontExists=false;
+        $this->patientDontExists=true;
         $this->patientExists=false;
         $this->patient_id =null;
         $query = DB::table('patients')->whereIdentifier($this->id_number)->first();
         if($query){
             $this->patientExists=true;
             $this->patient_id = $query->id;
+            $this->patientDontExists=false;
 
-        }else if(strlen($this->id_number)>5){
-            $this->patientDontExists=true;
         }
     }
 
@@ -179,4 +195,41 @@ class Create extends Component
         $this->blood_type='';
         $this->marital_status='';
     }
+
+    private function getIdPattern()
+    {
+        switch ($this->id_type) {
+            case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
+                return '/^[A-Z]*[0-9]+-[0-9]+-[0-9]+$/';
+            case 'CE': // Cédula Extranjera: Similar a CC
+                return '/^[A-Z]*[0-9]+-[0-9]+-[0-9]+$/';
+            case 'PA': // Pasaporte: N1234567
+                return '/^[A-Z0-9-]{5,20}$/';
+            case 'PT': // Permiso Temporal: Formato flexible
+                return '/^[A-Z0-9-]{8,15}$/';
+            case 'SS': // Seguro Social: XXX-XX-XXXX
+                return '/^\d{3}-?\d{2}-?\d{4}$/';
+            default:
+                return '/^[A-Z0-9-]{5,20}$/'; // Universal para cualquier tipo
+        }
+    }
+
+    public function getIdPlaceholder()
+    {
+        switch ($this->id_type) {
+            case 'CC':
+                return 'Ej: 8-123-456 o PE-123-456';
+            case 'CE':
+                return 'Ej: 4-123-456-12345';
+            case 'PA':
+                return 'Ej: PA1234567';
+            case 'PT':
+                return 'Ej: PT-12345678';
+            case 'SS':
+                return 'Ej: 123-45-6789';
+            default:
+                return 'Ingrese el número de documento';
+        }
+    }
+
 }
