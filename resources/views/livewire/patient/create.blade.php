@@ -19,9 +19,7 @@
                     <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
                     <x-text-input wire:model.live="id_number" id="id_number" class="block mt-1 w-full" type="text" placeholder="{{ $this->getIdPlaceholder() }}" value="" autofocus/>
                     <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
-                    {{--}}
                     <small class="text-muted">{{ $this->getIdPlaceholder() }}</small>
-                    {{--}}
                 </div>
             </div>
         </div>
@@ -73,7 +71,7 @@
                 <div class="col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms {{--}}cal-icon{{--}}">
                         <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                        <x-text-input id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" />
+                        <x-text-input wire:model="birthdate" id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" />
                         <x-input-error :messages="$errors->get('birthdate')" class="mt-2" />
                     </div>
                 </div>
