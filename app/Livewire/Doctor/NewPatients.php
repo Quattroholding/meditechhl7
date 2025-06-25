@@ -33,16 +33,19 @@ class NewPatients extends Component
         //QUERY PARA MOSTRAR PACEINTES REGISTRADOS EN EL MES ACTUAL
         $this->patients = PatientClient::whereMonth('created_at', $currentMonth)
         ->whereYear('created_at', $currentYear)
+        ->whereNull('deleted_at')
         ->whereIn('client_id', $this->userclient)
         ->count();
         //QUERY PARA MOSTRAR PACIENTES REGISTRADOS EL MES ANTERIOR
         $lastMonthPatients = PatientClient::whereMonth('created_at', $lastMonth)
         ->whereYear('created_at', $currentYear)
+        ->whereNull('deleted_at')
         ->whereIn('client_id', $this->userclient)
         ->count();
         //PORCENTAJE QUE COMPARA LA CANTIDAD DE PACIENTES REGISTRADOS EL MES PASADO CON EL DE EL MES ACTUAL
         if ($lastMonthPatients > 0) {
         $this->percentageChange = (($this->patients - $lastMonthPatients) / $lastMonthPatients) * 100;
+        if($this->percentageChange==0){$this->percentageChange = 100;}
     } else {
         $this->percentageChange = $this->patients > 0 ? 100 : 0;
     }
