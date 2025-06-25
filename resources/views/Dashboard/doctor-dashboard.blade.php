@@ -79,33 +79,21 @@
                     </div>
                 </div>
                 {{--}}
-
                 <div class="row">
-                    <div class="col-lg-9">
-                        {{--}}<div class="row">
-                            <div class="col-lg-6">
-                                @livewire('doctor.new-patients')
-                            </div>
-                            <div class="col-lg-6">
-                                @livewire('doctor.old-patients')
-                            </div>
-                        </div>
-                        @livewire('doctor.active-patients'){{--}}
+                    <div class="col-lg-6">
                         @livewire('doctor.recent-appointment-list')
-                        {{--}}
-                        @livewire('doctor.completed-appointments')
-                        {{--}}
-
                     </div>
-                    <div class="col-lg-3">
-                        @livewire('doctor.next-appointment')
-                        @livewire('doctor.new-patients')
-                        @livewire('doctor.old-patients')
-                        @livewire('doctor.active-patients')
-                        @livewire('doctor.patients-by-gender')
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-md-4">   @livewire('doctor.new-patients')</div>
+                            <div class="col-md-4">   @livewire('doctor.old-patients')</div>
+                            <div class="col-md-4">   @livewire('doctor.active-patients')</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">  @livewire('doctor.next-appointment')</div>
+                            <div class="col-md-6">  @livewire('doctor.patients-by-gender')</div>
+                        </div>
                     </div>
-
-                    {{--}}@livewire('doctor.notes-by-practitioner'){{--}}
                 </div>
             </div>
         </div>

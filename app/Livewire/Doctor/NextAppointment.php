@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctor;
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NextAppointment extends Component
@@ -15,6 +16,7 @@ class NextAppointment extends Component
         $this->getNextAppointment();
     }
 
+    #[On('getNextAppointment')]
     public function getNextAppointment()
     {
         $doctorId = auth()->user()->practitioner->id;

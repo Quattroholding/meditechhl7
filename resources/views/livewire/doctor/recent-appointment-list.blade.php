@@ -172,14 +172,6 @@
     </div>
 </div>
     <script>
-        document.addEventListener('livewire:load', function() {
-            setInterval(function() {
-                Livewire.dispatch('loadAppointments');
-            }, 60000);
-            console.log('actualizó'); // Actualizar cada minuto
-
-
-        });
 
         document.addEventListener("DOMContentLoaded", function () {
             const container = document.getElementById("miDiv");
@@ -194,6 +186,12 @@
                 destino.style.backgroundColor = '#ffff99';
                 setTimeout(() => destino.style.backgroundColor = '', 2000);
             }
+
+            setInterval(function() {
+                Livewire.dispatch('loadAppointments');
+                console.log('actualizó'); // Actualizar cada minuto
+            }, 30000);
+
         });
     </script>
 </div>
