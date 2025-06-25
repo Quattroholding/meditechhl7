@@ -7,13 +7,16 @@
                     {{ __('Configuraciones') }}
                 @endslot
                 @slot('li_1')
-                    {{ __('Procedimientos') }}
+                    {{ __('Servicios') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->
             <div class="row">
                 <div class="col-sm-12">
+                    {{--}}
                     <livewire:settings.user-procedure-create/>
+                    {{--}}
+                    <livewire:settings.service-catalog/>
                 </div>
             </div>
         </div>
