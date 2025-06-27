@@ -26,17 +26,23 @@ class NextAppointment extends Component
             ->where('start', '>=', Carbon::now())
             ->orderBy('start', 'asc')
             ->first();
-        //dd($nextAppointment, Carbon::now());
+
         if ($nextAppointment && $nextAppointment->start) {
             $startDate = Carbon::parse($nextAppointment->start);
-            $this->nextAppointmentTime = $startDate->diffForHumans();
+            $now = Carbon::now();
+            $diffInMinutes = $now->diffInMinutes($startDate);
+
+            $hours = floor($diffInMinutes / 60);
+            $minutes = $diffInMinutes % 60;
+
+            $this->nextAppointmentTime = "en $hours horas y $minutes minutos";
             $this->calculateTimeRemainingPercentage($startDate);
         } else {
             $this->nextAppointmentTime = __('No hay citas próximas');
             $this->timeRemainingPercentage = 0;
         }
-
     }
+
 
     public function calculateTimeRemainingPercentage($appointmentStartTime)
     {
