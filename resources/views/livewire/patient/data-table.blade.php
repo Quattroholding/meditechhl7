@@ -19,13 +19,12 @@
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
                             <tr>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('first_name')">{{__('patient.full_name')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('birthdate')">{{__('patient.birthdate')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th>{{__('patient.full_id_number')}}</th>
-                                <th>{{__('patient.email')}}</th>
-                                <th>{{__('patient.whatsapp')}}</th>
-                                <th></th>
+                                <th><x-table-sort-button title="ID" columnName="patients.id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('patient.full_name')}}" columnName="patients.name" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('patient.birthdate')}}" columnName="patients.birth_date" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('patient.full_id_number')}}" columnName="patients.identifier" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('patient.email')}}" columnName="patients.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('patient.whatsapp')}}" columnName="patients.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -65,9 +64,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="mt-3" class="float-right">
-                            {{ $data->links() }}
-                        </div>
+                        {{ $data->links() }}
                     </div>
                 </div>
             </div>
