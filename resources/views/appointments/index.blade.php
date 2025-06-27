@@ -35,6 +35,4 @@
         @component('components.notification-box')
         @endcomponent
     </div>
-
-
 </x-app-layout>

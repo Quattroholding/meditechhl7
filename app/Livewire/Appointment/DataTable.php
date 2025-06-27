@@ -23,7 +23,6 @@ class DataTable extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'page' => ['except' => 1],
     ];
 
 
