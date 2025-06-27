@@ -39,11 +39,27 @@
                     </ul>
                 </li>
                 <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <img src="assets/img/icons/menu-icon-07.svg" alt=""></span>
+                        <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
+                        <li><a href="payments.html">{{__('Pagos')}}</a></li>
+                        {{--}}
+                        <li><a href="expenses.html">Expenses</a></li>
+                        <li><a href="taxes.html">Taxes</a></li>
+                        <li><a href="provident-fund.html">Provident Fund</a></li>
+                        {{--}}
+                    </ul>
+                </li>
+                <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
                         <span> Configuraciones </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Procedimientos') }}</a></li>
+                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Servicios') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_rapid_access') ? 'active' : '' }}"  href="{{ route('setting.create_rapid_access') }}">{{ __('Accesos Rapidos') }}</a></li>
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>

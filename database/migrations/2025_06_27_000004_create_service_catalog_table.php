@@ -79,6 +79,7 @@ return new class extends Migration
 
             // Multi-tenant support
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('practitioner_id')->nullable()->constrained('practitioners')->onDelete('cascade');
 
             // Audit fields
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');

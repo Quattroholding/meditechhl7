@@ -15,6 +15,8 @@ use \App\Http\Controllers\ApiController;
 use \App\Http\Controllers\SettingController;
 use \App\Http\Controllers\Auth\LoginController;
 use \App\Http\Controllers\DashboardController;
+use \App\Http\Controllers\InvoiceController;
+use \App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -98,8 +100,39 @@ Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified'])
 
     Route::post('/{appointment_id}', [ConsultationController::class, 'finished'])->name('consultation.finished');
 
+});
+
+// Invoice routes
+Route::group(array('prefix' => 'invoice','middleware'=>['auth','verified']), function() {
+
+    Route::get('/{invoice_id}/download', [ConsultationController::class, 'downloadInvoice'])->name('invoice.download');
 
 });
+
+Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified']), function() {
+
+    Route::group(array('prefix' => 'invoices','middleware'=>['auth','verified']), function() {
+
+        Route::get('/', [InvoiceController::class, 'index'])->name('invoice.index');
+
+        Route::get('/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+
+        Route::get('/{invoice_id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
+
+    });
+
+    Route::group(array('prefix' => 'payments','middleware'=>['auth','verified']), function() {
+
+        Route::get('/', [PaymentController::class, 'index'])->name('payment.index');
+
+        Route::get('/{id}', [PaymentController::class, 'show'])->name('payment.show');
+
+        Route::get('/{invoice_id}/download', [PaymentController::class, 'download'])->name('payment.download');
+
+    });
+
+});
+
 
 Route::post('/store_public', [PatientController::class, 'store_public'])->name('patient.public.store');
 
@@ -252,6 +285,7 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('/patients', [ApiController::class, 'patients'])->name('api.patients');
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
     Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
+    Route::get('/services_catalog', [ApiController::class, 'servicesCatalog'])->name('api.servicesCatalog');
 
 });
 

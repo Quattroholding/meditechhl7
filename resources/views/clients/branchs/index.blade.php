@@ -15,7 +15,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card card-table show-entire">
+                    <div class="card card-table show-entire p-2">
                         <div class="card-body">
                             <livewire:data-table model="{{$model}}"
                                                  :columns="['id','client_name', 'name', 'phone','address','type','active','acciones']"

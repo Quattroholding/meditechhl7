@@ -13,7 +13,6 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
@@ -46,8 +45,13 @@
                                                     {{__('generic.edit')}}
                                                 </a>
                                                 <a class="dropdown-item"  href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
-                                                    {{__('generic.download')}}
+                                                    {{__('consultation.download_resumen')}}
                                                 </a>
+                                                @if($dato->invoice)
+                                                    <a class="dropdown-item"  href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
+                                                        {{__('consultation.download_invoice')}}
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>
@@ -55,8 +59,17 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="mt-3" class="float-right">
-                            {{ $data->links() }}
+                    </div>
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <p class="text-muted mb-0">
+                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
+                                de {{ $data->total() }} resultados
+                            </p>
+                        </div>
+                        <div>
+                            {{ $data->links('vendor.pagination.custom-pagination') }}
                         </div>
                     </div>
                 </div>

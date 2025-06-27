@@ -102,8 +102,6 @@ return [
     'responsible_relationship' => 'Relación con el Responsable',
     'insurance_company' => 'Aseguradora',
     'linkage_type' => 'Tipo de Vinculación',
-
-
-
-
+    'download_resumen'=>'Descargar Resumen',
+    'download_invoice'=>'Descargar Factura',
 ];

@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\PatientScope;
+use App\Models\Scopes\ChargeItemScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[ScopedBy([PatientScope::class])]
+#[ScopedBy([ChargeItemScope::class])]
 class ChargeItem extends BaseModel
 {
     use HasFactory, SoftDeletes;
@@ -46,8 +45,9 @@ class ChargeItem extends BaseModel
         'revenue_code',
         'modifier_codes',
         'client_id',
+        'service_catalog_id',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
@@ -73,7 +73,7 @@ class ChargeItem extends BaseModel
 
         static::creating(function ($model) {
             if (empty($model->fhir_id)) {
-                $model->fhir_id = 'charge-item-' . Str::uuid();
+                $model->fhir_id = 'charge-item-'.Str::uuid();
             }
             if (empty($model->client_id)) {
                 $model->client_id = auth()->user()?->getCurrentClient()?->id;
@@ -110,6 +110,11 @@ class ChargeItem extends BaseModel
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function createdBy(): BelongsTo
@@ -161,7 +166,7 @@ class ChargeItem extends BaseModel
     public function scopeUnbilled($query)
     {
         return $query->whereDoesntHave('invoiceLineItems')
-                    ->where('status', 'billable');
+            ->where('status', 'billable');
     }
 
     // Accessors & Mutators
@@ -230,21 +235,21 @@ class ChargeItem extends BaseModel
 
     public function canBeBilled(): bool
     {
-        return $this->status === 'billable' && !$this->invoiceLineItems()->exists();
+        return $this->status === 'billable' && ! $this->invoiceLineItems()->exists();
     }
 
     public function addToCoding(string $system, string $code, ?string $display = null): void
     {
         $coding = $this->code ?? ['coding' => []];
 
-        if (!isset($coding['coding'])) {
+        if (! isset($coding['coding'])) {
             $coding['coding'] = [];
         }
 
         $coding['coding'][] = [
             'system' => $system,
             'code' => $code,
-            'display' => $display
+            'display' => $display,
         ];
 
         $this->update(['code' => $coding]);
@@ -258,24 +263,24 @@ class ChargeItem extends BaseModel
             'status' => $this->status,
             'code' => $this->code,
             'subject' => [
-                'reference' => "Patient/{$this->patient->fhir_id}"
+                'reference' => "Patient/{$this->patient->fhir_id}",
             ],
             'context' => $this->encounter ? [
-                'reference' => "Encounter/{$this->encounter->fhir_id}"
+                'reference' => "Encounter/{$this->encounter->fhir_id}",
             ] : null,
             'occurrenceDateTime' => $this->occurrence_date_time?->toISOString(),
             'performer' => $this->performerPractitioner ? [[
                 'actor' => [
-                    'reference' => "Practitioner/{$this->performerPractitioner->fhir_id}"
-                ]
+                    'reference' => "Practitioner/{$this->performerPractitioner->fhir_id}",
+                ],
             ]] : null,
             'quantity' => [
-                'value' => $this->quantity
+                'value' => $this->quantity,
             ],
             'priceOverride' => [
                 'value' => $this->unit_price_value,
-                'currency' => $this->unit_price_currency
-            ]
+                'currency' => $this->unit_price_currency,
+            ],
         ];
     }
 }

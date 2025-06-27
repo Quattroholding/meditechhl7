@@ -14,12 +14,12 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card card-table show-entire p-0 table-dash">
+                    <div class="card card-table show-entire p-2">
                         <div class="card-body">
                             <livewire:patient.data-table model="{{$model}}"
                                      routename="patient"
-                                     sortField="first_name"
-                                     sortDirecction="asc"
+                                     sortField="id"
+                                     sortDirecction="desc"
                                      title="{{ __('generic.list') }} {{ __('appointment.titles') }}"
                                      wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
                         </div>

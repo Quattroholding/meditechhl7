@@ -14,7 +14,7 @@ class EncounterSeeder extends Seeder
     public function run(): void
     {
         $completeEncounter = Encounter::factory()->count(1)
-            ->withCompleteEncounter()
+            ->withCompleteEncounterAndServices()
             ->create();
     }
 }

@@ -243,28 +243,68 @@
         <!-- Right Column - Services List -->
         <div class="col-sm-7">
             <div class="card">
-                <div class="card-body" style="overflow-x: auto; max-height: 800px;">
+                <div class="card-body">
                     <div class="col-12">
                         <div class="form-heading d-flex justify-content-between align-items-center">
                             <h4>{{ __('Catálogo de Servicios') }}</h4>
-                            <span class="badge badge-info">{{ count($created) }} servicios</span>
+                            <span class="badge badge-info">{{ $this->services->total() }} servicios</span>
                         </div>
                     </div>
 
-                    @if(count($created) > 0)
+                    <!-- Search and filters -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" wire:model.live="search" class="form-control" placeholder="Buscar por nombre, descripción, CPT o especialidad...">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select wire:model.live="perPage" class="form-control">
+                                <option value="5">5 por página</option>
+                                <option value="10">10 por página</option>
+                                <option value="25">25 por página</option>
+                                <option value="50">50 por página</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    @if($this->services->count() > 0)
                         <div class="table-responsive">
                             <table class="table border-0 custom-table comman-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th>{{ __('Nombre') }}</th>
-                                        <th>{{ __('Tipo') }}</th>
-                                        <th>{{ __('Precio') }}</th>
-                                        <th>{{ __('Estado') }}</th>
+                                        <th wire:click="sortBy('name')" style="cursor: pointer;">
+                                            {{ __('Nombre') }}
+                                            @if($sortField === 'name')
+                                                <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </th>
+                                        <th wire:click="sortBy('service_type')" style="cursor: pointer;">
+                                            {{ __('Tipo') }}
+                                            @if($sortField === 'service_type')
+                                                <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </th>
+                                        <th wire:click="sortBy('base_price')" style="cursor: pointer;">
+                                            {{ __('Precio') }}
+                                            @if($sortField === 'base_price')
+                                                <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </th>
+                                        <th wire:click="sortBy('is_active')" style="cursor: pointer;">
+                                            {{ __('Estado') }}
+                                            @if($sortField === 'is_active')
+                                                <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </th>
                                         <th>{{ __('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($created as $service)
+                                    @foreach($this->services as $service)
                                         <tr>
                                             <td>
                                                 @if($editingId === $service->id)
@@ -349,6 +389,19 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <p class="text-muted mb-0">
+                                    Mostrando del {{ $this->services->firstItem() }} al {{ $this->services->lastItem() }}
+                                    de {{ $this->services->total() }} resultados
+                                </p>
+                            </div>
+                            <div>
+                                {{ $this->services->links('vendor.pagination.custom-pagination') }}
+                            </div>
                         </div>
                     @else
                         <div class="text-center py-4">

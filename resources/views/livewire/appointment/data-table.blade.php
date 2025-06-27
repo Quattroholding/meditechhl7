@@ -18,20 +18,20 @@
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
                             <tr>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.identifier')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('patients.name')">{{__('appointment.patient')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">{{__('appointment.doctor')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.status')">{{__('appointment.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th>{{__('appointment.type')}}</th>
-                                <th>{{__('appointment.branch')}}</th>
-                                <th>{{__('appointment.consultorio')}}</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('appointments.start')">{{__('appointment.date')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th>{{__('appointment.time')}}</th>
+                                <th><x-table-sort-button title="ID" columnName="appointments.id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('appointment.patient')}}" columnName=""/></th>
+                                <th><x-table-sort-button title="{{__('appointment.doctor')}}" columnName=""/></th>
+                                <th><x-table-sort-button title="{{__('appointment.status')}}" columnName="appointments.status" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('appointment.type')}}" columnName="appointments.service_type" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('appointment.branch')}}" columnName="" /></th>
+                                <th><x-table-sort-button title="{{__('appointment.consultorio')}}" columnName=""/></th>
+                                <th><x-table-sort-button title="{{__('appointment.date')}}" columnName="appointments.start" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th><x-table-sort-button title="{{__('appointment.time')}}" columnName=""/></th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach ($data as $appointment)
+                            @foreach($data as $appointment)
                                 <tr>
                                     <td>{{$appointment->id}}</td>
                                     <td>{!!  $appointment->patient->profile_name !!}</td>
@@ -69,11 +69,18 @@
                             @endforeach
                             </tbody>
                         </table>
-                        @if($pagination>0)
-                        <div class="mt-3" class="float-right">
-                            {{ $data->links() }}
+                    </div>
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <p class="text-muted mb-0">
+                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
+                                de {{ $data->total() }} resultados
+                            </p>
                         </div>
-                        @endif
+                        <div>
+                            {{ $data->links('vendor.pagination.custom-pagination') }}
+                        </div>
                     </div>
                 </div>
             </div>
