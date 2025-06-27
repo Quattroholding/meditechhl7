@@ -82,7 +82,7 @@ class InvoiceController extends Controller
 
             $fileName = 'factura_'.$invoice->identifier.'.pdf';
 
-            return $pdf->download($fileName);
+            return $pdf->stream($fileName);
 
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al generar la factura: '.$e->getMessage());

@@ -152,11 +152,11 @@
     <div class="header">
         <div class="company-info">
             <div class="company-name">{{ $organization->name ?? 'Centro Médico' }}</div>
-            @if($organization->address ?? false)
-                <div>{{ $organization->address }}</div>
+            @if($invoice->encounter->appointment->consultingRoom->branch->address)
+                <div>{{ $invoice->encounter->appointment->consultingRoom->branch->address }}</div>
             @endif
-            @if($organization->phone ?? false)
-                <div>Tel: {{ $organization->phone }}</div>
+            @if($organization->whatsapp ?? false)
+                <div>Tel: {{ $organization->whatsapp }}</div>
             @endif
             @if($organization->email ?? false)
                 <div>Email: {{ $organization->email }}</div>
@@ -170,15 +170,15 @@
             <div class="section-title">INFORMACIÓN DEL PACIENTE</div>
             <div class="info-row">
                 <span class="label">Nombre:</span>
-                {{ $patient->first_name }} {{ $patient->last_name }}
+                {{ $patient->name }}
             </div>
             <div class="info-row">
                 <span class="label">Identificación:</span>
-                {{ $patient->identification_number }}
+                {{ $patient->identifier_type }}    {{ $patient->identifier }}
             </div>
             <div class="info-row">
                 <span class="label">Fecha Nacimiento:</span>
-                {{ $patient->date_of_birth ? $patient->date_of_birth->format('d/m/Y') : 'N/A' }}
+                {{ $patient->bith_date ? $patient->bith_date->format('d/m/Y') : 'N/A' }}
             </div>
             @if($patient->phone)
                 <div class="info-row">
@@ -234,7 +234,7 @@
             </div>
             <div class="info-row">
                 <span class="label">Médico:</span>
-                {{ $practitioner->first_name ?? '' }} {{ $practitioner->last_name ?? '' }}
+                {{ $practitioner->name }}
             </div>
             @if($practitioner->license_number ?? false)
                 <div class="info-row">
@@ -245,22 +245,22 @@
         </div>
     @endif
 
-    <table class="services-table">
+    <table class="services-table" border="1">
         <thead>
             <tr>
                 <th style="width: 10%;">#</th>
-                <th style="width: 15%;">Código CPT</th>
-                <th style="width: 40%;">Descripción del Servicio</th>
-                <th style="width: 10%;">Cantidad</th>
-                <th style="width: 12%;">Precio Unit.</th>
-                <th style="width: 13%;">Total</th>
+                <th style="width: 15%;text-align: center">Código</th>
+                <th style="width: 40%;text-align: center">Descripción del Servicio</th>
+                <th style="width: 10%;text-align: center">Cantidad</th>
+                <th style="width: 12%;text-align: center">Precio Unit.</th>
+                <th style="width: 13%;text-align: center">Total</th>
             </tr>
         </thead>
         <tbody>
             @foreach($lineItems as $index => $item)
                 <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="text-center">{{ $item->cpt_code ?? 'N/A' }}</td>
+                    <td >{{ $index + 1 }}</td>
+                    <td class="text-center">{{ $item->service_code ?? 'N/A' }}</td>
                     <td>
                         {{ $item->service_description }}
                         @if($item->service_date && $item->service_date != $invoice->date)
