@@ -8,11 +8,20 @@ use App\Models\Lista;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ServiceCatalog extends Component
 {
+    use WithPagination;
     public $clientId;
+    public $practitionerId;
     public $created = [];
+
+    // Data table properties
+    public $search = '';
+    public $perPage = 5;
+    public $sortField = 'created_at';
+    public $sortDirection = 'desc';
 
     // Fields for CPT-based services
     public $query;
@@ -67,6 +76,9 @@ class ServiceCatalog extends Component
 
     public function mount()
     {
+        if(auth()->user()->hasRole('doctor')){
+            $this->practitionerId = auth()->user()->practitioner->id;
+        }
         if (auth()->user()->clients()->first()) {
             $this->clientId = auth()->user()->clients()->first()->id;
         }
@@ -80,10 +92,35 @@ class ServiceCatalog extends Component
 
     public function loadServices()
     {
-        $this->created = ServiceCatalogModel::where('client_id', $this->clientId)
-            ->where('created_by', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $this->created = ServiceCatalogModel::where('client_id', $this->clientId)->orderBy('created_at', 'desc')->get();
+    }
+
+    public function getServicesProperty()
+    {
+        return ServiceCatalogModel::where('client_id', $this->clientId)
+            ->when($this->search, function ($query) {
+                return $query->where('name', 'like', '%' . $this->search . '%')
+                           ->orWhere('description', 'like', '%' . $this->search . '%')
+                           ->orWhere('cpt_code', 'like', '%' . $this->search . '%')
+                           ->orWhere('specialty', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage);
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortDirection = 'asc';
+        }
+        $this->sortField = $field;
     }
 
     public function updatedQuery()
@@ -142,6 +179,7 @@ class ServiceCatalog extends Component
             'is_active' => true,
             'effective_date' => now(),
             'client_id' => $this->clientId,
+            'practitioner_id' => $this->practitionerId,
             'created_by' => auth()->id(),
         ]);
 

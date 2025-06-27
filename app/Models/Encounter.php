@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Encounter extends Model
+class Encounter extends BaseModel
 {
     use HasFactory;
     protected $fillable = [
@@ -93,6 +93,11 @@ class Encounter extends Model
     public function medicalSpeciality(): BelongsTo
     {
         return $this->belongsTo(MedicalSpeciality::class);
+    }
+
+    public function invoice(): hasOne
+    {
+        return $this->hasOne(Invoice::class);
     }
 
     /**

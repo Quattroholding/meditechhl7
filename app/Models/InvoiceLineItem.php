@@ -15,13 +15,17 @@ class InvoiceLineItem extends BaseModel
         'fhir_id',
         'invoice_id',
         'sequence',
+        'sequence_number',
         'charge_item_id',
         'service_code',
         'service_description',
+        'service_date',
         'service_period',
         'quantity',
         'unit_of_measure',
         'unit_price',
+        'line_total',
+        'currency',
         'discount_percentage',
         'discount_amount',
         'tax_rate',
@@ -41,14 +45,18 @@ class InvoiceLineItem extends BaseModel
         'performing_organization_id',
         'note',
         'supporting_information',
-        'client_id'
+        'client_id',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
         'service_code' => 'array',
+        'service_date' => 'date',
         'service_period' => 'array',
         'quantity' => 'decimal:2',
         'unit_price' => 'decimal:2',
+        'line_total' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'tax_rate' => 'decimal:4',
@@ -66,10 +74,10 @@ class InvoiceLineItem extends BaseModel
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->fhir_id)) {
-                $model->fhir_id = 'line-item-' . Str::uuid();
+                $model->fhir_id = 'line-item-'.Str::uuid();
             }
             if (empty($model->client_id)) {
                 $model->client_id = auth()->user()?->getCurrentClient()?->id;
@@ -161,6 +169,7 @@ class InvoiceLineItem extends BaseModel
         }
 
         $taxableAmount = $this->subtotal - $this->discount_amount_calculated;
+
         return $taxableAmount * ((float) $this->tax_rate);
     }
 
@@ -173,7 +182,7 @@ class InvoiceLineItem extends BaseModel
         // Extract from service_code array if available
         if (is_array($this->service_code) && isset($this->service_code['coding'])) {
             foreach ($this->service_code['coding'] as $coding) {
-                if (isset($coding['system']) && 
+                if (isset($coding['system']) &&
                     (str_contains($coding['system'], 'cpt') || str_contains($coding['system'], 'hcpcs'))) {
                     return $coding['code'] ?? null;
                 }
@@ -186,7 +195,7 @@ class InvoiceLineItem extends BaseModel
     public function getFormattedServiceDescriptionAttribute(): string
     {
         $description = $this->service_description;
-        
+
         if ($this->primary_cpt_code) {
             $description .= " (CPT: {$this->primary_cpt_code})";
         }
@@ -273,22 +282,22 @@ class InvoiceLineItem extends BaseModel
     public function addModifier(string $modifierCode, ?string $description = null): void
     {
         $modifiers = $this->modifier_codes ?? [];
-        
-        if (!in_array($modifierCode, $modifiers)) {
+
+        if (! in_array($modifierCode, $modifiers)) {
             $modifiers[] = $modifierCode;
             $this->modifier_codes = $modifiers;
         }
 
         // Also add to FHIR modifier array
         $fhirModifiers = $this->modifier ?? ['coding' => []];
-        if (!isset($fhirModifiers['coding'])) {
+        if (! isset($fhirModifiers['coding'])) {
             $fhirModifiers['coding'] = [];
         }
 
         $fhirModifiers['coding'][] = [
             'system' => 'http://www.ama-assn.org/go/cpt',
             'code' => $modifierCode,
-            'display' => $description
+            'display' => $description,
         ];
 
         $this->modifier = $fhirModifiers;
@@ -305,37 +314,37 @@ class InvoiceLineItem extends BaseModel
         return [
             'sequence' => $this->sequence,
             'chargeItemReference' => $this->chargeItem ? [
-                'reference' => "ChargeItem/{$this->chargeItem->fhir_id}"
+                'reference' => "ChargeItem/{$this->chargeItem->fhir_id}",
             ] : null,
             'priceComponent' => [
                 [
                     'type' => 'base',
                     'amount' => [
                         'value' => $this->unit_price,
-                        'currency' => $this->invoice->currency ?? 'USD'
-                    ]
-                ]
+                        'currency' => $this->invoice->currency ?? 'USD',
+                    ],
+                ],
             ],
             'quantity' => [
                 'value' => $this->quantity,
-                'unit' => $this->unit_of_measure ?? 'each'
+                'unit' => $this->unit_of_measure ?? 'each',
             ],
             'totalPriceComponent' => [
                 [
                     'type' => 'base',
                     'amount' => [
                         'value' => $this->line_total_pretax,
-                        'currency' => $this->invoice->currency ?? 'USD'
-                    ]
+                        'currency' => $this->invoice->currency ?? 'USD',
+                    ],
                 ],
                 [
                     'type' => 'tax',
                     'amount' => [
                         'value' => $this->line_total_tax,
-                        'currency' => $this->invoice->currency ?? 'USD'
-                    ]
-                ]
-            ]
+                        'currency' => $this->invoice->currency ?? 'USD',
+                    ],
+                ],
+            ],
         ];
     }
 }

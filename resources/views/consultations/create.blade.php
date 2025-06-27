@@ -5,6 +5,7 @@
     <div class="page-wrapper">
         <div class="content">
             <div class="col-md-10 col-sm-12" id="paciente">
+                @include('partials.message')
                 @include('consultations.partials.head',array('patient'=>$patient,'appointment'=>$appointment))
             </div>
             <div class="col-md-10 col-sm-12">

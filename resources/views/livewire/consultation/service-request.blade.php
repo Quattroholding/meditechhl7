@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td style="width:80%;padding:0 20px;">
-                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar..." >
+                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar por descripcion o codigo cpt" >
                 </td>
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
                     <div class="general-btn-small"

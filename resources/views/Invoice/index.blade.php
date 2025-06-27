@@ -4,24 +4,30 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    {{ __('patient.titles') }}
+                    {{__('invoice.invoices')}}
                 @endslot
                 @slot('li_1')
-                    {{ __('generic.list') }} {{ __('patient.titles') }}
+                    {{__('generic.list')}}   {{__('invoice.invoices')}}
                 @endslot
             @endcomponent
             <!-- /Page Header -->
+            {{--}}
+            @component('components.invoices-active-tab')
+            @endcomponent
+            <!-- Report Filter -->
+            @component('components.invoices-report-filter')
+            @endcomponent
+            @component('components.invoices-tab')
+            @endcomponent
+            @component('components.invoices-card')
+            @endcomponent
+            {{--}}
 
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card card-table show-entire p-0 table-dash">
                         <div class="card-body">
-                            <livewire:patient.data-table model="{{$model}}"
-                                     routename="patient"
-                                     sortField="id"
-                                     sortDirecction="desc"
-                                     title="{{ __('generic.list') }} {{ __('appointment.titles') }}"
-                                     wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
+                            <livewire:invoice.data-table/>
                         </div>
                     </div>
                 </div>
@@ -30,4 +36,4 @@
         @component('components.notification-box')
         @endcomponent
     </div>
-</x-app-layout>
+</x-app-layout>>

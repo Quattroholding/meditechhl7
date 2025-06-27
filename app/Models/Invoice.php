@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\PatientScope;
+use App\Models\Scopes\InvoiceScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[ScopedBy([PatientScope::class])]
+#[ScopedBy([InvoiceScope::class])]
 class Invoice extends BaseModel
 {
     use HasFactory, SoftDeletes;
@@ -21,13 +21,21 @@ class Invoice extends BaseModel
         'identifier',
         'invoice_number',
         'patient_id',
+        'encounter_id',
+        'account_id',
         'issuer_organization_id',
         'recipient_organization_id',
         'recipient_patient_id',
+        'performer_practitioner_id',
         'date',
+        'issue_date',
         'due_date',
+        'payment_terms',
         'period_start_end',
         'currency',
+        'subtotal_amount',
+        'tax_amount',
+        'total_amount',
         'total_preTax',
         'total_tax',
         'total_gross',
@@ -49,14 +57,18 @@ class Invoice extends BaseModel
         'terms_and_conditions',
         'client_id',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
         'identifier' => 'array',
         'date' => 'date',
+        'issue_date' => 'date',
         'due_date' => 'date',
         'period_start_end' => 'array',
+        'subtotal_amount' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total_amount' => 'decimal:2',
         'total_preTax' => 'decimal:2',
         'total_tax' => 'decimal:2',
         'total_gross' => 'decimal:2',
@@ -72,10 +84,10 @@ class Invoice extends BaseModel
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->fhir_id)) {
-                $model->fhir_id = 'invoice-' . Str::uuid();
+                $model->fhir_id = 'invoice-'.Str::uuid();
             }
             if (empty($model->client_id)) {
                 $model->client_id = auth()->user()?->getCurrentClient()?->id;
@@ -92,6 +104,16 @@ class Invoice extends BaseModel
         return $this->belongsTo(Patient::class);
     }
 
+    public function encounter(): BelongsTo
+    {
+        return $this->belongsTo(Encounter::class);
+    }
+
+    public function performerPractitioner(): BelongsTo
+    {
+        return $this->belongsTo(Practitioner::class, 'performer_practitioner_id');
+    }
+
     public function issuerOrganization(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'issuer_organization_id');
@@ -100,6 +122,11 @@ class Invoice extends BaseModel
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function lineItems(): HasMany
@@ -121,7 +148,12 @@ class Invoice extends BaseModel
     public function scopeOverdue($query)
     {
         return $query->where('due_date', '<', now())
-                    ->whereIn('payment_status', ['pending', 'partial']);
+            ->whereIn('payment_status', ['pending', 'partial']);
+    }
+
+    public function scopeByEncounter($query, $encounterId)
+    {
+        return $query->where('encounter_id', $encounterId);
     }
 
     // Accessors
@@ -133,10 +165,10 @@ class Invoice extends BaseModel
     // Methods
     public function generateInvoiceNumber(): string
     {
-        $prefix = 'INV-' . now()->format('Y-');
-        $lastInvoice = static::where('invoice_number', 'like', $prefix . '%')
-                           ->orderBy('invoice_number', 'desc')
-                           ->first();
+        $prefix = 'INV-'.now()->format('Y-');
+        $lastInvoice = static::withoutGlobalScope(InvoiceScope::class)->where('invoice_number', 'like', $prefix.'%')
+            ->orderBy('invoice_number', 'desc')
+            ->first();
 
         if ($lastInvoice) {
             $lastNumber = (int) substr($lastInvoice->invoice_number, strlen($prefix));
@@ -145,20 +177,20 @@ class Invoice extends BaseModel
             $nextNumber = 1;
         }
 
-        return $prefix . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
     }
 
     public function addPayment(float $amount, ?string $method = null): bool
     {
         $newAmountPaid = (float) $this->amount_paid + $amount;
-        
+
         if ($newAmountPaid > $this->total_net) {
             return false;
         }
 
         $this->amount_paid = $newAmountPaid;
         $this->amount_due = $this->total_net - $this->amount_paid;
-        
+
         if ($this->amount_due <= 0.01) {
             $this->payment_status = 'paid';
             $this->payment_date = now();
@@ -178,7 +210,7 @@ class Invoice extends BaseModel
         $sequence = $this->lineItems()->max('sequence') + 1;
 
         return $this->lineItems()->create([
-            'fhir_id' => 'line-' . Str::uuid(),
+            'fhir_id' => 'line-'.Str::uuid(),
             'sequence' => $sequence,
             'charge_item_id' => $chargeItem->id,
             'service_code' => $chargeItem->code,
@@ -189,7 +221,7 @@ class Invoice extends BaseModel
             'line_total_gross' => $chargeItem->total_price,
             'cpt_code' => $chargeItem->primary_cpt_code,
             'performer_practitioner_id' => $chargeItem->performer_practitioner_id,
-            'client_id' => $this->client_id
+            'client_id' => $this->client_id,
         ]);
     }
 }

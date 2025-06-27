@@ -62,6 +62,7 @@ return new class extends Migration
             $table->foreignId('performing_organization_id')->nullable()->constrained('clients', 'id')->onDelete('set null');
 
             // Additional information
+            $table->date('service_date')->nullable();
             $table->text('note')->nullable();
             $table->json('supporting_information')->nullable(); // References
 

@@ -46,8 +46,13 @@
                                                     {{__('generic.edit')}}
                                                 </a>
                                                 <a class="dropdown-item"  href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
-                                                    {{__('generic.download')}}
+                                                    {{__('consultation.download_resumen')}}
                                                 </a>
+                                                @if($dato->invoice)
+                                                    <a class="dropdown-item"  href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
+                                                        {{__('consultation.download_invoice')}}
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>

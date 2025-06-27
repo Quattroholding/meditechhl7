@@ -15,14 +15,13 @@
                 <table class="table border-0 custom-table comman-table mb-0">
                     <thead>
                     <tr>
-                        <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                        <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('first_name')">{{__('doctor.full_name')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                        <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('birthdate')">{{__('doctor.birthdate')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                        <th>{{__('doctor.full_id_number')}}</th>
-                        <th>{{__('doctor.email')}}</th>
-                        <th>{{__('doctor.phone')}}</th>
-                        <th>{{__('doctor.qualifications')}}</th>
-                        <th></th>
+                        <th><x-table-sort-button title="ID" columnName="practitioners.id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.full_name')}}" columnName="practitioners.name" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.birthdate')}}" columnName="practitioners.birth_date" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.full_id_number')}}" columnName="practitioners.identifier" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.email')}}" columnName="practitioners.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.phone')}}" columnName="practitioners.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                        <th><x-table-sort-button title="{{__('doctor.qualifications')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                     </tr>
                     </thead>
                     <tbody>

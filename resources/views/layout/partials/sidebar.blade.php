@@ -23,8 +23,8 @@
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('clients') ? 'active' : '' }}" href="{{ route('client.index') }}">{{ __('generic.list') }} {{ __('client.titles') }}  </a></li>
                         <li><a class="{{ Request::is('clients/create') ? 'active' : '' }}"   href="{{ route('client.create') }}">{{ __('generic.create') }} {{ __('client.title') }}</a></li>
-                        <li><a class="{{ Request::is('client/branch/index') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
-                        <li><a class="{{ Request::is('client/room/index') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
+                        <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
+                        <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
                         <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>3)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
                     </ul>
                 </li>
@@ -67,6 +67,22 @@
                     </a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-07.svg') }}" alt=""></span>
+                        <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
+                        <li><a href="payments.html">{{__('Pagos')}}</a></li>
+                        {{--}}
+                        <li><a href="expenses.html">Expenses</a></li>
+                        <li><a href="taxes.html">Taxes</a></li>
+                        <li><a href="provident-fund.html">Provident Fund</a></li>
+                        {{--}}
                     </ul>
                 </li>
                 {{--}}

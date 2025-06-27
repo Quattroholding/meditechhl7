@@ -19,9 +19,9 @@ class DataTable extends Component
     public $columns = []; // Columnas a mostrar
     public $actions = [];
     public $search; // Búsqueda
-    public $sortField = 'id'; // Ordenación por defecto
+    public $sortField = 'name'; // Ordenación por defecto
     public $sortDirection = 'asc'; // Dirección de orden
-    public $pagination;
+    public $pagination=10;
 
     public $count = 0;
     public $route_name;
@@ -31,15 +31,6 @@ class DataTable extends Component
 
     public $note;
 
-    public function mount($pagination=10,$sortField='id',$sortDirection='asc',$routename='',$title='')
-    {
-        $this->class = new Patient();
-        $this->pagination = $pagination;
-        $this->route_name = $routename;
-        $this->sortField =$sortField;
-        $this->sortDirection =$sortDirection;
-        $this->title=$title;
-    }
 
     public function openModal($patientId)
     {
@@ -70,10 +61,13 @@ class DataTable extends Component
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+
+        $this->sortField = $field;
+        $this->resetPage();
     }
+
     public function render()
     {
         $data = Patient::query()
@@ -85,10 +79,9 @@ class DataTable extends Component
                     $q->orWhere('name', 'like', '%' . $this->search . '%');
                 });
             })
-            ->when(Schema::hasColumn($this->class->getTable(),$this->sortField),function ($q){
-                $q->orderBy($this->sortField, $this->sortDirection);
-            })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
+
         return view('livewire.patient.data-table', [ 'data' => $data, ]);
     }
 

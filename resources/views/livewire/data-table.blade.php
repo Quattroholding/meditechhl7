@@ -14,17 +14,13 @@
         <thead>
         <tr>
             @foreach ($columns as $column)
-                <th class="border-b border-gray-300 p-2 cursor-pointer @if($column=='acciones') text-end @endif" wire:click="sortBy('{{ $column }}')">
-                    {{ __($route_name.'.'.$column) }}
-                    @if ($sortField === $column)
-                        @if ($sortDirection === 'asc') ▲ @else ▼ @endif
-                    @endif
-                </th>
+                <th class="@if(strtolower($column)=='acciones') text-end @endif"><x-table-sort-button
+                     title="{{ __($route_name.'.'.$column) }}" columnName="{{ $column }}" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
             @endforeach
         </tr>
         </thead>
         <tbody>
-        @foreach ($data as $row)
+        @forelse ($data as $row)
             <tr class="">
                 @foreach ($columns as $column)
                     <td class="border-b border-gray-100 p-2 @if($column=='acciones') text-end @endif" >
@@ -48,12 +44,29 @@
                     </td>
                 @endforeach
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="8" class="text-center py-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="fas fa-close fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">{{ __('Sin resultados de busqueda') }}</h5>
+                    </div>
+                </td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
-        <div class="mt-3" class="float-right">
-            {{ $data->links() }}
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <p class="text-muted mb-0">
+                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
+                de {{ $data->total() }} resultados
+            </p>
+        </div>
+        <div>
+            {{ $data->links('vendor.pagination.custom-pagination') }}
         </div>
     </div>
-    <p>&nbsp;</p>
+    </div>
 </div>

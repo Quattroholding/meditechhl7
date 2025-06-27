@@ -12,48 +12,40 @@ class DataTable extends Component
 {
     use WithPagination;
 
-    public $model; // Modelo dinámico
-    public $class;
-    public $columns = []; // Columnas a mostrar
-    public $actions = [];
-    public $search; // Búsqueda
-    public $sortField = 'id'; // Ordenación por defecto
-    public $sortDirection = 'asc'; // Dirección de orden
-    public $pagination;
+    public $search = '';
+    public $sortField = 'id';
+    public $sortDirection = 'desc';
+    public $pagination=10;
 
-    public $count = 0;
-    public $route_name;
-    public $title='';
-    public $patient_id;
-    public $practitioner_id;
-    public $limit;
     public $show_create=true;
     public $showModal=false;
     public $modalTitle='Confirmar Cita';
 
-    public function mount($pagination=10,$sortField='appointments.id',$sortDirection='desc',$routename='',$title='')
-    {
-        $this->class = new Appointment();
-        $this->pagination = $pagination;
-        $this->route_name = $routename;
-        $this->sortField =$sortField;
-        $this->sortDirection =$sortDirection;
-        $this->title=$title;
-    }
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'page' => ['except' => 1],
+    ];
+
 
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+
+        $this->sortField = $field;
+        $this->resetPage();
     }
 
-    public function render()
+    public function updatingSearch()
     {
-        $query = Appointment::selectRaw('appointments.*')
+        $this->resetPage();
+    }
+
+    public function getDataProperty(){
+        return Appointment::query()->selectRaw('appointments.*')
             ->leftJoin('patients','patients.id','=','appointments.patient_id')
             ->leftJoin('practitioners','practitioners.id','=','appointments.practitioner_id')
             ->when($this->search, function (Builder $query) {
@@ -78,15 +70,26 @@ class DataTable extends Component
             ->when(!empty($this->limit),function ($q){
                 $q->take($this->limit);
             })
-            ->orderBy($this->sortField, $this->sortDirection);
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->pagination);
 
-        if($this->pagination>0) {
-            $data = $query->paginate($this->pagination);
-        }else{
-            $data = $query->get();
+    }
+
+    public function render()
+    {
+        try {
+            $data = $this->data;
+
+            return view('livewire.appointment.data-table', [ 'data' => $data, ]);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Invoice DataTable Error: ' . $e->getMessage());
+
+            // Return an empty collection to prevent infinite loading
+            return view('livewire.appointment.data-table', [
+                'invoices' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
+            ]);
         }
-
-        return view('livewire.appointment.data-table', [ 'data' => $data, ]);
     }
 
     public function editAppointment($appointmentId)

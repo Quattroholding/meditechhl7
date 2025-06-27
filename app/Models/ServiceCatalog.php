@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ServiceCatalogScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -51,8 +52,9 @@ class ServiceCatalog extends BaseModel
         'clinical_notes',
         'prerequisites',
         'client_id',
+        'practitioner_id',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
@@ -75,13 +77,18 @@ class ServiceCatalog extends BaseModel
         'prerequisites' => 'array',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ServiceCatalogScope);
+    }
+
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->fhir_id)) {
-                $model->fhir_id = 'service-' . Str::uuid();
+                $model->fhir_id = 'service-'.Str::uuid();
             }
             if (empty($model->client_id)) {
                 $model->client_id = auth()->user()?->getCurrentClient()?->id;
@@ -96,6 +103,11 @@ class ServiceCatalog extends BaseModel
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function practitioner(): BelongsTo
+    {
+        return $this->belongsTo(Practitioner::class);
     }
 
     public function createdBy(): BelongsTo
@@ -117,14 +129,14 @@ class ServiceCatalog extends BaseModel
     public function scopeActive($query)
     {
         return $query->where('is_active', true)
-                    ->where(function ($q) {
-                        $q->whereNull('effective_date')
-                          ->orWhere('effective_date', '<=', now());
-                    })
-                    ->where(function ($q) {
-                        $q->whereNull('expiration_date')
-                          ->orWhere('expiration_date', '>=', now());
-                    });
+            ->where(function ($q) {
+                $q->whereNull('effective_date')
+                    ->orWhere('effective_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expiration_date')
+                    ->orWhere('expiration_date', '>=', now());
+            });
     }
 
     public function scopeByServiceType($query, $serviceType)
@@ -166,7 +178,7 @@ class ServiceCatalog extends BaseModel
     {
         return $query->where(function ($q) use ($practitionerId) {
             $q->whereNull('qualified_practitioners')
-              ->orWhereJsonContains('qualified_practitioners', $practitionerId);
+                ->orWhereJsonContains('qualified_practitioners', $practitionerId);
         });
     }
 
@@ -174,7 +186,7 @@ class ServiceCatalog extends BaseModel
     {
         return $query->where(function ($q) use ($locationId) {
             $q->whereNull('available_locations')
-              ->orWhereJsonContains('available_locations', $locationId);
+                ->orWhereJsonContains('available_locations', $locationId);
         });
     }
 
@@ -182,7 +194,7 @@ class ServiceCatalog extends BaseModel
     public function getEffectivePriceAttribute(): float
     {
         $basePrice = (float) $this->base_price;
-        
+
         if ($this->markup_percentage > 0) {
             return $basePrice * (1 + ((float) $this->markup_percentage / 100));
         }
@@ -192,7 +204,7 @@ class ServiceCatalog extends BaseModel
 
     public function getProfitMarginAttribute(): float
     {
-        if (!$this->cost_estimate || $this->cost_estimate <= 0) {
+        if (! $this->cost_estimate || $this->cost_estimate <= 0) {
             return 0.0;
         }
 
@@ -201,7 +213,7 @@ class ServiceCatalog extends BaseModel
 
     public function getProfitMarginPercentageAttribute(): float
     {
-        if (!$this->cost_estimate || $this->cost_estimate <= 0) {
+        if (! $this->cost_estimate || $this->cost_estimate <= 0) {
             return 0.0;
         }
 
@@ -215,7 +227,7 @@ class ServiceCatalog extends BaseModel
 
     public function getIsCurrentlyAvailableAttribute(): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -236,9 +248,9 @@ class ServiceCatalog extends BaseModel
     public function generateServiceCode(): string
     {
         $prefix = strtoupper(substr($this->service_type ?? 'SVC', 0, 3));
-        $number = static::where('code', 'like', $prefix . '%')->count() + 1;
-        
-        return $prefix . '_' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        $number = static::where('code', 'like', $prefix.'%')->count() + 1;
+
+        return $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 
     public function createChargeItem(
@@ -252,17 +264,18 @@ class ServiceCatalog extends BaseModel
         $unitPrice = $customPrice ?? $this->effective_price;
 
         return ChargeItem::create([
-            'fhir_id' => 'charge-' . Str::uuid(),
+            'fhir_id' => 'charge-'.Str::uuid(),
             'status' => 'billable',
+            'service_catalog_id'=>$this->id,
             'code' => [
                 'coding' => [
                     [
                         'system' => 'http://www.ama-assn.org/go/cpt',
                         'code' => $this->cpt_code,
-                        'display' => $this->name
-                    ]
+                        'display' => $this->name,
+                    ],
                 ],
-                'text' => $this->name
+                'text' => $this->name,
             ],
             'patient_id' => $patientId,
             'encounter_id' => $encounterId,
@@ -274,13 +287,13 @@ class ServiceCatalog extends BaseModel
             'unit_price_value' => $unitPrice,
             'cpt_code' => $this->cpt_code,
             'revenue_code' => $this->revenue_code,
-            'client_id' => $this->client_id
+            'client_id' => $this->client_id,
         ]);
     }
 
     public function calculatePriceForInsurance(?string $insuranceType = null): float
     {
-        if (!$this->covered_by_insurance) {
+        if (! $this->covered_by_insurance) {
             return $this->effective_price;
         }
 
@@ -302,7 +315,7 @@ class ServiceCatalog extends BaseModel
 
     public function getPatientResponsibility(?string $insuranceType = null): float
     {
-        if (!$this->covered_by_insurance) {
+        if (! $this->covered_by_insurance) {
             return $this->effective_price;
         }
 
@@ -314,11 +327,11 @@ class ServiceCatalog extends BaseModel
 
     public function isAvailableForPractitioner(int $practitionerId): bool
     {
-        if (!$this->is_currently_available) {
+        if (! $this->is_currently_available) {
             return false;
         }
 
-        if (!$this->qualified_practitioners) {
+        if (! $this->qualified_practitioners) {
             return true; // Available to all practitioners
         }
 
@@ -327,11 +340,11 @@ class ServiceCatalog extends BaseModel
 
     public function isAvailableAtLocation(int $locationId): bool
     {
-        if (!$this->is_currently_available) {
+        if (! $this->is_currently_available) {
             return false;
         }
 
-        if (!$this->available_locations) {
+        if (! $this->available_locations) {
             return true; // Available at all locations
         }
 
@@ -341,8 +354,8 @@ class ServiceCatalog extends BaseModel
     public function addQualifiedPractitioner(int $practitionerId): void
     {
         $practitioners = $this->qualified_practitioners ?? [];
-        
-        if (!in_array($practitionerId, $practitioners)) {
+
+        if (! in_array($practitionerId, $practitioners)) {
             $practitioners[] = $practitionerId;
             $this->qualified_practitioners = $practitioners;
             $this->save();
@@ -352,7 +365,7 @@ class ServiceCatalog extends BaseModel
     public function removeQualifiedPractitioner(int $practitionerId): void
     {
         $practitioners = $this->qualified_practitioners ?? [];
-        
+
         $key = array_search($practitionerId, $practitioners);
         if ($key !== false) {
             unset($practitioners[$key]);
@@ -364,8 +377,8 @@ class ServiceCatalog extends BaseModel
     public function addAvailableLocation(int $locationId): void
     {
         $locations = $this->available_locations ?? [];
-        
-        if (!in_array($locationId, $locations)) {
+
+        if (! in_array($locationId, $locations)) {
             $locations[] = $locationId;
             $this->available_locations = $locations;
             $this->save();
@@ -376,10 +389,10 @@ class ServiceCatalog extends BaseModel
     {
         $this->is_active = false;
         $this->expiration_date = now();
-        
+
         if ($reason) {
-            $this->clinical_notes = ($this->clinical_notes ? $this->clinical_notes . "\n\n" : '') 
-                                  . "Deactivated: " . $reason . " (" . now()->toDateString() . ")";
+            $this->clinical_notes = ($this->clinical_notes ? $this->clinical_notes."\n\n" : '')
+                                  .'Deactivated: '.$reason.' ('.now()->toDateString().')';
         }
 
         return $this->save();
@@ -392,8 +405,8 @@ class ServiceCatalog extends BaseModel
             'id' => $this->fhir_id,
             'identifier' => [
                 [
-                    'value' => $this->code
-                ]
+                    'value' => $this->code,
+                ],
             ],
             'active' => $this->is_currently_available,
             'type' => [
@@ -402,10 +415,10 @@ class ServiceCatalog extends BaseModel
                         [
                             'system' => 'http://www.ama-assn.org/go/cpt',
                             'code' => $this->cpt_code,
-                            'display' => $this->name
-                        ]
-                    ]
-                ]
+                            'display' => $this->name,
+                        ],
+                    ],
+                ],
             ],
             'name' => $this->name,
             'comment' => $this->description,
@@ -414,14 +427,14 @@ class ServiceCatalog extends BaseModel
                     'coding' => [
                         [
                             'code' => $this->service_type,
-                            'display' => ucfirst(str_replace('_', ' ', $this->service_type))
-                        ]
-                    ]
-                ]
+                            'display' => ucfirst(str_replace('_', ' ', $this->service_type)),
+                        ],
+                    ],
+                ],
             ],
             'providedBy' => [
-                'reference' => "Organization/{$this->client->fhir_id}"
-            ]
+                'reference' => "Organization/{$this->client->fhir_id}",
+            ],
         ];
     }
 }

@@ -10,6 +10,7 @@ use App\Models\MedicalSpeciality;
 use App\Models\Medicine;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use App\Models\ServiceCatalog;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -163,5 +164,23 @@ class ApiController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function servicesCatalog(Request $request){
+        $select='*';
+
+        if($request->has('dropdown'))
+            $select = "id,name";
+
+        $data = ServiceCatalog::selectRaw($select)
+            ->when($request->has('q'),function ($q) use($request){
+                $q->whereRaw("(cpt_code LIKE '%".$request->q."%' or name LIKE '%".$request->q."%')");
+            })
+            ->take(10)
+            ->get();
+
+
+        return response()->json($data);
+
     }
 }
