@@ -14,11 +14,9 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card card-table show-entire p-0 table-dash">
+                    <div class="card card-table show-entire p-2">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <livewire:practitioner.data-table wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
-                            </div>
+                            <livewire:practitioner.data-table wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
                         </div>
                     </div>
                 </div>

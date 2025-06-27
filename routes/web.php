@@ -16,6 +16,7 @@ use \App\Http\Controllers\SettingController;
 use \App\Http\Controllers\Auth\LoginController;
 use \App\Http\Controllers\DashboardController;
 use \App\Http\Controllers\InvoiceController;
+use \App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -120,6 +121,15 @@ Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified']), fu
 
     });
 
+    Route::group(array('prefix' => 'payments','middleware'=>['auth','verified']), function() {
+
+        Route::get('/', [PaymentController::class, 'index'])->name('payment.index');
+
+        Route::get('/{id}', [PaymentController::class, 'show'])->name('payment.show');
+
+        Route::get('/{invoice_id}/download', [PaymentController::class, 'download'])->name('payment.download');
+
+    });
 
 });
 

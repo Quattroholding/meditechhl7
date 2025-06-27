@@ -169,7 +169,9 @@ class ConsultationController extends Controller
                 $invoice->update([
                     'subtotal_amount' => $subtotal,
                     'tax_amount' => $taxAmount,
+                    'total_tax' => $taxAmount,
                     'total_amount' => $totalAmount,
+                    'total_net' => $totalAmount,
                     'amount_due' => $totalAmount,
                 ]);
             }

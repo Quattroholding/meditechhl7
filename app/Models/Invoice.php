@@ -134,6 +134,11 @@ class Invoice extends BaseModel
         return $this->hasMany(InvoiceLineItem::class)->orderBy('sequence');
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class)->orderBy('payment_date', 'desc');
+    }
+
     // Scopes
     public function scopeByStatus($query, $status)
     {
@@ -159,7 +164,7 @@ class Invoice extends BaseModel
     // Accessors
     public function getBalanceAttribute(): float
     {
-        return (float) $this->total_net - (float) $this->amount_paid;
+        return (float) $this->total_amount - (float) $this->amount_paid;
     }
 
     // Methods

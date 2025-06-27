@@ -3,6 +3,7 @@
 namespace App\Livewire\Invoice;
 
 use App\Models\Invoice;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -115,5 +116,16 @@ class DataTable extends Component
                 'invoices' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
             ]);
         }
+    }
+
+    public function openPaymentModal($invoiceId){
+        $this->dispatch('openPaymentModal',$invoiceId);
+    }
+
+    #[On('paymentSaved')]
+    public function paymentSaved(){
+
+        dd('aqui');
+        $invoices = $this->invoices;
     }
 }

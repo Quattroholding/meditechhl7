@@ -13,7 +13,6 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
@@ -60,8 +59,17 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="mt-3" class="float-right">
-                            {{ $data->links() }}
+                    </div>
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <p class="text-muted mb-0">
+                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
+                                de {{ $data->total() }} resultados
+                            </p>
+                        </div>
+                        <div>
+                            {{ $data->links('vendor.pagination.custom-pagination') }}
                         </div>
                     </div>
                 </div>

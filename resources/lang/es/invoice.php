@@ -61,6 +61,15 @@ return [
         'pending' => 'Pendiente',
     ],
 
+    // Payment Status
+    'payment_status_class' => [
+        'unpaid' => 'status-pink',
+        'paid' => 'status-green',
+        'partial' => 'status-orange',
+        'overdue' => 'status-default',
+        'pending' => 'Pendiente',
+    ],
+
     // Types
     'types' => [
         'invoice' => 'Factura',
