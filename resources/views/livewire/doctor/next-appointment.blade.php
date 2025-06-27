@@ -10,9 +10,8 @@
             <h4>{{ $nextAppointmentTime }}</h4>
         </div>
     </div>
+    @push('scripts')
     <script>
-
-
         document.addEventListener("DOMContentLoaded", function () {
             setInterval(function() {
                 Livewire.dispatch('getNextAppointment');
@@ -21,13 +20,17 @@
                 $(window).scroll(animateElements);
             }, 30000);
 
-            function animateElements() {
+            animateElements();
+        });
+
+
+                    function animateElements() {
                 $('.circle-bar3').each(function () {
                     var elementPos = $(this).offset().top;
                     var topOfWindow = $(window).scrollTop();
                     var percent = $(this).find('.circle-graph3').attr('data-percent');
                     var animate = $(this).data('animate');
-                    if (elementPos < topOfWindow + $(window).height() - 30 && !animate) {
+                    if (elementPos < topOfWindow + $(window).height() - 30 && !animate && percent) {
                         $(this).data('animate', true);
                         $(this).find('.circle-graph3').circleProgress({
                             value: percent / 100,
@@ -41,7 +44,8 @@
                 });
             }
 
-            animateElements();
-        });
+    //$(window).scroll(animateElements);
+        animateElements();
     </script>
+@endpush
 </div>
