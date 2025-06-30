@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\PaymentScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,6 +51,11 @@ class Payment extends BaseModel
                 $model->payment_number = $model->generatePaymentNumber();
             }
         });
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new PaymentScope());
     }
 
     // Relationships

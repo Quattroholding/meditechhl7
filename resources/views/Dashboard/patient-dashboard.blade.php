@@ -59,21 +59,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="col-12 col-md-12  col-xl-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title d-inline-block" style="color: #fff">{{__('Ultimas 5 Citas')}}</h4>
-                                <a href="{{ url('appointments') }}" class="patient-views float-end" style="color: #fff">{{__('ver todas')}}</a>
-                            </div>
-                            <div class="card-body p-0 table-dash">
-                                <livewire:appointment.data-table pagination="-1"
-                                                                 sortDirecction="desc"
-                                                                 :limit="5"
-                                                                 :show_create="false"
-                                                                 wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="row">
 
                     </div>

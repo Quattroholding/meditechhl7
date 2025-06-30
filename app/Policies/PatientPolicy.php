@@ -25,4 +25,12 @@ class PatientPolicy
                ($user->hasRole('doctor') && $patient->user_id == $user->id)
             or $user->hasRole('admin');
     }
+
+    public function edit_profile(User $user,Patient $patient){
+       return ($user->hasRole('paciente') && $patient->user_id == $user->id) or $user->hasRole('admin');
+    }
+
+    public function edit_access(User $user,Patient $patient){
+        return ($user->hasRole('paciente') && $patient->user_id == $user->id) or $user->hasRole('admin');
+    }
 }

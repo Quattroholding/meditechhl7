@@ -79,7 +79,7 @@
                                     <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
                                 </div>
                             </div>
-
+                            {{--}}
                             <!-- Checkboxes -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block">
@@ -97,6 +97,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {{--}}
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
@@ -209,7 +210,7 @@
                                     <x-text-input wire:model="custom_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="custom_patient_copay"/>
                                 </div>
                             </div>
-
+                            {{--}}
                             <!-- Checkboxes -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block">
@@ -227,6 +228,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {{--}}
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
