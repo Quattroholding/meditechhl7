@@ -20,7 +20,7 @@
                                     <h4>  {{ __('generic.detail') }} {{ __('patient.title') }}</h4>
                                 </div>
                             </div>
-                            <form method="POST" action="{{ route('patient.update',$data->id) }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('patient.update',$data->id) }}" enctype="multipart/form-data" id="form">
                                 @csrf
                                 <div class="row">
                                     <!-- ID NUMBER -->
@@ -106,7 +106,7 @@
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('patient.phone')" />
-                                            <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                            <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" id="phone" :value="$data->phone"/>
                                             @error('phone') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
