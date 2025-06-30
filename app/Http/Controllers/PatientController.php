@@ -121,7 +121,7 @@ class PatientController extends Controller
         //$patient->identifier = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
         if($patient->save()){
 
-            session()->flash('message', 'Se ha registrado exitósamente el paciente');
+            session()->flash('message', 'Se ha registrado exitosamente el paciente');
 
             $registrationData=[
                 'username'=>$model->email,
