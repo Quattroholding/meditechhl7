@@ -82,7 +82,7 @@
 
                             <!-- Checkboxes -->
                             <div class="col-12 col-md-6">
-                                <div class="input-block local-forms">
+                                <div class="input-block">
                                     <div class="form-check">
                                         <input type="checkbox" wire:model="cpt_requires_auth" class="form-check-input" id="cpt_requires_auth">
                                         <label class="form-check-label" for="cpt_requires_auth">
@@ -212,7 +212,7 @@
 
                             <!-- Checkboxes -->
                             <div class="col-12 col-md-6">
-                                <div class="input-block local-forms">
+                                <div class="input-block">
                                     <div class="form-check">
                                         <input type="checkbox" wire:model="custom_requires_auth" class="form-check-input" id="custom_requires_auth">
                                         <label class="form-check-label" for="custom_requires_auth">

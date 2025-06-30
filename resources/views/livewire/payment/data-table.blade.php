@@ -10,16 +10,15 @@
                     @endcomponent
                     <!-- /Table Header -->
                     <div class="staff-search-table">
-                        <form action="javascript:;">
                             <div class="row">
                                 <div class="col-12 col-md-3 col-xl-3">
-                                    <div class="form-group local-forms cal-icon">
+                                    <div class="input-block  local-forms cal-icon">
                                         <x-input-label for="dateFrom" :value="__('Pagado desde')" />
                                         <input wire:model.live="dateFrom" wire:click="clickedDateTo" class="form-control datetimepicker" type="text">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-3 col-xl-3">
-                                    <div class="form-group local-forms cal-icon">
+                                    <div class="input-block  local-forms cal-icon">
                                         <x-input-label for="dateTo" :value="__('Pagado hasta')" />
                                         <input wire:model.live="dateTo" class="form-control datetimepicker" type="text">
                                     </div>
@@ -33,13 +32,11 @@
                                 <div class="col-12 col-md-3 col-xl-3 ">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="paymentMethod" :value="__('Metodo de pago')" />
-                                        <label>{{__('Metodo de pago')}}</label>
                                         <x-select-input wire:model.live="paymentMethod" name="paymentMethod" :options="$this->paymentMethods" :selected="['']" class="block mt-1 w-full"/>
-
                                     </div>
                                 </div>
                             </div>
-                        </form>
+
                     </div>
                     @include('partials.message')
 
