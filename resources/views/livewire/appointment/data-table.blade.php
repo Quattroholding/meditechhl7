@@ -13,6 +13,13 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
+                    <div x-data="{ message: '' }"
+                    x-on:cita-message.window="message = $event.detail.message; $store.debug.log('Evento recibido: ' + message)">
+                    {{--}} <div x-show="message" x-text="message" class="mb-4"></div>{{--}}
+                        <div class="alert alert-success alert-dismissible fade show mb-6" x-show="message" x-text="message" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
                     @include('partials.message')
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
@@ -55,7 +62,7 @@
                                                     @endif
                                             @if(auth()->user()->can('edit',$appointment))
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item"  href="{{ route('appointment.edit',$appointment->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                <a class="dropdown-item"  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>
                                             @endif

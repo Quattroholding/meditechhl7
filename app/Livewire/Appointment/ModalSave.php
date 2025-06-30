@@ -294,6 +294,7 @@ class ModalSave extends Component
             $this->notes = $this->appointment->comment;
             $this->canEdit = auth()->user()->can('edit',$this->appointment);
             $this->showModal = true;
+            $this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
         }
     }
 
