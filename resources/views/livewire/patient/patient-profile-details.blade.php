@@ -2,19 +2,23 @@
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
+                @if(auth()->user()->can('edit_profile',$patient))
                 <li class="nav-item" role="presentation">
                     <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
                         {{__('patient.account_settings')}}
                     </a>
                 </li>
+                @endif
+                @if(auth()->user()->can('edit_access',$patient))
                 <li class="nav-item" role="presentation">
                     <a href="#security_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
                         {{__('patient.security_settings')}}
                     </a>
                 </li>
-
+                @endif
             </ul>
             <div class="tab-content">
+                @if(auth()->user()->can('edit_profile',$patient))
                 <div class="tab-pane active" id="account_settings" role="tabpanel">
                     <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
@@ -135,6 +139,8 @@
                         </div>
                     </form>
                 </div>
+                @endif
+                @if(auth()->user()->can('edit_access',$patient))
                 <div class="tab-pane" id="security_settings" role="tabpanel">
                     <form method="POST" action="{{ route('patient.update',$patient->id) }}">
                         @csrf
@@ -179,6 +185,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
     </div>

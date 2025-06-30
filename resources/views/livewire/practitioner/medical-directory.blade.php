@@ -170,10 +170,18 @@
                 </div>
             @endforeach
         </div>
-        <div class="my-3">&nbsp;</div>
-        <!-- Paginación -->
-            <div class="mt-3" class="float-right">
-            {{ $practitioners->links() }}
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <p class="text-muted mb-0">
+                    Mostrando del {{ $practitioners->firstItem() }} al {{ $practitioners->lastItem() }}
+                    de {{ $practitioners->total() }} resultados
+                </p>
+            </div>
+            <div>
+                {{ $practitioners->links('vendor.pagination.custom-pagination') }}
+            </div>
         </div>
         <div class="my-3">&nbsp;</div>
     @else
