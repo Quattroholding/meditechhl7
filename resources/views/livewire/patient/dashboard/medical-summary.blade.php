@@ -3,9 +3,6 @@
         <h5 class="mb-0" style="color: #fff;">
             <i class="fas fa-file-medical me-2"></i>Resumen Médico
         </h5>
-        <a href="{{ route('patient.medical_history',auth()->user()->patient->id) }}" class="btn btn-outline-primary btn-sm">
-            Ver Completo
-        </a>
     </div>
     <div class="card-body">
         <div class="row">

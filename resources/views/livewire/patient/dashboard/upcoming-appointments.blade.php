@@ -3,9 +3,9 @@
         <h5 class="mb-0" style="color: #fff;">
             <i class="fas fa-calendar-alt me-2"></i>Próximas Citas
         </h5>
-        <a href="{{ route('appointment.create') }}" class="btn btn-primary btn-sm">
+        <button  wire:click="openModal" class="btn btn-primary btn-sm">
             <i class="fas fa-plus me-1"></i>Nueva Cita
-        </a>
+        </button>
     </div>
     <div class="card-body">
         @if($this->upcomingAppointments->count() > 0)
@@ -129,4 +129,6 @@
             </div>
         @endif
     </div>
+    <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
+                                     :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
 </div>

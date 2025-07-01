@@ -9,6 +9,10 @@ class UpcomingAppointments extends Component
 {
     public $patient;
     public $limit = 5;
+    public $appointment_date;
+    public $appointment_time;
+    public $modalTitle;
+    public $showModal;
 
     public function mount($limit = 5)
     {
@@ -53,6 +57,11 @@ class UpcomingAppointments extends Component
                 'message' => 'No se puede cancelar esta cita. Debe hacerlo con al menos 24 horas de anticipación.'
             ]);
         }
+    }
+
+    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    {
+        $this->dispatch('openAppointmentModal','Nueva Cita');
     }
 
     public function render()
