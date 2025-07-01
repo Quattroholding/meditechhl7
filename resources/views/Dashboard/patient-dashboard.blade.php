@@ -41,7 +41,6 @@
                     <div class="row">
                         <!-- Upcoming Appointments -->
                         <div class="col-12 mb-4">
-                            aquiiiiiii
                             @livewire('patient.dashboard.upcoming-appointments', ['limit' => 3])
                         </div>
 

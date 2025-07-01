@@ -27,7 +27,7 @@ class UpcomingAppointments extends Component
         }
 
         return Appointment::where('patient_id', $this->patient->id)
-            ->where('start', '>=', now())
+            ->whereDate('start', '>=', now())
             ->where('status', '!=', 'cancelled')
             ->with(['practitioner', 'consultingRoom.branch'])
             ->orderBy('start')

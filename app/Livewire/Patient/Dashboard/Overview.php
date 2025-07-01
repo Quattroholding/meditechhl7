@@ -28,7 +28,7 @@ class Overview extends Component
             'appointments' => [
                 'total' => Appointment::where('patient_id', $this->patient->id)->count(),
                 'upcoming' => Appointment::where('patient_id', $this->patient->id)
-                    ->where('start', '>=', now())
+                    ->whereDate('start', '>=', now())
                     ->where('status', '!=', 'cancelled')
                     ->count(),
                 'completed' => Appointment::where('patient_id', $this->patient->id)
@@ -81,7 +81,7 @@ class Overview extends Component
         }
 
         return Appointment::where('patient_id', $this->patient->id)
-            ->where('start', '>=', now())
+            ->whereDate('start', '>=', now())
             ->where('status', '!=', 'cancelled')
             ->orderBy('start')
             ->with(['practitioner'])

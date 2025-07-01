@@ -19,22 +19,22 @@
                                         <i class="fas fa-calendar-day fa-lg"></i>
                                     </div>
                                     <div class="mt-2">
-                                        <strong>{{ $appointment->appointment_date->format('M') }}</strong>
-                                        <div class="h4 mb-0">{{ $appointment->appointment_date->format('d') }}</div>
+                                        <strong>{{ $appointment->start->format('M') }}</strong>
+                                        <div class="h4 mb-0">{{ $appointment->start->format('d') }}</div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <h6 class="mb-1">
-                                    {{ $appointment->practitioner->full_name ?? 'Doctor asignado' }}
+                                    {{ $appointment->practitioner->name ?? 'Doctor asignado' }}
                                 </h6>
                                 <p class="mb-1 text-muted">
-                                    {{ $appointment->practitioner->specialty ?? 'Especialidad' }}
+                                    {{ $appointment->medicalSpeciality->name ?? 'Especialidad' }}
                                 </p>
                                 <small class="text-muted">
                                     <i class="fas fa-clock me-1"></i>
-                                    {{ $appointment->appointment_time ?? 'Hora por confirmar' }}
+                                    {{ $appointment->start->format('h:i') ?? 'Hora por confirmar' }}
                                 </small>
                                 @if($appointment->consultingRoom)
                                     <br>
@@ -82,11 +82,13 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
+                                        {{--}}
                                         <li>
                                             <a class="dropdown-item" href="{{ route('appointment.show', $appointment->id) }}">
                                                 <i class="fas fa-eye me-2"></i>Ver Detalles
                                             </a>
                                         </li>
+                                        {{--}}
                                         @if($appointment->appointment_date > now()->addHours(24))
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('appointment.edit', $appointment->id) }}">

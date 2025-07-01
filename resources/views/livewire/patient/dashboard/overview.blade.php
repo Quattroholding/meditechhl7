@@ -84,18 +84,18 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">{{ $this->nextAppointment->practitioner->full_name ?? 'Doctor asignado' }}</h6>
-                                <p class="mb-0 text-muted">{{ $this->nextAppointment->practitioner->specialty ?? 'Especialidad' }}</p>
+                                <h6 class="mb-1">{{ $this->nextAppointment->practitioner->name ?? 'Doctor asignado' }}</h6>
+                                <p class="mb-0 text-muted">{{ $this->nextAppointment->medicalSpeciality->name ?? 'Especialidad' }}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <strong>Fecha:</strong>
-                                <p class="mb-0">{{ $this->nextAppointment->appointment_date->format('d/m/Y') }}</p>
+                                <p class="mb-0">{{ $this->nextAppointment->start->format('d/m/Y') }}</p>
                             </div>
                             <div class="col-6">
                                 <strong>Hora:</strong>
-                                <p class="mb-0">{{ $this->nextAppointment->appointment_time ?? 'Por confirmar' }}</p>
+                                <p class="mb-0">{{ $this->nextAppointment->start->format('h:i') ?? 'Por confirmar' }}</p>
                             </div>
                         </div>
                         <div class="mt-3">
