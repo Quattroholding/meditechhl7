@@ -37,7 +37,7 @@ class Referral extends Model
 
     public function referredTo(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class, 'referred_to_id');
+        return $this->belongsTo(Practitioner::class, 'referred_to_id')->withDefault(['name'=>'N/A']);
     }
 
     public function speciality(){

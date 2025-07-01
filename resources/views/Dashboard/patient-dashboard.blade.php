@@ -31,145 +31,40 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 col-md-12 col-lg-12 col-xl-12">
-                    <div class="doctor-list-blk">
-                        <div class="row">
-                            @foreach ($dashboards as $dashboard)
-                                <div class="col-xl-3 col-md-6">
-                                    <div class="doctor-widget border-right-bg">
-                                        <div class="doctor-box-icon flex-shrink-0">
-                                            <img src="{{ URL::asset('/assets/img/icons/' . $dashboard['icon']) }}" alt="">
-                                        </div>
-                                        <div class="doctor-content dash-count flex-grow-1">
-                                            <h4>
-                                                @if($dashboard['title'] === 'Earnings')
-                                                    $<span
-                                                        class="counter-up">{{ $dashboard['count'] }}</span>
-                                                @else
-                                                    <span
-                                                        class="counter-up">{{ $dashboard['count'] }}</span>
-                                                @endif<span>{{ $dashboard['total'] }}</span><span
-                                                    class="{{ $dashboard['class'] }}">{{ $dashboard['percentageChange'] }}</span>
-                                            </h4>
-                                            <h5>{{ $dashboard['title'] }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
+            <!-- Health Overview Stats -->
+            @livewire('patient.dashboard.overview')
+            
+            <div class="row mt-4">
+                <!-- Left Column -->
+                <div class="col-lg-8">
                     <div class="row">
-
-                    </div>
-                    <!-- Con parámetros personalizados -->
-                    {{--}}
-                    <livewire:patient.dashboard.vital-signs-status
-                        :patient-id="auth()->user()->patient->id"
-                        :selected-period="30"
-                        :auto-refresh="true" />
-
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="chart-title patient-visit mb-0">
-                                <h4>Static of your Health</h4>
-                                <div class="income-value">
-                                    <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
-                                        last month</p>
-                                </div>
-                                <div class="average-health">
-                                    <h5>72bmp <span>Average</span></h5>
-                                </div>
-                                <div class="form-group mb-0">
-                                    @livewire('select-dashboard')
-                                </div>
-                            </div>
-                            <div id="health-chart"></div>
+                        <!-- Upcoming Appointments -->
+                        <div class="col-12 mb-4">
+                            @livewire('patient.dashboard.upcoming-appointments', ['limit' => 3])
                         </div>
-                    </div>
-                    {{--}}
-                </div>
-                {{--}}
-                <div class="col-12 col-md-12 col-lg-12 col-xl-5 d-flex">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="chart-title patient-visit">
-                                <h4>{{__('Indice de mas corporal')}}</h4>
-                            </div>
-                            <div class="body-mass-blk">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="weight-blk">
-                                            <div class="center slider">
-                                                <div>
-                                                    <h4>68</h4>
-                                                    <span>kg</span>
-                                                </div>
-                                                <div>
-                                                    <h4>70</h4>
-                                                    <span>kg</span>
-                                                </div>
-                                                <div>
-                                                    <h4>72</h4>
-                                                    <span>kg</span>
-                                                </div>
-                                                <div>
-                                                    <h4>74</h4>
-                                                    <span>kg</span>
-                                                </div>
-                                                <div>
-                                                    <h4>76</h4>
-                                                    <span>kg</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="weight-blk">
-                                            <div class="center slider">
-                                                <div>
-                                                    <h4>160</h4>
-                                                    <span>cm</span>
-                                                </div>
-                                                <div>
-                                                    <h4>162</h4>
-                                                    <span>cm</span>
-                                                </div>
-                                                <div>
-                                                    <h4>164</h4>
-                                                    <span>cm</span>
-                                                </div>
-                                                <div>
-                                                    <h4>166</h4>
-                                                    <span>cm</span>
-                                                </div>
-                                                <div>
-                                                    <h4>168</h4>
-                                                    <span>cm</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="progress weight-bar">
-                                    <div class="progress-bar progress-bar-success" role="progressbar"></div>
-                                </div>
-                                <ul class="weight-checkit">
-                                    <li>Underweight</li>
-                                    <li>Normal (45.5)</li>
-                                    <li>Overweight</li>
-                                </ul>
-                            </div>
+                        
+                        <!-- Recent Consultations -->
+                        <div class="col-12 mb-4">
+                            @livewire('patient.dashboard.recent-consultations', ['limit' => 3])
                         </div>
                     </div>
                 </div>
-                {{--}}
+                
+                <!-- Right Column -->
+                <div class="col-lg-4">
+                    <div class="row">
+                        <!-- Outstanding Invoices -->
+                        <div class="col-12 mb-4">
+                            @livewire('patient.dashboard.outstanding-invoices', ['limit' => 3])
+                        </div>
+                        
+                        <!-- Medical Summary -->
+                        <div class="col-12 mb-4">
+                            @livewire('patient.dashboard.medical-summary')
+                        </div>
+                    </div>
+                </div>
             </div>
-            {{--}}
-            <livewire:patient.dashboard-chat/>
-            <livewire:patient.dashboard-history/>
-            {{--}}
         </div>
         @component('components.notification-box')
         @endcomponent

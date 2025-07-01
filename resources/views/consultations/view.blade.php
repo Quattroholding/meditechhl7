@@ -1,0 +1,338 @@
+<x-app-layout>
+    <div class="page-wrapper">
+        <div class="content">
+            <!-- Page Header -->
+            @component('components.page-header')
+                @slot('title')
+                    {{ __('consultation.title') }} - {{ $encounter->identifier }}
+                @endslot
+                @slot('li_1')
+                    {{ __('generic.detail') }}  {{ __('consultation.title') }}
+                @endslot
+            @endcomponent
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Tab Navigation -->
+                            <ul class="nav nav-tabs" id="consultationTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">
+                                        <i class="fa fa-info-circle"></i> {{ __('consultation.general_information') }}
+                                    </button>
+                                </li>
+                                @if($encounter->vitalSigns->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="vitals-tab" data-bs-toggle="tab" data-bs-target="#vitals" type="button" role="tab" aria-controls="vitals" aria-selected="false">
+                                        <i class="fa fa-heartbeat"></i> {{ __('consultation.vital_signs') }}
+                                    </button>
+                                </li>
+                                @endif
+                                @if($encounter->presentIllnesses->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="illness-tab" data-bs-toggle="tab" data-bs-target="#illness" type="button" role="tab" aria-controls="illness" aria-selected="false">
+                                        <i class="fa fa-stethoscope"></i> {{ __('consultation.present_illness') }}
+                                    </button>
+                                </li>
+                                @endif
+                                @if($encounter->physicalExams->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="exams-tab" data-bs-toggle="tab" data-bs-target="#exams" type="button" role="tab" aria-controls="exams" aria-selected="false">
+                                        <i class="fa fa-user-md"></i> {{ __('consultation.physical_exams') }}
+                                    </button>
+                                </li>
+                                @endif
+                                @if($encounter->medicationRequests->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="medications-tab" data-bs-toggle="tab" data-bs-target="#medications" type="button" role="tab" aria-controls="medications" aria-selected="false">
+                                        <i class="fa fa-pills"></i> {{ __('consultation.medication_requests') }}
+                                    </button>
+                                </li>
+                                @endif
+                                @if($encounter->serviceRequests->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false">
+                                        <i class="fa fa-clipboard-list"></i> {{ __('consultation.service_requests') }}
+                                    </button>
+                                </li>
+                                @endif
+                                @if($encounter->referrals->count() > 0)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="referrals-tab" data-bs-toggle="tab" data-bs-target="#referrals" type="button" role="tab" aria-controls="referrals" aria-selected="false">
+                                        <i class="fa fa-share-alt"></i> {{ __('consultation.referrals') }}
+                                    </button>
+                                </li>
+                                @endif
+                            </ul>
+
+                            <!-- Tab Content -->
+                            <div class="tab-content" id="consultationTabsContent">
+                                <!-- General Information Tab -->
+                                <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.identifier') }}:</strong></label>
+                                                        <span>{{ $encounter->identifier }}</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.patient') }}:</strong></label>
+                                                        <span>{!! $encounter->patient->profile_name !!}</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.practitioner') }}:</strong></label>
+                                                        <span>{!! $encounter->practitioner->profile_name !!}</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.reason') }}:</strong></label>
+                                                        <span>{!! $encounter->reason !!}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.status') }}:</strong></label>
+                                                        {!! ucfirst($encounter->status) !!}
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.speciality') }}:</strong></label>
+                                                        <span>{!! $encounter->medicalSpeciality->name !!}</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.start') }}:</strong></label>
+                                                        <span>{{ $encounter->start ? $encounter->start->format('Y-m-d H:i:s') : 'N/A' }}</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.end') }}:</strong></label>
+                                                        <span>{{ $encounter->end ? $encounter->end->format('Y-m-d H:i:s') : 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if($encounter->vitalSigns->count() > 0)
+                                <!-- Vital Signs Tab -->
+                                <div class="tab-pane fade" id="vitals" role="tabpanel" aria-labelledby="vitals-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{ __('encounter.vital_sign_type') }}</th>
+                                                            <th>{{ __('encounter.value') }}</th>
+                                                            <th>{{ __('encounter.unit') }}</th>
+                                                            <th>{{ __('encounter.recorded_date') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($encounter->vitalSigns as $vitalSign)
+                                                            <tr>
+                                                                <td>{{ $vitalSign->observationType->description ?? $vitalSign->code }}</td>
+                                                                <td>{{ $vitalSign->value }}</td>
+                                                                <td>{{ $vitalSign->observationType->default_unit ?? $vitalSign->unit }}</td>
+                                                                <td>{{ $vitalSign->effective_date ? $vitalSign->effective_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($encounter->presentIllnesses)
+                                <!-- Present Illness Tab -->
+                                <div class="tab-pane fade" id="illness" role="tabpanel" aria-labelledby="illness-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                                <dl class="dl-horizontal">
+                                                    <dt>{{ __('encounter.location') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->location}}</dd>
+                                                    <dt>{{ __('encounter.severity') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->severity}}</dd>
+                                                    <dt>{{ __('encounter.duration') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->duration}}</dd>
+                                                    <dt>{{ __('encounter.timing') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->timing}}</dd>
+                                                    <dt>{{ __('encounter.aggravating_factors') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->aggravating_factors}}</dd>
+                                                    <dt>{{ __('encounter.alleviating_factors') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->alleviating_factors}}</dd>
+                                                    <dt>{{ __('encounter.associated_symptoms') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->associated_symptoms}}</dd>
+                                                    <dt>{{ __('encounter.description') }}</dt>
+                                                    <dd>{{$encounter->presentIllnesses->description}}</dd>
+                                                </dl>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($encounter->physicalExams->count() > 0)
+                                <!-- Physical Exams Tab -->
+                                <div class="tab-pane fade" id="exams" role="tabpanel" aria-labelledby="exams-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>{{ __('encounter.body_system') }}</th>
+                                                        <th>{{ __('encounter.findings') }}</th>
+                                                        <th>{{ __('encounter.exam_date') }}</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($encounter->physicalExams as $exam)
+                                                        <tr>
+                                                            <td>{{ $exam->observationType->name }}</td>
+                                                            <td>
+                                                                @foreach($exam->finding as $key=>$value)
+                                                                    {{$value}}
+                                                                @endforeach
+                                                            </td>
+                                                            <td>{{ $exam->effective_date ? $exam->effective_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($encounter->medicationRequests->count() > 0)
+                                <!-- Medication Requests Tab -->
+                                <div class="tab-pane fade" id="medications" role="tabpanel" aria-labelledby="medications-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{ __('consultation.medication') }}</th>
+                                                            <th>{{ __('consultation.dosage') }}</th>
+                                                            <th>{{ __('consultation.status') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($encounter->medicationRequests as $medication)
+                                                            <tr>
+                                                                <td>{{ $medication->medicine->full_name }}</td>
+                                                                <td>{{ $medication->dosage_text }}</td>
+                                                                <td>
+                                                                    <span class="badge badge-{{ $medication->status == 'active' ? 'success' : 'secondary' }}">
+                                                                        {{ ucfirst($medication->status) }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($encounter->serviceRequests->count() > 0)
+                                <!-- Service Requests Tab -->
+                                <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{ __('encounter.service_code') }}</th>
+                                                            <th>{{ __('encounter.service_description') }}</th>
+                                                            <th>{{ __('encounter.status') }}</th>
+                                                            <th>{{ __('encounter.request_date') }}</th>
+                                                            <th>{{ __('encounter.priority') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($encounter->serviceRequests as $service)
+                                                            <tr>
+                                                                <td>{{ $service->code }}</td>
+                                                                <td>{{ $service->cpt->description_es }}</td>
+                                                                <td>
+                                                                    <span class="badge badge-{{ $service->status == 'active' ? 'success' : 'secondary' }}">
+                                                                        {{ ucfirst($service->status) }}
+                                                                    </span>
+                                                                </td>
+                                                                <td>{{ $service->authored_on ? $service->authored_on->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                                <td>{{ ucfirst($service->priority) }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($encounter->referrals->count() > 0)
+                                <!-- Referrals Tab -->
+                                <div class="tab-pane fade" id="referrals" role="tabpanel" aria-labelledby="referrals-tab">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{ __('encounter.specialty') }}</th>
+                                                            <th>{{ __('encounter.reason') }}</th>
+                                                            <th>{{ __('encounter.status') }}</th>
+                                                            <th>{{ __('encounter.request_date') }}</th>
+                                                            <th>{{ __('encounter.referred_to') }}</th>
+                                                            <th>{{ __('encounter.priority') }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($encounter->referrals as $referral)
+                                                            <tr>
+                                                                <td>{{ $referral->speciality->name }}</td>
+                                                                <td>{{ $referral->reason }}</td>
+                                                                <td>
+                                                                    <span class="badge badge-{{ $referral->status == 'active' ? 'success' : 'secondary' }}">
+                                                                        {{ ucfirst($referral->status) }}
+                                                                    </span>
+                                                                </td>
+                                                                <td>{{$referral->referredTo->name}}</td>
+                                                                <td>{{ $referral->ocurrence_date ? $referral->ocurrence_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                                <td>{{ ucfirst($referral->priority) }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="text-center mt-4">
+                                <a href="{{ route('consultation.index') }}" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> {{ __('generic.back') }}
+                                </a>
+                                <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-primary" target="_blank">
+                                    <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @component('components.notification-box')
+        @endcomponent
+    </div>
+</x-app-layout>

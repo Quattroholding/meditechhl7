@@ -204,6 +204,23 @@ class ConsultationController extends Controller
         }
     }
 
+    public function view($encounter_id)
+    {
+        $encounter = Encounter::with([
+            'patient',
+            'practitioner',
+            'appointment',
+            'vitalSigns.observationType',
+            'presentIllnesses',
+            'medicationRequests',
+            'serviceRequests',
+            'referrals',
+            'physicalExams'
+        ])->findOrFail($encounter_id);
+
+        return view('consultations.view', compact('encounter'));
+    }
+
     public function downloadResumen(Request $request, $appointment_id)
     {
 

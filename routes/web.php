@@ -94,6 +94,8 @@ Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified'])
 
     Route::get('/', [ConsultationController::class, 'index'])->name('consultation.index');
 
+    Route::get('/{encounter_id}/view', [ConsultationController::class, 'view'])->name('consultation.view');
+
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->name('consultation.show');
 
     Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->name('consultation.download_resumen');
