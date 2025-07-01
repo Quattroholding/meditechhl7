@@ -74,7 +74,7 @@ class PresentIllness extends Component
         if($type=='duration') $this->duration = $value;
         if($type=='timing') $this->timing = $value;
 
-        if(!$this->encounter->presentIllnesses){
+        if(!isset($this->encounter->presentIllnesses->fhir_id)){
           $this->create();
         }else{
 

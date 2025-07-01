@@ -193,7 +193,8 @@
                                                         <tr>
                                                             <td>{{ $exam->observationType->name }}</td>
                                                             <td>
-                                                                @foreach($exam->finding as $key=>$value)
+
+                                                                @foreach((array)$exam->finding as $key=>$value)
                                                                     {{$value}}
                                                                 @endforeach
                                                             </td>

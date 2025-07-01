@@ -71,9 +71,9 @@
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-1">{{ $allergy->condition_name }}</h6>
-                                        @if($allergy->notes)
-                                            <small class="text-muted">{{ Str::limit($allergy->notes, 50) }}</small>
+                                        <h6 class="mb-1">{{ $allergy->title }}</h6>
+                                        @if($allergy->description)
+                                            <small class="text-muted">{{ Str::limit($allergy->description, 50) }}</small>
                                         @endif
                                     </div>
                                     <span class="badge bg-danger">
@@ -103,15 +103,18 @@
                 @if($this->currentMedications->count() > 0)
                     <div class="list-group list-group-flush">
                         @foreach($this->currentMedications as $encounter)
+
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <small class="text-muted d-block">{{ $encounter->encounter_date->format('d/m/Y') }}</small>
+                                        <small class="text-muted d-block">{{ $encounter->start->format('d/m/Y') }}</small>
                                         <div class="mt-1">
-                                            {{ Str::limit($encounter->prescription_notes, 80) }}
+                                            @foreach($encounter->medicationRequests as $m)
+                                                {{ Str::limit($m->medicine->full_name, 80) }}<br/>
+                                            @endforeach
                                         </div>
                                     </div>
-                                    <a href="{{ route('encounter.show', $encounter->id) }}" class="btn btn-outline-primary btn-sm">
+                                    <a href="{{ route('consultation.view', $encounter->id) }}" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </div>

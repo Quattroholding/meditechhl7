@@ -69,26 +69,8 @@
 
                             <!-- Status and Actions -->
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="badge
-                                    @switch($consultation->status)
-                                        @case('completed')
-                                            badge-success
-                                            @break
-                                        @case('in-progress')
-                                            badge-warning
-                                            @break
-                                        @case('cancelled')
-                                            badge-danger
-                                            @break
-                                        @default
-                                            badge-secondary
-                                    @endswitch
-                                ">
-                                    {{ ucfirst(__('encounter.status.' . $consultation->status)) }}
-                                </span>
-
+                                {!! $consultation->status !!}
                                 <div class="btn-group btn-group-sm">
-
                                     <a href="{{ route('consultation.view', $consultation->id) }}"
                                        class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye me-1"></i>Ver Detalles

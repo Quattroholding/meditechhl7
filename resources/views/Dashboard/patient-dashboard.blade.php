@@ -37,7 +37,7 @@
 
             <div class="row mt-4">
                 <!-- Left Column -->
-                <div class="col-lg-8">
+                <div class="col-lg-6">
                     <div class="row">
                         <!-- Upcoming Appointments -->
                         <div class="col-12 mb-4">
@@ -52,7 +52,7 @@
                 </div>
 
                 <!-- Right Column -->
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     <div class="row">
                         <!-- Outstanding Invoices -->
                         <div class="col-12 mb-4">

@@ -51,7 +51,7 @@ class MedicalSummary extends Component
         // Get medications from recent encounters
         return Encounter::where('patient_id', $this->patient->id)
             ->whereHas('medicationRequests')
-            ->where('start', '>=', now()->subMonths(6))
+            ->whereDate('start', '>=', now()->subMonths(6))
             ->orderBy('start', 'desc')
             ->limit(3)
             ->get();

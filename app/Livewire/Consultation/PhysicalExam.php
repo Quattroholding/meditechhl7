@@ -11,7 +11,7 @@ class PhysicalExam extends Component
     public $reason;
     public $encounter_id;
     public $encounter;
-    public $items;
+    public $items=[];
     public $values=[];
     public $saving = false;
     public $saved = [];
@@ -26,10 +26,11 @@ class PhysicalExam extends Component
             $this->values[$i->code]='';
             $this->saved[$i->code]=false;
             if($result) {
-                foreach ($result->finding as $key=>$value){
+                if(is_array($result->finding))
+                    foreach ($result->finding as $key=>$value){
 
-                    $this->values[$i->code] .=$value;
-                }
+                        $this->values[$i->code] .=$value;
+                    }
             }
         }
     }
