@@ -6,13 +6,13 @@
                     <h2 class="modal-title">{{ $title }}</h2>
                     <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
-                <!-- En tu vista de Livewire -->
+                <!-- MENSAJE DEL MODAL -->
                 <div x-data="{ message: '' }"
                     x-on:cita-message.window="message = $event.detail.message; $store.debug.log('Evento recibido: ' + message)">
                    {{--}} <div x-show="message" x-text="message" class="mb-4"></div>{{--}}
                     <div class="alert alert-error alert-dismissible fade show mb-6" x-show="message" x-text="message" role="alert">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 </div>
                 <form wire:submit="saveAppointment">
                     @if(!auth()->user()->hasRole('paciente'))
