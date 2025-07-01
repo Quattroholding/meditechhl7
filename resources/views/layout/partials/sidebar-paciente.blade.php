@@ -19,6 +19,27 @@
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('appointment.booking') }} </a></li>
                     </ul>
                 </li>
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side"> <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt=""></span>
+                        <span>  {{ __('encounter.titles') }} </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-07.svg') }}" alt=""></span>
+                        <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
+                        <li><a class="{{ Request::is('accounts/payments') ? 'active' : '' }}" href="{{route('payment.index')}}">{{__('Pagos')}}</a></li>
+                    </ul>
+                </li>
                 <li>
                     <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;

@@ -44,9 +44,11 @@
                                                 <a class="dropdown-item"  href="{{ route('consultation.view',$dato->id) }}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('generic.detail')}}
                                                 </a>
+                                                @if(auth()->user()->can('edit',$dato))
                                                 <a class="dropdown-item"  href="{{ route('consultation.show',$dato->appointment_id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>
+                                                @endif
                                                 <a class="dropdown-item"  href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank">  <i  class="fa-solid fa-file-pdf m-r-5"></i>
                                                     {{__('consultation.download_resumen')}}
                                                 </a>

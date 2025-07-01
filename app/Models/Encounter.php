@@ -67,7 +67,9 @@ class Encounter extends BaseModel
 
     public function presentIllnesses(): HasOne
     {
-        return $this->hasOne(PresentIllness::class);
+        return $this->hasOne(PresentIllness::class)->withDefault([
+            'location'=>'',
+        ]);
     }
 
     public function procedures(): HasMany

@@ -30,7 +30,7 @@
                                     </button>
                                 </li>
                                 @endif
-                                @if($encounter->presentIllnesses->count() > 0)
+                                @if($encounter->presentIllnesses)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="illness-tab" data-bs-toggle="tab" data-bs-target="#illness" type="button" role="tab" aria-controls="illness" aria-selected="false">
                                         <i class="fa fa-stethoscope"></i> {{ __('consultation.present_illness') }}
