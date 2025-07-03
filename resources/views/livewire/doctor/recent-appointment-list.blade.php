@@ -170,7 +170,7 @@
         <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
             :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
     </div>
-</div>
+
     <script>
 
         document.addEventListener("DOMContentLoaded", function () {

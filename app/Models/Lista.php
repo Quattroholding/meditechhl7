@@ -92,5 +92,12 @@ class Lista extends Model
         ];
     }
 
+    public static function medicineTypes(){
+        return Medicine::selectRaw('distinct(type) as type')->pluck('type','type')->toArray();
+    }
+
+    public static function medicineMgsTypes(){
+        return Medicine::selectRaw('distinct(mgs_type) as type')->pluck('type','type')->toArray();
+    }
 
 }

@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Doctors
+                    {{ __('doctor.titles') }}
                 @endslot
                 @slot('li_1')
-                    Doctors Profile
+                        {{ __('doctor.profile') }}   {{ __('doctor.title') }}
                 @endslot
             @endcomponent
             <!-- /Page Header -->

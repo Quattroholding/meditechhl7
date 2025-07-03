@@ -112,7 +112,7 @@
                     <span>📧 {{ $data->email ?? 'N/A' }}</span>
                     <span>📞 {{ $data->phone ?? 'N/A' }}</span>
                     <span>📅 Citas Agendadas : {{$data->appointments()->count()}}</span>
-                    <span>🏥  Consultas Finalizadas : {{$data->encounters()->whereStatus('fullfilled')->count()}}</span>
+                    <span>🏥  Consultas Finalizadas : {{$data->encounters()->whereStatus('fulfilled')->count()}}</span>
 
 
                 </div>

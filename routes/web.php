@@ -278,6 +278,22 @@ Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']
 
 });
 
+Route::group(array('prefix' => 'medicines','middleware'=>['auth','verified']), function() {
+
+    Route::get('/', function() {
+        return view('medicine.index');
+    })->name('medicine.index');
+
+    Route::get('/create', function() {
+        return view('medicine.create');
+    })->name('medicine.create');
+
+    Route::get('/{id}/edit', function($id) {
+        return view('medicine.edit', ['medicine_id' => $id]);
+    })->name('medicine.edit');
+
+});
+
 Route::group(array('prefix' => 'api'), function() {
 
     Route::get('/diagnostics', [ApiController::class, 'diagnostics'])->name('api.diagnostics');
