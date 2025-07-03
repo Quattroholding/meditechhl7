@@ -164,25 +164,26 @@ class PatientController extends Controller
     }
 
     public function update(Request $request,$id){
-
+        //dd($request->all());
         $validated = $request->validate([
-            'id_number' => 'required',
-            'id_type' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'identifier' => 'required',
+            'identifier_type' => 'required',
+            'given_name' => 'required',
+            'family_name' => 'required',
             'gender' => 'required',
             'birth_date' => 'required',
-            'physical_address' => 'required',
+            'address' => 'required',
             'marital_status'=>'required',
             //'billing_address' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            //'blood_type' => 'required',
+            'blood_type' => 'required',
         ]);
 
         $model = Patient::findOrFail($id);
 
         $model->fill($request->except('birth_date'));
+        $model->name = $request->given_name.' '.$request->family_name;
         $model->birth_date = substr($request->birth_date,6,4).'-'.substr($request->birth_date,3,2).'-'.substr($request->birth_date,0,2);
 
         if($model->save()){
