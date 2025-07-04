@@ -182,6 +182,12 @@ class AppointmentFactory extends Factory
     {
         return $this->afterCreating(function (Appointment $appointment) {
             if(!Encounter::whereAppointmentId($appointment->id)->first()){
+
+                $type = '4525004'; // consulta de medicina general
+                if ($appointment->medical_speciality_id != '50') {
+                    $type = '26172008';
+                } // consulta de especialidad
+
                 $encounter = Encounter::factory()
                     ->withVitalSigns()
                     ->withPresentIllness()
@@ -189,15 +195,18 @@ class AppointmentFactory extends Factory
                     ->withDiagnoses()
                     ->withServiceRequests()
                     ->withMedicationRequests()
-                    ->withReferral()
-                    ->create([
-                        'patient_id' => $appointment->patient_id,
-                        'practitioner_id' => $appointment->practitioner_id,
-                        'appointment_id'=>$appointment->id,
-                        'status' => 'finished',
-                        'class' => 'AMB',
-                        'type' => 'AMB',
-                        'priority'=>'routine']);
+                    //->withReferral()
+                    ->withServices()
+                    ->create([ 'patient_id' => $appointment->patient_id,
+                            'practitioner_id' => $appointment->practitioner_id,
+                            'appointment_id' => $appointment->id,
+                            'identifier' => 'ENC-'.fake()->unique()->numerify('#######'),
+                            'status' => 'in-progress',
+                            'class' => 'SS',
+                            'type' => $type,
+                            'priority' => 'routine',
+                            'start' => $appointment->start,
+                            'medical_speciality_id' => $appointment->medical_speciality_id]);
             }
         });
     }

@@ -27,11 +27,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 col-lg-12 col-xl-12">
-
-                </div>
-            </div>
             <div class="doctor-list-blk">
                 <div class="row">
                     @foreach ($dashboards as $dashboard)
@@ -59,40 +54,18 @@
                 </div>
             </div>
             <div class="row">
-                {{--}}
-                <div class="col-12 col-md-12 col-lg-12 col-xl-7">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="chart-title patient-visit mb-0">
-                                <h4>Income</h4>
-                                <div class="income-value">
-                                    <h3><span>$</span> 20,560</h3>
-                                    <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
-                                        last month</p>
-                                </div>
-                                <div class="form-group mb-0">
-                                   @livewire('doctor.select-dashboard')
-                                </div>
-                            </div>
-                            <div id="apexcharts-area"></div>
-                        </div>
-                    </div>
+                <div class="col-lg-6">
+                    @livewire('doctor.recent-appointment-list')
                 </div>
-                {{--}}
-                <div class="row">
-                    <div class="col-lg-6">
-                        @livewire('doctor.recent-appointment-list')
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-md-4">   @livewire('doctor.new-patients')</div>
+                        <div class="col-md-4">   @livewire('doctor.old-patients')</div>
+                        <div class="col-md-4">   @livewire('doctor.active-patients')</div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <div class="col-md-4">   @livewire('doctor.new-patients')</div>
-                            <div class="col-md-4">   @livewire('doctor.old-patients')</div>
-                            <div class="col-md-4">   @livewire('doctor.active-patients')</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">  @livewire('doctor.next-appointment')</div>
-                            <div class="col-md-6">  @livewire('doctor.patients-by-gender')</div>
-                        </div>
+                    <div class="row">
+                        <div class="col-md-6">  @livewire('doctor.next-appointment')</div>
+                        <div class="col-md-6">  @livewire('doctor.patients-by-gender')</div>
                     </div>
                 </div>
             </div>

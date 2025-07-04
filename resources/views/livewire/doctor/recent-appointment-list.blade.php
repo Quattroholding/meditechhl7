@@ -25,6 +25,28 @@
         .btn-cancel { background: #e8536e; color: white; }
         .btn-edit { background: #9b59b6; color: white; }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById("miDiv");
+            const destino = document.getElementById("destino");
+
+
+            if (container && destino) {
+                container.scrollTop = destino.offsetTop;
+                console.log(destino);
+
+                destino.style.transition = 'background-color 0.5s ease';
+                destino.style.backgroundColor = '#ffff99';
+                setTimeout(() => destino.style.backgroundColor = '', 2000);
+            }
+
+            setInterval(function() {
+                Livewire.dispatch('loadAppointments');
+                console.log('actualizó'); // Actualizar cada minuto
+            }, 30000);
+
+        });
+    </script>
     <div  class="card flex-fill comman-shadow" >
         <div class="card-header">
             <h4 class="card-title d-inline-block" style="color: white">{{__('Citas para hoy')}}</h4>
@@ -169,31 +191,9 @@
         </div>
         <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
             :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
+
     </div>
-
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const container = document.getElementById("miDiv");
-            const destino = document.getElementById("destino");
-
-
-            if (container && destino) {
-                container.scrollTop = destino.offsetTop;
-                console.log(destino);
-
-                destino.style.transition = 'background-color 0.5s ease';
-                destino.style.backgroundColor = '#ffff99';
-                setTimeout(() => destino.style.backgroundColor = '', 2000);
-            }
-
-            setInterval(function() {
-                Livewire.dispatch('loadAppointments');
-                console.log('actualizó'); // Actualizar cada minuto
-            }, 30000);
-
-        });
-    </script>
+    </div>
 </div>
 
 

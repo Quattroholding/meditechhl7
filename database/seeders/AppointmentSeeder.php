@@ -17,8 +17,9 @@ class AppointmentSeeder extends Seeder
     public function run(): void
     {
         Appointment::factory()
-            ->count(25)
-            ->booked()
+            ->count(10)
+            ->fulfilled()
+            ->withEncounter()
             ->create();
         // Crear 20 citas normales
         /*Appointment::factory()

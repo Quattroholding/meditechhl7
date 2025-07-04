@@ -340,6 +340,121 @@ class EncounterFactory extends Factory
             if ($this->faker->boolean(20)) {
                 $this->withReferral()->create([], $encounter);
             }
+
+            // Servicios cobrados (ChargeItems) - incluir consulta siempre
+            $clientId = $encounter->practitioner->user->clients()->first()->id ?? null;
+
+            // Always include consultation service
+            $consultationServices = ServiceCatalog::where('service_type', 'consultation')
+                ->where('is_active', true)
+                ->limit(5)
+                ->get();
+
+            if ($consultationServices->isNotEmpty()) {
+                $service = $consultationServices->random();
+                $chargeItemClientId = $clientId ?? $service->client_id;
+
+                ChargeItem::create([
+                    'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                    'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                    'status' => 'billable',
+                    'code' => [
+                        'text' => $service->name,
+                        'coding' => [[
+                            'code' => $service->cpt_code,
+                            'system' => 'http://www.ama-assn.org/go/cpt',
+                            'display' => $service->name
+                        ]]
+                    ],
+                    'patient_id' => $encounter->patient_id,
+                    'encounter_id' => $encounter->id,
+                    'performer_practitioner_id' => $encounter->practitioner_id,
+                    'service_catalog_id' => $service->id,
+                    'quantity' => 1,
+                    'unit_price_value' => $service->base_price,
+                    'unit_price_currency' => $service->currency,
+                    'occurrence_date_time' => $encounter->start,
+                    'client_id' => $chargeItemClientId,
+                    'created_by' => $encounter->practitioner->user_id ?? 1,
+                ]);
+            }
+
+            // Servicios de procedimientos (60% de probabilidad)
+            if ($this->faker->boolean(60)) {
+                $procedureServices = ServiceCatalog::where('service_type', 'procedure')
+                    ->where('is_active', true)
+                    ->limit(5)
+                    ->get();
+
+                if ($procedureServices->isNotEmpty()) {
+                    $service = $procedureServices->random();
+                    $chargeItemClientId = $clientId ?? $service->client_id;
+
+                    ChargeItem::create([
+                        'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                        'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                        'status' => 'billable',
+                        'code' => [
+                            'text' => $service->name,
+                            'coding' => [[
+                                'code' => $service->cpt_code,
+                                'system' => 'http://www.ama-assn.org/go/cpt',
+                                'display' => $service->name
+                            ]]
+                        ],
+                        'patient_id' => $encounter->patient_id,
+                        'encounter_id' => $encounter->id,
+                        'performer_practitioner_id' => $encounter->practitioner_id,
+                        'service_catalog_id' => $service->id,
+                        'quantity' => $this->faker->numberBetween(1, 2),
+                        'unit_price_value' => $service->base_price,
+                        'unit_price_currency' => $service->currency,
+                        'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
+                        'client_id' => $chargeItemClientId,
+                        'created_by' => $encounter->practitioner->user_id ?? 1,
+                    ]);
+                }
+            }
+
+            // Servicios adicionales (40% de probabilidad)
+            if ($this->faker->boolean(40)) {
+                $generalServices = ServiceCatalog::where('is_active', true)
+                    ->limit(10)
+                    ->get();
+
+                if ($generalServices->isNotEmpty()) {
+                    $serviceCount = rand(1, 2);
+                    $selectedServices = $generalServices->random(min($serviceCount, $generalServices->count()));
+
+                    foreach ($selectedServices as $service) {
+                        $chargeItemClientId = $clientId ?? $service->client_id;
+
+                        ChargeItem::create([
+                            'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                            'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                            'status' => 'billable',
+                            'code' => [
+                                'text' => $service->name,
+                                'coding' => [[
+                                    'code' => $service->cpt_code,
+                                    'system' => 'http://www.ama-assn.org/go/cpt',
+                                    'display' => $service->name
+                                ]]
+                            ],
+                            'patient_id' => $encounter->patient_id,
+                            'encounter_id' => $encounter->id,
+                            'performer_practitioner_id' => $encounter->practitioner_id,
+                            'service_catalog_id' => $service->id,
+                            'quantity' => $this->faker->numberBetween(1, 2),
+                            'unit_price_value' => $service->base_price,
+                            'unit_price_currency' => $service->currency,
+                            'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
+                            'client_id' => $chargeItemClientId,
+                            'created_by' => $encounter->practitioner->user_id ?? 1,
+                        ]);
+                    }
+                }
+            }
         });
     }
 
@@ -404,16 +519,26 @@ class EncounterFactory extends Factory
     public function withServices($count = null)
     {
         return $this->afterCreating(function (Encounter $encounter) use ($count) {
+            // Get client_id from practitioner's user clients
+            $clientId = $encounter->practitioner->user->clients()->first()->id ?? null;
+
             // Get available services for this practitioner
             $availableServices = ServiceCatalog::where('practitioner_id', $encounter->practitioner_id)
                 ->where('is_active', true)
                 ->get();
 
             // If no practitioner-specific services, get common services for this client
-            if ($availableServices->isEmpty()) {
-                $availableServices = ServiceCatalog::where('client_id', $encounter->client_id)
+            if ($availableServices->isEmpty() && $clientId) {
+                $availableServices = ServiceCatalog::where('client_id', $clientId)
                     ->whereNull('practitioner_id')
                     ->where('is_active', true)
+                    ->get();
+            }
+
+            // If still no services, get any active services as fallback
+            if ($availableServices->isEmpty()) {
+                $availableServices = ServiceCatalog::where('is_active', true)
+                    ->limit(10)
                     ->get();
             }
 
@@ -433,13 +558,13 @@ class EncounterFactory extends Factory
                 $unitPrice = $service->base_price;
                 $totalPrice = $quantity * $unitPrice;
 
-                // Get client_id from practitioner's user clients
-                $clientId = $encounter->practitioner->user->clients()->first()->id ?? $service->client_id;
+                // Use the client_id we determined earlier
+                $chargeItemClientId = $clientId ?? $service->client_id;
 
                 ChargeItem::create([
                     'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
                     'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
-                    'status' => $this->faker->randomElement(['billable', 'not-billable', 'aborted']),
+                    'status' => $this->faker->randomElement(['billable']),
                     'code' => [
                         'text' => $service->name,
                         'coding' => [[
@@ -457,7 +582,7 @@ class EncounterFactory extends Factory
                     'unit_price_currency' => $service->currency,
                     'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
                     'note' => $this->faker->optional(30)->sentence(),
-                    'client_id' => $clientId,
+                    'client_id' => $chargeItemClientId,
                     'created_by' => $encounter->practitioner->user_id ?? 1,
                 ]);
             }
@@ -470,16 +595,27 @@ class EncounterFactory extends Factory
     public function withConsultationServices($count = 1)
     {
         return $this->afterCreating(function (Encounter $encounter) use ($count) {
+            // Get client_id from practitioner's user clients
+            $clientId = $encounter->practitioner->user->clients()->first()->id ?? null;
+
             $consultationServices = ServiceCatalog::where('practitioner_id', $encounter->practitioner_id)
                 ->where('service_type', 'consultation')
                 ->where('is_active', true)
                 ->get();
 
-            if ($consultationServices->isEmpty()) {
-                $consultationServices = ServiceCatalog::where('client_id', $encounter->client_id)
+            if ($consultationServices->isEmpty() && $clientId) {
+                $consultationServices = ServiceCatalog::where('client_id', $clientId)
                     ->whereNull('practitioner_id')
                     ->where('service_type', 'consultation')
                     ->where('is_active', true)
+                    ->get();
+            }
+
+            // If still no services, get any consultation services as fallback
+            if ($consultationServices->isEmpty()) {
+                $consultationServices = ServiceCatalog::where('service_type', 'consultation')
+                    ->where('is_active', true)
+                    ->limit(5)
                     ->get();
             }
 
@@ -487,8 +623,8 @@ class EncounterFactory extends Factory
                 $selectedServices = $consultationServices->random(min($count, $consultationServices->count()));
 
                 foreach ($selectedServices as $service) {
-                    // Get client_id from practitioner's user clients
-                    $clientId = $encounter->practitioner->user->clients()->first()->id ?? $service->client_id;
+                    // Use the client_id we determined earlier
+                    $chargeItemClientId = $clientId ?? $service->client_id;
 
                     ChargeItem::create([
                         'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
@@ -510,7 +646,7 @@ class EncounterFactory extends Factory
                         'unit_price_value' => $service->base_price,
                         'unit_price_currency' => $service->currency,
                         'occurrence_date_time' => $encounter->start,
-                        'client_id' => $clientId,
+                        'client_id' => $chargeItemClientId,
                         'created_by' => $encounter->practitioner->user_id ?? 1,
                     ]);
                 }
@@ -524,13 +660,16 @@ class EncounterFactory extends Factory
     public function withProcedureServices($count = null)
     {
         return $this->afterCreating(function (Encounter $encounter) use ($count) {
+            // Get client_id from practitioner's user clients
+            $clientId = $encounter->practitioner->user->clients()->first()->id ?? null;
+
             $procedureServices = ServiceCatalog::where('practitioner_id', $encounter->practitioner_id)
                 ->where('service_type', 'procedure')
                 ->where('is_active', true)
                 ->get();
 
-            if ($procedureServices->isEmpty()) {
-                $procedureServices = ServiceCatalog::where('client_id', $encounter->client_id)
+            if ($procedureServices->isEmpty() && $clientId) {
+                $procedureServices = ServiceCatalog::where('client_id', $clientId)
                     ->whereNull('practitioner_id')
                     ->where('service_type', 'procedure')
                     ->where('is_active', true)
@@ -546,8 +685,8 @@ class EncounterFactory extends Factory
                         $quantity = $this->faker->numberBetween(1, 2);
                         $totalPrice = $quantity * $service->base_price;
 
-                        // Get client_id from practitioner's user clients
-                        $clientId = $encounter->practitioner->user->clients()->first()->id ?? $service->client_id;
+                        // Use the client_id we determined earlier
+                        $chargeItemClientId = $clientId ?? $service->client_id;
 
                         ChargeItem::create([
                             'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
@@ -569,7 +708,7 @@ class EncounterFactory extends Factory
                             'unit_price_value' => $service->base_price,
                             'unit_price_currency' => $service->currency,
                             'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
-                            'client_id' => $clientId,
+                            'client_id' => $chargeItemClientId,
                             'created_by' => $encounter->practitioner->user_id ?? 1,
                         ]);
                     }
@@ -579,43 +718,133 @@ class EncounterFactory extends Factory
     }
 
     /**
-     * Update withCompleteEncounter to include services
+     * Create encounter with services only (for billing-focused encounters)
      */
-    public function withCompleteEncounterAndServices()
+    public function withServicesOnly()
     {
         return $this->afterCreating(function (Encounter $encounter) {
-            // Add all existing encounter elements
-            $this->withVitalSigns(rand(3, 5))->create([], $encounter);
-            $this->withPhysicalExams(rand(1, 3))->create([], $encounter);
-            $this->withDiagnoses(rand(1, 3))->create([], $encounter);
-            $this->withPresentIllness()->create([], $encounter);
+            // Get client_id from practitioner's user clients
+            $clientId = $encounter->practitioner->user->clients()->first()->id ?? null;
 
-            if ($this->faker->boolean(80)) {
-                $this->withServiceRequests(rand(0, 3))->create([], $encounter);
+            // Always include consultation service
+            $consultationServices = ServiceCatalog::where('service_type', 'consultation')
+                ->where('is_active', true)
+                ->limit(5)
+                ->get();
+
+            if ($consultationServices->isNotEmpty()) {
+                $service = $consultationServices->random();
+                $chargeItemClientId = $clientId ?? $service->client_id;
+
+                ChargeItem::create([
+                    'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                    'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                    'status' => 'billable',
+                    'code' => [
+                        'text' => $service->name,
+                        'coding' => [[
+                            'code' => $service->cpt_code,
+                            'system' => 'http://www.ama-assn.org/go/cpt',
+                            'display' => $service->name
+                        ]]
+                    ],
+                    'patient_id' => $encounter->patient_id,
+                    'encounter_id' => $encounter->id,
+                    'performer_practitioner_id' => $encounter->practitioner_id,
+                    'service_catalog_id' => $service->id,
+                    'quantity' => 1,
+                    'unit_price_value' => $service->base_price,
+                    'unit_price_currency' => $service->currency,
+                    'occurrence_date_time' => $encounter->start,
+                    'client_id' => $chargeItemClientId,
+                    'created_by' => $encounter->practitioner->user_id ?? 1,
+                ]);
+            }
+
+            // Additional services based on encounter type and specialty
+            if ($this->faker->boolean(70)) {
+                $procedureServices = ServiceCatalog::where('service_type', 'procedure')
+                    ->where('is_active', true)
+                    ->limit(5)
+                    ->get();
+
+                if ($procedureServices->isNotEmpty()) {
+                    $service = $procedureServices->random();
+                    $chargeItemClientId = $clientId ?? $service->client_id;
+
+                    ChargeItem::create([
+                        'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                        'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                        'status' => 'billable',
+                        'code' => [
+                            'text' => $service->name,
+                            'coding' => [[
+                                'code' => $service->cpt_code,
+                                'system' => 'http://www.ama-assn.org/go/cpt',
+                                'display' => $service->name
+                            ]]
+                        ],
+                        'patient_id' => $encounter->patient_id,
+                        'encounter_id' => $encounter->id,
+                        'performer_practitioner_id' => $encounter->practitioner_id,
+                        'service_catalog_id' => $service->id,
+                        'quantity' => $this->faker->numberBetween(1, 2),
+                        'unit_price_value' => $service->base_price,
+                        'unit_price_currency' => $service->currency,
+                        'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
+                        'client_id' => $chargeItemClientId,
+                        'created_by' => $encounter->practitioner->user_id ?? 1,
+                    ]);
+                }
             }
 
             if ($this->faker->boolean(50)) {
-                $this->withProcedures(rand(0, 2))->create([], $encounter);
-            }
+                $generalServices = ServiceCatalog::where('is_active', true)
+                    ->limit(10)
+                    ->get();
 
-            if ($this->faker->boolean(60)) {
-                $this->withMedicationRequests(rand(0, 3))->create([], $encounter);
-            }
+                if ($generalServices->isNotEmpty()) {
+                    $serviceCount = rand(1, 2);
+                    $selectedServices = $generalServices->random(min($serviceCount, $generalServices->count()));
 
-            if ($this->faker->boolean(20)) {
-                $this->withReferral()->create([], $encounter);
-            }
+                    foreach ($selectedServices as $service) {
+                        $chargeItemClientId = $clientId ?? $service->client_id;
 
-            // Add services (ChargeItems) for billing
-            $this->withConsultationServices(1)->create([], $encounter);
-
-            if ($this->faker->boolean(60)) {
-                $this->withProcedureServices()->create([], $encounter);
-            }
-
-            if ($this->faker->boolean(40)) {
-                $this->withServices(rand(1, 2))->create([], $encounter);
+                        ChargeItem::create([
+                            'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
+                            'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                            'status' => 'billable',
+                            'code' => [
+                                'text' => $service->name,
+                                'coding' => [[
+                                    'code' => $service->cpt_code,
+                                    'system' => 'http://www.ama-assn.org/go/cpt',
+                                    'display' => $service->name
+                                ]]
+                            ],
+                            'patient_id' => $encounter->patient_id,
+                            'encounter_id' => $encounter->id,
+                            'performer_practitioner_id' => $encounter->practitioner_id,
+                            'service_catalog_id' => $service->id,
+                            'quantity' => $this->faker->numberBetween(1, 2),
+                            'unit_price_value' => $service->base_price,
+                            'unit_price_currency' => $service->currency,
+                            'occurrence_date_time' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
+                            'client_id' => $chargeItemClientId,
+                            'created_by' => $encounter->practitioner->user_id ?? 1,
+                        ]);
+                    }
+                }
             }
         });
+    }
+
+    /**
+     * Alias for withCompleteEncounter (now includes services by default)
+     * @deprecated Use withCompleteEncounter() instead
+     */
+    public function withCompleteEncounterAndServices()
+    {
+        return $this->withCompleteEncounter();
     }
 }

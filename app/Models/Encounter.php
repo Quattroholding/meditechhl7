@@ -102,6 +102,11 @@ class Encounter extends BaseModel
         return $this->hasOne(Invoice::class);
     }
 
+    public function chargeItems(): HasMany
+    {
+        return $this->hasMany(ChargeItem::class);
+    }
+
     /**
      * Scope a query to only include appointments fullfilled.
      */

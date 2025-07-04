@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters')->onDelete('cascade');
             $table->foreignId('account_id')->nullable()->constrained('accounts')->onDelete('cascade');
-            $table->foreignId('performer_practitioner_id')->nullable()->constrained('patients')->onDelete('cascade');
+            $table->foreignId('performer_practitioner_id')->nullable()->constrained('practitioners')->onDelete('cascade');
             // Issuer and Recipient
             $table->foreignId('issuer_organization_id')->constrained('clients', 'id')->onDelete('cascade');
             $table->foreignId('recipient_organization_id')->nullable()->constrained('clients', 'id')->onDelete('set null');

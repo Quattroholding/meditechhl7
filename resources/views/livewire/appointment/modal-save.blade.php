@@ -125,4 +125,4 @@
         });
     });
 </script>
-    @endpush
+@endpush
