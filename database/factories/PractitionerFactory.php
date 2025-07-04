@@ -22,11 +22,14 @@ class PractitionerFactory extends Factory
         $gender = $this->faker->randomElement(['male', 'female']);
         $givenName = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
 
+        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']);
+        $identifier = $this->faker->unique()->regexify($this->getIdPattern($id_type));
+
         $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
 
         return [
             'fhir_id' => 'practitioner-' . Str::uuid(),
-            'identifier' => $this->faker->unique()->numerify('DOC#######'),
+            'identifier' => $identifier,
             'name' => 'Dr. ' . $givenName . ' ' . $this->faker->lastName,
             'given_name' => $givenName,
             'family_name' => $this->faker->lastName,
@@ -71,6 +74,7 @@ class PractitionerFactory extends Factory
                     'period_start' => $period_start,
                     'period_end'=>$period_end,
                     'medical_speciality_id'=>$specialty_id,
+                    'default'=>1,
                 ]);
         });
     }
@@ -99,5 +103,23 @@ class PractitionerFactory extends Factory
                 }
             }
         });
+    }
+
+    private function getIdPattern($id_type)
+    {
+        switch ($id_type) {
+            case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
+                return '/^[A-Z]*[0-9]+-[0-9]+-[0-9]+$/';
+            case 'CE': // Cédula Extranjera: Similar a CC
+                return '/^[A-Z]*[0-9]+-[0-9]+-[0-9]+$/';
+            case 'PA': // Pasaporte: N1234567
+                return '/^[A-Z0-9-]{5,20}$/';
+            case 'PT': // Permiso Temporal: Formato flexible
+                return '/^[A-Z0-9-]{8,15}$/';
+            case 'SS': // Seguro Social: XXX-XX-XXXX
+                return '/^\d{3}-?\d{2}-?\d{4}$/';
+            default:
+                return '/^[A-Z0-9-]{5,20}$/'; // Universal para cualquier tipo
+        }
     }
 }

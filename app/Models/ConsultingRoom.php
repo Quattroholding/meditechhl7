@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Models\Scopes\ConsultingRoomScope;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ConsultingRoom extends BaseModel
 {
+    use HasFactory;
     protected $fillable=['id','branch_id','name','number','floor','active'];
 
     /**

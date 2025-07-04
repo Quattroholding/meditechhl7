@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends BaseModel
 {
+    use HasFactory;
     protected $fillable=['client_id','name','phone','address','type','active'];
 
     // ESTE ES EL FILTRO GLOBAL POR TIPO DE ROL DE USUARIO

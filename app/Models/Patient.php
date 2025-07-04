@@ -239,4 +239,40 @@ class Patient extends BaseModel
             ->whereEncounterId($this->encounters()->latest()->first()->id)
             ->whereRaw("valid_to >='".now()->format('Y-m-d')."'");
     }
+
+    // Insurance relationships
+    public function insurancePolicies(): HasMany
+    {
+        return $this->hasMany(PatientInsurancePolicy::class);
+    }
+
+    public function activeInsurancePolicies(): HasMany
+    {
+        return $this->insurancePolicies()->active();
+    }
+
+    public function primaryInsurance(): HasOne
+    {
+        return $this->hasOne(PatientInsurancePolicy::class)->primary()->active();
+    }
+
+    public function secondaryInsurance(): HasOne
+    {
+        return $this->hasOne(PatientInsurancePolicy::class)->secondary()->active();
+    }
+
+    public function invoicePayments(): HasMany
+    {
+        return $this->hasMany(InvoicePayment::class);
+    }
+
+    public function hasActiveInsurance(): bool
+    {
+        return $this->activeInsurancePolicies()->exists();
+    }
+
+    public function getPrimaryInsuranceCompany()
+    {
+        return $this->primaryInsurance?->insuranceCompany;
+    }
 }

@@ -24,6 +24,7 @@ class RecentAppointmentList extends Component
     public function loadAppointments()
     {
         $today =  \Carbon\Carbon::today();
+
         $doctor_id = auth()->user()->practitioner->id;
         $this->appointments = Appointment::whereDate('start', $today)
                                         ->orderBy('start')

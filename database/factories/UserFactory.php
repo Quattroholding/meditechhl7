@@ -43,9 +43,9 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(function (User $user) {
             // Asignar rol de paciente por defecto si no tiene ningún rol
-            if (!$user->hasAnyRole(Role::all())) {
+            /*if (!$user->hasAnyRole(Role::all())) {
                 $user->assignRole('doctor');
-            }
+            }*/
         });
     }
 

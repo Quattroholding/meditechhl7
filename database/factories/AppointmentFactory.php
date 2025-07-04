@@ -74,6 +74,7 @@ class AppointmentFactory extends Factory
             'end' => $endDate,
             'minutes_duration' => $duration,
             'medical_speciality_id'=>$specility_id,
+            'client_id'=>$practitioner->user->default_client_id,
             'participant' => json_encode([
                 [
                     'actor' => 'Patient/' . $patient->fhir_id,

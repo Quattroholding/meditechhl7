@@ -58,6 +58,21 @@ class Invoice extends BaseModel
         'client_id',
         'created_by',
         'updated_by',
+        // Insurance fields
+        'primary_insurance_id',
+        'secondary_insurance_id',
+        'insurance_billed_amount',
+        'insurance_paid_amount',
+        'insurance_pending_amount',
+        'patient_copay_amount',
+        'patient_deductible_amount',
+        'patient_coinsurance_amount',
+        'patient_responsibility_amount',
+        'patient_paid_amount',
+        'patient_balance_amount',
+        'insurance_status',
+        'has_insurance',
+        'insurance_notes',
     ];
 
     protected $casts = [
@@ -79,6 +94,17 @@ class Invoice extends BaseModel
         'participant' => 'array',
         'billing_address' => 'array',
         'shipping_address' => 'array',
+        // Insurance casts
+        'insurance_billed_amount' => 'decimal:2',
+        'insurance_paid_amount' => 'decimal:2',
+        'insurance_pending_amount' => 'decimal:2',
+        'patient_copay_amount' => 'decimal:2',
+        'patient_deductible_amount' => 'decimal:2',
+        'patient_coinsurance_amount' => 'decimal:2',
+        'patient_responsibility_amount' => 'decimal:2',
+        'patient_paid_amount' => 'decimal:2',
+        'patient_balance_amount' => 'decimal:2',
+        'has_insurance' => 'boolean',
     ];
 
     public static function boot()
@@ -228,5 +254,78 @@ class Invoice extends BaseModel
             'performer_practitioner_id' => $chargeItem->performer_practitioner_id,
             'client_id' => $this->client_id,
         ]);
+    }
+
+    // Insurance relationships
+    public function primaryInsurance(): BelongsTo
+    {
+        return $this->belongsTo(PatientInsurancePolicy::class, 'primary_insurance_id');
+    }
+
+    public function secondaryInsurance(): BelongsTo
+    {
+        return $this->belongsTo(PatientInsurancePolicy::class, 'secondary_insurance_id');
+    }
+
+    public function insuranceClaims(): HasMany
+    {
+        return $this->hasMany(InsuranceClaim::class);
+    }
+
+    public function invoicePayments(): HasMany
+    {
+        return $this->hasMany(InvoicePayment::class);
+    }
+
+    public function patientPayments(): HasMany
+    {
+        return $this->invoicePayments()->patientPayments();
+    }
+
+    public function insurancePayments(): HasMany
+    {
+        return $this->invoicePayments()->insurancePayments();
+    }
+
+    // Insurance utility methods
+    public function hasInsurance(): bool
+    {
+        return $this->has_insurance;
+    }
+
+    public function getInsuranceBilledAmount(): float
+    {
+        return $this->insurance_billed_amount ?? 0;
+    }
+
+    public function getInsurancePaidAmount(): float
+    {
+        return $this->insurance_paid_amount ?? 0;
+    }
+
+    public function getPatientResponsibilityAmount(): float
+    {
+        return $this->patient_responsibility_amount ?? 0;
+    }
+
+    public function getPatientBalanceAmount(): float
+    {
+        return $this->patient_balance_amount ?? 0;
+    }
+
+    public function calculatePatientBalance(): float
+    {
+        $totalPatientResponsibility = $this->patient_copay_amount + $this->patient_deductible_amount + $this->patient_coinsurance_amount;
+        $totalPatientPaid = $this->patient_paid_amount;
+        
+        return $totalPatientResponsibility - $totalPatientPaid;
+    }
+
+    public function updateInsuranceAmounts(): void
+    {
+        $this->insurance_paid_amount = $this->insurancePayments()->sum('amount');
+        $this->patient_paid_amount = $this->patientPayments()->sum('amount');
+        $this->patient_balance_amount = $this->calculatePatientBalance();
+        $this->save();
     }
 }

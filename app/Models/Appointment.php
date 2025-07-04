@@ -20,7 +20,7 @@ class Appointment extends Model
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id','client_id', 'identifier', 'status',
         'service_type', 'description', 'start', 'end', 'minutes_duration','medical_speciality_id','consulting_room_id',
-        'original_requested_datetime','practitioner_suggested_datetime','comment'
+        'original_requested_datetime','practitioner_suggested_datetime','comment','client_id',
     ];
 
     protected $casts = [

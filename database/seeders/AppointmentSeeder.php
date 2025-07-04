@@ -16,6 +16,10 @@ class AppointmentSeeder extends Seeder
      */
     public function run(): void
     {
+        Appointment::factory()
+            ->count(25)
+            ->booked()
+            ->create();
         // Crear 20 citas normales
         /*Appointment::factory()
             ->count(20)
@@ -58,7 +62,7 @@ class AppointmentSeeder extends Seeder
             ->withSpecialist('Pediatría')
             ->count(2)
             ->booked()
-            ->create();*/
+            ->create();
         date_default_timezone_set('America/Panama');
         $horaInicio = new DateTime('08:00');
         $horaFin = new DateTime('17:00'); // Puedes definir un límite si quieres
@@ -88,7 +92,7 @@ class AppointmentSeeder extends Seeder
             ]);
             // Mostrar intervalo
             echo "Inicio: " . $inicioActual->format('H:i') . " - Fin: " . $horaInicio->format('H:i') . " (Duración: $duracion minutos)" . PHP_EOL;
-        }
+        }*/
 
     }
 }

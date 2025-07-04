@@ -8,6 +8,17 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* Custom Color Palette */
+    --primary: #0c9547;
+    --secondary: #08a0d0;
+    --tertiary: #243d84;
+    --primary-light: #0fb454;
+    --secondary-light: #0ab5e8;
+    --tertiary-light: #2d4a9e;
+    --primary-dark: #0a7b3a;
+    --secondary-dark: #0689b3;
+    --tertiary-dark: #1e336e;
 }
 
 /* Asegúrate de que este CSS se cargue después del CSS de la librería */
@@ -27,5 +38,50 @@
 /* Asegúrate de que el input no tenga márgenes adicionales */
 .iti input.iti__tel-input {
     width: 100%;
+}
+
+/* Custom Color Classes */
+.bg-primary { background-color: var(--primary) !important; }
+.bg-secondary { background-color: var(--secondary) !important; }
+.bg-tertiary { background-color: var(--tertiary) !important; }
+.text-primary { color: var(--primary) !important; }
+.text-secondary { color: var(--secondary) !important; }
+.text-tertiary { color: var(--tertiary) !important; }
+.border-primary { border-color: var(--primary) !important; }
+.border-secondary { border-color: var(--secondary) !important; }
+.border-tertiary { border-color: var(--tertiary) !important; }
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+}
+
+.btn-secondary {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: white !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-dark) !important;
+    border-color: var(--secondary-dark) !important;
+}
+
+.btn-tertiary {
+    background-color: var(--tertiary) !important;
+    border-color: var(--tertiary) !important;
+    color: white !important;
+}
+
+.btn-tertiary:hover {
+    background-color: var(--tertiary-dark) !important;
+    border-color: var(--tertiary-dark) !important;
 }
 
