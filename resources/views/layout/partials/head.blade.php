@@ -49,7 +49,7 @@
  <link rel="stylesheet" type="text/css" href="{{ url('assets/css/fullcalendar.min.css') }}">
 
  <!-- Main CSS -->
- <link rel="stylesheet" type="text/css" href="{{ url('assets/css/style.css?time='.time()) }}">
+ <link rel="stylesheet" type="text/css" href="{{ url('assets/css/style.css?time='.time().time()) }}">
 
  <link rel="stylesheet" type="text/css" href="{{ url('styles/default.css?time='.time()) }}">
 

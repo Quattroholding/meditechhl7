@@ -6333,7 +6333,7 @@ a.btn.add-links:hover {
 	font-size: 14px;
 }
 .profile-image a {
-	color: #333448;
+	/*color: #333448;*/
 }
 .profile-image a:hover {
 	color: #2e37a4;
