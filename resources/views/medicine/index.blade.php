@@ -1,5 +1,4 @@
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -17,4 +16,4 @@
             <livewire:medicine.data-table />
         </div>
     </div>
-@endsection
+</x-app-layout>>

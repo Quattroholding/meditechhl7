@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Models\Scopes\PatientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PatientInsurancePolicy extends BaseModel
+class PatientInsurancePolicy extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'patient_id',
@@ -47,10 +47,7 @@ class PatientInsurancePolicy extends BaseModel
         'coverage_details' => 'array',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new PatientScope);
-    }
+
 
     public function patient(): BelongsTo
     {

@@ -15,6 +15,11 @@
                     <!-- /Table Header -->
                     @include('partials.message')
                     <livewire:modal-add-notes wire:model="showModal"/>
+
+                    <!-- Modal de seguros -->
+                    @if($showInsuranceModal && $selectedPatientForInsurance)
+                        @livewire('patient.add-insurance', ['patient_id' => $selectedPatientForInsurance->id, 'showInsuranceModal' => true, 'hideButton' => true], key('insurance-'.$selectedPatientForInsurance->id))
+                    @endif
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">
                             <thead>
@@ -31,7 +36,7 @@
                             @foreach ($data as $patient)
                                 <tr>
                                     <td>{{$patient->id}}</td>
-                                    <td>{!!  $patient->name !!}</td>
+                                    <td>{!!  $patient->profile_name !!}</td>
                                     <td>{!!  $patient->birth_date !!} </td>
                                     <td>{{ $patient->identifier }}</td>
                                     <td>{{ $patient->email }}</td>
@@ -45,6 +50,14 @@
                                                 <a class="dropdown-item"  wire:click="openModalNote({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                     {{__('patient.add_note')}}
                                                 </a>
+                                                <a class="dropdown-item"  wire:click="openInsuranceModal({{ $patient->id }})">  <i  class="fa-solid fa-shield-halved m-r-5"></i>
+                                                    {{__('Gestionar Seguros')}}
+                                                </a>
+                                                {{--}}
+                                                <a class="dropdown-item" href="{{route('patient.insurances',$patient->id)}}">  <i  class="fa-solid fa-list m-r-5"></i>
+                                                    {{__('Ver Seguros')}}
+                                                </a>
+                                                {{--}}
                                                 <a class="dropdown-item"  href="{{route('patient.medical_history',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.medical_history')}}
                                                 </a>

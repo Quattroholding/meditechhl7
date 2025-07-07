@@ -190,6 +190,7 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), fu
 
     Route::get('/create', [PatientController::class, 'create'])->name('patient.create');
 
+
     Route::post('/store', [PatientController::class, 'store'])->name('patient.store');
 
     Route::get('/check/{id_number}', [PatientController::class, 'check'])->name('patient.check');
@@ -197,6 +198,8 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), fu
     Route::post('/associate', [PatientController::class, 'associate'])->name('patient.associate');
 
     Route::get('/{id}/profile', [PatientController::class, 'profile'])->name('patient.profile');
+
+    Route::get('/{id}/insurances', [PatientController::class, 'insurances'])->name('patient.insurances');
 
     Route::get('/{id}/medical_history', [PatientController::class, 'medicalHistory'])->name('patient.medical_history');
 

@@ -244,4 +244,10 @@ class PatientController extends Controller
         }
         return response()->json(['error' => 'Paciente no encontrado'], 404);
     }
+
+    public function insurances($id){
+
+        $patient = Patient::findOrFail($id);
+        return view('patients.insurances',compact('patient'));
+    }
 }

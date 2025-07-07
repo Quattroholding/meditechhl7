@@ -11,8 +11,9 @@ use Livewire\WithPagination;
 
 class DataTable extends Component
 {
-
     use WithPagination;
+
+    protected $listeners = ['insurance-modal-closed' => 'closeInsuranceModal'];
 
     public $model; // Modelo dinámico
     public $class;
@@ -28,6 +29,8 @@ class DataTable extends Component
     public $title='';
     public $showModal = false;
     public $selectedPatient;
+    public $showInsuranceModal = false;
+    public $selectedPatientForInsurance;
 
     public $note;
 
@@ -91,6 +94,18 @@ class DataTable extends Component
             $practitioner_id = auth()->user()->practitioner->id;
 
         $this->dispatch('openModal',$patientId,$practitioner_id);
+    }
+
+    public function openInsuranceModal($patientId)
+    {
+        $this->selectedPatientForInsurance = Patient::find($patientId);
+        $this->showInsuranceModal = true;
+    }
+
+    public function closeInsuranceModal()
+    {
+        $this->showInsuranceModal = false;
+        $this->selectedPatientForInsurance = null;
     }
 
 }
