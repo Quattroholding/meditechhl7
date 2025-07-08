@@ -1,7 +1,7 @@
 <div class="theme-settings22">
     <div class="patient-information-btn" style="background: rgb(45, 59, 165);">
         <div class=""
-             type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Ver Informacion del paciente
+             type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$patient_id}}" aria-controls="offcanvasRight">Ver Informacion del paciente
         </div>
     </div>
 </div>
