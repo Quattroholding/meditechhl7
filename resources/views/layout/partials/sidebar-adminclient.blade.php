@@ -19,7 +19,7 @@
                         <li><a class="{{ Request::is('practitioners/create') ? 'active' : '' }}"   href="{{ route('practitioner.create') }}">{{ __('generic.create') }} {{ __('doctor.title') }}</a></li>
                     </ul>
                 </li>
-                <li class="submenu">
+                {{--}}<li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>
                         <span>{{ __('patient.titles') }} </span> <span class="menu-arrow"></span>
@@ -28,9 +28,19 @@
                         <li><a class="{{ Request::is('patients') ? 'active' : '' }}"  href="{{ route('patient.index') }}">{{ __('generic.list') }} {{ __('patient.titles') }}</a></li>
                         <li><a class="{{ Request::is('patients/create') ? 'active' : '' }}"   href="{{ route('patient.create') }}">{{ __('generic.create') }} {{ __('patient.title') }}</a></li>
                     </ul>
-                </li>
-
+                </li>{{--}}
                 <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-07.svg') }}" alt=""></span>
+                        <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
+                        <li><a class="{{ Request::is('accounts/payments') ? 'active' : '' }}" href="{{route('payment.index')}}">{{__('Pagos')}}</a></li>
+                    </ul>
+                </li>
+                {{--}}<li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
                         <span> Configuraciones </span> <span class="menu-arrow"></span></a>
@@ -42,7 +52,7 @@
                         <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
                     </ul>
-                </li>
+                </li>{{--}}
                 <li>
                     <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
                         <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;

@@ -23,6 +23,7 @@
                                         <div class="logo">Meditech</div>
                                     </a>
                                     <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
+                                    <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
                                 </div>
