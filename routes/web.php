@@ -52,6 +52,7 @@ Route::get('/reset-password', function () {
 Route::get('/autologin', function () {
 
   if(request()->get('role')=='admin') $route=route('admin.dashboard');
+  if(request()->get('role')=='admin client') $route=route('client.dashboard');
   if(request()->get('role')=='doctor')   $route=route('doctor.dashboard');
   if(request()->get('role')=='paciente') $route=route('patient.dashboard');
 
@@ -68,6 +69,7 @@ Route::get('/autologin', function () {
 
 Route::get('/dash', function () {
     if(auth()->user()->hasRole('admin')) $route=route('admin.dashboard');
+    if(auth()->user()->hasRole('admin client')) $route=route('client.dashboard');
     if(auth()->user()->hasRole('doctor'))   $route=route('doctor.dashboard');
     if(auth()->user()->hasRole('paciente')) $route=route('patient.dashboard');
     return redirect($route);
@@ -83,6 +85,7 @@ Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), f
     })->name('admin.dashboard.kpis')->middleware('role:admin');
     Route::get('/doctor', [DashboardController::class, 'doctor'])->name('doctor.dashboard');
     Route::get('/patient', [DashboardController::class, 'patient'])->name('patient.dashboard');
+    Route::get('/client', [DashboardController::class, 'admin'])->name('client.dashboard');
 
 });
 
