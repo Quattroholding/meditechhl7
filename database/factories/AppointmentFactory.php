@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Appointment;
+use App\Models\Branch;
+use App\Models\ConsultingRoom;
 use App\Models\Encounter;
 use App\Models\Patient;
 use App\Models\PatientClient;
@@ -54,6 +56,12 @@ class AppointmentFactory extends Factory
             'Botox'
         ];
 
+        $clientId = $practitioner->user->default_client_id;
+
+        $brach = Branch::whereClientId($clientId)->first();
+
+        $consultingRoomId = $brach->consultingRooms()->inRandomOrder()->take(1)->first()->id;
+
         return [
             'fhir_id' => 'appointment-' . Str::uuid(),
             'patient_id' =>$patient->id,
@@ -73,8 +81,9 @@ class AppointmentFactory extends Factory
             'start' => $startDate,
             'end' => $endDate,
             'minutes_duration' => $duration,
+            'consulting_room_id'=>$consultingRoomId,
             'medical_speciality_id'=>$specility_id,
-            'client_id'=>$practitioner->user->default_client_id,
+            'client_id'=>$clientId,
             'participant' => json_encode([
                 [
                     'actor' => 'Patient/' . $patient->fhir_id,

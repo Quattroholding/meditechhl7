@@ -100,6 +100,7 @@
                                 </div>
 
                                 <div class="row">
+
                                     <!-- PHYSICAL ADDRESS -->
                                     <div class=" col-12 col-md-12 col-xl-12">
                                         <div class="input-block local-forms">
@@ -112,11 +113,19 @@
                                 <div class="row">
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- SPECIALTY -->
+                                        {{--}}
                                         <div class="input-block  local-forms">
-                                            <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" required/>
+                                            <x-input-label for="medical_speciality" :value="__('doctor.speciality')" required/>
                                             <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()"
                                                             class="block  w-full" multiple aria-label="multiple select example" :selected="[old('medical_speciality')]"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                        </div>
+                                        {{--}}
+                                        <!-- REGISTRY -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
+                                            <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" :value="old('registry')" maxlength="60"/>
+                                            <x-input-error :messages="$errors->get('registry')" class="mt-2" />
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-6">

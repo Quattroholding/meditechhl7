@@ -17,6 +17,8 @@ use \App\Http\Controllers\Auth\LoginController;
 use \App\Http\Controllers\DashboardController;
 use \App\Http\Controllers\InvoiceController;
 use \App\Http\Controllers\PaymentController;
+use \App\Http\Controllers\MedicalDocumentController;
+use \App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -259,6 +261,8 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), fu
 
     Route::get('/create_user_procedures', [SettingController::class, 'createUserProcedure'])->name('setting.create_user_procedures');
 
+    Route::get('/{practitioner_id}/signature_and_seal', [SettingController::class, 'uploadSignatureSeal'])->name('setting.signature_and_seal');
+
 });
 
 Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']), function() {
@@ -307,6 +311,38 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
     Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
     Route::get('/services_catalog', [ApiController::class, 'servicesCatalog'])->name('api.servicesCatalog');
+
+});
+
+// Medical Documents Routes (PDF Generation)
+Route::middleware('auth')->group(function () {
+
+    // Prescription Routes
+    Route::get('/prescription/{encounter}/download', [MedicalDocumentController::class, 'generatePrescription'])
+        ->name('prescription.download');
+
+    Route::get('/prescription/{encounter}/preview', [MedicalDocumentController::class, 'previewPrescription'])
+        ->name('prescription.preview');
+
+    Route::post('/prescription/custom/download', [MedicalDocumentController::class, 'generatePrescriptionByMedications'])
+        ->name('prescription.custom.download');
+
+    // Medical Order Routes
+    Route::get('/medical-order/{encounter}/download', [MedicalDocumentController::class, 'generateMedicalOrder'])
+        ->name('medical-order.download');
+
+    Route::get('/medical-order/{encounter}/preview', [MedicalDocumentController::class, 'previewMedicalOrder'])
+        ->name('medical-order.preview');
+
+    Route::post('/medical-order/custom/download', [MedicalDocumentController::class, 'generateMedicalOrderByServices'])
+        ->name('medical-order.custom.download');
+
+    // Private File Serving Routes
+    Route::get('/practitioner/{practitioner_id}/signature', [FileController::class, 'serveSignature'])
+        ->name('practitioner.signature');
+
+    Route::get('/practitioner/{practitioner_id}/seal', [FileController::class, 'serveSeal'])
+        ->name('practitioner.seal');
 
 });
 

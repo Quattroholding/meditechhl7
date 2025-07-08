@@ -321,9 +321,16 @@
 
                             <!-- Action Buttons -->
                             <div class="text-center mt-4">
+
                                 <a href="{{ route('consultation.index') }}" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> {{ __('generic.back') }}
                                 </a>
+                                @if($encounter->medicationRequests->count() > 0)
+                                    <a href="{{route('prescription.download',$encounter->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf"></i> {{__('Descargar receta')}} </a>
+                                @endif
+                                @if($encounter->serviceRequests->count() > 0)
+                                    <a href="{{route('medical-order.download',$encounter->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf"></i> {{__('Descargar orden')}} </a>
+                               @endif
                                 <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-primary" target="_blank">
                                     <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
                                 </a>

@@ -56,6 +56,14 @@
                                     <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                                 </div>
                             </div>
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <!-- Registry -->
+                                <div class="input-block local-forms">
+                                    <x-input-label for="registry" :value="__('doctor.registry')" required="true"/>
+                                    <x-text-input id="registry" class="block mt-1 w-full" type="text" name="registry" :value="$data->registry" />
+                                    <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <!-- GENDER -->

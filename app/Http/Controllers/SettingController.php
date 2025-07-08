@@ -27,4 +27,8 @@ class SettingController extends Controller
     public function createUserProcedure(Request $request){
         return view('settings.procedures.create');
     }
+
+    public function uploadSignatureSeal(Request $request,$practitioner_id){
+        return view('settings.practitioners.signature_and_seal',compact('practitioner_id'));
+    }
 }

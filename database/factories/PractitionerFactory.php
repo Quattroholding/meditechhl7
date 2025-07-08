@@ -26,10 +26,13 @@ class PractitionerFactory extends Factory
         $identifier = $this->faker->unique()->regexify($this->getIdPattern($id_type));
 
         $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
+        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']);
 
         return [
             'fhir_id' => 'practitioner-' . Str::uuid(),
+            'registry'=>$this->faker->randomNumber(8),
             'identifier' => $identifier,
+            'identifier_type' => $id_type,
             'name' => 'Dr. ' . $givenName . ' ' . $this->faker->lastName,
             'given_name' => $givenName,
             'family_name' => $this->faker->lastName,

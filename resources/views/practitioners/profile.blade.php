@@ -18,6 +18,11 @@
                         <livewire:doctor.profile-about practitioner_id="{{$data->id}}"/>
                         <livewire:doctor.profile-details practitioner_id="{{$data->id}}"/>
                     </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <livewire:doctor.signature-manager practitioner_id="{{$data->id}}"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

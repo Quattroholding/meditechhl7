@@ -27,6 +27,10 @@ class Medicine extends BaseModel
         return $this->generic_name." (".$this->type." ".$this->mgs." ".$this->mgs_type.")";
     }
 
+    public function getConcentrationAttribute(){
+        return $this->mgs." ".$this->mgs_type;
+    }
+
     public function medicationRequests(): HasMany
     {
         return $this->hasMany(MedicationRequest::class);

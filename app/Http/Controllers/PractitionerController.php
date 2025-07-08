@@ -32,7 +32,7 @@ class PractitionerController extends Controller
         //dd($data->specialties);
         $practitioner_clients = $data->user->clients->pluck('id')->toArray();
         $specialties = $data->qualifications->pluck('medical_speciality_id')->toArray();
-         $clients = Client::whereIn('id',auth()->user()->clients->pluck('id'))->pluck('long_name','id')->toArray();
+         $clients = Client::pluck('long_name','id')->toArray();
         //dd($qualifications, $practitioner_clients);
         return view('practitioners.edit', compact('data', 'practitioner_clients', 'specialties','clients'));
     }
@@ -41,8 +41,10 @@ class PractitionerController extends Controller
         $validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
+            'identifier_type' => 'required',
             'id_type' => 'required',
             'id_number' => 'required',
+            'registry' => 'required',
             'email' => 'required|unique:practitioners',
             'gender' => 'required',
             'birth_date' => 'required',
@@ -78,6 +80,7 @@ class PractitionerController extends Controller
                     $practitioner->family_name = $request->last_name;
                     $practitioner->identifier_type = $request->id_type;
                     $practitioner->identifier = $request->id_number;
+                    $practitioner->registry = $request->registry;
                     $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                     $fecha->setTime(0, 0, 0);
                     $practitioner->birth_date = $fecha->format('Y-m-d H:i:s');
@@ -108,22 +111,24 @@ class PractitionerController extends Controller
 
     public function update(Request $request,$id){
 
-        $validated = $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'id_type' => 'required',
-            'id_number' => 'required',
-            'email' => 'required',
-            'gender' => 'required',
-            'birth_date' => 'required',
-            'address' => 'required',
-            'phone' => 'required',
-            //'full_phone' => 'required',
-            //'image' => 'required',
-            'clients' => 'required'
-        ]);
-
         try {
+
+            $validated = $request->validate([
+
+                'id_type' => 'required',
+                'id_number' => 'required',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'gender' => 'required',
+                'birth_date' => 'required',
+                'email' => 'required',
+                'phone' => 'required',
+                'registry' => 'required',
+                'address' => 'required',
+                //'full_phone' => 'required',
+                //'image' => 'required',
+                'clients' => 'required'
+            ]);
 
             $practitioner = Practitioner::findOrFail($id);
 
@@ -147,6 +152,7 @@ class PractitionerController extends Controller
                     $practitioner->given_name = $request->first_name;
                     $practitioner->family_name = $request->last_name;
                     $practitioner->identifier_type = $request->id_type;
+                    $practitioner->registry = $request->registry;
                     $practitioner->identifier = $request->id_number;
                     $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                     $fecha->setTime(0, 0, 0);

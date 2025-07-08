@@ -16,7 +16,7 @@ class Practitioner extends BaseModel
     use HasFactory,Notifiable;
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name',
-        'gender', 'birth_date', 'address', 'phone', 'email', 'active'
+        'gender', 'birth_date', 'address', 'phone', 'email', 'active','registry','identifier_type'
     ];
 
     protected $casts = [
@@ -75,12 +75,36 @@ class Practitioner extends BaseModel
         return $this->files()->whereType('avatar')->latest()->first();
     }
 
+    public function signature(){
+        return $this->files()->whereType('signature')->latest()->first();
+    }
+
+    public function seal(){
+        return $this->files()->whereType('seal')->latest()->first();
+    }
+
+    public function getSignaturePath(){
+        $signature = $this->signature();
+        if ($signature && \Storage::disk('local')->exists($signature->path)) {
+            return \Storage::disk('local')->path($signature->path);
+        }
+        return null;
+    }
+
+    public function getSealPath(){
+        $seal = $this->seal();
+        if ($seal && \Storage::disk('local')->exists($seal->path)) {
+            return \Storage::disk('local')->path($seal->path);
+        }
+        return null;
+    }
+
     public function getProfileNameAttribute(){
         $path = url('assets/img/profiles/avatar-02.jpg');
         if($this->avatar()) $path = url('storage/'.$this->avatar()->path);
 
         return '<div class="profile-image">
-                  <a href="'.url('patient/'.$this->id.'/profile').'" >
+                  <a href="'.url('practitioners/'.$this->id.'/profile').'" >
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
                                     </a>

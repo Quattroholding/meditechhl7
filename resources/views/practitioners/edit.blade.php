@@ -91,7 +91,7 @@
                                 <div class=" col-6 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="$data->phone"/>
+                                        <x-text-input id="phone" class="block mt-1 w-full" type="" name="phone" :value="$data->phone"/>
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
@@ -116,12 +116,20 @@
                             </div>
                             <div class="row">
                             <div class="col-6 col-md-6 col-xl-6">
-                                    <!-- SPECIALTY -->
+                                <!-- REGISTRY -->
+                                <div class="input-block local-forms">
+                                    <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
+                                    <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" value="{{$data->registry}}" maxlength="60"/>
+                                    <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                </div>
+                                {{--}}
+                                <!-- SPECIALTY -->
                                 <div class="input-block  local-forms">
                                     <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" required/>
                                     <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block w-full" :selected="$specialties"  multiple aria-label="multiple select example" />
                                     <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
                                 </div>
+                                {{--}}
                             </div>
                             <div class="col-6 col-md-6 col-xl-6">
                                     <!-- CLIENTS -->
