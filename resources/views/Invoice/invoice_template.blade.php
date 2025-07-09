@@ -46,7 +46,7 @@
         }
 
         .patient-info, .invoice-info {
-            width: 48%;
+            width: 100%;
         }
 
         .section-title {
@@ -166,66 +166,75 @@
     </div>
 
     <div class="invoice-details">
-        <div class="patient-info">
-            <div class="section-title">INFORMACIÓN DEL PACIENTE</div>
-            <div class="info-row">
-                <span class="label">Nombre:</span>
-                {{ $patient->name }}
-            </div>
-            <div class="info-row">
-                <span class="label">Identificación:</span>
-                {{ $patient->identifier_type }}    {{ $patient->identifier }}
-            </div>
-            <div class="info-row">
-                <span class="label">Fecha Nacimiento:</span>
-                {{ $patient->bith_date ? $patient->bith_date->format('d/m/Y') : 'N/A' }}
-            </div>
-            @if($patient->phone)
-                <div class="info-row">
-                    <span class="label">Teléfono:</span>
-                    {{ $patient->phone }}
-                </div>
-            @endif
-            @if($patient->email)
-                <div class="info-row">
-                    <span class="label">Email:</span>
-                    {{ $patient->email }}
-                </div>
-            @endif
-        </div>
-
-        <div class="invoice-info">
-            <div class="section-title">INFORMACIÓN DE FACTURA</div>
-            <div class="info-row">
-                <span class="label">Número:</span>
-                {{ $invoice->identifier }}
-            </div>
-            <div class="info-row">
-                <span class="label">Fecha Emisión:</span>
-                {{ $invoice->issue_date->format('d/m/Y') }}
-            </div>
-            <div class="info-row">
-                <span class="label">Fecha Vencimiento:</span>
-                {{ $invoice->due_date->format('d/m/Y') }}
-            </div>
-            <div class="info-row">
-                <span class="label">Estado:</span>
-                <span style="color: {{ $invoice->payment_status === 'paid' ? 'green' : ($invoice->payment_status === 'partial' ? 'orange' : 'red') }};">
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    <div class="patient-info">
+                        <div class="section-title">INFORMACIÓN DEL PACIENTE</div>
+                        <div class="info-row">
+                            <span class="label">Nombre:</span>
+                            {{ $patient->name }}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Identificación:</span>
+                            {{ $patient->identifier_type }}    {{ $patient->identifier }}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Fecha Nacimiento:</span>
+                            {{ $patient->birth_date ? $patient->birth_date : 'N/A' }}
+                        </div>
+                        @if($patient->phone)
+                            <div class="info-row">
+                                <span class="label">Teléfono:</span>
+                                {{ $patient->phone }}
+                            </div>
+                        @endif
+                        @if($patient->email)
+                            <div class="info-row">
+                                <span class="label">Email:</span>
+                                {{ $patient->email }}
+                            </div>
+                        @endif
+                    </div>
+                </td>
+                <td>
+                    <div class="invoice-info">
+                        <div class="section-title">INFORMACIÓN DE FACTURA</div>
+                        <div class="info-row">
+                            <span class="label">Número:</span>
+                            {{ $invoice->identifier }}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Fecha Emisión:</span>
+                            {{ $invoice->issue_date->format('d/m/Y') }}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Fecha Vencimiento:</span>
+                            {{ $invoice->due_date->format('d/m/Y') }}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Estado:</span>
+                            <span style="color: {{ $invoice->payment_status === 'paid' ? 'green' : ($invoice->payment_status === 'partial' ? 'orange' : 'red') }};">
                     {{ ucfirst($invoice->payment_status) }}
                 </span>
-            </div>
-            <div class="info-row">
-                <span class="label">Moneda:</span>
-                {{ strtoupper($invoice->currency) }}
-            </div>
-        </div>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Moneda:</span>
+                            {{ strtoupper($invoice->currency) }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
     </div>
 
     @if($encounter)
         <div class="encounter-info">
             <div class="section-title">INFORMACIÓN DE LA CONSULTA</div>
             <div class="info-row">
-                <span class="label">Encuentro ID:</span>
+                <span class="label">Consulta ID:</span>
                 {{ $encounter->identifier }}
             </div>
             <div class="info-row">
@@ -236,10 +245,10 @@
                 <span class="label">Médico:</span>
                 {{ $practitioner->name }}
             </div>
-            @if($practitioner->license_number ?? false)
+            @if($practitioner->registry ?? false)
                 <div class="info-row">
                     <span class="label">Licencia Médica:</span>
-                    {{ $practitioner->license_number }}
+                    {{ $practitioner->registry }}
                 </div>
             @endif
         </div>

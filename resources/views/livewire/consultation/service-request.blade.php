@@ -34,9 +34,20 @@
                                     {{$s->cpt->full_name}}
                                 </td>
                             </tr>
+
                             </tbody>
                         </table>
+                        <div class="my-3">
+                            {{__('consultation.instruction')}}
+                            <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})"
+                                               wire:model="notes.{{$s->id}}"
+                                               class="block mt-1 w-full" type="text" name="notes"
+                                               placeholder="Escribir instrucciones (opcional)">{{$s->note}}
+                            </x-textarea-input>
+                        </div>
+
                     </div>
+                    @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
                 @endforeach
             </div>
         </div>

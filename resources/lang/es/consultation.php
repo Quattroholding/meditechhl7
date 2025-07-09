@@ -112,4 +112,6 @@ return [
     'medication'=>'Medicamento',
     'dosage'=>'Dosis',
     'status'=>'Estatus',
+    'diagnostic_note'=>'Nota',
+    'instruction'=>'Instrucciones adicionales',
 ];

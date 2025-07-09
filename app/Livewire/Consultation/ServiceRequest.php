@@ -20,6 +20,8 @@ class ServiceRequest extends Component
     public $rapidAccess=[];
     public $section_id;
     public $saved = false;
+    public $notes=[];
+    public $savedNote=[];
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
@@ -83,11 +85,26 @@ class ServiceRequest extends Component
         $this->loadSelectedLists();
     }
 
+    public function updateNote($id){
+        $this->savedNote[$id] = false;
+        $serviceRequest = \App\Models\ServiceRequest::find($id);
+
+        $serviceRequest->update(['note'=>$this->notes[$id]]);
+        sleep(2);
+        $this->savedNote[$id] = true;
+
+    }
+
     private function loadSelectedLists()
     {
         $this->selectedLists = $this->encounter->serviceRequests()
             ->where('service_type', $this->type)
             ->get();
+
+        foreach ($this->selectedLists as $key){
+            $this->savedNote[$key->id] = false;
+            $this->notes[$key->id]=$key->note;
+        }
     }
 
     private function loadRapidAccess()

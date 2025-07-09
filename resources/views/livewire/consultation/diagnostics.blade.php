@@ -25,14 +25,25 @@
                             </tr>
                             </tbody>
                         </table>
+                        <div style="width:100%" class="my-3">{{__('consultation.diagnostic_note')}}
+                         <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})"
+                                            wire:model="notes.{{$s->id}}"
+                                            class="block mt-1 w-full" type="text" name="notes"
+                                            placeholder="Escribir nota opcional">{{$s->note}}
+                         </x-textarea-input>
+                        </div>
                     </div>
+                    @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
                 @endforeach
             </div>
         </div>
     @endif
     <div class="selector-field selector-field-on">
     @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px;">
+    <div style="width:100%;padding:20px;">
+        <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px;">
+    </div>
+
     @if(!empty($results))
         <div class="selector-items" style="z-index: 1000">
             @foreach($results as $result)

@@ -74,12 +74,14 @@ class ConsultationController extends Controller
         try {
             DB::beginTransaction();
 
-            $clientId = auth()->user()->getCurrentClient()->id;
+
 
             $appointment = Appointment::find($appointment_id);
             if (! $appointment) {
                 throw new \Exception('Cita no encontrada.');
             }
+
+            $clientId =$appointment->client_id;
 
             $encounter = Encounter::whereAppointmentId($appointment->id)->first();
             if (! $encounter) {

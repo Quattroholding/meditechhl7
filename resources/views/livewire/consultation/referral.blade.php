@@ -51,7 +51,9 @@
     <div class="my-3"></div>
     <div class="selector-field selector-field-on">
     @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar especialidad." >
+    <div style="width:100%;padding:20px;">
+        <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar especialidad." >
+    </div>
     @if(!empty($results))
         <div class="selector-items" style="z-index: 1000">
             @foreach($results as $result)

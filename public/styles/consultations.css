@@ -1,5 +1,7 @@
 
-
+body{
+    font-size: 14px;
+}
 .anual-coupon {
     width: 100%;
     background: rgb(255, 255, 255);
@@ -1521,7 +1523,7 @@ textarea {
     overflow: hidden;
     width: 0px;
     transition: 1s all;
-    height: 15px;
+    height: 30px;
 
 }
 

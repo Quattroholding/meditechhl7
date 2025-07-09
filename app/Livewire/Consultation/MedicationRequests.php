@@ -95,6 +95,7 @@ class MedicationRequests extends Component
 
     public function updateField($id,$value,$field)
     {
+
         if($field=='quantity') $this->quantitys[$id] = $value;
         if($field=='frequency') $this->frecuencies[$id] = $value;
         if($field=='duration') $this->durations[$id] = $value;
@@ -103,7 +104,8 @@ class MedicationRequests extends Component
         $dosage_instructions = $this->generateDosageInstruction($id);
 
         $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
-        $medicationRequest->$field = htmlspecialchars($value);
+        $medicationRequest->$field = null;
+        $medicationRequest->$field = !empty(htmlspecialchars($value)) ?? htmlspecialchars($value) ;
         $medicationRequest->dosage_instruction =$dosage_instructions;
         $medicationRequest->dosage_text =$dosage_instructions['text'];
         $medicationRequest->save();

@@ -20,11 +20,23 @@ class Diagnostics extends Component
     public $selectedLists=[];
     public $saving = false;
     public $saved = false;
+    public $savedNote=[];
+    public $notes=[];
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
+        $this->loadSelectedLists();
+    }
+
+    private function loadSelectedLists()
+    {
         $this->selectedLists = $this->encounter->diagnoses()->get();
+
+        foreach ($this->selectedLists as $key){
+            $this->savedNote[$key->id] = false;
+            $this->notes[$key->id]=$key->note;
+        }
     }
 
     public function updatedQuery()
@@ -45,6 +57,7 @@ class Diagnostics extends Component
     public function selectOption($option)
     {
         $this->saved = false;
+        $this->savedNote = false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -81,6 +94,16 @@ class Diagnostics extends Component
        $ed = EncounterDiagnosis::find($diagnostic_id);
        $ed->delete();
        $this->selectedLists = $this->encounter->diagnoses()->get();
+    }
+
+    public function updateNote($id){
+        $this->savedNote[$id] = false;
+        $encounterDiagnostic = EncounterDiagnosis::find($id);
+
+        $encounterDiagnostic->update(['note'=>$this->notes[$id]]);
+        sleep(2);
+        $this->savedNote[$id] = true;
+
     }
 
     public function render()
