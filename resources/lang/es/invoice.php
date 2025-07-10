@@ -12,7 +12,7 @@ return [
     'issue_date' => 'Fecha de Emisión',
     'created_at' => 'Creada el',
     'updated_at' => 'Actualizada el',
-
+    'code'=>'code',
     // Search and Filters
     'search' => 'Buscar',
     'search_placeholder' => 'Buscar por ID, número o paciente...',

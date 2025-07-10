@@ -39,7 +39,7 @@
                         </table>
                         <div class="my-3">
                             {{__('consultation.instruction')}}
-                            <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})"
+                            <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
                                                wire:model="notes.{{$s->id}}"
                                                class="block mt-1 w-full" type="text" name="notes"
                                                placeholder="Escribir instrucciones (opcional)">{{$s->note}}
@@ -62,7 +62,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:80%;padding:0 20px;">
+                <td style="width:80%;padding:20px;">
                     <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar por descripcion o codigo cpt" >
                 </td>
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
@@ -78,22 +78,7 @@
             </tr>
             </tbody>
         </table>
-        {{--}}
-     <x-offcanvas id="offcanvasRight{{$id}}" title="Listado de acceso rapido" position="right" size="xl" wire:ignore.self>
-
-         @foreach($rapidAccess as $i)
-             <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
-                 <div class="sel-list-item-code">{{$i->cpt->code}}</div>
-                 <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
-                 <div class="preloader-space"></div><div class="preloader-space-2">
-                 </div>
-             </div>
-         @endforeach
-     </x-offcanvas>
-     {{--}}
         <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel">
-
-
             <div class="offcanvas-body  quick-items-content">
                 <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
                     <img src="/images/close-floating.png" alt="">
@@ -137,17 +122,14 @@
         @if(!empty($results))
             <div class="selector-items" style="z-index: 1000">
                 @foreach($results as $result)
-                    <div class="sel-list-item d-flex justify-content-between align-items-center"
-                         style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee;">
-                        <div class="flex-grow-1" wire:click="selectOption({{ json_encode($result) }})">
-                            {{ $result['name'] }}
+                    <div class="sel-list-item row" wire:click="selectOption({{ json_encode($result) }})">
+                        <div class="col-md-1 "><strong>{{ $result['code'] }}</strong></div>
+                        <div class="col-md-8">  {{ $result['description_es'] }}</div>
+                        <div class="col-md-3 text-end">
+                            <button type="button"  class="btn btn-sm btn-outline-primary"  wire:click="addToRapidAccess({{ $result['id'] }})"  title="Agregar a accesos rápidos">
+                                <i class="fas fa-star"></i>
+                            </button>
                         </div>
-                        <button type="button"
-                                class="btn btn-sm btn-outline-primary"
-                                wire:click="addToRapidAccess({{ $result['id'] }})"
-                                title="Agregar a accesos rápidos">
-                            <i class="fas fa-star"></i>
-                        </button>
                     </div>
                 @endforeach
             </div>

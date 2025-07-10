@@ -71,7 +71,7 @@
                             <!-- WHATSAPP -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="whatsapp" :value="__('Telefono')" />
-                                <x-text-input id="whatsapp" class="block mt-1 w-full" type="text" name="whatsapp" :value="$data->whatsapp"/>
+                                <x-text-input id="whatsapp" class="block mt-1 w-full" type="tel" name="whatsapp" :value="$data->whatsapp"/>
                                 <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                             </div>
                         </div>

@@ -14,13 +14,13 @@
                                     <div class="col-12">
                                         <div class="card bg-light">
                                             <div class="card-body">
-                                                <div class="row">
+                                                <div class="row  px-3 py-3">
                                                     <div class="col-md-6">
                                                         <h6 class="mb-2">
                                                             <strong>Factura:</strong> {{ $invoice->invoice_number }}
                                                         </h6>
                                                         <p class="mb-1">
-                                                            <strong>Paciente:</strong> {{ $invoice->patient->full_name }}
+                                                            <strong>Paciente:</strong> {{ $invoice->patient->name }}
                                                         </p>
                                                         <p class="mb-0">
                                                             <strong>Fecha:</strong> {{ $invoice->issue_date?->format('d/m/Y') }}
@@ -164,12 +164,12 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" wire:click="closeModal">
-                                    {{ __('Cancelar') }}
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-save"></i> {{ __('Registrar Pago') }}
-                                </button>
+                                <div class="flex items-center justify-end mt-4">
+                                    <div class="doctor-submit text-end">
+                                        <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
+                                        <a class="btn btn-secondary "  wire:click="closeModal">  {{ __('button.cancel') }}</a>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     @endif

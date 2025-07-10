@@ -61,7 +61,7 @@ class ApiController extends Controller
         $select='*';
 
         if($request->has('dropdown'))
-            $select = "id,code,concat(code,'|',description_es)  as name";
+            $select = "id,code,concat(code,'|',description_es)  as name,description_es,description";
 
         $query = Icd10Code::selectRaw($select)
             ->when($request->has('q'),function ($q) use($request){
@@ -82,7 +82,7 @@ class ApiController extends Controller
         $select='*';
 
         if($request->has('dropdown'))
-            $select = "id,concat(code,'|',description_es)  as name";
+            $select = "id,concat(code,'|',description_es)  as name,description_es,description,code";
 
         $query = CptCode::selectRaw($select)
             ->when($request->has('q'),function ($q) use($request){

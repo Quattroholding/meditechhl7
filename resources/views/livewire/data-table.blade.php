@@ -31,10 +31,10 @@
                                 <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i   class="fa fa-ellipsis-v"></i></a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     @if(in_array('edit',$actions))
-                                    <a class="dropdown-item" href="{{route($route_name.'.edit',$row->id)}}"><i   class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>
+                                    <a class="dropdown-item" href="{{route($route_name.'.edit',$row->id)}}"><i   class="fa-solid fa-pen-to-square m-r-5"></i> {{__('generic.edit')}}</a>
                                     @endif
                                     @if(in_array('delete',$actions))
-                                    <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_patient"><i class="fa fa-trash-alt m-r-5"></i> Delete</a>
+                                    <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_patient"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
                                     @endif
                                 </div>
                             </div>

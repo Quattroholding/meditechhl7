@@ -137,32 +137,36 @@ class ClientController extends Controller
 
     public function update(Request $request,$id){
 
-        $validated = $request->validate([
-            'name' => 'required',
-            'long_name' => 'required',
-            'ruc' => 'required',
-            'email' => 'required',
-            'dv' => 'required',
-            'phone' => 'required',
-            'full_phone' => 'required',
-            'logo' => 'required',
-        ]);
+        try{
+            $validated = $request->validate([
+                'name' => 'required',
+                'long_name' => 'required',
+                'ruc' => 'required',
+                'email' => 'required',
+                'dv' => 'required',
+                'whatsapp' => 'required',
+                //'full_phone' => 'required',
+                'logo' => 'required',
+            ]);
 
-        $model = Client::find($id);
-        $model->fill($request->all());
+            $model = Client::find($id);
+            $model->fill($request->all());
 
-        if($model->save()){
+            if($model->save()){
 
-
-            if($request->file('logo')){
-                $service = new FileService();
-                $filename = 'client_logo_'.$model->id;
-                $model->logo = $service->uploadSingleFile($request->file('logo'),'clients',$filename);
-                $model->save();
+                if($request->file('logo')){
+                    $service = new FileService();
+                    $filename = 'client_logo_'.$model->id;
+                    $model->logo = $service->uploadSingleFile($request->file('logo'),'clients',$filename);
+                    $model->save();
+                }
+                $request->session()->flash('message.success','Actualización con exito.');
+            }else{
+                $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
             }
-            $request->session()->flash('message.success','Actualización co exito.');
-        }else{
-            $request->session()->flash('message.success','Hubo un error y no se pudo actualizar.');
+
+        }catch (\Exception $e){
+            $request->session()->flash('message.error',$e->getMessage());
         }
 
         return redirect(route('client.edit',$id));

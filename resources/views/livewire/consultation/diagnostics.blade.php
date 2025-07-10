@@ -25,8 +25,8 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div style="width:100%" class="my-3">{{__('consultation.diagnostic_note')}}
-                         <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})"
+                        <div style="width:100%" class="">{{__('consultation.diagnostic_note')}}
+                         <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
                                             wire:model="notes.{{$s->id}}"
                                             class="block mt-1 w-full" type="text" name="notes"
                                             placeholder="Escribir nota opcional">{{$s->note}}
@@ -47,8 +47,9 @@
     @if(!empty($results))
         <div class="selector-items" style="z-index: 1000">
             @foreach($results as $result)
-                <div  class="sel-list-item"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
-                    {{ $result['name'] }}
+                <div  class="sel-list-item row"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
+                    <div class="col-md-1"><strong>{{$result['code']}}</strong></div>
+                    <div class="col-md-11"> {{ $result['description_es'] }}</div>
                 </div>
             @endforeach
         </div>

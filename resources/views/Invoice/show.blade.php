@@ -64,7 +64,7 @@
                                 <div class="col-12 col-md-6 m-b-20">
                                     @if($invoice->issuerOrganization || $invoice->client)
                                         @php $organization = $invoice->issuerOrganization ?? $invoice->client; @endphp
-                                        <img src="{{ $organization->logo }}" width="35" height="35" alt="">
+                                        <img src="{{ url('storage/'.$invoice->issuerOrganization->logo) }}" width="100%" alt="">
                                         <span>{{ $organization->name }}</span>
 
                                         <ul class="list-unstyled invoice-clinic mt-2">
@@ -155,8 +155,9 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>{{ __('invoice.code') }}</th>
                                             <th>{{ __('invoice.service_description') }}</th>
-                                            <th>{{ __('invoice.cpt_code') }}</th>
+
                                             <th>{{ __('invoice.quantity') }}</th>
                                             <th>{{ __('invoice.unit_price') }}</th>
                                             <th>{{ __('invoice.line_total') }}</th>
@@ -166,13 +167,13 @@
                                         @forelse($invoice->lineItems as $index => $lineItem)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $lineItem->service_code ?? 'N/A' }}</td>
                                                 <td>
                                                     <strong>{{ $lineItem->service_description ?? 'N/A' }}</strong>
                                                     @if($lineItem->chargeItem && $lineItem->chargeItem->note)
                                                         <br><small class="text-muted">{{ $lineItem->chargeItem->note }}</small>
                                                     @endif
                                                 </td>
-                                                <td>{{ $lineItem->cpt_code ?? 'N/A' }}</td>
                                                 <td>{{ number_format($lineItem->quantity, 0) }}</td>
                                                 <td>{{ $invoice->currency }} {{ number_format($lineItem->unit_price, 2) }}</td>
                                                 <td>{{ $invoice->currency }} {{ number_format($lineItem->line_total_gross, 2) }}</td>
@@ -276,6 +277,9 @@
 
                             <!-- Action Buttons -->
                             <div class="col-12">
+                                <a href="{{ route('invoice.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>{{ __('invoice.back_to_list') }}
+                                </a>
                                 <div class="doctor-submit float-end">
                                     <a href="{{ route('invoice.download', $invoice->id) }}" target="_blank" class="btn btn-primary submit-form me-2">
                                         <i class="fas fa-download me-2"></i>{{ __('invoice.download_pdf') }}
@@ -283,23 +287,14 @@
                                     <a href="{{ route('invoice.download', $invoice->id) }}?html=1" target="_blank" class="btn btn-outline-primary me-2">
                                         <i class="far fa-eye me-2"></i>{{ __('invoice.preview') }}
                                     </a>
+                                    {{--}}
                                     <a href="javascript:window.print()" class="btn btn-outline-secondary">
                                         <i class="feather-printer me-2"></i>{{ __('invoice.print') }}
                                     </a>
+                                    {{--}}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Back to List Button -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <a href="{{ route('invoice.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>{{ __('invoice.back_to_list') }}
-                        </a>
                     </div>
                 </div>
             </div>

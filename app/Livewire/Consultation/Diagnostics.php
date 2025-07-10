@@ -57,7 +57,6 @@ class Diagnostics extends Component
     public function selectOption($option)
     {
         $this->saved = false;
-        $this->savedNote = false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -77,7 +76,7 @@ class Diagnostics extends Component
             ]);
         }
 
-        $this->encounter->diagnoses()->create([
+        $ed = $this->encounter->diagnoses()->create([
             'encounter_id' => $this->encounter->id,
             'condition_id' => $condition->id,
             'rank' => 1,
@@ -87,13 +86,13 @@ class Diagnostics extends Component
         $this->query='';
         sleep(1);
         $this->saved = true;
-        $this->selectedLists = $this->encounter->diagnoses()->get();
+        $this->loadSelectedLists();
     }
 
     public function delete($diagnostic_id){
        $ed = EncounterDiagnosis::find($diagnostic_id);
        $ed->delete();
-       $this->selectedLists = $this->encounter->diagnoses()->get();
+       $this->loadSelectedLists();
     }
 
     public function updateNote($id){

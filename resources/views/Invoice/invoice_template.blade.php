@@ -148,7 +148,7 @@
         }
     </style>
 </head>
-<body>
+<body style="max-width: 800px;margin: 0 auto;">
     <div class="header">
         <div class="company-info">
             <div class="company-name">{{ $organization->name ?? 'Centro Médico' }}</div>
