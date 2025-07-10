@@ -34,7 +34,7 @@ class SettingController extends Controller
 
     public function uploadSignatureSeal($practitioner_id)
     {
-        return view('settings.signature-seal', compact('practitioner_id'));
+        return view('settings.practitioners.signature_and_seal', compact('practitioner_id'));
     }
 
     /**
@@ -43,7 +43,7 @@ class SettingController extends Controller
     public function themeManager($client_id)
     {
         $client = Client::findOrFail($client_id);
-        
+
         // Verificar permisos - solo admin o usuarios del cliente pueden acceder
         if (!auth()->user()->hasRole('admin') && !auth()->user()->clients->contains($client_id)) {
             abort(403, 'No tienes permisos para acceder a la configuración de este cliente.');
