@@ -4,10 +4,8 @@
             Meditech
         </a>
     </div>
-    <a id="toggle_btn" href="javascript:void(0);"><img src="{{ URL::asset('/assets/img/icons/bar-icon.svg') }}"
-            alt=""></a>
-    <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img
-            src="{{ URL::asset('/assets/img/icons/bar-icon.svg') }}" alt=""></a>
+    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+    <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><i class="fa fa-bars"></i></a>
     {{--}}
     <div class="top-nav-search mob-view">
         <form action="javascript:;">
@@ -17,6 +15,7 @@
     </div>
     {{--}}
     <ul class="nav user-menu float-end">
+        {{--}}
         <li class="nav-item dropdown d-none d-md-block">
             <a href="javascript:;" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><img
                     src="{{ URL::asset('/assets/img/icons/note-icon-01.svg') }}" alt=""><span
@@ -110,6 +109,7 @@
                     src="{{ URL::asset('/assets/img/icons/note-icon-02.svg') }}" alt=""><span
                     class="pulse"></span> </a>
         </li>
+        {{--}}
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="javascript:;" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">

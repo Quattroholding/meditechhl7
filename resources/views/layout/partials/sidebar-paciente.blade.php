@@ -6,13 +6,12 @@
                 <li class="menu-title">Menú</li>
                 <li>
                     <a class="{{ Request::is('dashboard/patient') ? 'active' : '' }}"  href="{{ route('patient.dashboard') }}">
-                        <span class="menu-side"> <img  src="{{ URL::asset('/assets/img/icons/menu-icon-01.svg') }}" alt=""></span>&nbsp;
+                        <span class="menu-side"> <i class="fa fa-chart-bar"></i></span>&nbsp;
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
+                    <a href="javascript:;"><span class="menu-side"><i class="fa fa-calendar-alt"></i></span>
                         <span>  {{ __('appointment.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ url('appointments') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
@@ -21,7 +20,7 @@
                 </li>
                 <li class="submenu">
                     <a href="javascript:;">
-                        <span class="menu-side"> <img  src="{{ URL::asset('/assets/img/icons/icono-consulta.svg') }}" alt=""></span>
+                        <span class="menu-side"> <i class="fa fa-stethoscope"></i></span>
                         <span>  {{ __('encounter.titles') }} </span>
                         <span class="menu-arrow"></span>
                     </a>
@@ -32,7 +31,7 @@
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
-                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-07.svg') }}" alt=""></span>
+                            <i class="fa fa-file-invoice-dollar"></i></span>
                         <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
@@ -42,19 +41,19 @@
                 </li>
                 <li>
                     <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
-                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>&nbsp;
+                        <span class="menu-side"><i class="fa fa-user-injured"></i></span>&nbsp;
                         <span>{{ __('patient.medical_directory') }}</span>
                     </a>
                 </li>
                 <li>
                     <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
-                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-13.svg') }}" alt=""></span>&nbsp;
+                        <span class="menu-side"><i class="fa fa-file-medical"></i></span>&nbsp;
                         <span>{{ __('patient.medical_history') }}</span>
                     </a>
                 </li>
                 <li>
                     <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/profile') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
-                        <span class="menu-side"><img  src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>&nbsp;
+                        <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
                         <span>{{ __('patient.profile') }}</span>
                     </a>
                 </li>
@@ -62,7 +61,7 @@
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">
                     <span class="menu-side">
-                        <img src="{{ URL::asset('/assets/img/icons/logout.svg') }}" alt=""></span>
+                        <i class="fa fa-sign-out-alt"></i></span>
                     <span>{{__('Cerrar sesión')}}</span>
                 </a>
             </div>

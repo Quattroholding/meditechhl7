@@ -1,11 +1,11 @@
-sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="menu-title">Menú</li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
-                            <img  src="{{ URL::asset('/assets/img/icons/menu-icon-01.svg') }}" alt=""></span>
+                            <i class="fa fa-chart-bar"></i></span>
                             <span> Dashboard </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
@@ -14,7 +14,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 </li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
-                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-08.svg') }}" alt=""></span>
+                            <i class="fa fa-hospital"></i></span>
                             <span> {{ __('client.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('clients') ? 'active' : '' }}" href="{{ route('client.index') }}">{{ __('generic.list') }} {{ __('client.titles') }}  </a></li>
@@ -27,7 +27,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 </li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
-                        <img  src="{{ URL::asset('/assets/img/icons/menu-icon-03.svg') }}" alt=""></span>
+                        <i class="fa fa-user-injured"></i></span>
                         <span>{{ __('patient.titles') }} </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
@@ -36,8 +36,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-04.svg') }}" alt=""></span>
+                    <a href="javascript:;"><span class="menu-side"><i class="fa fa-calendar-alt"></i></span>
                         <span>  {{ __('appointment.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ url('appointments') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
@@ -61,7 +60,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 {{--}}
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
-                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
+                            <i class="fa fa-cogs"></i></span>
                         <span> Configuraciones </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
@@ -71,7 +70,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 </li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
-                            <img src="{{ URL::asset('/assets/img/icons/menu-icon-08.svg') }}" alt=""></span>
+                            <i class="fa fa-hospital"></i></span>
                         <span> Usuarios </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('users') ? 'active' : '' }}"  href="{{ route('user.index') }}">{{ __('generic.list') }} {{ __('user.titles') }}</a></li>
@@ -94,7 +93,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 </li>
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-07.svg') }}" alt=""></span>
+                                src="{{ URL::asset('/assets/img/icons/medical-billing.svg') }}" alt=""></span>
                         <span> Accounts </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('invoices','create-invoice','edit-invoice','invoice-view') ? 'active' : '' }}"
@@ -122,7 +121,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                 </li>
                 <li>
                     <a class="{{ Request::is('chat') ? 'active' : '' }}" href="{{ url('chat') }}"><span
-                            class="menu-side"><img src="{{ URL::asset('/assets/img/icons/menu-icon-10.svg') }}"
+                            class="menu-side"><i class="fa fa-comments"></i>
                                 alt=""></span>
                         <span>Chat</span></a>
                 </li>
@@ -222,7 +221,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
                         ? 'active'
                         : '' }}"
                         href="{{ url('settings') }}"><span class="menu-side"><img
-                                src="{{ URL::asset('/assets/img/icons/menu-icon-16.svg') }}" alt=""></span>
+                                src="{{ URL::asset('/assets/img/icons/medical-settings.svg') }}" alt=""></span>
                         <span>Settings</span></a>
                 </li>
                 <li class="menu-title">UI Elements</li>
@@ -322,7 +321,7 @@ sidebar-doctor.blade.php<div class="sidebar" id="sidebar">
             <div class="logout-btn">
                 <a href="{{ url('login') }}">
                     <span class="menu-side">
-                        <img src="{{ URL::asset('/assets/img/icons/logout.svg') }}" alt=""></span>
+                        <i class="fa fa-sign-out-alt"></i></span>
                     <span>Logout</span>
                 </a>
             </div>

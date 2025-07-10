@@ -24,6 +24,10 @@ class Client extends BaseModel
         return $this->hasMany(Branch::class);
     }
 
+    public function theme(){
+        return $this->hasOne(ClientTheme::class);
+    }
+
     public function getFullNameAttribute($attr) {
         return $attr->name; //Change the format to whichever you desire
     }

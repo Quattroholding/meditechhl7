@@ -266,6 +266,8 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), fu
 
     Route::get('/{practitioner_id}/signature_and_seal', [SettingController::class, 'uploadSignatureSeal'])->name('setting.signature_and_seal');
 
+    Route::get('/theme/{client_id}', [SettingController::class, 'themeManager'])->name('setting.theme_manager');
+
 });
 
 Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']), function() {

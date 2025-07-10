@@ -1006,7 +1006,6 @@ textarea.form-control {
 	color: #2e37a4;
 }
 .menu-title {
-	color: #333;
 	font-size: 15px;
 	font-weight: 500;
 	padding: 12px 20px;
@@ -1016,7 +1015,6 @@ textarea.form-control {
 	line-height: 40px;
 }
 .sidebar-menu li.menu-title a {
-	color: #009efb;
 	display: inline-block;
 	float: right;
 	padding: 0;

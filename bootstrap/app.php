@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
+
+        // Agregar middleware de tema del cliente a todas las rutas web
+        /*$middleware->web(append: [
+            \App\Http\Middleware\InjectClientTheme::class,
+        ]);*/
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

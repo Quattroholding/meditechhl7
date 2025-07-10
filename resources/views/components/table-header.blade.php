@@ -16,10 +16,13 @@ if(!isset($show_create)) $show_create=true;
                     </div>
                     @if($show_create)
                     <div class="add-group">
-                        <a href="{{ $li_1 }}" class="btn btn-primary add-pluss ms-2" title="{{__('generic.new')}}">
-                            <img src="{{ URL::asset('/assets/img/icons/plus.svg') }}" alt="{{__('generic.new')}}">
+                        <a href="{{ $li_1 }}" class="btn btn-light add-pluss ms-2 py-2" title="{{__('generic.new')}}">
+
+                            <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}}
                         </a>
-                        <a href="#" class="btn btn-primary doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
+                        {{--}}
+                        <a href="#" class="btn btn-light doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
+                        {{--}}
                     </div>
                     @endif
                 </div>

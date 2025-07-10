@@ -1422,7 +1422,7 @@ textarea {
 .selector-items {
 
     position: absolute;
-    top: 50px;
+    top: 75px;
     left: 0px;
     max-height: 132px;
     overflow-y: scroll;

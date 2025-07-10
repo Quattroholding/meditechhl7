@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\ServiceRequest;
+use App\Models\ClientTheme;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -35,6 +36,9 @@ class MedicalDocumentController extends Controller
                 ], 400);
             }
 
+            // Obtener el cliente del encounter
+            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
+            
             // Preparar datos para la vista
             $data = [
                 'encounter' => $encounter,
@@ -44,6 +48,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
                 'prescriptionNumber' => 'RX-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             // Generar PDF
@@ -87,6 +92,9 @@ class MedicalDocumentController extends Controller
             }
 
 
+            // Obtener el cliente del encounter
+            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
+            
             // Preparar datos para la vista
             $data = [
                 'encounter' => $encounter,
@@ -96,6 +104,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
                 'orderNumber' => 'OM-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             // Generar PDF
@@ -146,6 +155,7 @@ class MedicalDocumentController extends Controller
 
             // Obtener el encounter principal (del primer medicamento)
             $encounter = $medications->first()->encounter;
+            $client = $encounter?->appointment?->client ?? $medications->first()->practitioner?->user?->clients?->first();
 
             // Preparar datos para la vista
             $data = [
@@ -156,6 +166,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter ? $encounter->diagnoses : collect([]),
                 'date' => Carbon::now(),
                 'prescriptionNumber' => 'RX-CUSTOM-' . date('Ymd_His'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             // Generar PDF
@@ -206,6 +217,7 @@ class MedicalDocumentController extends Controller
 
             // Obtener el encounter principal (del primer servicio)
             $encounter = $services->first()->encounter;
+            $client = $encounter?->appointment?->client ?? $services->first()->practitioner?->user?->clients?->first();
 
             // Preparar datos para la vista
             $data = [
@@ -216,6 +228,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter ? $encounter->diagnoses : collect([]),
                 'date' => Carbon::now(),
                 'orderNumber' => 'OM-CUSTOM-' . date('Ymd_His'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             // Generar PDF
@@ -254,6 +267,8 @@ class MedicalDocumentController extends Controller
                 abort(400, 'Este encuentro no tiene medicamentos prescritos.');
             }
 
+            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
+            
             $data = [
                 'encounter' => $encounter,
                 'patient' => $encounter->patient,
@@ -262,6 +277,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
                 'prescriptionNumber' => 'RX-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             return view('documents.prescription', $data);
@@ -290,6 +306,8 @@ class MedicalDocumentController extends Controller
                 abort(400, 'Este encuentro no tiene servicios solicitados.');
             }
 
+            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
+            
             $data = [
                 'encounter' => $encounter,
                 'patient' => $encounter->patient,
@@ -298,6 +316,7 @@ class MedicalDocumentController extends Controller
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
                 'orderNumber' => 'OM-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             return view('documents.medical-order', $data);
@@ -305,5 +324,23 @@ class MedicalDocumentController extends Controller
         } catch (\Exception $e) {
             abort(500, 'Error al mostrar la orden médica: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Obtener CSS del tema del cliente para PDFs
+     */
+    private function getClientThemeCSS($client): string
+    {
+        if (!$client) {
+            return '';
+        }
+
+        $theme = ClientTheme::getActiveForClient($client->id);
+        
+        if (!$theme) {
+            return '';
+        }
+
+        return $theme->generatePdfCSS();
     }
 }
