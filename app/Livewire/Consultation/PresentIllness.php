@@ -12,7 +12,7 @@ class PresentIllness extends Component
     public $reason;
     public $encounter_id;
     public $encounter;
-    public $location;
+    public $location=[];
     public $severity;
     public $duration;
     public $timing;
@@ -30,13 +30,21 @@ class PresentIllness extends Component
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
         $this->present_illness = $this->encounter->presentIllnesses;
-        $arr =['location'=>'Ubicación','severity'=>'Gravedad','duration'=>'Duración','timing'=>'Momento'];
+        $this->loadPressentIllness();
+    }
 
+    public function loadPressentIllness(){
+        $arr =['location'=>'Ubicación','severity'=>'Gravedad','duration'=>'Duración','timing'=>'Momento'];
+        $this->location=array();
         foreach ($arr as $key=>$value){
             $this->items[$key]['title'] =$value;
             $this->items[$key]['items'] = PresentIllnesType::whereType($key)->get();
             if($this->present_illness){
-                $this->$key =  $this->encounter->presentIllnesses->$key;
+                if($key=='location'){
+                    $this->location[$key] =  $this->encounter->presentIllnesses->locations;
+                }else{
+                    $this->$key =  $this->encounter->presentIllnesses->$key;
+                }
             }
         }
 
@@ -46,11 +54,9 @@ class PresentIllness extends Component
             $this->alleviating_factors = $this->present_illness->alleviating_factors;
             $this->associated_symptoms = $this->present_illness->associated_symptoms;
         }
-
     }
 
-    public function render()
-    {
+    public function render(){
         return view('livewire.consultation.present-illness');
     }
 
@@ -77,24 +83,47 @@ class PresentIllness extends Component
         if(!isset($this->encounter->presentIllnesses->fhir_id)){
           $this->create();
         }else{
+            $locations = null;
+            if($type=='location'){
+                $locations  = $this->encounter->presentIllnesses->addLocationIfMissing($this->location);
+                $this->encounter->presentIllnesses->locations =$locations;
+            }
 
             $this->encounter->presentIllnesses->location = $this->location;
-            $this->encounter->presentIllnesses->extension = array_merge((array)json_decode($this->encounter->presentIllnesses->extension),['location'=>$this->location]);
             $this->encounter->presentIllnesses->severity = $this->severity;
             $this->encounter->presentIllnesses->duration = $this->duration;
             $this->encounter->presentIllnesses->timing = $this->timing;
             $this->encounter->presentIllnesses->save();
+
         }
+
+        $this->loadPressentIllness();
     }
+
+    public function delete($type,$value){
+
+        $locations =array();
+        foreach ($this->encounter->presentIllnesses->locations as $l){
+            if($l<>$value) $locations[]=$l;
+        }
+
+        $this->encounter->presentIllnesses->locations =$locations;
+        $this->encounter->presentIllnesses->save();
+        $this->loadPressentIllness();
+    }
+
     public function updatedDescription(){
         $this->savedDescription = false;
     }
+
     public function updatedAggravatingFactors(){
         $this->savedAggravatingFactors = false;
     }
+
     public function updatedAlleviatingFactors(){
         $this->savedAlleviatingFactors = false;
     }
+
     public function updatedAssociatedSymptoms(){
         $this->savedAssociatedSymptoms = false;
     }
@@ -119,6 +148,7 @@ class PresentIllness extends Component
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
+
     public function saveAggravatingFactors(){
 
         $this->savedAggravatingFactors = false;
@@ -139,6 +169,7 @@ class PresentIllness extends Component
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
+
     public function saveAlleviatingFactors(){
 
         $this->savedAlleviatingFactors = false;
@@ -159,6 +190,7 @@ class PresentIllness extends Component
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
+
     public function saveAssociatedSymptoms(){
 
         $this->savedAssociatedSymptoms = false;

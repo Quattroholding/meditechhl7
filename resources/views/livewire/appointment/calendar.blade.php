@@ -217,4 +217,18 @@
             </div>
         </div>
     @endif
+    <script>
+
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastr', (event) => {
+                event.preventDefault();
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+        </script>
 </div>

@@ -10,14 +10,17 @@
                             $pic = str_replace('(','',$pic);
                             $pic = str_replace(')','',$pic);
                             $pic = str_replace('/','',$pic);
-                             $pic = str_replace('-','',$pic);
+                            $pic = str_replace('-','',$pic);
                         @endphp
-                        <div @if($key=='location')
-                                wire:click="save('{{$key}}','{{$i->value}}',true)"
+                        <div @if($key=='location' && is_array($this->$key['location']) && (in_array($i->value,$this->$key['location']) or in_array($i->value_esp,$this->$key['location'])))
+                                class="sel-list-item   location-active"
+                                wire:click="delete('{{$key}}','{{$i->value}}')"
+                            @elseif(in_array($this->$key,[$i->value,$i->value_esp]))
+                                 class="sel-list-item   location-active"
                             @else
-                                wire:click="save('{{$key}}','{{$i->value}}')"
-                            @endif
-                            class="sel-list-item @if(in_array($this->$key,[$i->value,$i->value_esp])) location-active @endif">
+                                 class="sel-list-item"
+                                 wire:click="save('{{$key}}','{{$i->value}}')"
+                            @endif>
                             <div>
                                 <img src="/items/{{$pic}}.png" style="width:60px">
                             </div>

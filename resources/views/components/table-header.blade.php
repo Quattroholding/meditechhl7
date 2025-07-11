@@ -15,8 +15,8 @@ if(!isset($show_create)) $show_create=true;
                         </form>
                     </div>
                     @if($show_create)
-                    <div class="add-group">
-                        <a href="{{ $li_1 }}" class="btn btn-light add-pluss ms-2 py-2" title="{{__('generic.new')}}">
+                    <div class="">
+                        <a href="{{ $li_1 }}" class="btn btn-primary submit-form me-2 add-pluss ms-2 py-2" title="{{__('generic.new')}}">
 
                             <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}}
                         </a>

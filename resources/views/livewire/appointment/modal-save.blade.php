@@ -76,53 +76,40 @@
                         <textarea wire:model="description" class="form-control-full" rows="3" placeholder="Describir el motivo de la consulta">{{$description}}</textarea>
                         <x-input-error :messages="$errors->get('description')"/>
                     </div>
-                    {{--}}
-                    <div class="form-group">
-                        <label class="form-label">Notas Adicionales</label>
-                        <textarea wire:model="notes" class="form-control-full" rows="2" placeholder="Notas adicionales"></textarea>
-                        @error('notes') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
-                    </div>
-                    @if($appointment)
-                        <div class="form-group">
-                            <label class="form-label">Estado de la Cita</label>
-                            <div class="status-buttons">
-                                <button type="button" wire:click="$set('status', 'booked')" class="status-btn appointment-booked {{ $status === 'booked' ? 'active' : '' }}">Programada</button>
-
-                                <button type="button" wire:click="$set('status', 'arrived')" class="status-btn appointment-arrived {{ $status === 'arrived' ? 'active' : '' }}">Llegada</button>
-
-                                <button type="button" wire:click="$set('status', 'checked-in')" class="status-btn appointment-checked-in {{ $status === 'checked-in' ? 'active' : '' }}">En Progreso</button>
-
-                                <button type="button" wire:click="$set('status', 'fulfilled')" class="status-btn appointment-fulfilled {{ $status === 'fulfilled' ? 'active' : '' }}">Completada</button>
-                                <button type="button" wire:click="$set('status', 'cancelled')" class="status-btn appointment-cancelled {{ $status === 'cancelled' ? 'active' : '' }}">Cancelada</button>
-                                <button type="button" wire:click="$set('status', 'no-show')" class="status-btn appointment-noshow {{ $status === 'no-show' ? 'active' : '' }}">No Asistió</button>
-                            </div>
-                        </div>
-                    @endif
-                     {{--}}
                     <div style="margin-top: 30px; display: flex; gap: 15px;">
                         @if(auth()->user()->can('edit',$appointment) or !$appointment)
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
                                 {{ $buttonSaveTitle }}
                             </button>
                         @endif
-                        <button type="button" wire:click="closeModal" class="btn btn-secondary">Cancelar</button>
+                        <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>
                         @if(auth()->user()->can('cancelled',$appointment))
-                            <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" onclick="return confirm('¿Está seguro de eliminar esta cita?')">Eliminar</button>
+                            <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" onclick="return confirm('¿Está seguro de eliminar esta cita?')">{{__('generic.delete')}}</button>
                         @endif
                     </div>
                 </form>
             </div>
         </div>
     @endif
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('debug', {
+                    log(message) {
+                        console.log(message);
+                    }
+                });
+            });
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('showToastr', (event) => {
+                    event.preventDefault();
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                });
+            });
+        </script>
 </div>
-@push('scripts')
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('debug', {
-            log(message) {
-                console.log(message);
-            }
-        });
-    });
-</script>
-@endpush
+

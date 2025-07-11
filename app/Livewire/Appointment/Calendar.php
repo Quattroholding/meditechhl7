@@ -236,9 +236,6 @@ class Calendar extends Component
         $this->dispatch('editAppointmentModal',$appointmentId);
     }
 
-
-
-
     public function updateStatus($appointmentId, $newStatus)
     {
 

@@ -203,6 +203,10 @@ class ModalSave extends Component
                 //$this->closeModal();
                 //session()->flash('message.error', 'El doctor no está disponible en ese horario.');
                 $this->dispatch('cita-message', message: 'El doctor no está disponible en ese horario.');
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'El doctor no está disponible en ese horario.' ,
+                );
                 return;
             }
 
@@ -214,7 +218,12 @@ class ModalSave extends Component
                     $this->appointment->notifyPatientAboutConfirmation();
                 }
 
-                session()->flash('message.success', 'Cita actualizada exitosamente.');
+                session()->flash('message.success','Cita actualizada exitosamente.');
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: 'Cita actualizada exitosamente.',
+                );
+
             } else {
                 // Crear nueva cita
 
@@ -225,6 +234,10 @@ class ModalSave extends Component
                     $app->notifyPractitionerAboutProposal();
                 }
                 session()->flash('message.success', 'Cita creada exitosamente.');
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: 'Cita creada exitosamente.',
+                );
             }
 
             $this->closeModal();
@@ -233,7 +246,12 @@ class ModalSave extends Component
 
         } catch (\Exception $e) {
             $this->closeModal();
-            session()->flash('message.error', 'Error al guardar la cita: ' . $e->getMessage());
+            session()->flash('message.error','Error al guardar la cita: ' . $e->getMessage());
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al guardar la cita: ' . $e->getMessage(),
+            );
+
         }
     }
 

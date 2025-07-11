@@ -18,7 +18,8 @@ class PresentIllness extends Model
         'aggravating_factors' => 'string',
         'alleviating_factors' => 'string',
         'associated_symptoms' => 'string',
-        'timeline' => 'array'
+        'timeline' => 'array',
+        'locations' => 'array',
     ];
 
     // Relaciones
@@ -40,5 +41,18 @@ class PresentIllness extends Model
     public function symptoms(): HasMany
     {
         return $this->hasMany(PresentIllnessSymptom::class);
+    }
+
+    public function addLocationIfMissing(string $value): array
+    {
+        $locations = collect($this->locations)->flatten();
+        $result = $locations->values()->all(); // guardar como array
+
+        if (! $locations->contains($value)) {
+            $locations->push($value);
+            $result = $locations->values()->all(); // guardar como array
+        }
+
+        return $result;
     }
 }
