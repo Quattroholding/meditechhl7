@@ -9,12 +9,12 @@ class SettingController extends Controller
 {
     public function consultationTemplate()
     {
-        return view('settings.consultation-template');
+        return view('settings.consultation.create');
     }
 
     public function rapidAccess()
     {
-        return view('settings.rapid-access');
+        return view('settings.rapidAccess.create');
     }
 
     public function cptUser()
@@ -24,12 +24,12 @@ class SettingController extends Controller
 
     public function workingHourUser()
     {
-        return view('settings.working-hour-user');
+        return view('settings.working_hour.create');
     }
 
     public function createUserProcedure()
     {
-        return view('settings.user-procedures');
+        return view('settings.procedures.create');
     }
 
     public function uploadSignatureSeal($practitioner_id)
