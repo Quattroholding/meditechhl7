@@ -75,6 +75,8 @@ class User extends Authenticatable
             $prefix='Dr ';
             if($this->practitioner->gender =='female')
                 $prefix='Dra ';
+        }else{
+            $prefix='';
         }
 
         return $prefix.$this->first_name . ' ' . $this->last_name;
