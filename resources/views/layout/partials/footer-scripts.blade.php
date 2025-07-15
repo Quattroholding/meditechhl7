@@ -72,3 +72,8 @@
 <script src="{{ URL::asset('/assets/js/app.js') }}"></script>
 
 <script src="{{ URL::asset('/assets/js/custom.js?time='.time()) }}"></script>
+
+<!-- Dashboard Animations JS -->
+@if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
+<script src="{{ URL::asset('/assets/js/dashboard-animations.js?time='.time()) }}"></script>
+@endif

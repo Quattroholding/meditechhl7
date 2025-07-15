@@ -34,7 +34,7 @@
                                 <th><x-table-sort-button title="{{__('appointment.consultorio')}}" columnName=""/></th>
                                 <th><x-table-sort-button title="{{__('appointment.date')}}" columnName="appointments.start" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('appointment.time')}}" columnName=""/></th>
-                                <th></th>
+                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
                             </tr>
                             </thead>
                             <tbody>

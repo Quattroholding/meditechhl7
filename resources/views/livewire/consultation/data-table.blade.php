@@ -23,7 +23,7 @@
                                 <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.status')">{{__('encounter.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.start')">{{__('encounter.day')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
                                 <th>{{__('encounter.time')}}</th>
-                                <th></th>
+                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
                             </tr>
                             </thead>
                             <tbody>

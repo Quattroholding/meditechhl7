@@ -12,10 +12,22 @@ class NewPatients extends Component
     public $percentageChange;
     public $statusClass;
     public $icon;
-    
-     public function mount()
+    public $order;
+    public $isLoading = true;
+
+    public function mount()
+    {
+        // Inicializar variables para evitar errores
+        $this->patients = 0;
+        $this->percentageChange = 0;
+        $this->statusClass = 'status-green';
+        $this->icon = 'sort-icon-01.svg';
+    }
+
+    public function loadData()
     {
         $this->getNewPatients();
+        $this->isLoading = false;
     }
     public function render()
     {
@@ -23,7 +35,7 @@ class NewPatients extends Component
     }
 
     public function getNewPatients(){
-        
+
         $currentMonth = Carbon::now()->month;
         $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $currentYear = Carbon::now()->year;

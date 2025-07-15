@@ -1,0 +1,214 @@
+/* ===================================
+   DASHBOARD ANIMATIONS
+   =================================== */
+
+/* Animación para el bloque good-morning */
+.good-morning-blk {
+    display: none; /* Oculto por defecto */
+    opacity: 0;
+    transform: translateY(20px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.good-morning-blk.show-animation {
+    display: block !important;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.good-morning-blk.fade-out {
+    animation: fadeOutUp 2s ease-in forwards;
+}
+
+/* Keyframes para fade in/out */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Animación de máquina de escribir para el saludo */
+.typewriter-text {
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    /* Inicializar completamente oculto */
+    opacity: 0;
+    border-right: none;
+}
+
+.typewriter-text.ready {
+    /* Mostrar solo el cursor cuando está listo para escribir */
+    opacity: 1;
+    color: transparent;
+    border-right: 2px solid;
+    border-color: var(--sidebar-text-color, var(--primary-color, #3498db));
+    animation: blink 1.2s infinite;
+}
+
+.typewriter-text.typing {
+    /* Estado durante la escritura */
+    border-right: 2px solid;
+    border-color: var(--sidebar-text-color, var(--primary-color, #3498db));
+    animation: blink 1.2s infinite;
+    opacity: 1;
+    color: inherit;
+}
+
+.typewriter-text.finished {
+    border-right: none;
+    animation: none;
+    opacity: 1;
+    color: inherit;
+}
+
+/* Cursor parpadeante */
+@keyframes blink {
+    0%, 50% {
+        border-color: var(--sidebar-text-color, var(--primary-color, #3498db));
+    }
+    51%, 100% {
+        border-color: transparent;
+    }
+}
+
+/* Animación sutil para la imagen de morning */
+.morning-img img {
+    animation: floatImage 3s ease-in-out infinite;
+}
+
+@keyframes floatImage {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Ocultar todo el contenido dashboard-init por defecto */
+.dashboard-init {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(30px) !important;
+    transition: all 0.8s ease-out;
+    pointer-events: none; /* Evitar interacciones mientras está oculto */
+}
+
+.dashboard-init.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto;
+}
+
+/* Ocultar widgets por defecto hasta que termine typewriter (fallback) */
+.dashboard-widgets-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+}
+
+.dashboard-widgets-hidden.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Efecto de slide-in para los contadores después del typewriter */
+.dashboard-counters {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.dashboard-counters.animate-in {
+    animation: slideInUp 0.8s ease-out forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación para cards individuales */
+.dashboard-card {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.dashboard-card.animate-in {
+    animation: slideInLeft 0.6s ease-out forwards;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Stagger animation para múltiples cards */
+.dashboard-card:nth-child(1) { animation-delay: 0.2s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.4s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.6s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.8s; }
+.dashboard-card:nth-child(5) { animation-delay: 1.0s; }
+.dashboard-card:nth-child(6) { animation-delay: 1.2s; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .good-morning-blk {
+        text-align: center;
+    }
+    
+    .morning-img img {
+        max-width: 200px;
+        animation: none; /* Disable float on mobile */
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .typewriter-text {
+        border-color: var(--primary-color, #5dade2);
+    }
+    
+    @keyframes blink {
+        0%, 50% {
+            border-color: var(--primary-color, #5dade2);
+        }
+        51%, 100% {
+            border-color: transparent;
+        }
+    }
+}

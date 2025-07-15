@@ -53,3 +53,8 @@
 
  <link rel="stylesheet" type="text/css" href="{{ url('styles/default.css?time='.time()) }}">
 
+<!-- Dashboard Animations CSS -->
+@if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
+<link rel="stylesheet" type="text/css" href="{{ url('assets/css/dashboard-animations.css?time='.time()) }}">
+@endif
+

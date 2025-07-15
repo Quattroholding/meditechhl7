@@ -15,9 +15,22 @@ class OldPatients extends Component
     public $icon;
     public $oldPatients;
     public $allOldPatients;
+    public $order;
+    public $isLoading = true;
 
     public function mount(){
+        // Inicializar variables para evitar errores
+        $this->oldPatients = 0;
+        $this->allOldPatients = 0;
+        $this->percentageChange = 0;
+        $this->statusClass = 'status-green';
+        $this->icon = 'sort-icon-01.svg';
+    }
+
+    public function loadData()
+    {
         $this->getOldPatients();
+        $this->isLoading = false;
     }
 
     public function render()

@@ -28,7 +28,7 @@ class LoginController extends Controller
 
             auth()->getUser()->getCurrentClient();
 
-            return redirect()->intended($route);
+            return redirect()->intended($route."?show_salute=true");
         }
 
         return back()->withErrors([

@@ -30,6 +30,7 @@
                                 <th><x-table-sort-button title="{{__('patient.full_id_number')}}" columnName="patients.identifier" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('patient.email')}}" columnName="patients.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('patient.whatsapp')}}" columnName="patients.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
                             </tr>
                             </thead>
                             <tbody>

@@ -19,13 +19,13 @@
                             <thead {{--}}class="thead-light"{{--}}>
                             <tr>
                                 <th><x-table-sort-button title="ID" columnName="identifier" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th>{{ __('invoice.type') }}</th>
+                                <th><x-table-sort-button title="{{ __('invoice.type') }}" columnName=""></x-table-sort-button></th>
                                 <th><x-table-sort-button title="{{__('invoice.created_at')}}" columnName="created_at" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th>{{ __('invoice.bill_to') }}</th>
+                                <th><x-table-sort-button title="{{ __('invoice.bill_to') }}" columnName=""/></th>
                                 <th><x-table-sort-button title="{{__('invoice.amount')}}" columnName="total_amount" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('invoice.due_date')}}" columnName="due_date" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th>{{ __('invoice.statuss') }}</th>
-                                <th></th>
+                                <th><x-table-sort-button title="{{ __('invoice.statuss') }}" columnName=""></x-table-sort-button></th>
+                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
                             </tr>
                             </thead>
                             <tbody>

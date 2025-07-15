@@ -71,7 +71,13 @@ class User extends Authenticatable
     }
 
     public function getFullNameAttribute() {
-        return $this->first_name . ' ' . $this->last_name;
+        if($this->hasRole('doctor')){
+            $prefix='Dr ';
+            if($this->practitioner->gender =='female')
+                $prefix='Dra ';
+        }
+
+        return $prefix.$this->first_name . ' ' . $this->last_name;
     }
 
     public function clients(){ return $this->belongsToMany(Client::class,'user_clients'); }
@@ -94,13 +100,20 @@ class User extends Authenticatable
 
     public function getProfileNameAttribute(){
 
+        $prefix='';
         $path = url('assets/img/profiles/avatar-02.jpg');
         if($this->profile_picture) $path = url('storage/'.$this->profile_picture);
+
+        if($this->hasRole('doctor')){
+            $prefix='Dr ';
+            if($this->practitioner->gender =='female')
+             $prefix='Dra ';
+        }
 
         return '<div class="profile-image">
                   <a href="'.url('patient/'.$this->id.'/pofile').'" >
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
-                                        '.$this->first_name.' '.$this->last_name.'
+                                        '.$prefix.$this->first_name.' '.$this->last_name.'
                                     </a>
                     </div>';
     }

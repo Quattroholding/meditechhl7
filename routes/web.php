@@ -62,7 +62,7 @@ Route::get('/autologin', function () {
     if($user)
         Auth::login($user);
 
-    return redirect($route);
+    return redirect($route."?show_salute=true");
 
 
 })->name('autologin');

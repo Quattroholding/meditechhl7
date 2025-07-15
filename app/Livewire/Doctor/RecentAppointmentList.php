@@ -13,10 +13,20 @@ class RecentAppointmentList extends Component
     public $appointment_time;
     public $modalTitle;
     public $showModal;
-    protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
+    public $order;
+    public $isLoading = true;
+    //protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
+
     public function mount()
     {
-       $this->loadAppointments();
+        // Inicializar variables para evitar errores
+        $this->appointments = collect();
+    }
+
+    public function loadData()
+    {
+        $this->loadAppointments();
+        $this->isLoading = false;
     }
 
     // app/Http/Livewire/AppointmentList.php

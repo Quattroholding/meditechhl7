@@ -24,6 +24,53 @@
         .btn-complete { background: #27ae60; color: white; }
         .btn-cancel { background: #e8536e; color: white; }
         .btn-edit { background: #9b59b6; color: white; }
+
+        /* Loading skeleton styles */
+        .loading-skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-appointment-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .skeleton-time {
+            width: 60px;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+
+        .skeleton-patient-info {
+            flex: 1;
+        }
+
+        .skeleton-name {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            width: 70%;
+        }
+
+        .skeleton-status {
+            height: 14px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 40%;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -48,12 +95,33 @@
         });
     </script>
     <div  class="card flex-fill comman-shadow" >
-        <div class="card-header">
-            <h4 class="card-title d-inline-block" style="color: white">{{__('Citas para hoy')}}</h4>
-            <button wire:click="openModal" class="btn btn-success float-end">+ Nueva Cita</button>
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">
+                <i class="fas fa-calendar-alt me-2" style="color: var(--primary-color, #3498db);"></i>
+                {{__('Citas para hoy')}}
+            </h4>
+            <div class="dropdown">
+                <button wire:click="openModal" class="btn btn-success float-end">+ Nueva Cita</button>
+            </div>
         </div>
+
         <div class="card-body" >
-            @if ($appointments->isEmpty())
+            @if($isLoading)
+                <div class="loading-skeleton">
+                    <div class="skeleton-list">
+                        @for($i = 0; $i < 5; $i++)
+                            <div class="skeleton-appointment-item mb-3">
+                                <div class="skeleton-time"></div>
+                                <div class="skeleton-patient-info">
+                                    <div class="skeleton-name"></div>
+                                    <div class="skeleton-status"></div>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+            @elseif ($appointments->isEmpty())
             <p class="px-2">{{__('Sin citas programadas para hoy')}}</p>
             @else
             <ul class="teaching-card">
@@ -189,8 +257,10 @@
             @endif
         </div>
     </div>
+
 <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
                                  :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
+
 </div>
 
 

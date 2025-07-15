@@ -17,6 +17,7 @@
                 <th class="@if(strtolower($column)=='acciones') text-end @endif"><x-table-sort-button
                      title="{{ __($route_name.'.'.$column) }}" columnName="{{ $column }}" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
             @endforeach
+                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
         </tr>
         </thead>
         <tbody>

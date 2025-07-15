@@ -78,6 +78,10 @@ class ModalSave extends Component
 
     }
 
+    public function loadData(){
+
+    }
+
     public function render()
     {
         if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
