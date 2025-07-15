@@ -12,6 +12,7 @@ class PatientHead extends Component
 {
     use WithFileUploads;
     public $data;
+    public $showModal;
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
 

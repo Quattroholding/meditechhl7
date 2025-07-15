@@ -396,6 +396,8 @@ class DashboardAnimations {
             top: 0,
             behavior: 'smooth'
         });
+
+        this.rest
     }
 
     /**
@@ -490,9 +492,9 @@ document.addEventListener('click', (e) => {
 document.addEventListener('livewire:navigated', () => {
     // NO reiniciar automáticamente porque interfiere con las animaciones de login
     console.log('Livewire navigated - skipping auto-restart to avoid interfering with login animations');
-    // setTimeout(() => {
-    //     DashboardAnimations.restart();
-    // }, 100);
+     setTimeout(() => {
+         DashboardAnimations.restart();
+     }, 10000);
 });
 
 // Compatibility con Turbo/Hotwire

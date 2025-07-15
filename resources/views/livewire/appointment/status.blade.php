@@ -40,7 +40,7 @@
     @endif
     <script>
     document.addEventListener('livewire:initialized', () => {
-        Livewire.on('showToastr{{$appointment->id}}', (event) => {
+        Livewire.on('showToastrStatus{{$appointment->id}}', (event) => {
             console.log('aqui :'+event);
             toastr[event.type](event.message, '', {
                 closeButton: true,

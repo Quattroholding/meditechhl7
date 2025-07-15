@@ -35,14 +35,15 @@ class Status extends Component
         if($current_status=='proposed' && $newStatus=='booked'){
             $this->appointment->notifyPatientAboutConfirmation();
 
-            $this->dispatch('showToastr'.$this->appointment_id,
+            $this->dispatch('showToastrStatus'.$this->appointment_id,
                 type: 'success',
                 message: '¡Cita confirmada con exito , se envio notificacion al correo del paciente!'
             );
         }
 
         if($newStatus=='checked-in'){
-            $this->dispatch('showToastr'.$this->appointment_id,
+
+            $this->dispatch('showToastrStatus'.$this->appointment_id,
                 type: 'success',
                 message: '¡Espere por favor en unos segundos empezara su consulta!'
             );
