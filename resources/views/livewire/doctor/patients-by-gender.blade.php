@@ -42,7 +42,12 @@
         document.addEventListener('livewire:initialized', () => {
             let chartInstance = null;
             
-            Livewire.on('loadGraph', (data) => {
+            Livewire.on('loadGraph', (data) => { 
+                // Accede a las propiedades del objeto
+                const malePercentage = data[0].male;
+                const femalePercentage = data[0].female;
+                const unknownPercentage = data[0].unknown;
+
                 console.log('🔄 Loading ApexCharts for patients-by-gender...', data);
                 
                 // Esperar a que el DOM esté actualizado y el elemento sea visible
@@ -91,14 +96,14 @@
                             enabled: false
                         },
                         series: [
-                            parseFloat(data.male) || 0, 
-                            parseFloat(data.female) || 0, 
-                            parseFloat(data.unknown) || 0
+                            parseFloat(malePercentage) || 0, 
+                            parseFloat(femalePercentage) || 0, 
+                            parseFloat(unknownPercentage) || 0
                         ],
                         labels: [
-                            'Male (' + (parseFloat(data.male) || 0) + '%)',
-                            'Female (' + (parseFloat(data.female) || 0) + '%)',
-                            'Unknown (' + (parseFloat(data.unknown) || 0) + '%)'
+                            'Male (' + (parseFloat(malePercentage) || 0) + '%)',
+                            'Female (' + (parseFloat(femalePercentage) || 0) + '%)',
+                            'Unknown (' + (parseFloat(unknownPercentage) || 0) + '%)'
                         ],
                         colors: ['#4F8EF7', '#FF6B9D', '#FFC107'],
                         responsive: [{
