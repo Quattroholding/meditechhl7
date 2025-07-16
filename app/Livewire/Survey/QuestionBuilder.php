@@ -57,7 +57,7 @@ class QuestionBuilder extends Component
     public function deleteQuestion($questionId)
     {
         SurveyQuestion::findOrFail($questionId)->delete();
-        session()->flash('message', 'Pregunta eliminada exitosamente.');
+        session()->flash('message.success', 'Pregunta eliminada exitosamente.');
     }
 
     public function saveQuestion()
@@ -78,12 +78,12 @@ class QuestionBuilder extends Component
         if ($this->editingQuestion && $this->questionId) {
             $question = SurveyQuestion::findOrFail($this->questionId);
             $question->update($data);
-            session()->flash('message', 'Pregunta actualizada exitosamente.');
+            session()->flash('message.success', 'Pregunta actualizada exitosamente.');
         } else {
             $maxOrder = SurveyQuestion::where('survey_id', $this->surveyId)->max('order') ?? 0;
             $data['order'] = $maxOrder + 1;
             SurveyQuestion::create($data);
-            session()->flash('message', 'Pregunta agregada exitosamente.');
+            session()->flash('message.success', 'Pregunta agregada exitosamente.');
         }
 
         $this->resetForm();

@@ -32,8 +32,8 @@ class SurveyList extends Component
     {
         $survey = Survey::findOrFail($surveyId);
         $survey->delete();
-        
-        session()->flash('message', 'Encuesta eliminada exitosamente.');
+
+        session()->flash('message.success', 'Encuesta eliminada exitosamente.');
     }
 
     public function render()

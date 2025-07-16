@@ -1,12 +1,5 @@
 <div>
-    @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('message') }}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        </div>
-    @endif
+   @include('partials.message')
 
     <div class="row mb-3">
         <div class="col-md-6">

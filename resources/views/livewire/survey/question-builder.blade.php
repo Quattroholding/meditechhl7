@@ -1,12 +1,5 @@
 <div>
-    @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('message') }}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        </div>
-    @endif
+   @include('partials.message')
 
     <div class="row">
         <div class="col-md-6">
@@ -20,16 +13,16 @@
                     <form wire:submit.prevent="saveQuestion">
                         <div class="form-group">
                             <label for="question_text">Texto de la Pregunta *</label>
-                            <input type="text" wire:model="question_text" 
-                                   class="form-control @error('question_text') is-invalid @enderror" 
+                            <input type="text" wire:model="question_text"
+                                   class="form-control @error('question_text') is-invalid @enderror"
                                    id="question_text" placeholder="Escriba la pregunta aquí">
                             @error('question_text') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="question_type">Tipo de Pregunta *</label>
-                            <select wire:model.live="question_type" 
-                                    class="form-control @error('question_type') is-invalid @enderror" 
+                            <select wire:model.live="question_type"
+                                    class="form-control @error('question_type') is-invalid @enderror"
                                     id="question_type">
                                 @foreach($questionTypes as $type => $label)
                                     <option value="{{ $type }}">{{ $label }}</option>
@@ -42,7 +35,7 @@
                             <div class="form-group">
                                 <label>Opciones de Respuesta</label>
                                 <div class="input-group mb-2">
-                                    <input type="text" wire:model="newOption" class="form-control" 
+                                    <input type="text" wire:model="newOption" class="form-control"
                                            placeholder="Agregar nueva opción">
                                     <div class="input-group-append">
                                         <button type="button" wire:click="addOption" class="btn btn-secondary">
@@ -50,13 +43,13 @@
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 @if(count($options) > 0)
                                     <div class="list-group">
                                         @foreach($options as $index => $option)
                                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                                 {{ $option }}
-                                                <button type="button" wire:click="removeOption({{ $index }})" 
+                                                <button type="button" wire:click="removeOption({{ $index }})"
                                                         class="btn btn-danger btn-sm">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -69,7 +62,7 @@
 
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" wire:model="is_required" 
+                                <input type="checkbox" wire:model="is_required"
                                        class="custom-control-input" id="is_required">
                                 <label class="custom-control-label" for="is_required">
                                     Pregunta obligatoria
@@ -79,7 +72,7 @@
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> 
+                                <i class="fa fa-save"></i>
                                 {{ $editingQuestion ? 'Actualizar' : 'Agregar' }} Pregunta
                             </button>
                             @if($editingQuestion)
@@ -114,7 +107,7 @@
                                             <small class="text-muted">
                                                 Tipo: {{ $questionTypes[$question->question_type] ?? $question->question_type }}
                                             </small>
-                                            
+
                                             @if($question->options && count($question->options) > 0)
                                                 <div class="mt-2">
                                                     <small class="text-muted">Opciones:</small>
@@ -127,11 +120,11 @@
                                             @endif
                                         </div>
                                         <div class="btn-group btn-group-sm ml-2">
-                                            <button wire:click="editQuestion({{ $question->id }})" 
+                                            <button wire:click="editQuestion({{ $question->id }})"
                                                     class="btn btn-warning btn-sm">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button wire:click="deleteQuestion({{ $question->id }})" 
+                                            <button wire:click="deleteQuestion({{ $question->id }})"
                                                     onclick="return confirm('¿Está seguro de eliminar esta pregunta?')"
                                                     class="btn btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>

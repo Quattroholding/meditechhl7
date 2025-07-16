@@ -59,7 +59,7 @@ class SurveyBuilder extends Component
             $this->surveyId = $survey->id;
         }
 
-        session()->flash('message', 'Encuesta guardada exitosamente.');
+        session()->flash('message.success', 'Encuesta guardada exitosamente.');
         $this->dispatch('survey-updated');
     }
 
