@@ -19,6 +19,7 @@ use \App\Http\Controllers\InvoiceController;
 use \App\Http\Controllers\PaymentController;
 use \App\Http\Controllers\MedicalDocumentController;
 use \App\Http\Controllers\FileController;
+use \App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -350,5 +351,14 @@ Route::middleware('auth')->group(function () {
         ->name('practitioner.seal');
 
 });
+
+// Survey Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('surveys', SurveyController::class);
+});
+
+// Public Survey Routes (no authentication required)
+Route::get('/survey/{token}', [SurveyController::class, 'publicForm'])->name('survey.public');
+Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])->name('survey.submit');
 
 

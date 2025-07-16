@@ -72,6 +72,17 @@
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
+                            <i class="fa fa-poll"></i></span>
+                        <span> Encuestas </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('surveys') ? 'active' : '' }}" href="{{ route('surveys.index') }}">Lista de Encuestas</a></li>
+                        <li><a class="{{ Request::is('surveys/create') ? 'active' : '' }}" href="{{ route('surveys.create') }}">Crear Encuesta</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
                             <i class="fa fa-file-invoice-dollar"></i></span>
                         <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
                     </a>

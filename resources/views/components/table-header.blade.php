@@ -11,7 +11,7 @@ if(!isset($show_create)) $show_create=true;
                     <div class="top-nav-search table-search-blk">
                         <form action="javascript:;">
                             <input type="text"  wire:model.live.debounce.300ms="search" placeholder="Buscar..." class="form-control" id="search">
-                            <a class="btn"><img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt=""></a>
+                            <a class="btn">{{--}}<img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt="">{{--}}</a>
                         </form>
                     </div>
                     @if($show_create)

@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Encounter;
 use App\Models\Patient;
 use App\Observers\AppointmentObserver;
+use App\Observers\EncounterObserver;
 use App\Policies\AppointmentPolicy;
 use App\Policies\ConsultationPolicy;
 use App\Policies\PatientPolicy;
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
        //Paginator::useTailwind();
        Appointment::observe(AppointmentObserver::class);
+       Encounter::observe(EncounterObserver::class);
        Gate::policy(Appointment::class,AppointmentPolicy::class);
        Gate::policy(Patient::class,PatientPolicy::class);
        Gate::policy(Encounter::class,ConsultationPolicy::class);

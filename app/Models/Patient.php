@@ -40,7 +40,7 @@ class Patient extends BaseModel
     public function routeNotificationForMail($notification = null)
     {
         // Si estamos en testing, usar correo específico
-        if (config('app.env') === 'local' || config('mail.testing_mode', false)) {
+        if (config('app.env') === 'local' || config('mail.testing_mode')) {
             return config('mail.testing_patient_email', 'patient.test@example.com');
         }
 

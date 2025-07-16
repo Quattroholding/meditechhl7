@@ -74,8 +74,6 @@ class ConsultationController extends Controller
         try {
             DB::beginTransaction();
 
-
-
             $appointment = Appointment::find($appointment_id);
             if (! $appointment) {
                 throw new \Exception('Cita no encontrada.');
@@ -182,10 +180,9 @@ class ConsultationController extends Controller
             $appointment->update(['status' => 'fulfilled']);
 
             // Update encounter status
-            $encounter->update([
-                'status' => 'finished',
-                'end' => now(),
-            ]);
+            $encounter->status = 'finished';
+            $encounter->end = now();
+            $encounter->save();
 
             DB::commit();
 
