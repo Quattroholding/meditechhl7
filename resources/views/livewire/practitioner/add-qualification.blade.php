@@ -18,14 +18,14 @@
                     <div class="col-6 col-md-6 col-xl-6">
                         <div class="input-block  local-forms">
                             <x-input-label for="id_type" :value="__('doctor.qualification_start')" />
-                            <x-text-input wire:model.defer="period_start" class="block mt-1 w-full datetimepicker" type="date" name="period_start"/>
+                            <x-text-input wire:model.defer="period_start" class="block mt-1 w-full" type="date" name="period_start"/>
                             <x-input-error :messages="$errors->get('period_start')"/>
                         </div>
                     </div>
                     <div class="col-6 col-md-6 col-xl-6">
                         <div class=" input-block  local-forms ">
                             <x-input-label for="period_end" :value="__('doctor.qualification_end')" />
-                            <x-text-input wire:model.defer="period_end" class="block mt-1 w-full datetimepicker" type="date" name="period_end"/>
+                            <x-text-input wire:model.defer="period_end" class="block mt-1 w-full" type="date" name="period_end"/>
                             <x-input-error :messages="$errors->get('period_end')"/>
                         </div>
                     </div>

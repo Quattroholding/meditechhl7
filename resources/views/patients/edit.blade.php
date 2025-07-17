@@ -106,7 +106,7 @@
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('patient.phone')" />
-                                            <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" id="phone" :value="$data->phone"/>
+                                            <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                             @error('phone') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
                                         </div>
                                     </div>

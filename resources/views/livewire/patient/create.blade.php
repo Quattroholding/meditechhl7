@@ -101,7 +101,7 @@
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
                         <x-input-label for="phone" :value="__('patient.phone')" required/>
-                        <x-text-input wire:model="phone" class="block mt-1 w-full" type="tel" name="phone" id="phone" :value="old('phone')"/>
+                        <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                     </div>
                 </div>

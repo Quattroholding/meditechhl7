@@ -167,6 +167,12 @@ return [
         'billing_address' => [
             'required' => 'La dirección fiscal es obligatoria',
         ],
+        'identifier_type' => [
+            'required' => 'El tipo de documento es obligatorio',
+        ],
+        'clients' => [
+            'required' => 'Debe seleccionar al menos un cliente',
+        ],
 
     ],
 

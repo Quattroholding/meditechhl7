@@ -22,14 +22,13 @@
                             </div>
                             <form method="POST" action="{{ route('practitioner.store') }}" enctype="multipart/form-data" id="form">
                                 @csrf
-
                                 <div class="row">
                                     <!-- ID NUMBER -->
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <div class="input-block  local-forms">
-                                            <x-input-label for="id_type" :value="__('doctor.id_type')" required="true"/>
-                                            <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
-                                            <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
+                                            <x-input-label for="identifier_type" :value="__('doctor.id_type')" required="true"/>
+                                            <x-select-input name="identifier_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
+                                            <x-input-error :messages="$errors->get('identifier_type')" class="mt-2" />
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-6">
@@ -93,7 +92,7 @@
                                     <div class=" col-6 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                            <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                            <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                         </div>
                                     </div>
@@ -113,14 +112,12 @@
                                 <div class="row">
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- SPECIALTY -->
-                                        {{--}}
                                         <div class="input-block  local-forms">
-                                            <x-input-label for="medical_speciality" :value="__('doctor.speciality')" required/>
+                                            <x-input-label for="medical_speciality" :value="__('doctor.qualifications')" required/>
                                             <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()"
                                                             class="block  w-full" multiple aria-label="multiple select example" :selected="[old('medical_speciality')]"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
                                         </div>
-                                        {{--}}
                                         <!-- REGISTRY -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>

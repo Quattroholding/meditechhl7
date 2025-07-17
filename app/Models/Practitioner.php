@@ -112,7 +112,7 @@ class Practitioner extends BaseModel
     }
 
     public function getBirthDateAttribute($attr){
-        return Carbon::parse($attr)->format('d-m-Y');
+        return Carbon::parse($attr)->format('d/m/Y');
     }
 
     // Scope para obtener solo practicantes activos

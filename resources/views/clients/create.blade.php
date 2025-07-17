@@ -96,7 +96,7 @@
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="logo" id="file"
                                                    onchange="loadFile(event)" class="hide-input">
-                                            <label for="file" class="upload">Choose File</label>
+                                            <label for="file" class="upload">{{__('Escoger archivo')}}</label>
                                         </div>
                                     </div>
                                 </div>

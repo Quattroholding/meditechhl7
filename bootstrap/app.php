@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'first.login' => \App\Http\Middleware\FirstLoginMiddleware::class,
+            'custom.permission' => \App\Http\Middleware\PermissionMiddleware::class,
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web

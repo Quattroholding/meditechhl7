@@ -19,7 +19,8 @@ class Helper extends Model
 
     public static function urlIsImage($url){
 
-        if(strpos($_SERVER['REQUEST_URI'], $url)) {
+
+        if(strpos($_SERVER['REQUEST_URI'], $url) && request()->get('page')<>1) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE); // Abre la información de tipo MIME
             $tipo = finfo_file($finfo, $url);
             finfo_close($finfo);

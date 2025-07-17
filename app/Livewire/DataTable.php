@@ -50,7 +50,7 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = $this->model::query()
+        $data =  $this->class::query()
         ->when($this->search, function (Builder $query) {
             $query->where(function ($q) { // Asegura que las condiciones sean correctas
 

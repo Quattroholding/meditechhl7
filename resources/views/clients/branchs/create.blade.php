@@ -48,7 +48,7 @@
                             <!-- PHONE -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="phone" :value="__('Teléfono')" required/>
-                                <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                             </div>
                             <!-- ADDRESS -->

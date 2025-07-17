@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="dashboard-init">
+            <div class="dashboard-initr">
                 <div class="row">
                     <livewire:dashboard.counter function="appointments" wire:key="counter_appointments"/>
                     <livewire:dashboard.counter function="patients" wire:key="counter_patients"/>

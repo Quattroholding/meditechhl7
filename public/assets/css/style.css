@@ -116,6 +116,13 @@ a:focus {
 	border: 2px solid rgba(46, 55, 164, 0.1);
 	border-radius: 10px;
 }
+.input-phone {
+    box-shadow: none;
+    font-size: 14px;
+    min-height: 45px;
+    border: 2px solid rgba(46, 55, 164, 0.1);
+    border-radius: 10px;
+}
 .form-control::placeholder {
 	font-size: 13px;
 }

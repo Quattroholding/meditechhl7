@@ -20,6 +20,7 @@ use \App\Http\Controllers\PaymentController;
 use \App\Http\Controllers\MedicalDocumentController;
 use \App\Http\Controllers\FileController;
 use \App\Http\Controllers\SurveyController;
+use \App\Http\Controllers\FirstLoginController;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -74,11 +75,17 @@ Route::get('/dash', function () {
     if(auth()->user()->hasRole('doctor'))   $route=route('doctor.dashboard');
     if(auth()->user()->hasRole('paciente')) $route=route('patient.dashboard');
     return redirect($route);
-})->name('dash')->middleware(['auth','verified']);
+})->name('dash')->middleware(['auth','verified','first.login']);
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 
-Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), function() {
+// First Login Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/first-login', [FirstLoginController::class, 'show'])->name('first-login.show');
+    Route::put('/first-login', [FirstLoginController::class, 'update'])->name('first-login.update');
+});
+
+Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/admin', [DashboardController::class, 'admin'])->name('admin.dashboard');
     Route::get('/admin-kpis', function() {
@@ -90,13 +97,13 @@ Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified']), f
 
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [ConsultationController::class, 'index'])->name('consultation.index');
 
@@ -111,15 +118,15 @@ Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified'])
 });
 
 // Invoice routes
-Route::group(array('prefix' => 'invoice','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'invoice','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/{invoice_id}/download', [ConsultationController::class, 'downloadInvoice'])->name('invoice.download');
 
 });
 
-Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified','first.login']), function() {
 
-    Route::group(array('prefix' => 'invoices','middleware'=>['auth','verified']), function() {
+    Route::group(array('prefix' => 'invoices','middleware'=>['auth','verified','first.login']), function() {
 
         Route::get('/', [InvoiceController::class, 'index'])->name('invoice.index');
 
@@ -129,7 +136,7 @@ Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified']), fu
 
     });
 
-    Route::group(array('prefix' => 'payments','middleware'=>['auth','verified']), function() {
+    Route::group(array('prefix' => 'payments','middleware'=>['auth','verified','first.login']), function() {
 
         Route::get('/', [PaymentController::class, 'index'])->name('payment.index');
 
@@ -144,7 +151,7 @@ Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified']), fu
 
 Route::post('/store_public', [PatientController::class, 'store_public'])->name('patient.public.store');
 
-Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [ClientController::class, 'index'])->name('client.index');
 
@@ -158,7 +165,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), fun
 
     Route::delete('/{id}/delete', [ClientController::class, 'destroy'])->name('client.destroy');
 
-    Route::group(array('prefix' => 'branch','middleware'=>['auth','verified']), function() {
+    Route::group(array('prefix' => 'branch','middleware'=>['auth','verified','first.login']), function() {
 
         Route::get('/', [BranchController::class, 'index'])->name('client.branch.index');
 
@@ -173,7 +180,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), fun
         Route::delete('/{id}/delete', [BranchController::class, 'destroy'])->name('client.branch.destroy');
     });
 
-    Route::group(array('prefix' => 'consulting_rooms','middleware'=>['auth','verified']), function() {
+    Route::group(array('prefix' => 'consulting_rooms','middleware'=>['auth','verified','first.login']), function() {
 
         Route::get('/', [RoomController::class, 'index'])->name('client.room.index');
 
@@ -190,7 +197,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified']), fun
 
 });
 
-Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'patients','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [PatientController::class, 'index'])->name('patient.index');
 
@@ -217,7 +224,7 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified']), fu
 
 });
 
-Route::group(array('prefix' => 'users','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'users','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [UserController::class, 'index'])->name('user.index');
 
@@ -235,7 +242,7 @@ Route::group(array('prefix' => 'users','middleware'=>['auth','verified']), funct
 
 });
 
-Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [AppointmentController::class, 'index'])->name('appointment.index');
 
@@ -253,7 +260,7 @@ Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified'])
 
 });
 
-Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'settings','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/create_consultation_template', [SettingController::class, 'consultationTemplate'])->name('setting.create_template');
 
@@ -271,7 +278,26 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified']), fu
 
 });
 
-Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']), function() {
+// Roles and Permissions Routes
+Route::group(array('prefix' => 'roles','middleware'=>['auth','verified','first.login','permission:manage-roles']), function() {
+    Route::get('/', [\App\Http\Controllers\RoleController::class, 'index'])->name('role.index');
+    Route::get('/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('role.create');
+    Route::post('/store', [\App\Http\Controllers\RoleController::class, 'store'])->name('role.store');
+    Route::get('/{id}/edit', [\App\Http\Controllers\RoleController::class, 'edit'])->name('role.edit');
+    Route::post('/{id}/update', [\App\Http\Controllers\RoleController::class, 'update'])->name('role.update');
+    Route::delete('/{id}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('role.destroy');
+});
+
+Route::group(array('prefix' => 'permissions','middleware'=>['auth','verified','first.login','permission:manage-permissions']), function() {
+    Route::get('/', [\App\Http\Controllers\PermissionController::class, 'index'])->name('permission.index');
+    Route::get('/create', [\App\Http\Controllers\PermissionController::class, 'create'])->name('permission.create');
+    Route::post('/store', [\App\Http\Controllers\PermissionController::class, 'store'])->name('permission.store');
+    Route::get('/{id}/edit', [\App\Http\Controllers\PermissionController::class, 'edit'])->name('permission.edit');
+    Route::post('/{id}/update', [\App\Http\Controllers\PermissionController::class, 'update'])->name('permission.update');
+    Route::delete('/{id}', [\App\Http\Controllers\PermissionController::class, 'destroy'])->name('permission.destroy');
+});
+
+Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', [PractitionerController::class, 'index'])->name('practitioner.index');
 
@@ -291,7 +317,7 @@ Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified']
 
 });
 
-Route::group(array('prefix' => 'medicines','middleware'=>['auth','verified']), function() {
+Route::group(array('prefix' => 'medicines','middleware'=>['auth','verified','first.login']), function() {
 
     Route::get('/', function() {
         return view('medicine.index');
@@ -321,7 +347,7 @@ Route::group(array('prefix' => 'api'), function() {
 });
 
 // Medical Documents Routes (PDF Generation)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'first.login'])->group(function () {
 
     // Prescription Routes
     Route::get('/prescription/{encounter}/download', [MedicalDocumentController::class, 'generatePrescription'])
@@ -353,7 +379,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Survey Routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'first.login'])->group(function () {
     Route::resource('surveys', SurveyController::class);
 });
 

@@ -41,7 +41,7 @@ class BranchController extends Controller
             $request->session()->flash('message.success','Hubo un error y no se pudo crear la sucursal.');
         }
 
-        return redirect(route('client.index'));
+        return redirect(route('client.branch.index'));
     }
 
     public function edit($id){
@@ -53,7 +53,6 @@ class BranchController extends Controller
 
     public function update(Request $request,$id){
 
-        dd($request->all());
         $validated = $request->validate([
             "client_id" => "required",
             "name" => "required",

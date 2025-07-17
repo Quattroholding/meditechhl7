@@ -23,7 +23,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'default_client_id'
+        'default_client_id',
+        'first_login_at'
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'first_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -58,6 +60,16 @@ class User extends Authenticatable
                 });
             });
         }
+    }
+
+    public function routeNotificationForMail($notification = null)
+    {
+        // Si estamos en testing, usar correo específico
+        if (config('app.env') === 'testing' || config('mail.testing_mode', false)) {
+            return config('mail.testing_practitioner_email', 'doctor.test@example.com');
+        }
+
+        return $this->email;
     }
 
     public function getCurrentClient(){

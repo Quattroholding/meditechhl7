@@ -3,6 +3,7 @@
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="menu-title">Menú</li>
+                @can('dashboard.admin')
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-chart-bar"></i></span>
@@ -16,18 +17,31 @@
                         {{--}}
                     </ul>
                 </li>
+                @endcan
+                @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
                             <i class="fa fa-hospital"></i></span>
                             <span> {{ __('client.titles') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        @can('clients.view')
                         <li><a class="{{ Request::is('clients') ? 'active' : '' }}" href="{{ route('client.index') }}">{{ __('generic.list') }} {{ __('client.titles') }}  </a></li>
+                        @endcan
+                        @can('clients.create')
                         <li><a class="{{ Request::is('clients/create') ? 'active' : '' }}"   href="{{ route('client.create') }}">{{ __('generic.create') }} {{ __('client.title') }}</a></li>
+                        @endcan
+                        @can('branches.view')
                         <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
+                        @endcan
+                        @can('branches.view')
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
+                        @endcan
+                        @can('users.create')
                         <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>3)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-user-md"></i></span>
@@ -104,15 +118,37 @@
 
                     </ul>
                 </li>
+                @canany(['users.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-users"></i></span>
                         <span> Usuarios </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        @can('users.view')
                         <li><a class="{{ Request::is('users') ? 'active' : '' }}"  href="{{ route('user.index') }}">{{ __('generic.list') }} {{ __('user.titles') }}</a></li>
+                        @endcan
+                        @can('users.create')
                         <li><a class="{{ Request::is('users/create') ? 'active' : '' }}"  href="{{ route('user.create') }}">{{ __('generic.create') }} {{ __('user.title') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+                
+                @canany(['manage-roles', 'manage-permissions'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-shield-alt"></i></span>
+                        <span> Roles y Permisos </span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        @can('manage-roles')
+                        <li><a class="{{ Request::is('roles') ? 'active' : '' }}"  href="{{ route('role.index') }}">Gestionar Roles</a></li>
+                        @endcan
+                        @can('manage-permissions')
+                        <li><a class="{{ Request::is('permissions') ? 'active' : '' }}"  href="{{ route('permission.index') }}">Gestionar Permisos</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">

@@ -22,11 +22,18 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-             $route=route('admin.dashboard');
-            if(auth()->getUser()->hasRole('doctor'))   $route=route('doctor.dashboard');
-            if(auth()->getUser()->hasRole('paciente')) $route=route('patient.dashboard');
+            
+            $user = auth()->user();
+            $user->getCurrentClient();
 
-            auth()->getUser()->getCurrentClient();
+            // Check if doctor needs to complete first login
+            if ($user->hasRole('doctor') && is_null($user->first_login_at)) {
+                return redirect()->route('first-login.show');
+            }
+
+            $route = route('admin.dashboard');
+            if($user->hasRole('doctor'))   $route = route('doctor.dashboard');
+            if($user->hasRole('paciente')) $route = route('patient.dashboard');
 
             return redirect()->intended($route."?show_salute=true");
         }

@@ -8,7 +8,9 @@ use App\Models\PractitionerQualification;
 use App\Models\Practitioner;
 use App\Models\MedicalSpeciality;
 use App\Services\FileService;
+use App\Notifications\PractitionerCredentialsNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use DateTime;
 use Carbon\Carbon;
@@ -42,7 +44,6 @@ class PractitionerController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'identifier_type' => 'required',
-            'id_type' => 'required',
             'id_number' => 'required',
             'registry' => 'required',
             'email' => 'required|unique:practitioners',
@@ -56,12 +57,16 @@ class PractitionerController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use($request){
+
+            DB::beginTransaction();
+
+
                 $model = new User();
                 $model->fill($request->all());
                 $model->last_name = $request->last_name;
-                //------------HACER UN PASSWORD GENÉRICO PARA ENVIAR CORREO A USUARIO
-                $model->password = 'test';
+                //------------GENERAR PASSWORD TEMPORAL PARA ENVIAR CORREO A USUARIO
+                $temporaryPassword = Str::random(10);
+                $model->password = Hash::make($temporaryPassword);
                 //---------MANEJAR MULTIPLES CLIENTES - ARREGLAR
                 $model->default_client_id =  $request->clients[0];
 
@@ -75,10 +80,12 @@ class PractitionerController extends Controller
                     $model->assignRole('doctor');
                     $practitioner = new Practitioner();
                     $practitioner->fill($request->except('birth_date'));
-                    $practitioner->name = 'Dr. '.$request->first_name.' '.$request->last_name;
+                    $prefix = 'Dr. ';
+                    if($request->gender=='female') $prefix='Dra. ';
+                    $practitioner->name = $prefix.$request->first_name.' '.$request->last_name;
                     $practitioner->given_name = $request->first_name;
                     $practitioner->family_name = $request->last_name;
-                    $practitioner->identifier_type = $request->id_type;
+                    $practitioner->identifier_type = $request->identifier_type;
                     $practitioner->identifier = $request->id_number;
                     $practitioner->registry = $request->registry;
                     $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
@@ -90,20 +97,30 @@ class PractitionerController extends Controller
                     if($practitioner->save()){
                         $specialties = $request->medical_speciality;
                         $syn=[];
+                        $i=0;
+
                         foreach($specialties as $speciality){
+                            $default=false;
+                            if($i==0) $default=true;
                             $medical_speciality_name =  MedicalSpeciality::find($speciality);
-                            $syn[$speciality]=array('code' => $speciality, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+                            $syn[$speciality]=array('code' => $speciality,'default'=>$default, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name);
+                            $i++;
                         }
                         $practitioner->specialties()->sync($syn);
                     }
                 }
-            });
+
+                // Enviar notificación con credenciales temporales
+                $model->notify(new PractitionerCredentialsNotification($model, $temporaryPassword));
+
+           DB::commit();
 
             session()->flash('message.success','Creado con exito.');
 
             return redirect(route('practitioner.index'));
 
         }catch (\Exception $e){
+            DB::rollBack();
             session()->flash('message.error',$e->getMessage());
             return redirect(route('practitioner.create'))->withInput($request->all());
         }
