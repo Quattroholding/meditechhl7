@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 @endcan
-                @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
+                @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create', 'rooms.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
                             <i class="fa fa-hospital"></i></span>
@@ -50,7 +50,7 @@
                         @can('branches.view')
                         <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
                         @endcan
-                        @can('branches.view')
+                        @can('rooms.view')
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
                         @endcan
                         @can('users.create')
