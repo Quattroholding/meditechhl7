@@ -4,7 +4,7 @@
             <ul>
                 <li class="menu-title">Menú</li>
                 <li class="menu-side">
-                    <a class="{{ Request::is('dashboard/doctor') ? 'active' : '' }}"  href="{{ route('doctor.dashboard') }}"><span class="menu-side" >
+                    <a class="{{ Request::is('dashboard/client') ? 'active' : '' }}"  href="{{ route('client.dashboard') }}"><span class="menu-side" >
                             <i class="fa fa-chart-bar"></i></span>
                             <span> Dashboard </span>
                     </a>
