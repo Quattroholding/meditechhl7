@@ -26,7 +26,7 @@ class FirstLoginController extends Controller
 
         // Validate if user hasn't completed first login
         if (!is_null($user->first_login_at)) {
-            return redirect()->route('practitioner.profile');
+            return redirect()->route('practitioner.profile',$user->practitioner->id);
         }
 
         $request->validate([
@@ -50,6 +50,6 @@ class FirstLoginController extends Controller
             'first_login_at' => now(),
         ]);
 
-        return redirect()->route('practitioner.profile')->with('success', 'Contraseña actualizada exitosamente. Bienvenido al sistema.');
+        return redirect()->route('practitioner.profile',$user->practitioner->id)->with('success', 'Contraseña actualizada exitosamente. Bienvenido al sistema.');
     }
 }
