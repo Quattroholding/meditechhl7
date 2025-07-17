@@ -119,9 +119,13 @@ class User extends Authenticatable
         if($this->profile_picture) $path = url('storage/'.$this->profile_picture);
 
         if($this->hasRole('doctor')){
-            $prefix='Dr ';
+            /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
-             $prefix='Dra ';
+             $prefix='Dra ';*/
+            // dd($this->hasRole('doctor'), $this->practitioner->gender);
+            $gender=$this->practitioner->gender;
+            if($gender)
+            $prefix = $gender =='female' ? 'Dra. ' : 'Dr. ';
         }
 
         return '<div class="profile-image">

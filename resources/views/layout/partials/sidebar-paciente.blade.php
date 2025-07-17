@@ -36,7 +36,6 @@
                     </a>
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
-                        <li><a class="{{ Request::is('accounts/payments') ? 'active' : '' }}" href="{{route('payment.index')}}">{{__('Pagos')}}</a></li>
                     </ul>
                 </li>
                 <li>
