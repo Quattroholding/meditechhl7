@@ -13,7 +13,7 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-                    @include('partials.message')
+
                     <livewire:medicine.modal-save wire:model="showModal"/>
 
                     <div class="table-responsive">
@@ -25,8 +25,8 @@
                                 <th><x-table-sort-button title="Fuente" columnName="source" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="Nombre" columnName="generic_name" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="Narcotico" columnName="narcotic" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th><x-table-sort-button title="Estado" columnName="status" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                <th class="text-end"><x-table-sort-button title="Acciones" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                             </tr>
                             </thead>
                             <tbody>

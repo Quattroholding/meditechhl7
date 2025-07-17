@@ -1,32 +1,27 @@
 <div>
-   @include('partials.message')
+    <!-- Table Header -->
+    @component('components.table-header')
+        @slot('title')
 
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <input type="text" wire:model.live="search" class="form-control" placeholder="Buscar encuestas...">
-        </div>
-        <div class="col-md-3">
-            <select wire:model.live="statusFilter" class="form-control">
-                <option value="">Todos los estados</option>
-                <option value="draft">Borrador</option>
-                <option value="active">Activo</option>
-                <option value="inactive">Inactivo</option>
-            </select>
-        </div>
-    </div>
-
+        @endslot
+        @slot('li_1')
+            {{ route('surveys.create') }}
+        @endslot
+    @endcomponent
+    <!-- /Table Header -->
+    @include('partials.message')
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table border-0 custom-table comman-table mb-0">
             <thead>
                 <tr>
-                    <th>Título</th>
-                    <th>Estado</th>
-                    <th>Activa</th>
-                    <th>Preguntas</th>
-                    <th>Respuestas</th>
-                    <th>Creada por</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
+                    <th><x-table-sort-button title="Título" columnName="title" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Estado" columnName="status" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Activa" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Preguntas" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Respuestas" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Creada por" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th><x-table-sort-button title="Fecha" columnName="created_at" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th class="text-end"><x-table-sort-button title="Acciones" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                 </tr>
             </thead>
             <tbody>
