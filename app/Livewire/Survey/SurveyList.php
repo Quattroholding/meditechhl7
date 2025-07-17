@@ -12,6 +12,8 @@ class SurveyList extends Component
 
     public $search = '';
     public $statusFilter = '';
+    public $sortDirection='asc';
+    public $sortField='title';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -34,6 +36,16 @@ class SurveyList extends Component
         $survey->delete();
 
         session()->flash('message.success', 'Encuesta eliminada exitosamente.');
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
     public function render()

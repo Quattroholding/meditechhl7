@@ -42,26 +42,39 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['practitioners.view','practitioners.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-user-md"></i></span>
                         <span>{{ __('doctor.titles') }} </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('practitioners.view')
                         <li><a class="{{ Request::is('practitioners') ? 'active' : '' }}"  href="{{ route('practitioner.index') }}">{{ __('generic.list') }} {{ __('doctor.titles') }}</a></li>
+                        @endcan
+                        @can('practitioners.create')
                         <li><a class="{{ Request::is('practitioners/create') ? 'active' : '' }}"   href="{{ route('practitioner.create') }}">{{ __('generic.create') }} {{ __('doctor.title') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+                @canany(['patients.view','patients.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-user-injured"></i></span>
                         <span>{{ __('patient.titles') }} </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('patients.view')
                         <li><a class="{{ Request::is('patients') ? 'active' : '' }}"  href="{{ route('patient.index') }}">{{ __('generic.list') }} {{ __('patient.titles') }}</a></li>
+                        @endcan
+                        @can('patients.create')
                         <li><a class="{{ Request::is('patients/create') ? 'active' : '' }}"   href="{{ route('patient.create') }}">{{ __('generic.create') }} {{ __('patient.title') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+                @canany(['appointments.view','appointments.calendar'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side"><i class="fa fa-calendar-alt"></i></span>
@@ -69,10 +82,16 @@
                         <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('appointments.view')
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ route('appointment.index') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
+                        @endif
+                        @can('appointments.calendar')
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('Calendario') }} </a></li>
+                        @endif
                     </ul>
                 </li>
+                @endcanany
+                @can('consultations.view')
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side"> <i class="fa fa-stethoscope"></i></span>
@@ -83,6 +102,25 @@
                         <li><a class="{{ Request::is('consultation') ? 'active' : '' }}" href="{{ route('consultation.index') }}">{{ __('generic.list') }} {{ __('encounter.titles') }}</a></li>
                     </ul>
                 </li>
+                @endcan
+                @canany(['medicines.view','medicines.create'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <i class="fa fa-pills"></i></span>
+                        <span> {{__('Medicamentos')}} </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('medicines.view')
+                        <li><a class="{{ Request::is('medicines') ? 'active' : '' }}" href="{{route('medicine.index')}}">{{ __('generic.list') }} {{__('Medicamentos')}}</a></li>
+                        @endcan
+                        @can('medicines.create')
+                        <li><a class="{{ Request::is('medicines/create') ? 'active' : '' }}" href="{{route('medicine.create')}}">{{ __('generic.create') }} {{ __('Medicamento') }}</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+                @canany(['surveys.view','surveys.create'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
@@ -90,10 +128,16 @@
                         <span> Encuestas </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('surveys.view')
                         <li><a class="{{ Request::is('surveys') ? 'active' : '' }}" href="{{ route('surveys.index') }}">Lista de Encuestas</a></li>
+                        @endcan
+                        @can('surveys.create')
                         <li><a class="{{ Request::is('surveys/create') ? 'active' : '' }}" href="{{ route('surveys.create') }}">Crear Encuesta</a></li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+                @canany(['invoices.view','payments.view'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
@@ -101,23 +145,36 @@
                         <span> {{__('Cuentas')}} </span> <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('invoices.view')
                         <li><a class="{{ Request::is('accounts/invoices') ? 'active' : '' }}" href="{{route('invoice.index')}}">{{__('Facturas')}}</a></li>
+                        @endcan
+                        @can('payments.view')
                         <li><a class="{{ Request::is('accounts/payments') ? 'active' : '' }}" href="{{route('payment.index')}}">{{__('Pagos')}}</a></li>
-
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
+                @canany(['settings.create_user_procedures','settings.create_consultation_template','settings.create_rapid_access','settings.create_working_hour_user'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-cogs"></i></span>
-                        <span> Configuraciones </span> <span class="menu-arrow"></span></a>
+                        <span> {{__('Configuraciones')}} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
+                        @can('settings.create_user_procedures')
                         <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Servicios') }}</a></li>
+                        @endcan
+                        @can('settings.create_consultation_template')
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
+                        @endcan
+                        @can('settings.create_rapid_access')
                         <li><a class="{{ Request::is('settings/create_rapid_access') ? 'active' : '' }}"  href="{{ route('setting.create_rapid_access') }}">{{ __('Accesos Rapidos') }}</a></li>
+                        @endcan
+                        @can('settings.create_working_hour_user')
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
-
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
                 @canany(['users.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -133,7 +190,6 @@
                     </ul>
                 </li>
                 @endcanany
-                
                 @canany(['manage-roles', 'manage-permissions'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
