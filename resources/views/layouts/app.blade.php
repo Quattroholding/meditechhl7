@@ -35,6 +35,8 @@
                         @endif
                         @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
                             @include('layout.partials.header')
+                            @include('layout.partials.sidebar')
+                            {{--}}
                             @if(auth()->user()->hasRole('doctor'))
                                 @include('layout.partials.sidebar-doctor')
                             @elseif(auth()->user()->hasRole('admin client'))
@@ -46,6 +48,7 @@
                             @elseif(auth()->user()->hasRole('admin'))
                                 @include('layout.partials.sidebar')
                             @endif
+                            {{--}}
                         @endif
                       {{$slot}}
                     </div>

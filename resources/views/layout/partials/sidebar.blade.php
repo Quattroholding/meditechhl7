@@ -4,18 +4,35 @@
             <ul>
                 <li class="menu-title">Menú</li>
                 @can('dashboard.admin')
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
+                    <li class="menu-side">
+                        <a class="{{ Request::is('dashboard') ? 'active' : '' }}"  href="{{ route('admin.dashboard') }}"><span class="menu-side" >
                             <i class="fa fa-chart-bar"></i></span>
-                            <span> Dashboard </span> <span class="menu-arrow"></span>
+                            <span> Dashboard </span>
+                        </a>
+                    </li>
+                @endcan
+                @can('dashboard.doctor')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('dashboard/doctor') ? 'active' : '' }}"  href="{{ route('doctor.dashboard') }}"><span class="menu-side" >
+                                <i class="fa fa-chart-bar"></i></span>
+                            <span> Dashboard </span>
+                        </a>
+                    </li>
+                @endcan
+                @can('dashboard.patient')
+                <li>
+                    <a class="{{ Request::is('dashboard/patient') ? 'active' : '' }}"  href="{{ route('patient.dashboard') }}">
+                        <span class="menu-side"> <i class="fa fa-chart-bar"></i></span>&nbsp;
+                        <span>Dashboard</span>
                     </a>
-                    <ul style="display: none;">
-                        <li><a class="{{ Request::is('/dashboard', 'index') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
-                        {{--}}
-                        <li><a class="{{ Request::is('dashboard/doctor') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}">Doctor Dashboard</a></li>
-                        <li><a class="{{ Request::is('dashboard/patient') ? 'active' : '' }}"  href="{{ route('patient.dashboard') }}">{{ __('patient.titles') }} Dashboard</a></li>
-                        {{--}}
-                    </ul>
+                </li>
+                @endcan
+                @can('dashboard.client')
+                <li class="menu-side">
+                    <a class="{{ Request::is('dashboard/client') ? 'active' : '' }}"  href="{{ route('client.dashboard') }}"><span class="menu-side" >
+                            <i class="fa fa-chart-bar"></i></span>
+                        <span> Dashboard </span>
+                    </a>
                 </li>
                 @endcan
                 @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])

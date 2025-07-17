@@ -19,9 +19,10 @@
                     <div class="col-md-6">
                         <div class="morning-user">
                             <h2><span class="typewriter-text">{{__('generic.hello')}} , {{auth()->user()->patient->name}}</span></h2>
-                            <p class="typewriter-text">{{ auth()->user()->patient->identifier_type }}: {{ auth()->user()->patient->identifier }} •
+                            <p class="typewriter-text">{{ auth()->user()->patient->identifier_type }}: {{ auth()->user()->patient->identifier }} {{--}}
                             @if(auth()->user()->patient->age) {{ auth()->user()->patient->age }} años • @endif
-                                {{ ucfirst(__('patient.'.auth()->user()->patient->gender) ?? 'No especificado') }}</p>
+                                {{ ucfirst(__('patient.'.auth()->user()->patient->gender) ?? 'No especificado') }}{{--}}
+                            </p>
                         </div>
                     </div>
                     <div class="col-md-6 position-blk">
