@@ -139,7 +139,12 @@
                                     <!-- CLIENTS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="client" :value="__('user.client')" />
-                                        <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full"/>
+                                        @if(auth()->user()->hasRole('doctor') or auth()->user()->hasRole('admin client'))
+
+                                            <x-select-input name="clients[{{auth()->user()->getCurrentClient()->id}}]" :options="auth()->user()->clients()->pluck('clients.name','clients.id')->toArray()" multiple class="block  w-full"/>
+                                        @else
+                                            <x-select-input name="clients[]" :options="\App\Models\Client::whereIn('id',[3,5])->pluck('name','id')->toArray()" class="block  w-full"/>
+                                        @endif
                                         <x-input-error class="mt-2" :messages="$errors->get('clients')" />
                                     </div>
                                 </div>
@@ -148,7 +153,7 @@
                                 <!-- PICTURE -->
                                 <div class="col-12 col-md-6 col-xl-12">
                                     <div class="form-group local-top-form">
-                                        <label class="local-top" for="avatar">Avatar <span class="login-danger">*</span></label>
+                                        <label class="local-top" for="avatar">Avatar</label>
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="avatar" id="file"    onchange="loadFile(event)" class="hide-input">
                                             <label for="file" class="upload">Buscar Archivo</label>

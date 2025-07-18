@@ -24,7 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'default_client_id',
-        'first_login_at'
+        'first_login_at',
+        'profile_picture',
     ];
 
     /**
@@ -49,17 +50,6 @@ class User extends Authenticatable
             'first_login_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    protected static function booted()
-    {
-        if(auth()->check() && auth()->user()->hasRole('cliente')){
-            self::addGlobalScope('client_filter', function ($query){
-                $query->whereHas("clients",function ($q){
-                    $q->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
-                });
-            });
-        }
     }
 
     public function routeNotificationForMail($notification = null)
@@ -138,6 +128,14 @@ class User extends Authenticatable
 
     public function workingHours(){
         return $this->hasMany(UserWorkingHour::class);
+    }
+
+    public function files(){
+        return $this->hasMany(File::class,'record_id')->where('table_name',$this->getTable());
+    }
+
+    public function avatar(){
+        return $this->files()->whereType('avatar')->latest()->first();
     }
 
 }

@@ -57,6 +57,7 @@ Route::get('/autologin', function () {
   if(request()->get('role')=='admin client') $route=route('client.dashboard');
   if(request()->get('role')=='doctor')   $route=route('doctor.dashboard');
   if(request()->get('role')=='paciente') $route=route('patient.dashboard');
+  if(request()->get('role')=='asistente') $route=route('assistence.dashboard');
 
   $user = \App\Models\User::role(request()->get('role'))->inRandomOrder()->limit(1)->first();
 
@@ -93,7 +94,8 @@ Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified','fir
     })->name('admin.dashboard.kpis')->middleware('role:admin');
     Route::get('/doctor', [DashboardController::class, 'doctor'])->middleware('permission:dashboard.doctor')->name('doctor.dashboard');
     Route::get('/patient', [DashboardController::class, 'patient'])->middleware('permission:dashboard.patient')->name('patient.dashboard');
-    Route::get('/client', [DashboardController::class, 'admin'])->middleware('permission:dashboard.client')->name('client.dashboard');
+    Route::get('/client', [DashboardController::class, 'admin_client'])->middleware('permission:dashboard.client')->name('client.dashboard');
+    Route::get('/assistence', [DashboardController::class, 'assistence'])->middleware('permission:dashboard.assistence')->name('assistence.dashboard');
 
 });
 
@@ -101,6 +103,11 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // User Profile Route
+    Route::get('/user-profile', function () {
+        return view('user-profile');
+    })->name('user.profile');
 });
 
 Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified','first.login']), function() {

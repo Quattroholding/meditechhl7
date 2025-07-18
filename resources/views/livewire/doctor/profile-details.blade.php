@@ -122,11 +122,13 @@
                                 </div>
                             </div>{{--}}
                         </div>
+                        @can('practitioners.edit')
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
                             </div>
                         </div>
+                        @endcan
                     </form>
                 </div>
                 <div class="tab-pane" id="security_settings" role="tabpanel">
@@ -166,11 +168,13 @@
                                 </div>
                             </div>
                         </div>
+                        @can('practitioners.edit')
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
                             </div>
                         </div>
+                        @endcan
                     </form>
                 </div>
             </div>

@@ -30,7 +30,9 @@
                                 <th><x-table-sort-button title="{{__('patient.full_id_number')}}" columnName="patients.identifier" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('patient.email')}}" columnName="patients.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th><x-table-sort-button title="{{__('patient.whatsapp')}}" columnName="patients.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
                                 <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
+                                @endcanany
                             </tr>
                             </thead>
                             <tbody>
@@ -42,38 +44,50 @@
                                     <td>{{ $patient->identifier }}</td>
                                     <td>{{ $patient->email }}</td>
                                     <td>{{ $patient->phone }}</a></td>
+                                    @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
                                     <td class="text-end">
                                         <div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
+                                                @can('patients.add_note')
                                                 <a class="dropdown-item"  wire:click="openModalNote({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                     {{__('patient.add_note')}}
                                                 </a>
+                                                @endcan
+                                                @can('patients.insurance')
                                                 <a class="dropdown-item"  wire:click="openInsuranceModal({{ $patient->id }})">  <i  class="fa-solid fa-shield-halved m-r-5"></i>
                                                     {{__('Gestionar Seguros')}}
                                                 </a>
+                                                @endcan
                                                 {{--}}
                                                 <a class="dropdown-item" href="{{route('patient.insurances',$patient->id)}}">  <i  class="fa-solid fa-list m-r-5"></i>
                                                     {{__('Ver Seguros')}}
                                                 </a>
                                                 {{--}}
+                                                @can('patients.medical_history')
                                                 <a class="dropdown-item"  href="{{route('patient.medical_history',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.medical_history')}}
                                                 </a>
+                                                @endcan
                                                 @if(auth()->user()->can('profile',$patient))
                                                 <a class="dropdown-item"  href="{{route('patient.profile',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.profile')}}
                                                 </a>
                                                 @endif
+                                                @can('patients.edit')
                                                 <a class="dropdown-item"  href="{{ route('patient.edit',$patient->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     {{__('generic.edit')}}
                                                 </a>
+                                                @endcan
+                                                @can('patients.delete')
                                                 <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_patient"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
+                                                @endcan
                                             </div>
                                         </div>
                                     </td>
+                                    @endcanany
                                 </tr>
                             @endforeach
                             </tbody>

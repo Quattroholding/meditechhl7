@@ -23,7 +23,10 @@ class EncouterScope implements Scope
         }elseif(auth()->user() && auth()->user()->hasRole('paciente')){ // el asistente ve todas las citas de los doctores asociados a cu cliente
             $builder->where('patient_id',auth()->user()->patient->id);
         }elseif(auth()->user() && auth()->user()->hasRole('asistente')){ // el asistente ve todas las citas de los doctores asociados a cu cliente
-            $builder->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
+            $builder->whereHas('appointment',function ($q){
+                $q->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
+            });
+
         }
     }
 }

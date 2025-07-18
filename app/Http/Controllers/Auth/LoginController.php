@@ -22,7 +22,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $user = auth()->user();
             $user->getCurrentClient();
 
@@ -34,6 +34,7 @@ class LoginController extends Controller
             $route = route('admin.dashboard');
             if($user->hasRole('doctor'))   $route = route('doctor.dashboard');
             if($user->hasRole('paciente')) $route = route('patient.dashboard');
+            if($user->hasRole('asistente')) $route = route('assistence.dashboard');
 
             return redirect()->intended($route."?show_salute=true");
         }

@@ -25,68 +25,37 @@ class UserFormRequest extends FormRequest
     public function rules(): array
     {
         $rol = $this->input('rol');
-    // Reglas de validación base
-    $rules['rol'] = 'required|integer';
-
-    
-    switch ($rol) {
-        /*------VALIDACIÓN PARA ADMIN------*/
-        case '1': 
-        /*------VALIDACIÓN PARA ASISTENTE------*/
-        case '3':
-        /*------VALIDACIÓN PARA ADMIN-CLIENT------*/
-        case '5':
+        // Reglas de validación base
+        $rules['rol'] = 'required|integer';
+        switch ($rol) {
+            case '3':
+            /*------VALIDACIÓN PARA ASISTENTE------*/
+                $rules['first_name'] = 'required|string|max:255';
+                $rules['last_name'] = 'required|string|max:255';
+                $rules['email'] = 'required|email|unique:users,email';
+                $rules['password'] = 'required|string|confirmed';//|min:8';
+                $rules['clients'] = 'required|array|min:1';
+                break;
+            case '5':
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';
                 $rules['password'] = 'required|string|confirmed';//|min:8';
                 $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
                 $rules['clients'] = 'required|array|min:1';
-            break;
-        /*------VALIDACIÓN PARA DOCTOR------*/
-        case '2':
-                $rules['first_name'] = 'required|string|max:255';
-                $rules['last_name'] = 'required|string|max:255';
-                $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = 'required|string|confirmed';//'required|string|min:8|confirmed'
-                $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
-                $rules['id_type'] = 'required|string';
-                $rules['id_number'] = 'required';
-                $rules['medical_speciality'] = 'required|array|min:1';
-                $rules['gender'] = 'required|string';
-                $rules['birth_date'] = 'required';
-                $rules['address'] = 'required|string';
-                $rules['phone'] = 'required';
-                $rules['clients'] = 'required|array|min:1';
-            break;
+                break;
+            default:
+                break;
+        }
 
-        /*------VALIDACIÓN PARA PACIENTE------*/
-        case '4': 
-                $rules['first_name'] = 'required|string|max:255';
-                $rules['last_name'] = 'required|string|max:255';
-                $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = 'required|string|confirmed'; //'required|string|min:8|confirmed'
-                $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
-                $rules['id_type'] = 'required|string';
-                $rules['id_number'] = 'required|string';
-                $rules['marital_status'] = 'required|string';
-                $rules['gender'] = 'required|string';
-                $rules['birth_date'] = 'required|date';
-                $rules['address'] = 'required|string';
-                $rules['phone'] = 'required|string';
-            break;
-
-        default:
-            break;
-    }
         return $rules;
     }
 
     protected function failedValidation(Validator $validator)
-{
-    // Registrar los errores de validación
-    \Log::info($validator->errors());
+    {
+        // Registrar los errores de validación
+        \Log::info($validator->errors());
 
-    parent::failedValidation($validator);
-}
+        parent::failedValidation($validator);
+    }
 }

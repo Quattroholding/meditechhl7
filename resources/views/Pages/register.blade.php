@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="input-block local-forms">
                                         <x-input-label for="phone" :value="__('user.phone')" required/>
-                                        <x-text-input  id="phone" name="phone"  class="block w-full" type="tel" value="{{ old('phone') }}"/>
+                                        <input   id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                         <x-input-error :messages="$errors->get('phone')"/>
                                     </div>
                                     <div class="input-block local-forms">

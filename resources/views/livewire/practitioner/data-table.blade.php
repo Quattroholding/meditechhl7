@@ -3,7 +3,8 @@
         <div class="card card-table show-entire">
             <div class="card-body">
                 <!-- Table Header -->
-                @component('components.table-header')
+                @php $show_create=false; if(auth()->user()->can('practitioners.create'))  $show_create=true; @endphp
+                @component('components.table-header',['show_create'=>$show_create])
                     @slot('title')
 
                     @endslot
@@ -23,7 +24,9 @@
                             <th><x-table-sort-button title="{{__('doctor.email')}}" columnName="practitioners.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                             <th><x-table-sort-button title="{{__('doctor.phone')}}" columnName="practitioners.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                             <th><x-table-sort-button title="{{__('doctor.qualifications')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                            @canany(['practitioner.profile','practitioner.edit','practitioner.delete'])
                             <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
+                            @endcanany
                         </tr>
                         </thead>
                         <tbody>
@@ -40,22 +43,30 @@
                                         {{$q->display}}
                                     @endforeach
                                 </td>
+                                @canany(['practitioner.profile','practitioner.edit','practitioner.delete'])
                                 <td class="text-end">
                                     <div class="dropdown dropdown-action">
                                         <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa fa-ellipsis-v"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
+                                            @can('practitioner.profile')
                                             <a class="dropdown-item"  href="{{route('practitioner.profile',$practitioner->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                 {{__('doctor.profile')}}
                                             </a>
+                                            @endcan
+                                            @can('practitioner.edit')
                                             <a class="dropdown-item"  href="{{ route('practitioner.edit',$practitioner->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 {{__('generic.edit')}}
                                             </a>
+                                            @endcan
+                                            @can('practitioner.delete')
                                             <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </td>
+                                @endcanany
                             </tr>
                         @endforeach
                         </tbody>
