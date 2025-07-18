@@ -29,7 +29,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'clients.create', 'description' => 'Registrar nuevos clientes','module'=>'clientes'],
             ['name' => 'clients.edit', 'description' => 'Editar información de clientes','module'=>'clientes'],
             ['name' => 'clients.delete', 'description' => 'Eliminar clientes del sistema','module'=>'clientes'],
-
+           
             // Patient management
             ['name' => 'patients.view', 'description' => 'Ver lista y perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.create', 'description' => 'Registrar nuevos pacientes','module'=>'pacientes'],
@@ -47,6 +47,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'practitioners.delete', 'description' => 'Eliminar registros de médicos','module'=>'medicos'],
             ['name' => 'practitioners.profile', 'description' => 'Ver perfil de médicos','module'=>'medicos'],
             ['name' => 'practitioners.directory', 'description' => 'Ver directorio medico','module'=>'medicos'],
+             ['name' => 'practitioners.add_assistant', 'description' => 'Agregar un nuevo asistente al Sistema','module'=>'medicos'],
 
             // Appointment management
             ['name' => 'appointments.view', 'description' => 'Ver calendario y lista de citas','module'=>'citas'],
@@ -190,6 +191,7 @@ class RolePermissionSeeder extends Seeder
             'medicines.create',
             'practitioners.profile',
             'practitioners.directory',
+            'practitioners.add_assistant',
         ]);
 
 
@@ -218,7 +220,8 @@ class RolePermissionSeeder extends Seeder
             'payments.view',
             'practitioners.directory',
             'surveys.view',
-            'users.profile'
+            'users.profile',
+            'practitioners.add_assistant',
         ]);
 
         $assistantRole = Role::firstOrCreate(['name' => 'asistente']);

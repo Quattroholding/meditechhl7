@@ -35,14 +35,6 @@
                     </a>
                 </li>
                 @endcan
-                @can('dashboard.assistence')
-                    <li class="menu-side">
-                        <a class="{{ Request::is('dashboard/assistence') ? 'active' : '' }}"  href="{{ route('assistence.dashboard') }}"><span class="menu-side" >
-                            <i class="fa fa-chart-bar"></i></span>
-                            <span> Dashboard </span>
-                        </a>
-                    </li>
-                @endcan
                 @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
@@ -58,7 +50,7 @@
                         @can('branches.view')
                         <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('generic.list') }} {{ __('client.branches') }}</a></li>
                         @endcan
-                        @can('branches.view')
+                        @can('rooms.view')
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
                         @endcan
                         @can('users.create')
@@ -200,14 +192,6 @@
                     </ul>
                 </li>
                 @endcanany
-                @can('practitioners.directory')
-                <li>
-                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
-                        <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
-                        <span>{{ __('patient.medical_directory') }}</span>
-                    </a>
-                </li>
-                @endcan
                 @canany(['users.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -238,30 +222,6 @@
                     </ul>
                 </li>
                 @endcanany
-                @can('practitioners.profile' && auth()->user()->practitioner)
-                <li>
-                    <a class="{{ Request::is('practitioners/') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">
-                        <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
-                        <span>{{ __('doctor.profile') }}</span>
-                    </a>
-                </li>
-                @endcan
-                @can('patients.profile' && auth()->user()->patient)
-                    <li>
-                        <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/profile') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
-                            <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
-                            <span>{{ __('patient.profile') }}</span>
-                        </a>
-                    </li>
-                @endcan
-                @can('users.profile')
-                    <li>
-                        <a class="{{ Request::is(auth()->user()->id.'/profile') ? 'active' : '' }}"  href="{{ route('profile.edit',auth()->user()->id) }}">
-                            <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
-                            <span>{{ __('patient.profile') }}</span>
-                        </a>
-                    </li>
-                @endcan
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">
