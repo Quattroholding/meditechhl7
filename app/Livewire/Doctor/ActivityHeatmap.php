@@ -53,12 +53,10 @@ class ActivityHeatmap extends Component
 
     public function loadActivityData()
     {
-        $practitionerId = auth()->user()->practitioner->id;
         $days = (int) $this->timeFrame;
 
         // Obtener citas confirmadas y finalizadas
         $appointments = Appointment::query()
-            ->where('practitioner_id', $practitionerId)
             ->whereIn('status', ['booked', 'arrived', 'checked-in', 'fulfilled'])
             ->when($days > 0, function($query) use ($days) {
                 return $query->where('start', '>=', now()->subDays($days));

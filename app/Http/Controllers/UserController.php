@@ -86,7 +86,7 @@ class UserController extends Controller
             }
         }catch (\Exception $e){
             DB::rollBack();
-            $request->session()->flash('message.success',$e->getMessage());
+            $request->session()->flash('message.error',$e->getMessage());
         }
 
         return redirect(route('user.create'));
@@ -95,6 +95,10 @@ class UserController extends Controller
     public function edit($id){
 
         $data = User::find($id);
+
+        if(auth()->user()->hasRole('asistente') && $id<>auth()->user()->id){
+            abort(403, 'No tienes permisos para acceder a esta página.');
+        }
 
         return view('users.edit',compact('data'));
     }
@@ -115,7 +119,7 @@ class UserController extends Controller
             $filename = 'profile_picture_'.$user->id;
             $user->profile_picture = $service->uploadSingleFile($request->file('avatar'),'users',$filename);
         }
-
+        $user->default_client_id =  $request->clients[0] ?? 1;
         if($user->save()){
 
             $request->session()->flash('message.suucess','Actualizado con exito');

@@ -29,7 +29,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'clients.create', 'description' => 'Registrar nuevos clientes','module'=>'clientes'],
             ['name' => 'clients.edit', 'description' => 'Editar información de clientes','module'=>'clientes'],
             ['name' => 'clients.delete', 'description' => 'Eliminar clientes del sistema','module'=>'clientes'],
-           
+
             // Patient management
             ['name' => 'patients.view', 'description' => 'Ver lista y perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.create', 'description' => 'Registrar nuevos pacientes','module'=>'pacientes'],
@@ -246,7 +246,6 @@ class RolePermissionSeeder extends Seeder
             'payments.edit',
             'payments.delete',
             'users.profile',
-            'users.edit'
         ]);
     }
 }

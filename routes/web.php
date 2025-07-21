@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
 
 Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified','first.login']), function() {
 
-    Route::get('/admin', [DashboardController::class, 'admin'])->name('admin.dashboard');
+    Route::get('/admin', [DashboardController::class, 'admin'])->middleware('permission:dashboard.admin')->name('admin.dashboard');
     Route::get('/admin-kpis', function() {
         return view('dashboard.admin-kpis');
     })->name('admin.dashboard.kpis')->middleware('role:admin');
@@ -103,7 +103,7 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // User Profile Route
     Route::get('/user-profile', function () {
         return view('user-profile');

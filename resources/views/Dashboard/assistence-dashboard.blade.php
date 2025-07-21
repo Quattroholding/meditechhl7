@@ -31,12 +31,10 @@
                 </div>
             </div>
             <div class="dashboard-initrr">
-                {{--}}
+
                 <div class="row">
                     <div class="col-lg-6">
                         <div data-order="1">@livewire('doctor.recent-appointment-list',['order'=>1])</div>
-                        <div data-order="6">@livewire('doctor.top-active-conditions',['order'=>6])</div>
-                        <div data-order="7">@livewire('doctor.top-prescribed-medications',['order'=>7])</div>
                         <div data-order="8">@livewire('doctor.consultation-effectiveness',['order'=>8])</div>
                     </div>
                     <div class="col-lg-6">
@@ -53,7 +51,7 @@
                         <div data-order="9">@livewire('doctor.activity-heatmap',['order'=>9])</div>
                     </div>
                 </div>
-                {{--}}
+
             </div>
         </div>
         @component('components.notification-box')
