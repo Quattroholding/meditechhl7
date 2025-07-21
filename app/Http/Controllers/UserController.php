@@ -11,8 +11,10 @@ use App\Models\PractitionerQualification;
 use App\Http\Requests\UserFormRequest;
 use App\Models\Practitioner;
 use App\Models\MedicalSpeciality;
+use App\Notifications\PractitionerCredentialsNotification;
 use App\Services\FileService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -49,6 +51,7 @@ class UserController extends Controller
 
             $model = new User();
             $model->fill($request->all());
+            $temporaryPassword = $request->password;
             $model->default_client_id =  $request->clients[0] ?? 1;
 
             if($model->save()){
@@ -74,6 +77,8 @@ class UserController extends Controller
                     $data['record_id']= $model->id;
                     $user_profile->profile_picture = $service->uploadSingleFile($file,'users',$data['name']);
                 }
+
+                $model->notify(new PractitionerCredentialsNotification($model, $temporaryPassword));
 
                 DB::commit();
 

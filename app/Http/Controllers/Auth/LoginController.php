@@ -27,7 +27,7 @@ class LoginController extends Controller
             $user->getCurrentClient();
 
             // Check if doctor needs to complete first login
-            if ($user->hasRole('doctor') && is_null($user->first_login_at)) {
+            if (is_null($user->first_login_at)) {
                 return redirect()->route('first-login.show');
             }
 

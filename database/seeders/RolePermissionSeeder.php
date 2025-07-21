@@ -23,6 +23,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'users.edit', 'description' => 'Editar información de usuarios','module'=>'usuarios'],
             ['name' => 'users.delete', 'description' => 'Eliminar usuarios del sistema','module'=>'usuarios'],
             ['name' => 'users.profile', 'description' => 'Ver perfil del usuario','module'=>'usuarios'],
+            ['name' => 'users.change_client', 'description' => 'Cambiar de cliente','module'=>'usuarios'],
 
             // Client management
             ['name' => 'clients.view', 'description' => 'Ver lista de clientes/organizaciones','module'=>'clientes'],
@@ -246,6 +247,7 @@ class RolePermissionSeeder extends Seeder
             'payments.edit',
             'payments.delete',
             'users.profile',
+            'users.change_client',
         ]);
     }
 }

@@ -17,16 +17,16 @@ class FirstLoginMiddleware
     {
         if (auth()->check()) {
             $user = auth()->user();
-            
+
             // Check if user has doctor role and hasn't completed first login
-            if ($user->hasRole('doctor') && is_null($user->first_login_at)) {
+            if (is_null($user->first_login_at)) {
                 // Skip middleware for password change routes to avoid infinite redirect
                 if (!$request->routeIs('first-login.*') && !$request->routeIs('logout')) {
                     return redirect()->route('first-login.show');
                 }
             }
         }
-        
+
         return $next($request);
     }
 }

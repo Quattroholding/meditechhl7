@@ -48,12 +48,12 @@ class Appointment extends Model
     // Relaciones
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class)->withDefault(['profile_name'=>'N/A']);
     }
 
     public function practitioner(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class);
+        return $this->belongsTo(Practitioner::class)->withDefault(['profile_name'=>'N/A']);
     }
 
     public function encounter(): HasOne

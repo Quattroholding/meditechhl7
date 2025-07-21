@@ -237,7 +237,7 @@ Route::group(array('prefix' => 'users','middleware'=>['auth','verified','first.l
 
     Route::get('/create', [UserController::class, 'create'])->middleware('permission:users.create')->name('user.create');
 
-    Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->middleware('permission:users.delete')->name('user.change_client');
+    Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->middleware('permission:users.change_client')->name('user.change_client');
 
     Route::post('/store', [UserController::class, 'store'])->middleware('permission:users.create')->name('user.store');
 
