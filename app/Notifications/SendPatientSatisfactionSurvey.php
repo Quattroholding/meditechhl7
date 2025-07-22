@@ -45,7 +45,7 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $surveyUrl = route('survey.public', $this->surveyResponse->token);
-        $practitionerName = $this->encounter->practitioner->full_name ?? 'Su médico';
+        $practitionerName = $this->encounter->appointment->practitioner->full_name ?? 'Su médico';
         $encounterDate = $this->encounter->start->format('d/m/Y');
         $clinicName = $this->encounter->appointment->client->name;
 

@@ -75,7 +75,9 @@
                                                         positionClass: 'toast-top-right',
                                                         timeOut: 5000,
                                                         onHidden: function() {
+                                                            @if($appointment->status =='checked-in')
                                                             window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
+                                                            @endif
                                                         }
                                                     });
                                                 });

@@ -8,20 +8,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AppointmentConfirmedNotification extends Notification
+class AppointmentConfirmedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $appointment;
+    public $tries = 3;
+    public $backoff = [60, 300, 600];
 
-    public function __construct(Appointment $appointment)
-    {
-        $this->appointment = $appointment;
+    public function __construct(
+        public Appointment $appointment
+    ) {
+        $this->onQueue('emails');
     }
 
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail($notifiable)
@@ -29,44 +31,28 @@ class AppointmentConfirmedNotification extends Notification
         $practitioner = $this->appointment->practitioner;
         $confirmedDate = $this->appointment->start;
         $wasDateChanged = $this->appointment->wasDateTimeChanged();
+        $clinicName = $this->appointment->client->name ?? config('app.name');
 
         $subject = $wasDateChanged
             ? 'Cita Reprogramada - Nueva Fecha Confirmada'
             : 'Cita Médica Confirmada';
 
-        $mail = (new MailMessage)
-            ->subject($subject)
-            ->greeting('Estimado/a ' . $notifiable->name);
-
-        if ($wasDateChanged) {
-            $originalDate = $this->appointment->original_requested_datetime;
-            $mail->line('Su cita médica ha sido reprogramada por el médico.')
-                ->line('**Fecha original solicitada:** ' . $originalDate->format('d/m/Y H:i'))
-                ->line('**Nueva fecha confirmada:** ' . $confirmedDate->format('d/m/Y H:i'));
-        } else {
-            $mail->line('Su cita médica ha sido confirmada para la fecha y hora solicitada.');
-        }
-
-        return $mail
-            ->line('**Detalles de su cita:**')
-            ->line('Médico: Dr. ' . $practitioner->name)
-            ->line('Fecha: ' . $confirmedDate->format('d/m/Y'))
-            ->line('Hora: ' . $confirmedDate->format('H:i'))
-            ->line('Duración estimada: ' . $this->appointment->minutes_duration . ' minutos')
-            ->line('Tipo de consulta: ' . ($this->appointment->service_type ?? 'Consulta general'))
-            ->when($this->appointment->comment, function ($mail) {
-                return $mail->line('Nota del médico: ' . $this->appointment->comment);
-            })
-            ->line('**Instrucciones importantes:**')
-            ->line('• Llegue 15 minutos antes de su cita')
-            ->line('• Traiga su documento de identidad')
-            ->line('• Traiga sus exámenes médicos previos si los tiene')
-            ->when($this->appointment->patient_instruction, function ($mail) {
-                return $mail->line('• ' . $this->appointment->patient_instruction);
-            })
-            ->action('Ver Detalles de la Cita', url('/appointments/' . $this->appointment->id))
-            ->line('Si necesita reprogramar o cancelar su cita, por favor contáctenos con al menos 24 horas de anticipación.')
-            ->salutation(env('APP_NAME'));
+        return (new MailMessage)
+            ->subject($subject . ' - ' . $clinicName)
+            ->view('emails.appointment-confirmed', [
+                'patientName' => $notifiable->name,
+                'practitionerName' => $practitioner->name,
+                'appointmentDate' => $confirmedDate->format('d/m/Y'),
+                'appointmentTime' => $confirmedDate->format('H:i'),
+                'durationMinutes' => $this->appointment->minutes_duration,
+                'serviceType' => $this->appointment->service_type ?? 'Consulta general',
+                'clinicName' => $clinicName,
+                'comment' => $this->appointment->comment,
+                'patientInstruction' => $this->appointment->patient_instruction,
+                'wasDateChanged' => $wasDateChanged,
+                'originalDate' => $wasDateChanged ? $this->appointment->original_requested_datetime?->format('d/m/Y H:i') : null,
+                'appointmentUrl' => route('appointment.calendar'),
+            ]);
     }
 
     /**
@@ -76,8 +62,42 @@ class AppointmentConfirmedNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
+        $wasDateChanged = $this->appointment->wasDateTimeChanged();
+
         return [
-            //
+            'type' => 'appointment_confirmed',
+            'appointment_id' => $this->appointment->id,
+            'practitioner_name' => $this->appointment->practitioner->name,
+            'practitioner_id' => $this->appointment->practitioner->id,
+            'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
+            'appointment_date' => $this->appointment->start->format('Y-m-d'),
+            'appointment_time' => $this->appointment->start->format('H:i'),
+            'duration_minutes' => $this->appointment->minutes_duration,
+            'service_type' => $this->appointment->service_type,
+            'was_rescheduled' => $wasDateChanged,
+            'original_requested_datetime' => $wasDateChanged ? $this->appointment->original_requested_datetime?->format('Y-m-d H:i:s') : null,
+            'clinic_name' => $this->appointment->client->name ?? null,
+            'branch_name' => $this->appointment->consultingRoom->branch->name ?? null,
+            'consulting_room' => $this->appointment->consultingRoom->name ?? null,
+            'comment' => $this->appointment->comment,
+            'patient_instruction' => $this->appointment->patient_instruction,
+            'message' => $wasDateChanged
+                ? 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido reprogramada y confirmada.'
+                : 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido confirmada.',
+            'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        \Log::error('Falló el envío de notificación de cita confirmada', [
+            'appointment_id' => $this->appointment->id,
+            'patient_id' => $this->appointment->patient_id,
+            'practitioner_id' => $this->appointment->practitioner_id,
+            'error' => $exception->getMessage()
+        ]);
     }
 }

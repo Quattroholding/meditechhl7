@@ -1,0 +1,97 @@
+@extends('emails.layouts.base', [
+    'title' => $wasDateChanged ? 'Cita Reprogramada - Nueva Fecha Confirmada' : 'Cita Médica Confirmada',
+    'headerIcon' => '✅',
+    'headerTitle' => $wasDateChanged ? 'Cita Reprogramada' : 'Cita Confirmada',
+    'headerSubtitle' => $wasDateChanged ? 'Su cita ha sido reprogramada exitosamente' : 'Su cita médica ha sido confirmada',
+    'headerColor' => '#28a745'
+])
+
+@section('content')
+    {{-- Mensaje de saludo --}}
+    <x-email.message-box title="Estimado/a {{ $patientName }}">
+        @if($wasDateChanged)
+            <p style="font-size: 16px; margin: 0;">
+                Su cita médica ha sido <strong>reprogramada</strong> por el médico. A continuación encontrará los detalles de su nueva fecha confirmada.
+            </p>
+        @else
+            <p style="font-size: 16px; margin: 0;">
+                Nos complace confirmarle que su cita médica ha sido <strong>confirmada</strong> para la fecha y hora solicitada.
+            </p>
+        @endif
+    </x-email.message-box>
+
+    @if($wasDateChanged)
+        {{-- Comparación de fechas --}}
+        <x-email.message-box type="highlight" title="📅 Cambio de Fecha">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+                <div style="text-align: center; padding: 10px; background: #fff3cd; border-radius: 8px;">
+                    <p style="margin: 0; color: #856404; font-size: 12px; text-transform: uppercase; font-weight: bold;">Fecha Original</p>
+                    <p style="margin: 5px 0 0; color: #856404; font-size: 16px; font-weight: bold;">{{ $originalDate }}</p>
+                </div>
+                <div style="text-align: center; padding: 10px; background: #d4edda; border-radius: 8px;">
+                    <p style="margin: 0; color: #155724; font-size: 12px; text-transform: uppercase; font-weight: bold;">Nueva Fecha</p>
+                    <p style="margin: 5px 0 0; color: #155724; font-size: 16px; font-weight: bold;">{{ $appointmentDate }} {{ $appointmentTime }}</p>
+                </div>
+            </div>
+        </x-email.message-box>
+    @endif
+
+    {{-- Detalles de la cita --}}
+    <x-email.message-box type="success" title="🏥 Detalles de su Cita">
+        <x-email.info-grid :items="[
+            'Médico' => 'Dr. ' . $practitionerName,
+            'Fecha' => $appointmentDate,
+            'Hora' => $appointmentTime,
+            'Duración' => $durationMinutes . ' minutos',
+            'Tipo de consulta' => $serviceType ?? 'Consulta general',
+            'Centro médico' => $clinicName
+        ]" />
+
+        @if($comment)
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #b8dabc;">
+                <p style="margin: 0; color: #155724;">
+                    <strong>Nota del médico:</strong> {{ $comment }}
+                </p>
+            </div>
+        @endif
+    </x-email.message-box>
+
+    {{-- Instrucciones importantes --}}
+    <x-email.message-box type="info" title="📋 Instrucciones Importantes">
+        <ul style="color: #1565c0; line-height: 1.8; margin: 10px 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>Llegada:</strong> Llegue 15 minutos antes de su cita</li>
+            <li style="margin-bottom: 8px;"><strong>Documentos:</strong> Traiga su documento de identidad</li>
+            <li style="margin-bottom: 8px;"><strong>Exámenes:</strong> Traiga sus exámenes médicos previos si los tiene</li>
+            @if($patientInstruction)
+                <li style="margin-bottom: 8px;"><strong>Instrucción especial:</strong> {{ $patientInstruction }}</li>
+            @endif
+        </ul>
+    </x-email.message-box>
+
+    {{-- Botón de acción --}}
+    @if($appointmentUrl ?? false)
+        <x-email.button href="{{ $appointmentUrl }}" type="success" icon="👁️">
+            Ver Detalles de la Cita
+        </x-email.button>
+    @endif
+
+    {{-- Información sobre cambios --}}
+    <x-email.message-box type="warning" title="⚠️ Cambios y Cancelaciones">
+        <p style="margin: 0; color: #856404;">
+            Si necesita reprogramar o cancelar su cita, por favor contáctenos con <strong>al menos 24 horas de anticipación</strong>.
+        </p>
+        <p style="margin: 10px 0 0; color: #856404;">
+            Esto nos permite ofrecer el horario a otros pacientes que puedan necesitarlo.
+        </p>
+    </x-email.message-box>
+
+    {{-- Mensaje de agradecimiento --}}
+    <div style="text-align: center; margin: 30px 0;">
+        <p style="color: #6c757d; font-size: 16px; font-style: italic;">
+            "Gracias por confiar en nosotros para su cuidado médico"
+        </p>
+        <p style="color: #28a745; font-weight: bold; font-size: 18px;">
+            Equipo de {{ $clinicName }}
+        </p>
+    </div>
+@endsection

@@ -8,19 +8,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AppointmentCancelledNotification extends Notification
+class AppointmentCancelledNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $appointment;
-    protected $cancellationReason;
-    protected $cancelledBy;
+    public $tries = 3;
+    public $backoff = [60, 300, 600];
 
-    public function __construct(Appointment $appointment, $cancellationReason = null, $cancelledBy = 'practitioner')
-    {
-        $this->appointment = $appointment;
-        $this->cancellationReason = $cancellationReason;
-        $this->cancelledBy = $cancelledBy;
+    public function __construct(
+        public Appointment $appointment,
+        public ?string $cancellationReason = null,
+        public string $cancelledBy = 'practitioner'
+    ) {
+        $this->onQueue('emails');
     }
 
     public function via($notifiable)
@@ -32,26 +32,20 @@ class AppointmentCancelledNotification extends Notification
     {
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start_datetime;
+        $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
-            ->subject('Cita Médica Cancelada')
-            ->greeting('Estimado/a ' . $notifiable->name)
-            ->line('Lamentamos informarle que su cita médica confirmada ha sido cancelada.')
-            ->line('**Detalles de la cita cancelada:**')
-            ->line('Médico: Dr. ' . $practitioner->name)
-            ->line('Fecha: ' . $appointmentDate->format('d/m/Y'))
-            ->line('Hora: ' . $appointmentDate->format('H:i'))
-            ->line('Especialidad: ' . ($practitioner->specialty ?? 'Medicina General'))
-            ->when($this->cancellationReason, function ($mail) {
-                return $mail->line('**Motivo de cancelación:** ' . $this->cancellationReason);
-            })
-            ->line('**Próximos pasos:**')
-            ->line('• Puede reagendar su cita contactándose con nuestro equipo')
-            ->line('• Consulte nuevas fechas disponibles en el sistema')
-            ->line('• Si es urgente, puede solicitar cita con otro especialista')
-            ->action('Reagendar Cita', url('/appointments/reschedule'))
-            ->line('Disculpe las molestias ocasionadas. Estamos aquí para ayudarle.')
-            ->salutation('Atentamente,<br>Sistema de Gestión Médica');
+            ->subject('Cita Médica Cancelada - ' . $clinicName)
+            ->view('emails.appointment-cancelled', [
+                'patientName' => $notifiable->name,
+                'practitionerName' => $practitioner->name,
+                'appointmentDate' => $appointmentDate->format('d/m/Y'),
+                'appointmentTime' => $appointmentDate->format('H:i'),
+                'specialty' => $practitioner->specialty ?? 'Medicina General',
+                'clinicName' => $clinicName,
+                'cancellationReason' => $this->cancellationReason,
+                'rescheduleUrl' => route('appointment.calendar'),
+            ]);
     }
 
     public function toArray($notifiable)
@@ -60,10 +54,32 @@ class AppointmentCancelledNotification extends Notification
             'type' => 'appointment_cancelled',
             'appointment_id' => $this->appointment->id,
             'practitioner_name' => $this->appointment->practitioner->name,
-            'appointment_datetime' => $this->appointment->start_datetime,
+            'practitioner_id' => $this->appointment->practitioner->id,
+            'appointment_datetime' => $this->appointment->start_datetime->format('Y-m-d H:i:s'),
+            'appointment_date' => $this->appointment->start_datetime->format('Y-m-d'),
+            'appointment_time' => $this->appointment->start_datetime->format('H:i'),
             'cancellation_reason' => $this->cancellationReason,
             'cancelled_by' => $this->cancelledBy,
-            'message' => 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido cancelada.'
+            'clinic_name' => $this->appointment->client->name ?? null,
+            'branch_name' => $this->appointment->consultingRoom->branch->name ?? null,
+            'consulting_room' => $this->appointment->consultingRoom->name ?? null,
+            'message' => 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido cancelada.',
+            'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        \Log::error('Falló el envío de notificación de cita cancelada', [
+            'appointment_id' => $this->appointment->id,
+            'patient_id' => $this->appointment->patient_id,
+            'practitioner_id' => $this->appointment->practitioner_id,
+            'cancellation_reason' => $this->cancellationReason,
+            'cancelled_by' => $this->cancelledBy,
+            'error' => $exception->getMessage()
+        ]);
     }
 }

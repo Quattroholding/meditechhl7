@@ -66,6 +66,12 @@ class DataTable extends Component
             ->when(!empty($this->patient_id),function ($q){
                 $q->wherePatientId($this->patient_id);
             })
+            ->when(request()->has('status'),function ($q){
+                $q->whereStatus(request()->get('status'));
+            })
+            ->when(request()->has('id'),function ($q){
+                $q->whereId(request()->get('id'));
+            })
             ->when(!empty($this->limit),function ($q){
                 $q->take($this->limit);
             })

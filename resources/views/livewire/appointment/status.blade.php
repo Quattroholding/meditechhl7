@@ -42,7 +42,6 @@
     <script>
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('showToastr{{$appointment->id}}', (event) => {
-           alert('status')
             toastr[event.type](event.message, '', {
                 closeButton: true,
                 progressBar: true,

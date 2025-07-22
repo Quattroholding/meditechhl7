@@ -167,6 +167,9 @@ class Patient extends BaseModel
         return $this->hasMany(ClinicalImpression::class);
     }
 
+    public function account(){
+        return $this->hasOne(Account::class,'patient_id')->whereStatus('active');
+    }
 
     // Accesor para FHIR
     public function getFhirResourceAttribute()

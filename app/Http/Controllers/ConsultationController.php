@@ -92,6 +92,7 @@ class ConsultationController extends Controller
                 ->get();
 
             $invoice = null;
+
             if ($chargeItems->count() > 0) {
                 // Find or create patient account
                 $patient = Patient::find($appointment->patient_id);
@@ -99,6 +100,8 @@ class ConsultationController extends Controller
                     ->where('client_id', $encounter->client_id)
                     ->active()
                     ->first();
+
+
 
                 if (! $account) {
                     $account = Account::createPatientAccount($patient);

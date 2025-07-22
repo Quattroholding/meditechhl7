@@ -23,7 +23,7 @@ class Survey extends BaseModel
 
     protected static function booted()
     {
-        static::addGlobalScope(new ClientScope);
+        //static::addGlobalScope(new ClientScope);
     }
 
     public function client(): BelongsTo
