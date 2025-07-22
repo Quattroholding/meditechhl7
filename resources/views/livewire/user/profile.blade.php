@@ -123,7 +123,7 @@
         <div class="card">
             <div class="card-body">
                 <ul class="nav nav-tabs" role="tablist">
-                    @can('users.edit')
+                    @can('users.profile')
                         <li class="nav-item" role="presentation">
                             <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
                                 {{__('patient.account_settings')}}
@@ -138,7 +138,7 @@
                     @endcan
                 </ul>
                 <div class="tab-content">
-                    @can('users.edit')
+                    @can('users.profile')
                         <div class="tab-pane active" id="account_settings" role="tabpanel">
                             <form id="send-verification" method="post" action="{{ route('verification.send') }}">
                                 @csrf

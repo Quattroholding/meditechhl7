@@ -48,23 +48,39 @@
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
-                                            @if(auth()->user()->can('booked',$appointment))
-                                                <div class="dropdown-menu dropdown-menu-end">
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                @if(auth()->user()->can('booked',$appointment))
                                                     <a class="dropdown-item"  wire:click="editAppointment({{$appointment->id}})">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                         {{__('appointment.status.confirm')}}
                                                     </a>
-                                                    @endif
-                                            @if(auth()->user()->can('edit',$appointment))
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item"  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                    {{__('generic.edit')}}
-                                                </a>
-                                            @endif
-                                            @if(auth()->user()->can('delete',$appointment))
-                                                <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
-                                            @endif
+                                                @endif
+                                                @if(auth()->user()->can('edit',$appointment))
+                                                    <a class="dropdown-item"  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                        {{__('generic.edit')}}
+                                                    </a>
+                                               @endif
+                                                @if(auth()->user()->can('delete',$appointment))
+                                                    <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment"><i class="fa fa-trash-alt m-r-5"></i>
+                                                        {{__('generic.delete')}}
+                                                    </a>
+                                               @endif
                                             </div>
                                         </div>
+                                        <script>
+                                            document.addEventListener('livewire:initialized', () => {
+                                                Livewire.on('showToastr{{$appointment->id}}', (event) => {
+                                                    toastr[event[0].type](event[0].message, '', {
+                                                        closeButton: true,
+                                                        progressBar: true,
+                                                        positionClass: 'toast-top-right',
+                                                        timeOut: 5000,
+                                                        onHidden: function() {
+                                                            window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                        </script>
                                     </td>
                                 </tr>
                             @endforeach
@@ -88,4 +104,22 @@
         </div>
     </div>
     <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"/>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastr', (event) => {
+                console.log('Toastr event received:', event);
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                    onHidden: function() {
+                        if(event.appointment_id) {
+                           window.location.href = '{{url('consultation')}}/'+event.appointment_id; // Replace with your desired URL
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </div>

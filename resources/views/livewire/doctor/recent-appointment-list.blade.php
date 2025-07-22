@@ -72,28 +72,7 @@
             100% { opacity: 1; }
         }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const container = document.getElementById("miDiv");
-            const destino = document.getElementById("destino");
 
-
-            if (container && destino) {
-                container.scrollTop = destino.offsetTop;
-                console.log(destino);
-
-                destino.style.transition = 'background-color 0.5s ease';
-                destino.style.backgroundColor = '#ffff99';
-                setTimeout(() => destino.style.backgroundColor = '', 2000);
-            }
-
-            setInterval(function() {
-                Livewire.dispatch('loadAppointments');
-                console.log('actualizó'); // Actualizar cada minuto
-            }, 30000);
-
-        });
-    </script>
     <div  class="card flex-fill comman-shadow" >
 
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -147,9 +126,12 @@
                                         <i class="fas fa-circle me-2 {{ $appointment->status == 'fulfilled' ? 'active-circles' : '' }}"></i>
                                         {{ \Carbon\Carbon::parse($time)->format('h:i') }}
                                         <a href="" title="{{ !in_array($appointment->status, ['booked', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
-                                              data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight">
+                                           @can('patients.medical_history') data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight" @endcan>
                                             {{ $appointment->patient->name }}
                                         </a>
+                                        @if(auth()->user()->hasRole('asistente'))
+                                            ({{$appointment->practitioner->name}})
+                                        @endif
                                         <div class="float-end">
                                             {{--}}
                                             <span class="badge appointment-status-{{$status}}" style="color:#fff;">  {{ __('appointment.status.'.$status) }}</span>
@@ -160,7 +142,7 @@
                                         </div>
                                     </li>
                                     @endif
-                                    @if (in_array($appointment->status, ['booked', 'arrived']))
+                                    @if (in_array($appointment->status, ['booked', 'arrived','checked-in']))
                                         @if($ongoing)
                                         <a id="destino" class="dropdown-toggle active-doctor"  data-bs-toggle="dropdown">
                                             <i class="fas fa-circle me-2 active-circles"></i>
@@ -192,15 +174,16 @@
                                             </li>
                                             <li class="schedule-blk mb-0 pt-2 dropdown-item">
                                                 <ul class="nav schedule-time">
-                                                    <li>
-                                                        <a href=""><img src="../assets/img/icons/trash.svg" alt="" style="cursor: pointer;"></a>
-                                                    </li>
+                                                    @can('patients.medical_history')
                                                     <li><a href="{{route('patient.medical_history', $appointment->patient->id)}}" >
                                                             <img src="../assets/img/icons/profile.svg" alt="" style="cursor: pointer;"></a>
                                                     </li>
+                                                    @endcan
+                                                    @can('appointments.edit')
                                                     <li>
                                                         <a wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;"><img src="../assets/img/icons/edit.svg" alt=""></a>
                                                     </li>
+                                                    @endcan
                                                 </ul>
                                                 @if(auth()->user()->can('arrived',$appointment))
                                                     <button wire:click.stop="updateStatus({{ $appointment->id }}, 'arrived')" class="action-btn btn-start">
@@ -232,6 +215,22 @@
                                         </ul>
                                     @endif
                                     @include('consultations.partials.patient_info',array('id'=>$appointment->patient_id))
+                                    <script>
+                                        document.addEventListener('livewire:initialized', () => {
+                                            alert('recent-appointment-list');
+                                            Livewire.on('showToastr{{$appointment->id}}', (event) => {
+                                                toastr[event[0].type](event[0].message, '', {
+                                                    closeButton: true,
+                                                    progressBar: true,
+                                                    positionClass: 'toast-top-right',
+                                                    timeOut: 5000,
+                                                    onHidden: function() {
+                                                        window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
                                 @endforeach
                             </ul>
                         </div>
@@ -245,6 +244,28 @@
 
 <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
                                  :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById("miDiv");
+            const destino = document.getElementById("destino");
+
+
+            if (container && destino) {
+                container.scrollTop = destino.offsetTop;
+                console.log(destino);
+
+                destino.style.transition = 'background-color 0.5s ease';
+                destino.style.backgroundColor = '#ffff99';
+                setTimeout(() => destino.style.backgroundColor = '', 2000);
+            }
+
+            setInterval(function() {
+                Livewire.dispatch('loadAppointments');
+                console.log('actualizó'); // Actualizar cada minuto
+            }, 30000);
+        });
+    </script>
 
 </div>
 
