@@ -1,4 +1,4 @@
-<div style="display: inline-block" >
+<div style="display: inline-block" wire:poll.10s>
     @if(in_array($appointment->status,['proposed','booked','arrived','fulfilled','pending','checked-in']))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop1"
@@ -27,12 +27,13 @@
                     <a class="dropdown-item" wire:click="changeStatus('checked-in')" >  ▶️ {{__('Iniciar Consulta')}}</a>
                 @endif
                 @if(auth()->user()->can('fulfilled',$appointment))
-                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}"><i class="fa fa-clock-o"></i> {{__('Finalizar Consulta')}}</a>
+                    <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}"><i class="fa fa-pencil"></i> {{__('Llenar Consulta')}}</a>
                 @endif
                 @if(auth()->user()->can('viewConsultation',$appointment))
                     <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" > 👁️ {{__('Ver Consulta')}}</a>
                 @endif
             </div>
+
             @endif
         </div>
     @else
@@ -40,8 +41,8 @@
     @endif
     <script>
     document.addEventListener('livewire:initialized', () => {
-        Livewire.on('showToastrStatus{{$appointment->id}}', (event) => {
-            console.log('aqui :'+event);
+        Livewire.on('showToastr{{$appointment->id}}', (event) => {
+           alert('status')
             toastr[event.type](event.message, '', {
                 closeButton: true,
                 progressBar: true,

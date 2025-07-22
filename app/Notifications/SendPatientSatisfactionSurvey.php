@@ -45,23 +45,20 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $surveyUrl = route('survey.public', $this->surveyResponse->token);
-        $practitionerName = $this->encounter->practitioner->name ?? 'Su médico';
+        $practitionerName = $this->encounter->practitioner->full_name ?? 'Su médico';
         $encounterDate = $this->encounter->start->format('d/m/Y');
         $clinicName = $this->encounter->appointment->client->name;
 
         return (new MailMessage)
             ->subject('Encuesta de Satisfacción - ' . $clinicName)
-            ->greeting('Estimado/a ' . $notifiable->name . ',')
-            ->line('Esperamos que se encuentre bien. Su opinión es muy importante para nosotros y nos ayuda a mejorar continuamente la calidad de nuestros servicios.')
-            ->line('**Detalles de su consulta:**')
-            ->line('• Fecha: ' . $encounterDate)
-            ->line('• Médico: ' . $practitionerName)
-            ->line('• Centro médico: ' . $clinicName)
-            ->line('Le invitamos a completar una breve encuesta de satisfacción sobre la atención recibida.')
-            ->action('Completar Encuesta', $surveyUrl)
-            ->line('Esta encuesta tomará aproximadamente 2-3 minutos en completarse.')
-            ->line('Gracias por confiar en nosotros para su cuidado médico.')
-            ->salutation('Equipo de ' . $clinicName);
+            ->view('emails.patient-satisfaction-survey', [
+                'patientName' => $notifiable->name,
+                'surveyTitle' => $this->survey->title,
+                'surveyUrl' => $surveyUrl,
+                'practitionerName' => $practitionerName,
+                'encounterDate' => $encounterDate,
+                'clinicName' => $clinicName
+            ]);
     }
 
     /**

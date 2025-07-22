@@ -5,10 +5,13 @@ namespace App\Livewire\Appointment;
 use App\Models\Appointment;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class Status extends Component
 {
     use WithPagination;
+
+
     public $appointment_id;
     public $appointment;
     public $status;
@@ -32,23 +35,41 @@ class Status extends Component
         $this->status = $newStatus;
         $this->color = $this->colors[$this->status];
 
+        // Emitir evento para otros usuarios
+        $this->dispatch('appointmentStatusChanged',
+            appointment_id: $this->appointment_id,
+            new_status: $newStatus
+        );
+
         if($current_status=='proposed' && $newStatus=='booked'){
             $this->appointment->notifyPatientAboutConfirmation();
 
-            $this->dispatch('showToastrStatus'.$this->appointment_id,
-                type: 'success',
-                message: '¡Cita confirmada con exito , se envio notificacion al correo del paciente!'
-            );
+            $this->dispatch('showToastr' . $this->appointment_id, [
+                'type' => 'success',
+                'message' => '¡Cita confirmada con exito , se envio notificacion al correo del paciente!',
+                'appointment_id' => $this->appointment_id
+            ]);
         }
 
         if($newStatus=='checked-in'){
-
-            $this->dispatch('showToastrStatus'.$this->appointment_id,
-                type: 'success',
-                message: '¡Espere por favor en unos segundos empezara su consulta!'
-            );
+            $this->dispatch('showToastr'.$this->appointment_id, [
+                'type' => 'success',
+                'message' => '¡Espere por favor en unos segundos empezara su consulta!',
+                'appointment_id' => $this->appointment_id
+            ]);
             //sleep(5);
             //return $this->redirect(route('consultation.show',$this->appointment->id));
+        }
+    }
+
+    #[On('appointmentStatusChanged')]
+    public function updateStatus($appointment_id, $new_status)
+    {
+        if ($appointment_id == $this->appointment_id) {
+            $this->appointment = Appointment::find($this->appointment_id);
+            $this->status = $new_status;
+            $this->colors = $this->appointment::statusColors();
+            $this->color = $this->colors[$this->status];
         }
     }
 
