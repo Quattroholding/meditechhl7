@@ -101,7 +101,6 @@
             });
             document.addEventListener('livewire:initialized', () => {
                 Livewire.on('showToastr', (event) => {
-                    alert('aqui modal-save')
                     toastr[event.type](event.message, '', {
                         closeButton: true,
                         progressBar: true,
