@@ -33,6 +33,7 @@
                     <a class="dropdown-item" href="{{route('consultation.show',$appointment->id)}}" > 👁️ {{__('Ver Consulta')}}</a>
                 @endif
             </div>
+
             @endif
         </div>
     @else
