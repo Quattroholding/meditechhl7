@@ -53,7 +53,7 @@
                                     <!-- Client -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="client" :value="__('client.title')" />
-                                        <x-select-input name="clients" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="$data->clients()->pluck('client_id')->toArray()" class="block w-full"/>
+                                        <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="$data->clients()->pluck('client_id')->toArray()" multiple class="block w-full"/>
                                         <x-input-error :messages="$errors->get('clients')" class="mt-2" />
                                     </div>
                                 </div>

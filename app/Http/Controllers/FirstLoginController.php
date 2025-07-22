@@ -25,8 +25,10 @@ class FirstLoginController extends Controller
         $user = auth()->user();
 
         // Validate if user hasn't completed first login
+        $route = route('profile.edit',$user->id);
+        if($user->practitioner)  $route = route('practitioner.profile',$user->practitioner->id);
         if (!is_null($user->first_login_at)) {
-            return redirect()->route('practitioner.profile',$user->practitioner->id);
+            return redirect($route);
         }
 
         $request->validate([
@@ -50,6 +52,6 @@ class FirstLoginController extends Controller
             'first_login_at' => now(),
         ]);
 
-        return redirect()->route('practitioner.profile',$user->practitioner->id)->with('success', 'Contraseña actualizada exitosamente. Bienvenido al sistema.');
+        return redirect($route)->with('success', 'Contraseña actualizada exitosamente. Bienvenido al sistema.');
     }
 }

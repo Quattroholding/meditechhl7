@@ -35,7 +35,6 @@ class RecentAppointmentList extends Component
     {
         $today =  \Carbon\Carbon::today();
 
-        $doctor_id = auth()->user()->practitioner->id;
         $this->appointments = Appointment::whereDate('start', $today)
                                         ->orderBy('start')
                                         ->get();

@@ -26,6 +26,7 @@
                                     <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
+                                    <a href="{{route('autologin',['role'=>'asistente'])}}" class="btn btn-primary">Asistente</a>
                                 </div>
                                 @if (session('message'))
                                     <div style="color: blue;">
@@ -46,7 +47,7 @@
                                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                     </div>
                                     <div class="input-block local-forms">
-                                        <x-input-label for="password" :value="__('Password')" required="true" />
+                                        <x-input-label for="password" :value="__('Contraseña')" required="true" />
                                         <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" />
                                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                         <span class="profile-views feather-eye-off toggle-password"></span>

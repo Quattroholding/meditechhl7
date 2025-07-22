@@ -52,12 +52,11 @@ class ConsultationEffectiveness extends Component
 
     public function loadEffectivenessData()
     {
-        $practitionerId = auth()->user()->practitioner->id;
+
         $days = (int) $this->timeFrame;
 
         // Obtener citas del período seleccionado
         $appointments = Appointment::query()
-            ->where('practitioner_id', $practitionerId)
             ->when($days > 0, function($query) use ($days) {
                 return $query->where('start', '>=', now()->subDays($days));
             })

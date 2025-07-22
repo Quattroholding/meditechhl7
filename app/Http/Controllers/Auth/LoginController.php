@@ -22,24 +22,25 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $user = auth()->user();
             $user->getCurrentClient();
 
             // Check if doctor needs to complete first login
-            if ($user->hasRole('doctor') && is_null($user->first_login_at)) {
+            if (is_null($user->first_login_at)) {
                 return redirect()->route('first-login.show');
             }
 
             $route = route('admin.dashboard');
             if($user->hasRole('doctor'))   $route = route('doctor.dashboard');
             if($user->hasRole('paciente')) $route = route('patient.dashboard');
+            if($user->hasRole('asistente')) $route = route('assistence.dashboard');
 
             return redirect()->intended($route."?show_salute=true");
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ])->onlyInput('email');
     }
 }

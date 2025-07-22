@@ -35,7 +35,15 @@
                     </a>
                 </li>
                 @endcan
-                @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create', 'rooms.view', 'users.create'])
+                @can('dashboard.assistence')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('dashboard/assistence') ? 'active' : '' }}"  href="{{ route('assistence.dashboard') }}"><span class="menu-side" >
+                            <i class="fa fa-chart-bar"></i></span>
+                            <span> Dashboard </span>
+                        </a>
+                    </li>
+                @endcan
+                @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
                             <i class="fa fa-hospital"></i></span>
@@ -192,6 +200,14 @@
                     </ul>
                 </li>
                 @endcanany
+                @can('practitioners.directory')
+                <li>
+                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
+                        <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
+                        <span>{{ __('patient.medical_directory') }}</span>
+                    </a>
+                </li>
+                @endcan
                 @canany(['users.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -207,6 +223,22 @@
                     </ul>
                 </li>
                 @endcanany
+                @can('practitioners.profile' && auth()->user()->practitioner)
+                <li>
+                    <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">
+                        <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
+                        <span>{{ __('doctor.profile') }}</span>
+                    </a>
+                </li>
+                @endcan
+                @can('users.profile')
+                    <li>
+                        <a class="{{ Request::is('profile') ? 'active' : '' }}"  href="{{ route('profile.edit') }}">
+                            <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
+                            <span>{{ __('doctor.profile') }}</span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['manage-roles', 'manage-permissions'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">

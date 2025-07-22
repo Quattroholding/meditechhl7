@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
+
+class ResetPasswordNotification extends ResetPassword
+{
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail($notifiable): MailMessage
+    {
+        $expireTime = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
+        $expireTimeInMinutes = $expireTime . ' minutos';
+
+        return (new MailMessage)
+            ->subject('Restablecer Contraseña - ' . config('app.name'))
+            ->view('emails.reset-password', [
+                'actionUrl' => $this->resetUrl($notifiable),
+                'expireTime' => $expireTimeInMinutes,
+                'user' => $notifiable
+            ]);
+    }
+
+    /**
+     * Get the reset URL for the given notifiable.
+     */
+    protected function resetUrl($notifiable)
+    {
+        return url(route('password.reset', [
+            'token' => $this->token,
+            'email' => $notifiable->getEmailForPasswordReset(),
+        ], false));
+    }
+}

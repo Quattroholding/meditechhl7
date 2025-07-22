@@ -11,11 +11,13 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function admin(Request $request){
-
         $dashboard = array();
         return view('Dashboard.index',compact('dashboard'));
     }
-
+    public function admin_client(Request $request){
+        $dashboard = array();
+        return view('Dashboard.index',compact('dashboard'));
+    }
     public function doctor(Request $request){
 
         $dashboards=array();
@@ -68,7 +70,6 @@ class DashboardController extends Controller
 
         return view('Dashboard.doctor-dashboard',compact('dashboards'));
     }
-
     public function patient(Request $request){
 
         $patient = Patient::find(auth()->user()->patient->id);
@@ -122,5 +123,8 @@ class DashboardController extends Controller
 
 
         return view('Dashboard.patient-dashboard',compact('dashboards','patient'));
+    }
+    public function assistence(Request $request){
+        return view('Dashboard.assistence-dashboard');
     }
 }

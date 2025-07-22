@@ -23,4 +23,8 @@ return [
     'address'=>'Dirección',
     'gender'=>'Genero',
     'birthdate'=>'Fecha  Nacimiento',
+    'created_at'=>'Fecha de creacion',
+    'current_password'=>'Contraseña actual',
+    'new_password'=>'Nueva Contraseña',
+    'confirm_password'=>'Confirmar nueva contraseña'
 ];

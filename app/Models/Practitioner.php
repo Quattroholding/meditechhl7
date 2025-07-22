@@ -100,6 +100,7 @@ class Practitioner extends BaseModel
     }
 
     public function getProfileNameAttribute(){
+
         $path = url('assets/img/profiles/avatar-02.jpg');
         if($this->avatar()) $path = url('storage/'.$this->avatar()->path);
 

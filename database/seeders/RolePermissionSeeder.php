@@ -23,13 +23,14 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'users.edit', 'description' => 'Editar información de usuarios','module'=>'usuarios'],
             ['name' => 'users.delete', 'description' => 'Eliminar usuarios del sistema','module'=>'usuarios'],
             ['name' => 'users.profile', 'description' => 'Ver perfil del usuario','module'=>'usuarios'],
+            ['name' => 'users.change_client', 'description' => 'Cambiar de cliente','module'=>'usuarios'],
 
             // Client management
             ['name' => 'clients.view', 'description' => 'Ver lista de clientes/organizaciones','module'=>'clientes'],
             ['name' => 'clients.create', 'description' => 'Registrar nuevos clientes','module'=>'clientes'],
             ['name' => 'clients.edit', 'description' => 'Editar información de clientes','module'=>'clientes'],
             ['name' => 'clients.delete', 'description' => 'Eliminar clientes del sistema','module'=>'clientes'],
-           
+
             // Patient management
             ['name' => 'patients.view', 'description' => 'Ver lista y perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.create', 'description' => 'Registrar nuevos pacientes','module'=>'pacientes'],
@@ -37,6 +38,8 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'patients.delete', 'description' => 'Eliminar registros de pacientes','module'=>'pacientes'],
             ['name' => 'patients.profile', 'description' => 'Ver perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.medical_history', 'description' => 'Ver historial medico de pacientes','module'=>'pacientes'],
+            ['name' => 'patients.add_note', 'description' => 'Agregar nota general de pacientes','module'=>'pacientes'],
+            ['name' => 'patients.insurance', 'description' => 'Gerstionar seguros de pacientes','module'=>'pacientes'],
 
             // Practitioner management
             ['name' => 'practitioners.view', 'description' => 'Ver lista de médicos y profesionales','module'=>'medicos'],
@@ -108,6 +111,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'dashboard.doctor', 'description' => 'Acceso al dashboard de médico','module'=>'dashboards'],
             ['name' => 'dashboard.patient', 'description' => 'Acceso al dashboard de paciente','module'=>'dashboards'],
             ['name' => 'dashboard.client', 'description' => 'Acceso al dashboard de cliente','module'=>'dashboards'],
+            ['name' => 'dashboard.assistence', 'description' => 'Acceso al dashboard de asistencia','module'=>'dashboards'],
         ];
 
         foreach ($permissions as $permissionData) {
@@ -148,6 +152,8 @@ class RolePermissionSeeder extends Seeder
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
         $doctorRole->givePermissionTo([
             'dashboard.doctor',
+            'users.view',
+            'users.create',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
@@ -156,6 +162,8 @@ class RolePermissionSeeder extends Seeder
             'patients.create',
             'patients.edit',
             'patients.medical_history',
+            'patients.add_note',
+            'patients.insurance',
             'consultations.view',
             'consultations.create',
             'consultations.edit',
@@ -191,6 +199,8 @@ class RolePermissionSeeder extends Seeder
         $adminClientRole = Role::firstOrCreate(['name' => 'admin client']);
         $adminClientRole->givePermissionTo([
             'dashboard.client',
+            'users.view',
+            'users.create',
             'practitioners.view',
             'practitioners.create',
             'practitioners.edit',
@@ -217,9 +227,12 @@ class RolePermissionSeeder extends Seeder
 
         $assistantRole = Role::firstOrCreate(['name' => 'asistente']);
         $assistantRole->givePermissionTo([
+            'dashboard.assistence',
             'patients.view',
             'patients.create',
             'patients.edit',
+            'patients.add_note',
+            'patients.insurance',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
@@ -233,7 +246,8 @@ class RolePermissionSeeder extends Seeder
             'payments.create',
             'payments.edit',
             'payments.delete',
-            'users.profile'
+            'users.profile',
+            'users.change_client',
         ]);
     }
 }

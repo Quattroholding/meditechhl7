@@ -26,13 +26,21 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        auth()->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (auth()->user()->isDirty('email')) {
+            auth()->user()->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if(auth()->user()->save()){
+
+            if($request->has('clients'))
+                auth()->user()->clients()->sync($request->clients);
+
+            session()->flash('message.success','Actualizado con exito!');
+        }else{
+            session()->flash('message.error','Hubo un error y no se pudo actualizar!');
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

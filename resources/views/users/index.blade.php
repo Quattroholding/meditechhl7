@@ -12,21 +12,7 @@
             @endcomponent
             <!-- /Page Header -->
 
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card card-table show-entire p-2">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                            <livewire:data-table model="{{$model}}"
-                                                 :columns="['id', 'profile_name', 'email','acciones']"
-                                                 :actions="['edit','delete']"
-                                                 routename="user"
-                                                 wire:key="{{\Illuminate\Support\Str::random(5)}}"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <livewire:user.data-table />
         </div>
     </div>
 </x-app-layout>

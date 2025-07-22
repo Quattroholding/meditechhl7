@@ -206,7 +206,9 @@ class Patient extends BaseModel
 
     public function getProfileNameAttribute(){
         $path = url('assets/img/profiles/avatar-02.jpg');
-        $route = route('patient.profile',$this->id);
+        $route='';
+        if(auth()->user()->can('patients.profile'))   $route = route('patient.profile',$this->id);
+
         $title = 'Ver perfil';
         if($this->avatar()) $path = url('storage/'.$this->avatar()->path);
 
