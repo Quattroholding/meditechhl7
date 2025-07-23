@@ -154,6 +154,7 @@ class RolePermissionSeeder extends Seeder
             'dashboard.doctor',
             'users.view',
             'users.create',
+            'users.change_client',
             'appointments.view',
             'appointments.create',
             'appointments.edit',

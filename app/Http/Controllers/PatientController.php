@@ -234,10 +234,10 @@ class PatientController extends Controller
         if ($patient) {
             /*$clinicId = auth()->user()->clinic_id;
             $patient->clinics()->syncWithoutDetaching([$clinicId]);*/
-            $client = UserClient::where('user_id',$patient->identifier)->first();
+            /*$client = UserClient::where('user_id',$patient->identifier)->first();*/
             $user_client= new PatientClinic();
             $user_client->patient_id = $patient->identifier;
-            $user_client->client_id = $client->client_id;
+            $user_client->client_id = auth()->user()->getCurrentClient()->id;
             $user_client->save();
 
              return response()->json(['message' => 'Paciente asociado']);
