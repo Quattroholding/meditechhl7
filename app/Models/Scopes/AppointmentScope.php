@@ -22,7 +22,7 @@ class AppointmentScope implements Scope
             });
         }elseif(auth()->user() && auth()->user()->hasRole('paciente') && auth()->user()->patient->id){ // el asistente ve todas las citas de los doctores asociados a cu cliente
             $builder->where('patient_id',auth()->user()->patient->id);
-        }elseif(auth()->user() && auth()->user()->hasRole('asistente')){ // el asistente ve todas las citas de los doctores asociados a cu cliente
+        }elseif(auth()->user() && auth()->user()->hasRole('asistente') || auth()->user() && auth()->user()->hasRole('admin client')){ // el asistente ve todas las citas de los doctores asociados a cu cliente
             $builder->whereHas('patient',function ($q){
                 $q->whereHas('clients',function ($q2){
                    $q2->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
