@@ -10,9 +10,33 @@
         {{--}}
     </div>
     <div class="card-body">
-        @if($this->recentConsultations->count() > 0)
+        @if($isLoading)
+            <div class="timeline loading-skeleton">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="timeline-item">
+                        <div class="timeline-marker skeleton-marker"></div>
+                        <div class="timeline-content skeleton-content">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <div class="skeleton-doctor-name mb-1"></div>
+                                    <div class="skeleton-specialty"></div>
+                                </div>
+                                <div class="skeleton-date"></div>
+                            </div>
+                            <div class="skeleton-complaint mb-2"></div>
+                            <div class="skeleton-diagnosis mb-2"></div>
+                            <div class="skeleton-treatment mb-2"></div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="skeleton-status"></div>
+                                <div class="skeleton-actions"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        @elseif($recentConsultations->count() > 0)
             <div class="timeline">
-                @foreach($this->recentConsultations as $consultation)
+                @foreach($recentConsultations as $consultation)
                     <div class="timeline-item">
                         <div class="timeline-marker bg-primary"></div>
                         <div class="timeline-content">
@@ -89,7 +113,7 @@
                 @endforeach
             </div>
 
-            @if($this->recentConsultations->count() >= $limit)
+            @if($recentConsultations->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('consultation.index') }}" class="btn btn-outline-primary btn-sm">
                         Ver Historial Completo
@@ -101,9 +125,7 @@
                 <i class="fas fa-stethoscope fa-3x text-muted mb-3"></i>
                 <h6 class="text-muted">No hay consultas registradas</h6>
                 <p class="text-muted mb-3">Tus consultas médicas aparecerán aquí</p>
-                <a href="{{ route('appointment.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i>Programar Consulta
-                </a>
+
             </div>
         @endif
     </div>
@@ -144,6 +166,81 @@
             padding: 15px;
             border-radius: 8px;
             border-left: 4px solid #007bff;
+        }
+
+        /* Skeleton loading styles for consultations */
+        .loading-skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-marker {
+            background: #e9ecef !important;
+        }
+
+        .skeleton-content {
+            background: #f8f9fa;
+        }
+
+        .skeleton-doctor-name {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 140px;
+        }
+
+        .skeleton-specialty {
+            height: 14px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 100px;
+        }
+
+        .skeleton-date {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 60px;
+        }
+
+        .skeleton-complaint {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .skeleton-diagnosis {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 90%;
+        }
+
+        .skeleton-treatment {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 85%;
+        }
+
+        .skeleton-status {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            width: 80px;
+        }
+
+        .skeleton-actions {
+            height: 32px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 120px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </div>

@@ -9,20 +9,35 @@ class RecentConsultations extends Component
 {
     public $patient;
     public $limit = 5;
+    public $order;
+    public $isLoading = true;
+    public $recentConsultations = [];
 
-    public function mount($limit = 5)
+    protected $listeners = ['loadData'];
+
+    public function mount($limit = 5, $order = null)
     {
         $this->patient = auth()->user()->patient;
         $this->limit = $limit;
+        $this->order = $order;
+        // Initialize empty data to avoid errors during loading
+        $this->recentConsultations = collect();
     }
 
-    public function getRecentConsultationsProperty()
+    public function loadData()
+    {
+        $this->loadRecentConsultations();
+        $this->isLoading = false;
+    }
+
+    public function loadRecentConsultations()
     {
         if (!$this->patient) {
-            return collect();
+            $this->recentConsultations = collect();
+            return;
         }
 
-        return Encounter::where('patient_id', $this->patient->id)
+        $this->recentConsultations = Encounter::where('patient_id', $this->patient->id)
             ->with(['practitioner', 'appointment', 'vitalSigns.observationType'])
             ->orderBy('start', 'desc')
             ->limit($this->limit)

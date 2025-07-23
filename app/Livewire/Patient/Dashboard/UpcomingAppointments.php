@@ -13,20 +13,35 @@ class UpcomingAppointments extends Component
     public $appointment_time;
     public $modalTitle;
     public $showModal;
+    public $order;
+    public $isLoading = true;
+    public $upcomingAppointments = [];
 
-    public function mount($limit = 5)
+    protected $listeners = ['loadData'];
+
+    public function mount($limit = 5, $order = null)
     {
         $this->patient = auth()->user()->patient;
         $this->limit = $limit;
+        $this->order = $order;
+        // Initialize empty data to avoid errors during loading
+        $this->upcomingAppointments = collect();
     }
 
-    public function getUpcomingAppointmentsProperty()
+    public function loadData()
+    {
+        $this->loadUpcomingAppointments();
+        $this->isLoading = false;
+    }
+
+    public function loadUpcomingAppointments()
     {
         if (!$this->patient) {
-            return collect();
+            $this->upcomingAppointments = collect();
+            return;
         }
 
-        return Appointment::where('patient_id', $this->patient->id)
+        $this->upcomingAppointments = Appointment::where('patient_id', $this->patient->id)
             ->whereDate('start', '>=', now())
             ->where('status', '!=', 'cancelled')
             ->with(['practitioner', 'consultingRoom.branch'])

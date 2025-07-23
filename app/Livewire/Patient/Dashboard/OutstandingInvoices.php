@@ -9,20 +9,38 @@ class OutstandingInvoices extends Component
 {
     public $patient;
     public $limit = 5;
+    public $order;
+    public $isLoading = true;
+    public $outstandingInvoices = [];
+    public $totalDebt = 0;
 
-    public function mount($limit = 5)
+    protected $listeners = ['loadData'];
+
+    public function mount($limit = 5, $order = null)
     {
         $this->patient = auth()->user()->patient;
         $this->limit = $limit;
+        $this->order = $order;
+        // Initialize empty data to avoid errors during loading
+        $this->outstandingInvoices = collect();
+        $this->totalDebt = 0;
     }
 
-    public function getOutstandingInvoicesProperty()
+    public function loadData()
+    {
+        $this->loadOutstandingInvoices();
+        $this->loadTotalDebt();
+        $this->isLoading = false;
+    }
+
+    public function loadOutstandingInvoices()
     {
         if (!$this->patient) {
-            return collect();
+            $this->outstandingInvoices = collect();
+            return;
         }
 
-        return Invoice::where('patient_id', $this->patient->id)
+        $this->outstandingInvoices = Invoice::where('patient_id', $this->patient->id)
             ->whereIn('payment_status', ['unpaid', 'partial'])
             ->with(['encounter', 'lineItems'])
             ->orderBy('due_date')
@@ -30,13 +48,14 @@ class OutstandingInvoices extends Component
             ->get();
     }
 
-    public function getTotalDebtProperty()
+    public function loadTotalDebt()
     {
         if (!$this->patient) {
-            return 0;
+            $this->totalDebt = 0;
+            return;
         }
 
-        return Invoice::where('patient_id', $this->patient->id)
+        $this->totalDebt = Invoice::where('patient_id', $this->patient->id)
             ->whereIn('payment_status', ['pending', 'partial'])
             ->sum('amount_due') ?? 0;
     }

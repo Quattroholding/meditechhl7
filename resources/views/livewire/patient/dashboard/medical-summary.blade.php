@@ -5,17 +5,40 @@
         </h5>
     </div>
     <div class="card-body">
-        <div class="row">
-            <!-- Active Medical Conditions -->
-            <div class="col-md-6 mb-4">
-                <div class="h6 mb-3">
-                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                    Condiciones Médicas Activas
+        @if($isLoading)
+            <div class="loading-skeleton">
+                <div class="row">
+                    @for($section = 0; $section < 4; $section++)
+                        <div class="col-md-6 mb-4">
+                            <div class="skeleton-section-title mb-3"></div>
+                            @for($i = 0; $i < 3; $i++)
+                                <div class="skeleton-list-item mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="flex-grow-1">
+                                            <div class="skeleton-item-title mb-1"></div>
+                                            <div class="skeleton-item-description"></div>
+                                            <div class="skeleton-item-date mt-1"></div>
+                                        </div>
+                                        <div class="skeleton-badge"></div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    @endfor
                 </div>
+            </div>
+        @else
+            <div class="row">
+                <!-- Active Medical Conditions -->
+                <div class="col-md-6 mb-4">
+                    <div class="h6 mb-3">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Condiciones Médicas Activas
+                    </div>
 
-                @if($this->activeMedicalConditions->count() > 0)
+                    @if($activeMedicalConditions->count() > 0)
                     <div class="list-group list-group-flush">
-                        @foreach($this->activeMedicalConditions as $condition)
+                        @foreach($activeMedicalConditions as $condition)
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
@@ -65,9 +88,9 @@
                     Alergias
                 </div>
 
-                @if($this->allergies->count() > 0)
+                @if($allergies->count() > 0)
                     <div class="list-group list-group-flush">
-                        @foreach($this->allergies as $allergy)
+                        @foreach($allergies as $allergy)
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="flex-grow-1">
@@ -100,9 +123,9 @@
                     Medicamentos Recientes
                 </div>
 
-                @if($this->currentMedications->count() > 0)
+                @if($currentMedications->count() > 0)
                     <div class="list-group list-group-flush">
-                        @foreach($this->currentMedications as $encounter)
+                        @foreach($currentMedications as $encounter)
 
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -136,14 +159,14 @@
                     Últimos Signos Vitales
                 </div>
 
-                @if($this->lastVitalSigns)
+                @if($lastVitalSigns)
                     <div class="bg-light p-3 rounded">
                         <small class="text-muted d-block mb-2">
-                            {{ $this->lastVitalSigns['date']->format('d/m/Y') }}
+                            {{ $lastVitalSigns['date']->format('d/m/Y') }}
                         </small>
 
                         <div class="row g-2">
-                            @foreach($this->lastVitalSigns['vital_signs'] as $vitalSign)
+                            @foreach($lastVitalSigns['vital_signs'] as $vitalSign)
                                 <div class="col-6">
                                     <div class="text-center p-2 bg-white rounded">
                                         <small class="text-muted d-block">{{ $vitalSign->observationType?->name ?? 'Signo Vital' }}</small>
@@ -200,6 +223,61 @@
                     {{--}}
                 </div>
             </div>
-        </div>
+            </div>
+        @endif
     </div>
+    
+    <style>
+        /* Loading skeleton styles for medical summary */
+        .loading-skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-section-title {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 200px;
+        }
+        
+        .skeleton-list-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .skeleton-item-title {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 120px;
+        }
+        
+        .skeleton-item-description {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 180px;
+        }
+        
+        .skeleton-item-date {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 80px;
+        }
+        
+        .skeleton-badge {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            width: 60px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
 </div>

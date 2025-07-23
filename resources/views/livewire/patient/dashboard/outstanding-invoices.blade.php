@@ -3,16 +3,50 @@
         <h5 class="mb-0" style="color: #fff">
             <i class="fas fa-file-invoice-dollar me-2"></i>Facturas Pendientes
         </h5>
-        @if($this->totalDebt > 0)
+        @if($totalDebt > 0)
             <span class="badge bg-warning text-dark">
-                Deuda Total: ${{ number_format($this->totalDebt, 2) }}
+                Deuda Total: ${{ number_format($totalDebt, 2) }}
             </span>
         @endif
     </div>
     <div class="card-body">
-        @if($this->outstandingInvoices->count() > 0)
+        @if($isLoading)
+            <div class="loading-skeleton">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="skeleton-invoice-item mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="skeleton-invoice-icon"></div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="skeleton-invoice-number mb-1"></div>
+                                        <div class="skeleton-invoice-date"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="skeleton-invoice-description mb-1"></div>
+                                <div class="skeleton-invoice-service"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="skeleton-amount mb-1"></div>
+                                <div class="skeleton-amount-value"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="skeleton-pending mb-1"></div>
+                                <div class="skeleton-pending-value"></div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="skeleton-badge mb-2"></div>
+                                <div class="skeleton-actions"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        @elseif($outstandingInvoices->count() > 0)
             <div class="list-group list-group-flush">
-                @foreach($this->outstandingInvoices as $invoice)
+                @foreach($outstandingInvoices as $invoice)
                     <div class="list-group-item px-0 py-3">
                         <div class="row align-items-center">
                             <div class="col-md-3">
@@ -127,7 +161,7 @@
                 @endforeach
             </div>
 
-            @if($this->outstandingInvoices->count() >= $limit)
+            @if($outstandingInvoices->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('patient.invoices') }}" class="btn btn-outline-primary btn-sm">
                         Ver Todas las Facturas
@@ -136,14 +170,14 @@
             @endif
 
             <!-- Payment Summary -->
-            @if($this->totalDebt > 0)
+            @if($totalDebt > 0)
                 <div class="alert alert-info mt-3 mb-0">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-info-circle fa-lg"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <strong>Total a pagar: ${{ number_format($this->totalDebt, 2) }}</strong>
+                            <strong>Total a pagar: ${{ number_format($totalDebt, 2) }}</strong>
                             <p class="mb-0">
                                 Puedes pagar tus facturas de forma individual o contactar con administración para un plan de pagos.
                             </p>
@@ -168,4 +202,103 @@
         @endif
     </div>
     @livewire('invoice.payment-modal')
+    
+    <style>
+        /* Loading skeleton styles for invoices */
+        .loading-skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-invoice-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .skeleton-invoice-icon {
+            width: 40px;
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .skeleton-invoice-number {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 120px;
+        }
+        
+        .skeleton-invoice-date {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 80px;
+        }
+        
+        .skeleton-invoice-description {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 60px;
+        }
+        
+        .skeleton-invoice-service {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 140px;
+        }
+        
+        .skeleton-amount {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 40px;
+        }
+        
+        .skeleton-amount-value {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 70px;
+        }
+        
+        .skeleton-pending {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 60px;
+        }
+        
+        .skeleton-pending-value {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 70px;
+        }
+        
+        .skeleton-badge {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            width: 100px;
+            margin-left: auto;
+        }
+        
+        .skeleton-actions {
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
 </div>

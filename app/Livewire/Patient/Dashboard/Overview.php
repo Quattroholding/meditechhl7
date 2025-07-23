@@ -12,19 +12,38 @@ use Livewire\Component;
 class Overview extends Component
 {
     public $patient;
+    public $order;
+    public $isLoading = true;
+    public $stats = [];
+    public $vitalSigns = null;
+    public $nextAppointment = null;
 
-    public function mount()
+    protected $listeners = ['loadData'];
+
+    public function mount($order = null)
     {
         $this->patient = auth()->user()->patient;
+        $this->order = $order;
+        // Initialize empty data to avoid errors during loading
+        $this->stats = [];
     }
 
-    public function getStatsProperty()
+    public function loadData()
+    {
+        $this->loadStats();
+        $this->loadVitalSigns();
+        $this->loadNextAppointment();
+        $this->isLoading = false;
+    }
+
+    public function loadStats()
     {
         if (!$this->patient) {
-            return [];
+            $this->stats = [];
+            return;
         }
 
-        return [
+        $this->stats = [
             'appointments' => [
                 'total' => Appointment::where('patient_id', $this->patient->id)->count(),
                 'upcoming' => Appointment::where('patient_id', $this->patient->id)
@@ -58,10 +77,11 @@ class Overview extends Component
         ];
     }
 
-    public function getVitalSignsProperty()
+    public function loadVitalSigns()
     {
         if (!$this->patient) {
-            return null;
+            $this->vitalSigns = null;
+            return;
         }
 
         // Get most recent vital signs with observation types
@@ -71,21 +91,27 @@ class Overview extends Component
             ->limit(4)
             ->get();
 
-        return $vitalSigns->isNotEmpty() ? $vitalSigns : null;
+        $this->vitalSigns = $vitalSigns->isNotEmpty() ? $vitalSigns : null;
     }
 
-    public function getNextAppointmentProperty()
+    public function loadNextAppointment()
     {
         if (!$this->patient) {
-            return null;
+            $this->nextAppointment = null;
+            return;
         }
 
-        return Appointment::where('patient_id', $this->patient->id)
+        $this->nextAppointment = Appointment::where('patient_id', $this->patient->id)
             ->whereDate('start', '>=', now())
             ->where('status', '!=', 'cancelled')
             ->orderBy('start')
             ->with(['practitioner'])
             ->first();
+    }
+
+    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    {
+        $this->dispatch('openAppointmentModal','Nueva Cita');
     }
 
     public function render()

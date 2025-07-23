@@ -3,14 +3,40 @@
         <h5 class="mb-0" style="color: #fff;">
             <i class="fas fa-calendar-alt me-2"></i>Próximas Citas
         </h5>
-        <button  wire:click="openModal" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-1"></i>Nueva Cita
-        </button>
+
     </div>
     <div class="card-body">
-        @if($this->upcomingAppointments->count() > 0)
+        @if($isLoading)
+            <div class="loading-skeleton">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="skeleton-appointment-item mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <div class="skeleton-calendar-badge"></div>
+                                    <div class="skeleton-date mt-2"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skeleton-doctor-name mb-2"></div>
+                                <div class="skeleton-specialty mb-1"></div>
+                                <div class="skeleton-time"></div>
+                                <div class="skeleton-location mt-1"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="skeleton-status-badge"></div>
+                                <div class="skeleton-reason mt-2"></div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="skeleton-actions"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        @elseif($upcomingAppointments->count() > 0)
             <div class="list-group list-group-flush">
-                @foreach($this->upcomingAppointments as $appointment)
+                @foreach($upcomingAppointments as $appointment)
                     <div class="list-group-item px-0">
                         <div class="row align-items-center">
                             <div class="col-md-2">
@@ -113,7 +139,7 @@
                 @endforeach
             </div>
 
-            @if($this->upcomingAppointments->count() >= $limit)
+            @if($upcomingAppointments->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('patient.appointments') }}" class="btn btn-outline-primary btn-sm">
                         Ver Todas las Citas
@@ -125,12 +151,97 @@
                 <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
                 <h6 class="text-muted">No tienes citas programadas</h6>
                 <p class="text-muted mb-3">Programa tu próxima cita médica</p>
-                <a href="{{ route('appointment.create') }}" class="btn btn-primary">
+                <button  wire:click="openModal" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus me-1"></i>Programar Cita
-                </a>
+                </button>
             </div>
         @endif
     </div>
     <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"
                                      :appointment_date="$appointment_date" :appointment_time="$appointment_time" />
+
+    <style>
+        /* Loading skeleton styles for appointments */
+        .loading-skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-appointment-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .skeleton-calendar-badge {
+            width: 60px;
+            height: 60px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .skeleton-date {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 40px;
+            margin: 0 auto;
+        }
+
+        .skeleton-doctor-name {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 160px;
+        }
+
+        .skeleton-specialty {
+            height: 14px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 120px;
+        }
+
+        .skeleton-time {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        .skeleton-location {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 100px;
+        }
+
+        .skeleton-status-badge {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            width: 80px;
+        }
+
+        .skeleton-reason {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            width: 90px;
+        }
+
+        .skeleton-actions {
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
 </div>
