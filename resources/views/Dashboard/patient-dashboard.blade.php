@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-md-6 position-blk">
                         <div class="morning-img">
-                            <img src="{{ URL::asset('/assets/img/morning-img-03.png') }}" alt="">
+                            <img src="{{ URL::asset('/assets/img/morning-img-21.png') }}" alt="">
                         </div>
                     </div>
                 </div>
