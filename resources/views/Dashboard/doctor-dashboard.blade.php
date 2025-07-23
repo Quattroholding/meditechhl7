@@ -17,7 +17,7 @@
                     <div class="col-md-6">
                         <div class="morning-user">
                            <h2>
-                               <span class="typewriter-text">{{__('generic.hello')}}, Dr. {{auth()->user()->full_name}}</span>
+                               <span class="typewriter-text">{{__('generic.hello')}}, {{auth()->user()->full_name}}</span>
                            </h2>
                            <p>  <span class="typewriter-text">{{__('generic.Have a nice day at work')}}</span></p>
 

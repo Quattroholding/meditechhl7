@@ -222,6 +222,11 @@ class ModalSave extends Component
                     $this->appointment->notifyPatientAboutConfirmation();
                 }
 
+                // Si la cita está confirmada (booked), programar recordatorio
+                if($this->appointment->status === 'booked'){
+                    $this->appointment->notifyPatientAboutAppointment();
+                }
+
                 session()->flash('message.success','Cita actualizada exitosamente.');
                 $this->dispatch('showToastr',
                     type: 'success',
@@ -236,7 +241,11 @@ class ModalSave extends Component
                 if($this->status=='proposed'){
                     $app->addPatientToPractitionerClient();
                     $app->notifyPractitionerAboutProposal();
+                } else if($this->status === 'booked'){
+                    // Si la cita se crea directamente como confirmada, programar recordatorio
+                    $app->notifyPatientAboutAppointment();
                 }
+                
                 session()->flash('message.success', 'Cita creada exitosamente.');
                 $this->dispatch('showToastr',
                     type: 'success',

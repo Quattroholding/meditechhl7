@@ -7,6 +7,7 @@ use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
+use App\Jobs\SendAppointmentReminderJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -291,6 +292,40 @@ class Appointment extends Model
         $this->patient->notify(
             new AppointmentCancelledNotification($this, $cancellationReason, 'practitioner')
         );
+    }
+
+    /**
+     * Schedule a reminder notification for the patient 2 hours before the appointment
+     * Only schedules if the appointment is more than 2 hours in the future
+     */
+    public function notifyPatientAboutAppointment()
+    {
+        // Check if appointment is more than 2 hours in the future
+        $hoursUntilAppointment = now()->diffInHours($this->start, false);
+        
+        if ($hoursUntilAppointment <= 2) {
+            \Log::info('Appointment reminder not scheduled - appointment is too soon', [
+                'appointment_id' => $this->id,
+                'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
+                'hours_until' => $hoursUntilAppointment
+            ]);
+            return false;
+        }
+
+        // Schedule the reminder job to run 2 hours before the appointment
+        $reminderTime = $this->start->copy()->subHours(2);
+        
+        SendAppointmentReminderJob::dispatch($this)->delay($reminderTime);
+        
+        \Log::info('Appointment reminder scheduled successfully', [
+            'appointment_id' => $this->id,
+            'patient_id' => $this->patient_id,
+            'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'reminder_datetime' => $reminderTime->format('Y-m-d H:i:s'),
+            'hours_until_appointment' => $hoursUntilAppointment
+        ]);
+        
+        return true;
     }
 }
 

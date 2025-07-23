@@ -4,7 +4,7 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',array('show_create'=>$show_create))
+                    @component('components.table-header',array('show_create'=>false))
                         @slot('title')
 
                         @endslot
