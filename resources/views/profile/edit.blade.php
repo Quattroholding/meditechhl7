@@ -1,4 +1,4 @@
-/<x-app-layout>
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
