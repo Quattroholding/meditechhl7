@@ -43,10 +43,10 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h6 class="mb-1">
-                                        {{ $consultation->practitioner->full_name ?? 'Doctor' }}
+                                        {{ $consultation->practitioner->name ?? 'Doctor' }}
                                     </h6>
                                     <small class="text-muted">
-                                        {{ $consultation->practitioner->specialty ?? 'Medicina General' }}
+                                        {{ $consultation->appointment->medicalSpeciality->name ?? 'Medicina General' }}
                                     </small>
                                 </div>
                                 <small class="text-muted">

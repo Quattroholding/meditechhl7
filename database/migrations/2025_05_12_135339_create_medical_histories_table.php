@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('fhir_id')->unique()->comment('FHIR FamilyMemberHistory/AllergyIntolerance/Procedure resource ID');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->enum('category', [
+                'medication',
                 'allergy',
                 'surgery',
                 'chronic-illness',
@@ -23,7 +24,7 @@ return new class extends Migration
                 'immunization',
                 'family-history',
                 'social-history',
-                'other'
+                'other',
             ]);
             $table->string('title')->comment('Título descriptivo del antecedente');
             $table->text('description')->nullable();

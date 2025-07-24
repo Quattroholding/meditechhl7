@@ -91,6 +91,7 @@ class MedicalHistory2 extends Component
         $this->isLoading = true;
         $current_medications = [];
         $total_personal_notes=0;
+        $totalNotes=0;
 
 
         if(auth()->user()->hasRole('doctor')){
@@ -106,6 +107,44 @@ class MedicalHistory2 extends Component
         if(auth()->user()->hasRole('doctor'))
             $total_personal_notes = Note::wherePractitionerId(auth()->user()->practitioner->id)->where('patient_id', $this->patientId)->count();
 
+        // Cargar historiales médicos por categoría - convertir a arrays
+        $medicalHistories = \App\Models\MedicalHistory::where('patient_id', $this->patientId)
+            ->where('category','<>','allergy')
+            ->orderBy('recorded_date', 'desc')
+            ->get()
+            ->groupBy('category')
+            ->map(function($histories) {
+                return $histories->map(function($history) {
+                    return [
+                        'id' => $history->id,
+                        'title' => $history->title,
+                        'description' => $history->description,
+                        'recorded_date' => $history->recorded_date,
+                        'category' => $history->category,
+                        'clinical_status' => $history->clinical_status
+                    ];
+                })->toArray();
+            })->toArray();
+
+        // Convertir alergias a array
+        $allergies = $this->patient->allergies()->get()->map(function($allergy) {
+            return [
+                'id' => $allergy->id,
+                'title' => $allergy->title,
+                'description' => $allergy->description,
+                'category' => $allergy->category
+            ];
+        })->toArray();
+
+        // Convertir medicamentos a array
+        $medications = collect($current_medications)->map(function($medication) {
+            return [
+                'id' => $medication->id ?? null,
+                'medicine_name' => $medication->medicine->full_name ?? 'N/A',
+                'dosage_text' => $medication->dosage_text ?? ''
+            ];
+        })->toArray();
+
         // Resumen general del paciente
         $this->overviewData = [
             'total_encounters' => Encounter::where('patient_id', $this->patientId)->count(),
@@ -113,11 +152,12 @@ class MedicalHistory2 extends Component
             'last_visit' => Encounter::where('patient_id', $this->patientId)->latest('created_at')->first()?->created_at,
             'total_requests' => MedicationRequest::where('patient_id', $this->patientId)->count()+ServiceRequest::where('patient_id', $this->patientId)->count(),
             'vital_signs_count' => VitalSign::where('patient_id', $this->patientId)->count(),
-            'allergies' => $this->patient->allergies ?? [],
-            'medications' =>$current_medications,
+            'allergies' => $allergies,
+            'medications' => $medications,
             'total_notes' => $totalNotes,
             'total_personal_notes' => $total_personal_notes,
-            'recent_activity' => $this->getRecentActivity()
+            'recent_activity' => $this->getRecentActivity(),
+            'medical_histories' => $medicalHistories
         ];
 
         $this->sectionsLoaded['overview'] = true;

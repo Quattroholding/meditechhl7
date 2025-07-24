@@ -38,7 +38,7 @@
                             <div class="col-12 col-md-6 col-xl-8">
                                 <div class=" input-block  local-forms ">
                                     <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
-                                    <x-text-input id="id_number" class="block mt-1 w-full" type="number" name="id_number" value="{{$patient->identifier}}" autofocus/>
+                                    <x-text-input  id="id_number" class="block mt-1 w-full" type="text" :value="$patient->identifier" />
                                     <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                         </div>
-                        @can('patient.update')
+                        @can('patients.profile')
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
@@ -180,7 +180,7 @@
                                 </div>
                             </div>
                         </div>
-                        @can('patient.update')
+                        @can('patients.profile')
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>

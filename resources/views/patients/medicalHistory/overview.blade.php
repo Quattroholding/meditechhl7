@@ -55,7 +55,7 @@
                 <div style="margin-top: 15px;">
                     @foreach($overviewData['allergies'] as $allergy)
                         <span class="badge" style="background: #fee2e2; color: #dc2626; margin: 2px;">
-                            {{ $allergy->title }}
+                            {{ $allergy['title'] }}
                         </span>
                     @endforeach
                 </div>
@@ -70,14 +70,62 @@
                 <div style="margin-top: 15px;">
                     @foreach($overviewData['medications'] as $medication)
                         <div style="margin-bottom: 8px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
-                            <strong>{{ $medication->medicine->full_name ?? 'N/A' }}</strong>
-                            <br><small style="color: #16a34a;">{{ $medication->dosage_text ?? '' }}</small>
+                            <strong>{{ $medication['medicine_name'] }}</strong>
+                            <br><small style="color: #16a34a;">{{ $medication['dosage_text'] }}</small>
                         </div>
                     @endforeach
                 </div>
             </div>
         @endif
     </div>
+
+    <!-- Historial Médico por Categorías -->
+    @if(!empty($overviewData['medical_histories']))
+        <div class="overview-grid">
+            @php
+                $categoryConfig = [
+                    //'allergy' => ['icon' => '⚠️', 'title' => 'Alergias Registradas', 'color' => '#dc3545'],
+                    'medication' => ['icon' => '💊', 'title' => 'Medicamentos Previos', 'color' => '#059669'],
+                    'surgery' => ['icon' => '🔪', 'title' => 'Cirugías', 'color' => '#7c3aed'],
+                    'chronic-illness' => ['icon' => '🩺', 'title' => 'Enfermedades Crónicas', 'color' => '#ea580c'],
+                    'hospitalization' => ['icon' => '🏥', 'title' => 'Hospitalizaciones', 'color' => '#0ea5e9'],
+                    'immunization' => ['icon' => '💉', 'title' => 'Vacunas', 'color' => '#10b981'],
+                    'family-history' => ['icon' => '👨‍👩‍👧‍👦', 'title' => 'Antecedentes Familiares', 'color' => '#8b5cf6'],
+                    'social-history' => ['icon' => '🚬', 'title' => 'Historia Social', 'color' => '#f59e0b'],
+                    'other' => ['icon' => '📝', 'title' => 'Otros', 'color' => '#6b7280']
+                ];
+            @endphp
+
+            @foreach($overviewData['medical_histories'] as $category => $histories)
+                @php $config = $categoryConfig[$category] ?? $categoryConfig['other']; @endphp
+                <div class="stat-card" style="border-left: 5px solid {{ $config['color'] }};">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background: {{ $config['color'] }};">{{ $config['icon'] }}</div>
+                        <div class="stat-title">{{ $config['title'] }}</div>
+                        <div class="stat-count" style="font-size: 14px; color: #6b7280;">{{ count($histories) }}</div>
+                    </div>
+                    <div style="margin-top: 15px; max-height: 150px; overflow-y: auto;">
+                        @foreach(array_slice($histories, 0, 5) as $history)
+                            <div style="margin-bottom: 8px; padding: 8px; background: #f8fafc; border-radius: 6px; border-left: 3px solid {{ $config['color'] }};">
+                                <strong>{{ $history['title'] }}</strong>
+                                @if($history['description'])
+                                    <br><small style="color: #6b7280;">{{ Str::limit($history['description'], 50) }}</small>
+                                @endif
+                                @if($history['recorded_date'])
+                                    <br><small style="color: {{ $config['color'] }};">{{ Carbon\Carbon::parse($history['recorded_date'])->format('d/m/Y') }}</small>
+                                @endif
+                            </div>
+                        @endforeach
+                        @if(count($histories) > 5)
+                            <div style="text-align: center; padding: 8px;">
+                                <small style="color: #6b7280;">{{ count($histories) - 5 }} más...</small>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     <!-- Actividad Reciente -->
     @if(!empty($overviewData['recent_activity']))
@@ -112,4 +160,5 @@
             </div>
         </div>
     @endif
+
 </div>

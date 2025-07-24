@@ -160,8 +160,8 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <strong>Motivo:</strong>
-                            <p class="mb-0">{{ $nextAppointment->reason_for_visit ?? 'Consulta general' }}</p>
+                            <strong>Tipo Servicio:</strong>
+                            <p class="mb-0">{{ $nextAppointment->service_type ?? 'Consulta general' }}</p>
                         </div>
                         <div class="mt-3">
                             <span class="badge

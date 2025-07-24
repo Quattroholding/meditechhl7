@@ -54,10 +54,11 @@ class Lista extends Model
     public static function medicalHistoryCategory(){
 
         return [
+            'medication'=>'Medicamento',
             'allergy'=>'Alergia',
             'surgery'=>'Cirugía',
             'chronic-illness'=>'Enfermedad Crónica',
-            'hospitalization'=>'Hspitalizacíon',
+            'hospitalization'=>'Hospitalizacíon',
             'immunization'=>'Inmunizacíon',
             'family-history'=>'Historia Familiar',
             'social-history'=>'Historia Social',

@@ -208,6 +208,14 @@
                     </a>
                 </li>
                 @endcan
+                @if(auth()->user()->can('patients.medical_history') && auth()->user()->patient)
+                <li>
+                    <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
+                        <span class="menu-side"><i class="fa fa-file-medical"></i></span>&nbsp;
+                        <span>{{ __('patient.medical_history') }}</span>
+                    </a>
+                </li>
+                @endcan
                 @canany(['users.view', 'users.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -223,13 +231,21 @@
                     </ul>
                 </li>
                 @endcanany
-                @can('practitioners.profile' && auth()->user()->practitioner)
+                @if(auth()->user()->can('practitioners.profile') && auth()->user()->practitioner)
                 <li>
                     <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">
                         <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
                         <span>{{ __('doctor.profile') }}</span>
                     </a>
                 </li>
+                @endcan
+                @if(auth()->user()->can('patients.profile') && auth()->user()->patient)
+                    <li>
+                        <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/profile') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
+                            <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
+                            <span>{{ __('patient.profile') }}</span>
+                        </a>
+                    </li>
                 @endcan
                 @can('users.profile')
                     <li>

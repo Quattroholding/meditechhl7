@@ -211,6 +211,7 @@
             gap: 15px;
             align-items: center;
             flex-wrap: wrap;
+            float: right;
         }
 
         .filter-group {
@@ -272,7 +273,7 @@
         /* Overview Grid */
         .overview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
