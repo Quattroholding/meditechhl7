@@ -182,8 +182,9 @@ class PatientController extends Controller
 
         $model = Patient::findOrFail($id);
 
-        $model->fill($request->except('birth_date'));
+        $model->fill($request->except('birth_date', 'id_type'));
         $model->name = $request->given_name.' '.$request->family_name;
+        $model->identifier_type = $request->id_type;
         $model->birth_date = substr($request->birth_date,6,4).'-'.substr($request->birth_date,3,2).'-'.substr($request->birth_date,0,2);
 
         if($model->save()){

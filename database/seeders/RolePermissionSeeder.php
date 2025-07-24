@@ -35,6 +35,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'patients.view', 'description' => 'Ver lista y perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.create', 'description' => 'Registrar nuevos pacientes','module'=>'pacientes'],
             ['name' => 'patients.edit', 'description' => 'Editar información de pacientes','module'=>'pacientes'],
+            ['name' => 'patients.update', 'description' => 'Actualizar información de pacientes','module'=>'pacientes'],
             ['name' => 'patients.delete', 'description' => 'Eliminar registros de pacientes','module'=>'pacientes'],
             ['name' => 'patients.profile', 'description' => 'Ver perfiles de pacientes','module'=>'pacientes'],
             ['name' => 'patients.medical_history', 'description' => 'Ver historial medico de pacientes','module'=>'pacientes'],
@@ -148,6 +149,7 @@ class RolePermissionSeeder extends Seeder
             'patients.medical_history',
             'patients.profile',
             'patients.edit',
+            'patients.update',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
