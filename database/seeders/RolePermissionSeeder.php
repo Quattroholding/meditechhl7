@@ -147,6 +147,7 @@ class RolePermissionSeeder extends Seeder
             'practitioners.directory',
             'patients.medical_history',
             'patients.profile',
+            'patients.edit',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);

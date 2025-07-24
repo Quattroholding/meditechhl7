@@ -38,8 +38,8 @@
                             <div class="col-12 col-md-6 col-xl-8">
                                 <div class=" input-block  local-forms ">
                                     <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
-                                    <x-text-input  id="id_number" class="block mt-1 w-full" type="text" :value="$patient->identifier" />
-                                    <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
+                                    <x-text-input  name="identifier" class="block mt-1 w-full" type="text" :value="$patient->identifier" />
+                                    <x-input-error :messages="$errors->get('identifier')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
@@ -48,16 +48,16 @@
                                 <!-- First Name -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="first_name" :value="__('patient.first_name')" required="true"/>
-                                    <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="$patient->given_name" required />
-                                    <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
+                                    <x-text-input id="given_name" class="block mt-1 w-full" type="text" name="given_name" :value="$patient->given_name" required />
+                                    <x-input-error :messages="$errors->get('given_name')" class="mt-2" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-4">
                                 <!-- Last Name -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="last_name" :value="__('patient.last_name')" required="true"/>
-                                    <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="$patient->family_name" required/>
-                                    <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
+                                    <x-text-input id="family_name" class="block mt-1 w-full" type="text" name="family_name" :value="$patient->family_name" required/>
+                                    <x-input-error :messages="$errors->get('family_name')" class="mt-2" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-4">
@@ -92,15 +92,15 @@
                             <div class=" col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="physical_address" :value="__('patient.physical_address')" required/>
-                                    <x-textarea-input id="physical_address" class="block mt-1 w-full" type="email" name="physical_address">{{$patient->address}}</x-textarea-input>
-                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                    <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="address">{{$patient->address}}</x-textarea-input>
+                                    <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-6">
                                 <!-- BILLING ADDRESS -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="billing_address" :value="__('patient.billing_address')" />
-                                    <x-textarea-input id="billing_address" class="block mt-1 w-full" type="email" name="billing_address">{{$patient->billing_address}}</x-textarea-input>
+                                    <x-textarea-input id="billing_address" class="block mt-1 w-full" type="text" name="billing_address">{{$patient->billing_address}}</x-textarea-input>
                                     <x-input-error :messages="$errors->get('billing_address')" class="mt-2" />
                                 </div>
                             </div>

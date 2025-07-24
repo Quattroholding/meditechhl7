@@ -164,10 +164,10 @@ class PatientController extends Controller
     }
 
     public function update(Request $request,$id){
-        //dd($request->all());
+
         $validated = $request->validate([
             'identifier' => 'required',
-            'identifier_type' => 'required',
+            'id_type' => 'required',
             'given_name' => 'required',
             'family_name' => 'required',
             'gender' => 'required',
