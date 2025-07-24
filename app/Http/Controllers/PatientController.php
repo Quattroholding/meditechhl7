@@ -181,14 +181,18 @@ class PatientController extends Controller
         ]);
 
         $model = Patient::findOrFail($id);
-
         $model->fill($request->except('birth_date', 'id_type'));
         $model->name = $request->given_name.' '.$request->family_name;
         $model->identifier_type = $request->id_type;
         $model->birth_date = substr($request->birth_date,6,4).'-'.substr($request->birth_date,3,2).'-'.substr($request->birth_date,0,2);
 
+        $user = User::findOrFail($model->user_id);
+        $user->first_name = $request->given_name;
+        $user->last_name = $request->family_name;
+        $user->email = $request->email;
+        
+        if($user->save()){
         if($model->save()){
-
             if($request->file('image')){
                 $service = new FileService();
                 $data['record_id'] = $model->id;
@@ -197,7 +201,7 @@ class PatientController extends Controller
                 $service->guardarArchivos([$request->file('image')],$data);
             }
             session()->flash('message.success','Actualización con exito.');
-        }else{
+        }}else{
            session()->flash('message.success','Hubo un error y no se pudo actualizar.');
         }
 
