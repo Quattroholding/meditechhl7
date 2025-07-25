@@ -89,19 +89,11 @@
                         </div>
                         <div class="row">
                             <!-- PHYSICAL ADDRESS -->
-                            <div class=" col-12 col-md-6 col-xl-6">
+                            <div class=" col-12 col-md-12 col-xl-12">
                                 <div class="input-block local-forms">
                                     <x-input-label for="physical_address" :value="__('patient.physical_address')" required/>
                                     <x-textarea-input id="physical_address" class="block mt-1 w-full" type="text" name="address">{{$patient->address}}</x-textarea-input>
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <!-- BILLING ADDRESS -->
-                                <div class="input-block local-forms">
-                                    <x-input-label for="billing_address" :value="__('patient.billing_address')" />
-                                    <x-textarea-input id="billing_address" class="block mt-1 w-full" type="text" name="billing_address">{{$patient->billing_address}}</x-textarea-input>
-                                    <x-input-error :messages="$errors->get('billing_address')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
