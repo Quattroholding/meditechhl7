@@ -41,19 +41,22 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             let chartInstance = null;
-            
-            Livewire.on('loadGraph', (data) => { 
+
+            Livewire.on('loadGraph', (data) => {
                 // Accede a las propiedades del objeto
+                const malePercentageCount = data[0].maleCount ;
+                const femalePercentageCount  = data[0].femaleCount ;
+                const unknownPercentageCount  = data[0].unknownCount ;
                 const malePercentage = data[0].male;
                 const femalePercentage = data[0].female;
                 const unknownPercentage = data[0].unknown;
 
                 console.log('🔄 Loading ApexCharts for patients-by-gender...', data);
-                
+
                 // Esperar a que el DOM esté actualizado y el elemento sea visible
                 setTimeout(() => {
                     var divElement = document.querySelector("#radial-patients-active");
-                    
+
                     if (!divElement) {
                         console.error('❌ Element #radial-patients-active not found');
                         return;
@@ -96,14 +99,14 @@
                             enabled: false
                         },
                         series: [
-                            parseFloat(malePercentage) || 0, 
-                            parseFloat(femalePercentage) || 0, 
+                            parseFloat(malePercentage) || 0 ,
+                            parseFloat(femalePercentage) || 0,
                             parseFloat(unknownPercentage) || 0
                         ],
                         labels: [
-                            'Male (' + (parseFloat(malePercentage) || 0) + '%)',
-                            'Female (' + (parseFloat(femalePercentage) || 0) + '%)',
-                            'Unknown (' + (parseFloat(unknownPercentage) || 0) + '%)'
+                            'Male (' + (malePercentageCount || 0) + ')',
+                            'Female (' + (femalePercentageCount || 0) + ')',
+                            'Unknown (' + (unknownPercentageCount || 0) + ')'
                         ],
                         colors: ['#4F8EF7', '#FF6B9D', '#FFC107'],
                         responsive: [{

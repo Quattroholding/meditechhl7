@@ -144,49 +144,28 @@
                 @endif
                 @if(auth()->user()->can('edit_access',$patient))
                 <div class="tab-pane" id="security_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('patient.update',$patient->id) }}">
+                    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
                         @csrf
-                        <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">
-                        <div class="form-heading">
-                            <h4>{{__('patient.security_settings')}}</h4>
-                            <div class="row">
-                                <!-- PHYSICAL ADDRESS -->
-                                <div class=" col-12 col-md-6 col-xl-12">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="current_password" :value="__('patient.current_password')" />
-                                        <x-text-input id="current_password" class="block mt-1 w-full" type="password" name="current_password"/>
-                                        <x-input-error :messages="$errors->get('current_password')" class="mt-2" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- PHYSICAL ADDRESS -->
-                                <div class=" col-12 col-md-6 col-xl-12">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="new_password" :value="__('patient.new_password')" />
-                                        <x-text-input id="new_password" class="block mt-1 w-full" type="password" name="new_password"/>
-                                        <x-input-error :messages="$errors->get('new_password')" class="mt-2" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- PHYSICAL ADDRESS -->
-                                <div class=" col-12 col-md-6 col-xl-12">
-                                    <div class="input-block local-forms">
-                                        <x-input-label for="confirm_password" :value="__('patient.confirm_password')" />
-                                        <x-text-input id="confirm_password" class="block mt-1 w-full" type="password" name="confirm_password"/>
-                                        <x-input-error :messages="$errors->get('confirm_password')" class="mt-2" />
-                                    </div>
-                                </div>
-                            </div>
+                        @method('put')
+
+
+                        <div class="input-block local-forms">
+                            <x-input-label for="update_password_password" :value="__('user.new_password')" required/>
+                            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
                         </div>
-                        @can('patients.profile')
+
+                        <div class="input-block local-forms">
+                            <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" required/>
+                            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
                             </div>
                         </div>
-                        @endcan
                     </form>
                 </div>
                 @endif

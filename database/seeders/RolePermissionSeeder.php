@@ -195,6 +195,7 @@ class RolePermissionSeeder extends Seeder
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',
+            'practitioners.edit',
         ]);
 
 
