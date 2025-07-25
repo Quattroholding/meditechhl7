@@ -39,6 +39,9 @@ class Reason extends Component
             sleep(1);
             $this->saved = true;
 
+            // Emitir evento al componente padre para calcular si el button finished se debe habilitar
+            $this->dispatch('findFinishedButtonStatus');
+
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());
         }
@@ -46,5 +49,7 @@ class Reason extends Component
 
     public function updatedReason(){
         $this->saved = false;
+
+
     }
 }

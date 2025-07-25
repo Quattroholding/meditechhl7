@@ -56,17 +56,8 @@ class ConsultationController extends Controller
                 'end' => now()]);
         }
 
-        $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
 
-        if ($encounter_sections_user->count() > 0) {
-            $encounter_sections = EncounterSection::whereIn('id', $encounter_sections_user->pluck('encounter_section_id'))->get();
-        } else {
-            $encounter_sections = EncounterSection::whereNull('category')->get();
-        }
-
-        $secciones = $encounter_sections->pluck('name_esp', 'id');
-
-        return view('consultations.create', compact('consultation', 'appointment', 'patient', 'encounter_sections', 'secciones'));
+        return view('consultations.create', compact('consultation', 'appointment', 'patient'));
     }
 
     public function finished(Request $request, $appointment_id)

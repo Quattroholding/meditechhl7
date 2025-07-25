@@ -98,6 +98,7 @@ class PresentIllness extends Component
         }
 
         $this->loadPressentIllness();
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($type,$value){
@@ -114,6 +115,7 @@ class PresentIllness extends Component
 
     public function updatedDescription(){
         $this->savedDescription = false;
+
     }
 
     public function updatedAggravatingFactors(){
@@ -143,6 +145,8 @@ class PresentIllness extends Component
                 sleep(1);
                 $this->savedDescription = true;
             }
+
+            $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar: ' . $e->getMessage());

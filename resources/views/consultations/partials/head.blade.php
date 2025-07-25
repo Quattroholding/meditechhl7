@@ -1,10 +1,10 @@
 <div class="consultation-ficha" style="padding: 0px">
     <div class="consultation-ficha-contenido">
         <div>
-            <b>Consulta #</b> {{ $consultation->id }}
+            <b>Consulta #</b> {{ $encounter->id }}
         </div>
         <div>
-            <b>Fecha de Atención:</b> {{ $consultation->created_at }}
+            <b>Fecha de Atención:</b> {{ $encounter->created_at }}
         </div>
     </div>
     <div class="consultation-ficha-contenido">
@@ -40,7 +40,7 @@
     </div>
     <div class="consultation-ficha-contenido">
         <div>
-            <b>Doctor:</b> {!! $consultation->practitioner->profile_name  !!}</div>
+            <b>Doctor:</b> {!! $encounter->practitioner->profile_name  !!}</div>
             @if( $appointment->practitioner->qualifications()->first())
             <div>
                 <b>Especialidad:</b> {{ $appointment->practitioner->qualifications()->first()->display }}

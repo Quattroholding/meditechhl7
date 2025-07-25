@@ -19,13 +19,7 @@
             </div>
     @endforeach
     <div class="my-3"></div>
-    <form method="POST" action="{{ route('consultation.finished',$appointment_id) }}">
-    @csrf
-        <div class="text-end">
-            <button type="submit" class="btn btn-success">{{__('Finalizar Consulta')}}</button>
-        </div>
-
-    </form>
+    <livewire:consultation.finishedButton encounter_id="{{$encounter_id}}"/>
 </div>
 
 <script>

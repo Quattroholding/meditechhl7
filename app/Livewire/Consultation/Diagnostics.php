@@ -88,6 +88,7 @@ class Diagnostics extends Component
         sleep(1);
         $this->saved = true;
         $this->loadSelectedLists();
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($diagnostic_id){
@@ -110,7 +111,6 @@ class Diagnostics extends Component
         $this->savedNote[$id] = false;
         $encounterDiagnostic = EncounterDiagnosis::find($id);
 
-        dd('aqui');
         $encounterDiagnostic->update(['clinical_status'=>$this->clinical_status[$id]]);
         sleep(2);
         $this->savedNote[$id] = true;
