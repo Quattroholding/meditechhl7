@@ -22,10 +22,10 @@ class Diagnostics extends Component
     public $saved = false;
     public $savedNote=[];
     public $notes=[];
+    public $clinical_status=[];
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
-
         $this->loadSelectedLists();
     }
 
@@ -36,6 +36,7 @@ class Diagnostics extends Component
         foreach ($this->selectedLists as $key){
             $this->savedNote[$key->id] = false;
             $this->notes[$key->id]=$key->note;
+            $this->clinical_status[$key->id]=$key->clinical_status;
         }
     }
 
@@ -100,6 +101,17 @@ class Diagnostics extends Component
         $encounterDiagnostic = EncounterDiagnosis::find($id);
 
         $encounterDiagnostic->update(['note'=>$this->notes[$id]]);
+        sleep(2);
+        $this->savedNote[$id] = true;
+
+    }
+
+    public function updateClinicalStatus($id){
+        $this->savedNote[$id] = false;
+        $encounterDiagnostic = EncounterDiagnosis::find($id);
+
+        dd('aqui');
+        $encounterDiagnostic->update(['clinical_status'=>$this->clinical_status[$id]]);
         sleep(2);
         $this->savedNote[$id] = true;
 

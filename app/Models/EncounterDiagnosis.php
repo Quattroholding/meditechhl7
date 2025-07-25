@@ -12,7 +12,7 @@ class EncounterDiagnosis extends Model
         'condition_id',
         'rank',
         'use',
-        'note'
+        'note',
     ];
 
     public function encounter(): BelongsTo

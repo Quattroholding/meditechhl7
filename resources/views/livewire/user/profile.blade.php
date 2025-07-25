@@ -202,6 +202,7 @@
                                 @csrf
                                 @method('put')
 
+
                                 <div class="input-block local-forms">
                                     <x-input-label for="update_password_password" :value="__('user.new_password')" required/>
                                     <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
