@@ -47,7 +47,7 @@ class Lista extends Model
             'centro de salud'=>'Centro de Salud',
             'clinica'=>'Clinica',
             'hospital'=>'Hospital',
-            'cosnultorio'=>'Consultorio',
+            'consultorio'=>'Consultorio',
         ];
     }
 

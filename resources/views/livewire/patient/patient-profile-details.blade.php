@@ -20,7 +20,7 @@
             <div class="tab-content">
                 @if(auth()->user()->can('edit_profile',$patient))
                 <div class="tab-pane active" id="account_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('patient.update',$patient->id) }}">
+                    <form method="POST" action="{{ route('patient.update',$patient->id) }}" id="form">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">
                         <div class="form-heading">
@@ -102,7 +102,7 @@
                             <div class=" col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="phone" :value="__('patient.phone')" required/>
-                                    <x-text-input class="block mt-1 w-full" type="tel" name="phone" :value="$patient->phone"/>
+                                    <x-text-input class="block mt-1 w-full" type="tel" id="phone" name="phone" :value="$patient->phone"/>
                                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                 </div>
                             </div>
