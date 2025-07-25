@@ -25,6 +25,16 @@
                             </tr>
                             </tbody>
                         </table>
+                        {{--}}
+                        <div style="width:100%" class="">{{__('consultation.diagnostic_clinical_status')}}
+
+                        <x-select-input wire:model="clinical_status.{{$s->id}}"
+                                        wire:change.debounce.300ms="updateClinicalStatus({{$s->id}})"
+                                        name="clinical_status"
+                                        :options="\App\Models\Lista::conditionClinicalStatus()"
+                                        :selected="['active']"
+                                        class="block mt-1 w-full"/>
+                        {{--}}
                         <div style="width:100%" class="">{{__('consultation.diagnostic_note')}}
                          <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
                                             wire:model="notes.{{$s->id}}"

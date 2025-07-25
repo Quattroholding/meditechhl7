@@ -101,4 +101,15 @@ class Lista extends Model
         return Medicine::selectRaw('distinct(mgs_type) as type')->pluck('type','type')->toArray();
     }
 
+    public static function conditionClinicalStatus(){
+        return [
+          'active'=>__('status.active'),
+          'recurrence'=>__('status.recurrence'),
+          'relapse'=>__('status.relapse'),
+          'inactive'=>__('status.inactive'),
+          'remission'=>__('status.remission'),
+          'resolved'=>__('status.resolved'),
+        ];
+    }
+
 }
