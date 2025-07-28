@@ -77,6 +77,14 @@ class WhatsAppChannel
      */
     protected function getPhoneNumber($notifiable): ?string
     {
+        // If in testing mode, use specific testing phone
+        if (config('app.env') === 'local' || config('mail.testing_mode')) {
+            $testingPhone = config('mail.testing_whatsapp_phone');
+            if ($testingPhone) {
+                return $testingPhone;
+            }
+        }
+
         // Check for whatsapp_phone first, then fall back to phone
         $phone = $notifiable->whatsapp_phone ?? $notifiable->phone ?? null;
 
