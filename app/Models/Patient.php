@@ -19,7 +19,7 @@ class Patient extends BaseModel
         'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name',
         'family_name', 'gender', 'birth_date', 'deceased', 'deceased_date',
         'address','billing_address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
-        'marital_status', 'multiple_birth', 'multiple_birth_count','blood_type'
+        'marital_status', 'multiple_birth', 'multiple_birth_count','blood_type', 'whatsapp_phone'
     ];
 
     protected $casts = [

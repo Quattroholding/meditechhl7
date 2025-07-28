@@ -28,7 +28,14 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = ['mail', 'database'];
+        
+        // Add WhatsApp channel if user has WhatsApp phone number
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = \App\Channels\WhatsAppChannel::class;
+        }
+        
+        return $channels;
     }
 
     /**
@@ -90,6 +97,50 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
             'message' => "Recordatorio: Su cita con Dr. {$this->appointment->practitioner->name} es en {$hoursUntil} horas",
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
+    {
+        $practitioner = $this->appointment->practitioner;
+        $appointmentDate = $this->appointment->start;
+        $clinicName = $this->appointment->client->name ?? config('app.name');
+        $hoursUntil = now()->diffInHours($appointmentDate);
+
+        $message = "🏥 *Recordatorio de Cita Médica*\n\n";
+        $message .= "Hola {$notifiable->name},\n\n";
+        $message .= "Le recordamos su cita médica:\n\n";
+        $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
+        $message .= "📅 *Fecha:* {$appointmentDate->format('d/m/Y')}\n";
+        $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
+        $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
+        $message .= "🏢 *Clínica:* {$clinicName}\n";
+        
+        if ($this->appointment->consultingRoom->branch->name ?? null) {
+            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
+        }
+        
+        if ($this->appointment->consultingRoom->name ?? null) {
+            $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
+        }
+
+        if ($this->appointment->medicalSpeciality->name ?? null) {
+            $message .= "🔬 *Especialidad:* {$this->appointment->medicalSpeciality->name}\n";
+        }
+
+        $message .= "\n⏰ *Su cita es en {$hoursUntil} horas*\n\n";
+
+        if ($this->appointment->patient_instruction) {
+            $message .= "📋 *Instrucciones:*\n{$this->appointment->patient_instruction}\n\n";
+        }
+
+        $message .= "Por favor llegue 15 minutos antes de su cita.\n";
+        $message .= "Si necesita reprogramar, contáctenos con anticipación.\n\n";
+        $message .= "¡Esperamos verle pronto! 😊";
+
+        return $message;
     }
 
     /**

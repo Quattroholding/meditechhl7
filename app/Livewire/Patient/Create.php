@@ -144,6 +144,7 @@ class Create extends Component
         $patient->family_name = $this->last_name;
         $patient->email = $model->email;
         $patient->phone = $this->phone;
+        $patient->whatsapp_phone = $this->phone;
         $patient->name = $this->first_name .' '. $this->last_name;
         $patient->user_id = $model->id;
         $patient->birth_date =$this->birthdate;

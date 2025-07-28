@@ -130,8 +130,8 @@
                                     <div class=" col-12 col-md-6 col-xl-6" style="display: none" id="whatsapp">
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="whatsapp" :value="__('phone')" />
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                        <x-input-label for="whatsapp" :value="__('user.phone')" />
+                                        <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>
@@ -233,6 +233,7 @@
                     case 5:
                     /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
                     case 3:
+                        $("#whatsapp").show();
                     /*-----FORMULARIO PARA ROLE ADMIN-----*/
                     case 1:
                         //$("#client").show();

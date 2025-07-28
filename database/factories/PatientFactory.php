@@ -43,6 +43,7 @@ class PatientFactory extends Factory
             'postal_code' => $this->faker->postcode,
             'country' => $this->faker->country,
             'phone' => $this->faker->phoneNumber,
+            'whatsapp_phone' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->safeEmail,
             'marital_status' => $this->faker->randomElement(['Soltero/a', 'Casado/a', 'Divorciado/a', 'Viudo/a']),
             'multiple_birth' => $this->faker->boolean(20),

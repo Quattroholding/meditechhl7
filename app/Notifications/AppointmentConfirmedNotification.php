@@ -23,7 +23,14 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        $channels = ['mail', 'database'];
+        
+        // Add WhatsApp channel if user has WhatsApp phone number
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = \App\Channels\WhatsAppChannel::class;
+        }
+        
+        return $channels;
     }
 
     public function toMail($notifiable)
@@ -86,6 +93,54 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
                 : 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido confirmada.',
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
+    {
+        $practitioner = $this->appointment->practitioner;
+        $confirmedDate = $this->appointment->start;
+        $wasDateChanged = $this->appointment->wasDateTimeChanged();
+        $clinicName = $this->appointment->client->name ?? config('app.name');
+
+        if ($wasDateChanged) {
+            $message = "✅ *Cita Reprogramada y Confirmada*\n\n";
+            $message .= "Hola {$notifiable->name},\n\n";
+            $message .= "Su cita ha sido reprogramada y confirmada:\n\n";
+        } else {
+            $message = "✅ *Cita Médica Confirmada*\n\n";
+            $message .= "Hola {$notifiable->name},\n\n";
+            $message .= "Su cita médica ha sido confirmada:\n\n";
+        }
+
+        $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
+        $message .= "📅 *Fecha:* {$confirmedDate->format('d/m/Y')}\n";
+        $message .= "🕐 *Hora:* {$confirmedDate->format('H:i a')}\n";
+        $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
+        $message .= "🏢 *Clínica:* {$clinicName}\n";
+        
+        if ($this->appointment->consultingRoom->branch->name ?? null) {
+            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
+        }
+        
+        if ($this->appointment->consultingRoom->name ?? null) {
+            $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
+        }
+
+        if ($wasDateChanged && $this->appointment->original_requested_datetime) {
+            $message .= "\n⏰ *Fecha original:* {$this->appointment->original_requested_datetime->format('d/m/Y H:i')}\n";
+        }
+
+        if ($this->appointment->patient_instruction) {
+            $message .= "\n📋 *Instrucciones:*\n{$this->appointment->patient_instruction}\n";
+        }
+
+        $message .= "\nPor favor llegue 15 minutos antes de su cita.\n";
+        $message .= "¡Esperamos verle pronto! 😊";
+
+        return $message;
     }
 
     /**
