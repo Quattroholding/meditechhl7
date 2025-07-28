@@ -164,9 +164,10 @@ class PractitionerController extends Controller
                     $practitioner->user->clients()->sync($sync);
                     //$model->assignRole('doctor');
 
-                    $practitioner->fill($request->except('birth_date'));
+                    $practitioner->fill($request->except('birth_date', 'phone'));
                     $practitioner->name = 'Dr. '.$request->first_name.' '.$request->last_name;
                     $practitioner->given_name = $request->first_name;
+                    $practitioner->phone = $request->full_phone;
                     $practitioner->family_name = $request->last_name;
                     $practitioner->identifier_type = $request->id_type;
                     $practitioner->registry = $request->registry;
@@ -177,6 +178,9 @@ class PractitionerController extends Controller
                     //ASIGNACIÓN DE DATOS AL MODELO
                     //$practitioner->fhir_id = 'practitioner-' . Str::uuid();
                     //$practitioner->user_id = $model->id;
+                    $user=User::findOrFail($practitioner->user_id);
+                    $user->fill($request->all());
+                    $user->save();
                     if($practitioner->save()){
                         if($request->has('medical_speciality')){
                             $specialties = $request->medical_speciality;

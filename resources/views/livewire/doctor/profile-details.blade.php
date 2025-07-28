@@ -16,7 +16,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="account_settings" role="tabpanel">
-                    <form method="POST" action="{{ route('practitioner.update',$data->id) }}">
+                    <form method="POST" action="{{ route('practitioner.update',$data->id) }}" id="form">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('practitioner.profile',$data->id)}}">
                         @foreach($data->user->clients as $cli)
@@ -99,7 +99,7 @@
                             <div class=" col-6 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                    <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{$data->phone}}">
+                                    <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" id ="phone" value="{{$data->phone}}">
                                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                 </div>
                             </div>
