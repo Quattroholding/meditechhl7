@@ -23,6 +23,8 @@ class Diagnostics extends Component
     public $savedNote=[];
     public $notes=[];
     public $clinical_status=[];
+    public $severity=[];
+    public $savedSeverity=[];
 
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
@@ -35,9 +37,13 @@ class Diagnostics extends Component
 
         foreach ($this->selectedLists as $key){
             $this->savedNote[$key->id] = false;
+            $this->savedSeverity[$key->id] = false;
             $this->notes[$key->id]=$key->note;
-            $this->clinical_status[$key->id]=$key->clinical_status;
+            $this->clinical_status[$key->id]=$key->condition->clinical_status;
+            $this->severity[$key->id]=$key->condition->severity;
         }
+
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function updatedQuery()
@@ -88,7 +94,6 @@ class Diagnostics extends Component
         sleep(1);
         $this->saved = true;
         $this->loadSelectedLists();
-        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($diagnostic_id){
@@ -114,6 +119,15 @@ class Diagnostics extends Component
         $encounterDiagnostic->update(['clinical_status'=>$this->clinical_status[$id]]);
         sleep(2);
         $this->savedNote[$id] = true;
+
+    }
+
+    public function updateSeverity($id){
+        $this->savedSeverity[$id] = false;
+        $encounterDiagnostic = EncounterDiagnosis::find($id);
+        $encounterDiagnostic->condition->update(['severity'=>$this->severity[$id]]);
+        sleep(2);
+        $this->savedSeverity[$id] = true;
 
     }
 

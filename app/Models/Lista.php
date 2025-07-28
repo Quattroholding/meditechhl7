@@ -112,4 +112,13 @@ class Lista extends Model
         ];
     }
 
+    public static function conditionSeverity(){
+        return [
+            'mild'=>__('status.mild'),
+            'moderate'=>__('status.moderate'),
+            'severe'=>__('status.severe'),
+            'critical'=>__('status.critical'),
+        ];
+    }
+
 }

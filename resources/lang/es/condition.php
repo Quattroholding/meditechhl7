@@ -4,7 +4,7 @@ return [
     'title'=>'Diagnostico',
     'titles'=>'Diagnosticos',
     'practitioner'=>'Doctor',
-    'catefory'=>'Categoria',
+    'category'=>'Categoria',
     'severity'=>'Gravedad',
     'onset_date'=>'Fecha de Inicio',
     'recorded_date'=>'Fecha',
@@ -13,6 +13,6 @@ return [
     'status'=>'Estatus',
     'identifier'=>'Idetificador',
     'clinical_status'=>'Estatus Clínico',
-    'verification_status'=>'Verificación'
+    'verification_status'=>'Verificación',
 ];
 

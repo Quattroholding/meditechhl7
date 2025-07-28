@@ -25,25 +25,28 @@
                             </tr>
                             </tbody>
                         </table>
-                        {{--}}
-                        <div style="width:100%" class="">{{__('consultation.diagnostic_clinical_status')}}
 
-                        <x-select-input wire:model="clinical_status.{{$s->id}}"
-                                        wire:change.debounce.300ms="updateClinicalStatus({{$s->id}})"
-                                        name="clinical_status"
-                                        :options="\App\Models\Lista::conditionClinicalStatus()"
-                                        :selected="['active']"
+                        <div style="width:100%" class="">{{__('condition.severity')}}
+
+                        <x-select-input wire:model="severity.{{$s->id}}"
+                                        wire:change.debounce.300ms="updateSeverity({{$s->id}})"
+                                        name="severity"
+                                        :options="\App\Models\Lista::conditionSeverity()"
+                                        :selected="[$s->condition->severity]"
                                         class="block mt-1 w-full"/>
-                        {{--}}
+                            @include('partials.input_saving',['function'=>'updateSeverity','saved'=>$savedSeverity[$s->id],'function_param'=>$s->id])
+                        </div>
+                        <div class="my-3"></div>
                         <div style="width:100%" class="">{{__('consultation.diagnostic_note')}}
                          <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
                                             wire:model="notes.{{$s->id}}"
                                             class="block mt-1 w-full" type="text" name="notes"
                                             placeholder="Escribir nota opcional">{{$s->note}}
                          </x-textarea-input>
+                            @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
                         </div>
                     </div>
-                    @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
+
                 @endforeach
             </div>
         </div>
