@@ -46,11 +46,44 @@
                                     <td>{{ $patient->phone }}</a></td>
                                     @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
+                                            </a>{{--}}
+                                            <div class="btn-group btn-group-sm">
+                                                @can('patients.add_note')
+                                                <a wire:click="openModalNote({{ $patient->id }})" class="btn btn-warning btn-sm" title="Add Note">
+                                                    <i  class="fa-solid fa-sticky-note m-r-5"></i>    
+                                                </a>
+                                                @endcan
+
+                                                @can('patients.insurance')
+                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-info btn-sm" title="{{__('Gestionar Seguros')}}"> 
+                                                    <i  class="fa-solid fa-shield-halved m-r-5"></i>
+                                                </a>
+                                                @endcan
+                                                @can('patients.medical_history')
+                                                <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-primary btn-sm" title="{{__('patient.medical_history')}}">
+                                                    <i  class="fa-solid fa-eye m-r-5"></i>
+                                                </a>
+                                                @endcan
+                                                @if(auth()->user()->can('profile',$patient))
+                                                <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">  
+                                                    <i  class="fa-solid fa-eye m-r-5"></i>
+                                                </a>
+                                                @endif
+                                                @can('patients.edit')
+                                                <a  href="{{ route('patient.edit',$patient->id) }}" title="{{__('generic.edit')}}" class="btn btn-success btn-sm">  
+                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                                @endcan
+                                                @can('patients.delete')
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_patient" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                    <i class="fa fa-trash-alt m-r-5"></i>
+                                                </a>
+                                                @endcan
+                                            </div>
+                                           {{--}} <div class="dropdown-menu dropdown-menu-end">
                                                 @can('patients.add_note')
                                                 <a class="dropdown-item"  wire:click="openModalNote({{ $patient->id }})">  <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                     {{__('patient.add_note')}}
@@ -61,11 +94,11 @@
                                                     {{__('Gestionar Seguros')}}
                                                 </a>
                                                 @endcan
-                                                {{--}}
+                                                
                                                 <a class="dropdown-item" href="{{route('patient.insurances',$patient->id)}}">  <i  class="fa-solid fa-list m-r-5"></i>
                                                     {{__('Ver Seguros')}}
                                                 </a>
-                                                {{--}}
+
                                                 @can('patients.medical_history')
                                                 <a class="dropdown-item"  href="{{route('patient.medical_history',$patient->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                     {{__('patient.medical_history')}}
@@ -84,8 +117,8 @@
                                                 @can('patients.delete')
                                                 <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_patient"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
                                                 @endcan
-                                            </div>
-                                        </div>
+                                            </div>{{--}}
+                                        {{--}}</div>{{--}}
                                     </td>
                                     @endcanany
                                 </tr>
