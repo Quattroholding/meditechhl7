@@ -43,28 +43,45 @@
                                         {{$q->display}}
                                     @endforeach
                                 </td>
-                                @canany(['practitioner.profile','practitioner.edit','practitioner.delete'])
+                                @canany(['practitioners.profile','practitioners.edit','practitioners.delete'])
                                 <td class="text-end">
-                                    <div class="dropdown dropdown-action">
+                                    <div class="btn-group btn-group-sm">
+                                        @can('practitioners.profile')
+                                            <a href="{{route('practitioner.profile',$practitioner->id)}}" class="btn btn-info btn-sm" title="{{__('doctor.profile')}}">  
+                                                <i  class="fa-solid fa-eye m-r-5 text-white"></i>
+                                            </a>
+                                        @endcan
+                                        @can('practitioners.edit')
+                                            <a href="{{ route('practitioner.edit',$practitioner->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                                <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('practitioners.delete')
+                                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                <i class="fa fa-trash-alt m-r-5"></i> 
+                                            </a>
+                                        @endcan
+                                    </div>
+                                    {{--}}<div class="dropdown dropdown-action">
                                         <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa fa-ellipsis-v"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            @can('practitioner.profile')
+                                            @can('practitioners.profile')
                                             <a class="dropdown-item"  href="{{route('practitioner.profile',$practitioner->id)}}">  <i  class="fa-solid fa-eye m-r-5"></i>
                                                 {{__('doctor.profile')}}
                                             </a>
                                             @endcan
-                                            @can('practitioner.edit')
+                                            @can('practitioners.edit')
                                             <a class="dropdown-item"  href="{{ route('practitioner.edit',$practitioner->id) }}">  <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 {{__('generic.edit')}}
                                             </a>
                                             @endcan
-                                            @can('practitioner.delete')
+                                            @can('practitioners.delete')
                                             <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
                                             @endcan
                                         </div>
-                                    </div>
+                                    </div>{{--}}
                                 </td>
                                 @endcanany
                             </tr>

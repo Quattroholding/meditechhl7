@@ -41,7 +41,19 @@
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d-m-Y') }}</td>
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        <div class="btn-group btn-group-sm">
+                                            @can('users.edit')
+                                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">
+                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                            @endcan
+                                            @can('users.delete')
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_user" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                    <i class="fa fa-trash-alt m-r-5"></i>
+                                                </a>
+                                            @endcan
+                                        </div>
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
@@ -59,7 +71,7 @@
                                                     </a>
                                                 @endcan
                                             </div>
-                                        </div>
+                                        </div>{{--}}
                                     </td>
                                 </tr>
                             @endforeach
