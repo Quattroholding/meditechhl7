@@ -26,7 +26,19 @@
                         @if(App\Models\Helper::urlIsImage($row->$column))
                             <img src="{{$row->$columns}}">
                         @elseif($column=='acciones')
-                            <div class="dropdown dropdown-action">
+                            <div class="btn-group btn-group-sm">
+                                @if(in_array('edit',$actions))
+                                    <a href="{{route($route_name.'.edit',$row->id)}}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">
+                                        <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                    </a>
+                                @endif
+                                @if(in_array('delete',$actions))
+                                    <a href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_patient" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                        <i class="fa fa-trash-alt m-r-5"></i> 
+                                    </a>
+                                @endif
+                            </div>
+                            {{--}}<div class="dropdown dropdown-action">
                                 <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i   class="fa fa-ellipsis-v"></i></a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     @if(in_array('edit',$actions))
@@ -36,7 +48,7 @@
                                     <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_patient"><i class="fa fa-trash-alt m-r-5"></i> {{__('generic.delete')}}</a>
                                     @endif
                                 </div>
-                            </div>
+                            </div>{{--}}
                         @else
                             {!! $row->$column  !!}
                         @endif
