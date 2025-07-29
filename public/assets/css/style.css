@@ -11439,11 +11439,11 @@ button.swal2-cancel {
 
 @media only screen and (min-width: 991px) {
 	#toggle_btn {
-		color: #fff;
+		color:rgb(12,149,71,1);
 		float: left;
 		font-size: 20px;
 		line-height: 70px;
-		padding: 25px 10px;
+		padding: 5px;
 	}
 	.user-active .call-imgs {
 		width: 100%;
