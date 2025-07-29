@@ -47,12 +47,21 @@
                                         </span>
                                     </td>
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        @if($medicine->source=='CUSTOM')
+                                            <div class="btn-group btn-group-sm">
+                                                <a wire:click="openModal({{ $medicine->id }})" class="btn btn-success btn-sm" title="Editar">
+                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                                <a href="javascript:;" onclick="confirm('¿Estás seguro de eliminar este medicamento?') || event.stopImmediatePropagation()" wire:click="deleteMedicine({{ $medicine->id }})" class="btn btn-danger btn-sm" title="Eliminar">
+                                                    <i class="fa fa-trash-alt m-r-5"></i>
+                                                </a>
+                                            </div>
+                                        @endif
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
-                                            @if($medicine->source=='CUSTOM')
-                                            <div class="dropdown-menu dropdown-menu-end">
+                                                                                        <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item" wire:click="openModal({{ $medicine->id }})">
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                     Editar
@@ -62,8 +71,7 @@
                                                     Eliminar
                                                 </a>
                                             </div>
-                                            @endif
-                                        </div>
+                                        </div>{{--}}
                                     </td>
                                 </tr>
                             @endforeach
