@@ -12,7 +12,7 @@ class AppointmentPolicy
 
     public function viewConsultation(User $user, Appointment $appointment): bool
     {
-        if($user->hasRole('paciente')) return false;
+        if($user->hasRole('paciente') or $user->hasRole('admin client')) return false;
 
         if($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id && $appointment->status=='fulfilled')  return true;
 
@@ -26,7 +26,7 @@ class AppointmentPolicy
 
     public function arrived(User $user, Appointment $appointment): bool
     {
-        return $appointment->status=='booked' && !$user->hasRole('paciente');
+        return $appointment->status=='booked' && !$user->hasRole('paciente') && !$user->hasRole('admin client');
     }
 
     public function checked_in(User $user, Appointment $appointment): bool
@@ -36,7 +36,7 @@ class AppointmentPolicy
 
     public function fulfilled(User $user, Appointment $appointment): bool
     {
-        return $appointment->status=='checked-in' && !$user->hasRole('paciente');
+        return $appointment->status=='checked-in' && !$user->hasRole('paciente') && !$user->hasRole('admin client');
     }
 
     public function cancelled(User $user, Appointment $appointment): bool
@@ -46,7 +46,7 @@ class AppointmentPolicy
 
     public function noshow(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status,['pending','booked']) && now()->isAfter(Carbon::parse($appointment->start));
+        return in_array($appointment->status,['pending','booked']) && now()->isAfter(Carbon::parse($appointment->start)) && !$user->hasRole('admin client');
     }
 
     public function changeStatus(User $user, Appointment $appointment): bool
@@ -64,17 +64,17 @@ class AppointmentPolicy
 
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $this->booked($user,$appointment);
+        return $this->booked($user,$appointment) && !$user->hasRole('admin client');
     }
 
     public function reject(User $user, Appointment $appointment): bool
     {
-        return $this->booked($user,$appointment);
+        return $this->booked($user,$appointment) && !$user->hasRole('admin client');
     }
 
     public function addNote(User $user, Appointment $appointment): bool
     {
-        return !$user->hasRole('paciente');
+        return !$user->hasRole('paciente') && !$user->hasRole('admin client');
     }
 
 }
