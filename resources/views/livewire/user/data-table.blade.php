@@ -47,8 +47,15 @@
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endcan
+                                            @can('users.activate')
+                                                @if($user->active == false)
+                                                <a href="javascript:;" href="{{route('user.activate', $user->id)}}" class="btn btn-warning btn-sm" title="{{__('Reactivar Usuario')}}">
+                                                    <i class="fa fa-check-circle m-r-5"></i>
+                                                </a>
+                                                @endif
+                                            @endcan
                                             @can('users.delete')
-                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_user" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('user.destroy', $user->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>
                                             @endcan

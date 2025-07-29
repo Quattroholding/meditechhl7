@@ -87,13 +87,13 @@
                     </div>
                 </div>
                 <!-- BILLING ADDRESS -->
-                <div class=" col-12 col-md-6 col-xl-6">
+               {{--}} <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
                         <x-input-label for="marital_status" :value="__('patient.billing_address')" />
                         <x-textarea-input wire:model="billing_address" class="block mt-1 w-full" type="email" name="billing_address"/>
                         <x-input-error :messages="$errors->get('billing_address')" class="mt-2" />
                     </div>
-                </div>
+                </div>{{--}}
             </div>
 
             <div class="row">

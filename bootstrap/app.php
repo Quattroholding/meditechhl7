@@ -20,9 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
-        /*$middleware->web(append: [
-            \App\Http\Middleware\InjectClientTheme::class,
-        ]);*/
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckActiveUserMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
