@@ -68,9 +68,9 @@ class User extends Authenticatable
     public function getCurrentClient(){
 
         if(session()->has('client')){
-            return session()->get('client');
+            return session()->get('client_'.auth()->user()->id);
         }else{
-            session(['client' => Client::find($this->default_client_id)]);
+            session(['client_'.auth()->user()->id => Client::find($this->default_client_id)]);
             return  Client::find($this->default_client_id);
         }
     }
@@ -153,6 +153,12 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function getCurrentClientTotUsersCreated(){
+
+        return $this->getCurrentClient()->users()->role('asistente')->count()+
+            $this->getCurrentClient()->users()->role('admin client')->count() + $this->getCurrentClient()->users()->role('doctor')->count();
     }
 
 }

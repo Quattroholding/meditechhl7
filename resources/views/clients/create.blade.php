@@ -41,15 +41,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class=" col-12 col-md-6 col-xl-4">
-                                    <!-- RUC/DV -->
-                                    <div class="input-block  local-forms">
-                                        <x-input-label for="ruc" :value="__('Ruc')" required/>
-                                        <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="old('ruc')"/>
-                                        <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
-                                    </div>
-                                </div>
-                                <div class=" col-12 col-md-6 col-xl-4">
+                                <div class=" col-12 col-md-6 col-xl-2">
                                     <!-- RUC/DV -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="dv" :value="__('DV')" required/>
@@ -57,35 +49,55 @@
                                         <x-input-error :messages="$errors->get('dv')" class="mt-2" />
                                     </div>
                                 </div>
-                               <div class="col-12 col-md-6 col-xl-4">
-                                   <!-- EMAIL -->
-                                   <div class="input-block  local-forms ">
-                                       <x-input-label for="email" :value="__('Email')" required/>
-                                       <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
-                                       <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                   </div>
-                               </div>
-                                                               <div class="col-12 col-md-6 col-xl-6">
+                                <div class=" col-12 col-md-6 col-xl-6">
+                                    <!-- RUC/DV -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="update_password_password" :value="__('Contraseña')"/>
-                                        <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                        <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-label for="ruc" :value="__('Ruc')" required/>
+                                        <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="old('ruc')"/>
+                                        <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-6">
-                                    <div class="input-block  local-forms">
-                                        <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')"/>
-                                        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" /><p>&nbsp;</p>
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- PACKAGE -->
+                                    <div class="input-block  local-forms ">
+                                        <x-input-label for="package_id" :value="__('Paquete')" required/>
+                                        <x-select-input name="package_id" :options="\App\Models\Package::whereIsActive(1)->pluck('name','id')->toArray()" :selected="[null]" class="block w-full"/>
+                                        <x-input-error :messages="$errors->get('package_id')" class="mt-2" />
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <!-- EMAIL -->
+                                        <div class="input-block  local-forms ">
+                                            <x-input-label for="email" :value="__('Email')" required/>
+                                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <div class="input-block  local-forms">
+                                            <x-input-label for="update_password_password" :value="__('Contraseña')"/>
+                                            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" /><p>&nbsp;</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <div class="input-block  local-forms">
+                                            <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')"/>
+                                            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" /><p>&nbsp;</p>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="row">
                                 <div class=" col-12 col-md-6 col-xl-4">
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="phone" :value="__('Telefono')" required/>
-                                        <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')"/>
+                                        <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
                                         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                     </div>
                                 </div>

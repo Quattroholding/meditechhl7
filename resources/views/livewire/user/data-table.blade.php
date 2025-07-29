@@ -33,7 +33,10 @@
                                     <td>{{ $user->email }}</td>
                                     <td>
                                         @foreach($user->roles as $role)
-                                            <span class="badge bg-primary me-1">{{ $role->name }}</span>
+
+                                            <span class="badge me-1  @if($role->id==2) bg-primary @elseif($role->id==3) bg-success @elseif($role->id==5) bg-warning @endif">
+                                                {{ $role->name }}
+                                            </span>
                                         @endforeach
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d-m-Y') }}</td>

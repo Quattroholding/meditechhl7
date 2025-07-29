@@ -116,7 +116,7 @@
                     <h5>{{auth()->user()->full_name}}</h5>
                     <span>
                         @if(auth()->user()->getCurrentClient() && !auth()->user()->hasRole('paciente'))
-                                {{auth()->user()->getCurrentClient()->name}} -
+                                {{auth()->user()->getCurrentClient()->name}} ({{auth()->user()->getCurrentClient()->package->name}}) -
                         @endif
                             {{auth()->user()->roles()->first()->name}}
                     </span>

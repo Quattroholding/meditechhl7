@@ -150,7 +150,7 @@ class UserController extends Controller
     public function changeClient($client_id){
 
 
-        session(['client' => Client::find($client_id)]);
+        session(['client_'.auth()->user()->id => Client::find($client_id)]);
 
         session()->flash('message.succes','Client Actualizado con exito.');
 

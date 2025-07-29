@@ -10,7 +10,7 @@ class Client extends BaseModel
 {
 
     use HasFactory;
-    protected $fillable=['name','group','ruc','dv','long_name','email','whatsapp','logo'];
+    protected $fillable=['name','group','ruc','dv','long_name','email','whatsapp','logo','package_id'];
 
     public function patients(){
         return $this->belongsToMany(Patient::class,'patient_clients');
@@ -26,6 +26,10 @@ class Client extends BaseModel
 
     public function theme(){
         return $this->hasOne(ClientTheme::class);
+    }
+
+    public function package(){
+        return $this->belongsTo(Package::class)->withDefault(['name'=>'']);
     }
 
     public function getFullNameAttribute($attr) {
