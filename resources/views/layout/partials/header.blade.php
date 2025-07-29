@@ -1,7 +1,7 @@
 <div class="header">
     <div class="header-left">
         <a href="{{ route('dash') }}" class="logo">
-            Meditech
+            Meditec
         </a>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>

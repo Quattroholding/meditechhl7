@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
-            <i class="fas fa-calendar-alt me-2" style="color: var(--primary-color, #3498db);"></i>
+            <i class="fas fa-calendar-alt me-2" ></i>
             Horarios de Mayor Actividad
         </h4>
         <div class="dropdown">
@@ -39,10 +39,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Skeleton para heatmap -->
                 <div class="skeleton-heatmap mb-4"></div>
-                
+
                 <!-- Skeleton para top listas -->
                 <div class="row">
                     <div class="col-md-6">
@@ -335,9 +335,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255,255,255,0.3) 50%, 
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.3) 50%,
                 transparent
             );
             animation: shimmer 2s infinite;

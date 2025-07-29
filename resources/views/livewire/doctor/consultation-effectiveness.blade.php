@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
-            <i class="fas fa-chart-line me-2" style="color: var(--primary-color, #3498db);"></i>
+            <i class="fas fa-chart-line me-2"></i>
             Efectividad de Atención
         </h4>
         <div class="dropdown">

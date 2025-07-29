@@ -16,10 +16,10 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgb(45, 59, 165);
+            background: rgb(12, 149, 72);
             color: white;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(8, 160, 208, 0.3);
         }
 
         .timeline-date {
@@ -365,7 +365,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #0c9447, #0c9447);
             color: white;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
@@ -565,8 +565,10 @@
                 </div>
             @endif
         </div>
+        {{--}}
         @if($calendarData['isToday'])
             <div class="timeline-controls">
+
                 <button
                     wire:click="toggleAutoUpdate"
                     class="auto-update-toggle {{ $autoUpdateEnabled ? 'active' : '' }}"
@@ -586,6 +588,7 @@
                 </button>
             </div>
         @endif
+        {{--}}
     </div>
 
     <!-- Leyenda -->

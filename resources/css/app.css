@@ -8,11 +8,12 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
-    
+
     /* Custom Color Palette */
     --primary: #0c9547;
     --secondary: #08a0d0;
     --tertiary: #243d84;
+    --info: #243d84;
     --primary-light: #0fb454;
     --secondary-light: #0ab5e8;
     --tertiary-light: #2d4a9e;
@@ -42,14 +43,15 @@
 
 /* Custom Color Classes */
 .bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--primary) !important; }
 .bg-secondary { background-color: var(--secondary) !important; }
-.bg-tertiary { background-color: var(--tertiary) !important; }
+.bg-info { background-color: var(--info) !important; }
 .text-primary { color: var(--primary) !important; }
 .text-secondary { color: var(--secondary) !important; }
-.text-tertiary { color: var(--tertiary) !important; }
+.text-info { color: var(--info) !important; }
 .border-primary { border-color: var(--primary) !important; }
 .border-secondary { border-color: var(--secondary) !important; }
-.border-tertiary { border-color: var(--tertiary) !important; }
+.border-info { border-color: var(--info) !important; }
 
 /* Button Styles */
 .btn-primary {

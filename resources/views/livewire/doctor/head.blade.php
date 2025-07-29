@@ -2,7 +2,7 @@
     <style>
         .data-header {
             /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
-            background: #003b62;
+            background: rgb(12,149,71,1);
             color: white;
             border-radius: 20px;
             padding: 30px;
