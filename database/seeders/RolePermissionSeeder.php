@@ -16,6 +16,7 @@ class RolePermissionSeeder extends Seeder
             // Role and Permission management
             ['name' => 'manage-roles', 'description' => 'Gestionar roles de usuario','module'=>'roles'],
             ['name' => 'manage-permissions', 'description' => 'Gestionar permisos del sistema','module'=>'roles'],
+            ['name' => 'manage-packages', 'description' => 'Gestionar los paquetes de licenciamiento de los clientes del sistema','module'=>'paquetes'],
 
             // User management
             ['name' => 'users.view', 'description' => 'Ver lista de usuarios del sistema','module'=>'usuarios'],

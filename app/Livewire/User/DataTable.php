@@ -49,7 +49,7 @@ class DataTable extends Component
                 $q2->whereIn('user_clients.client_id',auth()->user()->clients()->pluck('client_id'));
             });
         })
-        ->whereDoesntHave('practitioner')
+        //->whereDoesntHave('practitioner')
         ->whereDoesntHave('patient')
         ->when($this->search, function (Builder $query) {
             $query->where(function ($q) {

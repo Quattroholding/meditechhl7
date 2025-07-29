@@ -41,37 +41,46 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class=" col-12 col-md-6 col-xl-4">
+                        <div class=" col-12 col-md-6 col-xl-2">
                             <!-- RUC/DV -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="ruc" :value="__('Ruc')" />
-                                <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="$data->ruc"/>
-                                <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
-                            </div>
-                        </div>
-                        <div class=" col-12 col-md-6 col-xl-4">
-                            <!-- RUC/DV -->
-                            <div class="input-block  local-forms">
-                                <x-input-label for="ruc" :value="__('DV')" />
+                                <x-input-label for="ruc" :value="__('DV')" required/>
                                 <x-text-input id="dv" class="block mt-1 w-full" type="number" name="dv" :value="$data->dv" maxlength="2"  min="1"/>
                                 <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                             </div>
                         </div>
+                        <div class=" col-12 col-md-6 col-xl-6">
+                            <!-- RUC/DV -->
+                            <div class="input-block  local-forms">
+                                <x-input-label for="ruc" :value="__('Ruc')" required/>
+                                <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="$data->ruc"/>
+                                <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <!-- PACKAGE -->
+                            <div class="input-block  local-forms ">
+                                <x-input-label for="package_id" :value="__('Paquete')" required/>
+                                <x-select-input name="package_id" :options="\App\Models\Package::whereIsActive(1)->pluck('name','id')->toArray()" :selected="[$data->package_id]" class="block w-full"/>
+                                <x-input-error :messages="$errors->get('package_id')" class="mt-2" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-md-6 col-xl-4">
                             <!-- EMAIL -->
                             <div class="input-block  local-forms ">
-                                <x-input-label for="email" :value="__('Email')" />
-                                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
+                                <x-input-label for="email" :value="__('Email')" required/>
+                                <x-text-input id="email2" class="block mt-1 w-full" type="email" name="email" :value="$data->email"/>
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class=" col-12 col-md-6 col-xl-4">
                             <!-- WHATSAPP -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="whatsapp" :value="__('Telefono')" />
-                                <x-text-input id="whatsapp" class="block mt-1 w-full" type="tel" name="whatsapp" :value="$data->whatsapp"/>
+                                <input  id="whatsapp" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{$data->whatsapp}}">
                                 <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
                             </div>
                         </div>

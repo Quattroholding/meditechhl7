@@ -231,6 +231,17 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['manage-packages'])
+                    <li class="submenu">
+                        <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-boxes-packing"></i></span>
+                            <span> Paquetes </span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                                <li><a class="{{ Request::is('packages') ? 'active' : '' }}"  href="{{ route('package.index') }}">{{ __('generic.list') }} {{ __('package.titles') }}</a></li>
+                                <li><a class="{{ Request::is('packages/create') ? 'active' : '' }}"  href="{{ route('package.create') }}">{{ __('generic.create') }} {{ __('package.title') }}</a></li>
+                        </ul>
+                    </li>
+                @endcanany
                 @if(auth()->user()->can('practitioners.profile') && auth()->user()->practitioner)
                 <li>
                     <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PackageController;
 use \App\Http\Controllers\BranchController;
 use \App\Http\Controllers\RoomController;
 use App\Http\Controllers\PatientController;
@@ -201,6 +202,22 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first
 
         Route::delete('/{id}/delete', [RoomController::class, 'destroy'])->middleware('permission:rooms.delete')->name('client.room.destroy');
     });
+
+});
+
+Route::group(array('prefix' => 'packages','middleware'=>['auth','verified','first.login']), function() {
+
+    Route::get('/', [PackageController::class, 'index'])->middleware('permission:manage-packages')->name('package.index');
+
+    Route::get('/create', [PackageController::class, 'create'])->middleware('permission:manage-packages')->name('package.create');
+
+    Route::post('/store', [PackageController::class, 'store'])->middleware('permission:manage-packages')->name('package.store');
+
+    Route::get('/{id}/edit', [PackageController::class, 'edit'])->middleware('permission:manage-packages')->name('package.edit');
+
+    Route::post('/{id}/update', [PackageController::class, 'update'])->middleware('permission:manage-packages')->name('package.update');
+
+    Route::delete('/{id}/delete', [PackageController::class, 'destroy'])->middleware('permission:manage-packages')->name('package.destroy');
 
 });
 

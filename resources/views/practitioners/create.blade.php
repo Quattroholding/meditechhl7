@@ -13,6 +13,12 @@
             <!-- /Page Header -->
             <div class="row">
                 <div class="col-sm-12">
+                    @cannot('create',auth()->user())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{__('Ya se supero el limite de usuarios de su plan , si desea registrar mas usuarios puede hacer un upgrade de plan , para mas informacion contactar a planes@meditec.com ')}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endcannot
                     <div class="card">
                         <div class="card-body">
                             <div class="col-12">
@@ -167,7 +173,9 @@
 
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">
+                                        @can('create',auth()->user())
                                         <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
+                                        @endcan
                                         <a class="btn btn-primary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                                     </div>
                                 </div>
