@@ -47,7 +47,20 @@
                                         @endif
                                     </td>
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        <div class="btn-group btn-group-sm">
+                                                <a href="{{ route('invoice.show', $invoice->id) }}" class="btn btn-info btn-sm" title="{{ __('invoice.view_details') }}">
+                                                    <i class="far fa-eye me-2"></i>
+                                                </a>
+                                                @if($invoice->balance > 0)
+                                                    <a href="javascript:;" wire:click="openPaymentModal({{ $invoice->id }})" class="btn btn-info btn-sm" title="{{ __('Registrar Pago') }}">
+                                                        <i class="fas fa-credit-card me-2"></i>
+                                                    </a>
+                                                @endif
+                                                <a href="{{ route('invoice.download', $invoice->id) }}" target="_blank" class="btn btn-danger btn-sm" title="{{ __('invoice.download_pdf') }}">
+                                                    <i class="fas fa-download me-2"></i>
+                                                </a>
+                                        </div>
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"
                                                data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fas fa-ellipsis-v"></i>
@@ -65,7 +78,7 @@
                                                     <i class="fas fa-download me-2"></i>{{ __('invoice.download_pdf') }}
                                                 </a>
                                             </div>
-                                        </div>
+                                        </div>{{--}}
                                     </td>
                                 </tr>
                             @empty

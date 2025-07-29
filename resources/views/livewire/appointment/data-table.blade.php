@@ -44,7 +44,24 @@
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</td>
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        <div class="btn-group btn-group-sm">
+                                            @if(auth()->user()->can('booked',$appointment))
+                                                <a wire:click="editAppointment({{$appointment->id}})" class="btn btn-primary btn-sm" title="{{__('appointment.status.confirm')}}">  
+                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                            @endif
+                                            @if(auth()->user()->can('edit',$appointment))
+                                                <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                            @endif
+                                            @if(auth()->user()->can('delete',$appointment))
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                    <i class="fa fa-trash-alt m-r-5"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
@@ -65,7 +82,7 @@
                                                     </a>
                                                @endif
                                             </div>
-                                        </div>
+                                        </div>{{--}}
                                         <script>
                                             document.addEventListener('livewire:initialized', () => {
                                                 Livewire.on('showToastr{{$appointment->id}}', (event) => {
