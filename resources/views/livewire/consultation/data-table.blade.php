@@ -36,7 +36,25 @@
                                     <td>{{ \Carbon\Carbon::parse($dato->start)->format('d-m-Y')  }}</td>
                                     <td>{{ $dato->time }}</td>
                                     <td class="text-end">
-                                        <div class="dropdown dropdown-action">
+                                        <div class="btn-group btn-group-sm">
+                                                <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">  
+                                                    <i  class="fa-solid fa-eye m-r-5 text-white"></i> 
+                                                </a>
+                                                @if(auth()->user()->can('edit',$dato))
+                                                <a href="{{ route('consultation.show',$dato->appointment_id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">  
+                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                </a>
+                                                @endif
+                                                <a href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank" class="btn btn-danger btn-sm"  title="{{__('consultation.download_resumen')}}">  
+                                                    <i  class="fa-solid fa-file-pdf m-r-5"></i> 
+                                                </a>
+                                                @if($dato->invoice)
+                                                    <a href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank" class="btn btn-success btn-sm" title="{{__('consultation.download_invoice')}}">  
+                                                        <i  class="fa-solid fa-file-pdf m-r-5"></i>
+                                                    </a>
+                                                @endif
+                                        </div>
+                                        {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </a>
@@ -58,7 +76,7 @@
                                                     </a>
                                                 @endif
                                             </div>
-                                        </div>
+                                        </div>{{--}}
                                     </td>
                                 </tr>
                             @endforeach
