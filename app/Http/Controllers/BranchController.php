@@ -74,11 +74,17 @@ class BranchController extends Controller
         return redirect(route('client.branch.edit',$id));
     }
 
-    public function destroy($id){
+    public function destroy(Request $request,$id){
 
-        $data = Branch::findOrFail($id);
-        $data->delete();
+        try {
+            $data = Branch::findOrFail($id);
+            $data->delete();
 
-        return redirect(route('clients.index'));
+            session()->flash('message.success','Eliminado con exito.');
+        }catch (\Exception $e){
+            session()->flash('message.error',$e->getMessage());
+        }
+
+        return redirect(route('client.branch.index'));
     }
 }

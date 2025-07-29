@@ -15,7 +15,7 @@
                 <div class="col-sm-12">
                     @cannot('create',auth()->user())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{__('Ya se supero el limite de usuarios de su plan , si desea registrar mas usuarios puede hacer un upgrade de plan , para mas informacion contactar a planes@meditec.com ')}}
+                            {{__('user.plan_error_message')}}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endcannot

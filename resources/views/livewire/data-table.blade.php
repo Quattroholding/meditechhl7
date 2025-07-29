@@ -33,8 +33,8 @@
                                     </a>
                                 @endif
                                 @if(in_array('delete',$actions))
-                                    <a href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_patient" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
-                                        <i class="fa fa-trash-alt m-r-5"></i> 
+                                    <a href="javascript:;" data-bs-toggle="modal"  data-bs-target="#delete_modal" data-route="{{route($route_name.'.destroy',$row->id)}}"class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                        <i class="fa fa-trash-alt m-r-5"></i>
                                     </a>
                                 @endif
                             </div>

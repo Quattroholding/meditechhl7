@@ -26,5 +26,6 @@ return [
     'created_at'=>'Fecha de creacion',
     'current_password'=>'Contraseña actual',
     'new_password'=>'Nueva Contraseña',
-    'confirm_password'=>'Confirmar nueva contraseña'
+    'confirm_password'=>'Confirmar nueva contraseña',
+    'plan_error_message'=>'Ya se supero el limite de usuarios de su plan , si desea registrar mas usuarios puede hacer un upgrade de plan , para mas informacion contactar a planes@meditec.com'
 ];

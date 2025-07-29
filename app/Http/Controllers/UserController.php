@@ -49,6 +49,10 @@ class UserController extends Controller
         try{
             DB::beginTransaction();
 
+            if(!auth()->user()->can('create',auth()->user())){
+                throw new \ErrorException(__('user.plan_error_message'));
+            }
+
             $model = new User();
             $model->fill($request->all());
             $temporaryPassword = $request->password;
