@@ -36,7 +36,7 @@ class RoomController extends Controller
             $request->session()->flash('message.success','Hubo un error y no se pudo crear el consultorio.');
         }
 
-        return redirect(route('client.index'));
+        return redirect(route('client.room.index'));
     }
 
     public function edit($id){
@@ -71,9 +71,15 @@ class RoomController extends Controller
 
     public function destroy($id){
 
-        $data = ConsultingRoom::find($id);
-        $data->delete();
+         try {
+            $data = ConsultingRoom::find($id);
+            $data->delete();
 
-        return redirect(route('clients.index'));
+            session()->flash('message.success','Eliminado con exito.');
+        }catch (\Exception $e){
+            session()->flash('message.error',$e->getMessage());
+        }
+
+        return redirect(route('client.room.index'));
     }
 }

@@ -15,7 +15,7 @@
                 <div class="col-sm-12">
                     @cannot('create',auth()->user())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                           {{__('Ya se supero el limite de usuarios de su plan , si desea registrar mas usuarios puede hacer un upgrade de plan , para mas informacion contactar a planes@meditec.com ')}}
+                           {{__('user.plan_error_message')}}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endcannot
@@ -137,8 +137,8 @@
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="whatsapp" :value="__('user.phone')" />
-                                        <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
-                                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                        <input   wire:model="whatsapp_phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="whatsapp_phone" value="{{old('phone')}}">
+                                        <x-input-error :messages="$errors->get('whatsapp_phone')" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="client_id">
