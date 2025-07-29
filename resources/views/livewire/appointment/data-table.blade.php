@@ -1,3 +1,26 @@
+{{--}}<style>
+    .action-btn {
+            padding: 0px 8px;
+            border: none;
+            border-radius: 9px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    .btn-confirm { background: #3498db; color: white; }
+    .btn-start { background: #f39c12; color: white; }
+    .btn-complete { background: #27ae60; color: white; }
+    .btn-cancel { background: #e8536e; color: white; }
+    .btn-edit { background: #9b59b6; color: white; }
+
+</style>{{--}}
 <div>
     <div class="row">
         <div class="col-sm-12">
@@ -45,21 +68,45 @@
                                     <td>{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            @if(auth()->user()->can('booked',$appointment))
+                                            {{--}}@if(auth()->user()->can('booked',$appointment))
                                                 <a wire:click="editAppointment({{$appointment->id}})" class="btn btn-primary btn-sm" title="{{__('appointment.status.confirm')}}">  
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
-                                            @endif
+                                            @endif{{--}}
                                             @if(auth()->user()->can('edit',$appointment))
                                                 <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endif
-                                            @if(auth()->user()->can('delete',$appointment))
+                                            {{--}}@if(auth()->user()->can('delete',$appointment))
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
-                                                    <i class="fa fa-trash-alt m-r-5"></i>
+                                                    🚮
                                                 </a>
                                             @endif
+                                            @if(auth()->user()->can('booked',$appointment))
+                                                <a wire:click="changeStatus('booked')" class="action-btn btn-confirm" title="{{__('Confirmar')}}">✅</a>
+                                            @endif
+                                            @if(auth()->user()->can('arrived',$appointment))
+                                                <a wire:click="changeStatus('arrived')" class="action-btn btn-start" title="{{__('Registrar Llegada')}}">🚪</a>
+                                            @endif
+                                            @if(auth()->user()->can('noshow',$appointment))
+                                                <a wire:click="changeStatus('noshow')" class="action-btn btn-cancel btn-sm" title="{{__('No apareció')}}">👻</a>
+                                            @endif
+                                            @if(auth()->user()->can('cancelled',$appointment))
+                                                <a wire:click="changeStatus('cancelled')" class="action-btn btn-cancel" title="{{__('Cancelar')}}">❌</a>
+                                            @endif
+                                            @if(auth()->user()->can('entered-in-error',$appointment))
+                                                <a wire:click="changeStatus('entered-in-error')" class="action-btn btn-cancel" title="{{__('Ingresado por error')}}">‼️</a>
+                                            @endif
+                                            @if(auth()->user()->can('checked_in',$appointment))
+                                                <a wire:click="changeStatus('checked-in')" class="action-btn btn-start btn-sm" title="{{__('Iniciar Consulta')}}">▶️</a>
+                                            @endif
+                                            @if(auth()->user()->can('fulfilled',$appointment))
+                                                <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-start btn-sm" title="{{__('Llenar Consulta')}}">🩺</a>
+                                            @endif
+                                            @if(auth()->user()->can('viewConsultation',$appointment))
+                                                <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-start btn-sm" title="{{__('Ver Consulta')}}">👁️</a>
+                                            @endif{{--}}
                                         </div>
                                         {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">

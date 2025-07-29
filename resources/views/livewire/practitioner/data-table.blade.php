@@ -56,11 +56,11 @@
                                                 <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endcan
-                                        @can('practitioners.delete')
+                                        {{--}}@can('practitioners.delete')
                                             <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                 <i class="fa fa-trash-alt m-r-5"></i> 
                                             </a>
-                                        @endcan
+                                        @endcan{{--}}
                                     </div>
                                     {{--}}<div class="dropdown dropdown-action">
                                         <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">

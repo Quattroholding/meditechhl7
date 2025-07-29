@@ -49,12 +49,12 @@
                                         <div class="btn-group btn-group-sm">
                                                 @can('patients.add_note')
                                                 <a wire:click="openModalNote({{ $patient->id }})" class="btn btn-warning btn-sm" title="Add Note">
-                                                    <i  class="fa-solid fa-sticky-note m-r-5"></i>
+                                                    <i  class="fa-solid fa-sticky-note m-r-5"></i>    
                                                 </a>
                                                 @endcan
 
                                                 @can('patients.insurance')
-                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-info btn-sm" title="{{__('Gestionar Seguros')}}">
+                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-info btn-sm" title="{{__('Gestionar Seguros')}}"> 
                                                     <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
                                                 </a>
                                                 @endcan
@@ -64,20 +64,20 @@
                                                 </a>
                                                 @endcan
                                                 @if(auth()->user()->can('profile',$patient))
-                                                <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">
+                                                <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">  
                                                     <i  class="fa-solid fa-eye m-r-5"></i>
                                                 </a>
                                                 @endif
                                                 @can('patients.edit')
-                                                <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
+                                                <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">  
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                                 @endcan
-                                                @can('patients.delete')
-                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                               {{--}}@can('patients.delete')
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('patient.destroy', $patient->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>
-                                                @endcan
+                                                @endcan{{--}}
                                             </div>
                                         {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,7 +94,7 @@
                                                     {{__('Gestionar Seguros')}}
                                                 </a>
                                                 @endcan
-
+                                                
                                                 <a class="dropdown-item" href="{{route('patient.insurances',$patient->id)}}">  <i  class="fa-solid fa-list m-r-5"></i>
                                                     {{__('Ver Seguros')}}
                                                 </a>
