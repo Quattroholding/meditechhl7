@@ -1,4 +1,4 @@
-<style>
+{{--}}<style>
     .action-btn {
             padding: 0px 8px;
             border: none;
@@ -20,7 +20,7 @@
     .btn-cancel { background: #e8536e; color: white; }
     .btn-edit { background: #9b59b6; color: white; }
 
-</style>
+</style>{{--}}
 <div>
     <div class="row">
         <div class="col-sm-12">
@@ -74,12 +74,12 @@
                                                 </a>
                                             @endif{{--}}
                                             @if(auth()->user()->can('edit',$appointment))
-                                                <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="action-btn btn-edit btn-sm" title="{{__('generic.edit')}}">  
-                                                    📝
+                                                <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endif
-                                            @if(auth()->user()->can('delete',$appointment))
-                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment" class="action-btn btn-cancel btn-sm" title="{{__('generic.delete')}}">
+                                            {{--}}@if(auth()->user()->can('delete',$appointment))
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_appointment" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     🚮
                                                 </a>
                                             @endif
@@ -106,7 +106,7 @@
                                             @endif
                                             @if(auth()->user()->can('viewConsultation',$appointment))
                                                 <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-start btn-sm" title="{{__('Ver Consulta')}}">👁️</a>
-                                            @endif
+                                            @endif{{--}}
                                         </div>
                                         {{--}}<div class="dropdown dropdown-action">
                                             <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
