@@ -55,12 +55,12 @@
 
                                                 @can('patients.insurance')
                                                 <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-info btn-sm" title="{{__('Gestionar Seguros')}}"> 
-                                                    <i  class="fa-solid fa-shield-halved m-r-5"></i>
+                                                    <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
                                                 </a>
                                                 @endcan
                                                 @can('patients.medical_history')
-                                                <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-primary btn-sm" title="{{__('patient.medical_history')}}">
-                                                    <i  class="fa-solid fa-eye m-r-5"></i>
+                                                <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-dark btn-sm" title="{{__('patient.medical_history')}}">
+                                                    <i  class="fa fa-file-text-o m-r-5"></i>
                                                 </a>
                                                 @endcan
                                                 @if(auth()->user()->can('profile',$patient))
@@ -69,7 +69,7 @@
                                                 </a>
                                                 @endif
                                                 @can('patients.edit')
-                                                <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                                <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">  
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                                 @endcan
