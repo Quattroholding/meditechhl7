@@ -141,12 +141,24 @@ class UserController extends Controller
 
     public function destroy($id){
 
-        if(auth()->user()->id ==$id){
+        /*if(auth()->user()->id ==$id){
             session()->flash('message.error','Este usuario no se puede borrar.');
             return redirect()->back();
         }
         $data = User::find($id);
-        $data->delete();
+        $data->delete();*/
+        $user = User::find($id);
+        $user->deactivate();
+        session()->flash('message.succes','usuario desactivado correctamente');
+
+        return redirect(route('user.index'));
+    }
+
+        public function activate(User $user)
+    {
+        $user = User::find($id);
+        $user->activate();
+        session()->flash('message.succes','usuario activado correctamente');
 
         return redirect(route('user.index'));
     }

@@ -264,6 +264,8 @@ Route::group(array('prefix' => 'users','middleware'=>['auth','verified','first.l
 
     Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:users.delete')->name('user.destroy');
 
+    Route::post('/{id}/activate', [UserController::class, 'activate'])->middleware('permission:users.activate')->name('user.activate');
+
 });
 
 Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified','first.login']), function() {

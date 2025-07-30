@@ -25,6 +25,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'users.delete', 'description' => 'Eliminar usuarios del sistema','module'=>'usuarios'],
             ['name' => 'users.profile', 'description' => 'Ver perfil del usuario','module'=>'usuarios'],
             ['name' => 'users.change_client', 'description' => 'Cambiar de cliente','module'=>'usuarios'],
+            ['name' => 'users.activate', 'description' => 'Activar usuarios','module'=>'usuarios'],
 
             // Client management
             ['name' => 'clients.view', 'description' => 'Ver lista de clientes/organizaciones','module'=>'clientes'],

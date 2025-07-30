@@ -29,6 +29,7 @@ class User extends Authenticatable
         'profile_picture',
         'phone',
         'whatsapp_phone',
+        'active'
     ];
 
     /**
@@ -52,6 +53,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'first_login_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
     }
 
@@ -91,6 +93,31 @@ class User extends Authenticatable
     }
 
     public function clients(){ return $this->belongsToMany(Client::class,'user_clients'); }
+
+        public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('active', false);
+    }
+
+     public function activate()
+    {
+        $this->update(['active' => true]);
+    }
+
+    public function deactivate()
+    {
+        $this->update(['active' => false]);
+    }
+
+    public function isActive()
+    {
+        return $this->active;
+    }
 
     // Relación con paciente (si existe)
     public function patient()

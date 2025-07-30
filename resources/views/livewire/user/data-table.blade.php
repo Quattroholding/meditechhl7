@@ -47,8 +47,34 @@
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endcan
+                                           {{--}} @can('users.activate')
+                                                @if($user->active == false)
+                                                 <button type="button" 
+                                                    class="btn btn-warning btn-sm" 
+                                                    title="{{ __('Reactivar Usuario') }}"
+                                                    wire:click.prevent="activateUser({{ $user->id }})"
+                                                    wire:loading.attr="disabled"
+                                                    wire:target="activateUser({{ $user->id }})">
+                                                
+                                                    <i class="fa fa-check-circle m-r-5" 
+                                                    wire:loading.remove 
+                                                    wire:target="activateUser({{ $user->id }})"></i>
+                                                
+                                                    <i class="fa fa-spinner fa-spin m-r-5" 
+                                                    wire:loading 
+                                                    wire:target="activateUser({{ $user->id }})"></i>
+                                                
+                                                <span wire:loading.remove wire:target="activateUser({{ $user->id }})">
+                                                    {{ __('Activar') }}
+                                                </span>
+                                                <span wire:loading wire:target="activateUser({{ $user->id }})">
+                                                    {{ __('Activando...') }}
+                                                </span>
+                                            </button>
+                                                @endif
+                                            @endcan{{--}}
                                             @can('users.delete')
-                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_user" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
+                                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('user.destroy', $user->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>
                                             @endcan
