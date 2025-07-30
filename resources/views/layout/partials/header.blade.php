@@ -1,7 +1,7 @@
 <div class="header">
     <div class="header-left">
         <a href="{{ route('dash') }}" class="logo">
-           <img src="{{url('images/logo1.png')}}" alt=""  style="width: 80%;">
+           <img src="{{url('images/logo1.png')}}" alt="">
         </a>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
