@@ -56,7 +56,7 @@
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">
                                         <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.update') }} </button>
-                                        <a class="btn btn-primary cancel-form" href="{{ route('client.branch.index') }}">  {{ __('button.cancel') }}</a>
+                                        <a class="btn btn-secondary cancel-form" href="{{ route('client.branch.index') }}">  {{ __('button.cancel') }}</a>
                                     </div>
                                 </div>
                             </form>

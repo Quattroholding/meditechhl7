@@ -11414,7 +11414,7 @@ div.dt-container .dt-paging .dt-paging-button.current:hover {
 }
 button.swal2-confirm {
     background:rgb(12,149,71,1);
-    border: 1px solidrgb(12,149,71,1);
+    border: 1px solid rgb(12,149,71,1);
     color: #fff;
     border-radius: 5px;
     padding: 0.5rem 0.85rem;

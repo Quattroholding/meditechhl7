@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <div class="input-group mb-3">
             <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar {{$type}}" >
-            <button class="input-group-text btn btn-info submit-form me-2" id="basic-addon2" wire:click="clearInput()"><i class="fa fa-close"></i> {{__('Limpiar')}}</button>
+            <button class="input-group-text btn btn-primary submit-form me-2" id="basic-addon2" wire:click="clearInput()"><i class="fa fa-close"></i> {{__('Limpiar')}}</button>
         </div>
 
         <!-- Spinner de Carga -->

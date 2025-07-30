@@ -93,8 +93,8 @@
 
 
                     <div class="modal-footer">
-                        <button type="button" wire:click="closeModal" class="btn btn-secondary">Cancelar</button>
                         <button type="submit" class="btn btn-primary">{{ $buttonSaveTitle }}</button>
+                        <button type="button" wire:click="closeModal" class="btn btn-secondary">{{ __('button.cancel') }}</button>
                     </div>
                 </form>
             </div>

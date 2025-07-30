@@ -151,7 +151,7 @@
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">
                                         <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
-                                        <a href="{{route('patient.index')}}" class="btn btn-primary cancel-form">  {{ __('button.cancel') }}</a>
+                                        <a href="{{route('patient.index')}}" class="btn btn-secondary cancel-form">  {{ __('button.cancel') }}</a>
                                     </div>
                                 </div>
                             </form>

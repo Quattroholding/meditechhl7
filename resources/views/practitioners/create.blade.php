@@ -176,7 +176,7 @@
                                         @can('create',auth()->user())
                                         <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.register') }} </button>
                                         @endcan
-                                        <a class="btn btn-primary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
+                                        <a class="btn btn-secondary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                                     </div>
                                 </div>
                             </form>
