@@ -11703,17 +11703,17 @@ button.swal2-cancel {
 		margin-left: 0;
 	}
 	a.mobile_btn {
-		color: #fff;
+		color: rgb(12,149,71,1);
 		font-size: 24px;
 		height: 70px;
 		left: 0;
 		line-height: 70px;
 		padding: 0 20px;
 		position: absolute;
-		top: 25px;
 		width: 80px;
 		z-index: 10;
 	}
+    .logo
 	.slide-nav .page-wrapper {
 		left: 225px;
 		margin-left: 0;
