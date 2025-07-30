@@ -26,7 +26,6 @@ class Create extends Component
     public $gender;
     public $birthdate;
     public $physical_address;
-    public $billing_address;
     public $phone;
     public $blood_type;
     public $password;
@@ -43,7 +42,6 @@ class Create extends Component
         'birthdate' => 'required',
         'physical_address' => 'required',
         'marital_status'=>'required',
-        //'billing_address' => 'required',
         'email' => 'required|unique:'.Patient::class,
         'phone' => 'required',
         //'blood_type' => 'required',
@@ -134,6 +132,7 @@ class Create extends Component
         $model->last_name = $this->last_name;
         $model->email = strtolower($this->email);
         $model->password = $this->password;
+        $model->whatsapp_phone = $this->phone;
         $model->save();
 
         // Asignar rol de paciente
@@ -147,11 +146,11 @@ class Create extends Component
         $patient->whatsapp_phone = $this->phone;
         $patient->name = $this->first_name .' '. $this->last_name;
         $patient->user_id = $model->id;
+        $patient->gender = $this->gender;
         $patient->birth_date =$this->birthdate;
         $patient->fhir_id = 'patient-' . Str::uuid();
         $patient->communication = json_encode(['language'=>'es','preferred'=>true]);
         $patient->address = $this->physical_address;
-        $patient->billing_address = $this->billing_address;
         $patient->marital_status = $this->marital_status;
         $patient->blood_type = $this->blood_type;
         //IDENTIFIER ES ID
@@ -191,7 +190,6 @@ class Create extends Component
         $this->gender='';
         $this->birthdate='';
         $this->physical_address='';
-        $this->billing_address='';
         $this->phone='';
         $this->blood_type='';
         $this->marital_status='';
