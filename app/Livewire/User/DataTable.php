@@ -41,6 +41,19 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+   /*public function activateUser($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            
+            $user->active = true;
+            $user->save();
+            // Mensaje de éxito
+            session()->flash('message.success', 'Usuario activado exitosamente');
+        } catch (\Exception $e) {
+            session()->flash('message.error', 'Error al activar el usuario');
+        }
+    }*/
 
     public function render()
     {

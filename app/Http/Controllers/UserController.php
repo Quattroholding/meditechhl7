@@ -158,8 +158,9 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user->activate();
-        
-        return redirect()->back()->with('message.success', 'Usuario activado correctamente');
+        session()->flash('message.succes','usuario activado correctamente');
+
+        return redirect(route('user.index'));
     }
 
     public function changeClient($client_id){
