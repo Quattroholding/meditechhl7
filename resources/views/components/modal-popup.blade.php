@@ -8,10 +8,10 @@
                 <img src="{{ URL::asset('/assets/img/sent.png') }}" alt="" width="50" height="46">
                 <h3>{{__('Estas seguro que quieres borrar esto')}}?</h3>
 
-                <div class="flex items-center justify-end mt-4">
-                    <div class="doctor-submit text-end">
-                        <button type="submit" class="btn btn-danger submit-form me-2">{{ __('button.delete') }} </button>
-                        <a class="btn btn-primary cancel-form" data-bs-dismiss="modal">{{ __('button.cancel') }}</a>
+                <div class="flex items-center justify-end">
+                    <div class="doctor-submit text-end py-3">
+                        <button type="submit" class="btn btn-danger">{{ __('button.delete') }} </button>
+                        <a class="btn btn-secondary" data-bs-dismiss="modal">{{ __('button.cancel') }}</a>
                     </div>
                 </div>
             </div>
