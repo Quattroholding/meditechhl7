@@ -3,8 +3,7 @@
 <div class="border rounded-lg overflow-hidden" id="parent_section_marker_{{ $attributes->whereStartsWith('data-id')->first() }}">
     <button
         @click="toggleItem('accordion-{{ $attributes->whereStartsWith('data-id')->first() }}')"
-        class="w-full px-4 py-3 text-left font-medium flex justify-between items-center hover:bg-gray-50 transition"
-        style="background: rgb(45, 59, 165);color:#fff;">
+        class="w-full px-4 py-3 text-left font-medium flex justify-between items-center hover:bg-gray-50 transition btn-primary">
         <span>{{ $title }}</span>
         <svg
             class="w-5 h-5 transform transition-transform duration-200"

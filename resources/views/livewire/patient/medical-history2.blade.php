@@ -8,7 +8,7 @@
         }
 
         .patient-header {
-            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            background: linear-gradient(135deg, rgb(12,149,71,1), rgb(12,149,71,0.5));
             background: #003b62;
             color: white;
             border-radius: 20px;
@@ -144,7 +144,7 @@
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, #003b62, #764ba2);
+            background: linear-gradient(135deg, rgb(12,149,71,1), rgb(12,149,71,0.5));
             color: white;
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }

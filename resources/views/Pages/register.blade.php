@@ -18,13 +18,7 @@
                         <div class="login-right">
                             <div class="login-right-wrap">
                                 <div class="account-logo">
-
-                                    <a href="{{ url('/') }}">
-                                        {{--}}
-                                        <img  src="{{ URL::asset('/assets/img/login-logo.png') }}" alt="">
-                                        {{--}}
-                                        <div class="logo">Meditech</div>
-                                    </a>
+                                    <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
                                 </div>
                                 <!-- Form -->
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form">
