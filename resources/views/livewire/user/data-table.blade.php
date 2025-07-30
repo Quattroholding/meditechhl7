@@ -47,6 +47,11 @@
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endcan
+                                            @can('users.activate')
+                                                @if($user->active == false)
+                                                    <livewire:user.active-users user_id="{{$user->id}}" wire:key="{{$user->id}}"/>
+                                                @endif
+                                            @endcan
                                            {{--}} @can('users.activate')
                                                 @if($user->active == false)
                                                  <button type="button" 
