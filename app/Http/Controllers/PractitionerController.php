@@ -25,7 +25,8 @@ class PractitionerController extends Controller
     }
 
     public function create(){
-        $clients = Client::whereIn('id',auth()->user()->clients->pluck('id'))->pluck('long_name','id')->toArray();
+        
+        $clients = (auth()->user()->hasRole('admin')) ? Client::all()->pluck('long_name','id')->toArray() : Client::whereIn('id',auth()->user()->clients->pluck('id'))->pluck('long_name','id')->toArray();
         return view('practitioners.create',compact('clients'));
     }
 
