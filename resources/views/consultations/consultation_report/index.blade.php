@@ -24,7 +24,7 @@
     @if(request()->has('html'))
         <img style="max-height:56px" src="{{ url('assets/img/logo.png') }}">
     @else
-        <img style="max-height:56px" src="{{ public_path('assets/img/logo.png') }}">
+        <img style="max-height:56px" src="{{ public_path('images/logoReporte.png') }}">
     @endif
     {{--}}
     @if($data['appointment']->clinic()->first()->pais != "1")
@@ -105,7 +105,7 @@
         <tr>
             <td colspan="2" valign="top">
                 <div style=" padding: 2px 0px;width:100%">
-                    <div style="width:100%;height: 3px;background-color: #005DB8"></div>
+                    <div style="width:100%;height: 3px;background-color:rgba(12, 149, 71, 1);"></div>
                 </div>
             </td>
         </tr>
@@ -131,7 +131,7 @@
     </div>
     <div style="position:absolute;float:right;bottom:10px"><b>Page <span class="pagenum"></span></b></div>
     <div style=" padding:8px;margin-top:100px;width:100%">
-        <div style="width:100%;height: 3px;background-color: #005DB8"></div>
+        <div style="width:100%;height: 3px;background-color:rgba(12, 149, 71, 1);"></div>
     </div>
     <div class=" subtitle-header" style="text-align: center"> Doctor:
         <span>{{ $data->practitioner->name }} {{ $data->practitioner->surrname }}</span>

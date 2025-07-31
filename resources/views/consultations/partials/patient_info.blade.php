@@ -7,7 +7,7 @@
     <div class="offcanvas-body">
         <div class="col-sm-12">
             <div class="row">
-                <div wire:init>
+                <div>
                     {{--}}
                     <livewire:consultation.patient-history patient_id="{{$id}}"/>
                     {{--}}

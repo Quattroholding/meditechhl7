@@ -737,18 +737,10 @@
                             </button>
                         @endif
 
-                        @if(auth()->user()->can('fulfilled',$appModel))
-                            <a href="{{route('consultation.show',$appointment['id'])}}" class="action-btn btn-warning">
-                                <i class="fa fa-eye"></i> Editar
-                            </a>
-                            <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'fulfilled')" class="action-btn btn-complete">
-                                ✅ Finalizar
-                            </button>
-                        @endif
 
                         @if(auth()->user()->can('viewConsultation',$appModel))
                             <a href="{{route('consultation.show',$appointment['id'])}}" class="action-btn btn-start">
-                                ▶️ Ver Consulta
+                                @if($appModel->encounter) <i class="fa fa-edit"></i> {{__('Editar Consulta')}} @else ✏️ {{__(' Llenar Consulta')}}@endif
                             </a>
                         @endif
 
@@ -763,13 +755,7 @@
                                 👻 No aparecio
                             </button>
                         @endif
-                        @if(auth()->user()->can('edit',$appModel))
-                            <div class="float-right">
-                                <button wire:click.stop="editAppointment({{ $appointment['id'] }})"  class="action-btn btn-edit">
-                                    ✏️ Editar
-                                </button>
-                            </div>
-                        @endif
+
                     </div>
                 </div>
 

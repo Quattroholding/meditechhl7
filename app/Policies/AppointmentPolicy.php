@@ -14,7 +14,7 @@ class AppointmentPolicy
     {
         if($user->hasRole('paciente') or $user->hasRole('admin client')) return false;
 
-        if($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id && $appointment->status=='fulfilled')  return true;
+        if($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id && in_array($appointment->status,['fulfilled','checked-in']))  return true;
 
         return $appointment->status=='fulfilled';
     }

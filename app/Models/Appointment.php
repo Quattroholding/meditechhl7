@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Appointment extends Model
 {
@@ -59,7 +60,7 @@ class Appointment extends Model
 
     public function encounter(): HasOne
     {
-        return $this->hasOne(Encounter::class);
+        return $this->hasOne(Encounter::class,'appointment_id');
     }
 
     public function client(): BelongsTo
@@ -302,7 +303,7 @@ class Appointment extends Model
     {
         // Check if appointment is more than 2 hours in the future
         $hoursUntilAppointment = now()->diffInHours($this->start, false);
-        
+
         if ($hoursUntilAppointment <= 2) {
             \Log::info('Appointment reminder not scheduled - appointment is too soon', [
                 'appointment_id' => $this->id,
@@ -314,9 +315,9 @@ class Appointment extends Model
 
         // Schedule the reminder job to run 2 hours before the appointment
         $reminderTime = $this->start->copy()->subHours(2);
-        
+
         SendAppointmentReminderJob::dispatch($this)->delay($reminderTime);
-        
+
         \Log::info('Appointment reminder scheduled successfully', [
             'appointment_id' => $this->id,
             'patient_id' => $this->patient_id,
@@ -324,7 +325,7 @@ class Appointment extends Model
             'reminder_datetime' => $reminderTime->format('Y-m-d H:i:s'),
             'hours_until_appointment' => $hoursUntilAppointment
         ]);
-        
+
         return true;
     }
 }

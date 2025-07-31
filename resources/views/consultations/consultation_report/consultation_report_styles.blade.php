@@ -44,12 +44,12 @@
         min-height: 10px;
         background-color: #FFFFFF;
         border: 1px dotted #8BC443;
-        border-left: 3px solid rgba(0, 93, 184, 1);
+        border-left: 3px solid rgba(12, 149, 71, 1);
         border-radius: 0px;
         padding: 10px;
         font-weight: bold;
         line-height: 20px;
-        color: #005DB8;
+        color:rgba(12, 149, 71, 1);
         font-size: 12px;
 
 
@@ -240,7 +240,7 @@
         padding: 5px;
         margin: 5px;
         font-weight: bold;
-        color: #005DB8;
+        color: rgba(12, 149, 71, 1);
 
 
     }

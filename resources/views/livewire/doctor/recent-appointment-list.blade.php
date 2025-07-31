@@ -196,8 +196,9 @@
                                                     </button>
                                                 @endif
                                                 @if(auth()->user()->can('viewConsultation',$appointment))
-                                                    <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-start">
-                                                        ▶️ Ver Consulta
+                                                    <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-confirm">
+                                                         @if($appointment->encounter) {{__('Editar Consulta')}} @else ✏️ {{__(' Llenar Consulta')}}@endif
+
                                                     </a>
                                                 @endif
                                                 @if(auth()->user()->can('cancelled',$appointment))

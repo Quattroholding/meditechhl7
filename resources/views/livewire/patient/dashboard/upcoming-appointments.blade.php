@@ -41,7 +41,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-2">
                                 <div class="text-center">
-                                    <div class="badge bg-primary p-3 rounded-circle">
+                                    <div class="badge appointment appointment-{{$appointment->status}} p-3 rounded-circle" style="position: relative" title="{{ __('appointment.status.' . $appointment->status) }}">
                                         <i class="fas fa-calendar-day fa-lg"></i>
                                     </div>
                                     <div class="mt-2">
@@ -75,33 +75,19 @@
                             </div>
 
                             <div class="col-md-2">
-                                <span class="badge
-                                    @switch($appointment->status)
-                                        @case('scheduled')
-                                            badge-success
-                                            @break
-                                        @case('confirmed')
-                                            badge-primary
-                                            @break
-                                        @case('pending')
-                                            badge-warning
-                                            @break
-                                        @default
-                                            badge-secondary
-                                    @endswitch
-                                ">
-                                    {{ ucfirst(__('appointment.status.' . $appointment->status)) }}
+                                <span style="position: relative" class="appointment appointment-{{$appointment->status}} ">
+                                    {{ ucfirst(__('appointment.status.' . $appointment->status)) }}  &nbsp;
                                 </span>
 
-                                @if($appointment->reason_for_visit)
+                                @if($appointment->service_type)
                                     <div class="mt-2">
                                         <small class="text-muted">
-                                            <strong>Motivo:</strong> {{ Str::limit($appointment->reason_for_visit, 50) }}
+                                            <strong>Motivo:</strong> {{ Str::limit($appointment->service_type, 50) }}
                                         </small>
                                     </div>
                                 @endif
                             </div>
-
+                            @if($appointment->start > now()->addHours(24))
                             <div class="col-md-2 text-end">
                                 <div class="dropdown">
                                     <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown">
@@ -115,7 +101,7 @@
                                             </a>
                                         </li>
                                         {{--}}
-                                        @if($appointment->appointment_date > now()->addHours(24))
+
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('appointment.edit', $appointment->id) }}">
                                                     <i class="fas fa-edit me-2"></i>Editar
@@ -130,10 +116,11 @@
                                                     <i class="fas fa-times me-2"></i>Cancelar
                                                 </a>
                                             </li>
-                                        @endif
+
                                     </ul>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 @endforeach
