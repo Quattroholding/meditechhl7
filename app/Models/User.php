@@ -27,7 +27,6 @@ class User extends Authenticatable
         'default_client_id',
         'first_login_at',
         'profile_picture',
-        'phone',
         'whatsapp_phone',
         'active'
     ];
