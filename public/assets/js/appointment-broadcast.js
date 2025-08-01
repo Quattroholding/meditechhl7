@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Appointment broadcast script loaded');
     console.log('isDoctorRole:', window.isDoctorRole);
     console.log('Echo available:', typeof window.Echo);
-    
+
     // Solo ejecutar si es un doctor
     if (!window.isDoctorRole) return;
 
@@ -21,9 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const popup = document.createElement('div');
         popup.innerHTML = `
-            <div class="modal fade show" id="appointmentCheckedInModal" style="display: block; background: rgba(0,0,0,0.5); z-index: 9999;">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            <div class="modal-overlay" id="appointmentCheckedInModal" style="z-index: 9999;">
+                <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title">
                                 <i class="fas fa-user-clock me-2"></i>
@@ -48,16 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 El paciente ha sido registrado y está esperando para iniciar la consulta.
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="text-end" style="margin-top: 20px; display: flex; gap: 15px;">
+
                             <button type="button" class="btn btn-secondary" onclick="dismissAppointmentPopup()">
                                 <i class="fas fa-times me-2"></i>Cerrar
                             </button>
+
                             <button type="button" class="btn btn-primary" onclick="goToConsultation(${appointmentData.id})">
                                 <i class="fas fa-stethoscope me-2"></i>Iniciar Consulta
                             </button>
                         </div>
                     </div>
-                </div>
             </div>
         `;
         document.body.appendChild(popup);
@@ -66,12 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
         playNotificationSound();
 
         // Auto-hide after 30 seconds if not closed
-        setTimeout(() => {
+        /*setTimeout(() => {
             const modal = document.getElementById('appointmentCheckedInModal');
             if (modal) {
                 modal.style.opacity = '0.8';
             }
-        }, 30000);
+        }, 30000);*/
     }
 
     // Function to dismiss popup
