@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Appointment;
 
+use App\Events\AppointmentCheckedIn;
 use App\Models\Appointment;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,6 +30,12 @@ class Status extends Component
     }
 
     public function changeStatus($newStatus){
+        \Log::info('ChangeStatus method called', [
+            'appointment_id' => $this->appointment_id,
+            'old_status' => $this->appointment->status,
+            'new_status' => $newStatus
+        ]);
+
         $current_status = $this->appointment->status;
         $this->appointment->status = $newStatus;
         $this->appointment->save();
@@ -52,9 +59,15 @@ class Status extends Component
         }
 
         if($newStatus=='checked-in'){
+
+
+            // Disparar evento de broadcast para notificar al doctor
+            broadcast(new AppointmentCheckedIn($this->appointment));
+
+
             $this->dispatch('showToastr'.$this->appointment_id, [
                 'type' => 'success',
-                'message' => '¡Espere por favor en unos segundos empezara su consulta!',
+                'message' => '¡Paciente registrado, se notificó al doctor!',
                 'appointment_id' => $this->appointment_id
             ]);
             //sleep(5);

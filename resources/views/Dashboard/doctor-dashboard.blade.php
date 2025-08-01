@@ -100,11 +100,11 @@
             // Sistema de carga progresiva ultra-simplificado
 
             function loadAllWidgets() {
-                console.log('🚀 Starting ultra-simple async widget loading...');
+               // console.log('🚀 Starting ultra-simple async widget loading...');
 
                 // Obtener todos los elementos con wire:id
                 const allElements = document.querySelectorAll('[wire\\:id]');
-                console.log(`🔍 Found ${allElements.length} Livewire elements`);
+                //console.log(`🔍 Found ${allElements.length} Livewire elements`);
 
                 // Crear array de componentes con su order
                 const componentsWithOrder = [];
@@ -144,12 +144,12 @@
                 // Ordenar por order
                 componentsWithOrder.sort((a, b) => a.order - b.order);
 
-                console.log(`📋 Found ${componentsWithOrder.length} components to load`);
+                //console.log(`📋 Found ${componentsWithOrder.length} components to load`);
 
                 // Cargar cada componente con delay
                 componentsWithOrder.forEach((item, index) => {
                     setTimeout(() => {
-                        console.log(`⏰ Loading component ${index + 1}/${componentsWithOrder.length} (order: ${item.order}, wireId: ${item.wireId})`);
+                        //console.log(`⏰ Loading component ${index + 1}/${componentsWithOrder.length} (order: ${item.order}, wireId: ${item.wireId})`);
 
                         // Debug específico para patients-by-gender
                         if (item.wireId && item.wireId.includes('patients-by-gender')) {
@@ -165,7 +165,7 @@
                         }
 
                         // Intentar llamar loadData con verificación adicional
-                        console.log(`📞 Attempting to call loadData for ${item.wireId}...`);
+                        //console.log(`📞 Attempting to call loadData for ${item.wireId}...`);
 
                         item.component.call('loadData')
                             .then(() => {

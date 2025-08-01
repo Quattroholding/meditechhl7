@@ -58,3 +58,8 @@
 <link rel="stylesheet" type="text/css" href="{{ url('assets/css/dashboard-animations.css?time='.time()) }}">
 @endif
 
+<!-- Meta data for broadcasting -->
+@if(auth()->check() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner)
+<meta name="doctor-id" content="{{ auth()->user()->practitioner->id }}">
+@endif
+

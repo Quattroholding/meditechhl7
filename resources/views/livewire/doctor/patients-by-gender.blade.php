@@ -51,7 +51,7 @@
                 const femalePercentage = data[0].female;
                 const unknownPercentage = data[0].unknown;
 
-                console.log('🔄 Loading ApexCharts for patients-by-gender...', data);
+                //console.log('🔄 Loading ApexCharts for patients-by-gender...', data);
 
                 // Esperar a que el DOM esté actualizado y el elemento sea visible
                 setTimeout(() => {
@@ -68,11 +68,11 @@
                         return;
                     }
 
-                    console.log('✅ Element found and ApexCharts available', divElement);
+                    //console.log('✅ Element found and ApexCharts available', divElement);
 
                     // Destruir el gráfico existente si existe
                     if (chartInstance) {
-                        console.log('🔄 Destroying existing chart');
+                        //console.log('🔄 Destroying existing chart');
                         chartInstance.destroy();
                         chartInstance = null;
                     }
@@ -125,7 +125,7 @@
                         }
                     };
 
-                    console.log('📊 Creating chart with data:', donutChart);
+                    //console.log('📊 Creating chart with data:', donutChart);
 
                     try {
                         chartInstance = new ApexCharts(divElement, donutChart);

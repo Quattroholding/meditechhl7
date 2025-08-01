@@ -40,6 +40,7 @@ class ModalSave extends Component
     public $practitioners=[];
     public $confirm=false;
     public $client_id;
+    public $clients=[];
 
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
@@ -65,9 +66,8 @@ class ModalSave extends Component
     ];
 
     public function mount(){
-
-        $this->loadEspecialidades();
         $this->loadDoctors();
+        $this->loadEspecialidades();
         $this->loadConsultorios();
 
         if(auth()->user()->hasRole('paciente')) {
@@ -84,6 +84,7 @@ class ModalSave extends Component
 
     public function render()
     {
+
         if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
         return view('livewire.appointment.modal-save');
     }
@@ -131,14 +132,20 @@ class ModalSave extends Component
             });
         })->get()->pluck('name','id')->toArray();
 
-        //$this->doctor_id='';
     }
 
     public function loadEspecialidades()
     {
+
+        $this->clients =  auth()->user()->clients()->pluck('client_id')->toArray();
         $esp= MedicalSpeciality::when(auth()->user()->hasRole('doctor'),function ($q){
             $q->whereIn('id',auth()->user()->practitioner->qualifications->pluck('medical_speciality_id'));
+        })->when(auth()->user()->hasRole('asistente'),function ($q){
+            $q->whereHas('practitionerQualifications.practitioner.user.clients', function ($q2) {
+                $q2->whereIn('clients.id', $this->clients);
+            });
         })->orderBy('name')->get();
+
 
         $this->especialidades = $esp->pluck('name','id')->toArray();
 
@@ -245,7 +252,7 @@ class ModalSave extends Component
                     // Si la cita se crea directamente como confirmada, programar recordatorio
                     $app->notifyPatientAboutAppointment();
                 }
-                
+
                 session()->flash('message.success', 'Cita creada exitosamente.');
                 $this->dispatch('showToastr',
                     type: 'success',

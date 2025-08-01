@@ -369,6 +369,27 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
     Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
     Route::get('/services_catalog', [ApiController::class, 'servicesCatalog'])->name('api.servicesCatalog');
+    
+    // Doctor notifications API
+    Route::get('/doctor-notifications/{doctor_id}', function($doctor_id) {
+        $notifications = [];
+        
+        // Verificar notificación en sesión (fallback para mismo navegador)
+        $sessionKey = 'doctor_notification_' . $doctor_id;
+        if (session()->has($sessionKey)) {
+            $notification = session()->get($sessionKey);
+            
+            // Solo mostrar si es reciente (últimos 2 minutos)
+            if ($notification['timestamp'] > (now()->timestamp - 120)) {
+                $notifications[] = $notification;
+            }
+            
+            // Limpiar la notificación después de entregarla
+            session()->forget($sessionKey);
+        }
+        
+        return response()->json(['notifications' => $notifications]);
+    })->middleware('auth')->name('api.doctor.notifications');
 
 });
 
@@ -412,5 +433,15 @@ Route::middleware(['auth', 'first.login','permission:surveys.view'])->group(func
 // Public Survey Routes (no authentication required)
 Route::get('/survey/{token}', [SurveyController::class, 'publicForm'])->name('survey.public');
 Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])->name('survey.submit');
+
+// Test route for broadcast
+Route::get('/test-broadcast/{appointment_id}', function($appointment_id) {
+    $appointment = \App\Models\Appointment::find($appointment_id);
+    if ($appointment) {
+        broadcast(new \App\Events\AppointmentCheckedIn($appointment));
+        return 'Broadcast sent for appointment ' . $appointment_id . ' to doctor ' . $appointment->practitioner_id;
+    }
+    return 'Appointment not found';
+})->middleware('auth')->name('test.broadcast');
 
 

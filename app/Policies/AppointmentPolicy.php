@@ -31,7 +31,7 @@ class AppointmentPolicy
 
     public function checked_in(User $user, Appointment $appointment): bool
     {
-        return $appointment->status=='arrived' && $appointment->practitioner->user_id == $user->id;
+        return $appointment->status=='arrived' && ($appointment->practitioner->user_id == $user->id or $user->hasRole('asistente'));
     }
 
     public function fulfilled(User $user, Appointment $appointment): bool
