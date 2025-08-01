@@ -77,6 +77,10 @@
 @if(auth()->user()->hasRole('doctor'))
     <script>
         window.isDoctorRole = true;
+        // Force load Echo if not available
+        if (typeof window.Echo === 'undefined') {
+            console.warn('Echo not loaded via Vite, loading manually...');
+        }
     </script>
     <script src="{{ URL::asset('/assets/js/appointment-broadcast.js?time='.time()) }}"></script>
 @endif
