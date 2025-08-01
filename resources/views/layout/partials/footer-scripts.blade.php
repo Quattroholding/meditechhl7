@@ -73,15 +73,17 @@
 
 <script src="{{ URL::asset('/assets/js/custom.js?time='.time()) }}"></script>
 
+<!-- Appointment Broadcast Listener -->
+@if(auth()->user()->hasRole('doctor'))
+    <script>
+        window.isDoctorRole = true;
+    </script>
+    <script src="{{ URL::asset('/assets/js/appointment-broadcast.js?time='.time()) }}"></script>
+@endif
+
+
 <!-- Dashboard Animations JS -->
 @if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
 <script src="{{ URL::asset('/assets/js/dashboard-animations.js?time='.time()) }}"></script>
 @endif
 
-<!-- Appointment Broadcast Listener -->
-@if(auth()->check() && auth()->user()->hasRole('doctor'))
-<script>
-    window.isDoctorRole = true;
-</script>
-<script src="{{ URL::asset('/assets/js/appointment-broadcast.js?time='.time()) }}"></script>
-@endif
