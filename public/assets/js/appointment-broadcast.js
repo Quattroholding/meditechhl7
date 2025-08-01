@@ -4,6 +4,10 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Appointment broadcast script loaded');
+    console.log('isDoctorRole:', window.isDoctorRole);
+    console.log('Echo available:', typeof window.Echo);
+    
     // Solo ejecutar si es un doctor
     if (!window.isDoctorRole) return;
 
@@ -96,6 +100,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Test popup function (remove after testing)
+    window.testPopup = function() {
+        showAppointmentPopup({
+            id: 64,
+            patient_name: "Liberty Horton",
+            appointment_time: "12:01",
+            consulting_room: "Consultorio 1"
+        });
+    };
+
     // Check if Echo is available
     if (typeof window.Echo !== 'undefined') {
         console.log('Echo is available, setting up broadcast listener...');
@@ -111,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Listen to private channel for this doctor
             window.Echo.private(`doctor.${doctorId}`)
-                .listen('appointment.checked.in', (data) => {
+                .listen('.appointment.checked.in', (data) => {
                     console.log('Appointment checked in event received:', data);
                     showAppointmentPopup(data.appointment);
                 })
