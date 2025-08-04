@@ -113,27 +113,35 @@ class UserController extends Controller
     }
 
     public function update(Request $request,$id){
-        $user = User::find($id);
-        $fields = $request->except('id');
-        if(empty($request->password))
-            unset($fields['password']);
-        $user->fill($fields);
 
-        if($request->has('clients')){
-            $user->clients()->sync($request->get('clients'));
-        }
+        try{
+            $user = User::find($id);
+            $fields = $request->except('id');
+            if(empty($request->password))
+                unset($fields['password']);
+            $user->fill($fields);
 
-        if($request->file('avatar')){
-            $service = new FileService();
-            $filename = 'profile_picture_'.$user->id;
-            $user->profile_picture = $service->uploadSingleFile($request->file('avatar'),'users',$filename);
-        }
-        $user->default_client_id =  $request->clients[0] ?? 1;
-        if($user->save()){
+            if($request->has('clients')){
+                $user->clients()->sync($request->get('clients'));
+            }
 
-            $request->session()->flash('message.suucess','Actualizado con exito');
-        }else{
-            $request->session()->flash('message.error','¡Error!, este usuario no se puede actualizar.');
+            if($request->file('avatar')){
+                $service = new FileService();
+                $filename = 'profile_picture_'.$user->id;
+                $user->profile_picture = $service->uploadSingleFile($request->file('avatar'),'users',$filename);
+            }
+            $user->default_client_id =  $request->clients[0] ?? 1;
+
+            if($user->save()){
+
+                $request->session()->flash('message.success','Actualizado con exito');
+            }else{
+                $request->session()->flash('message.error','¡Error!, este usuario no se puede actualizar.');
+            }
+
+        }catch (\Exception $e){
+
+            $request->session()->flash('message.error',$e->getMessage());
         }
 
         return redirect(route('user.edit',$id));

@@ -47,10 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 El paciente ha sido registrado y está esperando para iniciar la consulta.
                             </div>
                         </div>
-                        <div class="text-end" style="margin-top: 20px; display: flex; gap: 15px;">
+                        <div class="text-end" style="margin-top: 20px; display: flex; gap: 10px;">
 
                             <button type="button" class="btn btn-secondary" onclick="dismissAppointmentPopup()">
                                 <i class="fas fa-times me-2"></i>Cerrar
+                            </button>
+
+                            <button type="button" class="btn btn-warning" onclick="snoozeAppointmentPopup(${appointmentData.id})">
+                                <i class="fas fa-clock me-2"></i>Recordar en 5 min
                             </button>
 
                             <button type="button" class="btn btn-primary" onclick="goToConsultation(${appointmentData.id})">
@@ -61,6 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         document.body.appendChild(popup);
+
+        // Save appointment data to localStorage for snooze functionality
+        localStorage.setItem(`appointment_${appointmentData.id}`, JSON.stringify(appointmentData));
 
         // Play notification sound
         playNotificationSound();
@@ -86,6 +93,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to redirect to consultation
     window.goToConsultation = function(appointmentId) {
         window.location.href = `/consultation/${appointmentId}`;
+    }
+
+    // Function to snooze popup for 5 minutes
+    window.snoozeAppointmentPopup = function(appointmentId) {
+        const modal = document.getElementById('appointmentCheckedInModal');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 300);
+        }
+
+        // Get appointment data from localStorage or create default
+        let appointmentData = JSON.parse(localStorage.getItem(`appointment_${appointmentId}`) || '{}');
+        if (!appointmentData.id) {
+            // If no data in localStorage, use default data (from last popup)
+            appointmentData = {
+                id: appointmentId,
+                patient_name: "Paciente",
+                appointment_time: "Pendiente",
+                consulting_room: "Consultorio"
+            };
+        }
+
+        console.log(`Appointment snoozed for 5 minutes. Will remind at:`, new Date(Date.now() + 5 * 60 * 1000));
+
+        // Set timeout for 5 minutes (300,000 milliseconds)
+        setTimeout(() => {
+            console.log('Showing snoozed appointment reminder');
+            showAppointmentPopup(appointmentData);
+        }, 5 * 60 * 1000);
+
+        // Show confirmation toast
+        if (typeof toastr !== 'undefined') {
+            toastr.info('Te recordaré sobre este paciente en 5 minutos', 'Recordatorio programado');
+        } else {
+            alert('Te recordaré sobre este paciente en 5 minutos');
+        }
     }
 
     // Play notification sound
