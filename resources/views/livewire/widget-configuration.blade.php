@@ -20,6 +20,7 @@
                     @foreach($widgets as $index => $widget)
                     <div class="list-group-item"
                          data-widget-key="{{ $widget['key'] }}"
+                         data-widget-description="{{ $widget['description'] }}"
                          style="cursor: move; {{ !$widget['is_visible'] ? 'opacity: 0.6;' : '' }}">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="d-flex align-items-center">
@@ -160,9 +161,11 @@
 
                             items.forEach((item, index) => {
                                 const widgetKey = item.getAttribute('data-widget-key');
+                                const widgetDescription = item.getAttribute('data-widget-description');
                                 const checkbox = item.querySelector('input[type="checkbox"]');
                                 const widget = {
                                     key: widgetKey,
+                                    description:widgetDescription,
                                     is_visible: checkbox ? checkbox.checked : true,
                                     order_position: index + 1
                                 };

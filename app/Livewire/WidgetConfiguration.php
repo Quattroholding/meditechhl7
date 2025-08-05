@@ -30,7 +30,7 @@ class WidgetConfiguration extends Component
             return [
                 'key' => $key,
                 'name' => $widget['name'],
-                'description' =>  $preference ? $preference->widget_description :  $widget['name'],
+                'description' =>  $preference ? $preference->widget_description :  $widget['description'],
                 'is_visible' => $preference ? $preference->is_visible : true,
                 'order_position' => $preference ? $preference->order_position : $widget['order'],
                 'width' => $preference ? $preference->width : 'col-lg-6'
@@ -50,7 +50,7 @@ class WidgetConfiguration extends Component
             return $w['key'] === $widgetKey ? $widget : $w;
         })->toArray();
 
-        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['width']);
+        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'],$widget['description'], $widget['width']);
     }
 
     public function changeWidgetWidth($widgetKey, $width)
@@ -65,7 +65,7 @@ class WidgetConfiguration extends Component
             return $w['key'] === $widgetKey ? $widget : $w;
         })->toArray();
 
-        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['width']);
+        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'],$widget['description'], $widget['width']);
     }
 
     public function updateOrder($orderedWidgets)
@@ -86,11 +86,11 @@ class WidgetConfiguration extends Component
         // Save preferences to database
         foreach ($orderedWidgets as $widget) {
             $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
-            $this->savePreference($widget['key'], $widget['is_visible'], $widget['order_position'], $existingWidget['width'] ?? 'col-lg-6');
+            $this->savePreference($widget['key'], $widget['is_visible'], $widget['order_position'],$widget['description'], $existingWidget['width'] ?? 'col-lg-6');
         }
     }
 
-    private function savePreference($widgetKey, $isVisible, $orderPosition, $width = 'col-lg-6')
+    private function savePreference($widgetKey, $isVisible, $orderPosition,$description, $width = 'col-lg-6')
     {
         UserWidgetPreference::updateOrCreate(
             [
@@ -101,7 +101,8 @@ class WidgetConfiguration extends Component
             [
                 'is_visible' => $isVisible,
                 'order_position' => $orderPosition,
-                'width' => $width
+                'width' => $width,
+                'widget_description' => $description
             ]
         );
     }
