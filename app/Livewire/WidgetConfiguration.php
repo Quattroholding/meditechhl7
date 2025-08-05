@@ -33,7 +33,7 @@ class WidgetConfiguration extends Component
                 'description' =>  $preference ? $preference->widget_description :  $widget['description'],
                 'is_visible' => $preference ? $preference->is_visible : true,
                 'order_position' => $preference ? $preference->order_position : $widget['order'],
-                'width' => $preference ? $preference->width : 'col-lg-6'
+                'width' => $preference ? $preference->width :  $widget['width']
             ];
         })->sortBy('order_position')->values()->toArray();
     }

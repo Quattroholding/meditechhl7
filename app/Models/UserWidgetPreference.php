@@ -77,7 +77,7 @@ class UserWidgetPreference extends Model
                 'name' => $widget['name'],
                 'is_visible' => $preference ? $preference->is_visible : true,
                 'order_position' => $preference ? $preference->order_position : $widget['order'],
-                'width' => $preference ? $preference->width : 'col-lg-6'
+                'width' => $preference ? $preference->width : $widget['width']
             ];
         })->filter(function ($widget) {
             return $widget['is_visible'];

@@ -36,24 +36,11 @@ class DashboardController extends Controller
             'activity-heatmap' => 'doctor.activity-heatmap',
         ];
 
-        $widgetLayouts = [
-            'recent-appointment-list' => 'col-lg-5',
-            'patients-by-gender' => 'col-lg-7',
-            'new-patients' => 'col-lg-4',
-            'old-patients' => 'col-lg-4',
-            'active-patients' => 'col-lg-43',
-
-            'top-active-conditions' => 'col-lg-6',
-            'top-prescribed-medications' => 'col-lg-6',
-            'consultation-effectiveness' => 'col-lg-6',
-            'activity-heatmap' => 'col-lg-6',
-        ];
-
-        return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents', 'widgetLayouts'));
+        return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));
     }
     public function patient(Request $request){
         $patient = Patient::find(auth()->user()->patient->id);
-        $dashboards = array();
+
 
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'patient');
@@ -66,19 +53,10 @@ class DashboardController extends Controller
             'medical-summary' => 'patient.dashboard.medical-summary',
         ];
 
-        $widgetLayouts = [
-            'overview' => 'col-12',
-            'upcoming-appointments' => 'col-12 mb-4',
-            'recent-consultations' => 'col-12 mb-4',
-            'outstanding-invoices' => 'col-12 mb-4',
-            'medical-summary' => 'col-12 mb-4',
-        ];
 
-        return view('Dashboard.patient-dashboard', compact('dashboards', 'patient', 'visibleWidgets', 'widgetComponents', 'widgetLayouts'));
+        return view('Dashboard.patient-dashboard', compact('patient', 'visibleWidgets', 'widgetComponents'));
     }
     public function assistence(Request $request){
-        $dashboards = array();
-
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'assistant');
 
@@ -92,16 +70,6 @@ class DashboardController extends Controller
             'activity-heatmap' => 'doctor.activity-heatmap',
         ];
 
-        $widgetLayouts = [
-            'recent-appointment-list' => 'col-lg-6',
-            'new-patients' => 'col-lg-5',
-            'old-patients' => 'col-lg-5',
-            'active-patients' => 'col-lg-5',
-            'patients-by-gender' => 'col-lg-7',
-            'consultation-effectiveness' => 'col-lg-6',
-            'activity-heatmap' => 'col-lg-6',
-        ];
-
-        return view('Dashboard.assistence-dashboard', compact('dashboards', 'visibleWidgets', 'widgetComponents', 'widgetLayouts'));
+        return view('Dashboard.assistence-dashboard', compact( 'visibleWidgets', 'widgetComponents'));
     }
 }
