@@ -114,7 +114,7 @@
                 </div>
             </div>
             <div class="flex items-center justify-end mt-4">
-                <div class="text-end">
+                <div class="doctor-submit text-end">
                     <button type="submit" class="btn btn-primary me-2">     {{ __('button.register') }} </button>
                     <a class="btn btn-secondary me-2" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                 </div>

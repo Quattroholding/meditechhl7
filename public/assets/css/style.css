@@ -12200,14 +12200,6 @@ button.swal2-cancel {
 	.detail-personal {
 		margin-bottom: 15px;
 	}
-	.doctor-submit .btn-primary {
-		min-width: 125px;
-		font-size: 12px;
-		border-radius: 12px;
-		padding: 7px 15px;
-		margin-bottom: 8px;
-		margin-right: 0px !important;
-	}
 	.invoice-counts h4 {
 		display: inline-block;
 	}
