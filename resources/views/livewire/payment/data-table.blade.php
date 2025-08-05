@@ -173,19 +173,7 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div>
-                                <p class="text-muted mb-0">
-                                    Mostrando del {{ $this->payments->firstItem() }} al {{ $this->payments->lastItem() }}
-                                    de {{ $this->payments->total() }} resultados
-                                </p>
-                            </div>
-                            <div>
-                                {{ $this->payments->links('vendor.pagination.custom-pagination') }}
-                            </div>
-                        </div>
+                        @include('partials.pagination',['data'=>$this->payments])
                     @else
                         <div class="text-center py-4">
                             <div class="d-flex flex-column align-items-center">

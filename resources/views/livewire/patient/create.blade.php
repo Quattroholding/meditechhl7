@@ -6,15 +6,16 @@
     <form wire:submit="savePatient" id="form">
         @csrf
         <div class="row">
-            <!-- ID NUMBER -->
-            <div class="col-4 col-md-4 col-xl-4">
+            <!-- ID TYPE NUMBER -->
+            <div class="col-12 col-md-4 col-xl-4">
                 <div class="input-block  local-forms">
                     <x-input-label for="id_type" :value="__('patient.id_type')" required="true"/>
                     <x-select-input wire:model.live="id_type" name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
                     <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                 </div>
             </div>
-            <div class="col-4 col-md-4 col-xl-4">
+            <!-- ID NUMBER -->
+            <div class="col-12 col-md-4 col-xl-4">
                 <div class=" input-block  local-forms ">
                     <x-input-label for="id_number" :value="__('patient.full_id_number')" required="true"/>
                     <x-text-input wire:model.live="id_number" id="id_number" class="block mt-1 w-full" type="text" placeholder="{{ $this->getIdPlaceholder() }}" value="" autofocus/>
@@ -22,14 +23,14 @@
                     <small class="text-muted">{{ $this->getIdPlaceholder() }}</small>
                 </div>
             </div>
-    <!-- GENDER -->
-                <div class="col-4 col-md-4 col-xl-4">
-                    <div class="input-block local-forms ">
-                        <x-input-label for="gender" :value="__('patient.gender')" required="true"/>
-                        <x-select-input wire:model="gender" name="gender" :options="\App\Models\Lista::gender()" :selected="[null]" class="block w-full"/>
-                        <x-input-error :messages="$errors->get('gender')" class="mt-2" />
-                    </div>
+            <!-- GENDER -->
+            <div class="col-12 col-md-4 col-xl-4">
+                <div class="input-block local-forms ">
+                    <x-input-label for="gender" :value="__('patient.gender')" required="true"/>
+                    <x-select-input wire:model="gender" name="gender" :options="\App\Models\Lista::gender()" :selected="[null]" class="block w-full"/>
+                    <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                 </div>
+            </div>
         </div>
         @if($patientExists)
         <div class="row">
@@ -113,7 +114,7 @@
                 </div>
             </div>
             <div class="flex items-center justify-end mt-4">
-                <div class="doctor-submit text-end">
+                <div class="text-end">
                     <button type="submit" class="btn btn-primary me-2">     {{ __('button.register') }} </button>
                     <a class="btn btn-secondary me-2" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                 </div>

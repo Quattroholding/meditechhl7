@@ -79,20 +79,7 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <div>
-            <p class="text-muted mb-0">
-                Mostrando del {{ $permissions->firstItem() }} al {{ $permissions->lastItem() }}
-                de {{ $permissions->total() }} resultados
-            </p>
-        </div>
-        <div>
-            {{ $permissions->links('vendor.pagination.custom-pagination') }}
-        </div>
-    </div>
-
+    @include('partials.pagination',['data'=>$permissions])
     <!-- Modal -->
     <livewire:permission.modal-save/>
 </div>

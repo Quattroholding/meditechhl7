@@ -37,19 +37,19 @@
                                     <td>{{ $dato->time }}</td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">  
-                                                    <i  class="fa-solid fa-eye m-r-5 text-white"></i> 
+                                                <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">
+                                                    <i  class="fa-solid fa-eye m-r-5 text-white"></i>
                                                 </a>
                                                 @if(auth()->user()->can('edit',$dato))
-                                                <a href="{{ route('consultation.show',$dato->appointment_id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">  
+                                                <a href="{{ route('consultation.show',$dato->appointment_id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                                 @endif
-                                                <a href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank" class="btn btn-danger btn-sm"  title="{{__('consultation.download_resumen')}}">  
-                                                    <i  class="fa-solid fa-file-pdf m-r-5"></i> 
+                                                <a href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank" class="btn btn-danger btn-sm"  title="{{__('consultation.download_resumen')}}">
+                                                    <i  class="fa-solid fa-file-pdf m-r-5"></i>
                                                 </a>
                                                 @if($dato->invoice)
-                                                    <a href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank" class="btn btn-success btn-sm" title="{{__('consultation.download_invoice')}}">  
+                                                    <a href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank" class="btn btn-success btn-sm" title="{{__('consultation.download_invoice')}}">
                                                         <i  class="fa-solid fa-file-pdf m-r-5"></i>
                                                     </a>
                                                 @endif
@@ -83,18 +83,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            <p class="text-muted mb-0">
-                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
-                                de {{ $data->total() }} resultados
-                            </p>
-                        </div>
-                        <div>
-                            {{ $data->links('vendor.pagination.custom-pagination') }}
-                        </div>
-                    </div>
+                    @include('partials.pagination',['data'=>$data])
                 </div>
             </div>
         </div>

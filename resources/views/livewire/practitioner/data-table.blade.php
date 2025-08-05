@@ -47,18 +47,18 @@
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm">
                                         @can('practitioners.profile')
-                                            <a href="{{route('practitioner.profile',$practitioner->id)}}" class="btn btn-info btn-sm" title="{{__('doctor.profile')}}">  
+                                            <a href="{{route('practitioner.profile',$practitioner->id)}}" class="btn btn-info btn-sm" title="{{__('doctor.profile')}}">
                                                 <i  class="fa-solid fa-eye m-r-5 text-white"></i>
                                             </a>
                                         @endcan
                                         @can('practitioners.edit')
-                                            <a href="{{ route('practitioner.edit',$practitioner->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                            <a href="{{ route('practitioner.edit',$practitioner->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">
                                                 <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endcan
                                         {{--}}@can('practitioners.delete')
                                             <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
-                                                <i class="fa fa-trash-alt m-r-5"></i> 
+                                                <i class="fa fa-trash-alt m-r-5"></i>
                                             </a>
                                         @endcan{{--}}
                                     </div>
@@ -89,19 +89,7 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div>
-                        <p class="text-muted mb-0">
-                            Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
-                            de {{ $data->total() }} resultados
-                        </p>
-                    </div>
-                    <div>
-                        {{ $data->links('vendor.pagination.custom-pagination') }}
-                    </div>
-                </div>
+                @include('partials.pagination',['data'=>$data])
             </div>
         </div>
     </div>

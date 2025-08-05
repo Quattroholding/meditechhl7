@@ -69,12 +69,12 @@
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             {{--}}@if(auth()->user()->can('booked',$appointment))
-                                                <a wire:click="editAppointment({{$appointment->id}})" class="btn btn-primary btn-sm" title="{{__('appointment.status.confirm')}}">  
+                                                <a wire:click="editAppointment({{$appointment->id}})" class="btn btn-primary btn-sm" title="{{__('appointment.status.confirm')}}">
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endif{{--}}
                                             @if(auth()->user()->can('edit',$appointment))
-                                                <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">  
+                                                <a  wire:click="editAppointment({{$appointment->id}})" style="cursor: pointer;" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                             @endif
@@ -153,18 +153,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            <p class="text-muted mb-0">
-                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
-                                de {{ $data->total() }} resultados
-                            </p>
-                        </div>
-                        <div>
-                            {{ $data->links('vendor.pagination.custom-pagination') }}
-                        </div>
-                    </div>
+                    @include('partials.pagination',['data'=>$data])
+
                 </div>
             </div>
         </div>

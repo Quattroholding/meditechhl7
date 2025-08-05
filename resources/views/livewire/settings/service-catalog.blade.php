@@ -392,19 +392,7 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div>
-                                <p class="text-muted mb-0">
-                                    Mostrando del {{ $this->services->firstItem() }} al {{ $this->services->lastItem() }}
-                                    de {{ $this->services->total() }} resultados
-                                </p>
-                            </div>
-                            <div>
-                                {{ $this->services->links('vendor.pagination.custom-pagination') }}
-                            </div>
-                        </div>
+                        @include('partials.pagination',['data'=>$this->services])
                     @else
                         <div class="text-center py-4">
                             <i class="fa fa-medical-bag fa-3x text-muted mb-3"></i>

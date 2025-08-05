@@ -54,21 +54,21 @@
                                             @endcan
                                            {{--}} @can('users.activate')
                                                 @if($user->active == false)
-                                                 <button type="button" 
-                                                    class="btn btn-warning btn-sm" 
+                                                 <button type="button"
+                                                    class="btn btn-warning btn-sm"
                                                     title="{{ __('Reactivar Usuario') }}"
                                                     wire:click.prevent="activateUser({{ $user->id }})"
                                                     wire:loading.attr="disabled"
                                                     wire:target="activateUser({{ $user->id }})">
-                                                
-                                                    <i class="fa fa-check-circle m-r-5" 
-                                                    wire:loading.remove 
+
+                                                    <i class="fa fa-check-circle m-r-5"
+                                                    wire:loading.remove
                                                     wire:target="activateUser({{ $user->id }})"></i>
-                                                
-                                                    <i class="fa fa-spinner fa-spin m-r-5" 
-                                                    wire:loading 
+
+                                                    <i class="fa fa-spinner fa-spin m-r-5"
+                                                    wire:loading
                                                     wire:target="activateUser({{ $user->id }})"></i>
-                                                
+
                                                 <span wire:loading.remove wire:target="activateUser({{ $user->id }})">
                                                     {{ __('Activar') }}
                                                 </span>
@@ -109,18 +109,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            <p class="text-muted mb-0">
-                                Mostrando del {{ $data->firstItem() }} al {{ $data->lastItem() }}
-                                de {{ $data->total() }} resultados
-                            </p>
-                        </div>
-                        <div>
-                            {{ $data->links('vendor.pagination.custom-pagination') }}
-                        </div>
-                    </div>
+                    @include('partials.pagination',['data'=>$data])
                 </div>
             </div>
         </div>

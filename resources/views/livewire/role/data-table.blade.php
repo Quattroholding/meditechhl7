@@ -83,18 +83,7 @@
     </div>
 
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <div>
-            <p class="text-muted mb-0">
-                Mostrando del {{ $roles->firstItem() }} al {{ $roles->lastItem() }}
-                de {{ $roles->total() }} resultados
-            </p>
-        </div>
-        <div>
-            {{ $roles->links('vendor.pagination.custom-pagination') }}
-        </div>
-    </div>
+    @include('partials.pagination',['data'=>$roles])
 
     <!-- Modal -->
     <livewire:role.modal-save />

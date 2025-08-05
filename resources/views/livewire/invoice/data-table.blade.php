@@ -93,21 +93,8 @@
                             @endforelse
                             </tbody>
                         </table>
-
-
                     </div>
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            <p class="text-muted mb-0">
-                                Mostrando del {{ $invoices->firstItem() }} al {{ $invoices->lastItem() }}
-                                de {{ $invoices->total() }} resultados
-                            </p>
-                        </div>
-                        <div>
-                            {{ $invoices->links('vendor.pagination.custom-pagination') }}
-                        </div>
-                    </div>
+                    @include('partials.pagination',['data'=>$invoices])
                 </div>
             </div>
         </div>
