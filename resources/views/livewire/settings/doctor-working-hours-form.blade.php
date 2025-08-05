@@ -19,13 +19,17 @@
         </div>
 
         @foreach($workingHours as $day => $config)
-            <div class="flex items-center space-x-2">
-                <div class="col-12 col-md-6 col-xl-1 p-3">
-                    <input type="checkbox"  wire:model="workingHours.{{$day}}.enabled" wire:click="changeEnabled('{{$day}}')" style="display: inline-block">
-                    <label>{{ucfirst($day)}}</label>
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                <div class="col-12 col-sm-3 col-md-2 mb-2">
+                    <div class="form-check">
+                        <input type="checkbox"  wire:model="workingHours.{{$day}}.enabled" wire:click="changeEnabled('{{$day}}')" style="display: inline-block">
+                        <label>{{ucfirst($day)}}</label>
+                    </div>
                 </div>
-                <div class="col-12 col-md-6 col-xl-4 col-xs-12">
-                    <div class="input-block local-forms">
+                <div class="col-12 col-sm-9 col-md-10">
+                <div class="row">
+                    <div class="input-block local-forms col-12 col-md-6">
                         <x-input-label for="patient" :value="__('Hora Entrada')" required/>
 
                             <input id="start-{{ $day }}"
@@ -33,15 +37,16 @@
                                    class="form-control p-2 " {{ $config['enabled'] ? '' : 'disabled' }}>
 
                     </div>
-                </div>
-                <div class="col-12 col-md-6 col-xl-4">
-                    <div class="input-block local-forms">
+                    <div class="input-block local-forms col-12 col-md-6">
                         <x-input-label for="patient" :value="__('Hora Salida')" required/>
 
                             <input type="time"    wire:model="workingHours.{{$day}}.end"
                                    class="form-control p-2 " {{ $config['enabled'] ? '' : 'disabled' }} >
 
                     </div>
+                </div>
+                </div>
+
                 </div>
             </div>
         @endforeach

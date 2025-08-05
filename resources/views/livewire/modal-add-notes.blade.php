@@ -11,9 +11,9 @@
                     <textarea wire:model="note" class="form-control-full" rows="3" placeholder="Escribir nota" style="color: #0c0c0c"></textarea>
                     <x-input-error :messages="$errors->get('note')"/>
                 </div>
-                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                <div style="margin-top: 20px;" class="d-flex flex-wrap gap-2">
                     <button  type="submit" class="btn btn-primary" style="flex: 1;">{{ __('generic.save') }}</button>
-                    <button type="button" wire:click="$set('showModal', false)" class="btn btn-secondary">{{ __('generic.cancel') }}</button>
+                    <button type="button" wire:click="$set('showModal', false)" class="btn btn-secondary" style="flex: 1;">{{ __('generic.cancel') }}</button>
                 </div>
             </form>
         </div>
