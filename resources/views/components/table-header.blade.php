@@ -9,7 +9,7 @@ if(!isset($show_create)) $show_create=true;
                 <h3>{{ $title }}</h3>
                 <div class="doctor-search-blk">
                     <div class="top-nav-search table-search-blk">
-                        <form action="javascript:;">
+                        <form action="javascript:;" class="w-100">
                             <input type="text"  wire:model.live.debounce.300ms="search" placeholder="Buscar..." class="form-control" id="search">
                             <a class="btn">{{--}}<img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt="">{{--}}</a>
                         </form>

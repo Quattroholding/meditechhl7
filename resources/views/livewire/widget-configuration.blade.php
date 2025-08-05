@@ -44,7 +44,7 @@
                         <!-- Width Configuration -->
                         <div class="mt-2 ps-4">
                             <label class="form-label small text-muted">Ancho del widget:</label>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex flex-wrap gap-2">
                                 <button type="button"
                                         class="btn btn-sm {{ $widget['width'] === 'col-lg-3' ? 'btn-primary' : 'btn-outline-secondary' }}"
                                         wire:click="changeWidgetWidth('{{ $widget['key'] }}', 'col-lg-3')"
