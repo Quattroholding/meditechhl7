@@ -11,6 +11,9 @@
                 @slot('li_1')
                     {{__('patient.title')}}
                 @endslot
+                @slot('actions')
+                    @livewire('widget-configuration', ['dashboardType' => 'patient'])
+                @endslot
             @endcomponent
             <!-- /Page Header -->
 
@@ -30,39 +33,19 @@
                 </div>
             </div>
             @include('partials.message')
-            <!-- Health Overview Stats -->
             <div class="dashboard-initrr">
-                <div data-order="1">@livewire('patient.dashboard.overview', ['order' => 1])</div>
-                <div class="row mt-4">
-                    <!-- Left Column -->
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <!-- Upcoming Appointments -->
-                            <div class="col-12 mb-4" data-order="2">
-                                @livewire('patient.dashboard.upcoming-appointments', ['limit' => 3, 'order' => 2])
+                <div class="row">
+                    @foreach($visibleWidgets as $widget)
+                        @if(isset($widgetComponents[$widget['key']]))
+                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
+                                @if($widget['key'] === 'upcoming-appointments' || $widget['key'] === 'recent-consultations' || $widget['key'] === 'outstanding-invoices')
+                                    @livewire($widgetComponents[$widget['key']], ['limit' => 3, 'order' => $widget['order_position']])
+                                @else
+                                    @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
+                                @endif
                             </div>
-
-                            <!-- Recent Consultations -->
-                            <div class="col-12 mb-4" data-order="3">
-                                @livewire('patient.dashboard.recent-consultations', ['limit' => 3, 'order' => 3])
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column -->
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <!-- Outstanding Invoices -->
-                            <div class="col-12 mb-4" data-order="4">
-                                @livewire('patient.dashboard.outstanding-invoices', ['limit' => 3, 'order' => 4])
-                            </div>
-
-                            <!-- Medical Summary -->
-                            <div class="col-12 mb-4" data-order="5">
-                                @livewire('patient.dashboard.medical-summary', ['order' => 5])
-                            </div>
-                        </div>
-                    </div>
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -95,24 +78,24 @@
 
                             // Buscar el order en los atributos del elemento o sus padres
                             let currentElement = element;
+                            let hasOrder = false;
                             while (currentElement && order === 999) {
                                 if (currentElement.getAttribute && currentElement.getAttribute('data-order')) {
                                     order = parseInt(currentElement.getAttribute('data-order'));
+                                    hasOrder = true;
                                 }
                                 currentElement = currentElement.parentElement;
                             }
 
-                            // Si no se encuentra order, usar un orden secuencial
-                            if (order === 999) {
-                                order = index + 1;
+                            // Solo incluir componentes que tienen data-order (widgets del dashboard)
+                            if (hasOrder) {
+                                componentsWithOrder.push({
+                                    component: component,
+                                    wireId: wireId,
+                                    order: order,
+                                    element: element
+                                });
                             }
-
-                            componentsWithOrder.push({
-                                component: component,
-                                wireId: wireId,
-                                order: order,
-                                element: element
-                            });
                         }
                     }
                 });

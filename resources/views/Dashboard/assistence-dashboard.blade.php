@@ -7,7 +7,10 @@
                     Dashboard
                 @endslot
                 @slot('li_1')
-                    Doctor Dashboard
+                    Assistant Dashboard
+                @endslot
+                @slot('actions')
+                    @livewire('widget-configuration', ['dashboardType' => 'assistant'])
                 @endslot
             @endcomponent
             <!-- /Page Header -->
@@ -31,27 +34,15 @@
                 </div>
             </div>
             <div class="dashboard-initrr">
-
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div data-order="1">@livewire('doctor.recent-appointment-list',['order'=>1])</div>
-                        <div data-order="8">@livewire('doctor.consultation-effectiveness',['order'=>8])</div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <div class="col-lg-5">
-                                <div class="col-md-12" data-order="2">@livewire('doctor.new-patients',['order'=>2])</div>
-                                <div class="col-md-12" data-order="3">@livewire('doctor.old-patients',['order'=>3])</div>
-                                <div class="col-md-12" data-order="4">@livewire('doctor.active-patients',['order'=>4])</div>
+                    @foreach($visibleWidgets as $widget)
+                        @if(isset($widgetComponents[$widget['key']]))
+                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
+                                @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
                             </div>
-                            <div class="col-lg-7">
-                                <div class="col-md-12" data-order="5">@livewire('doctor.patients-by-gender',['order'=>5])</div>
-                            </div>
-                        </div>
-                        <div data-order="9">@livewire('doctor.activity-heatmap',['order'=>9])</div>
-                    </div>
+                        @endif
+                    @endforeach
                 </div>
-
             </div>
         </div>
         @component('components.notification-box')
@@ -83,24 +74,24 @@
 
                                 // Buscar el order en los atributos del elemento o sus padres
                                 let currentElement = element;
+                                let hasOrder = false;
                                 while (currentElement && order === 999) {
                                     if (currentElement.getAttribute && currentElement.getAttribute('data-order')) {
                                         order = parseInt(currentElement.getAttribute('data-order'));
+                                        hasOrder = true;
                                     }
                                     currentElement = currentElement.parentElement;
                                 }
 
-                                // Si no se encuentra order, usar un orden secuencial
-                                if (order === 999) {
-                                    order = index + 1;
+                                // Solo incluir componentes que tienen data-order (widgets del dashboard)
+                                if (hasOrder) {
+                                    componentsWithOrder.push({
+                                        component: component,
+                                        wireId: wireId,
+                                        order: order,
+                                        element: element
+                                    });
                                 }
-
-                                componentsWithOrder.push({
-                                    component: component,
-                                    wireId: wireId,
-                                    order: order,
-                                    element: element
-                                });
                             }
                         }
                     });

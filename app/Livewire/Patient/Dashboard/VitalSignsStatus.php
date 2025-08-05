@@ -13,6 +13,8 @@ class VitalSignsStatus extends Component
     public $patient;
     public $selectedPeriod = 7; // días
     public $autoRefresh = true;
+    public $isLoading = true;
+    public $order;
 
     public array $vitalSignsConfig = [];
 
@@ -30,6 +32,12 @@ class VitalSignsStatus extends Component
                 'priority' => $ot->priority
             ];
         }
+    }
+
+    public function loadData()
+    {
+        $this->loadPatient();
+        $this->isLoading = false;
     }
 
     public function loadPatient()

@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Consultation;
 use App\Models\Encounter;
 use App\Models\Patient;
+use App\Models\UserWidgetPreference;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -20,111 +21,87 @@ class DashboardController extends Controller
     }
     public function doctor(Request $request){
 
-        $dashboards=array();
+        // Get visible widgets for this user
+        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'doctor');
 
-        $totApp = Appointment::count();
-        $totAppFullFilled = Appointment::fullFilled()->count();
-        $porcFullFilled = ($totApp > 0) ? round($totAppFullFilled*100/$totApp,2) : 0; //round($totAppFullFilled*100/$totApp,2);
-        $classApp = 'status-pink';
-        $signApp = '-';
-        if($porcFullFilled>50){
-            $classApp = 'status-green';
-            $signApp = '+';
-        }
+        $widgetComponents = [
+            'recent-appointment-list' => 'doctor.recent-appointment-list',
+            'new-patients' => 'doctor.new-patients',
+            'old-patients' => 'doctor.old-patients',
+            'active-patients' => 'doctor.active-patients',
+            'patients-by-gender' => 'doctor.patients-by-gender',
+            'top-active-conditions' => 'doctor.top-active-conditions',
+            'top-prescribed-medications' => 'doctor.top-prescribed-medications',
+            'consultation-effectiveness' => 'doctor.consultation-effectiveness',
+            'activity-heatmap' => 'doctor.activity-heatmap',
+        ];
 
-        $dashboards[] = array(
-            "title" =>__('appointment.title'),
-            "icon" => "doctor-dash-01.svg",
-            "count" =>$totAppFullFilled,
-            "total" => "/".$totApp,
-            "class" => $classApp,
-            "percentageChange" =>$signApp.$porcFullFilled.'%');
+        $widgetLayouts = [
+            'recent-appointment-list' => 'col-lg-5',
+            'patients-by-gender' => 'col-lg-7',
+            'new-patients' => 'col-lg-4',
+            'old-patients' => 'col-lg-4',
+            'active-patients' => 'col-lg-43',
 
-        $totCon = Encounter::count();
-        $totConCompleted = Encounter::finished()->count();
-        //dd($totCon);
-        $porcCompleted = ($totCon > 0) ? round($totConCompleted*100/$totCon,2) : 0; //round($totConCompleted*100/$totCon,2);
-        $classCon = 'status-pink';
-        $signCon = '-';
-        if($porcCompleted>50){
-            $classCon = 'status-green';
-            $signCon = '+';
-        }
+            'top-active-conditions' => 'col-lg-6',
+            'top-prescribed-medications' => 'col-lg-6',
+            'consultation-effectiveness' => 'col-lg-6',
+            'activity-heatmap' => 'col-lg-6',
+        ];
 
-        $dashboards[] = array(
-            "title" => "Consultas",
-            "icon" => "doctor-dash-02.svg",
-            "count" =>$totConCompleted,
-            "total" => "/".$totCon,
-            "class" => $classCon,
-            "percentageChange" =>$signCon.$porcCompleted.'%');
-
-        $dashboards[] = array(
-            "title" => "Ganancias",
-            "icon" => "doctor-dash-04.svg",
-            "count" => "530",
-            "total" => "",
-            "class" => "status-green",
-            "percentageChange" => "+50%"
-        );
-
-        return view('Dashboard.doctor-dashboard',compact('dashboards'));
+        return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents', 'widgetLayouts'));
     }
     public function patient(Request $request){
-
         $patient = Patient::find(auth()->user()->patient->id);
+        $dashboards = array();
 
-        $dashboards=array();
+        // Get visible widgets for this user
+        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'patient');
 
-        $totApp = Appointment::count();
-        $totAppFullFilled = Appointment::fullFilled()->count();
-        $porcFullFilled = 0;//round($totAppFullFilled*100/$totApp,2);
-        $classApp = 'status-pink';
-        $signApp = '-';
-        if($porcFullFilled>50){
-            $classApp = 'status-green';
-            $signApp = '+';
-        }
+        $widgetComponents = [
+            'overview' => 'patient.dashboard.overview',
+            'upcoming-appointments' => 'patient.dashboard.upcoming-appointments',
+            'recent-consultations' => 'patient.dashboard.recent-consultations',
+            'outstanding-invoices' => 'patient.dashboard.outstanding-invoices',
+            'medical-summary' => 'patient.dashboard.medical-summary',
+        ];
 
-        $dashboards[] = array(
-            "title" =>__('appointment.titles'),
-            "icon" => "doctor-dash-01.svg",
-            "count" =>$totAppFullFilled,
-            "total" => "/".$totApp,
-            "class" => $classApp,
-            "percentageChange" =>$signApp.$porcFullFilled.'%');
+        $widgetLayouts = [
+            'overview' => 'col-12',
+            'upcoming-appointments' => 'col-12 mb-4',
+            'recent-consultations' => 'col-12 mb-4',
+            'outstanding-invoices' => 'col-12 mb-4',
+            'medical-summary' => 'col-12 mb-4',
+        ];
 
-        $totCon = Encounter::count();
-        $totConCompleted = Encounter::finished()->count();
-        $porcCompleted = 0;//round($totConCompleted*100/$totCon,2);
-        $classCon = 'status-pink';
-        $signCon = '-';
-        if($porcCompleted>50){
-            $classCon = 'status-green';
-            $signCon = '+';
-        }
-
-        $dashboards[] = array(
-            "title" => __('consultation.titles'),
-            "icon" => "doctor-dash-02.svg",
-            "count" =>$totConCompleted,
-            "total" => "/".$totCon,
-            "class" => $classCon,
-            "percentageChange" =>$signCon.$porcCompleted.'%');
-
-        $dashboards[] = array(
-            "title" => "Gastos",
-            "icon" => "doctor-dash-04.svg",
-            "count" => "530",
-            "total" => "",
-            "class" => "status-green",
-            "percentageChange" => "+50%"
-        );
-
-
-        return view('Dashboard.patient-dashboard',compact('dashboards','patient'));
+        return view('Dashboard.patient-dashboard', compact('dashboards', 'patient', 'visibleWidgets', 'widgetComponents', 'widgetLayouts'));
     }
     public function assistence(Request $request){
-        return view('Dashboard.assistence-dashboard');
+        $dashboards = array();
+
+        // Get visible widgets for this user
+        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'assistant');
+
+        $widgetComponents = [
+            'recent-appointment-list' => 'doctor.recent-appointment-list',
+            'new-patients' => 'doctor.new-patients',
+            'old-patients' => 'doctor.old-patients',
+            'active-patients' => 'doctor.active-patients',
+            'patients-by-gender' => 'doctor.patients-by-gender',
+            'consultation-effectiveness' => 'doctor.consultation-effectiveness',
+            'activity-heatmap' => 'doctor.activity-heatmap',
+        ];
+
+        $widgetLayouts = [
+            'recent-appointment-list' => 'col-lg-6',
+            'new-patients' => 'col-lg-5',
+            'old-patients' => 'col-lg-5',
+            'active-patients' => 'col-lg-5',
+            'patients-by-gender' => 'col-lg-7',
+            'consultation-effectiveness' => 'col-lg-6',
+            'activity-heatmap' => 'col-lg-6',
+        ];
+
+        return view('Dashboard.assistence-dashboard', compact('dashboards', 'visibleWidgets', 'widgetComponents', 'widgetLayouts'));
     }
 }

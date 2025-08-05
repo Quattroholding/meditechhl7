@@ -9,6 +9,9 @@
                 @slot('li_1')
                     Doctor Dashboard
                 @endslot
+                @slot('actions')
+                    @livewire('widget-configuration', ['dashboardType' => 'doctor'])
+                @endslot
             @endcomponent
             <!-- /Page Header -->
 
@@ -31,63 +34,15 @@
                 </div>
             </div>
             <div class="dashboard-initrr">
-                {{--}}
-                <div class="doctor-list-blk">
-                    <div class="row">
-                        @foreach ($dashboards as $dashboard)
-                            <div class="col-xl-3 col-md-6">
-                                <div class="doctor-widget border-right-bg">
-                                    <div class="doctor-box-icon flex-shrink-0">
-                                        <img src="{{ URL::asset('/assets/img/icons/' . $dashboard['icon']) }}" alt="">
-                                    </div>
-                                    <div class="doctor-content dash-count flex-grow-1">
-                                        <h4>
-                                            @if($dashboard['title'] === 'Earnings')
-                                                $<span
-                                                    class="counter-up">{{ $dashboard['count'] }}</span>
-                                            @else
-                                                <span
-                                                    class="counter-up">{{ $dashboard['count'] }}</span>
-                                            @endif<span>{{ $dashboard['total'] }}</span><span
-                                                class="{{ $dashboard['class'] }}">{{ $dashboard['percentageChange'] }}</span>
-                                        </h4>
-                                        <h5>{{ $dashboard['title'] }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                {{--}}
                 <div class="row">
-                    <div class="col-lg-6">
-
-                       <div data-order="1">@livewire('doctor.recent-appointment-list',['order'=>1])</div>
-
-                       <div data-order="6">@livewire('doctor.top-active-conditions',['order'=>6])</div>
-                       <div data-order="7">@livewire('doctor.top-prescribed-medications',['order'=>7])</div>
-                       <div data-order="8">@livewire('doctor.consultation-effectiveness',['order'=>8])</div>
-
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <div class="col-lg-5">
-                                <div class="col-md-12" data-order="2">@livewire('doctor.new-patients',['order'=>2])</div>
-                                <div class="col-md-12" data-order="3">@livewire('doctor.old-patients',['order'=>3])</div>
-                                <div class="col-md-12" data-order="4">@livewire('doctor.active-patients',['order'=>4])</div>
+                    @foreach($visibleWidgets as $widget)
+                        @if(isset($widgetComponents[$widget['key']]))
+                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
+                                @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
                             </div>
-                            <div class="col-lg-7">
-                                <div class="col-md-12" data-order="5">@livewire('doctor.patients-by-gender',['order'=>5])</div>
-                            </div>
-                        </div>
-
-                        <div data-order="9">@livewire('doctor.activity-heatmap',['order'=>9])</div>
-                        {{--}}
-                        <div data-order="10">@livewire('doctor.patient-satisfaction',['order'=>10])</div>
-                        {{--}}
-                    </div>
+                        @endif
+                    @endforeach
                 </div>
-
             </div>
         </div>
         @component('components.notification-box')
@@ -119,24 +74,24 @@
 
                             // Buscar el order en los atributos del elemento o sus padres
                             let currentElement = element;
+                            let hasOrder = false;
                             while (currentElement && order === 999) {
                                 if (currentElement.getAttribute && currentElement.getAttribute('data-order')) {
                                     order = parseInt(currentElement.getAttribute('data-order'));
+                                    hasOrder = true;
                                 }
                                 currentElement = currentElement.parentElement;
                             }
 
-                            // Si no se encuentra order, usar un orden secuencial
-                            if (order === 999) {
-                                order = index + 1;
+                            // Solo incluir componentes que tienen data-order (widgets del dashboard)
+                            if (hasOrder) {
+                                componentsWithOrder.push({
+                                    component: component,
+                                    wireId: wireId,
+                                    order: order,
+                                    element: element
+                                });
                             }
-
-                            componentsWithOrder.push({
-                                component: component,
-                                wireId: wireId,
-                                order: order,
-                                element: element
-                            });
                         }
                     }
                 });
@@ -164,15 +119,26 @@
                             return;
                         }
 
-                        // Intentar llamar loadData con verificación adicional
+                        // Verificar si el método loadData existe antes de llamarlo
                         //console.log(`📞 Attempting to call loadData for ${item.wireId}...`);
+
+                        // Check if loadData method exists
+                        let hasLoadData = false;
+                        try {
+                            // Try to access the method through call first
+                            hasLoadData = true; // We'll find out in the catch if it doesn't exist
+                        } catch(e) {
+                            hasLoadData = false;
+                        }
 
                         item.component.call('loadData')
                             .then(() => {
-                                console.log(`✅ Component ${item.wireId} loaded successfully`);
+                                //console.log(`✅ Component ${item.wireId} loaded successfully`);
                             })
                             .catch(error => {
                                 console.error(`❌ Error loading component ${item.wireId}:`, error);
+                                console.error(`❌ Component class:`, item.component.constructor.name);
+                                console.error(`❌ Available methods:`, Object.getOwnPropertyNames(Object.getPrototypeOf(item.component)));
                                 console.error(`❌ Error type:`, error.constructor.name);
                                 console.error(`❌ Error message:`, error.message);
 

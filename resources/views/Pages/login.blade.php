@@ -24,11 +24,7 @@
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
                                     <a href="{{route('autologin',['role'=>'asistente'])}}" class="btn btn-primary">Asistente</a>
                                 </div>
-                                @if (session('message'))
-                                    <div style="color: blue;">
-                                        {{ session('message') }}
-                                    </div>
-                                @endif
+                                @include('partials.message')
 
                                 <form action="{{ route('login') }}" method="POST">
                                     @csrf

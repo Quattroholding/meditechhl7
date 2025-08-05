@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class UserWidgetPreference extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'dashboard_type',
+        'widget_name',
+        'widget_description',
+        'is_visible',
+        'order_position',
+        'width'
+    ];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
+        'order_position' => 'integer'
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public static function getDefaultWidgets(string $dashboardType): array
+    {
+        $widgets = [
+            'doctor' => [
+                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 1,'description' => 'Citas para hoy','width'=>'col-lg-6'],
+                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 2,'description' => 'Pacientes por género','width'=>'col-lg-6'],
+                'new-patients' => ['name' => 'New Patients', 'order' => 3,'description' => 'Pacientes Nuevos','width'=>'col-lg-4'],
+                'old-patients' => ['name' => 'Old Patients', 'order' => 4,'description' => 'Pacientes Antiguos','width'=>'col-lg-4'],
+                'active-patients' => ['name' => 'Active Patients', 'order' => 5,'description' => 'Pacientes Activos','width'=>'col-lg-4'],
+                'top-active-conditions' => ['name' => 'Top Active Conditions', 'order' => 6,'description' => 'Top 5 condicones activas','width'=>'col-lg-6'],
+                'top-prescribed-medications' => ['name' => 'Top Prescribed Medications', 'order' => 7,'description' => 'Top 5 medicamentos prescritos','width'=>'col-lg-6'],
+                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 8,'description' => 'Efectividad de Atención','width'=>'col-lg-6'],
+                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 9,'description' => 'Horarios de Mayor Actividad','width'=>'col-lg-6'],
+            ],
+            'assistant' => [
+                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 1,'description' => 'Citas para hoy','width'=>'col-lg-6'],
+                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 2,'description' => 'Pacientes por género','width'=>'col-lg-6'],
+                'new-patients' => ['name' => 'New Patients', 'order' => 3,'description' => 'Pacientes Nuevos','width'=>'col-lg-4'],
+                'old-patients' => ['name' => 'Old Patients', 'order' => 4,'description' => 'Pacientes Antiguos','width'=>'col-lg-4'],
+                'active-patients' => ['name' => 'Active Patients', 'order' => 5,'description' => 'Pacientes Activos','width'=>'col-lg-4'],
+                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 6,'description' => 'Efectividad de Atención','width'=>'col-lg-6'],
+                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 7,'description' => 'Horarios de Mayor Actividad','width'=>'col-lg-6'],
+            ],
+            'patient' => [
+                'overview' => ['name' => 'Health Overview', 'order' => 1,'description'=>'General','width'=>'col-lg-12'],
+                'upcoming-appointments' => ['name' => 'Upcoming Appointments', 'order' => 2,'description'=>'Proximas citas','width'=>'col-lg-6'],
+                'recent-consultations' => ['name' => 'Recent Consultations', 'order' => 3,'description'=>'Consultas recientes','width'=>'col-lg-6'],
+                'outstanding-invoices' => ['name' => 'Outstanding Invoices', 'order' => 4,'description'=>'Facturas pendientes','width'=>'col-lg-6'],
+                'medical-summary' => ['name' => 'Medical Summary', 'order' => 5,'description'=>'Resumen medico','width'=>'col-lg-6'],
+            ]
+        ];
+
+        return $widgets[$dashboardType] ?? [];
+    }
+
+    public static function getVisibleWidgets(int $userId, string $dashboardType): array
+    {
+        $defaultWidgets = self::getDefaultWidgets($dashboardType);
+        $userPreferences = self::where('user_id', $userId)
+            ->where('dashboard_type', $dashboardType)
+            ->get()
+            ->keyBy('widget_name');
+
+        $visibleWidgets = collect($defaultWidgets)->map(function ($widget, $key) use ($userPreferences) {
+            $preference = $userPreferences->get($key);
+            return [
+                'key' => $key,
+                'name' => $widget['name'],
+                'is_visible' => $preference ? $preference->is_visible : true,
+                'order_position' => $preference ? $preference->order_position : $widget['order'],
+                'width' => $preference ? $preference->width : 'col-lg-6'
+            ];
+        })->filter(function ($widget) {
+            return $widget['is_visible'];
+        })->sortBy('order_position')->values()->toArray();
+
+        return $visibleWidgets;
+    }
+}
