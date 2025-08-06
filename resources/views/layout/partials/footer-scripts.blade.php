@@ -76,10 +76,6 @@
 <!-- Responsive Table JavaScript -->
 <script src="{{ asset('assets/js/responsive-table.js') }}"></script>
 
-
-<!-- Responsive Side Menu JavaScript -->
-<script src="{{ asset('assets/js/responsive-side-menu.js') }}"></script>
-
 <!-- Appointment Broadcast Listener -->
 @if(auth()->user()->hasRole('doctor'))
     <script>
