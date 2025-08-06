@@ -82,7 +82,7 @@ class PatientController extends Controller
             'phone' => 'required',
             'full_phone' => 'required',
             'password' => "required",
-            'terms_and_privacy' => "required"
+            'terms_and_privacy' => "required|accepted"
         ]);
 
         // Verificar si el correo ya está registrado
