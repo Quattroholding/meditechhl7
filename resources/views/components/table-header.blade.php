@@ -8,23 +8,30 @@ if(!isset($show_create)) $show_create=true;
             <div class="doctor-table-blk">
                 <h3>{{ $title }}</h3>
                 <div class="doctor-search-blk">
-                    <div class="top-nav-search table-search-blk">
-                        <form action="javascript:;" class="w-100">
-                            <input type="text"  wire:model.live.debounce.300ms="search" placeholder="Buscar..." class="form-control" id="search">
-                            <a class="btn">{{--}}<img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt="">{{--}}</a>
-                        </form>
+                    <div class="row g-2 align-items-center space-x-2">
+                        <div class="col-12 col-sm-7 col-md-7 col-lg-7 col-xl-7">
+                            <div class="top-nav-search table-search-blk w-100">
+                                <form action="javascript:;" class="w-100">
+                                    <input type="text"  wire:model.live.debounce.300ms="search" placeholder="Buscar..." class="form-control" id="search">
+                                    <a class="btn">{{--}}<img src="{{ URL::asset('/assets/img/icons/search-normal.svg') }}"  alt="">{{--}}</a>
+                                </form>
+                            </div>
+                        </div>
+                        @if($show_create)
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                            <div class="d-grid d-sm-block text-sm-end">
+                                <a href="{{ $li_1 }}" class="btn btn-primary submit-form add-pluss py-2" title="{{__('generic.new')}}">
+                                   {{--}} <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}} {{--}}
+                                    <i class="fa fa-plus me-1"></i>
+                                    <span class="d-md-inline">{{__('generic.new')}}</span>
+                                </a>
+                                {{--}}
+                                <a href="#" class="btn btn-light doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
+                                {{--}}
+                            </div>
+                        </div>
+                        @endif
                     </div>
-                    @if($show_create)
-                    <div class="">
-                        <a href="{{ $li_1 }}" class="btn btn-primary submit-form me-2 add-pluss ms-2 py-2" title="{{__('generic.new')}}">
-
-                            <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}}
-                        </a>
-                        {{--}}
-                        <a href="#" class="btn btn-light doctor-refresh ms-2" title="{{__('generic.refresh')}}"><img src="{{ URL::asset('/assets/img/icons/re-fresh.svg') }}" alt=""></a>
-                        {{--}}
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>
