@@ -39,13 +39,13 @@
             <div class="card-body">
                 <ul class="nav nav-tabs" role="tablist">
                     @can('users.profile')
-                        <li class="nav-item" role="presentation">
+                        <li class="nav-item w-100" role="presentation">
                             <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
                                 {{__('patient.account_settings')}}
                             </a>
                         </li>
 
-                        <li class="nav-item" role="presentation">
+                        <li class="nav-item w-100" role="presentation">
                             <a href="#security_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
                                 {{__('patient.security_settings')}}
                             </a>
