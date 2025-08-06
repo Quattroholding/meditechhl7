@@ -28,10 +28,7 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-        $this->validateReason();
-        $this->validatePresentIllnesses();
-
-        $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition();
+         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition();
 
     }
 
