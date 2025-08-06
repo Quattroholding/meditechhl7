@@ -2748,3 +2748,11 @@ w
 .edit-button:hover{
     background-color: #003b62;
 }
+
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .selector-btn-type .sel-list-item{
+        width: 48%;
+    }
+}
