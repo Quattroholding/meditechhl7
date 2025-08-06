@@ -47,12 +47,12 @@ class PasswordResetLinkController extends Controller
                     : back()->withInput($request->only('email'))
                         ->withErrors(['email' => __($status)]);*/
         if ($status == Password::RESET_LINK_SENT) {
-        $request->session()->flash('message.success', 'Correo enviado con éxito.');
-        return back()->with('status', __($status));
-    } else {
-        return back()->withInput($request->only('email'))
-                     ->withErrors(['email' => __($status)]);
-    }
+            $request->session()->flash('message.success', 'Envio de instrucciones de recuperación de contraseña al correo enviado con exito.');
+            return back()->with('status', __($status));
+        } else {
+            return back()->withInput($request->only('email'))
+                         ->withErrors(['email' => __($status)]);
+        }
 
     }
 }
