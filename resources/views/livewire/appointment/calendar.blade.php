@@ -7,7 +7,7 @@
         <div class="header-controls">
             <div class="view-buttons">
 
-                <button wire:click="changeView('monthly')" class="btn {{ $currentView === 'monthly' ? 'btn-primary active' : 'btn-secondary' }}">
+                <button wire:click="changeView('monthly')" class="btn {{ $currentView === 'monthly' ? 'btn-primary active' : 'btn-secondary' }} btn-fonts">
                     {{__('Mensual')}}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
@@ -16,7 +16,7 @@
                     Semanal
                 </button>
                 {{--}}
-                <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }}">
+                <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }} btn-fonts">
                     {{__('Hoy')}}
                 </button>
                 @endif
@@ -30,7 +30,7 @@
                 <button wire:click="goToToday" class="btn btn-secondary" style="margin-left: 10px;">Hoy</button>
                 {{--}}
             </div>
-            <button wire:click="openModal" class="btn btn-primary">+ Nueva Cita</button>
+            <button wire:click="openModal" class="btn btn-primary btn-fonts">+ Nueva Cita</button>
         </div>
         <!-- Estadísticas -->
         {{--}}
@@ -56,10 +56,10 @@
         <!-- Filtros -->
         <div class="filters-section">
             <div>
-                <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control">
+                <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control btn-fonts">
             </div>
             <div>
-                <select wire:model.live="selectedDoctor" class="form-control">
+                <select wire:model.live="selectedDoctor" class="form-control btn-fonts">
                     <option value="">Todos los doctores</option>
                     @foreach($doctors as $key=>$val)
                         <option value="{{ $key }}">{{ $val }}</option>
@@ -67,7 +67,7 @@
                 </select>
             </div>
             <div>
-                <select wire:model.live="selectedStatus" class="form-control">
+                <select wire:model.live="selectedStatus" class="form-control btn-fonts">
                     <option value="">Todos los estados</option>
                     <option value="booked">Programada</option>
                     <option value="arrived">Llegada</option>
@@ -78,7 +78,7 @@
                 </select>
             </div>
             <div class="col-xl-3 col-md-6">
-                <button wire:click="clearFilters" class="btn btn-secondary w-full">Limpiar Filtros</button>
+                <button wire:click="clearFilters" class="btn btn-secondary w-full btn-fonts">Limpiar Filtros</button>
             </div>
             {{--}}
             <div>
@@ -86,7 +86,7 @@
             </div>
             {{--}}
             <div class="col-xl-3 col-md-6 text-end">
-                <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full">
+                <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full btn-fonts">
                     ⚙️ Configurar Bloques
                 </button>
             </div>
