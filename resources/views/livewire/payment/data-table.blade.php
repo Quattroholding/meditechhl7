@@ -42,107 +42,124 @@
 
                     @if($this->payments->count() > 0)
                         <div class="table-responsive">
-                            <table class="table border-0 custom-table comman-table mb-0">
+                            <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                                 <thead>
                                     <tr>
-                                        <th wire:click="sortBy('payment_number')" style="cursor: pointer;">
+                                        <th data-column="payment_number" data-priority="1" wire:click="sortBy('payment_number')" style="cursor: pointer;">
                                             {{ __('Número de Pago') }}
                                             @if($sortField === 'payment_number')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
-                                        <th>{{ __('Factura') }}</th>
-                                        <th>{{ __('Paciente') }}</th>
-                                        <th wire:click="sortBy('payment_method')" style="cursor: pointer;">
+                                        <th data-column="invoice" data-priority="2">{{ __('Factura') }}</th>
+                                        <th data-column="patient" data-priority="3">{{ __('Paciente') }}</th>
+                                        <th data-column="payment_method" data-priority="4" wire:click="sortBy('payment_method')" style="cursor: pointer;">
                                             {{ __('Método de Pago') }}
                                             @if($sortField === 'payment_method')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
-                                        <th wire:click="sortBy('payment_date')" style="cursor: pointer;">
+                                        <th data-column="payment_date" data-priority="5" wire:click="sortBy('payment_date')" style="cursor: pointer;">
                                             {{ __('Fecha de Pago') }}
                                             @if($sortField === 'payment_date')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
-                                        <th wire:click="sortBy('amount')" style="cursor: pointer;">
+                                        <th data-column="amount" data-priority="6" wire:click="sortBy('amount')" style="cursor: pointer;">
                                             {{ __('Monto') }}
                                             @if($sortField === 'amount')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
-                                        <th wire:click="sortBy('status')" style="cursor: pointer;">
+                                        <th data-column="status" data-priority="7" wire:click="sortBy('status')" style="cursor: pointer;">
                                             {{ __('Estado') }}
                                             @if($sortField === 'status')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
-                                        <th>{{ __('Acciones') }}</th>
+                                        <th data-column="acciones" data-priority="1">{{ __('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($this->payments as $payment)
-                                        <tr>
-                                            <td>
-                                                <strong>{{ $payment->payment_number }}</strong>
-                                                @if($payment->reference_number)
-                                                    <br><small class="text-muted">Ref: {{ $payment->reference_number }}</small>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($payment->invoice)
-                                                    <a href="{{ route('invoice.show', $payment->invoice->id) }}" class="text-primary">
-                                                        {{ $payment->invoice->invoice_number }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">N/A</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($payment->patient)
-                                                    <div class="profile-image">
-                                                        <a href="{{ route('patient.profile', $payment->patient->id) }}">
-                                                         {!!  $payment->patient->profile_name!!}
-                                                        </a>
-                                                    </div>
-                                                @else
-                                                    <span class="text-muted">N/A</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-info">{{ $payment->payment_method_label }}</span>
-                                                @if($payment->transaction_id)
-                                                    <br><small class="text-muted">ID: {{ $payment->transaction_id }}</small>
-                                                @endif
-                                            </td>
-                                            <td>{{ $payment->payment_date->format('d/m/Y') }}</td>
-                                            <td class="text-success fw-bold">
-                                                ${{ number_format($payment->amount, 2) }}
-                                            </td>
-                                            <td>
-                                                <span class="badge
-                                                    @switch($payment->status)
-                                                        @case('completed')
-                                                            badge-success
-                                                            @break
-                                                        @case('pending')
-                                                            badge-warning
-                                                            @break
-                                                        @case('failed')
-                                                        @case('cancelled')
-                                                            badge-danger
-                                                            @break
-                                                        @case('refunded')
-                                                            badge-info
-                                                            @break
-                                                        @default
-                                                            badge-secondary
-                                                    @endswitch
-                                                ">
-                                                    {{ $payment->status_label }}
+                                        <tr class="table-row" data-row-id="{{ $payment->id }}">
+                                            <td data-column="payment_number" data-priority="1" data-label="{{ __('Número de Pago') }}">
+                                                <span class="row-expand-btn d-none me-2" onclick="toggleRowDetails(this)">
+                                                    <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
+                                                </span>
+                                                <span class="cell-content">
+                                                    <strong>{{ $payment->payment_number }}</strong>
+                                                    @if($payment->reference_number)
+                                                        <br><small class="text-muted">Ref: {{ $payment->reference_number }}</small>
+                                                    @endif
                                                 </span>
                                             </td>
-                                            <td class="text-end">
+                                            <td data-column="invoice" data-priority="2" data-label="{{ __('Factura') }}">
+                                                <span class="cell-content">
+                                                    @if($payment->invoice)
+                                                        <a href="{{ route('invoice.show', $payment->invoice->id) }}" class="text-primary">
+                                                            {{ $payment->invoice->invoice_number }}
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted">N/A</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td data-column="patient" data-priority="3" data-label="{{ __('Paciente') }}">
+                                                <span class="cell-content">
+                                                    @if($payment->patient)
+                                                        <div class="profile-image">
+                                                            <a href="{{ route('patient.profile', $payment->patient->id) }}">
+                                                             {!!  $payment->patient->profile_name!!}
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted">N/A</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td data-column="payment_method" data-priority="4" data-label="{{ __('Método de Pago') }}">
+                                                <span class="cell-content">
+                                                    <span class="badge badge-info">{{ $payment->payment_method_label }}</span>
+                                                    @if($payment->transaction_id)
+                                                        <br><small class="text-muted">ID: {{ $payment->transaction_id }}</small>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td data-column="payment_date" data-priority="5" data-label="{{ __('Fecha de Pago') }}">
+                                                <span class="cell-content">{{ $payment->payment_date->format('d/m/Y') }}</span>
+                                            </td>
+                                            <td data-column="amount" data-priority="6" data-label="{{ __('Monto') }}">
+                                                <span class="cell-content text-success fw-bold">
+                                                    ${{ number_format($payment->amount, 2) }}
+                                                </span>
+                                            </td>
+                                            <td data-column="status" data-priority="7" data-label="{{ __('Estado') }}">
+                                                <span class="cell-content">
+                                                    <span class="badge
+                                                        @switch($payment->status)
+                                                            @case('completed')
+                                                                badge-success
+                                                                @break
+                                                            @case('pending')
+                                                                badge-warning
+                                                                @break
+                                                            @case('failed')
+                                                            @case('cancelled')
+                                                                badge-danger
+                                                                @break
+                                                            @case('refunded')
+                                                                badge-info
+                                                                @break
+                                                            @default
+                                                                badge-secondary
+                                                        @endswitch
+                                                    ">
+                                                        {{ $payment->status_label }}
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
                                                 <div class="dropdown dropdown-action">
                                                     <a href="javascript:;" class="action-icon dropdown-toggle"
                                                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -166,6 +183,14 @@
                                                             </a>
                                                         @endif
                                                     </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Hidden row for expanded details -->
+                                        <tr class="row-details d-none" data-parent-row="{{ $payment->id }}">
+                                            <td colspan="8" class="p-3 bg-light">
+                                                <div class="row-details-content">
+                                                    <!-- Details will be populated by JavaScript -->
                                                 </div>
                                             </td>
                                         </tr>

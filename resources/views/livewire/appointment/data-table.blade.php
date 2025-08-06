@@ -39,34 +39,75 @@
 
                     @include('partials.message')
                     <div class="table-responsive">
-                        <table class="table border-0 custom-table comman-table mb-0">
+                        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
                             <tr>
-                                <th><x-table-sort-button title="ID" columnName="appointments.id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th><x-table-sort-button title="{{__('appointment.patient')}}" columnName=""/></th>
-                                <th><x-table-sort-button title="{{__('appointment.doctor')}}" columnName=""/></th>
-                                <th><x-table-sort-button title="{{__('appointment.status')}}" columnName="appointments.status" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th><x-table-sort-button title="{{__('appointment.type')}}" columnName="appointments.service_type" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th><x-table-sort-button title="{{__('appointment.branch')}}" columnName="" /></th>
-                                <th><x-table-sort-button title="{{__('appointment.consultorio')}}" columnName=""/></th>
-                                <th><x-table-sort-button title="{{__('appointment.date')}}" columnName="appointments.start" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                                <th><x-table-sort-button title="{{__('appointment.time')}}" columnName=""/></th>
-                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
+                                <th data-column="id" data-priority="1">
+                                    <x-table-sort-button title="ID" columnName="appointments.id" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                </th>
+                                <th data-column="patient" data-priority="2">
+                                    <x-table-sort-button title="{{__('appointment.patient')}}" columnName=""/>
+                                </th>
+                                <th data-column="practitioner" data-priority="3">
+                                    <x-table-sort-button title="{{__('appointment.doctor')}}" columnName=""/>
+                                </th>
+                                <th data-column="status" data-priority="4">
+                                    <x-table-sort-button title="{{__('appointment.status')}}" columnName="appointments.status" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                </th>
+                                <th data-column="service_type" data-priority="5">
+                                    <x-table-sort-button title="{{__('appointment.type')}}" columnName="appointments.service_type" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                </th>
+                                <th data-column="branch" data-priority="6">
+                                    <x-table-sort-button title="{{__('appointment.branch')}}" columnName="" />
+                                </th>
+                                <th data-column="consulting_room" data-priority="7">
+                                    <x-table-sort-button title="{{__('appointment.consultorio')}}" columnName=""/>
+                                </th>
+                                <th data-column="date" data-priority="8">
+                                    <x-table-sort-button title="{{__('appointment.date')}}" columnName="appointments.start" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                </th>
+                                <th data-column="time" data-priority="9">
+                                    <x-table-sort-button title="{{__('appointment.time')}}" columnName=""/>
+                                </th>
+                                <th data-column="acciones" data-priority="1" class="text-end">
+                                    <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($data as $appointment)
-                                <tr>
-                                    <td>{{$appointment->id}}</td>
-                                    <td>{!!  $appointment->patient->profile_name !!}</td>
-                                    <td>{!!  $appointment->practitioner->profile_name !!} </td>
-                                    <td><livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/> </td>
-                                    <td>{{ $appointment->service_type }}</td>
-                                    <td>{{ $appointment->consultingRoom->branch->name }}</a></td>
-                                    <td>{{ $appointment->consultingRoom->name }}</a></td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</td>
-                                    <td class="text-end">
+                                <tr class="table-row" data-row-id="{{ $appointment->id }}">
+                                    <td data-column="id" data-priority="1" data-label="ID">
+                                        <span class="row-expand-btn d-none me-2" onclick="toggleRowDetails(this)">
+                                            <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
+                                        </span>
+                                        <span class="cell-content">{{$appointment->id}}</span>
+                                    </td>
+                                    <td data-column="patient" data-priority="2" data-label="{{__('appointment.patient')}}">
+                                        <span class="cell-content">{!!  $appointment->patient->profile_name !!}</span>
+                                    </td>
+                                    <td data-column="practitioner" data-priority="3" data-label="{{__('appointment.doctor')}}">
+                                        <span class="cell-content">{!!  $appointment->practitioner->profile_name !!}</span>
+                                    </td>
+                                    <td data-column="status" data-priority="4" data-label="{{__('appointment.status')}}">
+                                        <span class="cell-content"><livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/></span>
+                                    </td>
+                                    <td data-column="service_type" data-priority="5" data-label="{{__('appointment.type')}}">
+                                        <span class="cell-content">{{ $appointment->service_type }}</span>
+                                    </td>
+                                    <td data-column="branch" data-priority="6" data-label="{{__('appointment.branch')}}">
+                                        <span class="cell-content">{{ $appointment->consultingRoom->branch->name }}</span>
+                                    </td>
+                                    <td data-column="consulting_room" data-priority="7" data-label="{{__('appointment.consultorio')}}">
+                                        <span class="cell-content">{{ $appointment->consultingRoom->name }}</span>
+                                    </td>
+                                    <td data-column="date" data-priority="8" data-label="{{__('appointment.date')}}">
+                                        <span class="cell-content">{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</span>
+                                    </td>
+                                    <td data-column="time" data-priority="9" data-label="{{__('appointment.time')}}">
+                                        <span class="cell-content">{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</span>
+                                    </td>
+                                    <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             {{--}}@if(auth()->user()->can('booked',$appointment))
                                                 <a wire:click="editAppointment({{$appointment->id}})" class="btn btn-primary btn-sm" title="{{__('appointment.status.confirm')}}">
@@ -147,6 +188,14 @@
                                                 });
                                             });
                                         </script>
+                                    </td>
+                                </tr>
+                                <!-- Hidden row for expanded details -->
+                                <tr class="row-details d-none" data-parent-row="{{ $appointment->id }}">
+                                    <td colspan="10" class="p-3 bg-light">
+                                        <div class="row-details-content">
+                                            <!-- Details will be populated by JavaScript -->
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

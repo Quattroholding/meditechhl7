@@ -14,28 +14,57 @@
                     @endcomponent
                     <!-- /Table Header -->
                     <div class="table-responsive">
-                        <table class="table border-0 custom-table comman-table mb-0">
+                        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
                             <tr>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">Id  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">{{__('encounter.practitioner')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('patients.name')">{{__('encounter.patient')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.status')">{{__('encounter.status')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.start')">{{__('encounter.day')}}  @if ($sortDirection === 'asc') ▲ @else ▼ @endif</th>
-                                <th>{{__('encounter.time')}}</th>
-                                <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
+                                <th data-column="id" data-priority="1" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">
+                                    Id @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                                </th>
+                                <th data-column="practitioner" data-priority="2" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">
+                                    {{__('encounter.practitioner')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                                </th>
+                                <th data-column="patient" data-priority="3" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('patients.name')">
+                                    {{__('encounter.patient')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                                </th>
+                                <th data-column="status" data-priority="4" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.status')">
+                                    {{__('encounter.status')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                                </th>
+                                <th data-column="start" data-priority="5" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('encounters.start')">
+                                    {{__('encounter.day')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                                </th>
+                                <th data-column="time" data-priority="6">
+                                    {{__('encounter.time')}}
+                                </th>
+                                <th data-column="acciones" data-priority="1" class="text-end">
+                                    <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach ($data as $dato)
-                                <tr>
-                                    <td>{{$dato->id}}</td>
-                                    <td>{!!  $dato->practitioner->profile_name !!} </td>
-                                    <td>{!!  $dato->patient->profile_name !!}</td>
-                                    <td>{!!  $dato->status !!}</td>
-                                    <td>{{ \Carbon\Carbon::parse($dato->start)->format('d-m-Y')  }}</td>
-                                    <td>{{ $dato->time }}</td>
-                                    <td class="text-end">
+                                <tr class="table-row" data-row-id="{{ $dato->id }}">
+                                    <td data-column="id" data-priority="1" data-label="ID">
+                                        <span class="row-expand-btn d-none me-2" onclick="toggleRowDetails(this)">
+                                            <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
+                                        </span>
+                                        <span class="cell-content">{{$dato->id}}</span>
+                                    </td>
+                                    <td data-column="practitioner" data-priority="2" data-label="{{__('encounter.practitioner')}}">
+                                        <span class="cell-content">{!!  $dato->practitioner->profile_name !!}</span>
+                                    </td>
+                                    <td data-column="patient" data-priority="3" data-label="{{__('encounter.patient')}}">
+                                        <span class="cell-content">{!!  $dato->patient->profile_name !!}</span>
+                                    </td>
+                                    <td data-column="status" data-priority="4" data-label="{{__('encounter.status')}}">
+                                        <span class="cell-content">{!!  $dato->status !!}</span>
+                                    </td>
+                                    <td data-column="start" data-priority="5" data-label="{{__('encounter.day')}}">
+                                        <span class="cell-content">{{ \Carbon\Carbon::parse($dato->start)->format('d-m-Y') }}</span>
+                                    </td>
+                                    <td data-column="time" data-priority="6" data-label="{{__('encounter.time')}}">
+                                        <span class="cell-content">{{ $dato->time }}</span>
+                                    </td>
+                                    <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                                 <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">
                                                     <i  class="fa-solid fa-eye m-r-5 text-white"></i>
@@ -77,6 +106,14 @@
                                                 @endif
                                             </div>
                                         </div>{{--}}
+                                    </td>
+                                </tr>
+                                <!-- Hidden row for expanded details -->
+                                <tr class="row-details d-none" data-parent-row="{{ $dato->id }}">
+                                    <td colspan="7" class="p-3 bg-light">
+                                        <div class="row-details-content">
+                                            <!-- Details will be populated by JavaScript -->
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
