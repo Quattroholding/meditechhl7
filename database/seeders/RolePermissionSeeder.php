@@ -48,11 +48,11 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'practitioners.view', 'description' => 'Ver lista de médicos y profesionales','module'=>'medicos'],
             ['name' => 'practitioners.create', 'description' => 'Registrar nuevos médicos','module'=>'medicos'],
             ['name' => 'practitioners.edit', 'description' => 'Editar información de médicos','module'=>'medicos'],
-             ['name' => 'practitioners.update', 'description' => 'Actualizar información de médicos','module'=>'medicos'],
+            ['name' => 'practitioners.update', 'description' => 'Actualizar información de médicos','module'=>'medicos'],
             ['name' => 'practitioners.delete', 'description' => 'Eliminar registros de médicos','module'=>'medicos'],
             ['name' => 'practitioners.profile', 'description' => 'Ver perfil de médicos','module'=>'medicos'],
             ['name' => 'practitioners.directory', 'description' => 'Ver directorio medico','module'=>'medicos'],
-             ['name' => 'practitioners.add_assistant', 'description' => 'Agregar un nuevo asistente al Sistema','module'=>'medicos'],
+            ['name' => 'practitioners.add_assistant', 'description' => 'Agregar un nuevo asistente al Sistema','module'=>'medicos'],
 
             // Appointment management
             ['name' => 'appointments.view', 'description' => 'Ver calendario y lista de citas','module'=>'citas'],

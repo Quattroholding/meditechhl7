@@ -16,7 +16,7 @@
                 <div class="login-wrapper">
                     <div class="loginbox">
                         <div class="login-right">
-                            <div class="login-right-wrap">
+                            <div class="login-right-wrap" x-data>
                                 <div class="account-logo">
                                     <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
                                 </div>
@@ -56,9 +56,9 @@
                                     </div>
                                     <div class="forgotpass">
                                         <div class="remember-me">
-                                            <x-input-label class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
-                                                <a href="javascript:;">&nbsp {{__('Terminos de Servicios')}} </a>&nbsp y <a
-                                                    href="javascript:;">&nbsp {{__('Politicas de Privacidad')}} </a>
+                                            <x-input-label name="remember-me"  id="remember-me" class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
+                                                <a href="javascript:;" x-on:click="$dispatch('open-modal', 'terms-privacy')">&nbsp {{__('Terminos de Servicios')}} </a>&nbsp y <a
+                                                    href="javascript:;" x-on:click="$dispatch('open-modal', 'terms-privacy')">&nbsp {{__('Politicas de Privacidad')}} </a>
                                                 <input type="checkbox" name="terms_and_privacy">
                                                 <span class="checkmark"></span>
                                             </x-input-label>
@@ -82,7 +82,12 @@
             <!-- /Login Content -->
         </div>
     </div>
+
+    <!-- Terms and Privacy Modal -->
+    <x-terms-privacy-modal />
+
     @vite(['resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
         var password = document.getElementById('password');
         var passwordConfirmation = document.getElementById('confirm-password');
@@ -99,7 +104,7 @@
         }
 
         password.addEventListener('input', validatePasswords);
-        passwordConfirmation.addEventListener('input', validatePasswords);
+        /*passwordConfirmation.addEventListener('input', validatePasswords);
 
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
             if (password.value !== passwordConfirmation.value) {
@@ -108,6 +113,6 @@
             } else {
                 passwordError.textContent = '';
             }
-        });
+        });*/
     </script>
 </x-guest-layout>

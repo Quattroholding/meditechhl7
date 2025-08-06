@@ -82,7 +82,7 @@ class PatientController extends Controller
             'phone' => 'required',
             'full_phone' => 'required',
             'password' => "required",
-            'terms_and_privacy' => "required"
+            'terms_and_privacy' => "required|accepted"
         ]);
 
         // Verificar si el correo ya está registrado
@@ -90,7 +90,7 @@ class PatientController extends Controller
 
         if (!empty($email_validation)) {
             // El correo ya está registrado
-            session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+            session()->flash('message.error', 'Este correo ya se encuentra registrado, por favor inicie sesión');
             return redirect('/login');
         }
 
@@ -191,7 +191,7 @@ class PatientController extends Controller
         $user->first_name = $request->given_name;
         $user->last_name = $request->family_name;
         $user->email = $request->email;
-        
+
         if($user->save()){
         if($model->save()){
             if($request->file('image')){

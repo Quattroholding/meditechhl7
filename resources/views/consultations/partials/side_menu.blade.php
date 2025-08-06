@@ -1,14 +1,17 @@
 <div class="theme-settings22">
-    <div class="patient-information-btn" style="background: rgb(45, 59, 165);">
-        <div class=""
-             type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$patient_id}}" aria-controls="offcanvasRight">Ver Informacion del paciente
-        </div>
+    <div class="patient-information-btn" style="background: rgb(45, 59, 165);"
+         type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$patient_id}}" aria-controls="offcanvasRight"
+         role="button" tabindex="0">
+
+        Ver Información del Paciente
     </div>
 </div>
-<div class="consultation-close-menu" onclick="change_menu_visibility()">
-    CERRAR MENÚ
+<div class="consultation-close-menu" onclick="change_menu_visibility()"
+     role="button" tabindex="0" aria-label="Toggle menu visibility">
+    <i class="fas fa-times me-1"></i>
+    <span class="menu-text">CERRAR MENÚ</span>
 </div>
-<div class="menu-right">
+<div class="menu-right" role="navigation" aria-label="Consultation sections menu">
 
     @php $i=0; @endphp
     @foreach($secciones as $k=>$v)

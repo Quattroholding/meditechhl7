@@ -1,6 +1,4 @@
-<?php $page = 'forgot-password'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-guest-layout>
     <div class="container-fluid px-0">
         <div class="row">
             <!-- Login logo -->
@@ -12,7 +10,6 @@
                 </div>
             </div>
             <!-- /Login logo -->
-
             <!-- Login Content -->
             <div class="col-lg-6 login-wrap-bg">
                 <div class="login-wrapper">
@@ -23,13 +20,9 @@
                                    <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
                                 </div>
                                 <!-- Form -->
+                                @include('partials.message')
                                 <form method="POST" enctype="multipart/form-data" action="{{ route('password.email') }}">
                                     @csrf
-                                    @if(session('message.success'))
-                                        <div class="alert alert-success">
-                                            {{ session('message.success') }}
-                                        </div>
-                                    @endif
                                     <div class="input-block local-forms">
                                         <label>Email <span class="login-danger">*</span></label>
                                         <x-text-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" autofocus/>
@@ -40,34 +33,15 @@
                                     </div>
                                 </form>
                                 <!-- /Form -->
-
                                 <div class="next-sign">
                                     <p class="account-subtitle">{{__('¿ Ya tiene una cuenta ?')}} <a href="{{ url('login') }}">{{__('Ingresar')}}</a></p>
-                                    {{--}}
-                                    <!-- Social Login -->
-                                    <div class="social-login">
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}"
-                                                alt=""></a>
-                                        <a href="javascript:;"><img
-                                                src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}"
-                                                alt=""></a>
-                                    </div>
-                                    <!-- /Social Login -->
-                                    {{--}}
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- /Login Content -->
-
         </div>
     </div>
-@endsection
+</x-guest-layout>

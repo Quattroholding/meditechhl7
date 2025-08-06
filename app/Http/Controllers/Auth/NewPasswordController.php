@@ -60,11 +60,10 @@ class NewPasswordController extends Controller
                     : back()->withInput($request->only('email'))
                         ->withErrors(['email' => __($status)]);*/
        if ($status == Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('message', 'Su contraseña ha sido reestablecida con éxito, puede iniciar sesión');
+            return redirect()->route('login')->with('message.success', 'Su contraseña ha sido reestablecida con éxito, puede iniciar sesión');
         }else {
-        return back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
-                    }          
+            return back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
+        }
 
     }
 }

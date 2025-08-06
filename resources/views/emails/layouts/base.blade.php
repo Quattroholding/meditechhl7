@@ -21,7 +21,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background: {{ $headerColor ?? '#2E37A4' }};
+            background: {{ $headerColor ?? '#0c9547' }};
             color: white;
             padding: 40px 30px;
             text-align: center;
@@ -104,7 +104,7 @@
         }
         .btn {
             display: inline-block;
-            background: {{ $buttonColor ?? '#2E37A4' }};
+            background: {{ $buttonColor ?? '#0c9547' }};
             color: white;
             padding: 15px 30px;
             text-decoration: none;

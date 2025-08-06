@@ -197,6 +197,9 @@
                         @can('settings.create_working_hour_user')
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
                         @endcan
+                        @can('settings.signature_and_seal')
+                            <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcanany

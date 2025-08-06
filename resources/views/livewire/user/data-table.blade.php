@@ -55,7 +55,7 @@
                                     <td data-column="roles" data-priority="4" data-label="{{__('user.roles')}}">
                                         <span class="cell-content">
                                             @foreach($user->roles as $role)
-                                                <span class="badge me-1  @if($role->id==2) bg-primary @elseif($role->id==3) bg-success @elseif($role->id==5) bg-warning @endif">
+                                                <span class="badge me-1  @if($role->id==2) bg-primary @elseif($role->id==3) bg-success @elseif($role->id==4) bg-info @elseif($role->id==5) bg-warning @endif">
                                                     {{ $role->name }}
                                                 </span>
                                             @endforeach
