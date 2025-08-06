@@ -15,7 +15,7 @@ class BranchScope implements Scope
     {
         if(auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {  // el doctor solo ve los clientes que tiene asociados
             $builder->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
-        }elseif(auth()->user()->hasRole('admin client')) {  // el doctor solo ve los clientes que tiene asociados
+        }elseif(auth()->user() && auth()->user()->hasRole('admin client')) {  // el doctor solo ve los clientes que tiene asociados
                $builder->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
 
 

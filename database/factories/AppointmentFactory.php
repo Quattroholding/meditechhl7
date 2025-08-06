@@ -58,45 +58,53 @@ class AppointmentFactory extends Factory
 
         $clientId = $practitioner->user->default_client_id;
 
-        $brach = Branch::whereClientId($clientId)->first();
+        $branch = Branch::whereClientId($clientId)->first();
 
-        $consultingRoomId = $brach->consultingRooms()->inRandomOrder()->take(1)->first()->id;
+        if($branch){
 
-        return [
-            'fhir_id' => 'appointment-' . Str::uuid(),
-            'patient_id' =>$patient->id,
-            'practitioner_id' =>$practitioner->id,
-            'identifier' => 'APT-' . $this->faker->unique()->numerify('#######'),
-            'status' => $this->faker->randomElement([
-                'proposed',
-                'pending',
-                'booked',
-                'arrived',
-                'fulfilled',
-                'cancelled',
-                'noshow'
-            ]),
-            'service_type' => $this->faker->randomElement($serviceTypes),
-            'description' => $this->faker->sentence,
-            'start' => $startDate,
-            'end' => $endDate,
-            'minutes_duration' => $duration,
-            'consulting_room_id'=>$consultingRoomId,
-            'medical_speciality_id'=>$specility_id,
-            'client_id'=>$clientId,
-            'participant' => json_encode([
-                [
-                    'actor' => 'Patient/' . $patient->fhir_id,
-                    'required' => 'required',
-                    'status' => 'accepted'
-                ],
-                [
-                    'actor' => 'Practitioner/' . $practitioner->fhir_id,
-                    'required' => 'required',
-                    'status' => 'accepted'
-                ]
-            ]),
-        ];
+            if( $branch->consultingRooms()->inRandomOrder()->take(1)->first()){
+
+                $consultingRoomId = $branch->consultingRooms()->inRandomOrder()->take(1)->first()->id;
+
+                return [
+                    'fhir_id' => 'appointment-' . Str::uuid(),
+                    'patient_id' =>$patient->id,
+                    'practitioner_id' =>$practitioner->id,
+                    'identifier' => 'APT-' . $this->faker->unique()->numerify('#######'),
+                    'status' => $this->faker->randomElement([
+                        'proposed',
+                        'pending',
+                        'booked',
+                        'arrived',
+                        'fulfilled',
+                        'cancelled',
+                        'noshow'
+                    ]),
+                    'service_type' => $this->faker->randomElement($serviceTypes),
+                    'description' => $this->faker->sentence,
+                    'start' => $startDate,
+                    'end' => $endDate,
+                    'minutes_duration' => $duration,
+                    'consulting_room_id'=>$consultingRoomId,
+                    'medical_speciality_id'=>$specility_id,
+                    'client_id'=>$clientId,
+                    'participant' => json_encode([
+                        [
+                            'actor' => 'Patient/' . $patient->fhir_id,
+                            'required' => 'required',
+                            'status' => 'accepted'
+                        ],
+                        [
+                            'actor' => 'Practitioner/' . $practitioner->fhir_id,
+                            'required' => 'required',
+                            'status' => 'accepted'
+                        ]
+                    ]),
+                ];
+            }
+
+        }
+
     }
 
     public function configure()

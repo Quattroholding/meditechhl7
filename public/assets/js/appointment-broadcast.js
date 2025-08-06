@@ -47,8 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 El paciente ha sido registrado y está esperando para iniciar la consulta.
                             </div>
                         </div>
-                        <div class="text-end" style="margin-top: 20px; display: flex; gap: 10px;">
+                        <div class="text-end" style="margin-top: 20px; display: flex; gap: 10px;grid-auto-flow: row">
 
+                            <button type="button" class="btn btn-primary" onclick="goToConsultation(${appointmentData.id})">
+                                <i class="fas fa-stethoscope me-2"></i>Iniciar Consulta
+                            </button>
                             <button type="button" class="btn btn-secondary" onclick="dismissAppointmentPopup()">
                                 <i class="fas fa-times me-2"></i>Cerrar
                             </button>
@@ -57,9 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fas fa-clock me-2"></i>Recordar en 5 min
                             </button>
 
-                            <button type="button" class="btn btn-primary" onclick="goToConsultation(${appointmentData.id})">
-                                <i class="fas fa-stethoscope me-2"></i>Iniciar Consulta
-                            </button>
+
                         </div>
                     </div>
             </div>
