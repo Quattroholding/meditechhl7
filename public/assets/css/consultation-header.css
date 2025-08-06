@@ -1,0 +1,279 @@
+/* Consultation Header Responsive Styles */
+
+.consultation-ficha {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.consultation-ficha-contenido {
+    border-radius: 8px;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    color: #003b62;
+    padding: 15px;
+    font-size: 14px;
+    display: grid;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.consultation-ficha-contenido:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+/* Header section with consultation info */
+.consultation-ficha-contenido:first-child {
+    background: linear-gradient(135deg, #003b62 0%, #2563eb 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.consultation-ficha-contenido:first-child b {
+    color: #93c5fd;
+}
+
+/* Patient info section */
+.consultation-ficha-contenido:nth-child(2) {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    border-left: 4px solid #10b981;
+}
+
+/* Doctor info section */
+.consultation-ficha-contenido:last-child {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef7cd 100%);
+    border-left: 4px solid #f59e0b;
+}
+
+.consultation-ficha-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.consultation-ficha-item:last-child {
+    border-bottom: none;
+}
+
+.consultation-ficha-item b {
+    font-weight: 600;
+    min-width: 120px;
+    display: inline-block;
+}
+
+.consultation-ficha-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+/* Profile name styling */
+.profile-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Responsive breakpoints */
+
+/* Tablet styles */
+@media (min-width: 768px) {
+    .consultation-ficha {
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 15px;
+    }
+    
+    .consultation-ficha-contenido {
+        padding: 20px;
+        font-size: 15px;
+    }
+    
+    .consultation-ficha-item b {
+        min-width: 140px;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+    .consultation-ficha {
+        grid-template-columns: 300px 1fr 300px;
+        gap: 20px;
+        max-width: 1200px;
+    }
+    
+    .consultation-ficha-contenido {
+        padding: 25px;
+    }
+    
+    .consultation-ficha-item {
+        padding: 6px 0;
+    }
+}
+
+/* Large desktop */
+@media (min-width: 1400px) {
+    .consultation-ficha {
+        grid-template-columns: 350px 1fr 350px;
+    }
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+    .consultation-ficha {
+        margin: 10px;
+        gap: 8px;
+    }
+    
+    .consultation-ficha-contenido {
+        padding: 12px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+    
+    .consultation-ficha-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 8px 0;
+    }
+    
+    .consultation-ficha-item b {
+        min-width: auto;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+    }
+    
+    /* Stack layout for better mobile UX */
+    .consultation-ficha-contenido:nth-child(2) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    
+    .consultation-ficha-contenido:nth-child(2) .consultation-ficha-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 8px;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+    .consultation-ficha {
+        margin: 5px;
+    }
+    
+    .consultation-ficha-contenido {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .consultation-ficha-contenido:nth-child(2) {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .consultation-ficha {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        break-inside: avoid;
+    }
+    
+    .consultation-ficha-contenido {
+        background: white !important;
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+        padding: 15px;
+    }
+    
+    .consultation-ficha-contenido:hover {
+        transform: none;
+        box-shadow: none !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .consultation-ficha-contenido {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        color: #f3f4f6;
+        border-color: #374151;
+    }
+    
+    .consultation-ficha-contenido:nth-child(2) {
+        background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+        border-left-color: #10b981;
+    }
+    
+    .consultation-ficha-contenido:last-child {
+        background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+        border-left-color: #f59e0b;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .consultation-ficha-contenido {
+        border: 2px solid #000;
+        background: #fff;
+        color: #000;
+    }
+    
+    .consultation-ficha-contenido:first-child {
+        background: #000;
+        color: #fff;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .consultation-ficha-contenido {
+        transition: none;
+    }
+    
+    .consultation-ficha-contenido:hover {
+        transform: none;
+    }
+}
+
+/* Focus states for accessibility */
+.consultation-ficha-contenido:focus-within {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* Animation for loading */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.consultation-ficha-contenido {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.consultation-ficha-contenido:nth-child(1) { animation-delay: 0s; }
+.consultation-ficha-contenido:nth-child(2) { animation-delay: 0.1s; }
+.consultation-ficha-contenido:nth-child(3) { animation-delay: 0.2s; }
