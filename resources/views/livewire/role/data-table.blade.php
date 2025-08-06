@@ -30,30 +30,51 @@
     </div>
     <!-- /Table Header -->
     <div class="table-responsive">
-        <table class="table border-0 custom-table comman-table mb-0">
+        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
             <thead>
                 <tr>
-                    <th><x-table-sort-button title="ID" columnName="id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Nombre')}}" columnName="name" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Usuarios')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Permisos')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th data-column="id" data-priority="1">
+                        <x-table-sort-button title="ID" columnName="id" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="name" data-priority="2">
+                        <x-table-sort-button title="{{__('Nombre')}}" columnName="name" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="users_count" data-priority="3">
+                        <x-table-sort-button title="{{__('Usuarios')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="permissions_count" data-priority="4">
+                        <x-table-sort-button title="{{__('Permisos')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="acciones" data-priority="1" class="text-end">
+                        <x-table-sort-button title="{{__('Acciones')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($roles as $role)
-                    <tr>
-                        <td>{{ $role->id }}</td>
-                        <td>
-                            <strong>{{ $role->name }}</strong>
+                    <tr class="table-row" data-row-id="{{ $role->id }}">
+                        <td data-column="id" data-priority="1" data-label="ID">
+                            <span class="row-expand-btn d-none me-2" onclick="toggleRowDetails(this)">
+                                <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
+                            </span>
+                            <span class="cell-content">{{ $role->id }}</span>
                         </td>
-                        <td>
-                            <span class="badge bg-info">{{ $role->users_count }}</span>
+                        <td data-column="name" data-priority="2" data-label="{{__('Nombre')}}">
+                            <span class="cell-content">
+                                <strong>{{ $role->name }}</strong>
+                            </span>
                         </td>
-                        <td>
-                            <span class="badge bg-success">{{ $role->permissions->count() }}</span>
+                        <td data-column="users_count" data-priority="3" data-label="{{__('Usuarios')}}">
+                            <span class="cell-content">
+                                <span class="badge bg-info">{{ $role->users_count }}</span>
+                            </span>
                         </td>
-                        <td  class="text-end">
+                        <td data-column="permissions_count" data-priority="4" data-label="{{__('Permisos')}}">
+                            <span class="cell-content">
+                                <span class="badge bg-success">{{ $role->permissions->count() }}</span>
+                            </span>
+                        </td>
+                        <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                             <button
                                 class="btn btn-sm btn-warning text-white"
                                 data-bs-toggle="modal"
@@ -69,6 +90,14 @@
                             >
                                 <i class="fas fa-trash"></i>
                             </button>
+                        </td>
+                    </tr>
+                    <!-- Hidden row for expanded details -->
+                    <tr class="row-details d-none" data-parent-row="{{ $role->id }}">
+                        <td colspan="5" class="p-3 bg-light">
+                            <div class="row-details-content">
+                                <!-- Details will be populated by JavaScript -->
+                            </div>
                         </td>
                     </tr>
                 @empty

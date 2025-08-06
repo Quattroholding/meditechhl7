@@ -24,34 +24,59 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table border-0 custom-table comman-table mb-0">
+        <table class="table border-0 custom-table comman-table mb-0 responsive-table">
             <thead>
                 <tr>
-                    <th><x-table-sort-button title="ID" columnName="id" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Nombre')}}" columnName="name" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Descripción')}}" columnName="description" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Modulo')}}" columnName="module" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th><x-table-sort-button title="{{__('Roles')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
-                    <th class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                    <th data-column="id" data-priority="1">
+                        <x-table-sort-button title="ID" columnName="id" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="name" data-priority="2">
+                        <x-table-sort-button title="{{__('Nombre')}}" columnName="name" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="description" data-priority="3">
+                        <x-table-sort-button title="{{__('Descripción')}}" columnName="description" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="module" data-priority="4">
+                        <x-table-sort-button title="{{__('Modulo')}}" columnName="module" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="roles" data-priority="5">
+                        <x-table-sort-button title="{{__('Roles')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
+                    <th data-column="acciones" data-priority="1" class="text-end">
+                        <x-table-sort-button title="{{__('Acciones')}}" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($permissions as $permission)
-                    <tr>
-                        <td>{{ $permission->id }}</td>
-                        <td>
-                            <strong>{{ $permission->name }}</strong>
+                    <tr class="table-row" data-row-id="{{ $permission->id }}">
+                        <td data-column="id" data-priority="1" data-label="ID">
+                            <span class="row-expand-btn d-none me-2" onclick="toggleRowDetails(this)">
+                                <i class="fas fa-plus-circle text-primary" style="cursor: pointer;"></i>
+                            </span>
+                            <span class="cell-content">{{ $permission->id }}</span>
                         </td>
-                        <td>
-                            {{ $permission->description ?? 'Sin descripción' }}
+                        <td data-column="name" data-priority="2" data-label="{{__('Nombre')}}">
+                            <span class="cell-content">
+                                <strong>{{ $permission->name }}</strong>
+                            </span>
                         </td>
-                        <td>
-                            {{ $permission->module ?? 'Sin modulo' }}
+                        <td data-column="description" data-priority="3" data-label="{{__('Descripción')}}">
+                            <span class="cell-content">
+                                {{ $permission->description ?? 'Sin descripción' }}
+                            </span>
                         </td>
-                        <td>
-                            <span class="badge bg-info">{{ $permission->roles_count }}</span>
+                        <td data-column="module" data-priority="4" data-label="{{__('Modulo')}}">
+                            <span class="cell-content">
+                                {{ $permission->module ?? 'Sin modulo' }}
+                            </span>
                         </td>
-                        <td class="text-end">
+                        <td data-column="roles" data-priority="5" data-label="{{__('Roles')}}">
+                            <span class="cell-content">
+                                <span class="badge bg-info">{{ $permission->roles_count }}</span>
+                            </span>
+                        </td>
+                        <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                             <button
                                 class="btn btn-sm btn-warning text-white"
                                 data-bs-toggle="modal"
@@ -69,9 +94,17 @@
                             </button>
                         </td>
                     </tr>
+                    <!-- Hidden row for expanded details -->
+                    <tr class="row-details d-none" data-parent-row="{{ $permission->id }}">
+                        <td colspan="6" class="p-3 bg-light">
+                            <div class="row-details-content">
+                                <!-- Details will be populated by JavaScript -->
+                            </div>
+                        </td>
+                    </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">
+                        <td colspan="6" class="text-center text-muted">
                             No se encontraron permisos
                         </td>
                     </tr>

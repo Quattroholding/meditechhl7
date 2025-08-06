@@ -73,6 +73,9 @@
 
 <script src="{{ URL::asset('/assets/js/custom.js?time='.time()) }}"></script>
 
+<!-- Responsive Table JavaScript -->
+<script src="{{ asset('assets/js/responsive-table.js') }}"></script>
+
 <!-- Appointment Broadcast Listener -->
 @if(auth()->user()->hasRole('doctor'))
     <script>

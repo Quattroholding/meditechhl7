@@ -13,6 +13,8 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @include('layout.partials.head')
     @yield('css')
+    <!-- Responsive Table CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive-table.css') }}">
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/652b8e06e9.js" crossorigin="anonymous"></script>
     @yield('scripts')
@@ -57,6 +59,7 @@
     @component('components.modal-popup') @endcomponent
     <div class="sidebar-overlay" data-reff=""></div>
     @include('layout.partials.footer-scripts')
+
     @stack('scripts')
 </body>
 </html>
