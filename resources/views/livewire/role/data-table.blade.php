@@ -76,7 +76,7 @@
                         </td>
                         <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                             <button
-                                class="btn btn-sm btn-warning"
+                                class="btn btn-sm btn-warning text-white"
                                 data-bs-toggle="modal"
                                 data-bs-target="#roleModal"
                                 wire:click="$dispatch('open-role-modal', {roleId: {{ $role->id }}})"

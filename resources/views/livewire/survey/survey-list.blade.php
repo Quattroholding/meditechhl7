@@ -49,10 +49,10 @@
                         <td>{{ $survey->created_at }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('surveys.show', $survey->id) }}" class="btn btn-info btn-sm">
+                                <a href="{{ route('surveys.show', $survey->id) }}" class="btn btn-info btn-sm text-white">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a href="{{ route('surveys.edit', $survey->id) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('surveys.edit', $survey->id) }}" class="btn btn-warning btn-sm text-white">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <button wire:click="delete({{ $survey->id }})"

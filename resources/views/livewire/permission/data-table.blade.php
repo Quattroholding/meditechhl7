@@ -78,7 +78,7 @@
                         </td>
                         <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                             <button
-                                class="btn btn-sm btn-warning"
+                                class="btn btn-sm btn-warning text-white"
                                 data-bs-toggle="modal"
                                 data-bs-target="#permissionModal"
                                 wire:click="$dispatch('open-permission-modal', {permissionId: {{ $permission->id }}})"
