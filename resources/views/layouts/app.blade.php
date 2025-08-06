@@ -15,6 +15,7 @@
     @yield('css')
     <!-- Responsive Table CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-table.css') }}">
+
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/652b8e06e9.js" crossorigin="anonymous"></script>
     @yield('scripts')
@@ -38,19 +39,6 @@
                         @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
                             @include('layout.partials.header')
                             @include('layout.partials.sidebar')
-                            {{--}}
-                            @if(auth()->user()->hasRole('doctor'))
-                                @include('layout.partials.sidebar-doctor')
-                            @elseif(auth()->user()->hasRole('admin client'))
-                                @include('layout.partials.sidebar-adminclient')
-                            @elseif(auth()->user()->hasRole('asistente'))
-                                @include('layout.partials.sidebar-asistente')
-                            @elseif(auth()->user()->hasRole('paciente'))
-                                @include('layout.partials.sidebar-paciente')
-                            @elseif(auth()->user()->hasRole('admin'))
-                                @include('layout.partials.sidebar')
-                            @endif
-                            {{--}}
                         @endif
                       {{$slot}}
                     </div>
