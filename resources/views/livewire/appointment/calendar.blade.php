@@ -30,7 +30,14 @@
                 <button wire:click="goToToday" class="btn btn-secondary" style="margin-left: 10px;">Hoy</button>
                 {{--}}
             </div>
-            <button wire:click="openModal" class="btn btn-primary btn-fonts">+ Nueva Cita</button>
+            <div class="view-buttons">
+                <button wire:click="openModal" class="btn btn-primary btn-fonts">
+                   <i class="fa fa-calendar"></i> Nueva Cita
+                </button>
+                <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary btn-fonts">
+                    <i class="fa fa-user-injured"></i> Registrar Paciente
+                </button>
+            </div>
         </div>
         <!-- Estadísticas -->
         {{--}}
@@ -157,6 +164,8 @@
                                      :title="$modalTitle"
                                      :appointment_date="$appointment_date"
                                      :appointment_time="$appointment_time"/>
+
+    @include('patients.modals.create',['name'=>'create_patient'])
 
     <!-- Modal de Configuración de Tiempo -->
     @if($showTimeBlockConfig)

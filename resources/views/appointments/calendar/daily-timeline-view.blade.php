@@ -542,9 +542,9 @@
             }
 
         }
-        
+
 @media (max-width: 380px) {
-    
+
     .timeline-date{
         font-size: 17px;
     }
@@ -557,7 +557,7 @@
     .resp-icon{
         font-size: 59px;
     }
- 
+
 }
 @media (max-width: 332px) {
 
@@ -569,7 +569,7 @@
     }
     .det-cal{
         font-size: 11px;
-    }  
+    }
     .resp-icon{
         font-size: 50px;
     }
@@ -822,9 +822,11 @@
                     No hay citas programadas para este día.
                 @endif
             </p>
-            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"
-                    class="btn btn-primary desc-cal" style="margin-top: 20px;">
-                + Programar Nueva Cita
+            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"  class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fa fa-calendar desc-cal"></i> Programar Nueva Cita
+            </button>
+            <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary" style="margin-top: 20px;">
+                <i class="fa fa-user-injured"></i> Registrar Paciente
             </button>
         </div>
     @endif
