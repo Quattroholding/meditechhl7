@@ -542,6 +542,40 @@
             }
 
         }
+        
+@media (max-width: 380px) {
+    
+    .timeline-date{
+        font-size: 17px;
+    }
+    .desc-cal{
+        font-size: 15px;
+    }
+    .det-cal{
+        font-size: 13px;
+    }
+    .resp-icon{
+        font-size: 59px;
+    }
+ 
+}
+@media (max-width: 332px) {
+
+    .timeline-date{
+        font-size: 15px;
+    }
+    .desc-cal{
+        font-size: 13px;
+    }
+    .det-cal{
+        font-size: 11px;
+    }  
+    .resp-icon{
+        font-size: 50px;
+    }
+
+}
+
     </style>
 
     <!-- Header del Timeline -->
@@ -551,13 +585,13 @@
                 {{ $currentPeriod }}
             </div>
             @if($calendarData['isToday'])
-                <div style="font-size: 14px; opacity: 0.9; margin-top: 5px; display: flex; align-items: center; gap: 10px;">
+                <div class="desc-cal" style="font-size: 14px; opacity: 0.9; margin-top: 5px; display: flex; align-items: center; gap: 10px;">
                     📅 Hoy
-                    <div class="time-display" x-text="currentTime">{{ now()->format('H:i:s') }}</div>
+                    <div class="time-display desc-cal" x-text="currentTime">{{ now()->format('H:i:s') }}</div>
                 </div>
             @endif
         </div>
-        <div class="timeline-stats">
+        <div class="timeline-stats det-cal">
             <div>{{ count($calendarData['appointments']) }} citas programadas</div>
             @if($calendarData['nextAppointment'])
                 <div style="margin-top: 5px; font-weight: 600;">
@@ -593,7 +627,7 @@
 
     <!-- Leyenda -->
     <div class="timeline-legend">
-        <div class="legend-items">
+        <div class="legend-items det-cal">
             <div class="legend-item">
                 <div class="legend-dot" style="background: #007bff; box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);"></div>
                 <span>Próxima Cita</span>
@@ -778,21 +812,19 @@
         </div>
     @else
         <!-- Estado vacío -->
-        <div class="empty-timeline" x-data>
-            <div class="empty-timeline-icon">📅</div>
-            <h3 style="color: #7f8c8d; margin-bottom: 10px;">No hay citas programadas</h3>
-            <p style="color: #95a5a6;">
+        <div class="empty-timeline">
+            <div class="empty-timeline-icon resp-icon">📅</div>
+            <h3 style="color: #7f8c8d; margin-bottom: 10px;" class="timeline-date">No hay citas programadas</h3>
+            <p style="color: #95a5a6;" class="det-cal">
                 @if($calendarData['isToday'])
                     ¡Perfecto! No tienes citas para hoy.
                 @else
                     No hay citas programadas para este día.
                 @endif
             </p>
-            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"  class="btn btn-primary" style="margin-top: 20px;">
-                <i class="fa fa-calendar"></i> Programar Nueva Cita
-            </button>
-            <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-edit" style="margin-top: 20px;">
-                <i class="fa fa-user-injured"></i> Registrar Paciente
+            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"
+                    class="btn btn-primary desc-cal" style="margin-top: 20px;">
+                + Programar Nueva Cita
             </button>
         </div>
     @endif
