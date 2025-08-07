@@ -38,6 +38,11 @@ class DataTable extends Component
         $this->title=$title;
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {

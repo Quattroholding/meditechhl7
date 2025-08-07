@@ -560,7 +560,7 @@ table.table td h2 span {
 .pagination > li > span {
 	color:rgb(12,149,71,1);
 	font-size: 14px;
-    padding: 5px 15px !important;
+    padding: 7.5px 15px !important;
 }
 .page-item.active .page-link {
 	background-color:rgb(12,149,71,1);

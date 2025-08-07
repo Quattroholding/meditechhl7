@@ -59,6 +59,11 @@ class DataTable extends Component
     }else{session()->flash('message.error', 'No se pudo guardar la nota porque no está autorizado para hacer este procedimiento.');}
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -83,7 +88,7 @@ class DataTable extends Component
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->pagination);
+            ->paginate($this->pagination, ['*'], 'page');
 
         return view('livewire.patient.data-table', [ 'data' => $data, ]);
     }

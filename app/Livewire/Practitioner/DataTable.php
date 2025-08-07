@@ -29,6 +29,12 @@ class DataTable extends Component
             $this->sortDirection = 'asc';
         }
     }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $data = Practitioner::selectRaw('practitioners.*')

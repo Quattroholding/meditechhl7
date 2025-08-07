@@ -25,6 +25,10 @@ class DataTable extends Component
         'search' => ['except' => ''],
     ];
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
 
     public function sortBy($field)
     {

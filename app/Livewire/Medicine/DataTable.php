@@ -29,6 +29,11 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $data = Medicine::query()

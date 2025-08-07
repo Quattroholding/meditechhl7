@@ -52,6 +52,11 @@ class DataTable extends Component
         }
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         $data = Encounter::selectRaw('encounters.*')
