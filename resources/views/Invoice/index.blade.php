@@ -4,7 +4,7 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    {{__('invoice.invoices')}}
+                    {{__('account.title')}}
                 @endslot
                 @slot('li_1')
                     {{__('generic.list')}}   {{__('invoice.invoices')}}

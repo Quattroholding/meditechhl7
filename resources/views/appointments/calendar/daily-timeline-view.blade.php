@@ -778,7 +778,7 @@
         </div>
     @else
         <!-- Estado vacío -->
-        <div class="empty-timeline">
+        <div class="empty-timeline" x-data>
             <div class="empty-timeline-icon">📅</div>
             <h3 style="color: #7f8c8d; margin-bottom: 10px;">No hay citas programadas</h3>
             <p style="color: #95a5a6;">
@@ -788,9 +788,11 @@
                     No hay citas programadas para este día.
                 @endif
             </p>
-            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"
-                    class="btn btn-primary" style="margin-top: 20px;">
-                + Programar Nueva Cita
+            <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"  class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fa fa-calendar"></i> Programar Nueva Cita
+            </button>
+            <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-edit" style="margin-top: 20px;">
+                <i class="fa fa-user-injured"></i> Registrar Paciente
             </button>
         </div>
     @endif

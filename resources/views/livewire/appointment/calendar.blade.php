@@ -11,11 +11,11 @@
                     {{__('Mensual')}}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
-                    {{--}}
+
                 <button wire:click="changeView('weekly')" class="btn {{ $currentView === 'weekly' ? 'btn-primary active' : 'btn-secondary' }}">
                     Semanal
                 </button>
-                {{--}}
+
                 <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }}">
                     {{__('Hoy')}}
                 </button>
@@ -30,7 +30,11 @@
                 <button wire:click="goToToday" class="btn btn-secondary" style="margin-left: 10px;">Hoy</button>
                 {{--}}
             </div>
-            <button wire:click="openModal" class="btn btn-primary">+ Nueva Cita</button>
+            <div class="view-buttons">
+                <button wire:click="openModal" class="btn btn-primary text-end"><i class="fa fa-calendar"></i> Nueva Cita</button>
+                <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-edit"> <i class="fa fa-user-injured"></i> Registrar Paciente </button>
+            </div>
+
         </div>
         <!-- Estadísticas -->
         {{--}}
@@ -84,12 +88,12 @@
             <div>
                 <button wire:click="exportFHIR" class="btn btn-secondary">Exportar FHIR</button>
             </div>
-            {{--}}
             <div class="col-xl-3 col-md-6 text-end">
                 <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full">
                     ⚙️ Configurar Bloques
                 </button>
             </div>
+           {{--}}
         </div>
 
         <!-- NUEVA SECCIÓN: Configuración de Bloques de Tiempo -->
@@ -157,6 +161,10 @@
                                      :title="$modalTitle"
                                      :appointment_date="$appointment_date"
                                      :appointment_time="$appointment_time"/>
+
+
+
+    @include('patients.modals.create',['name'=>'create_patient'])
 
     <!-- Modal de Configuración de Tiempo -->
     @if($showTimeBlockConfig)

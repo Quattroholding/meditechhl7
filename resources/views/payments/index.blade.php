@@ -4,10 +4,10 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    Accounts
+                    {{__('account.title')}}
                 @endslot
                 @slot('li_1')
-                    Payments
+                        {{__('generic.list')}}  {{__('account.payments')}}
                 @endslot
             @endcomponent
             <!-- /Page Header -->

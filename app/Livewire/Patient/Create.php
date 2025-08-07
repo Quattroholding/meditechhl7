@@ -120,7 +120,7 @@ class Create extends Component
         $email_validation = User::where('email', $this->email)->first();
         if (!empty($email_validation)) {
             // El correo ya está registrado
-            session()->flash('message', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+            session()->flash('message.error', 'Este correo ya se encuentra registrado.');
             return back();
         }
 
@@ -165,7 +165,10 @@ class Create extends Component
             ]);
             $client = Client::find($this->client_id);
             session()->flash('message.success', 'Paciente registrado exitosamente.');
-
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: 'Paciente registrado exitosamente.',
+            );
             $registrationData=[
                 'username'=>$model->email,
                 'password'=>$this->password,
@@ -176,6 +179,10 @@ class Create extends Component
 
         }else{
             session()->flash('message.error', 'Hubo un error y no se pudo actualizar el paciente.');
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Hubo un error y no se pudo actualizar el paciente.',
+            );
         }
 
     }
