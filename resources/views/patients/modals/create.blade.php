@@ -1,4 +1,4 @@
-<x-modal :name="$name" maxWidth="full_w" focusable>
+<x-modal :name="$name" maxWidth="2xl" focusable>
     <div class="bg-white rounded-lg h-full overflow-auto relative z-10">
         <div class="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-900">{{__('Registrar Paciente')}}</h2>
