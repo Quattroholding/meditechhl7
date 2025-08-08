@@ -75,7 +75,7 @@
                                 <div class="input-block local-forms">
                                     <x-input-label for="refills" :value="__('Meses de Refill')" />
                                     <select class="form-control" wire:change="updateField({{$m->id}},$event.target.value,'refills')">
-                                        <option value="">Sin Refill</option>
+                                        <option value="0">Sin Refill</option>
                                         @for($i=2;$i<6;$i++)
                                             <option value="{{$i}}" @if($m->refills==$i) selected @endif>{{$i}} meses</option>
                                         @endfor
@@ -98,6 +98,11 @@
         </table>
     @endif
     <div class="my-3"></div>
+    <div class="general-btn-small" wire:click="medical_request_history">
+        <div class="general-btn-small-text general-btn-small-text-a">Historial de Medicamentos</div>
+        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+    </div>
+    <p>&nbsp;</p>
     <div class="selector-field selector-field-on">
         @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
         <div style="width:100%;padding:20px;">
@@ -115,4 +120,7 @@
     </div>
 
    <div style="height:200px;">&nbsp;</div>
+
+   <!-- Componente del historial de medicamentos -->
+   <livewire:patient.medication-history />
 </div>

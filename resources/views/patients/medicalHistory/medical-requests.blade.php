@@ -3,6 +3,9 @@
         <div class="requests-grid" style="display: grid; gap: 20px;">
             @foreach($sectionData['types'] as $type=>$value)
                 @foreach($value as $request)
+                    <?php
+                        $encounter = $request->encounter()->withoutGlobalScope(\App\Models\Scopes\EncouterScope::class)->first();
+                    ?>
                     <div class="request-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease;">
                         <div class="request-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                             <div>
@@ -81,11 +84,12 @@
                                 </div>
                             </div>
                             <div style="text-align: right; font-size: 12px; color: #64748b;">
+
                                 <div><strong>Solicitado:</strong> {{ Carbon\Carbon::parse($request->created_at)->format('d/m/Y H:i') }}</div>
                                 @if($request->practitioner)
                                     <div><strong>Por:</strong> {{ $request->practitioner->name }}</div>
-                                    @if($request->encounter->medicalSpeciality)
-                                        <div><strong>Especialidad:</strong> {{ $request->encounter->medicalSpeciality->name }}</div>
+                                    @if($encounter->medicalSpeciality)
+                                        <div><strong>Especialidad:</strong> {{ $encounter->medicalSpeciality->name }}</div>
                                     @endif
                                 @endif
                             </div>

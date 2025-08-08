@@ -27,20 +27,30 @@ class MedicationRequests extends Component
     public $routes=[];
     public $saved = false;
 
+    protected $listeners = ['copyMedicationsToCurrentRecipe'];
+
     public function mount(){
         $this->encounter = Encounter::find($this->encounter_id);
 
-        $this->selectedLists = $this->encounter->medicationRequests()->get();
+        $this->getMedicationRequestsProperty();
+
+
+
+    }
+
+    public function getMedicationRequestsProperty()
+    {
+        $this->selectedLists = $this->encounter->medicationRequests()->orderBy('id','ASC')->get();
 
         foreach ($this->selectedLists as $sl){
-            $this->frecuencies[$sl->id] = $sl->frecuency;
+            $this->frecuencies[$sl->id] = $sl->frequency;
             $this->routes[$sl->id] = $sl->route;
             $this->durations[$sl->id] = $sl->duration;
             $this->quantitys[$sl->id] = $sl->quantity;
             $this->dosage_texts[$sl->id] = $sl->dosage_text;
         }
-
     }
+
     public function updatedQuery()
     {
         if (strlen($this->query) < 2) {
@@ -84,13 +94,19 @@ class MedicationRequests extends Component
         }
 
 
-        $this->selectedLists = $this->encounter->medicationRequests()->get();
+        $this->getMedicationRequestsProperty();
+
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($id){
         $this->encounter->medicationRequests()->whereId($id)->delete();
         $this->selectedLists = $this->encounter->referrals()->get();
-        $this->selectedLists = $this->encounter->medicationRequests()->get();
+        $this->getMedicationRequestsProperty();
+
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function updateField($id,$value,$field)
@@ -104,13 +120,16 @@ class MedicationRequests extends Component
         $dosage_instructions = $this->generateDosageInstruction($id);
 
         $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
-        $medicationRequest->$field = null;
-        $medicationRequest->$field = !empty(htmlspecialchars($value)) ?? htmlspecialchars($value) ;
+        //$medicationRequest->$field = null;
+        $medicationRequest->$field = $value;
         $medicationRequest->dosage_instruction =$dosage_instructions;
         $medicationRequest->dosage_text =$dosage_instructions['text'];
         $medicationRequest->save();
 
         $this->dosage_texts[$id] =$dosage_instructions['text'];
+
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     protected function generateDosageInstruction($id)
@@ -138,6 +157,66 @@ class MedicationRequests extends Component
             'frequency' => $frequency,
             'duration' => $duration
         ];
+    }
+
+    public function medical_request_history()
+    {
+        $this->dispatch('showMedicationHistory', $this->encounter->patient_id);
+    }
+
+    public function copyMedicationsToCurrentRecipe($selectedMedications)
+    {
+        $copiedCount = 0;
+
+        foreach ($selectedMedications as $medication) {
+            // Verificar si el medicamento ya existe en la receta actual
+            $existingMedication = $this->encounter->medicationRequests()
+                ->where('medication_id', $medication['medication_id'])
+                ->first();
+
+            if (!$existingMedication) {
+                // Crear nueva receta basada en la histórica
+                $newMedicationRequest = $this->encounter->medicationRequests()->create([
+                    'fhir_id' => 'medicationrequest-' . Str::uuid(),
+                    'identifier' => 'RX-' . fake()->unique()->numerify('#######'),
+                    'status' => 'active',
+                    'intent' => 'order',
+                    'medication_id' => $medication['medication_id'],
+                    'quantity' => $medication['quantity'],
+                    'frequency' => $medication['frequency'],
+                    'duration' => $medication['duration'],
+                    'route' => $medication['route'],
+                    'refills' => $medication['refills'],
+                    'dosage_text' => $medication['dosage_text'],
+                    'dosage_instruction' => $medication['dosage_instruction'],
+                    'valid_from' => now(),
+                    'valid_to' => now()->addDays(30),
+                    'patient_id' => $this->encounter->patient_id,
+                    'practitioner_id' => $this->encounter->practitioner_id,
+                ]);
+
+                // Actualizar los arrays locales para mostrar la información
+                $this->frecuencies[$newMedicationRequest->id] = $medication['frequency'];
+                $this->routes[$newMedicationRequest->id] = $medication['route'];
+                $this->durations[$newMedicationRequest->id] = $medication['duration'];
+                $this->quantitys[$newMedicationRequest->id] = $medication['quantity'];
+                $this->dosage_texts[$newMedicationRequest->id] = $medication['dosage_text'];
+
+                $copiedCount++;
+            }
+        }
+
+        // Actualizar la lista de medicamentos seleccionados
+        $this->selectedLists = $this->encounter->medicationRequests()->get();
+
+        if ($copiedCount > 0) {
+            session()->flash('message.success', "{$copiedCount} medicamento(s) copiado(s) exitosamente.");
+        } else {
+            session()->flash('message.info', 'Los medicamentos seleccionados ya están en la receta actual.');
+        }
+
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function render()

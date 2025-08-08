@@ -1,5 +1,5 @@
 <div>
-    @include('partials.message')
+
     @if($showModal)
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
             <div class="modal-content" wire:click.stop>

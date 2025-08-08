@@ -28,7 +28,7 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition();
+         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests();
 
     }
 
@@ -101,6 +101,51 @@ class FinishedButton extends Component
         }else{
             $this->messages[7]='- Al menos un diagnostico';
             return false;
+        }
+    }
+
+    public function validateMedicationRequests(){
+        $medicationRequests = $this->encounter->medicationRequests();
+        
+        // Si no hay medicamentos agregados, la validación pasa
+        if($medicationRequests->count() === 0) {
+            unset($this->messages[8]);
+            return true;
+        }
+        
+        $incompleMedications = [];
+        
+        foreach($medicationRequests->get() as $medication) {
+            $missingFields = [];
+            
+            if(empty($medication->route)) {
+                $missingFields[] = 'vía';
+            }
+            
+            if(empty($medication->frequency)) {
+                $missingFields[] = 'frecuencia';
+            }
+            
+            if(empty($medication->quantity)) {
+                $missingFields[] = 'cantidad';
+            }
+            
+            if(empty($medication->duration)) {
+                $missingFields[] = 'duración';
+            }
+            
+            if(!empty($missingFields)) {
+                $medicationName = $medication->medicine->full_name ?? 'Medicamento';
+                $incompleMedications[] = $medicationName . ' (' . implode(', ', $missingFields) . ')';
+            }
+        }
+        
+        if(!empty($incompleMedications)) {
+            $this->messages[8] = '- Medicamentos incompletos: ' . implode(', ', $incompleMedications);
+            return false;
+        } else {
+            unset($this->messages[8]);
+            return true;
         }
     }
 }
