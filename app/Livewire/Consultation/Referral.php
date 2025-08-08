@@ -89,11 +89,17 @@ class Referral extends Component
         $this->saved=true;
 
         $this->selectedLists = $this->encounter->referrals()->get();
+        
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($id){
         $this->encounter->referrals()->whereId($id)->delete();
         $this->selectedLists = $this->encounter->referrals()->get();
+        
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function updatedReason(){
@@ -109,6 +115,8 @@ class Referral extends Component
          sleep(1);
          $this->savedNota=true;
 
+         // Disparar evento para actualizar el estado del botón de finalizar
+         $this->dispatch('findFinishedButtonStatus');
      }
 
     public function setEspecialist($specialist,$referral_id)
@@ -119,6 +127,9 @@ class Referral extends Component
         $referral->save();
         sleep(1);
         $this->savedEspecialist=true;
+        
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function render()

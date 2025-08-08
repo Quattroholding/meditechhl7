@@ -28,7 +28,7 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests();
+         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
 
     }
 
@@ -145,6 +145,43 @@ class FinishedButton extends Component
             return false;
         } else {
             unset($this->messages[8]);
+            return true;
+        }
+    }
+
+    public function validateReferrals(){
+        $referrals = $this->encounter->referrals();
+        
+        // Si no hay referrals agregados, la validación pasa
+        if($referrals->count() === 0) {
+            unset($this->messages[9]);
+            return true;
+        }
+        
+        $incompleteReferrals = [];
+        
+        foreach($referrals->get() as $referral) {
+            $missingFields = [];
+            
+            if(empty($referral->reason)) {
+                $missingFields[] = 'motivo de referencia';
+            }
+            
+            if(empty($referral->referred_to_id)) {
+                $missingFields[] = 'especialista asignado';
+            }
+            
+            if(!empty($missingFields)) {
+                $specialtyName = $referral->speciality->name ?? 'Especialidad desconocida';
+                $incompleteReferrals[] = $specialtyName . ' (' . implode(', ', $missingFields) . ')';
+            }
+        }
+        
+        if(!empty($incompleteReferrals)) {
+            $this->messages[9] = '- Referencias incompletas: ' . implode(', ', $incompleteReferrals);
+            return false;
+        } else {
+            unset($this->messages[9]);
             return true;
         }
     }
