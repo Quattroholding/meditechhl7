@@ -467,7 +467,6 @@
             }
 
             .flow-arrow {
-                transform: rotate(90deg);
                 margin: 0;
             }
 
@@ -479,5 +478,6 @@
                 margin-bottom: 10px;
             }
         }
+
     </style>
 </div>

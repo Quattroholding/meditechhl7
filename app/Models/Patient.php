@@ -220,7 +220,7 @@ class Patient extends BaseModel
             $route = route('patient.medical_history',$this->id);
         }
 
-        return '<div class="profile-image">
+        return '<div class="profile-image m-0">
                   <a href="'.$route.'" title="'.$title.'">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
