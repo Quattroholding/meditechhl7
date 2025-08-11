@@ -43,8 +43,6 @@
         const parentMarker = document.getElementById('parent_section_marker_'+markerId);
         $("#section_marker_"+markerId).removeClass('hidden');
 
-        console.log('aquiii');
-
         if (marker) {
             parentMarker.scrollIntoView({
                 behavior: 'smooth',  // Opción para un desplazamiento suave (opcional)
