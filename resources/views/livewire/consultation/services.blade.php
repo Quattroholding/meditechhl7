@@ -11,7 +11,6 @@
                             <th>{{ __('Cantidad') }}</th>
                             <th>{{ __('Precio Unit.') }}</th>
                             <th>{{ __('Total') }}</th>
-                            <th>{{ __('Estado') }}</th>
                             <th>{{ __('Acciones') }}</th>
                         </tr>
                     </thead>
@@ -57,7 +56,7 @@
                                     <strong>${{ number_format($chargeItem->total_price, 2) }}</strong>
                                 </td>
                                 <td>
-                                    <span class="badge badge-{{ $chargeItem->status === 'billable' ? 'success' : ($chargeItem->status === 'billed' ? 'primary' : 'secondary') }}">
+                                    <span class="badge bg-{{ $chargeItem->status === 'billable' ? 'success' : ($chargeItem->status === 'billed' ? 'primary' : 'secondary') }}">
                                         {{ ucfirst($chargeItem->status) }}
                                     </span>
                                 </td>

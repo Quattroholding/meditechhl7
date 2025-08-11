@@ -79,25 +79,6 @@
                                     <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
                                 </div>
                             </div>
-                            {{--}}
-                            <!-- Checkboxes -->
-                            <div class="col-12 col-md-6">
-                                <div class="input-block">
-                                    <div class="form-check">
-                                        <input type="checkbox" wire:model="cpt_requires_auth" class="form-check-input" id="cpt_requires_auth">
-                                        <label class="form-check-label" for="cpt_requires_auth">
-                                            {{ __('Requiere Autorización') }}
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" wire:model="cpt_covered_insurance" class="form-check-input" id="cpt_covered_insurance">
-                                        <label class="form-check-label" for="cpt_covered_insurance">
-                                            {{ __('Cubierto por Seguro') }}
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            {{--}}
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
@@ -249,7 +230,7 @@
                     <div class="col-12">
                         <div class="form-heading d-flex justify-content-between align-items-center">
                             <h4>{{ __('Catálogo de Servicios') }}</h4>
-                            <span class="badge badge-info">{{ $this->services->total() }} servicios</span>
+                            <span class="badge badge-info">{{ $this->services->count() }} servicios</span>
                         </div>
                     </div>
 
@@ -324,12 +305,14 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="badge badge-primary">
+                                                <span class="badge bg-primary">
                                                     {{ ucfirst(str_replace('_', ' ', $service->service_type)) }}
                                                 </span>
+                                                {{--}}
                                                 @if($service->complexity)
                                                     <br><small class="text-muted">{{ ucfirst($service->complexity) }}</small>
                                                 @endif
+                                                {{--}}
                                             </td>
                                             <td>
                                                 @if($editingId === $service->id)
@@ -343,9 +326,10 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <span class="badge {{ $service->is_active ? 'badge-success' : 'badge-secondary' }}">
+                                                    <span class="badge {{ $service->is_active ? 'bg-success' : 'bg-secondary' }}">
                                                         {{ $service->is_active ? 'Activo' : 'Inactivo' }}
                                                     </span>
+                                                    {{--}}
                                                     @if($service->requires_authorization)
                                                         <small class="text-warning mt-1">
                                                             <i class="fa fa-lock"></i> Requiere autorización
@@ -356,6 +340,7 @@
                                                             <i class="fa fa-shield"></i> Cubierto por seguro
                                                         </small>
                                                     @endif
+                                                    {{--}}
                                                 </div>
                                             </td>
                                             <td>

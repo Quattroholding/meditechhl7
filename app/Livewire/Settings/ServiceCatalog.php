@@ -164,6 +164,8 @@ class ServiceCatalog extends Component
 
         $cpt = CptCode::whereId($this->cpt_id)->first();
 
+        dd($this);
+
         ServiceCatalogModel::create([
             'name' => $cpt->description_es ?? $cpt->description,
             'description' => $cpt->description_es ?? $cpt->description,
@@ -221,8 +223,9 @@ class ServiceCatalog extends Component
             'revenue_code' => $this->custom_revenue_code,
             'is_active' => true,
             'effective_date' => now(),
-            'client_id' => $this->clientId,
             'created_by' => auth()->id(),
+            'client_id' => $this->clientId,
+            'practitioner_id' => $this->practitionerId,
         ]);
 
         $this->dispatch('showToastr', [
@@ -369,14 +372,14 @@ class ServiceCatalog extends Component
         return [
             'consultation' => 'Consulta',
             'procedure' => 'Procedimiento',
-            'diagnostic' => 'Diagnóstico',
+            //'diagnostic' => 'Diagnóstico',
             'therapeutic' => 'Terapéutico',
             'surgical' => 'Quirúrgico',
             'laboratory' => 'Laboratorio',
             'imaging' => 'Imagenología',
-            'medication' => 'Medicamento',
+            //'medication' => 'Medicamento',
             'supply' => 'Suministro',
-            'facility' => 'Facilidad',
+            //'facility' => 'Facilidad',
             'other' => 'Otro'
         ];
     }
