@@ -26,4 +26,20 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withSchedule(function ($schedule) {
+        // Sincronizar medicamentos de FDA cada mes (primer día del mes a las 2:00 AM)
+        $schedule->command('medicines:sync-fda')
+            ->monthlyOn(1, '02:00')
+            ->description('Sincronización mensual de medicamentos con FDA')
+            ->emailOutputOnFailure('admin@meditech.com')
+            ->appendOutputTo(storage_path('logs/fda-sync.log'));
+
+        // También permitir ejecución manual para testing
+        $schedule->command('medicines:sync-fda --force')
+            ->weeklyOn(0, '03:00') // Domingos a las 3:00 AM para pruebas
+            ->when(fn() => config('app.env') !== 'production')
+            ->description('Sincronización de prueba semanal (solo en desarrollo)')
+            ->appendOutputTo(storage_path('logs/fda-sync-test.log'));
+    })
+    ->create();

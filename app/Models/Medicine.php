@@ -9,7 +9,24 @@ class Medicine extends BaseModel
 {
 
     protected $table='medicines';
-    protected $fillable=['ndc_code','home_name','generic_name','type','mgs','mgs_type','active','narcotic','client_id','user_id','source'];
+    protected $fillable=[
+        'ndc_code',
+        'home_name',
+        'generic_name',
+        'type',
+        'mgs',
+        'mgs_type',
+        'active',
+        'narcotic',
+        'client_id',
+        'user_id',
+        'source',
+        'price',
+        'product_type',
+        'usage_indications',
+        'porpuse',
+        'indication_and_usage'
+    ];
 
     public function client(){
         return $this->belongsTo(Client::class);
