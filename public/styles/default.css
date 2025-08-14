@@ -270,3 +270,16 @@ centered::before, .centered::after {
     }
     
 }
+
+@media (min-width: 526px) and (max-width: 767px) {
+  
+    .nav-item{
+        width: 50%;
+    }
+    
+}
+@media (max-width: 521px) {
+    .nav-item{
+        width: 100%;
+    }
+}
