@@ -263,13 +263,7 @@ centered::before, .centered::after {
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-@media (max-width: 599px) {
-    .data-info {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    
-}
+
 
 @media (min-width: 526px) and (max-width: 767px) {
   
