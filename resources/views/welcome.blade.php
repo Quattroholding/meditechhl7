@@ -439,7 +439,7 @@
             <div class="hero-cta">
                 <a href="{{route('patient.register')}}" class="cta-btn">Registrarse</a>
                 <a href="#demo" class="demo-btn">Ver Demo</a>
-                <a href="{{ asset('storage/app-debug.apk') }}" class="app-download-btn" download="MeditekPacientes.apk">
+                <a href="{{ asset('storage/app-release.apk') }}" class="app-download-btn" download="MeditecPacientes.apk">
                     📱 Descargar App Pacientes
                 </a>
             </div>
@@ -542,7 +542,7 @@
                 <p><a href="#">Precios</a></p>
                 <p><a href="#">Seguridad</a></p>
                 <p><a href="#">API Docs</a></p>
-                <p><a href="{{ asset('storage/app-debug.apk') }}" download="MeditekPacientes.apk">📱 App Móvil</a></p>
+                <p><a href="{{ asset('storage/app-release.apk') }}" download="MeditecPacientes.apk">📱 App Móvil</a></p>
             </div>
             <div class="footer-section">
                 <h4>Soporte</h4>
