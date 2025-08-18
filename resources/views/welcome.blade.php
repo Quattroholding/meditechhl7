@@ -171,6 +171,26 @@
             color: #667eea;
         }
 
+        .app-download-btn {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        .app-download-btn:hover {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
         /* Features Section */
         .features {
             padding: 6rem 0;
@@ -347,6 +367,12 @@
                 margin-right: 0;
             }
 
+            .app-download-btn {
+                display: block;
+                margin-left: 0;
+                margin-bottom: 1rem;
+            }
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
@@ -413,6 +439,9 @@
             <div class="hero-cta">
                 <a href="{{route('patient.register')}}" class="cta-btn">Registrarse</a>
                 <a href="#demo" class="demo-btn">Ver Demo</a>
+                <a href="{{ asset('storage/app-debug.apk') }}" class="app-download-btn" download="MeditekPacientes.apk">
+                    📱 Descargar App Pacientes
+                </a>
             </div>
         </div>
     </div>
@@ -513,6 +542,7 @@
                 <p><a href="#">Precios</a></p>
                 <p><a href="#">Seguridad</a></p>
                 <p><a href="#">API Docs</a></p>
+                <p><a href="{{ asset('storage/app-debug.apk') }}" download="MeditekPacientes.apk">📱 App Móvil</a></p>
             </div>
             <div class="footer-section">
                 <h4>Soporte</h4>
