@@ -7,12 +7,13 @@ use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +29,7 @@ class User extends Authenticatable
         'first_login_at',
         'profile_picture',
         'whatsapp_phone',
-        'active'
+        'active',
     ];
 
     /**
@@ -66,34 +67,41 @@ class User extends Authenticatable
         return $this->email;
     }
 
-    public function getCurrentClient(){
+    public function getCurrentClient()
+    {
 
-        if(session()->has('client')){
+        if (session()->has('client')) {
             return session()->get('client_'.auth()->user()->id);
-        }else{
+        } else {
             session(['client_'.auth()->user()->id => Client::find($this->default_client_id)]);
-            return  Client::find($this->default_client_id);
+
+            return Client::find($this->default_client_id);
         }
     }
 
-    public function getFullNameAttribute() {
-        if($this->hasRole('doctor')){
+    public function getFullNameAttribute()
+    {
+        if ($this->hasRole('doctor')) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
                 $prefix='Dra ';*/
-            $gender=$this->practitioner->gender;
-            if($gender)
-            $prefix = $gender =='female' ? 'Dra. ' : 'Dr. ';
-        }else{
-            $prefix='';
+            $gender = $this->practitioner->gender;
+            if ($gender) {
+                $prefix = $gender == 'female' ? 'Dra. ' : 'Dr. ';
+            }
+        } else {
+            $prefix = '';
         }
 
-        return $prefix.$this->first_name . ' ' . $this->last_name;
+        return $prefix.$this->first_name.' '.$this->last_name;
     }
 
-    public function clients(){ return $this->belongsToMany(Client::class,'user_clients'); }
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'user_clients');
+    }
 
-        public function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('active', true);
     }
@@ -103,7 +111,7 @@ class User extends Authenticatable
         return $query->where('active', false);
     }
 
-     public function activate()
+    public function activate()
     {
         $this->update(['active' => true]);
     }
@@ -130,24 +138,29 @@ class User extends Authenticatable
         return $this->hasOne(Practitioner::class);
     }
 
-    public function procedures(){
+    public function procedures()
+    {
         return $this->hasMany(UserProcedure::class);
     }
 
-    public function getProfileNameAttribute(){
+    public function getProfileNameAttribute()
+    {
 
-        $prefix='';
+        $prefix = '';
         $path = url('assets/img/profiles/avatar-02.jpg');
-        if($this->profile_picture) $path = url('storage/'.$this->profile_picture);
+        if ($this->profile_picture) {
+            $path = url('storage/'.$this->profile_picture);
+        }
 
-        if($this->hasRole('doctor')){
+        if ($this->hasRole('doctor')) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
              $prefix='Dra ';*/
             // dd($this->hasRole('doctor'), $this->practitioner->gender);
-            $gender=$this->practitioner->gender;
-            if($gender)
-            $prefix = $gender =='female' ? 'Dra. ' : 'Dr. ';
+            $gender = $this->practitioner->gender;
+            if ($gender) {
+                $prefix = $gender == 'female' ? 'Dra. ' : 'Dr. ';
+            }
         }
 
         return '<div class="profile-image">
@@ -158,15 +171,18 @@ class User extends Authenticatable
                     </div>';
     }
 
-    public function workingHours(){
+    public function workingHours()
+    {
         return $this->hasMany(UserWorkingHour::class);
     }
 
-    public function files(){
-        return $this->hasMany(File::class,'record_id')->where('table_name',$this->getTable());
+    public function files()
+    {
+        return $this->hasMany(File::class, 'record_id')->where('table_name', $this->getTable());
     }
 
-    public function avatar(){
+    public function avatar()
+    {
         return $this->files()->whereType('avatar')->latest()->first();
     }
 
@@ -181,10 +197,10 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
-    public function getCurrentClientTotUsersCreated(){
+    public function getCurrentClientTotUsersCreated()
+    {
 
-        return $this->getCurrentClient()->users()->role('asistente')->count()+
+        return $this->getCurrentClient()->users()->role('asistente')->count() +
             $this->getCurrentClient()->users()->role('admin client')->count() + $this->getCurrentClient()->users()->role('doctor')->count();
     }
-
 }

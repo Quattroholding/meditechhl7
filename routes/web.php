@@ -1,27 +1,26 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\FirstLoginController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\PackageController;
-use \App\Http\Controllers\BranchController;
-use \App\Http\Controllers\RoomController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PractitionerController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
-use \App\Http\Controllers\AppointmentController;
-use \App\Http\Controllers\ApiController;
-use \App\Http\Controllers\SettingController;
-use \App\Http\Controllers\Auth\LoginController;
-use \App\Http\Controllers\DashboardController;
-use \App\Http\Controllers\InvoiceController;
-use \App\Http\Controllers\PaymentController;
-use \App\Http\Controllers\MedicalDocumentController;
-use \App\Http\Controllers\FileController;
-use \App\Http\Controllers\SurveyController;
-use \App\Http\Controllers\FirstLoginController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Incluir el archivo de rutas de autenticación
@@ -37,7 +36,9 @@ Route::get('/register', function () {
 
 Route::get('/login', function () {
 
-    if(auth()->check()) return redirect(route('appointment.calendar'));
+    if (auth()->check()) {
+        return redirect(route('appointment.calendar'));
+    }
 
     return view('Pages/login');
 
@@ -51,33 +52,50 @@ Route::get('/reset-password', function () {
     return view('auth/reset-password');
 })->name('reset-password');
 
-
 Route::get('/autologin', function () {
 
-  if(request()->get('role')=='admin') $route=route('admin.dashboard');
-  if(request()->get('role')=='admin client') $route=route('client.dashboard');
-  if(request()->get('role')=='doctor')   $route=route('doctor.dashboard');
-  if(request()->get('role')=='paciente') $route=route('patient.dashboard');
-  if(request()->get('role')=='asistente') $route=route('assistence.dashboard');
+    if (request()->get('role') == 'admin') {
+        $route = route('admin.dashboard');
+    }
+    if (request()->get('role') == 'admin client') {
+        $route = route('client.dashboard');
+    }
+    if (request()->get('role') == 'doctor') {
+        $route = route('doctor.dashboard');
+    }
+    if (request()->get('role') == 'paciente') {
+        $route = route('patient.dashboard');
+    }
+    if (request()->get('role') == 'asistente') {
+        $route = route('assistence.dashboard');
+    }
 
-  $user = \App\Models\User::role(request()->get('role'))->inRandomOrder()->limit(1)->first();
+    $user = \App\Models\User::role(request()->get('role'))->inRandomOrder()->limit(1)->first();
 
-
-    if($user)
+    if ($user) {
         Auth::login($user);
+    }
 
-    return redirect($route."?show_salute=true");
-
+    return redirect($route.'?show_salute=true');
 
 })->name('autologin');
 
 Route::get('/dash', function () {
-    if(auth()->user()->hasRole('admin')) $route=route('admin.dashboard');
-    if(auth()->user()->hasRole('admin client')) $route=route('client.dashboard');
-    if(auth()->user()->hasRole('doctor'))   $route=route('doctor.dashboard');
-    if(auth()->user()->hasRole('paciente')) $route=route('patient.dashboard');
+    if (auth()->user()->hasRole('admin')) {
+        $route = route('admin.dashboard');
+    }
+    if (auth()->user()->hasRole('admin client')) {
+        $route = route('client.dashboard');
+    }
+    if (auth()->user()->hasRole('doctor')) {
+        $route = route('doctor.dashboard');
+    }
+    if (auth()->user()->hasRole('paciente')) {
+        $route = route('patient.dashboard');
+    }
+
     return redirect($route);
-})->name('dash')->middleware(['auth','verified','first.login']);
+})->name('dash')->middleware(['auth', 'verified', 'first.login']);
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
 
@@ -87,10 +105,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/first-login', [FirstLoginController::class, 'update'])->name('first-login.update');
 });
 
-Route::group(array('prefix' => 'dashboard','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('permission:dashboard.admin')->name('admin.dashboard');
-    Route::get('/admin-kpis', function() {
+    Route::get('/admin-kpis', function () {
         return view('dashboard.admin-kpis');
     })->name('admin.dashboard.kpis')->middleware('role:admin');
     Route::get('/doctor', [DashboardController::class, 'doctor'])->middleware('permission:dashboard.doctor')->name('doctor.dashboard');
@@ -111,7 +129,7 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     })->name('user.profile');
 });
 
-Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [ConsultationController::class, 'index'])->middleware('permission:consultations.view')->name('consultation.index');
 
@@ -126,15 +144,15 @@ Route::group(array('prefix' => 'consultation','middleware'=>['auth','verified','
 });
 
 // Invoice routes
-Route::group(array('prefix' => 'invoice','middleware'=>['auth','verified','first.login', 'permission:invoices.view']), function() {
+Route::group(['prefix' => 'invoice', 'middleware' => ['auth', 'verified', 'first.login', 'permission:invoices.view']], function () {
 
     Route::get('/{invoice_id}/download', [ConsultationController::class, 'downloadInvoice'])->name('invoice.download');
 
 });
 
-Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'accounts', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
-    Route::group(array('prefix' => 'invoices','middleware'=>['auth','verified','first.login', 'permission:invoices.view']), function() {
+    Route::group(['prefix' => 'invoices', 'middleware' => ['auth', 'verified', 'first.login', 'permission:invoices.view']], function () {
 
         Route::get('/', [InvoiceController::class, 'index'])->name('invoice.index');
 
@@ -144,7 +162,7 @@ Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified','firs
 
     });
 
-    Route::group(array('prefix' => 'payments','middleware'=>['auth','verified','first.login', 'permission:payments.view']), function() {
+    Route::group(['prefix' => 'payments', 'middleware' => ['auth', 'verified', 'first.login', 'permission:payments.view']], function () {
 
         Route::get('/', [PaymentController::class, 'index'])->name('payment.index');
 
@@ -156,10 +174,9 @@ Route::group(array('prefix' => 'accounts','middleware'=>['auth','verified','firs
 
 });
 
-
 Route::post('/store_public', [PatientController::class, 'store_public'])->name('patient.public.store');
 
-Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'clients', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [ClientController::class, 'index'])->middleware('permission:clients.view')->name('client.index');
 
@@ -173,7 +190,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first
 
     Route::delete('/{id}/delete', [ClientController::class, 'destroy'])->middleware('permission:clients.delete')->name('client.destroy');
 
-    Route::group(array('prefix' => 'branch','middleware'=>['auth','verified','first.login']), function() {
+    Route::group(['prefix' => 'branch', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
         Route::get('/', [BranchController::class, 'index'])->name('client.branch.index');
 
@@ -188,7 +205,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first
         Route::delete('/{id}/delete', [BranchController::class, 'destroy'])->name('client.branch.destroy');
     });
 
-    Route::group(array('prefix' => 'consulting_rooms','middleware'=>['auth','verified','first.login']), function() {
+    Route::group(['prefix' => 'consulting_rooms', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
         Route::get('/', [RoomController::class, 'index'])->middleware('permission:rooms.view')->name('client.room.index');
 
@@ -205,7 +222,7 @@ Route::group(array('prefix' => 'clients','middleware'=>['auth','verified','first
 
 });
 
-Route::group(array('prefix' => 'packages','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'packages', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [PackageController::class, 'index'])->middleware('permission:manage-packages')->name('package.index');
 
@@ -221,12 +238,11 @@ Route::group(array('prefix' => 'packages','middleware'=>['auth','verified','firs
 
 });
 
-Route::group(array('prefix' => 'patients','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'patients', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [PatientController::class, 'index'])->middleware('permission:patients.view')->name('patient.index');
 
     Route::get('/create', [PatientController::class, 'create'])->middleware('permission:patients.create')->name('patient.create');
-
 
     Route::post('/store', [PatientController::class, 'store'])->middleware('permission:patients.create')->name('patient.store');
 
@@ -248,7 +264,7 @@ Route::group(array('prefix' => 'patients','middleware'=>['auth','verified','firs
 
 });
 
-Route::group(array('prefix' => 'users','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users.view')->name('user.index');
 
@@ -268,7 +284,7 @@ Route::group(array('prefix' => 'users','middleware'=>['auth','verified','first.l
 
 });
 
-Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'appointments', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [AppointmentController::class, 'index'])->middleware('permission:appointments.view')->name('appointment.index');
 
@@ -286,7 +302,7 @@ Route::group(array('prefix' => 'appointments','middleware'=>['auth','verified','
 
 });
 
-Route::group(array('prefix' => 'settings','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/create_consultation_template', [SettingController::class, 'consultationTemplate'])->middleware('permission:settings.create_consultation_template')->name('setting.create_template');
 
@@ -305,7 +321,7 @@ Route::group(array('prefix' => 'settings','middleware'=>['auth','verified','firs
 });
 
 // Roles and Permissions Routes
-Route::group(array('prefix' => 'roles','middleware'=>['auth','verified','first.login','permission:manage-roles']), function() {
+Route::group(['prefix' => 'roles', 'middleware' => ['auth', 'verified', 'first.login', 'permission:manage-roles']], function () {
     Route::get('/', [\App\Http\Controllers\RoleController::class, 'index'])->name('role.index');
     Route::get('/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('role.create');
     Route::post('/store', [\App\Http\Controllers\RoleController::class, 'store'])->name('role.store');
@@ -314,7 +330,7 @@ Route::group(array('prefix' => 'roles','middleware'=>['auth','verified','first.l
     Route::delete('/{id}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('role.destroy');
 });
 
-Route::group(array('prefix' => 'permissions','middleware'=>['auth','verified','first.login','permission:manage-permissions']), function() {
+Route::group(['prefix' => 'permissions', 'middleware' => ['auth', 'verified', 'first.login', 'permission:manage-permissions']], function () {
     Route::get('/', [\App\Http\Controllers\PermissionController::class, 'index'])->name('permission.index');
     Route::get('/create', [\App\Http\Controllers\PermissionController::class, 'create'])->name('permission.create');
     Route::post('/store', [\App\Http\Controllers\PermissionController::class, 'store'])->name('permission.store');
@@ -323,7 +339,7 @@ Route::group(array('prefix' => 'permissions','middleware'=>['auth','verified','f
     Route::delete('/{id}', [\App\Http\Controllers\PermissionController::class, 'destroy'])->name('permission.destroy');
 });
 
-Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'practitioners', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [PractitionerController::class, 'index'])->middleware('permission:practitioners.view')->name('practitioner.index');
 
@@ -343,23 +359,23 @@ Route::group(array('prefix' => 'practitioners','middleware'=>['auth','verified',
 
 });
 
-Route::group(array('prefix' => 'medicines','middleware'=>['auth','verified','first.login']), function() {
+Route::group(['prefix' => 'medicines', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
-    Route::get('/', function() {
+    Route::get('/', function () {
         return view('medicine.index');
     })->middleware('permission:medicines.view')->name('medicine.index');
 
-    Route::get('/create', function() {
+    Route::get('/create', function () {
         return view('medicine.create');
     })->middleware('permission:medicines.create')->name('medicine.create');
 
-    Route::get('/{id}/edit', function($id) {
+    Route::get('/{id}/edit', function ($id) {
         return view('medicine.edit', ['medicine_id' => $id]);
     })->middleware('permission:medicines.edit')->name('medicine.edit');
 
 });
 
-Route::group(array('prefix' => 'api'), function() {
+Route::group(['prefix' => 'api'], function () {
 
     Route::get('/diagnostics', [ApiController::class, 'diagnostics'])->name('api.diagnostics');
     Route::get('/cpts/{type}', [ApiController::class, 'cpts'])->name('api.cpts');
@@ -367,27 +383,27 @@ Route::group(array('prefix' => 'api'), function() {
     Route::get('/medicines', [ApiController::class, 'medicines'])->name('api.medicines');
     Route::get('/patients', [ApiController::class, 'patients'])->name('api.patients');
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
-    Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
+    // Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
     Route::get('/services_catalog', [ApiController::class, 'servicesCatalog'])->name('api.servicesCatalog');
-    
+
     // Doctor notifications API
-    Route::get('/doctor-notifications/{doctor_id}', function($doctor_id) {
+    Route::get('/doctor-notifications/{doctor_id}', function ($doctor_id) {
         $notifications = [];
-        
+
         // Verificar notificación en sesión (fallback para mismo navegador)
-        $sessionKey = 'doctor_notification_' . $doctor_id;
+        $sessionKey = 'doctor_notification_'.$doctor_id;
         if (session()->has($sessionKey)) {
             $notification = session()->get($sessionKey);
-            
+
             // Solo mostrar si es reciente (últimos 2 minutos)
             if ($notification['timestamp'] > (now()->timestamp - 120)) {
                 $notifications[] = $notification;
             }
-            
+
             // Limpiar la notificación después de entregarla
             session()->forget($sessionKey);
         }
-        
+
         return response()->json(['notifications' => $notifications]);
     })->middleware('auth')->name('api.doctor.notifications');
 
@@ -426,7 +442,7 @@ Route::middleware(['auth', 'first.login'])->group(function () {
 });
 
 // Survey Routes
-Route::middleware(['auth', 'first.login','permission:surveys.view'])->group(function () {
+Route::middleware(['auth', 'first.login', 'permission:surveys.view'])->group(function () {
     Route::resource('surveys', SurveyController::class);
 });
 
@@ -435,13 +451,13 @@ Route::get('/survey/{token}', [SurveyController::class, 'publicForm'])->name('su
 Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])->name('survey.submit');
 
 // Test route for broadcast
-Route::get('/test-broadcast/{appointment_id}', function($appointment_id) {
+Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
     $appointment = \App\Models\Appointment::find($appointment_id);
     if ($appointment) {
         broadcast(new \App\Events\AppointmentCheckedIn($appointment));
-        return 'Broadcast sent for appointment ' . $appointment_id . ' to doctor ' . $appointment->practitioner_id;
+
+        return 'Broadcast sent for appointment '.$appointment_id.' to doctor '.$appointment->practitioner_id;
     }
+
     return 'Appointment not found';
 })->middleware('auth')->name('test.broadcast');
-
-
