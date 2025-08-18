@@ -262,3 +262,24 @@ centered::before, .centered::after {
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
+
+@media (max-width: 599px) {
+    .data-info {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+}
+
+@media (min-width: 526px) and (max-width: 767px) {
+  
+    .nav-item{
+        width: 50%;
+    }
+    
+}
+@media (max-width: 521px) {
+    .nav-item{
+        width: 100%;
+    }
+}
