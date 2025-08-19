@@ -22,6 +22,28 @@ class InsuranceCompanySeeder extends Seeder
         // Lista completa de aseguradoras de Panamá según superseguros.gob.pa
         $insuranceCompanies = [
             [
+                'name' => 'FMP',
+                'code' => 'VA',
+                'phone' => '800-669-8477',
+                'contact_phone' => '800-669-8477',
+                'address' => '',
+                'contact_person' => '',
+                'website' => 'www.va.gov',
+                'coverage_types' => ['Personas', 'General', 'Fianza'],
+                'notes' => '',
+            ],
+            [
+                'name' => 'TRICARE',
+                'code' => 'TRICARE',
+                'phone' => '800-444-5445',
+                'contact_phone' => '800-444-5445',
+                'address' => '7700 Arlington BoulevardSuite 5101 Falls Church, VA 22042-5101',
+                'contact_person' => '',
+                'website' => 'tricare.mil',
+                'coverage_types' => ['Personas', 'General', 'Fianza'],
+                'notes' => '',
+            ],
+            [
                 'name' => 'Acerta Compañía de Seguros, S.A.',
                 'code' => 'ACERTA',
                 'phone' => '(507) 307-3000',

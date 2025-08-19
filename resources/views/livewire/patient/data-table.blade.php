@@ -62,7 +62,7 @@
                                                 @endcan
 
                                                 @can('patients.insurance')
-                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-info btn-sm" title="{{__('Gestionar Seguros')}}">
+                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{__('Gestionar Seguros')}}">
                                                     <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
                                                 </a>
                                                 @endcan
@@ -73,10 +73,13 @@
                                                 @endcan
                                                 @if(auth()->user()->can('profile',$patient))
                                                 <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">
-                                                    <i  class="fa-solid fa-eye m-r-5"></i>
+                                                    <i  class="fa-solid fa-cog m-r-5"></i>
                                                 </a>
                                                 @endif
                                                 @can('patients.edit')
+                                                <a  href="{{ route('patient.show',$patient->id) }}" class="btn btn-info btn-sm" title="{{__('generic.show')}}">
+                                                    <i  class="fa-solid fa-eye m-r-5  text-white"></i>
+                                                </a>
                                                 <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>

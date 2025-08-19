@@ -241,6 +241,11 @@ class PatientController extends Controller
         return redirect(route('patient.edit', [$id]));
     }
 
+    public function show($id)
+    {
+        return view('patients.show', compact('id'));
+    }
+
     private function updatePatientRelationships(Request $request, Patient $patient): void
     {
         // Delete existing relationships if no longer dependent
@@ -361,6 +366,6 @@ class PatientController extends Controller
 
         $patient = Patient::findOrFail($id);
 
-        return view('patients.insurances',compact('patient'));
+        return view('patients.insurances', compact('patient'));
     }
 }

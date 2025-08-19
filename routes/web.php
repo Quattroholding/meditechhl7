@@ -259,6 +259,8 @@ Route::group(['prefix' => 'patients', 'middleware' => ['auth', 'verified', 'firs
 
     Route::get('/{id}/edit', [PatientController::class, 'edit'])->middleware('permission:patients.edit')->name('patient.edit');
 
+    Route::get('/{id}', [PatientController::class, 'show'])->middleware('permission:patients.edit')->name('patient.show');
+
     Route::post('/{id}/update', [PatientController::class, 'update'])->middleware('permission:patients.update')->name('patient.update');
 
     Route::delete('/{id}', [PatientController::class, 'destroy'])->middleware('permission:patients.delete')->name('patient.destroy');

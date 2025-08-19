@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
         $this->call(MedicineSeeder::class);
         $this->call(EncounterSecctionSeeder::class);
         $this->call(RapidAccessSeeder::class);
-        $this->call(DiagnosticSeeder::class);
+        //$this->call(DiagnosticSeeder::class);
         $this->call(ClientSeeder::class);
-        $this->call(UserSeeder::class);
         $this->call(InsuranceCompanySeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(ServiceCatalogSeeder::class);
         $this->call(UserWidgetPreferenceSeeder::class);
     }
