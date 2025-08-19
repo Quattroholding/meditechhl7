@@ -284,6 +284,17 @@
                     </ul>
                 </li>
                 @endcanany
+                
+                @can('manage insurances')
+                <li class="menu-side">
+                    <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">
+                        <span class="menu-side">
+                            <i class="fa fa-shield"></i>
+                        </span>
+                        <span>Aseguradoras</span>
+                    </a>
+                </li>
+                @endcan
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">

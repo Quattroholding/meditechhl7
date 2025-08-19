@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Patient;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PatientSeeder extends Seeder
@@ -13,7 +12,7 @@ class PatientSeeder extends Seeder
      */
     public function run(): void
     {
-        $clients = Patient::factory()->count(100)->create();
+        $clients = Patient::factory()->count(50)->create();
 
         foreach ($clients as $client) {
             $this->command->info($client);

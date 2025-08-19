@@ -9,6 +9,7 @@ use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FirstLoginController;
+use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\PackageController;
@@ -449,6 +450,11 @@ Route::middleware(['auth', 'first.login', 'permission:surveys.view'])->group(fun
 // Public Survey Routes (no authentication required)
 Route::get('/survey/{token}', [SurveyController::class, 'publicForm'])->name('survey.public');
 Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])->name('survey.submit');
+
+// Insurance Companies Routes
+Route::middleware(['auth', 'first.login', 'permission:manage insurances'])->group(function () {
+    Route::resource('insurances', InsuranceController::class);
+});
 
 // Test route for broadcast
 Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {

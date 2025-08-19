@@ -27,6 +27,8 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->json('coverage_types')->nullable(); // Para diferentes tipos de cobertura
             $table->text('notes')->nullable();
+            $table->string('website',50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

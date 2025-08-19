@@ -22,18 +22,18 @@ class PractitionerFactory extends Factory
         $gender = $this->faker->randomElement(['male', 'female']);
         $givenName = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
 
-        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']);
+        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS', 'CE', 'PT']);
         $identifier = $this->faker->unique()->regexify($this->getIdPattern($id_type));
 
         $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
-        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']);
+        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS', 'CE', 'PT']);
 
         return [
-            'fhir_id' => 'practitioner-' . Str::uuid(),
-            'registry'=>$this->faker->randomNumber(8),
+            'fhir_id' => 'practitioner-'.Str::uuid(),
+            'registry' => $this->faker->randomNumber(8),
             'identifier' => $identifier,
             'identifier_type' => $id_type,
-            'name' => 'Dr. ' . $givenName . ' ' . $this->faker->lastName,
+            'name' => 'Dr. '.$givenName.' '.$this->faker->lastName,
             'given_name' => $givenName,
             'family_name' => $this->faker->lastName,
             'gender' => $gender,
@@ -47,8 +47,8 @@ class PractitionerFactory extends Factory
                     'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
                     'display' => $specialty->name,
                     'period_start' => $this->faker->dateTimeBetween('-20 years', '-5 years')->format('Y-m-d'),
-                    'medical_speciality_id'=>$specialty->id,
-                ]
+                    'medical_speciality_id' => $specialty->id,
+                ],
             ]),
             'active' => true,
         ];
@@ -64,21 +64,22 @@ class PractitionerFactory extends Factory
         });
     }
 
-    public function specialist(string $specialty,int $specialty_id)
+    public function specialist(string $specialty, int $specialty_id)
     {
-        return  $this->afterCreating(function (Practitioner $practitioner) use($specialty,$specialty_id) {
+        return $this->afterCreating(function (Practitioner $practitioner) use ($specialty, $specialty_id) {
             $period_start = $this->faker->dateTimeBetween('-20 years', '-5 years')->format('Y-m-d');
             $period_end = $this->faker->dateTimeBetween($period_start, '+8 years');
             $medical_speciality = MedicalSpeciality::find($specialty_id);
-            return  $practitioner->qualifications()->create([
-                    'code' => $medical_speciality->id,
-                    'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
-                    'display' => $specialty,
-                    'period_start' => $period_start,
-                    'period_end'=>$period_end,
-                    'medical_speciality_id'=>$specialty_id,
-                    'default'=>1,
-                ]);
+
+            return $practitioner->qualifications()->create([
+                'code' => $medical_speciality->id,
+                'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
+                'display' => $specialty,
+                'period_start' => $period_start,
+                'period_end' => $period_end,
+                'medical_speciality_id' => $specialty_id,
+                'default' => 1,
+            ]);
         });
     }
 
@@ -86,22 +87,22 @@ class PractitionerFactory extends Factory
     {
         return $this->afterCreating(function (Practitioner $practitioner) {
             // Crear usuario asociado si no existe
-            if (!$practitioner->user) {
+            if (! $practitioner->user) {
 
                 $user = User::factory()
                     ->asDoctor()
                     ->create([
-                        'first_name' =>$practitioner->given_name,
+                        'first_name' => $practitioner->given_name,
                         'last_name' => $practitioner->family_name,
-                        'email' => Str::slug(str_replace('Dr. ', '', $practitioner->name)) . '@clinica.com'
+                        'email' => $practitioner->email,
                     ]);
 
                 $practitioner->user()->associate($user);
-                if($practitioner->save()){
-                    $client = Client::where('id','>',1)->inRandomOrder()->take(1)->first();
+                if ($practitioner->save()) {
+                    $client = Client::where('id', '>', 1)->inRandomOrder()->take(1)->first();
                     UserClient::create([
-                        'user_id'=>$user->id,
-                        'client_id'=>$client->id,
+                        'user_id' => $user->id,
+                        'client_id' => $client->id,
                     ]);
                 }
             }

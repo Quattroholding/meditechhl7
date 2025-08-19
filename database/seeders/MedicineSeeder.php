@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Medicine;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class MedicineSeeder extends Seeder
 {
@@ -13,6 +13,7 @@ class MedicineSeeder extends Seeder
      */
     public function run(): void
     {
+        /*
         $filename = public_path('medicines.csv');
         $handle = fopen($filename, 'r');
 
@@ -61,5 +62,10 @@ class MedicineSeeder extends Seeder
         } else {
             echo "Error al abrir el archivo.";
         }
+        */
+
+        Artisan::call('medicines:sync-fda', [
+            '--force' => true,
+        ]);
     }
 }

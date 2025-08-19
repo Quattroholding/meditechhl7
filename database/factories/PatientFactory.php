@@ -15,22 +15,20 @@ use Illuminate\Support\Str;
  */
 class PatientFactory extends Factory
 {
-
     protected $model = Patient::class;
-
 
     public function definition()
     {
         $gender = $this->faker->randomElement(['male', 'female']);
         $givenName = $gender === 'male' ? $this->faker->firstNameMale : $this->faker->firstNameFemale;
-        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS','CE','PT']);
+        $id_type = $this->faker->randomElement(['PA', 'CC', 'SS', 'CE', 'PT']);
         $identifier = $this->faker->unique()->regexify($this->getIdPattern($id_type));
 
         return [
-            'fhir_id' => 'patient-' . Str::uuid(),
+            'fhir_id' => 'patient-'.Str::uuid(),
             'identifier' => $identifier,
             'identifier_type' => $id_type,
-            'name' => $givenName . ' ' . $this->faker->lastName,
+            'name' => $givenName.' '.$this->faker->lastName,
             'given_name' => $givenName,
             'family_name' => $this->faker->lastName,
             'gender' => $gender,
@@ -52,7 +50,7 @@ class PatientFactory extends Factory
             },
             'communication' => json_encode([
                 'language' => 'es',
-                'preferred' => true
+                'preferred' => true,
             ]),
         ];
     }
@@ -81,25 +79,25 @@ class PatientFactory extends Factory
     {
         return $this->afterCreating(function (Patient $patient) {
             // Crear usuario asociado si no existe
-            if (!$patient->user) {
+            if (! $patient->user) {
                 $user = User::factory()
                     ->asPatient()
                     ->create([
-                        'first_name' =>$patient->given_name,
+                        'first_name' => $patient->given_name,
                         'last_name' => $patient->family_name,
-                        'email' => Str::slug($patient->given_name . '.' . $patient->family_name) . '@example.com'
+                        'email' => $patient->email,
                     ]);
 
                 $patient->user()->associate($user);
-                if($patient->save()){
-                    $client = Client::where('id','>',1)->inRandomOrder()->take(1)->first();
+                if ($patient->save()) {
+                    $client = Client::where('id', '>', 1)->inRandomOrder()->take(1)->first();
                     UserClient::create([
-                        'user_id'=>$user->id,
-                        'client_id'=>$client->id,
+                        'user_id' => $user->id,
+                        'client_id' => $client->id,
                     ]);
                     PatientClient::create([
-                        'patient_id'=>$patient->id,
-                        'client_id'=>$client->id,
+                        'patient_id' => $patient->id,
+                        'client_id' => $client->id,
                     ]);
                 }
 

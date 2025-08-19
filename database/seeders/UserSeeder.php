@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Appointment;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\MedicalSpeciality;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -17,13 +15,21 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 3. Crear médicos (con usuarios y rol doctor)
-        $doctors = Practitioner::factory()
-            ->count(5)
-            ->create();
+
+        $especialidades = MedicalSpeciality::get();
+
+        foreach ($especialidades as $e) {
+            $doctor = Practitioner::factory()
+                ->specialist($e->name, $e->id)
+                ->create();
+
+            $this->command->info($doctor);
+        }
 
         // 4. Crear pacientes (con usuarios y rol patient)
         $patients = Patient::factory()
-            ->count(20)
+            ->count(50)
             ->create();
+
     }
 }
