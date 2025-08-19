@@ -7,6 +7,9 @@ use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -149,5 +152,94 @@ class AuthController extends Controller
                 'birth_date' => $patient->birth_date,
             ] : null,
         ]);
+    }
+
+    /**
+     * Send a password reset email to the patient
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Verificar que el email corresponde a un usuario con rol paciente
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'message' => 'No se encontró un usuario con este email.',
+            ], 404);
+        }
+
+        if (!$user->hasRole('paciente')) {
+            return response()->json([
+                'message' => 'Este email no corresponde a un paciente.',
+            ], 403);
+        }
+
+        // Verificar que existe el registro de paciente
+        $patient = Patient::whereUserId($user->id)->first();
+        if (!$patient) {
+            return response()->json([
+                'message' => 'No se encontró información del paciente.',
+            ], 404);
+        }
+
+        // Enviar el email de reset de contraseña
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json([
+                'message' => 'Se ha enviado un enlace de restablecimiento de contraseña a tu email.',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No se pudo enviar el enlace de restablecimiento. Intenta nuevamente.',
+        ], 500);
+    }
+
+    /**
+     * Reset the patient's password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Verificar que el email corresponde a un usuario con rol paciente
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user || !$user->hasRole('paciente')) {
+            return response()->json([
+                'message' => 'Email no válido o no corresponde a un paciente.',
+            ], 403);
+        }
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => 'Tu contraseña ha sido restablecida exitosamente.',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No se pudo restablecer la contraseña. El enlace puede haber expirado.',
+        ], 400);
     }
 }
