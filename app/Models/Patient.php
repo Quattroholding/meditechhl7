@@ -311,4 +311,102 @@ class Patient extends BaseModel
     {
         return $this->primaryInsurance?->insuranceCompany;
     }
+
+    // Patient relationships
+    public function relationships(): HasMany
+    {
+        return $this->hasMany(PatientRelationship::class);
+    }
+
+    public function activeRelationships(): HasMany
+    {
+        return $this->relationships()->active();
+    }
+
+    public function relatedTo(): HasMany
+    {
+        return $this->hasMany(PatientRelationship::class, 'related_patient_id');
+    }
+
+    public function emergencyContacts(): HasMany
+    {
+        return $this->relationships()->emergencyContacts()->active();
+    }
+
+    public function insuranceSubscribers(): HasMany
+    {
+        return $this->relationships()->insuranceSubscribers()->active();
+    }
+
+    public function familyMembers(): HasMany
+    {
+        return $this->relationships()->active()
+            ->whereIn('relationship_code', ['CHILD', 'PARENT', 'SPOUSE', 'SIBLING']);
+    }
+
+    public function dependents(): HasMany
+    {
+        return $this->relationships()->active()
+            ->whereIn('relationship_code', ['CHILD', 'SPOUSE']);
+    }
+
+    public function guardians(): HasMany
+    {
+        return $this->relationships()->active()
+            ->whereIn('relationship_code', ['PARENT', 'GUARD']);
+    }
+
+    // Insurance methods with relationships
+    public function subscribedInsurancePolicies(): HasMany
+    {
+        return $this->hasMany(PatientInsurancePolicy::class, 'subscriber_patient_id');
+    }
+
+    public function getDependentInsurancePolicies()
+    {
+        return $this->subscribedInsurancePolicies()
+            ->where('patient_id', '!=', $this->id)
+            ->with(['patient', 'insuranceCompany']);
+    }
+
+    public function getFamilyInsuranceInfo(): array
+    {
+        $familyPolicies = [];
+
+        // Policies where this patient is the beneficiary
+        $beneficiaryPolicies = $this->activeInsurancePolicies()->with('subscriberPatient')->get();
+
+        // Policies where this patient is the subscriber (covering dependents)
+        $subscriberPolicies = $this->getDependentInsurancePolicies()->get();
+
+        return [
+            'as_beneficiary' => $beneficiaryPolicies,
+            'as_subscriber' => $subscriberPolicies,
+            'total_dependents_covered' => $subscriberPolicies->count(),
+        ];
+    }
+
+    public function addRelationship(Patient $relatedPatient, string $relationshipCode, array $options = []): PatientRelationship
+    {
+        return $this->relationships()->create([
+            'fhir_id' => 'rel-'.uniqid(),
+            'related_patient_id' => $relatedPatient->id,
+            'relationship_code' => $relationshipCode,
+            'relationship_display' => PatientRelationship::RELATIONSHIP_CODES[$relationshipCode] ?? $relationshipCode,
+            'is_emergency_contact' => $options['is_emergency_contact'] ?? false,
+            'is_insurance_subscriber' => $options['is_insurance_subscriber'] ?? false,
+            'effective_date' => $options['effective_date'] ?? now(),
+            'notes' => $options['notes'] ?? null,
+        ]);
+    }
+
+    public function getEmergencyContactsInfo(): array
+    {
+        return $this->emergencyContacts()
+            ->with('relatedPatient')
+            ->get()
+            ->map(function ($contact) {
+                return $contact->getContactInfo();
+            })->toArray();
+    }
 }

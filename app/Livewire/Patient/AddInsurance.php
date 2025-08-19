@@ -2,18 +2,21 @@
 
 namespace App\Livewire\Patient;
 
-use App\Models\Patient;
 use App\Models\InsuranceCompany;
+use App\Models\Patient;
 use App\Models\PatientInsurancePolicy;
 use Carbon\Carbon;
-use Livewire\Component;
 use Livewire\Attributes\Validate;
+use Livewire\Component;
 
 class AddInsurance extends Component
 {
     public $patient_id;
+
     public $patient;
+
     public $showInsuranceModal = false;
+
     public $existingPolicies = [];
 
     // Insurance form fields
@@ -56,6 +59,7 @@ class AddInsurance extends Component
     public $out_of_pocket_max;
 
     public $is_active = true;
+
     public $notes;
 
     // Insurance companies
@@ -105,6 +109,7 @@ class AddInsurance extends Component
     public function loadInsuranceCompanies()
     {
         $this->insuranceCompanies = InsuranceCompany::active()
+            ->whereClientId(auth()->user()->getCurrentClient()->id)
             ->orderBy('name')
             ->get();
     }
@@ -165,7 +170,6 @@ class AddInsurance extends Component
     {
         $this->validate();
 
-
         try {
             // Check for existing policy with same priority
             $existingPolicy = PatientInsurancePolicy::where('patient_id', $this->patient_id)
@@ -178,7 +182,6 @@ class AddInsurance extends Component
                 $existingPolicy->update(['is_active' => false]);
             }
             // Create new insurance policy
-
 
             $insurancePolicy = PatientInsurancePolicy::create([
                 'patient_id' => $this->patient_id,
@@ -218,7 +221,7 @@ class AddInsurance extends Component
         } catch (\Exception $e) {
             $this->dispatch('showToastr',
                 type: 'error',
-                message: 'Error al agregar el seguro: ' . $e->getMessage(),
+                message: 'Error al agregar el seguro: '.$e->getMessage(),
             );
 
         }
@@ -253,7 +256,7 @@ class AddInsurance extends Component
             'child' => 'Hijo/a',
             'parent' => 'Padre/Madre',
             'sibling' => 'Hermano/a',
-            'other' => 'Otro'
+            'other' => 'Otro',
         ];
     }
 
@@ -262,7 +265,7 @@ class AddInsurance extends Component
         return [
             'primary' => 'Primario',
             'secondary' => 'Secundario',
-            'tertiary' => 'Terciario'
+            'tertiary' => 'Terciario',
         ];
     }
 
@@ -271,14 +274,14 @@ class AddInsurance extends Component
         try {
             $policy = PatientInsurancePolicy::find($policyId);
             if ($policy && $policy->patient_id == $this->patient_id) {
-                $policy->update(['is_active' => !$policy->is_active]);
+                $policy->update(['is_active' => ! $policy->is_active]);
                 $this->loadExistingPolicies();
 
                 $status = $policy->is_active ? 'activado' : 'desactivado';
                 session()->flash('message.success', "Seguro {$status} exitosamente.");
             }
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al cambiar el estado del seguro: ' . $e->getMessage());
+            session()->flash('message.error', 'Error al cambiar el estado del seguro: '.$e->getMessage());
         }
     }
 
@@ -292,7 +295,7 @@ class AddInsurance extends Component
                 session()->flash('message.success', 'Seguro eliminado exitosamente.');
             }
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al eliminar el seguro: ' . $e->getMessage());
+            session()->flash('message.error', 'Error al eliminar el seguro: '.$e->getMessage());
         }
     }
 }

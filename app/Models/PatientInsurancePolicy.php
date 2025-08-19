@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\PatientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +18,7 @@ class PatientInsurancePolicy extends Model
         'group_number',
         'subscriber_id',
         'subscriber_name',
+        'subscriber_patient_id',
         'relationship_to_subscriber',
         'effective_date',
         'expiration_date',
@@ -47,8 +47,6 @@ class PatientInsurancePolicy extends Model
         'coverage_details' => 'array',
     ];
 
-
-
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
@@ -57,6 +55,11 @@ class PatientInsurancePolicy extends Model
     public function insuranceCompany(): BelongsTo
     {
         return $this->belongsTo(InsuranceCompany::class);
+    }
+
+    public function subscriberPatient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class, 'subscriber_patient_id');
     }
 
     public function claims(): HasMany
@@ -96,6 +99,109 @@ class PatientInsurancePolicy extends Model
 
     public function isActive(): bool
     {
-        return $this->is_active && !$this->isExpired();
+        return $this->is_active && ! $this->isExpired();
+    }
+
+    public function getSubscriberNameAttribute($value): string
+    {
+        if ($this->subscriberPatient) {
+            return $this->subscriberPatient->name;
+        }
+
+        return $value ?: 'Unknown Subscriber';
+    }
+
+    public function isSelfSubscribed(): bool
+    {
+        return $this->relationship_to_subscriber === 'self' ||
+               ($this->subscriber_patient_id && $this->subscriber_patient_id === $this->patient_id);
+    }
+
+    public function getFhirCoverageResource(): array
+    {
+        return [
+            'resourceType' => 'Coverage',
+            'id' => "coverage-{$this->id}",
+            'status' => $this->is_active ? 'active' : 'inactive',
+            'type' => [
+                'coding' => [
+                    [
+                        'system' => 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
+                        'code' => 'EHCPOL',
+                        'display' => 'extended healthcare policy',
+                    ],
+                ],
+            ],
+            'subscriber' => $this->subscriberPatient ? [
+                'reference' => "Patient/{$this->subscriberPatient->fhir_id}",
+                'display' => $this->subscriberPatient->name,
+            ] : null,
+            'beneficiary' => [
+                'reference' => "Patient/{$this->patient->fhir_id}",
+                'display' => $this->patient->name,
+            ],
+            'relationship' => [
+                'coding' => [
+                    [
+                        'system' => 'http://terminology.hl7.org/CodeSystem/subscriber-relationship',
+                        'code' => $this->relationship_to_subscriber,
+                        'display' => ucfirst($this->relationship_to_subscriber),
+                    ],
+                ],
+            ],
+            'period' => [
+                'start' => $this->effective_date->format('Y-m-d'),
+                'end' => $this->expiration_date?->format('Y-m-d'),
+            ],
+            'payor' => [
+                [
+                    'reference' => "Organization/insurance-{$this->insurance_company_id}",
+                    'display' => $this->insuranceCompany->name ?? 'Unknown Insurance',
+                ],
+            ],
+            'class' => [
+                [
+                    'type' => [
+                        'coding' => [
+                            [
+                                'system' => 'http://terminology.hl7.org/CodeSystem/coverage-class',
+                                'code' => 'policy',
+                                'display' => 'Policy',
+                            ],
+                        ],
+                    ],
+                    'value' => $this->policy_number,
+                ],
+                $this->group_number ? [
+                    'type' => [
+                        'coding' => [
+                            [
+                                'system' => 'http://terminology.hl7.org/CodeSystem/coverage-class',
+                                'code' => 'group',
+                                'display' => 'Group',
+                            ],
+                        ],
+                    ],
+                    'value' => $this->group_number,
+                ] : null,
+            ],
+            'costToBeneficiary' => [
+                [
+                    'type' => [
+                        'coding' => [
+                            [
+                                'system' => 'http://terminology.hl7.org/CodeSystem/coverage-copay-type',
+                                'code' => 'copay',
+                                'display' => 'Copay',
+                            ],
+                        ],
+                    ],
+                    'valueMoney' => [
+                        'value' => $this->copay_amount,
+                        'currency' => 'USD',
+                    ],
+                ],
+            ],
+        ];
     }
 }

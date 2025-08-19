@@ -66,7 +66,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
@@ -95,7 +94,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <!-- PHONE -->
                 <div class=" col-12 col-md-6 col-xl-6">
@@ -110,6 +108,72 @@
                         <x-input-label for="marital_status" :value="__('patient.marital_status')" required/>
                         <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[null]" class="block w-full"/>
                         <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
+                    </div>
+                </div>
+            </div>
+            <!-- Dependent Patient Section -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">¿Es este paciente dependiente de otro?</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input wire:model.live="is_dependent" class="form-check-input" type="checkbox" id="is_dependent">
+                                <label class="form-check-label" for="is_dependent">
+                                    Sí, este paciente es dependiente de otro paciente existente
+                                </label>
+                            </div>
+
+                            @if($is_dependent)
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="primary_patient_id" value="Paciente Principal" required="true"/>
+                                            <select wire:model.live="primary_patient_id" id="primary_patient_id" class="form-control">
+                                                <option value="">Seleccione el paciente principal...</option>
+                                                @foreach($primary_patients as $patient)
+                                                    <option value="{{ $patient['id'] }}">{{ $patient['name'] }} ({{ $patient['identifier'] }})</option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error :messages="$errors->get('primary_patient_id')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="relationship_type" value="Tipo de Relación" required="true"/>
+                                            <select wire:model="relationship_type" id="relationship_type" class="form-control">
+                                                <option value="">Seleccione la relación...</option>
+                                                @foreach($this->getRelationshipOptions() as $code => $display)
+                                                    <option value="{{ $code }}">{{ $display }}</option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error :messages="$errors->get('relationship_type')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input wire:model="copy_insurance" class="form-check-input" type="checkbox" id="copy_insurance">
+                                            <label class="form-check-label" for="copy_insurance">
+                                                Copiar seguro médico del paciente principal
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input wire:model="is_emergency_contact" class="form-check-input" type="checkbox" id="is_emergency_contact">
+                                            <label class="form-check-label" for="is_emergency_contact">
+                                                Agregar como contacto de emergencia
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

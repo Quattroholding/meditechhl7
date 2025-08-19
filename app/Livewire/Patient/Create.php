@@ -6,6 +6,7 @@ use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
 use App\Models\Patient;
 use App\Models\PatientClient;
+use App\Models\PatientRelationship;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -46,6 +47,19 @@ class Create extends Component
 
     public $patientDontExists = true;
 
+    // Dependent patient fields
+    public $is_dependent = false;
+
+    public $primary_patient_id;
+
+    public $relationship_type;
+
+    public $copy_insurance = false;
+
+    public $is_emergency_contact = false;
+
+    public $primary_patients = [];
+
     protected $rules = [
         'id_number' => 'required',
         'id_type' => 'required',
@@ -58,6 +72,8 @@ class Create extends Component
         'email' => 'required|unique:'.Patient::class,
         'phone' => 'required',
         // 'blood_type' => 'required',
+        'primary_patient_id' => 'required_if:is_dependent,true',
+        'relationship_type' => 'required_if:is_dependent,true',
     ];
 
     public function rules()
@@ -73,6 +89,8 @@ class Create extends Component
             'marital_status' => 'required',
             'email' => 'required|unique:'.Patient::class,
             'phone' => 'required',
+            'primary_patient_id' => 'required_if:is_dependent,true',
+            'relationship_type' => 'required_if:is_dependent,true',
         ];
     }
 
@@ -84,13 +102,41 @@ class Create extends Component
         'first_name.required' => 'El nombre es obligatorio',
         'last_name.required' => 'El apellido es obligatorio',
         'marital_status.required' => 'El estado civil es obligatorio',
+        'primary_patient_id.required_if' => 'Debe seleccionar el paciente principal',
+        'relationship_type.required_if' => 'Debe seleccionar el tipo de relación',
     ];
 
     public function render()
     {
         $this->client_id = auth()->user()->getCurrentClient()->id;
 
+        // Load primary patients for dependent selection
+        $this->loadPrimaryPatients();
+
         return view('livewire.patient.create');
+    }
+
+    public function loadPrimaryPatients()
+    {
+        if ($this->is_dependent) {
+            $this->primary_patients = Patient::select('id', 'name', 'identifier')
+                ->orderBy('name')
+                ->get()
+                ->toArray();
+        }
+    }
+
+    public function updatedIsDependent()
+    {
+        if (! $this->is_dependent) {
+            $this->primary_patient_id = null;
+            $this->relationship_type = null;
+            $this->copy_insurance = false;
+            $this->is_emergency_contact = false;
+            $this->primary_patients = [];
+        } else {
+            $this->loadPrimaryPatients();
+        }
     }
 
     public function updatedIdNumber()
@@ -176,11 +222,22 @@ class Create extends Component
         $patient->identifier = strtoupper($this->id_number);
 
         if ($patient->save()) {
-            $this->resetForm();
+            // Create patient-client relationship
             PatientClient::create([
                 'client_id' => $this->client_id,
                 'patient_id' => $patient->id,
             ]);
+
+            // Handle dependent patient logic
+            if ($this->is_dependent && $this->primary_patient_id) {
+                $this->createPatientRelationship($patient);
+
+                if ($this->copy_insurance) {
+                    $this->copyInsuranceFromPrimary($patient);
+                }
+            }
+
+            $this->resetForm();
             $client = Client::find($this->client_id);
             session()->flash('message.success', 'Paciente registrado exitosamente.');
             $this->dispatch('showToastr',
@@ -219,6 +276,12 @@ class Create extends Component
         $this->phone = '';
         $this->blood_type = '';
         $this->marital_status = '';
+        $this->is_dependent = false;
+        $this->primary_patient_id = null;
+        $this->relationship_type = null;
+        $this->copy_insurance = false;
+        $this->is_emergency_contact = false;
+        $this->primary_patients = [];
     }
 
     private function getIdPattern()
@@ -255,5 +318,108 @@ class Create extends Component
             default:
                 return 'Ingrese el número de documento';
         }
+    }
+
+    private function createPatientRelationship(Patient $patient): void
+    {
+        $primaryPatient = Patient::find($this->primary_patient_id);
+
+        if ($primaryPatient) {
+            PatientRelationship::create([
+                'fhir_id' => 'rel-'.uniqid(),
+                'patient_id' => $this->primary_patient_id,
+                'related_patient_id' => $patient->id,
+                'relationship_code' => $this->relationship_type,
+                'relationship_display' => PatientRelationship::RELATIONSHIP_CODES[$this->relationship_type] ?? $this->relationship_type,
+                'is_emergency_contact' => $this->is_emergency_contact,
+                'is_insurance_subscriber' => $this->copy_insurance,
+                'effective_date' => now(),
+                'is_active' => true,
+                'notes' => 'Created during patient registration as dependent',
+            ]);
+
+            // Create reverse relationship for certain types
+            $reverseRelationshipMap = [
+                'CHILD' => 'PARENT',
+                'PARENT' => 'CHILD',
+                'SPOUSE' => 'SPOUSE',
+                'SIBLING' => 'SIBLING',
+            ];
+
+            if (isset($reverseRelationshipMap[$this->relationship_type])) {
+                PatientRelationship::create([
+                    'fhir_id' => 'rel-'.uniqid(),
+                    'patient_id' => $patient->id,
+                    'related_patient_id' => $this->primary_patient_id,
+                    'relationship_code' => $reverseRelationshipMap[$this->relationship_type],
+                    'relationship_display' => PatientRelationship::RELATIONSHIP_CODES[$reverseRelationshipMap[$this->relationship_type]] ?? $reverseRelationshipMap[$this->relationship_type],
+                    'effective_date' => now(),
+                    'is_active' => true,
+                    'notes' => 'Auto-created reverse relationship',
+                ]);
+            }
+        }
+    }
+
+    private function copyInsuranceFromPrimary(Patient $patient): void
+    {
+        $primaryPatient = Patient::find($this->primary_patient_id);
+
+        if ($primaryPatient) {
+            $primaryInsurance = $primaryPatient->primaryInsurance;
+
+            if ($primaryInsurance) {
+                // Determine relationship for insurance
+                $insuranceRelationship = $this->getInsuranceRelationship($this->relationship_type);
+
+                $patient->insurancePolicies()->create([
+                    'insurance_company_id' => $primaryInsurance->insurance_company_id,
+                    'policy_number' => $primaryInsurance->policy_number,
+                    'group_number' => $primaryInsurance->group_number,
+                    'subscriber_id' => $primaryInsurance->subscriber_id,
+                    'subscriber_name' => $primaryPatient->name,
+                    'subscriber_patient_id' => $this->primary_patient_id,
+                    'relationship_to_subscriber' => $insuranceRelationship,
+                    'effective_date' => $primaryInsurance->effective_date,
+                    'expiration_date' => $primaryInsurance->expiration_date,
+                    'priority' => 'primary',
+                    'coverage_percentage' => $primaryInsurance->coverage_percentage,
+                    'copay_amount' => $primaryInsurance->copay_amount,
+                    'deductible_amount' => $primaryInsurance->deductible_amount,
+                    'deductible_remaining' => $primaryInsurance->deductible_amount,
+                    'out_of_pocket_max' => $primaryInsurance->out_of_pocket_max,
+                    'out_of_pocket_remaining' => $primaryInsurance->out_of_pocket_max,
+                    'is_active' => true,
+                    'coverage_details' => $primaryInsurance->coverage_details,
+                    'notes' => 'Copied from primary patient: '.$primaryPatient->name,
+                ]);
+            }
+        }
+    }
+
+    private function getInsuranceRelationship(string $relationshipCode): string
+    {
+        $relationshipMap = [
+            'CHILD' => 'child',
+            'SPOUSE' => 'spouse',
+            'PARENT' => 'parent',
+            'SIBLING' => 'other',
+            'DOMPART' => 'spouse',
+        ];
+
+        return $relationshipMap[$relationshipCode] ?? 'other';
+    }
+
+    public function getRelationshipOptions(): array
+    {
+        return [
+            'CHILD' => 'Hijo/a',
+            'SPOUSE' => 'Cónyuge',
+            'PARENT' => 'Padre/Madre',
+            'SIBLING' => 'Hermano/a',
+            'DOMPART' => 'Pareja',
+            'GRANDCHILD' => 'Nieto/a',
+            'GRANDPRN' => 'Abuelo/a',
+        ];
     }
 }
