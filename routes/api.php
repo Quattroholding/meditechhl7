@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patient/profile', [PatientController::class, 'profile']);
     Route::put('/patient/personal-data', [PatientController::class, 'updatePersonalData']);
     Route::put('/patient/credentials', [PatientController::class, 'updateCredentials']);
+    Route::post('/patient/profile-picture', [PatientController::class, 'updateProfilePicture']);
 
     // Patient medical history
     Route::get('/patient/medical-history', [PatientController::class, 'medicalHistory']);

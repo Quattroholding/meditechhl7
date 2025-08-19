@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
 use App\Models\Patient;
 use App\Models\User;
+use App\Services\FileService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -237,6 +238,81 @@ class PatientController extends Controller
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Update patient profile picture
+     */
+    public function updateProfilePicture(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user->patient) {
+            return response()->json([
+                'message' => 'Perfil del paciente no encontrado.',
+            ], 404);
+        }
+
+        // Validar el archivo de imagen
+        $validator = Validator::make($request->all(), [
+            'profile_picture' => [
+                'required',
+                'file',
+                'image',
+                'mimes:jpeg,jpg,png,gif,webp',
+                'max:5120' // 5MB max
+            ],
+        ], [
+            'profile_picture.required' => 'La imagen de perfil es obligatoria.',
+            'profile_picture.file' => 'Debe ser un archivo válido.',
+            'profile_picture.image' => 'El archivo debe ser una imagen.',
+            'profile_picture.mimes' => 'La imagen debe ser formato: jpeg, jpg, png, gif o webp.',
+            'profile_picture.max' => 'La imagen no puede ser mayor a 5MB.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $fileService = new FileService();
+            $filename = 'patient_profile_' . $user->id . '_' . time();
+            
+            // Subir el archivo
+            $profilePicturePath = $fileService->uploadSingleFile(
+                $request->file('profile_picture'),
+                'patients',
+                $filename
+            );
+
+            if ($profilePicturePath) {
+                // Actualizar el campo profile_picture en la tabla users
+                $user->profile_picture = $profilePicturePath;
+                $user->save();
+
+                return response()->json([
+                    'message' => 'Foto de perfil actualizada exitosamente.',
+                    'data' => [
+                        'profile_picture' => $profilePicturePath,
+                        'profile_picture_url' => url('storage/' . $profilePicturePath),
+                        'updated_at' => $user->updated_at,
+                    ],
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Error al subir la imagen.',
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error interno del servidor.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
