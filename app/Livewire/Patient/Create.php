@@ -19,6 +19,8 @@ class Create extends Component
 
     public $patient_id;
 
+    public $patients=[];
+
     public $id_type = 'CC';
 
     public $id_number;
@@ -145,10 +147,10 @@ class Create extends Component
         $this->patientDontExists = true;
         $this->patientExists = false;
         $this->patient_id = null;
-        $query = DB::table('patients')->whereIdentifier($this->id_number)->first();
+        $query = DB::table('patients')->whereLike('identifier',$this->id_number.'%')->get();
         if ($query) {
             $this->patientExists = true;
-            $this->patient_id = $query->id;
+            $this->patients = $query->pluck('id');
             $this->patientDontExists = false;
 
         }
@@ -156,19 +158,19 @@ class Create extends Component
 
     public function asociar()
     {
+        foreach ($this->patients as $patient_id) {
+            $pc = PatientClient::whereClientId($this->client_id)->wherePatientId($patient_id)->first();
 
-        $pc = PatientClient::whereClientId($this->client_id)->wherePatientId($this->patient_id)->first();
-
-        if (! $pc) {
-            PatientClient::create([
-                'client_id' => $this->client_id,
-                'patient_id' => $this->patient_id,
-            ]);
-
-            session()->flash('message.success', 'Paciente asociado exitosamente.');
-        } else {
-            session()->flash('message.error', 'Este paciente ya se encuentra asociado a su cuenta.');
+            if (! $pc) {
+                PatientClient::create([
+                    'client_id' => $this->client_id,
+                    'patient_id' =>$patient_id,
+                ]);
+            }
         }
+
+        session()->flash('message.success', 'Paciente asociado exitosamente.');
+
 
         $this->id_number = null;
         $this->patientExists = false;

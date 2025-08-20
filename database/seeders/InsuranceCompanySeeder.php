@@ -11,7 +11,7 @@ class InsuranceCompanySeeder extends Seeder
     public function run(): void
     {
         // Obtener todos los clientes para asignar las aseguradoras
-        $clients = Client::all();
+        $clients = Client::whereId(1)->get();
 
         if ($clients->isEmpty()) {
             $this->command->error('No hay clientes en la base de datos. Ejecuta primero el seeder de clientes.');

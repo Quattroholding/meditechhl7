@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\patient;
+namespace App\Livewire\Patient;
 
 use Livewire\Component;
 
