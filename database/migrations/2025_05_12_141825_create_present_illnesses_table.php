@@ -19,9 +19,10 @@ return new class extends Migration
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->text('description')->comment('Narrativa de la enfermedad actual');
             $table->string('location')->nullable()->comment('Localización anatómica');
-            $table->enum('severity', ['mild', 'moderate', 'severe','disabling'])->nullable();
-            $table->string('duration',50)->nullable()->comment('Duración de los síntomas');
-            $table->string('timing',50)->nullable()->comment('Momento del dia de los síntomas');
+            $table->json('locations')->nullable()->comment('Localización anatómica multiple');
+            $table->enum('severity', ['mild', 'moderate', 'severe', 'disabling'])->nullable();
+            $table->string('duration', 50)->nullable()->comment('Duración de los síntomas');
+            $table->string('timing', 50)->nullable()->comment('Momento del dia de los síntomas');
             $table->enum('onset', ['sudden', 'acute', 'gradual'])->nullable();
             $table->dateTime('onset_date')->nullable();
             $table->text('aggravating_factors')->nullable();

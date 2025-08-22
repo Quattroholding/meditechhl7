@@ -20,6 +20,12 @@ return new class extends Migration
         Schema::table('encounters', function (Blueprint $table) {
             $table->uuid('scb_id')->nullable();
         });
+        Schema::table('practitioners', function (Blueprint $table) {
+            $table->uuid('scb_id')->nullable();
+        });
+        Schema::table('service_requests', function (Blueprint $table) {
+            $table->uuid('scb_id')->nullable();
+        });
     }
 
     /**
@@ -34,6 +40,12 @@ return new class extends Migration
             $table->dropColumn('scb_id');
         });
         Schema::table('encounters', function (Blueprint $table) {
+            $table->dropColumn('scb_id');
+        });
+        Schema::table('practitioners', function (Blueprint $table) {
+            $table->dropColumn('scb_id');
+        });
+        Schema::table('service_requests', function (Blueprint $table) {
             $table->dropColumn('scb_id');
         });
     }

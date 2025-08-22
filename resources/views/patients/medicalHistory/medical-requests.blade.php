@@ -54,7 +54,7 @@
                                             ⛔ Rechazada
                                             @break
                                         @default
-                                            {{ ucfirst($request->status) }}
+                                            {!!  ucfirst($request->status)  !!}
                                     @endswitch
                                 </span>
                                     @if($request->priority)
@@ -183,20 +183,23 @@
 
                         @if($type=='medications')
                             <div class="medication-details" style="background: #f0fdf4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #059669;">
-                                <div style="font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                                    💊 Prescripción de Medicamento
-                                </div>
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                                    @if($request->medication_name)
+
                                         <div>
                                             <div style="font-size: 12px; color: #059669; font-weight: 600;">💊 Medicamento</div>
-                                            <div style="font-weight: 600; color: #1e293b;">{{ $request->medicine->full_name }}</div>
+                                            <div style="font-weight: 600; color: #1e293b;">{{ $request->medicine ? $request->medicine->full_name : $request->medication }}</div>
                                         </div>
-                                    @endif
-                                    @if($request->dosage)
+
+                                    @if($request->dosage_text)
                                         <div>
                                             <div style="font-size: 12px; color: #059669; font-weight: 600;">📏 Dosis</div>
                                             <div>{{ $request->dosage_text }}</div>
+                                        </div>
+                                    @endif
+                                    @if($request->dosage_instruction)
+                                        <div>
+                                            <div style="font-size: 12px; color: #059669; font-weight: 600;">📏 Dosis</div>
+                                            <div>{{ $request->dosage_instruction }}</div>
                                         </div>
                                     @endif
                                     @if($request->frequency)

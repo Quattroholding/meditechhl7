@@ -8,8 +8,13 @@
         </tr>
         @foreach($data->medicationRequests()->get() as $mp)
             <tr class="table-contents">
-                <td>{{$mp->medicine->full_name}}</td>
-                <td>{{$mp->dosage_text}}</td>
+                @if($mp->medicine)
+                    <td>{{$mp->medicine->full_name}}</td>
+                    <td>{{$mp->dosage_text}}</td>
+                @else
+                    <td>{{$mp->medication}}</td>
+                    <td>{{$mp->dosage_instruction}}</td>
+                @endif
             </tr>
         @endforeach
     </table>

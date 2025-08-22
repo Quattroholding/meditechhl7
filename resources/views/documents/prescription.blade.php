@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta Médica</title>
-    
+
     <!-- CSS del tema del cliente -->
     {!! $clientThemeCSS !!}
-    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -267,12 +267,16 @@
             {{--}}
             <div class="diagnosis-title">{{ $diagnosis->use ?? 'Diagnóstico' }}:</div>
             {{--}}
+            @if($diagnosis->condition->icd10Code)
             <div>{{ $diagnosis->condition->icd10Code->description_es ?? 'Diagnóstico no especificado' }}</div>
             @if($diagnosis->condition->icd10_code)
                 <div style="font-size: 10px; color: #7f8c8d;">CIE-10: {{ $diagnosis->condition->icd10_code }}</div>
             @endif
             @if($diagnosis->note)
                 <div style="font-size: 10px; color: #7f8c8d; margin-top: 3px;">{{ $diagnosis->note }}</div>
+            @endif
+            @else
+                {{$diagnosis->condition->onset_info}}
             @endif
         </div>
         @endforeach
@@ -295,26 +299,37 @@
                 @foreach($medications as $medication)
                 <tr>
                     <td>
-                        <div class="medication-name">
-                            {{ $medication->medicine->home_name ?? 'Medicamento no especificado' }}
-                        </div>
-                        @if($medication->medicine->concentration)
-                            <div class="dosage-instructions">
-                                Concentración: {{ $medication->medicine->concentration }}
+
+                        @empty(!$medication->medication)
+                            <div class="medication-name">
+                                {{ $medication->medication }}
                             </div>
-                        @endif
-                        @if($medication->medicine->type)
-                            <div class="dosage-instructions">
-                                Forma: {{ $medication->medicine->type }}
-                            </div>
-                        @endif
-                    </td>
-                    <td>
-                        @if(is_array($medication->dosage_instruction) && isset($medication->dosage_instruction['dose']))
-                            {{ $medication->dosage_instruction['dose'] }}
                         @else
-                            {{ $medication->dosage_text ?? 'Ver instrucciones' }}
-                        @endif
+                            <div class="medication-name">
+                                {{ $medication->medicine->home_name ?? 'Medicamento no especificado' }}
+                            </div>
+                            @if($medication->medicine->concentration)
+                                <div class="dosage-instructions">
+                                    Concentración: {{ $medication->medicine->concentration }}
+                                </div>
+                            @endif
+                            @if($medication->medicine->type)
+                                <div class="dosage-instructions">
+                                    Forma: {{ $medication->medicine->type }}
+                                </div>
+                            @endif
+                        @endempty
+
+                    </td>
+                    <td>@empty(!$medication->medication)
+                            {{$medication->dosage_instruction}}
+                        @else
+                            @if(is_array($medication->dosage_instruction) && isset($medication->dosage_instruction['dose']))
+                                {{ $medication->dosage_instruction['dose'] }}
+                            @else
+                                {{ $medication->dosage_text ?? 'Ver instrucciones' }}
+                            @endif
+                        @endempty
                     </td>
 
                     <td style="text-align: center;">
@@ -355,7 +370,7 @@
                     <div class="signature-line"></div>
                 @endif
                 <div class="signature-label">Firma del Médico</div>
-                <div class="signature-label">Dr(a). {{ $practitioner->user->name }}</div>
+                <div class="signature-label">@if($practitioner->user) Dr(a). {{ $practitioner->user->name }} @endif</div>
                 <div class="signature-label">Reg. {{ $practitioner->license_number ?? 'N/A' }}</div>
             </div>
             <div class="signature-right">

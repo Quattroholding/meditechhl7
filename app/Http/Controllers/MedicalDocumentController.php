@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\ClientTheme;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\ServiceRequest;
-use App\Models\ClientTheme;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class MedicalDocumentController extends Controller
 {
@@ -26,19 +26,24 @@ class MedicalDocumentController extends Controller
                 'practitioner.qualifications',
                 'medicationRequests.medicine',
                 'diagnoses.condition',
-                'appointment'
+                'appointment',
             ])->findOrFail($encounterId);
 
             // Verificar que hay medication requests
             if ($encounter->medicationRequests->isEmpty()) {
                 return response()->json([
-                    'error' => 'Este encuentro no tiene medicamentos prescritos.'
+                    'error' => 'Este encuentro no tiene medicamentos prescritos.',
                 ], 400);
             }
 
+            $client = Client::find(1);
+            if ($encounter->appointment->client) {
+                $client = $encounter->appointment->client;
+            } elseif ($encounter->practitioner->user) {
+                $client = $encounter->practitioner->user->clients->first();
+            }
             // Obtener el cliente del encounter
-            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
-            
+
             // Preparar datos para la vista
             $data = [
                 'encounter' => $encounter,
@@ -46,8 +51,8 @@ class MedicalDocumentController extends Controller
                 'practitioner' => $encounter->practitioner,
                 'medications' => $encounter->medicationRequests,
                 'diagnoses' => $encounter->diagnoses,
-                'date' => Carbon::now(),
-                'prescriptionNumber' => 'RX-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'date' => Carbon::parse($encounter->end),
+                'prescriptionNumber' => 'RX-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
@@ -56,14 +61,14 @@ class MedicalDocumentController extends Controller
             $pdf->setPaper('letter', 'portrait');
 
             // Nombre del archivo
-            $fileName = 'receta_medica_' . $encounter->patient->identifier . '_' . date('Ymd_His') . '.pdf';
+            $fileName = 'receta_medica_'.$encounter->patient->identifier.'_'.date('Ymd_His').'.pdf';
 
             // Retornar el PDF para descarga
             return $pdf->stream($fileName);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar la receta médica: ' . $e->getMessage()
+                'error' => 'Error al generar la receta médica: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -81,20 +86,25 @@ class MedicalDocumentController extends Controller
                 'practitioner.qualifications',
                 'serviceRequests.cpt',
                 'diagnoses.condition',
-                'appointment'
+                'appointment',
             ])->findOrFail($encounterId);
 
             // Verificar que hay service requests
             if ($encounter->serviceRequests->isEmpty()) {
                 return response()->json([
-                    'error' => 'Este encuentro no tiene servicios solicitados.'
+                    'error' => 'Este encuentro no tiene servicios solicitados.',
                 ], 400);
             }
 
-
             // Obtener el cliente del encounter
-            $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
-            
+            $client = Client::find(1);
+
+            if ($encounter->appointment->client) {
+                $client = $encounter->appointment->client;
+            } elseif ($encounter->practitioner->user) {
+                $client = $encounter->practitioner->user->clients->first();
+            }
+
             // Preparar datos para la vista
             $data = [
                 'encounter' => $encounter,
@@ -102,9 +112,10 @@ class MedicalDocumentController extends Controller
                 'practitioner' => $encounter->practitioner,
                 'serviceRequests' => $encounter->serviceRequests,
                 'diagnoses' => $encounter->diagnoses,
-                'date' => Carbon::now(),
-                'orderNumber' => 'OM-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'date' => Carbon::parse($encounter->end),
+                'orderNumber' => 'OM-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
+                'client' => $client,
             ];
 
             // Generar PDF
@@ -112,14 +123,14 @@ class MedicalDocumentController extends Controller
             $pdf->setPaper('letter', 'portrait');
 
             // Nombre del archivo
-            $fileName = 'orden_medica_' . $encounter->patient->identifier . '_' . date('Ymd_His') . '.pdf';
+            $fileName = 'orden_medica_'.$encounter->patient->identifier.'_'.date('Ymd_His').'.pdf';
 
             // Retornar el PDF para descarga
             return $pdf->stream($fileName);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar la orden médica: ' . $e->getMessage()
+                'error' => 'Error al generar la orden médica: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -133,7 +144,7 @@ class MedicalDocumentController extends Controller
 
         if (empty($medicationIds)) {
             return response()->json([
-                'error' => 'No se especificaron medicamentos.'
+                'error' => 'No se especificaron medicamentos.',
             ], 400);
         }
 
@@ -144,12 +155,12 @@ class MedicalDocumentController extends Controller
                 'practitioner.user',
                 'practitioner.qualifications',
                 'medicine',
-                'encounter.diagnoses.condition'
+                'encounter.diagnoses.condition',
             ])->whereIn('id', $medicationIds)->get();
 
             if ($medications->isEmpty()) {
                 return response()->json([
-                    'error' => 'No se encontraron los medicamentos especificados.'
+                    'error' => 'No se encontraron los medicamentos especificados.',
                 ], 400);
             }
 
@@ -165,7 +176,7 @@ class MedicalDocumentController extends Controller
                 'medications' => $medications,
                 'diagnoses' => $encounter ? $encounter->diagnoses : collect([]),
                 'date' => Carbon::now(),
-                'prescriptionNumber' => 'RX-CUSTOM-' . date('Ymd_His'),
+                'prescriptionNumber' => 'RX-CUSTOM-'.date('Ymd_His'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
@@ -174,14 +185,14 @@ class MedicalDocumentController extends Controller
             $pdf->setPaper('letter', 'portrait');
 
             // Nombre del archivo
-            $fileName = 'receta_medica_personalizada_' . date('Ymd_His') . '.pdf';
+            $fileName = 'receta_medica_personalizada_'.date('Ymd_His').'.pdf';
 
             // Retornar el PDF para descarga
             return $pdf->download($fileName);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar la receta médica: ' . $e->getMessage()
+                'error' => 'Error al generar la receta médica: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -195,7 +206,7 @@ class MedicalDocumentController extends Controller
 
         if (empty($serviceIds)) {
             return response()->json([
-                'error' => 'No se especificaron servicios.'
+                'error' => 'No se especificaron servicios.',
             ], 400);
         }
 
@@ -206,12 +217,12 @@ class MedicalDocumentController extends Controller
                 'practitioner.user',
                 'practitioner.medicalSpeciality',
                 'cpt',
-                'encounter.diagnoses.condition'
+                'encounter.diagnoses.condition',
             ])->whereIn('id', $serviceIds)->get();
 
             if ($services->isEmpty()) {
                 return response()->json([
-                    'error' => 'No se encontraron los servicios especificados.'
+                    'error' => 'No se encontraron los servicios especificados.',
                 ], 400);
             }
 
@@ -227,7 +238,7 @@ class MedicalDocumentController extends Controller
                 'serviceRequests' => $services,
                 'diagnoses' => $encounter ? $encounter->diagnoses : collect([]),
                 'date' => Carbon::now(),
-                'orderNumber' => 'OM-CUSTOM-' . date('Ymd_His'),
+                'orderNumber' => 'OM-CUSTOM-'.date('Ymd_His'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
@@ -236,14 +247,14 @@ class MedicalDocumentController extends Controller
             $pdf->setPaper('letter', 'portrait');
 
             // Nombre del archivo
-            $fileName = 'orden_medica_personalizada_' . date('Ymd_His') . '.pdf';
+            $fileName = 'orden_medica_personalizada_'.date('Ymd_His').'.pdf';
 
             // Retornar el PDF para descarga
             return $pdf->download($fileName);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar la orden médica: ' . $e->getMessage()
+                'error' => 'Error al generar la orden médica: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -260,7 +271,7 @@ class MedicalDocumentController extends Controller
                 'practitioner.qualifications',
                 'medicationRequests.medicine',
                 'diagnoses.condition',
-                'appointment'
+                'appointment',
             ])->findOrFail($encounterId);
 
             if ($encounter->medicationRequests->isEmpty()) {
@@ -268,7 +279,7 @@ class MedicalDocumentController extends Controller
             }
 
             $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
-            
+
             $data = [
                 'encounter' => $encounter,
                 'patient' => $encounter->patient,
@@ -276,14 +287,14 @@ class MedicalDocumentController extends Controller
                 'medications' => $encounter->medicationRequests,
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
-                'prescriptionNumber' => 'RX-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'prescriptionNumber' => 'RX-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             return view('documents.prescription', $data);
 
         } catch (\Exception $e) {
-            abort(500, 'Error al mostrar la receta médica: ' . $e->getMessage());
+            abort(500, 'Error al mostrar la receta médica: '.$e->getMessage());
         }
     }
 
@@ -299,7 +310,7 @@ class MedicalDocumentController extends Controller
                 'practitioner.qualifications',
                 'serviceRequests.cpt',
                 'diagnoses.condition',
-                'appointment'
+                'appointment',
             ])->findOrFail($encounterId);
 
             if ($encounter->serviceRequests->isEmpty()) {
@@ -307,7 +318,7 @@ class MedicalDocumentController extends Controller
             }
 
             $client = $encounter->appointment->client ?? $encounter->practitioner->user->clients->first();
-            
+
             $data = [
                 'encounter' => $encounter,
                 'patient' => $encounter->patient,
@@ -315,14 +326,14 @@ class MedicalDocumentController extends Controller
                 'serviceRequests' => $encounter->serviceRequests,
                 'diagnoses' => $encounter->diagnoses,
                 'date' => Carbon::now(),
-                'orderNumber' => 'OM-' . str_pad($encounterId, 6, '0', STR_PAD_LEFT) . '-' . date('Ymd'),
+                'orderNumber' => 'OM-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
             ];
 
             return view('documents.medical-order', $data);
 
         } catch (\Exception $e) {
-            abort(500, 'Error al mostrar la orden médica: ' . $e->getMessage());
+            abort(500, 'Error al mostrar la orden médica: '.$e->getMessage());
         }
     }
 
@@ -331,13 +342,13 @@ class MedicalDocumentController extends Controller
      */
     private function getClientThemeCSS($client): string
     {
-        if (!$client) {
+        if (! $client) {
             return '';
         }
 
         $theme = ClientTheme::getActiveForClient($client->id);
-        
-        if (!$theme) {
+
+        if (! $theme) {
             return '';
         }
 

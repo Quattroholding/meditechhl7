@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('encounter_id')->constrained('encounters')->cascadeOnDelete();
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
             $table->foreignId('practitioner_id')->constrained('practitioners');
-            $table->foreignId('medication_id')->constrained('medicines');
+            $table->foreignId('medication_id')->nullable()->constrained('medicines');
+            $table->string('medication', 200)->nullable();
             $table->string('identifier')->unique();
             $table->enum('status', ['active', 'on-hold', 'cancelled', 'completed', 'entered-in-error', 'stopped', 'draft', 'unknown']);
             $table->enum('intent', ['proposal', 'plan', 'order', 'original-order', 'reflex-order', 'filler-order', 'instance-order', 'option']);
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->integer('quantity')->nullable();
             $table->integer('refills')->nullable();
             $table->integer('duration')->nullable();
+            $table->char('narcotic')->default('N');
             $table->date('valid_from');
             $table->date('valid_to')->nullable();
             $table->boolean('substitution_allowed')->default(true);

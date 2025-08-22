@@ -6,8 +6,6 @@ use App\Models\Account;
 use App\Models\Appointment;
 use App\Models\ChargeItem;
 use App\Models\Encounter;
-use App\Models\EncounterSection;
-use App\Models\EncounterTemplate;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
 use App\Models\Patient;
@@ -15,7 +13,6 @@ use App\Models\PresentIllnesType;
 use App\Models\ServiceCatalog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -37,7 +34,7 @@ class ConsultationController extends Controller
         $consultation = Encounter::whereAppointmentId($appointment_id)->first();
 
         $type = '4525004'; // consulta de medicina general
-        if ($appointment->medical_speciality_id != '50') {
+        if ($appointment->medical_speciality_id != '58') {
             $type = '26172008';
         } // consulta de especialidad
 
@@ -56,7 +53,6 @@ class ConsultationController extends Controller
                 'end' => now()]);
         }
 
-
         return view('consultations.create', compact('consultation', 'appointment', 'patient'));
     }
 
@@ -70,7 +66,7 @@ class ConsultationController extends Controller
                 throw new \Exception('Cita no encontrada.');
             }
 
-            $clientId =$appointment->client_id;
+            $clientId = $appointment->client_id;
 
             $encounter = Encounter::whereAppointmentId($appointment->id)->first();
             if (! $encounter) {
@@ -91,8 +87,6 @@ class ConsultationController extends Controller
                     ->where('client_id', $encounter->client_id)
                     ->active()
                     ->first();
-
-
 
                 if (! $account) {
                     $account = Account::createPatientAccount($patient);
@@ -208,7 +202,7 @@ class ConsultationController extends Controller
             'medicationRequests',
             'serviceRequests',
             'referrals',
-            'physicalExams'
+            'physicalExams',
         ])->findOrFail($encounter_id);
 
         return view('consultations.view', compact('encounter'));
@@ -226,7 +220,12 @@ class ConsultationController extends Controller
         $sello = $firma = '';
         $mode = 'full';
         foreach ($data->diagnoses()->get() as $d) {
-            array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->icd10Code->description_es.'</td>');
+            if ($d->condition->icd10Code) {
+                array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->icd10Code->description_es.'</td>');
+            } else {
+                array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->onset_info.'</td>');
+            }
+
         }
 
         if ($request->has('html')) {
@@ -237,5 +236,4 @@ class ConsultationController extends Controller
 
         return $pdf->stream('resumen.pdf');
     }
-
 }

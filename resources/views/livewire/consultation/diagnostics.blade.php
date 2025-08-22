@@ -20,7 +20,7 @@
                                 </span>
                                 </td>
                                 <td>
-                                    {{$s->condition->icd10Code->full_name}}
+                                    {{$s->condition->icd10Code ? $s->condition->icd10Code->full_name : $s->condition->onset_info}}
                                 </td>
                             </tr>
                             </tbody>

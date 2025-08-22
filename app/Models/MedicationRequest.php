@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class MedicationRequest extends Model
 {
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'medication_id',
         'identifier', 'status', 'intent', 'priority', 'reason', 'dosage_instruction',
         'dosage_text', 'route', 'frequency', 'quantity', 'refills', 'valid_from',
-        'valid_to', 'substitution_allowed', 'note'
+        'valid_to', 'substitution_allowed', 'note', 'medication', 'narcotic',
     ];
 
     protected $casts = [
         'valid_from' => 'date',
         'valid_to' => 'date',
         'substitution_allowed' => 'boolean',
-        'dosage_instruction'=>'array',
+        'dosage_instruction' => 'array',
     ];
 
     // Relaciones
@@ -40,14 +40,40 @@ class MedicationRequest extends Model
 
     public function medicine(): BelongsTo
     {
-        return $this->belongsTo(Medicine::class,'medication_id');
+        return $this->belongsTo(Medicine::class, 'medication_id');
     }
 
-    public function getValidFromAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getValidFromAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
     }
 
-    public function getValidToAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getValidToAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
+    }
+
+    public function getStatusAttribute($attr)
+    {
+        switch ($attr) {
+            case 'active':
+                return '<div class="badge bg-primary">Activo</div>';
+                break;
+            case 'completed':
+                return '<div class="badge bg-success">Completado</div>';
+                break;
+            case 'draft':
+                return '<div class="badge bg-warning">Sin Confirmar</div>';
+                break;
+            case 'stopped':
+                return '<div class="badge bg-secundary">Pausado</div>';
+                break;
+            case 'cancelled':
+                return '<div class="badge bg-danger">Cancelado</div>';
+                break;
+            case 'on-hold':
+                return '<div class="badge bg-warning">En Espera</div>';
+                break;
+        }
     }
 }

@@ -1,32 +1,32 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\Scopes\EncouterScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Encounter extends BaseModel
 {
     use HasFactory;
+
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id', 'appointment_id', 'identifier',
-        'status', 'class', 'type', 'priority', 'reason','start','end','medical_speciality_id',
+        'status', 'class', 'type', 'priority', 'reason', 'start', 'end', 'medical_speciality_id', 'scb_id',
     ];
 
     protected $casts = [
         'start' => 'datetime',
-        'end' => 'datetime'
+        'end' => 'datetime',
     ];
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new EncouterScope());
+        static::addGlobalScope(new EncouterScope);
     }
 
     // Relaciones
@@ -68,7 +68,7 @@ class Encounter extends BaseModel
     public function presentIllnesses(): HasOne
     {
         return $this->hasOne(PresentIllness::class)->withDefault([
-            'location'=>'',
+            'location' => '',
         ]);
     }
 
@@ -94,7 +94,7 @@ class Encounter extends BaseModel
 
     public function medicalSpeciality(): BelongsTo
     {
-        return $this->belongsTo(MedicalSpeciality::class)->withDefault(['name'=>'N/A']);
+        return $this->belongsTo(MedicalSpeciality::class)->withDefault(['name' => 'N/A']);
     }
 
     public function invoice(): hasOne
@@ -115,25 +115,27 @@ class Encounter extends BaseModel
         $query->where('status', 'finished');
     }
 
-    public function getTimeAttribute(){
+    public function getTimeAttribute()
+    {
         return Carbon::parse($this->start)->format('h:i').'-'.Carbon::parse($this->end)->format('h:i');
     }
 
-    public function getStatusAttribute($attr){
+    public function getStatusAttribute($attr)
+    {
 
-       return ' <span  class="badge" style="background-color: #'.$this->statusColors()[$attr].'">'. __('encounter.status.'.$attr). '</span>';
+        return ' <span  class="badge" style="background-color: #'.$this->statusColors()[$attr].'">'.__('encounter.status.'.$attr).'</span>';
     }
 
-    public function statusColors(){
+    public function statusColors()
+    {
         return [
-            'planned'=>'FFD700',
-            'arrived'=>'00BCD4',
-            'triaged'=>'FF9800',
-            'in-progress'=>'4CAF50',
-            'onleave'=>'9C27B0',
-            'finished'=>'2196F3',
-            'cancelled'=>'F44336',
+            'planned' => 'FFD700',
+            'arrived' => '00BCD4',
+            'triaged' => 'FF9800',
+            'in-progress' => '4CAF50',
+            'onleave' => '9C27B0',
+            'finished' => '2196F3',
+            'cancelled' => 'F44336',
         ];
     }
-
 }

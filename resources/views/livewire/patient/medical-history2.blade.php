@@ -639,15 +639,15 @@
                             @break
                         @endswitch
                     </h2>
-
+                    {{--}}
                     @if($activeSection !== 'overview')
                         <div class="float-right">
                             <button wire:click="toggleFilters" class="btn btn-light" style="color: #667eea; background: white; border: 2px solid #667eea;">
                                 🔍 Filtros
                             </button>
                         </div>
-
                     @endif
+                    {{--}}
                 </div>
 
                 @if($showFilters && $activeSection !== 'overview')
@@ -704,22 +704,130 @@
                             @include('patients.medicalHistory.overview')
                             @break
                         @case('encounters')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Consultas Médicas</h3>
+                                    @if(isset($sectionData['total']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total'] }} consultas médicas registradas
+                                        </p>
+                                    @endif
+                                </div>
+                                <span style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                    🏥 {{ $encountersPerPage }} por página
+                                </span>
+                            </div>
                             @include('patients.medicalHistory.encounters')
                             @break
                         @case('vital-signs')
-                            @include('patients.medicalHistory.vital-signs')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Signos Vitales</h3>
+                                    @if($groupVitalSignsByEncounter && isset($sectionData['total_encounters']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total_encounters'] }} consultas con signos vitales
+                                        </p>
+                                    @endif
+                                </div>
+                                <button wire:click="toggleGroupVitalSignsByEncounter"
+                                        class="btn btn-sm"
+                                        style="background: {{ $groupVitalSignsByEncounter ? '#dc2626' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
+                                    @if($groupVitalSignsByEncounter)
+                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
+                                    @else
+                                        ❤️ Vista Individual
+                                    @endif
+                                </button>
+                            </div>
+                            @if($groupVitalSignsByEncounter)
+                                @include('patients.medicalHistory.vital-signs-grouped')
+                            @else
+                                @include('patients.medicalHistory.vital-signs')
+                            @endif
                             @break
                         @case('conditions')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Condiciones Médicas</h3>
+                                    @if(isset($sectionData['total']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total'] }} condiciones médicas registradas
+                                        </p>
+                                    @endif
+                                </div>
+                                <span style="background: #7c3aed; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                    🩹 {{ $encountersPerPage }} por página
+                                </span>
+                            </div>
                             @include('patients.medicalHistory.conditions')
                             @break
                         @case('physical-exams')
-                            @include('patients.medicalHistory.physical-exams')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Exámenes Físicos</h3>
+                                    @if($groupPhysicalExamsByEncounter && isset($sectionData['total_encounters']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total_encounters'] }} consultas con exámenes físicos
+                                        </p>
+                                    @endif
+                                </div>
+                                <button wire:click="toggleGroupPhysicalExamsByEncounter"
+                                        class="btn btn-sm"
+                                        style="background: {{ $groupPhysicalExamsByEncounter ? '#f59e0b' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
+                                    @if($groupPhysicalExamsByEncounter)
+                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
+                                    @else
+                                        🔍 Vista Individual
+                                    @endif
+                                </button>
+                            </div>
+                            @if($groupPhysicalExamsByEncounter)
+                                @include('patients.medicalHistory.physical-exams-grouped')
+                            @else
+                                @include('patients.medicalHistory.physical-exams')
+                            @endif
                             @break
                         @case('present-illnesses')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Enfermedad Actual</h3>
+                                    @if(isset($sectionData['total']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total'] }} enfermedades actuales registradas
+                                        </p>
+                                    @endif
+                                </div>
+                                <span style="background: #8b5cf6; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                    🤒 {{ $encountersPerPage }} por página
+                                </span>
+                            </div>
                             @include('patients.medicalHistory.present-illnesses')
                             @break
                         @case('medical-requests')
-                            @include('patients.medicalHistory.medical-requests')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Órdenes Médicas</h3>
+                                    @if($groupByEncounter && isset($sectionData['total_encounters']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total_encounters'] }} consultas con órdenes médicas
+                                        </p>
+                                    @endif
+                                </div>
+                                <button wire:click="toggleGroupByEncounter"
+                                        class="btn btn-sm"
+                                        style="background: {{ $groupByEncounter ? '#059669' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
+                                    @if($groupByEncounter)
+                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
+                                    @else
+                                        📋 Vista Individual
+                                    @endif
+                                </button>
+                            </div>
+                            @if($groupByEncounter)
+                                @include('patients.medicalHistory.medical-requests-grouped')
+                            @else
+                                @include('patients.medicalHistory.medical-requests')
+                            @endif
                             @break
                         @case('service-requests')
                             @include('patients.medicalHistory.service-requests')

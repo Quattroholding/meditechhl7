@@ -9,7 +9,7 @@
             @foreach($selectedLists as $m)
             <tr class="consultation-tr-inputs" style="background: {{ $loop->iteration % 2 == 0 ? '#fff' : '#ededed' }}">
                 <td>
-                    <b rel="producto-full-name">{{$m->medicine->full_name}}</b>
+                    <b rel="producto-full-name">{{$m->medicine ? $m->medicine->full_name : $m->medication}}</b>
                 </td>
                 <td>
                     <table style="width:100%;">

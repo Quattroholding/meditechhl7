@@ -2,27 +2,27 @@
 
 namespace App\Models;
 
+use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Scopes\AppointmentScope;
 use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
-use App\Jobs\SendAppointmentReminderJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Appointment extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'fhir_id', 'patient_id', 'practitioner_id','client_id', 'identifier', 'status',
-        'service_type', 'description', 'start', 'end', 'minutes_duration','medical_speciality_id','consulting_room_id',
-        'original_requested_datetime','practitioner_suggested_datetime','comment','client_id',
+        'fhir_id', 'patient_id', 'practitioner_id', 'client_id', 'identifier', 'status',
+        'service_type', 'description', 'start', 'end', 'minutes_duration', 'medical_speciality_id', 'consulting_room_id',
+        'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
     ];
 
     protected $casts = [
@@ -36,7 +36,7 @@ class Appointment extends Model
     protected $appends = [
         'formatted_date',
         'formatted_time',
-        'fhir_status'
+        'fhir_status',
     ];
 
     /**
@@ -44,23 +44,23 @@ class Appointment extends Model
      */
     protected static function booted(): void
     {
-        static::addGlobalScope(new AppointmentScope());
+        static::addGlobalScope(new AppointmentScope);
     }
 
     // Relaciones
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class)->withDefault(['profile_name'=>'N/A']);
+        return $this->belongsTo(Patient::class)->withDefault(['profile_name' => 'N/A']);
     }
 
     public function practitioner(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class)->withDefault(['profile_name'=>'N/A']);
+        return $this->belongsTo(Practitioner::class)->withDefault(['profile_name' => 'N/A']);
     }
 
     public function encounter(): HasOne
     {
-        return $this->hasOne(Encounter::class,'appointment_id');
+        return $this->hasOne(Encounter::class, 'appointment_id');
     }
 
     public function client(): BelongsTo
@@ -70,14 +70,14 @@ class Appointment extends Model
 
     public function medicalSpeciality(): BelongsTo
     {
-        return $this->belongsTo(MedicalSpeciality::class,'medical_speciality_id')->withDefault([
-            'name'=>'Medicina General',
+        return $this->belongsTo(MedicalSpeciality::class, 'medical_speciality_id')->withDefault([
+            'name' => 'Medicina General',
         ]);
     }
 
     public function consultingRoom()
     {
-        return $this->belongsTo(ConsultingRoom::class)->withDefault(['name'=>'N/A']);
+        return $this->belongsTo(ConsultingRoom::class)->withDefault(['name' => 'N/A']);
     }
 
     /**
@@ -104,19 +104,20 @@ class Appointment extends Model
         $query->where('status', 'reservado');
     }
 
-    public static function statusColors(){
-          return [
-              'proposed'=>'dedede',
-              'pending'=>'FFA500',
-              'booked'=>'4CAF50',
-              'arrived'=>'00BCD4',
-              'fulfilled'=>'2196F3',
-              'cancelled'=>'F44336',
-              'noshow'=>'9E9E9E',
-              'entered-in-error'=>'FF5252',
-              'checked-in'=>'7C4DFF',
-              'waitlist'=>'FF9800'
-          ];
+    public static function statusColors()
+    {
+        return [
+            'proposed' => 'dedede',
+            'pending' => 'FFA500',
+            'booked' => '4CAF50',
+            'arrived' => '00BCD4',
+            'fulfilled' => '2196F3',
+            'cancelled' => 'F44336',
+            'noshow' => '9E9E9E',
+            'entered-in-error' => 'FF5252',
+            'checked-in' => '7C4DFF',
+            'waitlist' => 'FF9800',
+        ];
     }
 
     // Accesor para fecha formateada
@@ -140,7 +141,7 @@ class Appointment extends Model
             'in-progress' => 'arrived',
             'completed' => 'fulfilled',
             'cancelled' => 'cancelled',
-            'no-show' => 'noshow'
+            'no-show' => 'noshow',
         ];
 
         return $statusMap[$this->status] ?? 'booked';
@@ -168,7 +169,7 @@ class Appointment extends Model
     private function calculateTimes()
     {
         if (isset($this->attributes['appointment_date']) && isset($this->attributes['appointment_time'])) {
-            $startTime = Carbon::parse($this->attributes['appointment_date'] . ' ' . $this->attributes['appointment_time']);
+            $startTime = Carbon::parse($this->attributes['appointment_date'].' '.$this->attributes['appointment_time']);
             $this->attributes['start_time'] = $startTime;
 
             if (isset($this->attributes['minutes_duration'])) {
@@ -181,49 +182,49 @@ class Appointment extends Model
     public function toFHIR()
     {
         return [
-            "resourceType" => "Appointment",
-            "id" => $this->fhir_id,
-            "status" => $this->fhir_status,
-            "serviceCategory" => [[
-                "coding" => [[
-                    "system" => "http://terminology.hl7.org/CodeSystem/service-category",
-                    "code" => "17",
-                    "display" => "General Practice"
-                ]]
+            'resourceType' => 'Appointment',
+            'id' => $this->fhir_id,
+            'status' => $this->fhir_status,
+            'serviceCategory' => [[
+                'coding' => [[
+                    'system' => 'http://terminology.hl7.org/CodeSystem/service-category',
+                    'code' => '17',
+                    'display' => 'General Practice',
+                ]],
             ]],
-            "serviceType" => [[
-                "coding" => [[
-                    "system" => "http://snomed.info/sct",
-                    "code" => "11429006",
-                    "display" => "Consultation"
-                ]]
+            'serviceType' => [[
+                'coding' => [[
+                    'system' => 'http://snomed.info/sct',
+                    'code' => '11429006',
+                    'display' => 'Consultation',
+                ]],
             ]],
-            "subject" => [
-                "reference" => "Patient/" .$this->patient->name,
-                "display" => $this->patient_name
+            'subject' => [
+                'reference' => 'Patient/'.$this->patient->name,
+                'display' => $this->patient_name,
             ],
-            "participant" => [
+            'participant' => [
                 [
-                    "actor" => [
-                        "reference" => "Patient/" . $this->patient->name,
-                        "display" =>$this->patient->name
+                    'actor' => [
+                        'reference' => 'Patient/'.$this->patient->name,
+                        'display' => $this->patient->name,
                     ],
-                    "required" => "required",
-                    "status" => "accepted"
+                    'required' => 'required',
+                    'status' => 'accepted',
                 ],
                 [
-                    "actor" => [
-                        "reference" => "Practitioner/" .$this->practitioner->name,
-                        "display" => $this->practitioner->name
+                    'actor' => [
+                        'reference' => 'Practitioner/'.$this->practitioner->name,
+                        'display' => $this->practitioner->name,
                     ],
-                    "required" => "required",
-                    "status" => "accepted"
-                ]
+                    'required' => 'required',
+                    'status' => 'accepted',
+                ],
             ],
-            "start" => $this->start ? $this->start->toISOString() : null,
-            "end" => $this->end ? $this->end->toISOString() : null,
-            "comment" => $this->description,
-            "patientInstruction" => $this->patient->phone ? "Contacto: " . $this->patient->phone : null
+            'start' => $this->start ? $this->start->toISOString() : null,
+            'end' => $this->end ? $this->end->toISOString() : null,
+            'comment' => $this->description,
+            'patientInstruction' => $this->patient->phone ? 'Contacto: '.$this->patient->phone : null,
         ];
     }
 
@@ -254,8 +255,9 @@ class Appointment extends Model
             ->orderBy('start');
     }
 
-    public function addPatientToPractitionerClient(){
-        $this->patient->clients()->sync($this->client_id,array('created_at'=>now(),'updated_at'=>now()));
+    public function addPatientToPractitionerClient()
+    {
+        $this->patient->clients()->sync($this->client_id, ['created_at' => now(), 'updated_at' => now()]);
     }
 
     // Notificación al practitioner sobre propuesta
@@ -276,7 +278,7 @@ class Appointment extends Model
     public function wasDateTimeChanged(): bool
     {
         return $this->practitioner_suggested_datetime &&
-            !$this->practitioner_suggested_datetime->eq($this->original_requested_datetime);
+            ! $this->practitioner_suggested_datetime->eq($this->original_requested_datetime);
     }
 
     public function notifyPatientAboutRejection($rejectionReason = null, $alternatives = [])
@@ -285,7 +287,6 @@ class Appointment extends Model
             new AppointmentRejectedNotification($this, $rejectionReason)
         );
     }
-
 
     // Notificación al paciente sobre cancelación de cita confirmada
     public function notifyPatientAboutCancellation($cancellationReason = null)
@@ -308,8 +309,9 @@ class Appointment extends Model
             \Log::info('Appointment reminder not scheduled - appointment is too soon', [
                 'appointment_id' => $this->id,
                 'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
-                'hours_until' => $hoursUntilAppointment
+                'hours_until' => $hoursUntilAppointment,
             ]);
+
             return false;
         }
 
@@ -323,10 +325,9 @@ class Appointment extends Model
             'patient_id' => $this->patient_id,
             'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
             'reminder_datetime' => $reminderTime->format('Y-m-d H:i:s'),
-            'hours_until_appointment' => $hoursUntilAppointment
+            'hours_until_appointment' => $hoursUntilAppointment,
         ]);
 
         return true;
     }
 }
-

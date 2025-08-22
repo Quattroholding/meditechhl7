@@ -11,9 +11,9 @@ class ServiceRequest extends Model
 {
     use SoftDeletes;
 
-    protected $fillable=['fhir_id','encounter_id','patient_id','practitioner_id','status','intent','priority','do_not_perform','code','service_type',
-        'code_system','code_display','quantity','quantity_unit','occurrence_start','occurrence_end','body_site','note','patient_instruction',
-        'supporting_info','reason_code','reason_reference','authored_on','last_updated'];
+    protected $fillable = ['fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status', 'intent', 'priority', 'do_not_perform', 'code', 'service_type',
+        'code_system', 'code_display', 'quantity', 'quantity_unit', 'occurrence_start', 'occurrence_end', 'body_site', 'note', 'patient_instruction',
+        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id'];
 
     protected $casts = [
         'body_site' => 'array',
@@ -53,15 +53,18 @@ class ServiceRequest extends Model
         return $this->status === 'completed';
     }
 
-    public function cpt(){
-        return $this->belongsTo(CptCode::class,'code','code');
+    public function cpt()
+    {
+        return $this->belongsTo(CptCode::class, 'code', 'code');
     }
 
-    public function getOccurrenceStartAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getOccurrenceStartAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
     }
 
-    public function getOccrrenceEndAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getOccrrenceEndAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
     }
 }

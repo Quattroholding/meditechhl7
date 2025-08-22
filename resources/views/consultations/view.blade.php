@@ -225,13 +225,9 @@
                                                     <tbody>
                                                         @foreach($encounter->medicationRequests as $medication)
                                                             <tr>
-                                                                <td>{{ $medication->medicine->full_name }}</td>
-                                                                <td>{{ $medication->dosage_text }}</td>
-                                                                <td>
-                                                                    <span class="badge badge-{{ $medication->status == 'active' ? 'success' : 'secondary' }}">
-                                                                        {{ ucfirst($medication->status) }}
-                                                                    </span>
-                                                                </td>
+                                                                <td>{{ $medication->medicine ? $medication->medicine->full_name :  $medication->medication }}</td>
+                                                                <td>{{ $medication->dosage_instruction }}</td>
+                                                                <td>{!! $medication->status !!}</td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -252,6 +248,7 @@
                                                         <tr>
                                                             <th>{{ __('encounter.service_code') }}</th>
                                                             <th>{{ __('encounter.service_description') }}</th>
+                                                            <th>{{ __('encounter.type') }}</th>
                                                             <th>{{ __('encounter.status') }}</th>
                                                             <th>{{ __('encounter.request_date') }}</th>
                                                             <th>{{ __('encounter.priority') }}</th>
@@ -262,11 +259,13 @@
                                                             <tr>
                                                                 <td>{{ $service->code }}</td>
                                                                 <td>{{ $service->cpt->description_es }}</td>
+                                                                <td>{{$service->service_type}}</td>
                                                                 <td>
                                                                     <span class="badge badge-{{ $service->status == 'active' ? 'success' : 'secondary' }}">
                                                                         {{ ucfirst($service->status) }}
                                                                     </span>
                                                                 </td>
+
                                                                 <td>{{ $service->authored_on ? $service->authored_on->format('Y-m-d H:i') : 'N/A' }}</td>
                                                                 <td>{{ ucfirst($service->priority) }}</td>
                                                             </tr>

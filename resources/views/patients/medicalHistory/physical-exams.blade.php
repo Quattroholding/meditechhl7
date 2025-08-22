@@ -142,7 +142,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b;">
                         <div>
                             @if($exam->encounter)
-                                <span>📅 Consulta: {{ Carbon\Carbon::parse($exam->encounter->encounter_date)->format('d/m/Y') }}</span>
+                                <span>📅 Consulta: {{ Carbon\Carbon::parse($exam->encounter->end)->format('d/m/Y') }}</span>
                             @endif
                         </div>
                         <div>

@@ -3,21 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PhysicalExam extends Model
 {
     protected $fillable = [
-        'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status',
-        'category', 'code', 'description', 'method', 'conclusion', 'effective_date'
+        'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status', 'finding',
+        'category', 'code', 'description', 'method', 'conclusion', 'effective_date',
     ];
 
     protected $casts = [
         'effective_date' => 'datetime',
         'body_site' => 'array',
         'finding' => 'array',
-        'media' => 'array'
+        'media' => 'array',
     ];
 
     // Relaciones

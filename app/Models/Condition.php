@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Condition extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'fhir_id', 'patient_id', 'encounter_id', 'practitioner_id', 'identifier',
         'clinical_status', 'verification_status', 'code', 'category', 'severity',
-        'onset_date', 'abatement_date', 'recorded_date', 'note', 'evidence',
-        'extension'
+        'onset_date', 'onset_info', 'abatement_date', 'recorded_date', 'note', 'evidence',
+        'extension',
     ];
 
     protected $casts = [
@@ -21,7 +22,7 @@ class Condition extends Model
         'abatement_date' => 'date',
         'recorded_date' => 'date',
         'evidence' => 'array',
-        'extension' => 'array'
+        'extension' => 'array',
     ];
 
     // Relaciones
@@ -42,7 +43,7 @@ class Condition extends Model
 
     public function icd10Code(): BelongsTo
     {
-        return $this->belongsTo(Icd10Code::class,'code','code');
+        return $this->belongsTo(Icd10Code::class, 'code', 'code');
     }
 
     // Accesor para el recurso FHIR
@@ -54,49 +55,49 @@ class Condition extends Model
             'identifier' => [
                 [
                     'system' => 'http://hospital.sistema/conditions',
-                    'value' => $this->identifier
-                ]
+                    'value' => $this->identifier,
+                ],
             ],
             'clinicalStatus' => [
                 'coding' => [
                     [
                         'system' => 'http://terminology.hl7.org/CodeSystem/condition-clinical',
-                        'code' => $this->clinical_status
-                    ]
-                ]
+                        'code' => $this->clinical_status,
+                    ],
+                ],
             ],
             'verificationStatus' => [
                 'coding' => [
                     [
                         'system' => 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
-                        'code' => $this->verification_status
-                    ]
-                ]
+                        'code' => $this->verification_status,
+                    ],
+                ],
             ],
             'category' => [
                 [
                     'coding' => [
                         [
                             'system' => 'http://terminology.hl7.org/CodeSystem/condition-category',
-                            'code' => $this->category
-                        ]
-                    ]
-                ]
+                            'code' => $this->category,
+                        ],
+                    ],
+                ],
             ],
             'code' => [
                 'coding' => [
                     [
                         'system' => 'http://hl7.org/fhir/sid/icd-10',
                         'code' => $this->code,
-                        'display' => $this->description
-                    ]
-                ]
+                        'display' => $this->description,
+                    ],
+                ],
             ],
             'subject' => [
-                'reference' => 'Patient/' . $this->patient->fhir_id
+                'reference' => 'Patient/'.$this->patient->fhir_id,
             ],
             'encounter' => [
-                'reference' => 'Encounter/' . ($this->encounter->fhir_id ?? '')
+                'reference' => 'Encounter/'.($this->encounter->fhir_id ?? ''),
             ],
             'recordedDate' => $this->recorded_date->toIso8601String(),
         ];
@@ -107,6 +108,7 @@ class Condition extends Model
     {
         $conditions = collect($this->getCommonConditions());
         $found = $conditions->firstWhere('code', $this->code);
+
         return $found['description'] ?? 'Condición no especificada';
     }
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->foreignId('practitioner_id')->constrained('practitioners');
-            $table->foreignId('referred_to_id')->constrained('practitioners')->comment('Especialista referido');
+            $table->foreignId('referred_to_id')->nullable()->constrained('practitioners')->comment('Especialista referido');
             $table->string('identifier')->unique();
             $table->enum('status', ['draft', 'active', 'on-hold', 'revoked', 'completed', 'entered-in-error', 'unknown']);
             $table->enum('intent', ['proposal', 'plan', 'directive', 'order', 'original-order', 'reflex-order', 'filler-order', 'instance-order', 'option']);

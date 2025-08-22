@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orden Médica</title>
-    
+
     <!-- CSS del tema del cliente -->
     {!! $clientThemeCSS !!}
-    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -257,10 +257,10 @@
     <!-- Header -->
     <div class="header">
         <div class="clinic-name">
-            {{ $encounter->appointment->client->name ?? 'Centro Médico' }}
+            {{ $client->name ?? 'Centro Médico' }}
         </div>
-        <div>{{ $practitioner->user->clients->first()->address ?? '' }}</div>
-        <div>Tel: {{ $encounter->appointment->client->whatsapp ?? '' }}</div>
+        <div>{{ $client->address ?? '' }}</div>
+        <div>Tel: {{ $client->whatsapp ?? '' }}</div>
         <div class="document-title">ORDEN MÉDICA</div>
         <div class="order-number">No. {{ $orderNumber }}</div>
     </div>
@@ -320,12 +320,16 @@
             {{--}}
             <div class="diagnosis-title">{{ $diagnosis->use ?? 'Diagnóstico' }}:</div>
             {{--}}
+            @if($diagnosis->condition->icd10Code)
             <div>{{ $diagnosis->condition->icd10Code->description_es ?? 'Diagnóstico no especificado' }}</div>
             @if($diagnosis->condition->icd10_code)
                 <div style="font-size: 10px; color: #7f8c8d;">CIE-10: {{ $diagnosis->condition->icd10_code }}</div>
             @endif
             @if($diagnosis->note)
                 <div style="font-size: 10px; color: #7f8c8d; margin-top: 3px;">{{ $diagnosis->note }}</div>
+            @endif
+            @else
+                {{$diagnosis->condition->onset_info}}
             @endif
         </div>
         @endforeach
@@ -448,7 +452,7 @@
                     <div class="signature-line"></div>
                 @endif
                 <div class="signature-label">Firma del Médico</div>
-                <div class="signature-label">Dr(a). {{ $practitioner->user->name }}</div>
+                <div class="signature-label">{{ $practitioner->name }}</div>
                 <div class="signature-label">Reg. {{ $practitioner->license_number ?? 'N/A' }}</div>
             </div>
             <div class="signature-right">

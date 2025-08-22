@@ -9,8 +9,8 @@ class PresentIllness extends Model
 {
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'description',
-        'location', 'severity', 'duration','timing', 'onset', 'onset_date',
-        'aggravating_factors', 'alleviating_factors', 'associated_symptoms','timeline'
+        'location', 'locations', 'severity', 'duration', 'timing', 'onset', 'onset_date',
+        'aggravating_factors', 'alleviating_factors', 'associated_symptoms', 'timeline',
     ];
 
     protected $casts = [
