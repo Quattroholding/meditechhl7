@@ -101,7 +101,7 @@ class MigrateAppointmentsFromSCB extends Command
             }
 
             // Add order by for consistent results
-            $baseQuery .= ' ORDER BY a.id DESC';
+            $baseQuery .= ' ORDER BY a.id';
 
             // Get total count first (without limit for accurate count)
             $countQuery = "SELECT COUNT(*) as total FROM (
