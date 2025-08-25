@@ -16,7 +16,7 @@ class RolScope implements Scope
         if(auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {
             $builder->whereIn('id',[3]);
         }elseif(auth()->user() && auth()->user()->hasRole('admin client')){
-            $builder->whereIn('id',[3]);
+            $builder->whereIn('id',[5]);
         }
     }
 }

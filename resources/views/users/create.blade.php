@@ -137,7 +137,7 @@
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="whatsapp" :value="__('user.phone')" />
-                                        <input   wire:model="whatsapp_phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="whatsapp_phone" value="{{old('phone')}}">
+                                        <input   id="phone" class="block mt-1 w-full input-phone" type="tel" name="whatsapp_phone" value="{{old('phone')}}">
                                         <x-input-error :messages="$errors->get('whatsapp_phone')" class="mt-2" />
                                     </div>
                                 </div>
@@ -240,7 +240,7 @@
                     /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
                     case 5:
                     /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
-                    case 3:
+                    case 5:
                         $("#whatsapp").show();
                     /*-----FORMULARIO PARA ROLE ADMIN-----*/
                     case 1:
@@ -254,7 +254,7 @@
                         $("#confirm_password").show();
                         break;
                     /*-----FORMULARIO PARA ROLE DOCTOR-----*/
-                    case 2:
+                    case 3:
                         $("#client_id").show();
                         $("#id_type").show();
                         $("#id_number").show();

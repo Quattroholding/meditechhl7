@@ -28,7 +28,7 @@ class UserFormRequest extends FormRequest
         // Reglas de validación base
         $rules['rol'] = 'required|integer';
         switch ($rol) {
-            case '3':
+            case '5':
             /*------VALIDACIÓN PARA ASISTENTE------*/
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
@@ -36,7 +36,7 @@ class UserFormRequest extends FormRequest
                 $rules['password'] = 'required|string|confirmed';//|min:8';
                 $rules['clients'] = 'required|array|min:1';
                 break;
-            case '5':
+            case '3':
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';

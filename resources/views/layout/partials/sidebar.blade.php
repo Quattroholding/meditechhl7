@@ -62,7 +62,7 @@
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
                         @endcan
                         @can('users.create')
-                        <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>3)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
+                        <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>5)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
                         @endcan
                     </ul>
                 </li>
@@ -284,7 +284,7 @@
                     </ul>
                 </li>
                 @endcanany
-                
+
                 @can('manage insurances')
                 <li class="menu-side">
                     <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">

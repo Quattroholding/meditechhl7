@@ -25,7 +25,7 @@ class PractitionerController extends Controller
     }
 
     public function create(){
-        
+
         $clients = (auth()->user()->hasRole('admin')) ? Client::all()->pluck('long_name','id')->toArray() : Client::whereIn('id',auth()->user()->clients->pluck('id'))->pluck('long_name','id')->toArray();
         return view('practitioners.create',compact('clients'));
     }
@@ -33,7 +33,9 @@ class PractitionerController extends Controller
      public function edit($id){
         $data = Practitioner::find($id);
         //dd($data->specialties);
-        $practitioner_clients = $data->user->clients->pluck('id')->toArray();
+         $practitioner_clients = Client::whereId(1)->pluck('id')->toArray();
+         if($data->user)
+            $practitioner_clients = $data->user->clients->pluck('id')->toArray();
         $specialties = $data->qualifications->pluck('medical_speciality_id')->toArray();
          $clients = Client::pluck('long_name','id')->toArray();
         //dd($qualifications, $practitioner_clients);
@@ -152,21 +154,26 @@ class PractitionerController extends Controller
 
             DB::transaction(function () use($practitioner,$request){
 
-                   $practitioner->user->first_name = $request->first_name;
-                   $practitioner->user->last_name = $request->last_name;
-                   //$practitioner->user->email = $request->email;
-                   $practitioner->user->save();
-
-                    $sync=[];
-                    $clients = $request->clients;
-                    foreach($clients as $client){
-                        $sync[$client]=array('client_id' => $client, 'created_at' => now()->format('Y-m-d H:i:s'), 'updated_at' => now()->format('Y-m-d H:i:s'), 'user_id' => $practitioner->user_id);
+                    if($practitioner->user){
+                        $practitioner->user->fill($request->all());
+                        $practitioner->user->first_name = $request->first_name;
+                        $practitioner->user->last_name = $request->last_name;
+                        //$practitioner->user->email = $request->email;
+                        $practitioner->user->save();
+                        $sync=[];
+                        $clients = $request->clients;
+                        foreach($clients as $client){
+                            $sync[$client]=array('client_id' => $client, 'created_at' => now()->format('Y-m-d H:i:s'), 'updated_at' => now()->format('Y-m-d H:i:s'), 'user_id' => $practitioner->user_id);
+                        }
+                        $practitioner->user->clients()->sync($sync);
                     }
-                    $practitioner->user->clients()->sync($sync);
+
                     //$model->assignRole('doctor');
 
                     $practitioner->fill($request->except('birth_date', 'phone'));
-                    $practitioner->name = 'Dr. '.$request->first_name.' '.$request->last_name;
+                    $prefix = 'Dr. ';
+                    if($request->gender == 'female') $prefix='Dra. ';
+                    $practitioner->name = $prefix.$request->first_name.' '.$request->last_name;
                     $practitioner->given_name = $request->first_name;
                     $practitioner->phone = $request->full_phone;
                     $practitioner->family_name = $request->last_name;
@@ -176,12 +183,7 @@ class PractitionerController extends Controller
                     $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                     $fecha->setTime(0, 0, 0);
                     $practitioner->birth_date = $fecha->format('Y-m-d H:i:s');
-                    //ASIGNACIÓN DE DATOS AL MODELO
-                    //$practitioner->fhir_id = 'practitioner-' . Str::uuid();
-                    //$practitioner->user_id = $model->id;
-                    $user=User::findOrFail($practitioner->user_id);
-                    $user->fill($request->all());
-                    $user->save();
+
                     if($practitioner->save()){
                         if($request->has('medical_speciality')){
                             $specialties = $request->medical_speciality;

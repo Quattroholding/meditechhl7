@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Branch;
 use App\Models\Client;
 use App\Models\User;
+use App\Models\UserClient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -48,10 +49,16 @@ class ClientFactory extends Factory
                 ->create([
                     'first_name' =>$givenName,
                     'last_name' => $last_name,
-                    'email' => substr($givenName,0,1).$last_name.'@clinica.com'
+                    'email' => substr($givenName,0,1).$last_name.'@clinica.com',
+                    'default_client_id'=>$c->id,
                 ]);
 
             Branch::factory()->count(1)->create(['client_id'=>$c->id]);
+
+            UserClient::create([
+                'user_id' => $user->id,
+                'client_id' => $c->id,
+            ]);
         });
     }
 }
