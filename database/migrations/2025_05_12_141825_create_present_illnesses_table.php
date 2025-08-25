@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('description')->comment('Narrativa de la enfermedad actual');
             $table->string('location')->nullable()->comment('Localización anatómica');
             $table->json('locations')->nullable()->comment('Localización anatómica multiple');
-            $table->enum('severity', ['mild', 'moderate', 'severe', 'disabling'])->nullable();
+            $table->enum('severity', ['mild', 'moderate', 'severe', 'disabling','unknown'])->nullable();
             $table->string('duration', 50)->nullable()->comment('Duración de los síntomas');
             $table->string('timing', 50)->nullable()->comment('Momento del dia de los síntomas');
             $table->enum('onset', ['sudden', 'acute', 'gradual'])->nullable();

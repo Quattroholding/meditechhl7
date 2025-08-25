@@ -13,6 +13,7 @@ use App\Models\MedicationRequest;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\PresentIllnesType;
+use App\Models\ServiceRequestResult;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -448,7 +449,7 @@ class MigrateAppointmentsFromSCB extends Command
         foreach ($vitalSigsCode as $key => $value) {
             $vs = $encounter->vitalSigns()->whereEncounterId($encounter->id)->whereCode($value)->first();
 
-            if (! $vs && $vitalSCB && ! empty($vitalSCB[0]->$key) && ! in_array($vitalSCB[0]->$key, ['-', '.'])) {
+            if (! $vs && $vitalSCB && count($vitalSCB) > 0 && ! empty($vitalSCB[0]->$key) && ! in_array($vitalSCB[0]->$key, ['-', '.'])) {
                 $vsType = ClinicalObservationType::whereCode($value)->first();
                 $encounter->vitalSigns()->create([
                     'fhir_id' => 'observation-'.fake()->uuid(),
@@ -491,7 +492,7 @@ class MigrateAppointmentsFromSCB extends Command
 
             $vsType = ClinicalObservationType::whereCode($value)->first();
 
-            if (! $pe && ! empty($physicalSCB[0]->$key)) {
+            if (! $pe && $physicalSCB && count($physicalSCB) > 0 && ! empty($physicalSCB[0]->$key)) {
                 $encounter->physicalExams()->create([
                     'fhir_id' => 'observation-'.fake()->uuid(),
                     'code' => $value,
@@ -523,10 +524,10 @@ class MigrateAppointmentsFromSCB extends Command
             'associated_symptoms' => strtolower($appSCB->symptoms),
             'aggravating_factors' => strtolower($appSCB->modifying_factor),
             'locations' => array_values($location),
-            'location' => $location[0],
-            'severity' => $severity->value,
-            'duration' => $duration->value,
-            'timing' => $timing->value,
+            'location' => count($location) > 0 ? $location[0] : null,
+            'severity' => $severity ? $severity->value : 'unknown',
+            'duration' => $duration ? $duration->value : 'unknown',
+            'timing' => $timing ? $timing->value : 'unknown',
             'patient_id' => $encounter->patient_id,
             'practitioner_id' => $encounter->practitioner_id,
             'onset_date' => $encounter->start,
@@ -551,7 +552,7 @@ class MigrateAppointmentsFromSCB extends Command
             ];
 
             foreach ($exams as $exam) {
-                $encounter->serviceRequests()->create([
+                $sr = $encounter->serviceRequests()->create([
                     'fhir_id' => 'servicerequest-'.Str::uuid(),
                     'patient_id' => $encounter->patient_id,
                     'practitioner_id' => $encounter->practitioner_id,
@@ -570,6 +571,56 @@ class MigrateAppointmentsFromSCB extends Command
                     'service_group' => json_encode($serviceGroup),
                     'group_position' => array_search($exam, $exams) + 1,
                 ]);
+
+                if($sr){
+                    //BUSCAR LOS APPOINTMENTS_DETAIL por consultation EXAM
+                    $results= DB::connection('scb')->select("SELECT ad.CPT_TYPE ,ad.INSURANCE ,d.ICD10_CODE_HOMOLOGADO   ,adf.id,adf.APPOINTMENT_DETAIL_ID ,adf.CREATED_AT ,adf.PATH ,adf.DOC_NAME ,adf.DOC_TYPE ,adf.DOC_SUB_TYPE ,adf.FILE_HASH ,adf.UPLOADED_BY_NAME
+                                                                        FROM APPOINTMENTS_DETAIL ad ,APPOINTMENTS_DETAIL_FILES adf ,DIAGNOSTICS d
+                                                                        WHERE ad.id = adf.APPOINTMENT_DETAIL_ID
+                                                                        AND ad.DIAG_CODE =d.code
+                                                                        AND ad.DELETED_AT IS NULL AND adf.DELETED_AT IS NULL
+                                                                    AND ad.CONSULTATION_EXAM_ID =".$exam->id);
+
+                    foreach ($results as $rs){
+
+                        $file_hash = hash('sha256', fake()->text(1000));
+                        if(!empty($rs->file_hash)) $file_hash = $rs->file_hash;
+
+                        ServiceRequestResult::create([
+                            'fhir_id'=>fake()->unique()->uuid(),
+                            'service_request_id'=>$sr->id,
+                            'patient_id'=>$encounter->patient_id,
+                            'practitioner_id'=>$encounter->practitioner_id,
+                            'status'=>'final',
+                            'result_type'=>$exam->type,
+                            'code'=>$exam->code,
+                            'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
+                            'file_path'=>$rs->path,
+                            'file_name'=>$rs->doc_name,
+                            'file_type'=>$rs->doc_type,
+                            'file_size'=>fake()->numberBetween(1024, 5242880),// 1KB to 5MB,
+                            'file_hash'=>$file_hash,
+                            'metadata'=>[
+                                'insurance' => $rs->insurance,
+                                'icd10_code' =>$rs->icd10_code_homologado,
+                                'uploaded_by_name' =>$rs->uploaded_by_name,
+                                'resolution' => fake()->optional()->randomElement(['300dpi', '600dpi', '1200dpi']),
+                                'pages' => fake()->numberBetween(1, 10)
+                            ],
+                            'result_date'=>$rs->created_at,
+                            'uploaded_at'=>$rs->created_at,
+                            'observations'=>null,
+                            'notes'=>null,
+                            'interpretation'=>'normal',
+                            'reference_range'=>null,
+                            'specimen_info'=>null,
+                            'version'=>1,
+                            'replaces_id'=>null,
+                            'effective_date'=>$rs->created_at,
+                            'issued_date'=>$rs->created_at,
+                    ]);
+                    }
+                }
             }
         }
     }
@@ -781,6 +832,38 @@ class MigrateAppointmentsFromSCB extends Command
                 return "Cada {$days} días";
             }
         }
+    }
+
+    /**
+     * Genera un resumen de la consulta para mostrar en el progreso
+     *
+     * @param  object  $appSCB  Datos de la cita desde SCB
+     * @param  object  $entity  Encounter o Appointment creado
+     * @return string
+     */
+    private function getConsultationSummary($appSCB, $entity)
+    {
+        $summary = [];
+
+        // Agregar especialidad si existe
+        if (!empty($appSCB->speciality)) {
+            $summary[] = $appSCB->speciality;
+        }
+
+        // Agregar motivo de consulta si existe
+        if (!empty($appSCB->chief_complaint)) {
+            $complaint = substr($appSCB->chief_complaint, 0, 30);
+            if (strlen($appSCB->chief_complaint) > 30) {
+                $complaint .= '...';
+            }
+            $summary[] = $complaint;
+        }
+
+        // Agregar tipo de entidad
+        $entityType = class_basename($entity);
+        $summary[] = $entityType;
+
+        return implode(' | ', array_filter($summary));
     }
 
     /**
