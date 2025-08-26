@@ -14,8 +14,8 @@ class DataTable extends Component
     use WithPagination;
 
     public $search;
-    public $sortDirection='asc';
-    public $sortField='name';
+    public $sortDirection='desc';
+    public $sortField='id';
     public $pagination=10;
     public $route_name='practitioner';
     public $showModal=false;

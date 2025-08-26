@@ -46,7 +46,7 @@
                                     @foreach($existingPolicies as $policy)
                                     <tr>
                                         <td>
-                                            <span class="badge badge-{{ $policy->priority == 'primary' ? 'primary' : ($policy->priority == 'secondary' ? 'secondary' : 'info') }}">
+                                            <span class="badge bg-{{ $policy->priority == 'primary' ? 'primary' : ($policy->priority == 'secondary' ? 'secondary' : 'info') }}">
                                                 {{ ucfirst($policy->priority) }}
                                             </span>
                                         </td>
@@ -56,11 +56,11 @@
                                         <td>{{ $policy->coverage_percentage ?? 0 }}%</td>
                                         <td>
                                             @if($policy->is_active && !$policy->isExpired())
-                                                <span class="badge badge-success">Activo</span>
+                                                <span class="badge bg-success">Activo</span>
                                             @elseif($policy->isExpired())
-                                                <span class="badge badge-warning">Expirado</span>
+                                                <span class="badge bg-warning">Expirado</span>
                                             @else
-                                                <span class="badge badge-secondary">Inactivo</span>
+                                                <span class="badge bg-secondary">Inactivo</span>
                                             @endif
                                         </td>
                                         <td>

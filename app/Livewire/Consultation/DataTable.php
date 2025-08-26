@@ -19,7 +19,7 @@ class DataTable extends Component
     public $actions = [];
     public $search; // Búsqueda
     public $sortField = 'id'; // Ordenación por defecto
-    public $sortDirection = 'asc'; // Dirección de orden
+    public $sortDirection = 'desc'; // Dirección de orden
     public $pagination;
 
     public $count = 0;
