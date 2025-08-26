@@ -19,9 +19,11 @@
                     <form method="POST" action="{{ route('practitioner.update',$data->id) }}" id="form">
                         @csrf
                         <input type="hidden" name="redirect" value="{{route('practitioner.profile',$data->id)}}">
+                        @if($data->user)
                         @foreach($data->user->clients as $cli)
                             <input type="hidden" name="clients[]" value="{{$cli->id}}">
                         @endforeach
+                        @endif
                         <div class="row">
                             <!-- ID NUMBER -->
                             <div class="col-6 col-md-6 col-xl-6">
