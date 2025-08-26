@@ -28,7 +28,16 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.'/auth.php';
 
 Route::get('/', function () {
-    return view('welcome');
+    $practitioners = \App\Models\Practitioner::with(['specialties', 'files'])
+        ->active()
+        ->limit(12)
+        ->get();
+    
+    $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function($query) {
+        $query->where('active', true);
+    })->get();
+    
+    return view('welcome', compact('practitioners', 'specialties'));
 })->name('welcome');
 
 Route::get('/register', function () {

@@ -23,7 +23,7 @@ class Appointments extends Component
     {
         $appointments = Appointment::where('patient_id', $this->patient_id)
             ->with(['practitioner', 'consultingRoom'])
-            ->orderBy('appointment_date', 'desc')
+            ->orderBy('start', 'desc')
             ->paginate($this->perPage);
 
         return view('livewire.patient.tabs.appointments', compact('appointments'));

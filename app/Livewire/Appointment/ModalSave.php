@@ -302,6 +302,7 @@ class ModalSave extends Component
             }
 
             $practitioner = Practitioner::find($this->appointment->practitioner_id);
+
             $clientId=null;
             $userClient = UserClient::whereUserId($practitioner->user_id)->first();
             if($userClient) $clientId= $userClient->client_id;

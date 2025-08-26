@@ -166,12 +166,12 @@ class MigratePatientsFromSCB extends Command
                     }
 
                     $patient = new Patient;
-                    $patient->given_name = $patientSCB->name;
-                    $patient->family_name = $patientSCB->surrname;
+                    $patient->given_name = ucfirst(strtolower($patientSCB->name));
+                    $patient->family_name = ucfirst(strtolower($patientSCB->surrname));
                     $patient->email = $patientSCB->e_mail;
                     $patient->phone = $patientSCB->phone;
                     $patient->whatsapp_phone = $patientSCB->whatsapp;
-                    $patient->name = $patientSCB->name.' '.$patientSCB->surrname;
+                    $patient->name = ucfirst(strtolower($patientSCB->name)).' '.ucfirst(strtolower($patientSCB->surrname));
                     $patient->user_id = $model->id;
                     $patient->gender = $gender;
                     $patient->birth_date = $patientSCB->birthdate;

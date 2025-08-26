@@ -13,9 +13,9 @@
                         <tr>
                             <th>Fecha y Hora</th>
                             <th>Médico</th>
+                            <th>Estado</th>
                             <th>Especialidad</th>
                             <th>Consultorio</th>
-                            <th>Estado</th>
                             <th>Tipo</th>
                         </tr>
                     </thead>
@@ -23,8 +23,8 @@
                         @foreach($appointments as $appointment)
                         <tr>
                             <td>
-                                <div class="fw-medium">{{ $appointment->appointment_date->format('d/m/Y') }}</div>
-                                <small class="text-muted">{{ $appointment->start_time }} - {{ $appointment->end_time }}</small>
+                                <div class="fw-medium">{{ $appointment->start->format('d/m/Y') }}</div>
+                                <small class="text-muted">{{ $appointment->start->format('H:i') }} - {{ $appointment->end->format('H:i') }}</small>
                             </td>
                             <td>
                                 @if($appointment->practitioner)
@@ -50,8 +50,11 @@
                                 @endif
                             </td>
                             <td>
+                                <livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/>
+                            </td>
+                            <td>
                                 <span class="badge bg-info">
-                                    {{ $appointment->practitioner?->specialty ?? 'General' }}
+                                    {{ $appointment->medicalSpeciality?->name ?? 'General' }}
                                 </span>
                             </td>
                             <td>
@@ -62,30 +65,7 @@
                                     <span class="text-muted">Sin consultorio</span>
                                 @endif
                             </td>
-                            <td>
-                                @switch($appointment->status)
-                                    @case('scheduled')
-                                        <span class="badge bg-primary">Programada</span>
-                                        @break
-                                    @case('confirmed')
-                                        <span class="badge bg-info">Confirmada</span>
-                                        @break
-                                    @case('in-progress')
-                                        <span class="badge bg-warning">En Curso</span>
-                                        @break
-                                    @case('completed')
-                                        <span class="badge bg-success">Completada</span>
-                                        @break
-                                    @case('cancelled')
-                                        <span class="badge bg-danger">Cancelada</span>
-                                        @break
-                                    @case('no-show')
-                                        <span class="badge bg-dark">No Asistió</span>
-                                        @break
-                                    @default
-                                        <span class="badge bg-secondary">{{ ucfirst($appointment->status) }}</span>
-                                @endswitch
-                            </td>
+
                             <td>
                                 @switch($appointment->appointment_type)
                                     @case('consultation')
@@ -101,7 +81,7 @@
                                         <span class="badge bg-info">Rutina</span>
                                         @break
                                     @default
-                                        <span class="badge bg-light text-dark">{{ ucfirst($appointment->appointment_type ?? 'General') }}</span>
+                                        <span class="badge bg-light text-dark">{{ ucfirst($appointment->service_type ?? 'General') }}</span>
                                 @endswitch
                             </td>
                         </tr>

@@ -11,8 +11,9 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Diagnóstico</th>
                             <th>Código ICD-10</th>
+                            <th>Diagnóstico</th>
+
                             <th>Estado</th>
                             <th>Médico</th>
                             <th>Fecha</th>
@@ -22,17 +23,16 @@
                         @foreach($conditions as $condition)
                         <tr>
                             <td>
-                                <div class="fw-medium">{{ $condition->diagnosis_name }}</div>
-                                @if($condition->notes)
-                                    <small class="text-muted">{{ Str::limit($condition->notes, 50) }}</small>
+                                @if($condition->icd10Code)
+                                    <code>{{ $condition->icd10Code->code }}</code>
+                                @else
+                                    <span class="text-muted">Sin código</span>
                                 @endif
                             </td>
                             <td>
-                                @if($condition->icd10Code)
-                                    <code>{{ $condition->icd10Code->code }}</code>
-                                    <br><small class="text-muted">{{ Str::limit($condition->icd10Code->description, 30) }}</small>
-                                @else
-                                    <span class="text-muted">Sin código</span>
+                                <div class="fw-medium">{{$condition->onset_info }}</div>
+                                @if($condition->notes)
+                                    <small class="text-muted">{{ Str::limit($condition->notes, 50) }}</small>
                                 @endif
                             </td>
                             <td>
@@ -53,14 +53,14 @@
                             <td>
                                 @if($condition->practitioner)
                                     <div class="fw-medium">{{ $condition->practitioner->name }}</div>
-                                    <small class="text-muted">{{ $condition->practitioner->specialty ?? 'Médico General' }}</small>
+                                    <small class="text-muted">{{ $condition->practitioner->qualifications->first()->display ?? 'Médico General' }}</small>
                                 @else
                                     <span class="text-muted">No asignado</span>
                                 @endif
                             </td>
                             <td>
                                 <div>{{ $condition->onset_date?->format('d/m/Y') ?: $condition->created_at->format('d/m/Y') }}</div>
-                                <small class="text-muted">{{ $condition->created_at->diffForHumans() }}</small>
+                                <small class="text-muted">{{ $condition->recorded_date->diffForHumans() }}</small>
                             </td>
                         </tr>
                         @endforeach

@@ -151,9 +151,9 @@ class MigratePhysiciansFromSCB extends Command
                         $practitioner = new Practitioner;
                         $practitioner->fhir_id = 'practitioner-'.Str::uuid();
                         $practitioner->email = strtolower($physician->correo);
-                        $practitioner->name = 'Dr(a) '.ucfirst($physician->name).' '.ucfirst($physician->surrname);
-                        $practitioner->given_name = ucfirst($physician->name);
-                        $practitioner->family_name = ucfirst($physician->surrname);
+                        $practitioner->name = 'Dr(a) '.ucfirst(strtolower($physician->name)).' '.ucfirst(strtolower($physician->surrname));
+                        $practitioner->given_name = ucfirst(strtolower($physician->name));
+                        $practitioner->family_name = ucfirst(strtolower($physician->surrname));
                         $practitioner->identifier_type = 'CC';
                         $identifier = $physician->identification;
                         if (empty($identifier)) {

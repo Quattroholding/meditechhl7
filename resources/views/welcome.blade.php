@@ -406,6 +406,208 @@
         .cloud-icon::before {
             content: "☁️";
         }
+
+        /* Medical Directory Styles */
+        .medical-directory {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .directory-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .directory-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(92.39deg, #4E57CD 1.86%, #2E37A4 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .practitioners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .practitioner-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .practitioner-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(78, 87, 205, 0.15);
+            border-color: #4E57CD;
+        }
+
+        .practitioner-image {
+            position: relative;
+            text-align: center;
+            padding: 2rem 2rem 0;
+        }
+
+        .doctor-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .online-status {
+            position: absolute;
+            top: 2rem;
+            right: 2.5rem;
+            width: 16px;
+            height: 16px;
+            background: #10b981;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .practitioner-info {
+            padding: 1.5rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .practitioner-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .practitioner-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .specialty-tag {
+            background: rgba(78, 87, 205, 0.1);
+            color: #4E57CD;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .specialty-tag.more {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+        }
+
+        .practitioner-registry {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .practitioner-contact {
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .contact-icon {
+            font-size: 1rem;
+        }
+
+        .appointment-btn {
+            background: linear-gradient(92.39deg, #4E57CD 1.86%, #2E37A4 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .appointment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(78, 87, 205, 0.3);
+        }
+
+        .directory-cta {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(78, 87, 205, 0.05);
+            border-radius: 20px;
+            border: 2px dashed rgba(78, 87, 205, 0.2);
+        }
+
+        .directory-cta p {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .practitioner-card.hidden {
+            display: none;
+        }
+
+        /* Responsive Medical Directory */
+        @media (max-width: 768px) {
+            .practitioners-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .directory-filters {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -416,6 +618,7 @@
         <ul class="nav-links">
             <li><a href="#inicio">Inicio</a></li>
             <li><a href="#caracteristicas">Características</a></li>
+            <li><a href="#directorio">Directorio Médico</a></li>
             <li><a href="#beneficios">Beneficios</a></li>
             <li><a href="#contacto">Contacto</a></li>
         </ul>
@@ -492,17 +695,90 @@
     </div>
 </section>
 
+<!-- Medical Directory Section -->
+<section class="medical-directory" id="directorio">
+    <div class="container">
+        <h2 class="section-title animate-on-scroll">Directorio Médico</h2>
+        <p class="directory-subtitle animate-on-scroll">Conoce a nuestro equipo de especialistas médicos certificados</p>
+
+        <div class="directory-filters animate-on-scroll">
+            <button class="filter-btn active" data-specialty="all">Todas las Especialidades</button>
+            @foreach($specialties as $specialty)
+            <button class="filter-btn" data-specialty="{{ $specialty->id }}">{{ $specialty->name }}</button>
+            @endforeach
+        </div>
+
+        <div class="practitioners-grid" id="practitioners-grid">
+            @foreach($practitioners as $practitioner)
+            <div class="practitioner-card animate-on-scroll" data-specialty="{{ $practitioner->specialties->pluck('id')->implode(' ') }}">
+                <div class="practitioner-image">
+                    @if($practitioner->avatar())
+                        <img src="{{ asset('storage/' . $practitioner->avatar()->path) }}" alt="{{ $practitioner->name }}" class="doctor-photo">
+                    @else
+                        <img src="{{ asset('assets/img/profiles/avatar-02.jpg') }}" alt="{{ $practitioner->name }}" class="doctor-photo">
+                    @endif
+                    <div class="online-status"></div>
+                </div>
+
+                <div class="practitioner-info">
+                    <h3 class="practitioner-name">{{ $practitioner->name }}</h3>
+                    <div class="practitioner-specialties">
+                        @foreach($practitioner->specialties->take(2) as $specialty)
+                            <span class="specialty-tag">{{ $specialty->name }}</span>
+                        @endforeach
+                        @if($practitioner->specialties->count() > 2)
+                            <span class="specialty-tag more">+{{ $practitioner->specialties->count() - 2 }} más</span>
+                        @endif
+                    </div>
+
+                    @if($practitioner->registry)
+                        <p class="practitioner-registry">Registro: {{ $practitioner->registry }}</p>
+                    @endif
+
+                    <div class="practitioner-contact">
+                        @if($practitioner->phone)
+                            <div class="contact-item">
+                                <span class="contact-icon">📞</span>
+                                <span>{{ $practitioner->phone }}</span>
+                            </div>
+                        @endif
+                        @if($practitioner->email)
+                            <div class="contact-item">
+                                <span class="contact-icon">✉️</span>
+                                <span>{{ $practitioner->email }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="practitioner-actions">
+                        <a href="{{ route('patient.register') }}" class="appointment-btn">
+                            📅 Agendar Cita
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        {{--}}
+        <div class="directory-cta animate-on-scroll">
+            <p>¿Eres médico? Únete a nuestro directorio médico</p>
+            <a href="{{ route('login') }}" class="cta-btn">Registrarse como Médico</a>
+        </div>
+        {{--}}
+    </div>
+</section>
+
 <!-- Stats Section -->
 <section class="stats">
     <div class="container">
         <div class="stats-grid animate-on-scroll">
             <div class="stat-item">
-                <h3>500+</h3>
+                <h3>{{ $practitioners->count() }}+</h3>
                 <p>Doctores Activos</p>
             </div>
             <div class="stat-item">
-                <h3>50+</h3>
-                <p>Clínicas Registradas</p>
+                <h3>{{ $specialties->count() }}+</h3>
+                <p>Especialidades Médicas</p>
             </div>
             <div class="stat-item">
                 <h3>10,000+</h3>
@@ -641,6 +917,37 @@
     if (statsSection) {
         statsObserver.observe(statsSection);
     }
+
+    // Medical Directory Filters
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const practitionerCards = document.querySelectorAll('.practitioner-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                const selectedSpecialty = this.getAttribute('data-specialty');
+
+                practitionerCards.forEach(card => {
+                    const cardSpecialties = card.getAttribute('data-specialty');
+
+                    if (selectedSpecialty === 'all' || cardSpecialties.includes(selectedSpecialty)) {
+                        card.classList.remove('hidden');
+                        // Re-trigger animation
+                        setTimeout(() => {
+                            card.classList.add('animate');
+                        }, 100);
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    });
 </script>
 </body>
 </html>
