@@ -16,9 +16,9 @@
                 </div>
                 <form wire:submit="saveAppointment">
                     @if(!auth()->user()->hasRole('paciente'))
-                        <div class="input-block local-forms">
+                        <div class="input-block local-formss">
                             <x-input-label for="patient_id" :value="__('patient.title')" required/>
-                            <x-select-input  wire:model="patient_id" id="patient_id" name="patient_id" :options="\App\Models\Patient::get()->pluck('name','id')->toArray()"  class="block w-full"/>
+                            <livewire:components.patient-selector wire:model="patient_id" :required="true" />
                             <x-input-error :messages="$errors->get('patient_id')"/>
                         </div>
                     @else
