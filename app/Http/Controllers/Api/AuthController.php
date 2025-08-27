@@ -122,9 +122,18 @@ class AuthController extends Controller
 
 
         }else{
-            $patient->fill($request->all());
-            $patient->name = $request->given_name.' '.$request->family_name;
+            $patient->given_name = $request->first_name;
+            $patient->family_name = $request->last_name;
+            $patient->email = $request->email;
+            $patient->phone = $request->phone;
             $patient->whatsapp_phone = $request->phone;
+            $patient->name = $request->first_name.' '.$request->last_name;
+            $patient->gender = $request->gender;
+            $patient->birth_date = $request->birth_date;
+            $patient->address = $request->physical_address;
+            $patient->marital_status = $request->marital_status;
+            $patient->identifier_type = $request->identifier_type;
+            $patient->identifier = strtoupper($request->identifier);
             $patient->user_id = $user->id;
             $patient->save();
         }
