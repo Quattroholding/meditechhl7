@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
-use App\Models\File;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
@@ -299,7 +298,7 @@ class PatientController extends Controller
                     'updated_at' => now()
                 ]);
 
-                $f = File::create([
+                DB::table('files')->insert([
                     'user_id'=>$user->id,
                     'table_name'=>'patients',
                     'record_id'=>$patient->id,
@@ -307,6 +306,8 @@ class PatientController extends Controller
                     'path'=>$profilePicturePath,
                     'extention'=>$ext,
                     'type'=>'avatar',
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
 
                 // Get updated user data
