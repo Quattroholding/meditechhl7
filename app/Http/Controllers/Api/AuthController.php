@@ -99,7 +99,7 @@ class AuthController extends Controller
 
         $patient =Patient::whereLike('identifier',$request->identifier.'%')
             ->orWhere('email',$request->email)
-            ->get();
+            ->first();
 
         if(!$patient){
             // Crear paciente
