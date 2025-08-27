@@ -283,10 +283,8 @@ class PatientController extends Controller
             $file =  $request->file('profile_picture');
             $ext = $file->getClientOriginalExtension();
 
-            $filename = 'patient_profile_' . $user->id . '_' . time().'.'.$ext;
-            // Subir el archivo
-
-
+            $filename = 'patient_profile_' . $user->id . '_' . time();
+            
             // Subir el archivo
             $profilePicturePath = $fileService->uploadSingleFile(
                 $request->file('profile_picture'),
@@ -295,27 +293,31 @@ class PatientController extends Controller
             );
 
             if ($profilePicturePath) {
-                // Actualizar el campo profile_picture en la tabla users
-                $user->profile_picture = 'patients/'.$filename;
-                $user->save();
-
+                // Actualizar el campo profile_picture en la tabla users usando DB directo
+                DB::table('users')->where('id', $user->id)->update([
+                    'profile_picture' => $profilePicturePath,
+                    'updated_at' => now()
+                ]);
 
                 $f = File::create([
                     'user_id'=>$user->id,
                     'table_name'=>'patients',
                     'record_id'=>$patient->id,
-                    'name'=>$filename,
-                    'path'=>'patients/'.$filename,
+                    'name'=>basename($profilePicturePath),
+                    'path'=>$profilePicturePath,
                     'extention'=>$ext,
                     'type'=>'avatar',
                 ]);
 
+                // Get updated user data
+                $updatedUser = DB::table('users')->where('id', $user->id)->first();
+                
                 return response()->json([
                     'message' => 'Foto de perfil actualizada exitosamente.',
                     'data' => [
                         'profile_picture' => $profilePicturePath,
                         'profile_picture_url' => url('storage/' . $profilePicturePath),
-                        'updated_at' => $user->updated_at,
+                        'updated_at' => $updatedUser->updated_at,
                     ],
                 ]);
             }
