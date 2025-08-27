@@ -67,26 +67,28 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
+            'email' => 'required|string|email|max:255',
             'identifier' => ['required', 'regex:'.$this->getIdPattern($request->identifier_type)],
             'identifier_type' => 'required',
             'given_name' => 'required|string|max:255',
             'family_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|string|max:20',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female,other',
         ]);
 
+        $user = User::whereEmail($request->email)->first();
 
-
-        // Crear usuario
-        $user = User::create([
-            'first_name' => $request->given_name,
-            'last_name' => $request->family_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        if(!$user){
+            // Crear usuario
+            $user = User::create([
+                'first_name' => $request->given_name,
+                'last_name' => $request->family_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+        }
 
         $user->assignRole('paciente');
 
