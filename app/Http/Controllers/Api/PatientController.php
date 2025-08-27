@@ -380,6 +380,7 @@ class PatientController extends Controller
                 'collections' => [],
             ];
 
+
             // Get paginated collections based on request
             $collections = [
                 'medical_history' => $patient->medicalHistories(),
