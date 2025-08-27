@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\File;
+use App\Models\Patient;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -71,8 +72,14 @@ class FileService
 
                 if($upload)
                 {
+                    $user_id=null;
+                    if(auth()->user()) $user_id = auth()->user()->id;
+                    if($data['folder']=='patients') {
+                        $patient = Patient::find($record_id);
+                        $user_id = $patient->user_id;
+                    }
                     $f = File::create([
-                        'user_id'=>auth()->user()->id,
+                        'user_id'=>$user_id,
                         'table_name'=>$data['folder'],
                         'record_id'=>$record_id,
                         'name'=>$filename,
