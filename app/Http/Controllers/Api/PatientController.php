@@ -375,6 +375,7 @@ class PatientController extends Controller
                     'marital_status' => $patient->marital_status,
                     'phone' => $patient->phone,
                     'email' => $patient->email,
+                    'profile_picture_url'=>url('storage/'.$patient->avatar()->path),
                 ],
                 'collections' => [],
             ];
