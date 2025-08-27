@@ -122,12 +122,12 @@ class AuthController extends Controller
 
 
         }else{
-            $patient->given_name = $request->first_name;
-            $patient->family_name = $request->last_name;
+            $patient->given_name = $request->given_name;
+            $patient->family_name = $request->family_name;
             $patient->email = $request->email;
             $patient->phone = $request->phone;
             $patient->whatsapp_phone = $request->phone;
-            $patient->name = $request->first_name.' '.$request->last_name;
+            $patient->name = $request->given_name.' '.$request->family_name;
             $patient->gender = $request->gender;
             $patient->birth_date = $request->birth_date;
             $patient->address = $request->physical_address;
