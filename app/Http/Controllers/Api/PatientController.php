@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
+use App\Models\File;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
@@ -280,13 +281,8 @@ class PatientController extends Controller
         try {
             $fileService = new FileService();
             $filename = 'patient_profile_' . $user->id . '_' . time();
-
-            $data['record_id'] =$user->patient->id;
-            $data['folder'] = 'patients';
-            $data['type']='avatar';
-
             // Subir el archivo
-            $fileService->guardarArchivos([ $request->file('profile_picture')],$data);
+
 
             // Subir el archivo
             $profilePicturePath = $fileService->uploadSingleFile(
@@ -299,6 +295,17 @@ class PatientController extends Controller
                 // Actualizar el campo profile_picture en la tabla users
                 $user->profile_picture = $profilePicturePath;
                 $user->save();
+
+                $ext =  $request->file('profile_picture')->getClientOriginalExtension();
+                $f = File::create([
+                    'user_id'=>$user->id,
+                    'table_name'=>'patients',
+                    'record_id'=>$user->patient->id,
+                    'name'=>$filename,
+                    'path'=>'patients/'+$filename,
+                    'extention'=>$ext,
+                    'type'=>'avatar',
+                ]);
 
                 return response()->json([
                     'message' => 'Foto de perfil actualizada exitosamente.',
