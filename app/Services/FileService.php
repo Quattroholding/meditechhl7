@@ -73,11 +73,13 @@ class FileService
                 if($upload)
                 {
                     $user_id=null;
-                    if(auth()->user()) $user_id = auth()->user()->id;
                     if($data['folder']=='patients') {
                         $patient = Patient::find($record_id);
                         $user_id = $patient->user_id;
+                    }elseif(auth()->user()){
+                        $user_id = auth()->user()->id;
                     }
+
                     $f = File::create([
                         'user_id'=>$user_id,
                         'table_name'=>$data['folder'],
