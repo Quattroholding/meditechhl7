@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
@@ -66,7 +67,10 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'identifier' => ['required', 'regex:'.$this->getIdPattern()],
+            'identifier_type' => 'required',
+            'given_name' => 'required|string|max:255',
+            'family_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|string|max:20',
@@ -74,24 +78,41 @@ class AuthController extends Controller
             'gender' => 'required|in:male,female,other',
         ]);
 
+
+
         // Crear usuario
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->given_name,
+            'last_name' => $request->family_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
         $user->assignRole('paciente');
 
-        // Crear paciente
-        $patient = Patient::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'identifier' => 'PAT-'.str_pad($user->id, 6, '0', STR_PAD_LEFT),
-        ]);
+        $patient = DB::table('patients')->whereLike('identifier',$this->identifier.'%')->get();
+
+        if(!$patient){
+            // Crear paciente
+            $patient = Patient::create([
+                'user_id' => $user->id,
+                'identifier' =>$request->identifier,
+                'identifier_type'=>$request->identifier_type,
+                'given_name' => $request->given_name,
+                'family_name' => $request->family_name,
+                'name' => $request->given_name.' '.$request->family_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'whatsapp_phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+            ]);
+
+
+        }else{
+            $patient->user_id = $user->id;
+            $patient->save();
+        }
 
         $token = $user->createToken('patient-app')->plainTextToken;
 
@@ -165,7 +186,7 @@ class AuthController extends Controller
 
         // Verificar que el email corresponde a un usuario con rol paciente
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user) {
             return response()->json([
                 'message' => 'No se encontró un usuario con este email.',
@@ -213,7 +234,7 @@ class AuthController extends Controller
 
         // Verificar que el email corresponde a un usuario con rol paciente
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user || !$user->hasRole('paciente')) {
             return response()->json([
                 'message' => 'Email no válido o no corresponde a un paciente.',
@@ -241,5 +262,23 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'No se pudo restablecer la contraseña. El enlace puede haber expirado.',
         ], 400);
+    }
+
+    private function getIdPattern()
+    {
+        switch ($this->id_type) {
+            case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
+                return '/^[0-9]+-[0-9]+$/';
+            case 'CE': // Cédula Extranjera: Similar a CC
+                return '/^[A-Z]+-[0-9]+-[0-9]+$/';
+            case 'PA': // Pasaporte: N1234567
+                return '/^[A-Z0-9-]{5,20}$/';
+            case 'PT': // Permiso Temporal: Formato flexible
+                return '/^[A-Z0-9-]{8,15}$/';
+            case 'SS': // Seguro Social: XXX-XX-XXXX
+                return '/^\d{3}-?\d{2}-?\d{4}$/';
+            default:
+                return '/^[A-Z0-9-]{5,20}$/'; // Universal para cualquier tipo
+        }
     }
 }
