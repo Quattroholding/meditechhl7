@@ -22,7 +22,7 @@ class ConditionResource extends JsonResource
             'clinical_status' => $this->clinical_status,
             'verification_status' => $this->verification_status,
             'code' => $this->code,
-            'description' => $this->icd10Code->description_es,
+            'description' => $this->icd10Code ? $this->icd10Code->description_es : $this->onset_info,
             'category' => $this->category,
             'severity' => $this->severity,
             'onset_date' => Carbon::parse($this->onset_date)->format('d-m-Y'),
@@ -32,8 +32,8 @@ class ConditionResource extends JsonResource
             'evidence' => $this->evidence,
             'icd10_code' => $this->whenLoaded('icd10Code', function () {
                 return [
-                    'code' => $this->icd10Code->code,
-                    'description' => $this->icd10Code->description,
+                    'code' => $this->code,
+                    'description' => $this->icd10Code ? $this->icd10Code->description_es : $this->onset_info,
                 ];
             }),
             'practitioner' => $this->whenLoaded('practitioner', function () {
