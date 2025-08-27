@@ -89,7 +89,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
         }else{
-            $user->firt_name = $request->given_name;
+            $user->first_name = $request->given_name;
             $user->last_name = $request->family_name;
             $user->password = Hash::make($request->password);
             $user->save();
