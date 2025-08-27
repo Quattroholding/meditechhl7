@@ -67,7 +67,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'identifier' => ['required', 'regex:'.$this->getIdPattern()],
+            'identifier' => ['required', 'regex:'.$this->getIdPattern($request->identifier_type)],
             'identifier_type' => 'required',
             'given_name' => 'required|string|max:255',
             'family_name' => 'required|string|max:255',
@@ -273,9 +273,9 @@ class AuthController extends Controller
         ], 400);
     }
 
-    private function getIdPattern()
+    private function getIdPattern($type)
     {
-        switch ($this->id_type) {
+        switch ($type) {
             case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
                 return '/^[0-9]+-[0-9]+$/';
             case 'CE': // Cédula Extranjera: Similar a CC
