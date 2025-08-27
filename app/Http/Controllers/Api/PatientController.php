@@ -302,7 +302,7 @@ class PatientController extends Controller
                     'table_name'=>'patients',
                     'record_id'=>$user->patient->id,
                     'name'=>$filename,
-                    'path'=>'patients/'+$filename,
+                    'path'=>'patients/'.$filename,
                     'extention'=>$ext,
                     'type'=>'avatar',
                 ]);
