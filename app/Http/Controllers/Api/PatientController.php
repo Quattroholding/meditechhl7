@@ -64,6 +64,7 @@ class PatientController extends Controller
                     'secondary_insurance' => $patient->secondaryInsurance,
                     'created_at' => $patient->created_at,
                     'updated_at' => $patient->updated_at,
+                    'profile_picture_url'=>url('storage/'.$patient->avatar()->path),
                 ],
                 'user' => [
                     'id' => $user->id,
@@ -283,7 +284,7 @@ class PatientController extends Controller
             $ext = $file->getClientOriginalExtension();
 
             $filename = 'patient_profile_' . $user->id . '_' . time();
-            
+
             // Subir el archivo
             $profilePicturePath = $fileService->uploadSingleFile(
                 $request->file('profile_picture'),
@@ -312,7 +313,7 @@ class PatientController extends Controller
 
                 // Get updated user data
                 $updatedUser = DB::table('users')->where('id', $user->id)->first();
-                
+
                 return response()->json([
                     'message' => 'Foto de perfil actualizada exitosamente.',
                     'data' => [
