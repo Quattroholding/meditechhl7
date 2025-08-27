@@ -247,8 +247,8 @@ class PatientController extends Controller
     public function updateProfilePicture(Request $request): JsonResponse
     {
         $user = $request->user();
-
-        if (!$user->patient) {
+        $patient = DB::table('patients')->where('user_id', $user->id)->first();
+        if (!$patient) {
             return response()->json([
                 'message' => 'Perfil del paciente no encontrado.',
             ], 404);
@@ -282,7 +282,7 @@ class PatientController extends Controller
             $fileService = new FileService();
             $file =  $request->file('profile_picture');
             $ext = $file->getClientOriginalExtension();
-            $patient = DB::table('patients')->where('user_id', $user->id)->first();
+
             $filename = 'patient_profile_' . $user->id . '_' . time().'.'.$ext;
             // Subir el archivo
 
