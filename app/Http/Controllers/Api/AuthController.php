@@ -75,7 +75,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|string|max:20',
             'birth_date' => 'required|date',
-            'gender' => 'required|in:male,female,other',
+            'gender' => 'required|in:male,female,unknown',
         ]);
 
         $user = User::whereEmail($request->email)->first();
@@ -93,7 +93,7 @@ class AuthController extends Controller
         $user->assignRole('paciente');
 
         $patient = DB::table('patients')
-            ->whereLike('identifier',$this->identifier.'%')
+            ->whereLike('identifier',$request->identifier.'%')
             ->orWhere('email',$request->email)
             ->get();
 
