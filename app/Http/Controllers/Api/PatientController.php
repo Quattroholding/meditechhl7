@@ -282,6 +282,7 @@ class PatientController extends Controller
             $fileService = new FileService();
             $file =  $request->file('profile_picture');
             $ext = $file->getClientOriginalExtension();
+            $patient = DB::table('patients')->where('user_id', $user->id)->first();
             $filename = 'patient_profile_' . $user->id . '_' . time().'.'.$ext;
             // Subir el archivo
 
@@ -302,7 +303,7 @@ class PatientController extends Controller
                 $f = File::create([
                     'user_id'=>$user->id,
                     'table_name'=>'patients',
-                    'record_id'=>$user->patient->id,
+                    'record_id'=>$patient->id,
                     'name'=>$filename,
                     'path'=>'patients/'.$filename,
                     'extention'=>$ext,
