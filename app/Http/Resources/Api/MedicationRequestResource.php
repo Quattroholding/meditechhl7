@@ -23,10 +23,10 @@ class MedicationRequestResource extends JsonResource
             'intent' => $this->intent,
             'priority' => $this->priority,
             'reason' => $this->reason,
-            'medication_name' => $this->medicine->full_name,
+            'medication_name' => $this->medicine ? $this->medicine->full_name : $this->medication,
             'dosage_instruction' => $this->dosage_instruction,
             'requester_name' => $this->practitioner->name,
-            'authored_on' => Carbon::parse($this->created_at)->format('d-m-Y'),
+            'authored_on' => Carbon::parse($this->valid_to)->format('d-m-Y'),
             'dosage' => $this->dosage_text,
             'route' => $this->route,
             'frequency' => $this->frequency,
@@ -38,8 +38,8 @@ class MedicationRequestResource extends JsonResource
             'note' => $this->note,
             'medicine' => $this->whenLoaded('medicine', function () {
                 return [
-                    'id' => $this->medicine->id,
-                    'name' => $this->medicine->name,
+                    'id' => $this->medication_id,
+                    'name' => $this->medicine ? $this->medicine->full_name : $this->medication,
                     'active_ingredient' => $this->medicine->active_ingredient,
                 ];
             }),
