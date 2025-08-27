@@ -296,7 +296,7 @@ class PatientController extends Controller
 
             if ($profilePicturePath) {
                 // Actualizar el campo profile_picture en la tabla users
-                $user->profile_picture = $profilePicturePath;
+                $user->profile_picture = 'patients/'.$filename;
                 $user->save();
 
 
