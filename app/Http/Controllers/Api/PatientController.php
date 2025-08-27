@@ -280,7 +280,14 @@ class PatientController extends Controller
         try {
             $fileService = new FileService();
             $filename = 'patient_profile_' . $user->id . '_' . time();
-            
+
+            $data['record_id'] =$user->patient->id;
+            $data['folder'] = 'patients';
+            $data['type']='avatar';
+
+            // Subir el archivo
+            $fileService->guardarArchivos([ $request->file('profile_picture')],$data);
+
             // Subir el archivo
             $profilePicturePath = $fileService->uploadSingleFile(
                 $request->file('profile_picture'),
