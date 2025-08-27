@@ -97,8 +97,7 @@ class AuthController extends Controller
 
         $user->assignRole('paciente');
 
-        $patient = DB::table('patients')
-            ->whereLike('identifier',$request->identifier.'%')
+        $patient =Patient::whereLike('identifier',$request->identifier.'%')
             ->orWhere('email',$request->email)
             ->get();
 
