@@ -130,7 +130,7 @@ class AuthController extends Controller
             $patient->name = $request->given_name.' '.$request->family_name;
             $patient->gender = $request->gender;
             $patient->birth_date = $request->birth_date;
-            $patient->address = $request->physical_address;
+            $patient->address = $request->address;
             $patient->marital_status = $request->marital_status;
             $patient->identifier_type = $request->identifier_type;
             $patient->identifier = strtoupper($request->identifier);
