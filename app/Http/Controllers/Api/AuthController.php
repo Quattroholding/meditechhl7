@@ -90,7 +90,10 @@ class AuthController extends Controller
 
         $user->assignRole('paciente');
 
-        $patient = DB::table('patients')->whereLike('identifier',$this->identifier.'%')->get();
+        $patient = DB::table('patients')
+            ->whereLike('identifier',$this->identifier.'%')
+            ->orWhere('email',$request->email)
+            ->get();
 
         if(!$patient){
             // Crear paciente
@@ -106,10 +109,16 @@ class AuthController extends Controller
                 'whatsapp_phone' => $request->phone,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
+                'fhir_id'=> 'patient-'.Str::uuid(),
+                'communication' => json_encode(['language' => 'es', 'preferred' => true]),
+                'address'=>$request->address,
             ]);
 
 
         }else{
+            $patient->fill($request->all());
+            $patient->name = $request->given_name.' '.$request->family_name;
+            $patient->whatsapp_phone = $request->phone;
             $patient->user_id = $user->id;
             $patient->save();
         }
@@ -121,7 +130,7 @@ class AuthController extends Controller
             'token' => $token,
             'user' => [
                 'id' => $user->id,
-                'name' => $user->name,
+                'name' => $user->first_name.' '.$user->last_name,
                 'email' => $user->email,
             ],
             'patient' => [
