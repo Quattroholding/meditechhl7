@@ -28,7 +28,11 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'Paciente no encontrado'], 404);
         }
 
-        $appointments = Appointment::where('patient_id', $patient->id)
+        // Get pagination parameters with default of 10 per page
+        $perPage = $request->input('per_page', 10);
+        $perPage = min(max((int) $perPage, 1), 100); // Limit between 1 and 100
+
+        $appointmentsQuery = Appointment::where('patient_id', $patient->id)
             ->with(['practitioner', 'medicalSpeciality', 'consultingRoom'])
             ->when($request->status, function ($query, $status) {
                 return $query->where('status', $status);
@@ -39,35 +43,45 @@ class AppointmentController extends Controller
             ->when($request->date_to, function ($query, $dateTo) {
                 return $query->whereDate('start', '<=', $dateTo);
             })
-            ->orderBy('start', 'asc')
-            ->get()
-            ->map(function ($appointment) {
-                return [
-                    'id' => $appointment->id,
-                    'status' => $appointment->status,
-                    'description' => $appointment->description,
-                    'start' => $appointment->start->format('Y-m-d H:i:s'),
-                    'end' => $appointment->end->format('Y-m-d H:i:s'),
-                    'formatted_date' => $appointment->formatted_date,
-                    'formatted_time' => $appointment->formatted_time,
-                    'minutes_duration' => $appointment->minutes_duration,
-                    'practitioner' => [
-                        'id' => $appointment->practitioner->id,
-                        'name' => $appointment->practitioner->name,
-                        'speciality' => $appointment->medicalSpeciality->name ?? 'Medicina General',
-                    ],
-                    'consulting_room' => [
-                        'id' => $appointment->consultingRoom->id ?? null,
-                        'name' => $appointment->consultingRoom->name ?? 'N/A',
-                    ],
-                    'can_cancel' => $this->canCancelAppointment($appointment),
-                    'can_reschedule' => $this->canRescheduleAppointment($appointment),
-                ];
-            });
+            ->orderBy('start', 'desc');
+
+        $appointments = $appointmentsQuery->paginate($perPage);
+
+        $appointmentData = $appointments->map(function ($appointment) {
+            return [
+                'id' => $appointment->id,
+                'status' => $appointment->status,
+                'description' => $appointment->description,
+                'start' => $appointment->start->format('Y-m-d H:i:s'),
+                'end' => $appointment->end->format('Y-m-d H:i:s'),
+                'formatted_date' => $appointment->formatted_date,
+                'formatted_time' => $appointment->formatted_time,
+                'minutes_duration' => $appointment->minutes_duration,
+                'practitioner' => [
+                    'id' => $appointment->practitioner->id,
+                    'name' => $appointment->practitioner->name,
+                    'speciality' => $appointment->medicalSpeciality->name ?? 'Medicina General',
+                ],
+                'consulting_room' => [
+                    'id' => $appointment->consultingRoom->id ?? null,
+                    'name' => $appointment->consultingRoom->name ?? 'N/A',
+                ],
+                'can_cancel' => $this->canCancelAppointment($appointment),
+                'can_reschedule' => $this->canRescheduleAppointment($appointment),
+            ];
+        });
 
         return response()->json([
-            'appointments' => $appointments,
-            'total' => $appointments->count(),
+            'data' => $appointmentData,
+            'pagination' => [
+                'current_page' => $appointments->currentPage(),
+                'per_page' => $appointments->perPage(),
+                'total' => $appointments->total(),
+                'last_page' => $appointments->lastPage(),
+                'from' => $appointments->firstItem(),
+                'to' => $appointments->lastItem(),
+                'has_more_pages' => $appointments->hasMorePages(),
+            ],
         ]);
     }
 
