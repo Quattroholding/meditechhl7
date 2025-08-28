@@ -32,7 +32,8 @@ class PatientController extends Controller
         }
 
         $patient = $user->patient()->with(['clients', 'primaryInsurance', 'secondaryInsurance'])->first();
-
+        $profile_picture_path = '';
+        if($patient->avatar()) $profile_picture_path = url('storage/'.$patient->avatar()->path);
         return response()->json([
             'data' => [
                 'patient' => [
@@ -64,7 +65,7 @@ class PatientController extends Controller
                     'secondary_insurance' => $patient->secondaryInsurance,
                     'created_at' => $patient->created_at,
                     'updated_at' => $patient->updated_at,
-                    'profile_picture_url'=>url('storage/'.$patient->avatar()->path),
+                    'profile_picture_url'=>$profile_picture_path,
                 ],
                 'user' => [
                     'id' => $user->id,
