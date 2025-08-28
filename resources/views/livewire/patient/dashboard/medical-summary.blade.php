@@ -42,7 +42,7 @@
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-1">{{ $condition->icd10Code->code }}</h6>
+                                        <h6 class="mb-1">{{ $condition->code }}</h6>
                                         @if($condition->icd10Code)
                                             <p class="mb-1 text-muted small">{{ Str::limit($condition->icd10Code->description_es, 60) }}</p>
                                         @endif
@@ -226,54 +226,54 @@
             </div>
         @endif
     </div>
-    
+
     <style>
         /* Loading skeleton styles for medical summary */
         .loading-skeleton {
             animation: pulse 1.5s ease-in-out infinite;
         }
-        
+
         .skeleton-section-title {
             height: 20px;
             background: #e9ecef;
             border-radius: 4px;
             width: 200px;
         }
-        
+
         .skeleton-list-item {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
         }
-        
+
         .skeleton-item-title {
             height: 16px;
             background: #e9ecef;
             border-radius: 4px;
             width: 120px;
         }
-        
+
         .skeleton-item-description {
             height: 12px;
             background: #e9ecef;
             border-radius: 4px;
             width: 180px;
         }
-        
+
         .skeleton-item-date {
             height: 10px;
             background: #e9ecef;
             border-radius: 4px;
             width: 80px;
         }
-        
+
         .skeleton-badge {
             height: 20px;
             background: #e9ecef;
             border-radius: 10px;
             width: 60px;
         }
-        
+
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
