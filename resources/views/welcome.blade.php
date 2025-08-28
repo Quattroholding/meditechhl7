@@ -641,7 +641,6 @@
 
             <div class="hero-cta">
                 <a href="{{route('patient.register')}}" class="cta-btn">Registrarse</a>
-                <a href="#demo" class="demo-btn">Ver Demo</a>
                 <a href="{{ asset('storage/app-release.apk') }}" class="app-download-btn" download="MeditecPacientes.apk">
                     📱 Descargar App Pacientes
                 </a>
