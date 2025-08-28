@@ -110,7 +110,8 @@ class Create extends Component
 
     public function render()
     {
-        $this->client_id = auth()->user()->getCurrentClient()->id;
+        $this->client_id =1;
+        if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
 
         // Load primary patients for dependent selection
         $this->loadPrimaryPatients();
