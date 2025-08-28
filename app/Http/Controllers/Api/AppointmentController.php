@@ -164,7 +164,7 @@ class AppointmentController extends Controller
             // Create appointment without global scope to avoid auth issues
             $appointmentId = DB::table('appointments')->insertGetId([
                 'fhir_id' => 'appointment-'.Str::uuid(),
-                'identifier' => 'APT-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'APT-'.mt_rand(1000000, 9999999),
                 'patient_id' => $patient->id,
                 'practitioner_id' => $request->practitioner_id,
                 'client_id' => $client_id,
