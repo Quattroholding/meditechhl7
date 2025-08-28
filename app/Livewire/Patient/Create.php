@@ -146,12 +146,16 @@ class Create extends Component
 
         $this->patientDontExists = true;
         $this->patientExists = false;
-        $this->patient_id = null;
-        $query = DB::table('patients')->whereLike('identifier',$this->id_number.'%')->get();
-        if ($query) {
+        $this->patients = array();
+        $query = DB::table('patients')
+            ->whereRaw("(identifier ='".$this->id_number."' or identifier ='".$this->id_number."-SELF' or identifier ='".$this->id_number."-SPOUSE' or identifier ='".$this->id_number."-CHILD' or identifier ='".$this->id_number."-CHILDDISAB')")
+            ->get();
+
+        if ($query->count()>0) {
+            $this->patientDontExists = false;
             $this->patientExists = true;
             $this->patients = $query->pluck('id');
-            $this->patientDontExists = false;
+
 
         }
     }
