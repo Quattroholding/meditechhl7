@@ -359,6 +359,8 @@ class PatientController extends Controller
             $patient = $user->patient;
 
             // Build response with paginated collections
+            $profile_picture_path = '';
+            if($patient->avatar()) $profile_picture_path = url('storage/'.$patient->avatar()->path);
             $response = [
                 'patient_info' => [
                     'id' => $patient->id,
@@ -375,7 +377,7 @@ class PatientController extends Controller
                     'marital_status' => $patient->marital_status,
                     'phone' => $patient->phone,
                     'email' => $patient->email,
-                    'profile_picture_url'=>url('storage/'.$patient->avatar()->path),
+                    'profile_picture_url'=>$profile_picture_path,
                 ],
                 'collections' => [],
             ];
