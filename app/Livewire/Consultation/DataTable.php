@@ -32,7 +32,7 @@ class DataTable extends Component
     public $patient_id;
     public $practitioner_id;
 
-    public function mount($pagination=10,$sortField='encounters.id',$sortDirection='asc',$routename='',$title='')
+    public function mount($pagination=10,$sortField='encounters.id',$sortDirection='desc',$routename='',$title='')
     {
         $this->class = new Encounter();
         $this->pagination = $pagination;
