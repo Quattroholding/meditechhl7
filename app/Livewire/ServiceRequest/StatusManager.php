@@ -91,15 +91,14 @@ class StatusManager extends Component
         try {
             // Registrar cambio en el historial antes de actualizar
             StatusHistoryLog::create([
-                'model_type' => ServiceRequest::class,
-                'model_id' => $this->serviceRequest->id,
-                'field_name' => 'status',
-                'old_value' => $currentStatus,
-                'new_value' => $this->newStatus,
-                'reason' => $this->statusReason ?: __('service_request.manual_status_change'),
+                'table_name'=>'service_requests',
+                'model_name'=> 'App\Models\ServiceRequest',
+                'record_id'=>$this->serviceRequest->id,
+                'user_id'=>Auth::user()->id,
+                'old_status' => $currentStatus,
+                'new_status' => $this->newStatus,
+                'observation'=> $this->statusReason ?: __('service_request.manual_status_change'),
                 'change_type' => 'manual',
-                'user_id' => Auth::id(),
-                'changed_at' => now(),
             ]);
 
             // Actualizar el estado
@@ -108,12 +107,20 @@ class StatusManager extends Component
                 'last_updated' => now(),
             ]);
 
-            session()->flash('success', __('service_request.status_changed_successfully'));
+            session()->flash('message.success', __('service_request.status_changed_successfully'));
+            $this->dispatch('showToastrStatusManager',
+                type: 'success',
+                message:__('service_request.status_changed_successfully'),
+            );
             $this->dispatch('refreshServiceRequests');
             $this->closeModal();
 
         } catch (\Exception $e) {
-            session()->flash('error', __('service_request.status_change_failed') . ': ' . $e->getMessage());
+            session()->flash('message.error', __('service_request.status_change_failed') . ': ' . $e->getMessage());
+            $this->dispatch('showToastrStatusManager',
+                type: 'error',
+                message:  __('service_request.status_change_failed') . ': ' . $e->getMessage(),
+            );
         }
     }
 

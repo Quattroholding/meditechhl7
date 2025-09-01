@@ -43,7 +43,7 @@
                                         @error('newStatus')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                        
+
                                         @if($newStatus)
                                             <small class="form-text text-muted mt-1">
                                                 {{ __('service_request.status_' . $newStatus . '_description') }}
@@ -51,15 +51,15 @@
                                         @endif
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="statusReason" class="form-label">{{ __('service_request.status_reason') }}</label>
-                                        <textarea 
-                                            wire:model="statusReason" 
-                                            id="statusReason" 
-                                            class="form-control @error('statusReason') is-invalid @enderror" 
-                                            rows="3" 
+                                        <textarea
+                                            wire:model="statusReason"
+                                            id="statusReason"
+                                            class="form-control @error('statusReason') is-invalid @enderror"
+                                            rows="3"
                                             placeholder="{{ __('service_request.status_reason_placeholder') }}"
                                         ></textarea>
                                         @error('statusReason')
@@ -145,4 +145,16 @@
             </div>
         </div>
     @endif
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrStatusManager', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>

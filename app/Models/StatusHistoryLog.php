@@ -8,22 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class StatusHistoryLog extends Model
 {
     protected $table = 'status_history_logs';
-    
+
     protected $fillable = [
-        'model_type',
-        'model_id',
-        'field_name',
-        'old_value',
-        'new_value',
-        'reason',
+        'table_name',
+        'record_id',
+        'old_status',
+        'new_status',
+        'observation',
         'change_type',
         'user_id',
-        'changed_at',
+        'model_name',
     ];
 
-    protected $casts = [
-        'changed_at' => 'datetime',
-    ];
 
     public function user(): BelongsTo
     {

@@ -12,11 +12,8 @@
             @endcomponent
             <!-- /Page Header -->
             <livewire:service-request.data-table />
-            
-            <!-- Modals -->
-            <livewire:service-request.upload-result />
-            <livewire:service-request.view-results />
-            <livewire:service-request.status-manager />
+
+
         </div>
     </div>
 </x-app-layout>

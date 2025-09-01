@@ -16,8 +16,11 @@
                     <!-- /Table Header -->
 
                     {{-- <livewire:service-request.modal-save wire:model="showModal"/> --}}
+
+                    <!-- Modals -->
                     <livewire:service-request.upload-result />
                     <livewire:service-request.view-results />
+                    <livewire:service-request.status-manager />
 
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">

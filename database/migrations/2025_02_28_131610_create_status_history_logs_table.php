@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('record_id');
             $table->string('old_status',75)->nullable();
             $table->string('new_status',100);
+            $table->string('change_type',20)->default('auto');
+            $table->text('observation')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
