@@ -20,8 +20,8 @@ return new class extends Migration
             $table->date('period_start')->nullable();
             $table->date('period_end')->nullable();
             $table->string('issuer')->nullable(); // Quien emitió la calificación
+            $table->softDeletes();
             $table->timestamps();
-
             $table->index(['practitioner_id', 'code']);
         });
     }
