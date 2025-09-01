@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ConsultingRoomController;
 use App\Http\Controllers\Api\MedicalSpecialityController;
+use App\Http\Controllers\Api\MedicationRequestController;
+use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PractitionerController;
 use Illuminate\Support\Facades\Route;
@@ -35,10 +38,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patient/medical-history', [PatientController::class, 'medicalHistory']);
     Route::get('/patient/medical-history/{section}', [PatientController::class, 'medicalHistorySection']);
 
+    // Medication Requests
+    Route::apiResource('medication-requests', MedicationRequestController::class);
+
+    // Medicines
+    Route::apiResource('medicines', MedicineController::class);
+    Route::get('/clients/{clientId}/medicines', [MedicineController::class, 'getByClient']);
+
+    // Branches
+    Route::apiResource('branches', BranchController::class);
+    Route::get('/clients/{clientId}/branches', [BranchController::class, 'getByClient']);
+
+    // Consulting Rooms
+    Route::apiResource('consulting-rooms', ConsultingRoomController::class);
+    Route::get('/branches/{branchId}/consulting-rooms', [ConsultingRoomController::class, 'getByBranch']);
+    Route::get('/clients/{clientId}/consulting-rooms', [ConsultingRoomController::class, 'getByClient']);
+
     // Support resources
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
-    Route::get('/consulting-rooms', [ConsultingRoomController::class, 'index']);
 });

@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('medication_requests', function (Blueprint $table) {
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR MedicationRequest resource ID');
-            $table->foreignId('encounter_id')->constrained('encounters')->cascadeOnDelete();
+            $table->foreignId('encounter_id')->nullable()->constrained('encounters');
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->foreignId('medication_id')->nullable()->constrained('medicines');
+            $table->foreignId('client_id')->nullable()->constrained('clients');
+            $table->foreignId('branch_id')->nullable()->constrained('branches');
+            $table->foreignId('consulting_room_id')->nullable()->constrained('consulting_rooms');
             $table->string('medication', 200)->nullable();
             $table->string('identifier')->unique();
             $table->enum('status', ['active', 'on-hold', 'cancelled', 'completed', 'entered-in-error', 'stopped', 'draft', 'unknown']);
