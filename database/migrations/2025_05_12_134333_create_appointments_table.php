@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('minutes_duration')->nullable();
             $table->json('participant')->nullable()->comment('Otros participantes en la cita');
             $table->json('extension')->nullable()->comment('Extensiones FHIR');
+            $table->softDeletes();
             $table->timestamps();
 
         });
