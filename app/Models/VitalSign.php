@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class VitalSign  extends Model
+class VitalSign  extends BaseModel
 {
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status',

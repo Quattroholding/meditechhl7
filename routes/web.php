@@ -19,6 +19,7 @@ use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -32,11 +33,11 @@ Route::get('/', function () {
         ->active()
         ->limit(12)
         ->get();
-    
+
     $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function($query) {
         $query->where('active', true);
     })->get();
-    
+
     return view('welcome', compact('practitioners', 'specialties'));
 })->name('welcome');
 
@@ -384,6 +385,13 @@ Route::group(['prefix' => 'medicines', 'middleware' => ['auth', 'verified', 'fir
     Route::get('/{id}/edit', function ($id) {
         return view('medicine.edit', ['medicine_id' => $id]);
     })->middleware('permission:medicines.edit')->name('medicine.edit');
+
+});
+
+Route::group(['prefix' => 'service_requests', 'middleware' => ['auth', 'verified', 'first.login']], function () {
+
+    Route::get('/', [ServiceRequestController::class, 'index'])->middleware('permission:service_request.view')->name('service_request.index');
+
 
 });
 

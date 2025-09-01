@@ -20,4 +20,6 @@ return [
     'welcome'=>'Bienvenido(a)',
     'vs_last_month'=>'vs mes pasado',
     'logout'=>'Cerrar sesion',
+    'select'=>'Seleccione',
+    'close'=>'Cerrar',
 ];

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class Observation extends Model
+class Observation extends BaseModel
 {
     protected $fillable = ['patient_id', 'encounter_id', 'practitioner_id', 'identifier', 'status', 'code',
         'category', 'value', 'value_string','unit','interpretation','note',

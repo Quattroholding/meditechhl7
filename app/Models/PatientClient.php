@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PatientClient extends Model
+class PatientClient extends BaseModel
 {
     protected $fillable=['patient_id','client_id'];
     public function user(){

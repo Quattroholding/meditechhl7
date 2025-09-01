@@ -5,9 +5,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ServiceRequest extends Model
+class ServiceRequest extends BaseModel
 {
     use SoftDeletes;
 
@@ -56,6 +57,105 @@ class ServiceRequest extends Model
     public function cpt()
     {
         return $this->belongsTo(CptCode::class, 'code', 'code');
+    }
+
+    // Relación con ServiceRequestResult
+    public function results(): HasMany
+    {
+        return $this->hasMany(ServiceRequestResult::class);
+    }
+
+    /**
+     * Cambiar estado automáticamente basado en lógica de negocio
+     */
+    public function autoChangeStatus($reason = null, $userId = null)
+    {
+        $newStatus = $this->determineAutoStatus();
+
+        if ($newStatus && $newStatus !== $this->status) {
+            $this->changeStatusTo($newStatus, $reason ?: __('service_request.auto_status_change'), 'automatic', $userId);
+        }
+    }
+
+    /**
+     * Determinar el estado automático basado en reglas de negocio
+     */
+    private function determineAutoStatus()
+    {
+        // Si tiene resultados y está activo, puede completarse automáticamente
+        if ($this->status === 'active' && $this->results()->count() > 0) {
+            // Lógica adicional: verificar si todos los resultados están completos
+            $finalResults = $this->results()->where('status', 'final')->count();
+            $totalResults = $this->results()->count();
+
+            // Si todos los resultados son finales, marcar como completado
+            if ($finalResults === $totalResults && $totalResults > 0) {
+                return 'completed';
+            }
+        }
+
+        // Si es borrador y no tiene estado específico, activar automáticamente
+        if ($this->status === 'draft' || !$this->status) {
+            return 'active';
+        }
+
+        return null; // No cambiar estado
+    }
+
+    /**
+     * Cambiar estado con validación y audit trail
+     */
+    public function changeStatusTo($newStatus, $reason = null, $changeType = 'manual', $userId = null)
+    {
+        if (!$this->isValidTransition($this->status, $newStatus)) {
+            throw new \InvalidArgumentException(__('service_request.invalid_status_transition'));
+        }
+
+        $oldStatus = $this->status;
+
+        // Registrar en el historial
+        StatusHistoryLog::create([
+            'model_type' => self::class,
+            'model_id' => $this->id,
+            'field_name' => 'status',
+            'old_value' => $oldStatus,
+            'new_value' => $newStatus,
+            'reason' => $reason,
+            'change_type' => $changeType,
+            'user_id' => $userId ?: \Illuminate\Support\Facades\Auth::id(),
+            'changed_at' => now(),
+        ]);
+
+        // Actualizar el estado
+        $this->update([
+            'status' => $newStatus,
+            'last_updated' => now(),
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Validar si una transición de estado es válida
+     */
+    private function isValidTransition($fromStatus, $toStatus)
+    {
+        $validTransitions = [
+            null => ['draft', 'active'],
+            'draft' => ['active', 'revoked', 'entered-in-error'],
+            'active' => ['on-hold', 'completed', 'revoked', 'entered-in-error'],
+            'on-hold' => ['active', 'revoked', 'entered-in-error'],
+            'revoked' => ['entered-in-error'],
+            'completed' => ['entered-in-error'],
+            'entered-in-error' => [],
+            'unknown' => ['draft', 'active', 'entered-in-error']
+        ];
+
+        if (!$fromStatus) {
+            return in_array($toStatus, ['draft', 'active']);
+        }
+
+        return in_array($toStatus, $validTransitions[$fromStatus] ?? []);
     }
 
     public function getOccurrenceStartAttribute($attr)

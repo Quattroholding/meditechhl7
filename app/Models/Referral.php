@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class Referral extends Model
+class Referral extends BaseModel
 {
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id','practitioner_id',

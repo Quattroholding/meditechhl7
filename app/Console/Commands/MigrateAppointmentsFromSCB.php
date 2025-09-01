@@ -587,7 +587,7 @@ class MigrateAppointmentsFromSCB extends Command
                         if(!empty($rs->file_hash)) $file_hash = $rs->file_hash;
 
                         ServiceRequestResult::create([
-                            'fhir_id'=>fake()->unique()->uuid(),
+                            'fhir_id' => 'SRR-' . uniqid(),
                             'service_request_id'=>$sr->id,
                             'patient_id'=>$encounter->patient_id,
                             'practitioner_id'=>$encounter->practitioner_id,
@@ -619,6 +619,8 @@ class MigrateAppointmentsFromSCB extends Command
                             'effective_date'=>$rs->created_at,
                             'issued_date'=>$rs->created_at,
                     ]);
+                        $sr->status='completed';
+                        $sr->save();
                     }
                 }
             }

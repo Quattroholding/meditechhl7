@@ -113,6 +113,9 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'settings.create_working_hour_user', 'description' => 'Configurar horario laboral', 'module' => 'configuracones'],
             ['name' => 'settings.signature_and_seal', 'description' => 'Configurar firma y sello digital de medico', 'module' => 'configuracones'],
 
+            //Service Request
+            ['name' => 'service_request.view', 'description' => 'Ver lista de Solicitud de Examenes', 'module' => 'examenes'],
+            ['name' => 'service_request.upload_result', 'description' => 'Subir Resultado', 'module' => 'examenes'],
             // Dashboard access
             ['name' => 'dashboard.admin', 'description' => 'Acceso al dashboard de administrador', 'module' => 'dashboards'],
             ['name' => 'dashboard.doctor', 'description' => 'Acceso al dashboard de médico', 'module' => 'dashboards'],
@@ -190,6 +193,8 @@ class RolePermissionSeeder extends Seeder
             'settings.create_rapid_access',
             'settings.create_working_hour_user',
             'settings.signature_and_seal',
+            'service_request.view',
+            'service_request.upload_result',
             'branches.view',
             'branches.create',
             'branches.edit',
@@ -257,6 +262,8 @@ class RolePermissionSeeder extends Seeder
             'payments.create',
             'payments.edit',
             'payments.delete',
+            'service_request.view',
+            'service_request.upload_result',
             'users.profile',
             'users.change_client',
         ]);
