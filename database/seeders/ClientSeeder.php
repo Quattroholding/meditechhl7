@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Client;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -13,7 +12,7 @@ class ClientSeeder extends Seeder
      */
     public function run(): void
     {
-        $clients = Client::factory()->count(10)->create();
+        $clients = Client::factory()->count(9)->create();
 
         foreach ($clients as $client) {
             $this->command->info($client);

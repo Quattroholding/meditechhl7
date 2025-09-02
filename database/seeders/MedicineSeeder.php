@@ -66,6 +66,7 @@ class MedicineSeeder extends Seeder
 
         Artisan::call('medicines:sync-fda', [
             '--force' => true,
+            '--limit' => 5000,
         ]);
     }
 }

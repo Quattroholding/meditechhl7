@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('present_illnesse_types', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['location', 'duration', 'timing','severity'])->nullable();
-            $table->string('value',50);
-            $table->string('value_esp',50);
+            $table->enum('type', ['location', 'duration', 'timing', 'severity'])->nullable();
+            $table->string('value', 50);
+            $table->string('value_esp', 50);
             $table->integer('order');
-            $table->string('path_icon',25)->nullable();
+            $table->string('path_icon', 25)->nullable();
+            $table->integer('scb_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Patient;
 use App\Models\PatientInsurancePolicy;
 use App\Models\User;
-use Database\Factories\PatientInsurancePolicyFactory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +35,7 @@ class MigratePatientsFromSCB extends Command
      */
     public function handle()
     {
-        try{
+        try {
             $isDryRun = $this->option('dry-run');
             $batchSize = (int) $this->option('batch-size', 100);
             $limit = $this->option('limit') ? (int) $this->option('limit') : null;
@@ -59,7 +58,7 @@ class MigratePatientsFromSCB extends Command
                 ->whereNotNull('e_mail');
 
             // Solo pacientes no migrados, a menos que se fuerce la re-migración
-            if (!$forceRemigrate) {
+            if (! $forceRemigrate) {
                 $query->where('meditec_migration', '0');
             }
 
@@ -71,13 +70,15 @@ class MigratePatientsFromSCB extends Command
 
             if ($totalCount === 0) {
                 $this->warn('⚠️  No se encontraron pacientes para migrar.');
+
                 return Command::SUCCESS;
             }
 
             $this->info("📊 Se encontraron {$totalCount} pacientes para migrar.");
 
-            if (!$this->confirm('¿Desea continuar con la migración?')) {
+            if (! $this->confirm('¿Desea continuar con la migración?')) {
                 $this->info('❌ Migración cancelada por el usuario.');
+
                 return Command::SUCCESS;
             }
 
@@ -88,7 +89,7 @@ class MigratePatientsFromSCB extends Command
                 ->whereNotNull('e_mail');
 
             // Solo pacientes no migrados, a menos que se fuerce la re-migración
-            if (!$forceRemigrate) {
+            if (! $forceRemigrate) {
                 $patientsQuery->where('meditec_migration', '0');
             }
 
@@ -106,7 +107,7 @@ class MigratePatientsFromSCB extends Command
             $this->line('');
             $progressBar->start();
 
-            if (!$isDryRun) {
+            if (! $isDryRun) {
                 DB::beginTransaction();
             }
 
@@ -117,155 +118,166 @@ class MigratePatientsFromSCB extends Command
             foreach ($patients as $patientSCB) {
                 $progressBar->setMessage("Procesando: {$patientSCB->name} {$patientSCB->surrname}");
                 try {
-                    if(!Patient::whereScbId($patientSCB->id)->first()){
-                    $password = 'password';
+                    if (! Patient::whereScbId($patientSCB->id)->first()) {
+                        $password = 'password';
 
-                    // DEBO CREAR UN PASSWORD GENÉRICO
-                    $model = new User;
-                    $model->first_name = $patientSCB->name;
-                    $model->last_name = $patientSCB->surrname;
-                    if(!User::whereEmail($patientSCB->e_mail)->first()){
-                        $model->email = strtolower($patientSCB->e_mail);
-                    }else{
-                        $model->email = fake()->unique()->safeEmail;
-                    }
+                        // DEBO CREAR UN PASSWORD GENÉRICO
+                        $model = new User;
+                        $model->first_name = ucfirst(strtolower($patientSCB->name));
+                        $model->last_name = ucfirst(strtolower($patientSCB->surrname));
+                        if (! User::whereEmail($patientSCB->e_mail)->first()) {
+                            $model->email = strtolower($patientSCB->e_mail);
+                        } else {
+                            $model->email = fake()->unique()->safeEmail;
+                        }
 
-                    $model->password =$password;
-                    $model->whatsapp_phone = $patientSCB->whatsapp;
+                        $model->password = $password;
+                        $model->whatsapp_phone = $patientSCB->whatsapp;
 
-                    if (!$isDryRun) {
-                        $model->save();
-                    }
+                        if (! $isDryRun) {
+                            $model->save();
+                        }
 
-                    // Asignar rol de paciente
-                    if (!$isDryRun) {
-                        $model->assignRole('paciente');
-                    }
-                    $gender ='male';
-                    $country = 'Panama';
-                    if($patientSCB->sex=='F') $gender='female';
-                    if($patientSCB->state==5) $country='Colombia';
-                    if($patientSCB->state==7) $country='Ecuador';
+                        // Asignar rol de paciente
+                        if (! $isDryRun) {
+                            $model->assignRole('paciente');
+                        }
+                        $gender = 'male';
+                        $country = 'Panama';
+                        if ($patientSCB->sex == 'F') {
+                            $gender = 'female';
+                        }
+                        if ($patientSCB->state == 5) {
+                            $country = 'Colombia';
+                        }
+                        if ($patientSCB->state == 7) {
+                            $country = 'Ecuador';
+                        }
 
-                    switch (strtolower($patientSCB->patient_status)) {
-                        case 'married':
-                            $marital_status = 'Casado/a';
-                            break;
-                        case 'divorced':
-                            $marital_status = 'Divorciado/a';
-                            break;
-                        case 'single':
-                            $marital_status = 'Soltero/a';
-                            break;
-                        case 'widower':
-                            $marital_status = 'Viudo/a';
-                            break;
-                        case 'other':
-                            $marital_status = 'Otro/a';
-                            break;
-                    }
+                        switch (strtolower($patientSCB->patient_status)) {
+                            case 'married':
+                                $marital_status = 'Casado/a';
+                                break;
+                            case 'divorced':
+                                $marital_status = 'Divorciado/a';
+                                break;
+                            case 'single':
+                                $marital_status = 'Soltero/a';
+                                break;
+                            case 'widower':
+                                $marital_status = 'Viudo/a';
+                                break;
+                            case 'other':
+                                $marital_status = 'Otro/a';
+                                break;
+                        }
 
-                    $patient = new Patient;
-                    $patient->given_name = ucfirst(strtolower($patientSCB->name));
-                    $patient->family_name = ucfirst(strtolower($patientSCB->surrname));
-                    $patient->email = $patientSCB->e_mail;
-                    $patient->phone = $patientSCB->phone;
-                    $patient->whatsapp_phone = $patientSCB->whatsapp;
-                    $patient->name = ucfirst(strtolower($patientSCB->name)).' '.ucfirst(strtolower($patientSCB->surrname));
-                    $patient->user_id = $model->id;
-                    $patient->gender = $gender;
-                    $patient->birth_date = $patientSCB->birthdate;
-                    $patient->fhir_id = 'patient-'.Str::uuid();
-                    $patient->communication = json_encode(['language' => 'en', 'preferred' => true]);
-                    $patient->address = $patientSCB->address;
-                    $patient->marital_status = $marital_status;
-                    $patient->blood_type = $patientSCB->blood_type;
-                    // IDENTIFIER ES ID
-                    $patient->identifier_type = 'SS';
+                        $patient = new Patient;
+                        $patient->given_name = ucfirst(strtolower($patientSCB->name));
+                        $patient->family_name = ucfirst(strtolower($patientSCB->surrname));
+                        $patient->email = $patientSCB->e_mail;
+                        $patient->phone = $patientSCB->phone;
+                        $patient->whatsapp_phone = $patientSCB->whatsapp;
+                        $patient->name = ucfirst(strtolower($patientSCB->name)).' '.ucfirst(strtolower($patientSCB->surrname));
+                        $patient->user_id = $model->id;
+                        $patient->gender = $gender;
+                        $patient->birth_date = $patientSCB->birthdate;
+                        $patient->fhir_id = 'patient-'.Str::uuid();
+                        $patient->communication = json_encode(['language' => 'en', 'preferred' => true]);
+                        $patient->address = $patientSCB->address;
+                        $patient->marital_status = $marital_status;
+                        $patient->blood_type = $patientSCB->blood_type;
+                        // IDENTIFIER ES ID
+                        $patient->identifier_type = 'SS';
 
-                    if(!Patient::whereIdentifier($patientSCB->us_ssnumber)->first()){
-                        $patient->identifier = strtoupper($patientSCB->us_ssnumber);
-                    }else{
-                        $patient->identifier = strtoupper($patientSCB->us_ssnumber).'-'.strtoupper($patientSCB->relationship);
-                    }
-                    $patient->scb_id = $patientSCB->id;
+                        if (! Patient::whereIdentifier($patientSCB->us_ssnumber)->first()) {
+                            $patient->identifier = strtoupper($patientSCB->us_ssnumber);
+                        } else {
+                            $patient->identifier = strtoupper($patientSCB->us_ssnumber).'-'.strtoupper($patientSCB->relationship);
+                        }
+                        $patient->scb_id = $patientSCB->id;
 
-                    $patientSaved = $isDryRun || $patient->save();
-                    if ($patientSaved) {
+                        $patientSaved = $isDryRun || $patient->save();
+                        if ($patientSaved) {
 
-                        $suscriber_patient_id=$patient->id;
-                        $insurance_company_id = 1;
-                        $priority = 'primary';
-                        $relationship_to_subscriber ='self';
-                        if(!empty($patientSCB->relationship))   $relationship_to_subscriber =strtolower($patientSCB->relationship);
-                        $suscriber_name = $patient->name;
-                        if($patientSCB->patient_type=='CHAMPUS')  $insurance_company_id = 2;
-
-                        $policy_number = strtoupper($patientSCB->us_ssnumber);
-                        if($patientSCB->id <> $patientSCB->sponsor_id){
-                            $sponsor = DB::connection('scb')->table('patients')->where('id', $patientSCB->sponsor_id)->first();
-
-                            if($sponsor){
-                                $policy_number = strtoupper($sponsor->us_ssnumber);
-                                $paSponsor = Patient::whereScbId($sponsor->id)->first();
-                                if($paSponsor)
-                                    $suscriber_patient_id = $paSponsor->id;
-
-                                $priority = 'secondary';
-                                $suscriber_name = $sponsor->name.' '.$sponsor->surrname;
+                            $suscriber_patient_id = $patient->id;
+                            $insurance_company_id = 1;
+                            $priority = 'primary';
+                            $relationship_to_subscriber = 'self';
+                            if (! empty($patientSCB->relationship)) {
+                                $relationship_to_subscriber = strtolower($patientSCB->relationship);
                             }
-                        }
+                            $suscriber_name = $patient->name;
+                            if ($patientSCB->patient_type == 'CHAMPUS') {
+                                $insurance_company_id = 2;
+                            }
 
-                        if (!$isDryRun) {
-                            PatientInsurancePolicy::factory()->create([
-                            'patient_id'=>$patient->id,
-                            'insurance_company_id'=>$insurance_company_id,
-                            'policy_number'=> $policy_number,
-                            'relationship_to_subscriber'=>$relationship_to_subscriber,
-                            'subscriber_id'=> $policy_number,
-                            'subscriber_name'=>$suscriber_name,
-                            'subscriber_patient_id'=>$suscriber_patient_id,
-                            'priority'=>$priority,
-                            'is_active'=>1,
-                            'coverage_percentage' => 100.00, // La mayoría de los servicios cubiertos al 100% (sin deducible tradicional)
-                            'copay_amount' => 0.00, // Muchos servicios esenciales no tienen copago (depende del grupo de prioridad)
-                            'deductible_amount' => 0.00, // VA no funciona con deducibles clásicos como los seguros privados
-                            'deductible_remaining' => 0.00,
-                            'out_of_pocket_max' => 0.00, // Generalmente no aplica límite máximo de bolsillo
-                            'out_of_pocket_remaining' => 0.00,
-                            'coverage_details' => [
-                                'preventive_care' => true, // Siempre cubierto
-                                'specialist_visits' => true, // Cubierto dentro del sistema VA o referido
-                                'emergency_room' => true, // Cubierto en VA y en red comunitaria
-                                'hospitalization' => true, // Cubierto
-                                'prescription_drugs' => true, // Cubiertos, con copagos bajos o nulos
-                                'mental_health' => true, // Cubierto, con exención de copagos para las primeras 3 visitas ambulatorias hasta 2027
-                                'physical_therapy' => true, // Incluido en rehabilitación VA
-                                'dental' => false, // Solo en casos específicos (discapacidad 100%, prisionero de guerra, etc.)
-                                'vision' => true, // Exámenes cubiertos, gafas solo en criterios específicos
-                            ],
-                            'notes' => 'Cobertura médica del VA: la mayoría de los servicios médicos y hospitalarios están incluidos sin deducibles. Dental solo cubierto en casos específicos; visión limitada a exámenes y gafas bajo ciertos criterios.',
-                            ]);
-                        }
+                            $policy_number = strtoupper($patientSCB->us_ssnumber);
+                            if ($patientSCB->id != $patientSCB->sponsor_id) {
+                                $sponsor = DB::connection('scb')->table('patients')->where('id', $patientSCB->sponsor_id)->first();
 
-                        // Actualizar flag en Oracle para marcar como migrado
-                        if (!$isDryRun) {
-                            $this->markPatientAsMigrated($patientSCB->id);
-                        }
+                                if ($sponsor) {
+                                    $policy_number = strtoupper($sponsor->us_ssnumber);
+                                    $paSponsor = Patient::whereScbId($sponsor->id)->first();
+                                    if ($paSponsor) {
+                                        $suscriber_patient_id = $paSponsor->id;
+                                    }
 
-                        $migratedCount++;
-                        $progressBar->setMessage("✅ Paciente migrado: {$patient->name}");
+                                    $priority = 'secondary';
+                                    $suscriber_name = $sponsor->name.' '.$sponsor->surrname;
+                                }
+                            }
+
+                            if (! $isDryRun) {
+                                PatientInsurancePolicy::factory()->create([
+                                    'patient_id' => $patient->id,
+                                    'insurance_company_id' => $insurance_company_id,
+                                    'policy_number' => $policy_number,
+                                    'relationship_to_subscriber' => $relationship_to_subscriber,
+                                    'subscriber_id' => $policy_number,
+                                    'subscriber_name' => $suscriber_name,
+                                    'subscriber_patient_id' => $suscriber_patient_id,
+                                    'priority' => $priority,
+                                    'is_active' => 1,
+                                    'coverage_percentage' => 100.00, // La mayoría de los servicios cubiertos al 100% (sin deducible tradicional)
+                                    'copay_amount' => 0.00, // Muchos servicios esenciales no tienen copago (depende del grupo de prioridad)
+                                    'deductible_amount' => 0.00, // VA no funciona con deducibles clásicos como los seguros privados
+                                    'deductible_remaining' => 0.00,
+                                    'out_of_pocket_max' => 0.00, // Generalmente no aplica límite máximo de bolsillo
+                                    'out_of_pocket_remaining' => 0.00,
+                                    'coverage_details' => [
+                                        'preventive_care' => true, // Siempre cubierto
+                                        'specialist_visits' => true, // Cubierto dentro del sistema VA o referido
+                                        'emergency_room' => true, // Cubierto en VA y en red comunitaria
+                                        'hospitalization' => true, // Cubierto
+                                        'prescription_drugs' => true, // Cubiertos, con copagos bajos o nulos
+                                        'mental_health' => true, // Cubierto, con exención de copagos para las primeras 3 visitas ambulatorias hasta 2027
+                                        'physical_therapy' => true, // Incluido en rehabilitación VA
+                                        'dental' => false, // Solo en casos específicos (discapacidad 100%, prisionero de guerra, etc.)
+                                        'vision' => true, // Exámenes cubiertos, gafas solo en criterios específicos
+                                    ],
+                                    'notes' => 'Cobertura médica del VA: la mayoría de los servicios médicos y hospitalarios están incluidos sin deducibles. Dental solo cubierto en casos específicos; visión limitada a exámenes y gafas bajo ciertos criterios.',
+                                ]);
+                            }
+
+                            // Actualizar flag en Oracle para marcar como migrado
+                            if (! $isDryRun) {
+                                $this->markPatientAsMigrated($patientSCB->id);
+                            }
+
+                            $migratedCount++;
+                            $progressBar->setMessage("✅ Paciente migrado: {$patient->name}");
+                        }
+                    } else {
+                        $skippedCount++;
+                        $progressBar->setMessage("⏭️  Paciente ya existe: {$patientSCB->name} {$patientSCB->surrname}");
                     }
-                } else {
-                    $skippedCount++;
-                    $progressBar->setMessage("⏭️  Paciente ya existe: {$patientSCB->name} {$patientSCB->surrname}");
-                }
 
                 } catch (\Exception $e) {
                     $errorCount++;
                     $progressBar->setMessage("❌ Error procesando paciente: {$patientSCB->name}");
                     // Log the error but continue with the migration
-                    Log::error("Error migrando paciente {$patientSCB->id}: " . $e->getMessage());
+                    Log::error("Error migrando paciente {$patientSCB->id}: ".$e->getMessage());
                 }
 
                 $progressBar->advance();
@@ -278,7 +290,7 @@ class MigratePatientsFromSCB extends Command
             $this->line('');
             $this->line('');
 
-            if (!$isDryRun) {
+            if (! $isDryRun) {
                 DB::commit();
                 $this->info('✅ Cambios guardados en la base de datos.');
             } else {
@@ -320,12 +332,12 @@ class MigratePatientsFromSCB extends Command
             }
 
             $isDryRun = $this->option('dry-run');
-            if (!$isDryRun) {
+            if (! $isDryRun) {
                 DB::rollBack();
-                $this->error('❌ Error crítico durante la migración: ' . $exception->getMessage());
+                $this->error('❌ Error crítico durante la migración: '.$exception->getMessage());
                 $this->error('La migración ha sido revertida.');
             } else {
-                $this->error('❌ Error durante la simulación: ' . $exception->getMessage());
+                $this->error('❌ Error durante la simulación: '.$exception->getMessage());
             }
 
             return Command::FAILURE;
@@ -335,7 +347,7 @@ class MigratePatientsFromSCB extends Command
     /**
      * Marca un paciente como migrado en la base de datos Oracle SCB
      *
-     * @param int $patientId ID del paciente en SCB
+     * @param  int  $patientId  ID del paciente en SCB
      * @return bool
      */
     private function markPatientAsMigrated($patientId)
@@ -347,7 +359,8 @@ class MigratePatientsFromSCB extends Command
 
             return true;
         } catch (\Exception $e) {
-            Log::error("Error marcando paciente {$patientId} como migrado: " . $e->getMessage());
+            Log::error("Error marcando paciente {$patientId} como migrado: ".$e->getMessage());
+
             return false;
         }
     }

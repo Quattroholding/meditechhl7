@@ -556,7 +556,7 @@ class MigrateAppointmentsFromSCB extends Command
                     'fhir_id' => 'servicerequest-'.Str::uuid(),
                     'patient_id' => $encounter->patient_id,
                     'practitioner_id' => $encounter->practitioner_id,
-                    'status' => 'draft',
+                    'status' => 'active',
                     'intent' => 'order',
                     'priority' => 'asap',
                     'do_not_perform' => 0,
@@ -572,54 +572,56 @@ class MigrateAppointmentsFromSCB extends Command
                     'group_position' => array_search($exam, $exams) + 1,
                 ]);
 
-                if($sr){
-                    //BUSCAR LOS APPOINTMENTS_DETAIL por consultation EXAM
-                    $results= DB::connection('scb')->select("SELECT ad.CPT_TYPE ,ad.INSURANCE ,d.ICD10_CODE_HOMOLOGADO   ,adf.id,adf.APPOINTMENT_DETAIL_ID ,adf.CREATED_AT ,adf.PATH ,adf.DOC_NAME ,adf.DOC_TYPE ,adf.DOC_SUB_TYPE ,adf.FILE_HASH ,adf.UPLOADED_BY_NAME
+                if ($sr) {
+                    // BUSCAR LOS APPOINTMENTS_DETAIL por consultation EXAM
+                    $results = DB::connection('scb')->select('SELECT ad.CPT_TYPE ,ad.INSURANCE ,d.ICD10_CODE_HOMOLOGADO   ,adf.id,adf.APPOINTMENT_DETAIL_ID ,adf.CREATED_AT ,adf.PATH ,adf.DOC_NAME ,adf.DOC_TYPE ,adf.DOC_SUB_TYPE ,adf.FILE_HASH ,adf.UPLOADED_BY_NAME
                                                                         FROM APPOINTMENTS_DETAIL ad ,APPOINTMENTS_DETAIL_FILES adf ,DIAGNOSTICS d
                                                                         WHERE ad.id = adf.APPOINTMENT_DETAIL_ID
                                                                         AND ad.DIAG_CODE =d.code
                                                                         AND ad.DELETED_AT IS NULL AND adf.DELETED_AT IS NULL
-                                                                    AND ad.CONSULTATION_EXAM_ID =".$exam->id);
+                                                                    AND ad.CONSULTATION_EXAM_ID ='.$exam->id);
 
-                    foreach ($results as $rs){
+                    foreach ($results as $rs) {
 
                         $file_hash = hash('sha256', fake()->text(1000));
-                        if(!empty($rs->file_hash)) $file_hash = $rs->file_hash;
+                        if (! empty($rs->file_hash)) {
+                            $file_hash = $rs->file_hash;
+                        }
 
                         ServiceRequestResult::create([
-                            'fhir_id' => 'SRR-' . uniqid(),
-                            'service_request_id'=>$sr->id,
-                            'patient_id'=>$encounter->patient_id,
-                            'practitioner_id'=>$encounter->practitioner_id,
-                            'status'=>'final',
-                            'result_type'=>$exam->type,
-                            'code'=>$exam->code,
+                            'fhir_id' => 'SRR-'.uniqid(),
+                            'service_request_id' => $sr->id,
+                            'patient_id' => $encounter->patient_id,
+                            'practitioner_id' => $encounter->practitioner_id,
+                            'status' => 'final',
+                            'result_type' => $exam->type,
+                            'code' => $exam->code,
                             'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
-                            'file_path'=>$rs->path,
-                            'file_name'=>$rs->doc_name,
-                            'file_type'=>$rs->doc_type,
-                            'file_size'=>fake()->numberBetween(1024, 5242880),// 1KB to 5MB,
-                            'file_hash'=>$file_hash,
-                            'metadata'=>[
+                            'file_path' => $rs->path,
+                            'file_name' => $rs->doc_name,
+                            'file_type' => $rs->doc_type,
+                            'file_size' => fake()->numberBetween(1024, 5242880), // 1KB to 5MB,
+                            'file_hash' => $file_hash,
+                            'metadata' => [
                                 'insurance' => $rs->insurance,
-                                'icd10_code' =>$rs->icd10_code_homologado,
-                                'uploaded_by_name' =>$rs->uploaded_by_name,
+                                'icd10_code' => $rs->icd10_code_homologado,
+                                'uploaded_by_name' => $rs->uploaded_by_name,
                                 'resolution' => fake()->optional()->randomElement(['300dpi', '600dpi', '1200dpi']),
-                                'pages' => fake()->numberBetween(1, 10)
+                                'pages' => fake()->numberBetween(1, 10),
                             ],
-                            'result_date'=>$rs->created_at,
-                            'uploaded_at'=>$rs->created_at,
-                            'observations'=>null,
-                            'notes'=>null,
-                            'interpretation'=>'normal',
-                            'reference_range'=>null,
-                            'specimen_info'=>null,
-                            'version'=>1,
-                            'replaces_id'=>null,
-                            'effective_date'=>$rs->created_at,
-                            'issued_date'=>$rs->created_at,
-                    ]);
-                        $sr->status='completed';
+                            'result_date' => $rs->created_at,
+                            'uploaded_at' => $rs->created_at,
+                            'observations' => null,
+                            'notes' => null,
+                            'interpretation' => 'normal',
+                            'reference_range' => null,
+                            'specimen_info' => null,
+                            'version' => 1,
+                            'replaces_id' => null,
+                            'effective_date' => $rs->created_at,
+                            'issued_date' => $rs->created_at,
+                        ]);
+                        $sr->status = 'completed';
                         $sr->save();
                     }
                 }
@@ -848,12 +850,12 @@ class MigrateAppointmentsFromSCB extends Command
         $summary = [];
 
         // Agregar especialidad si existe
-        if (!empty($appSCB->speciality)) {
+        if (! empty($appSCB->speciality)) {
             $summary[] = $appSCB->speciality;
         }
 
         // Agregar motivo de consulta si existe
-        if (!empty($appSCB->chief_complaint)) {
+        if (! empty($appSCB->chief_complaint)) {
             $complaint = substr($appSCB->chief_complaint, 0, 30);
             if (strlen($appSCB->chief_complaint) > 30) {
                 $complaint .= '...';

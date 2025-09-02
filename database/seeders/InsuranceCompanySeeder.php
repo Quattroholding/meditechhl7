@@ -11,9 +11,9 @@ class InsuranceCompanySeeder extends Seeder
     public function run(): void
     {
         // Obtener todos los clientes para asignar las aseguradoras
-        $clients = Client::whereId(1)->get();
+        $client = Client::first();
 
-        if ($clients->isEmpty()) {
+        if (! $client) {
             $this->command->error('No hay clientes en la base de datos. Ejecuta primero el seeder de clientes.');
 
             return;
@@ -206,42 +206,42 @@ class InsuranceCompanySeeder extends Seeder
         ];
 
         // Para cada cliente, crear las aseguradoras
-        foreach ($clients as $client) {
-            $this->command->info("Creando aseguradoras para el cliente: {$client->name}");
+        // foreach ($clients as $client) {
+        $this->command->info("Creando aseguradoras para el cliente: {$client->name}");
 
-            foreach ($insuranceCompanies as $insuranceData) {
-                // Verificar si ya existe esta aseguradora para este cliente
-                $exists = Insurance::where('client_id', $client->id)
-                    ->where('code', $insuranceData['code'].'_'.$client->id)
-                    ->exists();
+        foreach ($insuranceCompanies as $insuranceData) {
+            // Verificar si ya existe esta aseguradora para este cliente
+            $exists = Insurance::where('client_id', $client->id)
+                ->where('code', $insuranceData['code'].'_'.$client->id)
+                ->exists();
 
-                if (! $exists) {
-                    $notes = $insuranceData['notes'] ?? '';
-                    if (isset($insuranceData['website'])) {
-                        $notes .= ($notes ? "\n" : '').'Website: '.$insuranceData['website'];
-                    }
-
-                    Insurance::create([
-                        'client_id' => $client->id,
-                        'name' => $insuranceData['name'],
-                        'code' => $insuranceData['code'].'_'.$client->id,
-                        'phone' => $insuranceData['phone'] ?? null,
-                        'contact_phone' => $insuranceData['contact_phone'] ?? null,
-                        'address' => $insuranceData['address'] ?? null,
-                        'contact_person' => $insuranceData['contact_person'] ?? null,
-                        'coverage_types' => $insuranceData['coverage_types'] ?? null,
-                        'notes' => $notes ?: null,
-                        'is_active' => true,
-                        'default_coverage_percentage' => 80.00, // 80% de cobertura por defecto
-                        'default_copay_amount' => 25.00, // $25 de copago por defecto
-                    ]);
-
-                    $this->command->info("  ✓ {$insuranceData['name']}");
-                } else {
-                    $this->command->warn("  - {$insuranceData['name']} ya existe para este cliente");
+            if (! $exists) {
+                $notes = $insuranceData['notes'] ?? '';
+                if (isset($insuranceData['website'])) {
+                    $notes .= ($notes ? "\n" : '').'Website: '.$insuranceData['website'];
                 }
+
+                Insurance::create([
+                    'client_id' => $client->id,
+                    'name' => $insuranceData['name'],
+                    'code' => $insuranceData['code'].'_'.$client->id,
+                    'phone' => $insuranceData['phone'] ?? null,
+                    'contact_phone' => $insuranceData['contact_phone'] ?? null,
+                    'address' => $insuranceData['address'] ?? null,
+                    'contact_person' => $insuranceData['contact_person'] ?? null,
+                    'coverage_types' => $insuranceData['coverage_types'] ?? null,
+                    'notes' => $notes ?: null,
+                    'is_active' => true,
+                    'default_coverage_percentage' => 80.00, // 80% de cobertura por defecto
+                    'default_copay_amount' => 25.00, // $25 de copago por defecto
+                ]);
+
+                $this->command->info("  ✓ {$insuranceData['name']}");
+            } else {
+                $this->command->warn("  - {$insuranceData['name']} ya existe para este cliente");
             }
         }
+        // }
 
         $this->command->info("\n✅ Seeder de Compañías de Seguros de Panamá completado exitosamente!");
         $this->command->info('Total de aseguradoras: '.count($insuranceCompanies));
