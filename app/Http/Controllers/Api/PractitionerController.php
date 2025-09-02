@@ -18,7 +18,7 @@ class PractitionerController extends Controller
 
         $practitioners = Practitioner::with(['specialties', 'user.clients'])
             ->when($request->id,function ($query) use ($request){
-                $query->whereId($request->id);
+                return $query->whereId($request->id);
             })
             ->when($request->speciality_id, function ($query, $specialityId) {
                 return $query->whereHas('specialties', function ($q) use ($specialityId) {
