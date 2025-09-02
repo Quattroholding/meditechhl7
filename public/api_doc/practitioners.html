@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médicos - Meditech2 API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #9f7aea;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .endpoint {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .method.post { background: #48bb78; }
+        .method.get { background: #4299e1; }
+        .method.put { background: #ed8936; }
+        .method.delete { background: #f56565; }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+
+        .section {
+            margin: 1.5rem 0;
+        }
+
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .response-codes {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .status-code {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .status-200 { background: #48bb78; }
+        .status-201 { background: #38b2ac; }
+        .status-400 { background: #ed8936; }
+        .status-401 { background: #f56565; }
+        .status-403 { background: #e53e3e; }
+        .status-404 { background: #a0aec0; }
+        .status-422 { background: #9f7aea; }
+        .status-500 { background: #718096; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .params-table th,
+        .params-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .params-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .param-required {
+            color: #f56565;
+            font-weight: 600;
+        }
+
+        .param-optional {
+            color: #718096;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc ul li {
+            margin: 0.5rem 0;
+        }
+
+        .toc ul li a {
+            text-decoration: none;
+            color: #4a5568;
+            transition: color 0.3s;
+        }
+
+        .toc ul li a:hover {
+            color: #9f7aea;
+        }
+
+        .note {
+            background: #bee3f8;
+            border-left: 4px solid #4299e1;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .info-box {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-user-md"></i> Médicos</h1>
+            <p>Endpoints para gestión de médicos, especialidades y disponibilidad</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="auth.html">Autenticación</a></li>
+                <li><a href="appointments.html">Citas</a></li>
+                <li><a href="patients.html">Pacientes</a></li>
+                <li><a href="practitioners.html" class="active">Médicos</a></li>
+                <li><a href="catalogs.html">Catálogos</a></li>
+                <li><a href="notifications.html">Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="toc">
+                <h3>Índice de Contenidos</h3>
+                <ul>
+                    <li><a href="#list-practitioners">GET /practitioners - Listar Médicos</a></li>
+                    <li><a href="#practitioner-availability">GET /practitioners/{id}/availability - Disponibilidad</a></li>
+                    <li><a href="#practitioner-consulting-rooms">GET /practitioners/{id}/consulting-rooms - Consultorios</a></li>
+                    <li><a href="#medical-specialities">GET /medical-specialities - Especialidades Médicas</a></li>
+                    <li><a href="#consulting-rooms">GET /consulting-rooms - Lista de Consultorios</a></li>
+                </ul>
+            </div>
+
+            <div class="note">
+                <strong>Nota:</strong> Los endpoints de médicos están diseñados para facilitar la búsqueda y selección de profesionales médicos por parte de pacientes y administradores del sistema.
+            </div>
+
+            <div class="endpoint" id="list-practitioners">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/practitioners</span>
+                </div>
+
+                <p>Obtiene la lista de médicos registrados en el sistema con paginación y filtros de búsqueda.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Número de página (por defecto: 1)</td>
+                            </tr>
+                            <tr>
+                                <td><code>per_page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Elementos por página (1-50, por defecto: 10)</td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Buscar por nombre, email, teléfono, identificación o especialidad</td>
+                            </tr>
+                            <tr>
+                                <td><code>speciality_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por especialidad médica específica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/practitioners?page=1&per_page=5&search=cardiología&speciality_id=3
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Lista de médicos obtenida exitosamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "fhir_id": "practitioner-abc123",
+            "identifier": "8-765-432",
+            "registry": "RM-12345",
+            "name": "Dr. Juan Carlos Pérez",
+            "given_name": "Juan Carlos",
+            "family_name": "Pérez",
+            "gender": "male",
+            "birth_date": "1975-08-20",
+            "phone": "+507 6000-9876",
+            "email": "dr.perez@ejemplo.com",
+            "active": true,
+            "specialties": [
+                {
+                    "id": 3,
+                    "name": "Cardiología",
+                    "description": "Especialidad en enfermedades del corazón"
+                }
+            ],
+            "clients": [
+                {
+                    "id": 1,
+                    "name": "Clínica San Fernando"
+                }
+            ],
+            "profile_picture_url": "https://ejemplo.com/storage/avatars/practitioner-1.jpg",
+            "years_experience": 15,
+            "consultation_fee": 75.00
+        }
+    ],
+    "pagination": {
+        "current_page": 1,
+        "per_page": 5,
+        "total": 25,
+        "last_page": 5,
+        "from": 1,
+        "to": 5,
+        "has_more_pages": true
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="practitioner-availability">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/practitioners/{id}/availability</span>
+                </div>
+
+                <p>Obtiene la disponibilidad de horarios de un médico específico para una fecha determinada.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td>integer</td>
+                                <td>ID del médico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>date</code></td>
+                                <td>date</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Fecha para consultar disponibilidad (YYYY-MM-DD, hoy o futura)</td>
+                            </tr>
+                            <tr>
+                                <td><code>duration</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Duración de la cita en minutos (15-180, por defecto: 30)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/practitioners/1/availability?date=2024-02-15&duration=30
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Disponibilidad obtenida exitosamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "date": "2024-02-15",
+    "practitioner": {
+        "id": 1,
+        "name": "Dr. Juan Carlos Pérez",
+        "specialties": ["Cardiología"]
+    },
+    "working_hours": {
+        "start": "08:00",
+        "end": "17:00",
+        "lunch_break": {
+            "start": "12:00",
+            "end": "13:00"
+        }
+    },
+    "available_slots": [
+        {
+            "time": "08:00",
+            "available": true,
+            "end_time": "08:30"
+        },
+        {
+            "time": "08:30",
+            "available": true,
+            "end_time": "09:00"
+        },
+        {
+            "time": "09:00",
+            "available": false,
+            "reason": "Cita existente"
+        },
+        {
+            "time": "09:30",
+            "available": true,
+            "end_time": "10:00"
+        }
+    ],
+    "total_available": 12,
+    "next_available": "08:00"
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-404">404</span>
+                        <span>Médico no encontrado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Médico no encontrado"
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-422">422</span>
+                        <span>Parámetros de validación incorrectos</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Los datos proporcionados no son válidos.",
+    "errors": {
+        "date": ["La fecha debe ser igual o posterior a hoy"],
+        "duration": ["La duración debe estar entre 15 y 180 minutos"]
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="practitioner-consulting-rooms">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/practitioners/{id}/consulting-rooms</span>
+                </div>
+
+                <p>Obtiene los consultorios disponibles para un médico específico.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td>integer</td>
+                                <td>ID del médico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Consultorios del médico</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Consultorio 101",
+            "location": "Primer piso",
+            "description": "Consultorio equipado para cardiología",
+            "capacity": 1,
+            "branch": {
+                "id": 1,
+                "name": "Sucursal Principal",
+                "address": "Calle Principal #123"
+            },
+            "equipment": [
+                "Electrocardiograma",
+                "Esfigmomanómetro",
+                "Estetoscopio digital"
+            ]
+        }
+    ]
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="medical-specialities">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/medical-specialities</span>
+                </div>
+
+                <p>Obtiene la lista de especialidades médicas disponibles en el sistema.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Lista de especialidades médicas</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Medicina General",
+            "description": "Atención médica general y preventiva",
+            "practitioners_count": 15
+        },
+        {
+            "id": 2,
+            "name": "Pediatría",
+            "description": "Especialidad médica dedicada al cuidado de bebés, niños y adolescentes",
+            "practitioners_count": 8
+        },
+        {
+            "id": 3,
+            "name": "Cardiología",
+            "description": "Especialidad médica que se ocupa de las enfermedades del corazón",
+            "practitioners_count": 5
+        },
+        {
+            "id": 4,
+            "name": "Ginecología y Obstetricia",
+            "description": "Especialidad médica y quirúrgica que trata las enfermedades del sistema reproductor femenino",
+            "practitioners_count": 6
+        }
+    ]
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="consulting-rooms">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/consulting-rooms</span>
+                </div>
+
+                <p>Obtiene la lista de consultorios disponibles en todas las sucursales.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>branch_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por sucursal específica</td>
+                            </tr>
+                            <tr>
+                                <td><code>available</code></td>
+                                <td>boolean</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Mostrar solo consultorios disponibles (true/false)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/consulting-rooms?branch_id=1&available=true
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Lista de consultorios</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Consultorio 101",
+            "location": "Primer piso",
+            "description": "Consultorio general equipado",
+            "capacity": 1,
+            "active": true,
+            "branch": {
+                "id": 1,
+                "name": "Sucursal Principal",
+                "address": "Calle Principal #123",
+                "city": "Ciudad de Panamá"
+            },
+            "current_availability": true,
+            "next_appointment": "2024-02-15 10:00:00"
+        }
+    ]
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>Información Adicional sobre Médicos</h4>
+                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
+                    <li><strong>Horarios de Trabajo:</strong> Los médicos tienen horarios configurables por día de la semana</li>
+                    <li><strong>Múltiples Especialidades:</strong> Un médico puede tener múltiples especialidades</li>
+                    <li><strong>Multi-Sucursal:</strong> Los médicos pueden trabajar en múltiples sucursales</li>
+                    <li><strong>Disponibilidad en Tiempo Real:</strong> La disponibilidad se calcula considerando citas existentes y horarios de trabajo</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

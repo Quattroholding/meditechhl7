@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación - Meditech2 API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #f56565;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .endpoint {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .method.post { background: #48bb78; }
+        .method.get { background: #4299e1; }
+        .method.put { background: #ed8936; }
+        .method.delete { background: #f56565; }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+
+        .section {
+            margin: 1.5rem 0;
+        }
+
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .response-codes {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status-code {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .status-200 { background: #48bb78; }
+        .status-201 { background: #38b2ac; }
+        .status-400 { background: #ed8936; }
+        .status-401 { background: #f56565; }
+        .status-403 { background: #e53e3e; }
+        .status-404 { background: #a0aec0; }
+        .status-422 { background: #9f7aea; }
+        .status-500 { background: #718096; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .params-table th,
+        .params-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .params-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .param-required {
+            color: #f56565;
+            font-weight: 600;
+        }
+
+        .param-optional {
+            color: #718096;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc ul li {
+            margin: 0.5rem 0;
+        }
+
+        .toc ul li a {
+            text-decoration: none;
+            color: #4a5568;
+            transition: color 0.3s;
+        }
+
+        .toc ul li a:hover {
+            color: #f56565;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-key"></i> Autenticación</h1>
+            <p>Endpoints para gestión de autenticación y autorización</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="auth.html" class="active">Autenticación</a></li>
+                <li><a href="appointments.html">Citas</a></li>
+                <li><a href="patients.html">Pacientes</a></li>
+                <li><a href="practitioners.html">Médicos</a></li>
+                <li><a href="catalogs.html">Catálogos</a></li>
+                <li><a href="notifications.html">Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="toc">
+                <h3>Índice de Contenidos</h3>
+                <ul>
+                    <li><a href="#login">POST /auth/login - Iniciar Sesión</a></li>
+                    <li><a href="#register">POST /auth/register - Registrar Usuario</a></li>
+                    <li><a href="#logout">POST /auth/logout - Cerrar Sesión</a></li>
+                    <li><a href="#refresh">POST /auth/refresh - Renovar Token</a></li>
+                    <li><a href="#user">GET /auth/user - Obtener Usuario Actual</a></li>
+                    <li><a href="#forgot-password">POST /auth/forgot-password - Olvidé mi Contraseña</a></li>
+                    <li><a href="#reset-password">POST /auth/reset-password - Restablecer Contraseña</a></li>
+                </ul>
+            </div>
+
+            <div class="endpoint" id="login">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/login</span>
+                </div>
+
+                <p>Permite a los usuarios (pacientes o médicos) iniciar sesión en el sistema.</p>
+
+                <div class="section">
+                    <h3>Parámetros de Entrada</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>email</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Email del usuario</td>
+                            </tr>
+                            <tr>
+                                <td><code>password</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Contraseña del usuario</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+POST /api/auth/login
+Content-Type: application/json
+
+{
+    "email": "doctor@ejemplo.com",
+    "password": "password123"
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Login exitoso</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Login exitoso",
+    "token": "1|abcd1234...",
+    "user_type": "practitioner",
+    "user": {
+        "id": 1,
+        "name": "Dr. Juan Pérez",
+        "email": "doctor@ejemplo.com",
+        "default_client_id": 1
+    },
+    "practitioner": {
+        "id": 1,
+        "name": "Dr. Juan Pérez",
+        "phone": "+507 6000-0000",
+        "birth_date": "1980-05-15",
+        "gender": "male",
+        "identifier": "8-123-456",
+        "registry": "RM-12345",
+        "active": true,
+        "clients": [
+            {
+                "id": 1,
+                "name": "Clínica Ejemplo",
+                "phone": "+507 200-0000",
+                "address": "Ciudad de Panamá"
+            }
+        ],
+        "clients_count": 1
+    }
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-422">422</span>
+                        <span>Datos de validación incorrectos</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Las credenciales proporcionadas son incorrectas.",
+    "errors": {
+        "email": ["Las credenciales proporcionadas son incorrectas."]
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="register">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/register</span>
+                </div>
+
+                <p>Registra un nuevo paciente en el sistema.</p>
+
+                <div class="section">
+                    <h3>Parámetros de Entrada</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>email</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Email del paciente (max: 255)</td>
+                            </tr>
+                            <tr>
+                                <td><code>identifier</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Número de identificación</td>
+                            </tr>
+                            <tr>
+                                <td><code>identifier_type</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Tipo de ID: CC, CE, PA, PT, SS</td>
+                            </tr>
+                            <tr>
+                                <td><code>given_name</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Nombre(s) (max: 255)</td>
+                            </tr>
+                            <tr>
+                                <td><code>family_name</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Apellido(s) (max: 255)</td>
+                            </tr>
+                            <tr>
+                                <td><code>password</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Contraseña (mín: 8 caracteres)</td>
+                            </tr>
+                            <tr>
+                                <td><code>password_confirmation</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Confirmación de contraseña</td>
+                            </tr>
+                            <tr>
+                                <td><code>phone</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Número de teléfono (max: 20)</td>
+                            </tr>
+                            <tr>
+                                <td><code>birth_date</code></td>
+                                <td>date</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Fecha de nacimiento (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>gender</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Género: male, female, unknown</td>
+                            </tr>
+                            <tr>
+                                <td><code>address</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Dirección del paciente</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+POST /api/auth/register
+Content-Type: application/json
+
+{
+    "email": "paciente@ejemplo.com",
+    "identifier": "8-123-456",
+    "identifier_type": "CC",
+    "given_name": "María",
+    "family_name": "González",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone": "+507 6000-1234",
+    "birth_date": "1990-03-15",
+    "gender": "female",
+    "address": "Ciudad de Panamá"
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-201">201</span>
+                        <span>Registro exitoso</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Registro exitoso",
+    "token": "2|xyz789...",
+    "user": {
+        "id": 2,
+        "name": "María González",
+        "email": "paciente@ejemplo.com"
+    },
+    "patient": {
+        "id": 1,
+        "name": "María González",
+        "phone": "+507 6000-1234",
+        "birth_date": "1990-03-15"
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="logout">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/logout</span>
+                </div>
+
+                <p>Cierra la sesión del usuario actual y revoca el token de acceso.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+POST /api/auth/logout
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Logout exitoso</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Logout exitoso"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="refresh">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/refresh</span>
+                </div>
+
+                <p>Renueva el token de acceso del usuario actual.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Token renovado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Token renovado",
+    "token": "3|newtoken123...",
+    "user_type": "patient"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="user">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/auth/user</span>
+                </div>
+
+                <p>Obtiene la información del usuario autenticado actual.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Información del usuario</span>
+                    </div>
+                    <div class="code-block">
+{
+    "user_type": "patient",
+    "user": {
+        "id": 2,
+        "name": "María González",
+        "email": "paciente@ejemplo.com"
+    },
+    "patient": {
+        "id": 1,
+        "name": "María González",
+        "phone": "+507 6000-1234",
+        "birth_date": "1990-03-15",
+        "gender": "female",
+        "identifier": "8-123-456",
+        "identifier_type": "CC"
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="forgot-password">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/forgot-password</span>
+                </div>
+
+                <p>Envía un enlace de restablecimiento de contraseña al email del usuario.</p>
+
+                <div class="section">
+                    <h3>Parámetros de Entrada</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>email</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Email del usuario</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Enlace enviado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Se ha enviado un enlace de restablecimiento de contraseña a tu email."
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="reset-password">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/auth/reset-password</span>
+                </div>
+
+                <p>Restablece la contraseña del usuario usando un token de reset.</p>
+
+                <div class="section">
+                    <h3>Parámetros de Entrada</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>token</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Token de restablecimiento</td>
+                            </tr>
+                            <tr>
+                                <td><code>email</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Email del usuario</td>
+                            </tr>
+                            <tr>
+                                <td><code>password</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Nueva contraseña (mín: 8)</td>
+                            </tr>
+                            <tr>
+                                <td><code>password_confirmation</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Confirmación de contraseña</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Contraseña restablecida</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Tu contraseña ha sido restablecida exitosamente."
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

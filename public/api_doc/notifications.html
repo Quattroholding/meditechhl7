@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Meditech2 API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #f093fb;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .endpoint {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .method.post { background: #48bb78; }
+        .method.get { background: #4299e1; }
+        .method.put { background: #ed8936; }
+        .method.delete { background: #f56565; }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+
+        .section {
+            margin: 1.5rem 0;
+        }
+
+        .section h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .response-codes {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .status-code {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .status-200 { background: #48bb78; }
+        .status-201 { background: #38b2ac; }
+        .status-400 { background: #ed8936; }
+        .status-401 { background: #f56565; }
+        .status-403 { background: #e53e3e; }
+        .status-404 { background: #a0aec0; }
+        .status-422 { background: #9f7aea; }
+        .status-500 { background: #718096; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .params-table th,
+        .params-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .params-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .param-required {
+            color: #f56565;
+            font-weight: 600;
+        }
+
+        .param-optional {
+            color: #718096;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc ul li {
+            margin: 0.5rem 0;
+        }
+
+        .toc ul li a {
+            text-decoration: none;
+            color: #4a5568;
+            transition: color 0.3s;
+        }
+
+        .toc ul li a:hover {
+            color: #f093fb;
+        }
+
+        .note {
+            background: #bee3f8;
+            border-left: 4px solid #4299e1;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .info-box {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .warning {
+            background: #fed7d7;
+            border-left: 4px solid #f56565;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .notification-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .type-appointment { background: #c6f6d5; color: #22543d; }
+        .type-reminder { background: #fed7d7; color: #742a2a; }
+        .type-system { background: #bee3f8; color: #2c5282; }
+        .type-alert { background: #fbb6ce; color: #97266d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-bell"></i> Notificaciones</h1>
+            <p>Sistema de notificaciones para médicos y usuarios</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="auth.html">Autenticación</a></li>
+                <li><a href="appointments.html">Citas</a></li>
+                <li><a href="patients.html">Pacientes</a></li>
+                <li><a href="practitioners.html">Médicos</a></li>
+                <li><a href="catalogs.html">Catálogos</a></li>
+                <li><a href="notifications.html" class="active">Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="toc">
+                <h3>Índice de Contenidos</h3>
+                <ul>
+                    <li><a href="#doctor-notifications">GET /doctor-notifications/{doctor_id} - Notificaciones del Médico</a></li>
+                    <li><a href="#general-notifications">GET /users - Notificaciones Generales</a></li>
+                    <li><a href="#notification-types">Tipos de Notificaciones</a></li>
+                    <li><a href="#notification-status">Estados de Notificaciones</a></li>
+                </ul>
+            </div>
+
+            <div class="note">
+                <strong>Sistema de Notificaciones:</strong> Meditech2 incluye un sistema completo de notificaciones que mantiene informados a médicos, pacientes y administradores sobre eventos importantes del sistema, citas médicas, recordatorios y alertas.
+            </div>
+
+            <div class="endpoint" id="doctor-notifications">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/doctor-notifications/{doctor_id}</span>
+                </div>
+
+                <p>Obtiene las notificaciones específicas para un médico, incluyendo citas, recordatorios y alertas del sistema.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>doctor_id</code></td>
+                                <td>integer</td>
+                                <td>ID del médico para obtener sus notificaciones</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>type</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por tipo: appointment, reminder, system, alert</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por estado: unread, read, archived</td>
+                            </tr>
+                            <tr>
+                                <td><code>priority</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por prioridad: low, medium, high, urgent</td>
+                            </tr>
+                            <tr>
+                                <td><code>date_from</code></td>
+                                <td>date</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Fecha desde (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>date_to</code></td>
+                                <td>date</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Fecha hasta (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>limit</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Número máximo de notificaciones (por defecto: 50)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/doctor-notifications/1?type=appointment&status=unread&priority=high&limit=20
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Notificaciones obtenidas exitosamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "type": "appointment",
+            "title": "Nueva Cita Programada",
+            "message": "Se ha programado una nueva cita para mañana a las 10:00 AM con el paciente María González",
+            "priority": "high",
+            "status": "unread",
+            "created_at": "2024-02-14T15:30:00.000000Z",
+            "scheduled_for": "2024-02-15T10:00:00.000000Z",
+            "related_data": {
+                "appointment_id": 123,
+                "patient_id": 45,
+                "patient_name": "María González",
+                "appointment_time": "2024-02-15T10:00:00.000000Z",
+                "consulting_room": "Consultorio 101"
+            },
+            "actions": [
+                {
+                    "type": "view_appointment",
+                    "label": "Ver Cita",
+                    "url": "/appointments/123"
+                },
+                {
+                    "type": "mark_read",
+                    "label": "Marcar como Leída",
+                    "method": "POST"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": "reminder",
+            "title": "Recordatorio: Cita en 30 minutos",
+            "message": "Recordatorio: Tiene una cita programada con Juan Pérez en 30 minutos",
+            "priority": "medium",
+            "status": "unread",
+            "created_at": "2024-02-15T09:30:00.000000Z",
+            "scheduled_for": "2024-02-15T09:30:00.000000Z",
+            "related_data": {
+                "appointment_id": 124,
+                "patient_id": 46,
+                "patient_name": "Juan Pérez",
+                "appointment_time": "2024-02-15T10:00:00.000000Z"
+            }
+        },
+        {
+            "id": 3,
+            "type": "system",
+            "title": "Actualización del Sistema",
+            "message": "El sistema será actualizado esta noche de 2:00 AM a 4:00 AM. Durante este tiempo el servicio estará limitado.",
+            "priority": "low",
+            "status": "read",
+            "created_at": "2024-02-14T10:00:00.000000Z",
+            "scheduled_for": null,
+            "related_data": {
+                "maintenance_window": {
+                    "start": "2024-02-15T02:00:00.000000Z",
+                    "end": "2024-02-15T04:00:00.000000Z"
+                }
+            }
+        }
+    ],
+    "summary": {
+        "total": 15,
+        "unread": 8,
+        "read": 5,
+        "archived": 2,
+        "by_type": {
+            "appointment": 6,
+            "reminder": 4,
+            "system": 3,
+            "alert": 2
+        },
+        "by_priority": {
+            "urgent": 1,
+            "high": 3,
+            "medium": 7,
+            "low": 4
+        }
+    },
+    "doctor": {
+        "id": 1,
+        "name": "Dr. Juan Carlos Pérez",
+        "specialty": "Cardiología"
+    }
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-404">404</span>
+                        <span>Médico no encontrado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Médico no encontrado"
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-403">403</span>
+                        <span>Sin autorización para ver notificaciones</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "No tiene autorización para ver las notificaciones de este médico"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="general-notifications">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/users</span>
+                </div>
+
+                <p>Obtiene notificaciones generales del sistema para usuarios (cuando se usa con contexto de notificaciones).</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>notifications</code></td>
+                                <td>boolean</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Debe ser true para obtener notificaciones</td>
+                            </tr>
+                            <tr>
+                                <td><code>user_type</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por tipo: patient, practitioner, admin</td>
+                            </tr>
+                            <tr>
+                                <td><code>global_only</code></td>
+                                <td>boolean</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Solo notificaciones globales (por defecto: false)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/users?notifications=true&user_type=patient
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Notificaciones generales obtenidas</span>
+                    </div>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 101,
+            "type": "system",
+            "title": "Bienvenido a Meditech2",
+            "message": "Gracias por registrarse en nuestro sistema. Puede comenzar a programar sus citas médicas.",
+            "priority": "low",
+            "status": "unread",
+            "global": true,
+            "target_audience": ["patient"],
+            "created_at": "2024-02-14T08:00:00.000000Z",
+            "expires_at": "2024-03-14T08:00:00.000000Z"
+        },
+        {
+            "id": 102,
+            "type": "alert",
+            "title": "Mantenimiento Programado",
+            "message": "Mantenimiento del sistema programado para el próximo domingo de 1:00 AM a 3:00 AM",
+            "priority": "medium",
+            "status": "unread",
+            "global": true,
+            "target_audience": ["patient", "practitioner"],
+            "created_at": "2024-02-13T16:00:00.000000Z",
+            "scheduled_for": "2024-02-18T01:00:00.000000Z"
+        }
+    ],
+    "user": {
+        "id": 2,
+        "name": "María González",
+        "type": "patient"
+    },
+    "summary": {
+        "total_notifications": 2,
+        "unread_count": 2,
+        "global_notifications": 2
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="notification-types">
+                <h3>Tipos de Notificaciones</h3>
+                <p>El sistema maneja diferentes tipos de notificaciones según su propósito:</p>
+
+                <div class="info-box">
+                    <h4>Tipos Disponibles:</h4>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><span class="notification-type type-appointment">appointment</span> <strong>Citas:</strong> Notificaciones relacionadas con citas médicas (nuevas, cambios, cancelaciones)</li>
+                        <li><span class="notification-type type-reminder">reminder</span> <strong>Recordatorios:</strong> Recordatorios automáticos de citas próximas o tareas pendientes</li>
+                        <li><span class="notification-type type-system">system</span> <strong>Sistema:</strong> Notificaciones del sistema (actualizaciones, mantenimiento, cambios)</li>
+                        <li><span class="notification-type type-alert">alert</span> <strong>Alertas:</strong> Notificaciones urgentes o importantes que requieren atención inmediata</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section" id="notification-status">
+                <h3>Estados de Notificaciones</h3>
+                <p>Las notificaciones pueden tener los siguientes estados:</p>
+
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Descripción</th>
+                            <th>Acción Requerida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>unread</code></td>
+                            <td>Notificación no leída por el usuario</td>
+                            <td>Marcar como leída</td>
+                        </tr>
+                        <tr>
+                            <td><code>read</code></td>
+                            <td>Notificación leída por el usuario</td>
+                            <td>Opcional: archivar</td>
+                        </tr>
+                        <tr>
+                            <td><code>archived</code></td>
+                            <td>Notificación archivada (oculta de la vista principal)</td>
+                            <td>Puede ser restaurada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning">
+                <strong>Importante:</strong> Las notificaciones de alta prioridad y urgentes deben ser atendidas promptamente para garantizar la continuidad del servicio médico y la satisfacción del paciente.
+            </div>
+
+            <div class="info-box">
+                <h4>Funcionalidades Adicionales:</h4>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Notificaciones Push:</strong> Integración con servicios de notificaciones móviles</li>
+                    <li><strong>Email:</strong> Notificaciones importantes también se envían por correo electrónico</li>
+                    <li><strong>SMS:</strong> Recordatorios de citas pueden enviarse por mensaje de texto</li>
+                    <li><strong>Tiempo Real:</strong> Las notificaciones se actualizan en tiempo real usando WebSockets</li>
+                    <li><strong>Programación:</strong> Notificaciones pueden ser programadas para envío futuro</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
