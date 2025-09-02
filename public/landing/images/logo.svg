@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40" viewBox="0 0 120 40">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Medical Cross -->
+  <rect x="5" y="15" width="12" height="3" fill="url(#logoGradient)" rx="1"/>
+  <rect x="9.5" y="10.5" width="3" height="12" fill="url(#logoGradient)" rx="1"/>
+  
+  <!-- DNA Helix representation -->
+  <path d="M25 8 Q30 12 25 16 Q20 20 25 24 Q30 28 25 32" stroke="url(#logoGradient)" stroke-width="2" fill="none"/>
+  <path d="M27 8 Q22 12 27 16 Q32 20 27 24 Q22 28 27 32" stroke="url(#logoGradient)" stroke-width="2" fill="none"/>
+  
+  <!-- Text -->
+  <text x="40" y="18" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">MEDITEC</text>
+  <text x="40" y="32" font-family="Inter, Arial, sans-serif" font-size="8" fill="#00D4AA">SOLUCIONES</text>
+</svg>
