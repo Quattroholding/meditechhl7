@@ -662,7 +662,7 @@ textarea.form-control {
 	font-size: 16px;
 	line-height: 30px;
 	padding: 10px;
-    background: rgba(12, 149, 71, 1);
+    background:#01338A;
 }
 .card-header h3{
     color: #FFFFFF;
@@ -959,7 +959,7 @@ textarea.form-control {
 	padding: 0 20px;
 }
 .sidebar-menu li a:hover {
-	color:rgb(12,149,71,1);
+	color: #01338A;
 }
 .sidebar-menu ul li .active img {
     filter: invert(13%) sepia(85%) saturate(7478%) hue-rotate(266deg) brightness(50%) contrast(340%);
@@ -999,7 +999,7 @@ textarea.form-control {
 	font-weight: 500;
 }
 .sidebar-menu ul li .active {
-	color:rgb(12,149,71,1);
+	color: #01338A;
 	font-weight: 500;
 }
 .sidebar-menu ul .submenu ul .active {
@@ -1081,7 +1081,7 @@ textarea.form-control {
 	font-size: 14px;
 	padding: 9px 10px 9px 60px;
 	position: relative;
-	color: rgba(12, 149, 71,1);
+	color: #01338A;
 	font-weight: 500;
 }
 .sidebar-menu ul ul {
@@ -1238,7 +1238,7 @@ textarea.form-control {
     justify-content: flex-start;
     position: relative;
     transition: all 0.2s ease-in-out 0s;
-    color:rgb(12,149,71,1);
+    color:#01338A;
     font-weight: 500;
 }
 .logout-btn a span {
@@ -1423,7 +1423,7 @@ textarea.form-control {
 	margin-bottom: 40px;
 }
 .login-right .btn-primary {
-	background: linear-gradient(60.39deg, rgb(12,149,71,1),rgb(12,149,71,0.5));
+	background: linear-gradient(60.39deg, #01338A,#012e7c);
 	border-radius: 12px;
 	font-size: 16px;
 	padding: 10px 15px;

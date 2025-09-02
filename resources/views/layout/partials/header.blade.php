@@ -113,8 +113,8 @@
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="javascript:;" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">
-                    <h5>{{auth()->user()->full_name}}</h5>
-                    <span>
+                    <h5 class="text-primary">{{auth()->user()->full_name}}</h5>
+                    <span class="text-primary">
                         @if(auth()->user()->getCurrentClient() && !auth()->user()->hasRole('paciente'))
                                 {{auth()->user()->getCurrentClient()->name}} ({{auth()->user()->getCurrentClient()->package->name}}) -
                         @endif

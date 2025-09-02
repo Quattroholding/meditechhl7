@@ -18,18 +18,23 @@
             <!-- /Page Header -->
 
             <div class="good-morning-blk">
-                <div class="row">
+                <div class="row" 
+                style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
+                        background-size: cover;
+                        background-repeat: no-repeat; 
+                        background-position: center; "
+                        >
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2><span class="typewriter-text">{{__('generic.hello')}} , {{auth()->user()->patient->name}}</span></h2>
-                            <p><span class="typewriter-text">{{__('generic.welcome')}}</span></p>
+                            <h2><span class="typewriter-text text-white">{{__('generic.hello')}} , {{auth()->user()->patient->name}}</span></h2>
+                            <p><span class="typewriter-text text-white">{{__('generic.welcome')}}</span></p>
                         </div>
                     </div>
-                    <div class="col-md-6 position-blk">
+                    {{--}}<div class="col-md-6 position-blk">
                         <div class="morning-img">
                             <img src="{{ URL::asset('/assets/img/morning-img-21.png') }}" alt="">
                         </div>
-                    </div>
+                    </div>{{--}}
                 </div>
             </div>
             @include('partials.message')

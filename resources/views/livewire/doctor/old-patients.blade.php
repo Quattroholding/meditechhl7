@@ -7,7 +7,7 @@
                 <div class="skeleton-percentage"></div>
             </div>
         @else
-            <h5>{{__('Pacientes antiguos')}}</h5>
+            <h5 class="text-primary">{{__('Pacientes antiguos')}}</h5>
             <h3>{{ $oldPatients }}<span class="{{ $statusClass }}"><img src="{{ URL::asset('/assets/img/icons/' . $icon) }}"
                         alt="" class="me-1">{{ number_format($percentageChange, 1) }}%</span></h3>
         @endif
