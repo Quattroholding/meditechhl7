@@ -17,6 +17,9 @@ class PractitionerController extends Controller
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
         $practitioners = Practitioner::with(['specialties', 'user.clients'])
+            ->when($request->id,function ($query) use ($request){
+                $query->whereId($request->id);
+            })
             ->when($request->speciality_id, function ($query, $specialityId) {
                 return $query->whereHas('specialties', function ($q) use ($specialityId) {
                     $q->where('medical_specialties.id', $specialityId);
