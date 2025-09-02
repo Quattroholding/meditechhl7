@@ -16,21 +16,25 @@
             <!-- /Page Header -->
 
             <div class="good-morning-blk">
-                <div class="row">
+                <div class="row"  style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
+                        background-size: cover;
+                        background-repeat: no-repeat; 
+                        background-position: center; "
+                        >
                     <div class="col-md-6">
                         <div class="morning-user">
                             <h2>
-                                <span class="typewriter-text">{{__('generic.hello')}}, {{auth()->user()->full_name}}</span>
+                                <span class="typewriter-text text-white">{{__('generic.hello')}}, {{auth()->user()->full_name}}</span>
                             </h2>
-                            <p>  <span class="typewriter-text">{{__('generic.Have a nice day at work')}}</span></p>
+                            <p>  <span class="typewriter-text text-white">{{__('generic.Have a nice day at work')}}</span></p>
 
                         </div>
                     </div>
-                    <div class="col-md-6 position-blk">
+                    {{--}}<div class="col-md-6 position-blk">
                         <div class="morning-img">
                             <img src="{{ URL::asset('/assets/img/morning-img-02.png') }}" alt="">
                         </div>
-                    </div>
+                    </div>{{--}}
                 </div>
             </div>
             <div class="dashboard-initrr">

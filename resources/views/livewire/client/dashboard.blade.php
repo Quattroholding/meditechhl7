@@ -14,18 +14,22 @@
             @endcomponent
             <!-- /Page Header -->
             <div class="good-morning-blk">
-                <div class="row">
+                <div class="row" style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
+                        background-size: cover;
+                        background-repeat: no-repeat; 
+                        background-position: center; "
+                        >
                     <div class="col-md-6">
                         <div class="morning-user">
-                            <h2>{{__('generic.hi')}}, <span>{{auth()->user()->full_name}}</span></h2>
-                            <p>{{__('generic.welcome')}}</p>
+                            <h2 class="text-white">{{__('generic.hi')}}, <span class="text-white">{{auth()->user()->full_name}}</span></h2>
+                            <p class="text-white">{{__('generic.welcome')}}</p>
                         </div>
                     </div>
-                    <div class="col-md-6 position-blk">
+                    {{--}}<div class="col-md-6 position-blk">
                         <div class="morning-img">
                             <img src="{{ URL::asset('/assets/img/morning-img-01.png') }}" alt="">
                         </div>
-                    </div>
+                    </div>{{--}}
                 </div>
             </div>
             <div class="row">

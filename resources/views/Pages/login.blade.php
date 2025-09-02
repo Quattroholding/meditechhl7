@@ -2,12 +2,12 @@
     <div class="container-fluid px-0">
         <div class="row">
             <!-- Login logo -->
-            <div class="col-lg-6 login-wrap">
-                <div class="login-sec">
-                    <div class="log-img">
-                        <img class="img-fluid" src="{{ URL::asset('/assets/img/login-02.png') }}" alt="Logo">
-                    </div>
-                </div>
+            <div class="col-lg-6 login-wrap" 
+            style= "background-image: url('{{ URL::asset('/assets/img/img-front.png') }}');
+                    background-size: cover;
+                    background-repeat: no-repeat; 
+                    background-position: center; ">
+
             </div>
             <!-- /Login logo -->
             <!-- Login Content -->
@@ -51,7 +51,7 @@
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        <a href="{{ url('forgot-password') }}">{{__('¿Se te olvidó la contraseña?')}}</a>
+                                        <a href="{{ url('forgot-password') }}" class="text-primary">{{__('¿Se te olvidó la contraseña?')}}</a>
                                     </div>
                                     <div class="form-group login-btn">
                                         <button class="btn btn-primary btn-block" type="submit">{{__('Ingresar')}}</button>
@@ -60,7 +60,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}">{{__('Regístrate')}}</a></p>
+                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}" class="text-primary">{{__('Regístrate')}}</a></p>
                                     <!-- Social Login -->
                                     <div class="social-login">
 
