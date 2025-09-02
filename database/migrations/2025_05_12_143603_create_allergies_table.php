@@ -22,7 +22,7 @@ return new class extends Migration
                 'medication',
                 'environment',
                 'biologic',
-                'other'
+                'other',
             ]);
             $table->enum('criticality', ['low', 'high', 'unable-to-assess'])->nullable();
             $table->enum('reaction_severity', ['mild', 'moderate', 'severe'])->nullable();

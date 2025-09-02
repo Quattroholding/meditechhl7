@@ -3,15 +3,17 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\MedicationRequest;
-use App\Models\Medicine;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class TopPrescribedMedications extends Component
 {
     public $timeFrame = '30'; // Por defecto últimos 30 días
+
     public $topMedications = [];
+
     public $order;
+
     public $isLoading = true;
 
     public function mount()
@@ -50,13 +52,13 @@ class TopPrescribedMedications extends Component
                 DB::raw('COUNT(*) as prescription_count'),
                 DB::raw('COUNT(DISTINCT medication_requests.encounter_id) as encounter_count'),
                 DB::raw('COUNT(DISTINCT medication_requests.patient_id) as patient_count'),
-                DB::raw('AVG(CAST(medication_requests.quantity AS DECIMAL(10,2))) as avg_quantity')
+                DB::raw('AVG(CAST(medication_requests.quantity AS DECIMAL(10,2))) as avg_quantity'),
             ])
             ->join('encounters', 'medication_requests.encounter_id', '=', 'encounters.id')
             ->join('medicines', 'medication_requests.medication_id', '=', 'medicines.id')
             ->where('medication_requests.practitioner_id', $practitionerId)
             ->where('medication_requests.status', '!=', 'cancelled')
-            ->when($days > 0, function($query) use ($days) {
+            ->when($days > 0, function ($query) use ($days) {
                 return $query->where('encounters.start', '>=', now()->subDays($days));
             })
             ->groupBy([
@@ -67,7 +69,7 @@ class TopPrescribedMedications extends Component
                 'medicines.mgs',
                 'medicines.mgs_type',
                 'medication_requests.frequency',
-                'medication_requests.route'
+                'medication_requests.route',
             ])
             ->orderByDesc('prescription_count')
             ->limit(5)
@@ -77,7 +79,7 @@ class TopPrescribedMedications extends Component
                     'medicine_id' => $item->medicine_id,
                     'generic_name' => $item->generic_name,
                     'home_name' => $item->home_name ?: $item->generic_name,
-                    'concentration' => $item->mgs . ' ' . $item->mgs_type,
+                    'concentration' => $item->mgs.' '.$item->mgs_type,
                     'type' => $item->type,
                     'frequency' => $item->frequency ?: 'No especificada',
                     'route' => $item->route ?: 'Oral',
@@ -85,7 +87,7 @@ class TopPrescribedMedications extends Component
                     'encounter_count' => $item->encounter_count,
                     'patient_count' => $item->patient_count,
                     'avg_quantity' => round($item->avg_quantity ?? 0, 1),
-                    'percentage' => 0 // Se calculará después
+                    'percentage' => 0, // Se calculará después
                 ];
             });
 
@@ -93,6 +95,7 @@ class TopPrescribedMedications extends Component
         $totalCount = $this->topMedications->sum('prescription_count');
         $this->topMedications = $this->topMedications->map(function ($medication) use ($totalCount) {
             $medication['percentage'] = $totalCount > 0 ? round(($medication['prescription_count'] / $totalCount) * 100, 1) : 0;
+
             return $medication;
         });
     }
@@ -104,7 +107,7 @@ class TopPrescribedMedications extends Component
             '#4ECDC4', // Turquesa
             '#45B7D1', // Azul
             '#96CEB4', // Verde menta
-            '#FECA57'  // Amarillo dorado
+            '#FECA57',  // Amarillo dorado
         ];
 
         return $colors[$index % count($colors)];
@@ -119,7 +122,7 @@ class TopPrescribedMedications extends Component
             'injection' => 'fas fa-syringe',
             'cream' => 'fas fa-pump-soap',
             'drop' => 'fas fa-eye-dropper',
-            'default' => 'fas fa-prescription-bottle-alt'
+            'default' => 'fas fa-prescription-bottle-alt',
         ];
 
         return $icons[strtolower($type)] ?? $icons['default'];

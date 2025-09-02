@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -13,6 +12,7 @@ class PractitionerCredentialsNotification extends Notification
     use Queueable;
 
     protected $user;
+
     protected $temporaryPassword;
 
     public function __construct(User $user, string $temporaryPassword)
@@ -29,7 +29,7 @@ class PractitionerCredentialsNotification extends Notification
     public function toMail($notifiable)
     {
         $userPrefix = '';
-        if($this->user->hasRole('doctor')) {
+        if ($this->user->hasRole('doctor')) {
             $userPrefix = 'Dr(a). ';
         }
 
@@ -38,7 +38,7 @@ class PractitionerCredentialsNotification extends Notification
             ->view('emails.practitioner-credentials', [
                 'user' => $this->user,
                 'temporaryPassword' => $this->temporaryPassword,
-                'userPrefix' => $userPrefix
+                'userPrefix' => $userPrefix,
             ]);
     }
 
@@ -47,7 +47,7 @@ class PractitionerCredentialsNotification extends Notification
         return [
             'user_id' => $this->user->id,
             'temporary_password' => $this->temporaryPassword,
-            'message' => 'New practitioner credentials sent'
+            'message' => 'New practitioner credentials sent',
         ];
     }
 }

@@ -9,33 +9,42 @@ use Livewire\Component;
 class PhysicalExam extends Component
 {
     public $reason;
+
     public $encounter_id;
+
     public $encounter;
-    public $items=[];
-    public $values=[];
+
+    public $items = [];
+
+    public $values = [];
+
     public $saving = false;
+
     public $saved = [];
 
-    public function mount(){
+    public function mount()
+    {
         $this->encounter = Encounter::find($this->encounter_id);
 
         $this->items = ClinicalObservationType::whereCategory('physical_exam')->get();
 
-        foreach ($this->items as $i){
+        foreach ($this->items as $i) {
             $result = $this->encounter->physicalExams()->whereCode($i->code)->first();
-            $this->values[$i->code]='';
-            $this->saved[$i->code]=false;
-            if($result) {
-                if(is_array($result->finding))
-                    foreach ($result->finding as $key=>$value){
+            $this->values[$i->code] = '';
+            $this->saved[$i->code] = false;
+            if ($result) {
+                if (is_array($result->finding)) {
+                    foreach ($result->finding as $key => $value) {
 
-                        $this->values[$i->code] .=$value;
+                        $this->values[$i->code] .= $value;
                     }
+                }
             }
         }
     }
 
-    public function updatedValues($value, $code){
+    public function updatedValues($value, $code)
+    {
         $this->saved[$code] = false;
     }
 
@@ -47,21 +56,21 @@ class PhysicalExam extends Component
         try {
             $vs = $this->encounter->physicalExams()->whereEncounterId($this->encounter_id)->whereCode($code)->first();
 
-            if(!$vs){
+            if (! $vs) {
                 $vsType = ClinicalObservationType::whereCode($code)->first();
                 $this->encounter->physicalExams()->create([
-                    'fhir_id' => 'observation-' . fake()->uuid(),
+                    'fhir_id' => 'observation-'.fake()->uuid(),
                     'code' => $code,
                     'status' => 'final',
                     'category' => 'exam',
-                    'description' => $vsType->name . ' realizado durante la consulta',
-                    'finding' => array('text'=> $this->values[$code]),
+                    'description' => $vsType->name.' realizado durante la consulta',
+                    'finding' => ['text' => $this->values[$code]],
                     'effective_date' => now(),
                     'patient_id' => $this->encounter->patient_id,
                     'practitioner_id' => $this->encounter->practitioner_id,
                 ]);
-            }else{
-                $vs->finding = array('text'=> $this->values[$code]);
+            } else {
+                $vs->finding = ['text' => $this->values[$code]];
                 $vs->save();
             }
             // Simular tiempo de guardado
@@ -69,9 +78,10 @@ class PhysicalExam extends Component
             $this->saved[$code] = true;
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: ' . $e->getMessage());
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
     }
+
     public function render()
     {
         return view('livewire.consultation.physical-exam');

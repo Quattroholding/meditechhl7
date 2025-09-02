@@ -11,9 +11,12 @@ class SurveyList extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
-    public $sortDirection='asc';
-    public $sortField='title';
+
+    public $sortDirection = 'asc';
+
+    public $sortField = 'title';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -52,8 +55,8 @@ class SurveyList extends Component
     {
         $surveys = Survey::query()
             ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                $query->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('description', 'like', '%'.$this->search.'%');
             })
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);

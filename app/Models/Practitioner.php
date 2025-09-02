@@ -1,32 +1,30 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\Scopes\PractitionerScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 
 class Practitioner extends BaseModel
 {
-
     use HasFactory,Notifiable;
+
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name',
-        'gender', 'birth_date', 'address', 'phone', 'email', 'active','registry','identifier_type'
+        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'identifier_type',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new PractitionerScope());
+        static::addGlobalScope(new PractitionerScope);
     }
 
     public function routeNotificationForMail($notification = null)
@@ -60,7 +58,6 @@ class Practitioner extends BaseModel
         return $this->belongsToMany(MedicalSpeciality::class, 'practitioner_qualifications');
     }
 
-
     public function medicationRequests(): HasMany
     {
         return $this->hasMany(MedicationRequest::class);
@@ -71,38 +68,48 @@ class Practitioner extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function avatar(){
+    public function avatar()
+    {
         return $this->files()->whereType('avatar')->latest()->first();
     }
 
-    public function signature(){
+    public function signature()
+    {
         return $this->files()->whereType('signature')->latest()->first();
     }
 
-    public function seal(){
+    public function seal()
+    {
         return $this->files()->whereType('seal')->latest()->first();
     }
 
-    public function getSignaturePath(){
+    public function getSignaturePath()
+    {
         $signature = $this->signature();
         if ($signature && \Storage::disk('local')->exists($signature->path)) {
             return \Storage::disk('local')->path($signature->path);
         }
+
         return null;
     }
 
-    public function getSealPath(){
+    public function getSealPath()
+    {
         $seal = $this->seal();
         if ($seal && \Storage::disk('local')->exists($seal->path)) {
             return \Storage::disk('local')->path($seal->path);
         }
+
         return null;
     }
 
-    public function getProfileNameAttribute(){
+    public function getProfileNameAttribute()
+    {
 
         $path = url('assets/img/profiles/avatar-02.jpg');
-        if($this->avatar()) $path = url('storage/'.$this->avatar()->path);
+        if ($this->avatar()) {
+            $path = url('storage/'.$this->avatar()->path);
+        }
 
         return '<div class="profile-image m-0">
                   <a href="'.url('practitioners/'.$this->id.'/profile').'" >
@@ -112,7 +119,8 @@ class Practitioner extends BaseModel
                     </div>';
     }
 
-    public function getBirthDateAttribute($attr){
+    public function getBirthDateAttribute($attr)
+    {
         return Carbon::parse($attr)->format('d/m/Y');
     }
 
@@ -121,5 +129,4 @@ class Practitioner extends BaseModel
     {
         return $query->where('active', true);
     }
-
 }

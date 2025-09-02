@@ -14,9 +14,13 @@ class ViewResults extends Component
     use WithPagination;
 
     public $showModal = false;
+
     public $serviceRequestId;
+
     public $serviceRequest;
+
     public $results = [];
+
     public $selectedResult = null;
 
     #[On('openViewResultsModal')]
@@ -25,8 +29,9 @@ class ViewResults extends Component
         $this->serviceRequestId = $serviceRequestId;
         $this->serviceRequest = ServiceRequest::with(['patient', 'practitioner', 'cpt'])->find($serviceRequestId);
 
-        if (!$this->serviceRequest) {
+        if (! $this->serviceRequest) {
             session()->flash('error', __('service_request.not_found'));
+
             return;
         }
 
@@ -64,13 +69,15 @@ class ViewResults extends Component
     {
         $result = ServiceRequestResult::find($resultId);
 
-        if (!$result || !$result->file_path) {
+        if (! $result || ! $result->file_path) {
             session()->flash('error', __('service_request_result.download_failed'));
+
             return;
         }
 
-        if (!Storage::disk('public')->exists($result->file_path)) {
+        if (! Storage::disk('public')->exists($result->file_path)) {
             session()->flash('error', __('service_request_result.file_not_found'));
+
             return;
         }
 
@@ -81,8 +88,9 @@ class ViewResults extends Component
     {
         $result = ServiceRequestResult::find($resultId);
 
-        if (!$result) {
+        if (! $result) {
             session()->flash('error', __('service_request_result.not_found'));
+
             return;
         }
 

@@ -14,7 +14,7 @@ class SurveyResponse extends BaseModel
         'token',
         'submitted_at',
         'responses',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -50,7 +50,7 @@ class SurveyResponse extends BaseModel
 
     public function isCompleted(): bool
     {
-        return $this->status === 'completed' && !is_null($this->submitted_at);
+        return $this->status === 'completed' && ! is_null($this->submitted_at);
     }
 
     public function getPublicUrlAttribute(): string

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Patient;
 use App\Models\Appointment;
+use App\Models\Patient;
 use App\Notifications\AppointmentReminderNotification;
 use Illuminate\Console\Command;
 
@@ -35,14 +35,16 @@ class TestWhatsAppNotification extends Command
             // Find or create a test patient
             if ($patientId) {
                 $patient = Patient::find($patientId);
-                if (!$patient) {
+                if (! $patient) {
                     $this->error("Patient with ID {$patientId} not found.");
+
                     return 1;
                 }
             } else {
                 $patient = Patient::first();
-                if (!$patient) {
-                    $this->error("No patients found in database.");
+                if (! $patient) {
+                    $this->error('No patients found in database.');
+
                     return 1;
                 }
             }
@@ -53,22 +55,24 @@ class TestWhatsAppNotification extends Command
 
             // Find an appointment for testing
             $appointment = Appointment::where('patient_id', $patient->id)->first();
-            if (!$appointment) {
+            if (! $appointment) {
                 $this->error("No appointments found for patient {$patient->name}.");
+
                 return 1;
             }
 
             // Send test notification
-            $this->info("Sending WhatsApp test notification...");
+            $this->info('Sending WhatsApp test notification...');
             $patient->notify(new AppointmentReminderNotification($appointment));
 
-            $this->info("✅ WhatsApp notification sent successfully!");
+            $this->info('✅ WhatsApp notification sent successfully!');
             $this->info("Patient: {$patient->name}");
             $this->info("Phone: {$phone}");
             $this->info("Appointment: {$appointment->start->format('d/m/Y H:i')} with Dr. {$appointment->practitioner->name}");
 
         } catch (\Exception $e) {
-            $this->error("❌ Failed to send WhatsApp notification: " . $e->getMessage());
+            $this->error('❌ Failed to send WhatsApp notification: '.$e->getMessage());
+
             return 1;
         }
 

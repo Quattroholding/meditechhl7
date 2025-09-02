@@ -6,10 +6,8 @@ use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
-use App\Models\User;
 use App\Models\UserClient;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -17,44 +15,57 @@ class Calendar extends Component
 {
     // Propiedades del calendario
     public $currentView = 'daily';
+
     public $currentDate;
+
     public $selectedDate;
 
     // Modal y formulario
     public $showModal = false;
+
     public $appointment_date = '';
+
     public $appointment_time = '';
-    public $modalTitle='Nueva Cita';
+
+    public $modalTitle = 'Nueva Cita';
 
     // Filtros
     public $selectedDoctor = '';
+
     public $selectedStatus = '';
+
     public $searchTerm = '';
 
     // Datos
     public $appointments = [];
+
     public $doctors = [];
+
     public $stats = [];
-
-
 
     // NUEVAS PROPIEDADES PARA CONFIGURACIÓN DE TIEMPO
     public $timeBlockMinutes = 30; // Bloques de 30 minutos por defecto
+
     public $startHour = 6; // Hora de inicio del calendario
+
     public $endHour = 21; // Hora de fin del calendario
+
     public $showTimeBlockConfig = false; // Para mostrar/ocultar configuración
 
     public $timeBlockOptions = [
         15 => '15 minutos',
         30 => '30 minutos',
-        60 => '60 minutos'
+        60 => '60 minutos',
     ];
 
     // Agregar estas propiedades al componente MedicalCalendar
     public $autoUpdateEnabled = true;
+
     public $currentTimePosition = null;
+
     public $lastTimeUpdate = null;
-    public $showDebug=true;
+
+    public $showDebug = true;
 
     public function mount()
     {
@@ -64,7 +75,7 @@ class Calendar extends Component
         $this->timeBlockMinutes = session('calendar.time_block_minutes', 30);
         $this->startHour = session('calendar.start_hour', 6);
         $this->endHour = session('calendar.end_hour', 21);
-        if(auth()->user()->hasRole('paciente')){
+        if (auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
             $this->currentView = 'monthly';
         }
@@ -80,29 +91,31 @@ class Calendar extends Component
     public function render()
     {
 
-        if(auth()->user()->hasRole('paciente')){
+        if (auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
             $this->currentView = 'monthly';
         }
 
-        if(auth()->user()->hasRole('doctor')){
+        if (auth()->user()->hasRole('doctor')) {
             $this->doctor_id = auth()->user()->practitioner->id;
             $practitioner = Practitioner::find($this->doctor_id);
 
-            $clientId=null;
+            $clientId = null;
             $userClient = UserClient::whereUserId($practitioner->user_id)->first();
-            if($userClient) $clientId= $userClient->client_id;
+            if ($userClient) {
+                $clientId = $userClient->client_id;
+            }
 
-            $this->consultorios =   ConsultingRoom::whereHas('branch',function ($q) use($clientId){
+            $this->consultorios = ConsultingRoom::whereHas('branch', function ($q) use ($clientId) {
                 $q->whereClientId($clientId);
-            })->pluck('name','id')->toArray();
+            })->pluck('name', 'id')->toArray();
 
-            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id',$practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name','id')->toArray();
+            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
         }
 
         return view('livewire.appointment.calendar', [
             'calendarData' => $this->getCalendarData(),
-            'currentPeriod' => $this->getCurrentPeriod()
+            'currentPeriod' => $this->getCurrentPeriod(),
         ]);
     }
 
@@ -141,25 +154,25 @@ class Calendar extends Component
 
     public function loadDoctors()
     {
-        $this->doctors = Practitioner::get()->pluck('name','id')->toArray();
+        $this->doctors = Practitioner::get()->pluck('name', 'id')->toArray();
     }
 
     public function loadEspecialidades()
     {
-        $this->especialidades = MedicalSpeciality::pluck('name','id')->toArray();
+        $this->especialidades = MedicalSpeciality::pluck('name', 'id')->toArray();
     }
 
     #[On('loadAppointments')]
     public function loadAppointments()
     {
-       $notStatuses =
-        $query = Appointment::with('practitioner:id,name')
-            ->with('patient:id,name,phone')
-            ->with('medicalSpeciality:id,name')
-            ->selectRaw('appointments.*')
-            ->leftJoin('patients','patients.id','=','appointments.patient_id')
-            ->leftJoin('practitioners','practitioners.id','=','appointments.practitioner_id')
-            ->leftJoin('medical_specialties','medical_specialties.id','=','appointments.medical_speciality_id');
+        $notStatuses =
+         $query = Appointment::with('practitioner:id,name')
+             ->with('patient:id,name,phone')
+             ->with('medicalSpeciality:id,name')
+             ->selectRaw('appointments.*')
+             ->leftJoin('patients', 'patients.id', '=', 'appointments.patient_id')
+             ->leftJoin('practitioners', 'practitioners.id', '=', 'appointments.practitioner_id')
+             ->leftJoin('medical_specialties', 'medical_specialties.id', '=', 'appointments.medical_speciality_id');
 
         // Filtrar por período según la vista
         if ($this->currentView === 'monthly') {
@@ -183,20 +196,22 @@ class Calendar extends Component
         }
 
         if ($this->searchTerm) {
-            $query->where(function($q) {
-                $q->orWhere('service_type', 'like', '%' . $this->searchTerm . '%');
-                $q->orWhere('start', 'like', '%' . $this->searchTerm . '%');
-                $q->orWhere('end', 'like', '%' . $this->searchTerm . '%');
-                $q->orWhere('status', 'like', '%' . $this->searchTerm . '%');
-                $q->orWhereRaw("patients.name like '%" . $this->searchTerm . "%'");
-                $q->orWhereRaw("practitioners.name like '%" . $this->searchTerm . "%'");
+            $query->where(function ($q) {
+                $q->orWhere('service_type', 'like', '%'.$this->searchTerm.'%');
+                $q->orWhere('start', 'like', '%'.$this->searchTerm.'%');
+                $q->orWhere('end', 'like', '%'.$this->searchTerm.'%');
+                $q->orWhere('status', 'like', '%'.$this->searchTerm.'%');
+                $q->orWhereRaw("patients.name like '%".$this->searchTerm."%'");
+                $q->orWhereRaw("practitioners.name like '%".$this->searchTerm."%'");
             });
         }
-        if($this->currentView=='daily')
-            $query->whereNotIn('status',['pending','whaitlist','noshow','cancelled']);
+        if ($this->currentView == 'daily') {
+            $query->whereNotIn('status', ['pending', 'whaitlist', 'noshow', 'cancelled']);
+        }
 
         $this->appointments = $query->orderBy('start')->get()->toArray();
     }
+
     #[On('loadStats')]
     public function loadStats()
     {
@@ -209,7 +224,7 @@ class Calendar extends Component
             'confirmed' => Appointment::whereBetween('start', [$startOfMonth, $endOfMonth])->where('status', 'confirmed')->count(),
             'fullfilled' => Appointment::whereBetween('start', [$startOfMonth, $endOfMonth])->where('status', 'fullfilled')->count(),
             'cancelled' => Appointment::whereBetween('start', [$startOfMonth, $endOfMonth])->where('status', 'cancelled')->count(),
-            'today' => Appointment::whereDate('start', Carbon::today())->count()
+            'today' => Appointment::whereDate('start', Carbon::today())->count(),
         ];
     }
 
@@ -217,7 +232,7 @@ class Calendar extends Component
     // MÉTODOS DEL MODAL Y FORMULARIO
     // ===========================================
 
-    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
         $this->showModal = true;
         $this->modalTitle = $modalTitle;
@@ -233,7 +248,7 @@ class Calendar extends Component
     public function editAppointment($appointmentId)
     {
         $this->modalTitle = 'Actualizar Cita';
-        $this->dispatch('editAppointmentModal',$appointmentId);
+        $this->dispatch('editAppointmentModal', $appointmentId);
     }
 
     public function updateStatus($appointmentId, $newStatus)
@@ -249,11 +264,11 @@ class Calendar extends Component
                 $this->loadAppointments();
                 $this->loadStats();
 
-                if($current_status=='proposed' && $newStatus=='booked'){
-                   $appointment->notifyPatientAboutConfirmation();
+                if ($current_status == 'proposed' && $newStatus == 'booked') {
+                    $appointment->notifyPatientAboutConfirmation();
                 }
 
-                if($newStatus=='checked-in'){
+                if ($newStatus == 'checked-in') {
                     $this->dispatch('showToastr'.$appointmentId,
                         type: 'success',
                         message: '¡Espere por favor en unos segundos empezara su consulta!'
@@ -296,25 +311,25 @@ class Calendar extends Component
     // MÉTODOS AUXILIARES
     // ===========================================
 
-
-
     private function getCurrentPeriod()
     {
         $months = [
             1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
             5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
         ];
 
         if ($this->currentView === 'monthly') {
-            return $months[$this->currentDate->month] . ' ' . $this->currentDate->year;
+            return $months[$this->currentDate->month].' '.$this->currentDate->year;
         } elseif ($this->currentView === 'weekly') {
             $startOfWeek = $this->currentDate->copy()->startOfWeek(Carbon::MONDAY);
             $endOfWeek = $this->currentDate->copy()->endOfWeek(Carbon::SUNDAY);
-            return $startOfWeek->day . ' - ' . $endOfWeek->day . ' ' . $months[$this->currentDate->month] . ' ' . $this->currentDate->year;
+
+            return $startOfWeek->day.' - '.$endOfWeek->day.' '.$months[$this->currentDate->month].' '.$this->currentDate->year;
         } elseif ($this->currentView === 'daily') {
             $days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            return $days[$this->currentDate->dayOfWeek] . ', ' . $this->currentDate->day . ' ' . $months[$this->currentDate->month] . ' ' . $this->currentDate->year;
+
+            return $days[$this->currentDate->dayOfWeek].', '.$this->currentDate->day.' '.$months[$this->currentDate->month].' '.$this->currentDate->year;
         }
     }
 
@@ -342,7 +357,7 @@ class Calendar extends Component
         while ($current->lte($endOfCalendar)) {
             $week = [];
             for ($i = 0; $i < 7; $i++) {
-                $dayAppointments = array_filter($this->appointments, function($appointment) use ($current) {
+                $dayAppointments = array_filter($this->appointments, function ($appointment) use ($current) {
                     return Carbon::parse($appointment['start'])->isSameDay($current);
                 });
 
@@ -350,7 +365,7 @@ class Calendar extends Component
                     'date' => $current->copy(),
                     'isCurrentMonth' => $current->month === $this->currentDate->month,
                     'isToday' => $current->isToday(),
-                    'appointments' => array_values($dayAppointments)
+                    'appointments' => array_values($dayAppointments),
                 ];
                 $current->addDay();
             }
@@ -367,7 +382,7 @@ class Calendar extends Component
 
         for ($i = 0; $i < 7; $i++) {
             $day = $startOfWeek->copy()->addDays($i);
-            $dayAppointments = array_filter($this->appointments, function($appointment) use ($day) {
+            $dayAppointments = array_filter($this->appointments, function ($appointment) use ($day) {
                 return Carbon::parse($appointment['start'])->isSameDay($day);
             });
 
@@ -375,7 +390,7 @@ class Calendar extends Component
                 'date' => $day,
                 'isToday' => $day->isToday(),
                 'appointments' => array_values($dayAppointments),
-                'timeSlots' => $this->generateTimeSlots()
+                'timeSlots' => $this->generateTimeSlots(),
             ];
         }
 
@@ -384,7 +399,7 @@ class Calendar extends Component
 
     private function getDailyData()
     {
-        $dayAppointments = array_filter($this->appointments, function($appointment) {
+        $dayAppointments = array_filter($this->appointments, function ($appointment) {
             return Carbon::parse($appointment['start'])->isSameDay($this->currentDate);
         });
 
@@ -418,12 +433,12 @@ class Calendar extends Component
         }
 
         // Agregar información de formato para cada cita
-        $sortedAppointments = collect($sortedAppointments)->map(function($appointment) {
+        $sortedAppointments = collect($sortedAppointments)->map(function ($appointment) {
             $start = Carbon::parse($appointment['start']);
             $end = Carbon::parse($appointment['end']);
 
             $appointment['formatted_start_time'] = $appointment['formatted_time'];
-            $appointment['formatted_time'] = $start->format('H:i') . ' - ' . $end->format('H:i');
+            $appointment['formatted_time'] = $start->format('H:i').' - '.$end->format('H:i');
             $appointment['formatted_date'] = $start->format('Y-m-d');
 
             return $appointment;
@@ -438,11 +453,9 @@ class Calendar extends Component
             'nextAppointment' => $nextAppointment,
             'nextAppointmentIndex' => $nextAppointmentIndex,
             'currentTimePosition' => $currentTimePosition,
-            'isToday' => $this->currentDate->isToday()
+            'isToday' => $this->currentDate->isToday(),
         ];
     }
-
-
 
     // ===========================================
     // EXPORTACIÓN Y SINCRONIZACIÓN
@@ -451,13 +464,13 @@ class Calendar extends Component
     public function exportFHIR()
     {
         $appointments = Appointment::all();
-        $fhirData = $appointments->map(function($appointment) {
+        $fhirData = $appointments->map(function ($appointment) {
             return $appointment->toFHIR();
         });
 
-        $filename = 'appointments_fhir_' . now()->format('Y-m-d_H-i-s') . '.json';
+        $filename = 'appointments_fhir_'.now()->format('Y-m-d_H-i-s').'.json';
 
-        return response()->streamDownload(function() use ($fhirData) {
+        return response()->streamDownload(function () use ($fhirData) {
             echo json_encode($fhirData, JSON_PRETTY_PRINT);
         }, $filename, [
             'Content-Type' => 'application/json',
@@ -471,7 +484,7 @@ class Calendar extends Component
             session()->flash('message.success', 'Sincronización completada exitosamente.');
             $this->loadAppointments();
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error en la sincronización: ' . $e->getMessage());
+            session()->flash('message.error', 'Error en la sincronización: '.$e->getMessage());
         }
     }
 
@@ -481,7 +494,7 @@ class Calendar extends Component
 
     public function toggleTimeBlockConfig()
     {
-        $this->showTimeBlockConfig = !$this->showTimeBlockConfig;
+        $this->showTimeBlockConfig = ! $this->showTimeBlockConfig;
     }
 
     public function updateTimeBlockConfig()
@@ -490,14 +503,14 @@ class Calendar extends Component
         $this->validate([
             'timeBlockMinutes' => 'required|in:15,30,60',
             'startHour' => 'required|integer|min:0|max:23',
-            'endHour' => 'required|integer|min:1|max:24|gt:startHour'
+            'endHour' => 'required|integer|min:1|max:24|gt:startHour',
         ]);
 
         // Guardar en session
         session([
             'calendar.time_block_minutes' => $this->timeBlockMinutes,
             'calendar.start_hour' => $this->startHour,
-            'calendar.end_hour' => $this->endHour
+            'calendar.end_hour' => $this->endHour,
         ]);
 
         // Recargar datos
@@ -521,7 +534,7 @@ class Calendar extends Component
                     'display' => $time->format('H:i'),
                     'hour' => $hour,
                     'minutes' => $minutes,
-                    'isHourStart' => $minutes === 0
+                    'isHourStart' => $minutes === 0,
                 ];
             }
         }
@@ -535,7 +548,7 @@ class Calendar extends Component
 
     public function getAppointmentsByTimeSlot($appointments, $hour, $minutes)
     {
-        return array_filter($appointments, function($appointment) use ($hour, $minutes) {
+        return array_filter($appointments, function ($appointment) use ($hour, $minutes) {
             $appointmentTime = Carbon::parse($appointment['start']);
             $appointmentHour = $appointmentTime->hour;
             $appointmentMinutes = $appointmentTime->minute;
@@ -568,7 +581,7 @@ class Calendar extends Component
 
         return [
             'top' => $position,
-            'height' => $height
+            'height' => $height,
         ];
     }
 
@@ -581,14 +594,14 @@ class Calendar extends Component
      */
     private function calculateCurrentTimePosition()
     {
-        if (!$this->currentDate->isToday()) {
+        if (! $this->currentDate->isToday()) {
             return null;
         }
 
         $now = Carbon::now();
 
         // Obtener las citas del día actual
-        $todayAppointments = collect($this->appointments)->filter(function($appointment) {
+        $todayAppointments = collect($this->appointments)->filter(function ($appointment) {
             return Carbon::parse($appointment['start'])->isToday();
         })->sortBy('start');
 
@@ -627,8 +640,8 @@ class Calendar extends Component
     public function getAppointmentStatus($appointment, $isNext = false)
     {
 
-        //$appointmentDateTime = Carbon::parse($appointment['start']);
-        //$now = Carbon::now();
+        // $appointmentDateTime = Carbon::parse($appointment['start']);
+        // $now = Carbon::now();
 
         $start = Carbon::parse($appointment['start']);
         $end = Carbon::parse($appointment['end']);
@@ -636,7 +649,7 @@ class Calendar extends Component
 
         if ($appointment['status'] === 'fulfilled') {
             return 'fulfilled';
-        }elseif ($appointment['status'] === 'pending') {
+        } elseif ($appointment['status'] === 'pending') {
             return 'pending';
         } elseif ($appointment['status'] === 'cancelled') {
             return 'cancelled';
@@ -645,9 +658,9 @@ class Calendar extends Component
         } if ($now->between($start, $end)) {
             // La cita está en progreso ahora mismo
             return 'current';
-        }elseif ($start->isPast() && $appointment['status'] !== 'fulfilled') {
+        } elseif ($start->isPast() && $appointment['status'] !== 'fulfilled') {
             return 'overdue';
-        }elseif ($now->diffInMinutes($start, false) <= 15 && $start->isFuture()) {
+        } elseif ($now->diffInMinutes($start, false) <= 15 && $start->isFuture()) {
             return 'upcoming';
         } elseif ($isNext) {
             return 'next';
@@ -658,8 +671,9 @@ class Calendar extends Component
 
     public function updateCurrentTimePosition()
     {
-        if (!$this->currentDate->isToday()) {
+        if (! $this->currentDate->isToday()) {
             $this->currentTimePosition = null;
+
             return;
         }
 
@@ -675,7 +689,7 @@ class Calendar extends Component
             'position' => $this->currentTimePosition,
             'currentTime' => now()->format('H:i'),
             'timestamp' => now()->timestamp,
-            'debug' => $debugInfo
+            'debug' => $debugInfo,
         ]);
     }
 
@@ -691,14 +705,14 @@ class Calendar extends Component
     private function getTimelineDebugInfo()
     {
         $now = Carbon::now();
-        $todayAppointments = collect($this->appointments)->filter(function($appointment) {
+        $todayAppointments = collect($this->appointments)->filter(function ($appointment) {
             return Carbon::parse($appointment['start'])->isToday();
         })->sortBy('start');
 
         if ($todayAppointments->isEmpty()) {
             return [
                 'message' => 'No hay citas hoy',
-                'currentTime' => $now->format('H:i:s')
+                'currentTime' => $now->format('H:i:s'),
             ];
         }
 
@@ -711,21 +725,20 @@ class Calendar extends Component
             'lastAppointmentEnd' => Carbon::parse($lastAppointment['end'])->format('H:i:s'),
             'totalAppointments' => $todayAppointments->count(),
             'positionPercent' => $this->currentTimePosition,
-            'appointments' => $todayAppointments->map(function($apt) {
+            'appointments' => $todayAppointments->map(function ($apt) {
                 return [
                     'start' => Carbon::parse($apt['start'])->format('H:i'),
                     'end' => Carbon::parse($apt['end'])->format('H:i'),
-                    'status' => $apt['status']
+                    'status' => $apt['status'],
                 ];
-            })->values()->toArray()
+            })->values()->toArray(),
         ];
     }
 
-
-// Método para toggle auto-update
+    // Método para toggle auto-update
     public function toggleAutoUpdate()
     {
-        $this->autoUpdateEnabled = !$this->autoUpdateEnabled;
+        $this->autoUpdateEnabled = ! $this->autoUpdateEnabled;
 
         if ($this->autoUpdateEnabled) {
             $this->updateCurrentTimePosition();
@@ -734,5 +747,4 @@ class Calendar extends Component
             $this->dispatch('stopAutoUpdate');
         }
     }
-
 }

@@ -5,19 +5,26 @@ namespace App\Livewire\Doctor;
 use App\Models\Appointment;
 use App\Models\AppointmentStatus;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class ConsultationEffectiveness extends Component
 {
     public $timeFrame = '30'; // Por defecto últimos 30 días
+
     public $effectivenessData = [];
+
     public $averageCompletionTime = 0;
+
     public $totalAppointments = 0;
+
     public $conversionRate = 0;
+
     public $statusCounts = [];
+
     public $dropoffPoints = [];
+
     public $order;
+
     public $isLoading = true;
 
     // Flujo de estados esperado
@@ -25,7 +32,7 @@ class ConsultationEffectiveness extends Component
         'booked' => 1,
         'arrived' => 2,
         'checked-in' => 3,
-        'fulfilled' => 4
+        'fulfilled' => 4,
     ];
 
     public function mount()
@@ -57,7 +64,7 @@ class ConsultationEffectiveness extends Component
 
         // Obtener citas del período seleccionado
         $appointments = Appointment::query()
-            ->when($days > 0, function($query) use ($days) {
+            ->when($days > 0, function ($query) use ($days) {
                 return $query->where('start', '>=', now()->subDays($days));
             })
             ->get();
@@ -66,6 +73,7 @@ class ConsultationEffectiveness extends Component
 
         if ($this->totalAppointments == 0) {
             $this->resetData();
+
             return;
         }
 
@@ -91,7 +99,7 @@ class ConsultationEffectiveness extends Component
             'booked_to_arrived' => 0,
             'arrived_to_checked_in' => 0,
             'checked_in_to_fulfilled' => 0,
-            'booked_to_fulfilled' => 0
+            'booked_to_fulfilled' => 0,
         ];
 
         foreach ($statusHistory as $appointmentId => $statuses) {
@@ -139,7 +147,7 @@ class ConsultationEffectiveness extends Component
             'booked' => 0,
             'arrived' => 0,
             'checked-in' => 0,
-            'fulfilled' => 0
+            'fulfilled' => 0,
         ];
 
         foreach ($statusHistory as $appointmentId => $statuses) {
@@ -160,20 +168,20 @@ class ConsultationEffectiveness extends Component
         $transitions = [
             'booked_to_arrived' => 0,
             'arrived_to_checked_in' => 0,
-            'checked_in_to_fulfilled' => 0
+            'checked_in_to_fulfilled' => 0,
         ];
 
         foreach ($statusHistory as $appointmentId => $statuses) {
             $statusesByStatus = $statuses->keyBy('status');
 
             // Calcular abandono en cada transición
-            if (isset($statusesByStatus['booked']) && !isset($statusesByStatus['arrived'])) {
+            if (isset($statusesByStatus['booked']) && ! isset($statusesByStatus['arrived'])) {
                 $transitions['booked_to_arrived']++;
             }
-            if (isset($statusesByStatus['arrived']) && !isset($statusesByStatus['checked-in'])) {
+            if (isset($statusesByStatus['arrived']) && ! isset($statusesByStatus['checked-in'])) {
                 $transitions['arrived_to_checked_in']++;
             }
-            if (isset($statusesByStatus['checked-in']) && !isset($statusesByStatus['fulfilled'])) {
+            if (isset($statusesByStatus['checked-in']) && ! isset($statusesByStatus['fulfilled'])) {
                 $transitions['checked_in_to_fulfilled']++;
             }
         }
@@ -181,7 +189,7 @@ class ConsultationEffectiveness extends Component
         foreach ($transitions as $transition => $dropoffs) {
             $this->dropoffPoints[$transition] = [
                 'count' => $dropoffs,
-                'percentage' => $this->totalAppointments > 0 ? round(($dropoffs / $this->totalAppointments) * 100, 1) : 0
+                'percentage' => $this->totalAppointments > 0 ? round(($dropoffs / $this->totalAppointments) * 100, 1) : 0,
             ];
         }
     }
@@ -207,7 +215,7 @@ class ConsultationEffectiveness extends Component
 
     public function getEffectivenessPercentage($fromStatus, $toStatus)
     {
-        $key = $fromStatus . '_to_' . str_replace('-', '_', $toStatus);
+        $key = $fromStatus.'_to_'.str_replace('-', '_', $toStatus);
         $count = $this->effectivenessData[$key] ?? 0;
 
         return $this->totalAppointments > 0 ?
@@ -217,6 +225,7 @@ class ConsultationEffectiveness extends Component
     public function getStatusPercentage($status)
     {
         $count = $this->statusCounts[$status] ?? 0;
+
         return $this->totalAppointments > 0 ?
             round(($count / $this->totalAppointments) * 100, 1) : 0;
     }
@@ -224,13 +233,13 @@ class ConsultationEffectiveness extends Component
     public function getFormattedTime($minutes)
     {
         if ($minutes < 60) {
-            return $minutes . ' min';
+            return $minutes.' min';
         }
 
         $hours = floor($minutes / 60);
         $remainingMinutes = $minutes % 60;
 
-        return $hours . 'h ' . $remainingMinutes . 'm';
+        return $hours.'h '.$remainingMinutes.'m';
     }
 
     private function resetData()

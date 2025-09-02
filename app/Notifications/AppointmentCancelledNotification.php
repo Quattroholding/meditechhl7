@@ -13,6 +13,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     public function __construct(
@@ -35,7 +36,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
-            ->subject('Cita Médica Cancelada - ' . $clinicName)
+            ->subject('Cita Médica Cancelada - '.$clinicName)
             ->view('emails.appointment-cancelled', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -63,7 +64,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             'clinic_name' => $this->appointment->client->name ?? null,
             'branch_name' => $this->appointment->consultingRoom->branch->name ?? null,
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
-            'message' => 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido cancelada.',
+            'message' => 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido cancelada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }
@@ -79,7 +80,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             'practitioner_id' => $this->appointment->practitioner_id,
             'cancellation_reason' => $this->cancellationReason,
             'cancelled_by' => $this->cancelledBy,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

@@ -10,9 +10,12 @@ class DataTable extends Component
 {
     use WithPagination;
 
-    public $sortDirection='asc';
-    public $sortField='name';
+    public $sortDirection = 'asc';
+
+    public $sortField = 'name';
+
     public $search = '';
+
     public $perPage = 10;
 
     protected $queryString = [
@@ -32,8 +35,9 @@ class DataTable extends Component
             $this->dispatch('swal:alert', [
                 'type' => 'error',
                 'title' => 'Error',
-                'text' => 'No se puede eliminar el rol porque está asignado a usuarios.'
+                'text' => 'No se puede eliminar el rol porque está asignado a usuarios.',
             ]);
+
             return;
         }
 
@@ -42,7 +46,7 @@ class DataTable extends Component
         $this->dispatch('swal:alert', [
             'type' => 'success',
             'title' => 'Éxito',
-            'text' => 'Rol eliminado exitosamente.'
+            'text' => 'Rol eliminado exitosamente.',
         ]);
     }
 
@@ -58,7 +62,7 @@ class DataTable extends Component
 
     public function render()
     {
-        $roles = Role::where('name', 'like', '%' . $this->search . '%')
+        $roles = Role::where('name', 'like', '%'.$this->search.'%')
             ->withCount('users')
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);

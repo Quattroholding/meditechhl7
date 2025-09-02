@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -22,12 +21,12 @@ class PermissionController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
         ]);
 
         Permission::create([
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
         ]);
 
         return redirect()->route('permission.index')
@@ -37,21 +36,22 @@ class PermissionController extends Controller
     public function edit($id)
     {
         $permission = Permission::findOrFail($id);
+
         return view('permissions.edit', compact('permission'));
     }
 
     public function update(Request $request, $id)
     {
         $permission = Permission::findOrFail($id);
-        
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
-            'description' => 'nullable|string|max:500'
+            'name' => 'required|string|max:255|unique:permissions,name,'.$permission->id,
+            'description' => 'nullable|string|max:500',
         ]);
 
         $permission->update([
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
         ]);
 
         return redirect()->route('permission.index')
@@ -61,7 +61,7 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         $permission = Permission::findOrFail($id);
-        
+
         // Check if permission is assigned to any roles
         if ($permission->roles()->count() > 0) {
             return redirect()->route('permission.index')

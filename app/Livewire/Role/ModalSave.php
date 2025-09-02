@@ -2,24 +2,27 @@
 
 namespace App\Livewire\Role;
 
-use Livewire\Attributes\Modelable;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class ModalSave extends Component
 {
     public $role;
+
     public $name = '';
+
     public $selectedPermissions = [];
+
     public $isEdit = false;
-    public $showModal=false;
+
+    public $showModal = false;
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'selectedPermissions' => 'array'
+        'selectedPermissions' => 'array',
     ];
 
     protected $messages = [
@@ -42,7 +45,7 @@ class ModalSave extends Component
         $this->resetForm();
         if ($roleId) {
             $this->loadRole($roleId);
-            $this->showModal=true;
+            $this->showModal = true;
         }
     }
 
@@ -50,7 +53,7 @@ class ModalSave extends Component
     public function closeModal()
     {
         $this->resetForm();
-        $this->showModal=false;
+        $this->showModal = false;
     }
 
     private function loadRole($roleId)
@@ -77,7 +80,7 @@ class ModalSave extends Component
         // Check for unique name
         if ($this->isEdit) {
             $this->validate([
-                'name' => 'required|string|max:255|unique:roles,name,' . $this->role->id,
+                'name' => 'required|string|max:255|unique:roles,name,'.$this->role->id,
             ]);
         } else {
             $this->validate([
@@ -99,7 +102,7 @@ class ModalSave extends Component
         $this->dispatch('swal:alert', [
             'type' => 'success',
             'title' => 'Éxito',
-            'text' => $this->isEdit ? 'Rol actualizado exitosamente.' : 'Rol creado exitosamente.'
+            'text' => $this->isEdit ? 'Rol actualizado exitosamente.' : 'Rol creado exitosamente.',
         ]);
 
         $this->dispatch('role-saved');

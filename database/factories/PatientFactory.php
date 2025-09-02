@@ -171,7 +171,7 @@ class PatientFactory extends Factory
                     ->forSelf()
                     ->create([
                         'patient_id' => $patient->id,
-                        'insurance_company_id'=>$insurace->id,
+                        'insurance_company_id' => $insurace->id,
                     ]);
 
                 // 10% de probabilidad de tener una segunda póliza
@@ -183,7 +183,7 @@ class PatientFactory extends Factory
                         ->active()
                         ->create([
                             'patient_id' => $patient->id,
-                            'insurance_company_id'=>$insurace->id,
+                            'insurance_company_id' => $insurace->id,
                         ]);
                 }
             }

@@ -10,10 +10,15 @@ use Livewire\Component;
 class VitalSignsStatus extends Component
 {
     public $patientId;
+
     public $patient;
+
     public $selectedPeriod = 7; // días
+
     public $autoRefresh = true;
+
     public $isLoading = true;
+
     public $order;
 
     public array $vitalSignsConfig = [];
@@ -22,14 +27,14 @@ class VitalSignsStatus extends Component
     {
         $this->patientId = $patientId ?? 1; // Default para demo
         $this->loadPatient();
-        foreach (ClinicalObservationType::whereCategory('vital_sign')->whereNotIn('code',['29463-7','8302-2'])->get() as $ot){
+        foreach (ClinicalObservationType::whereCategory('vital_sign')->whereNotIn('code', ['29463-7', '8302-2'])->get() as $ot) {
             $this->vitalSignsConfig[$ot->name] = [
                 'name' => $ot->name,
                 'loinc_code' => $ot->code, // Blood pressure panel
                 'icon' => $ot->icon,
-                'unit' =>$ot->unit,
-                'normal_range' => [$ot->min_normal_value,$ot->max_normal_value],
-                'priority' => $ot->priority
+                'unit' => $ot->unit,
+                'normal_range' => [$ot->min_normal_value, $ot->max_normal_value],
+                'priority' => $ot->priority,
             ];
         }
     }
@@ -58,7 +63,7 @@ class VitalSignsStatus extends Component
 
     public function getLatestVitalSignsProperty()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             return collect();
         }
 
@@ -81,7 +86,7 @@ class VitalSignsStatus extends Component
                     'status' => $this->getVitalSignStatus($observation, $config),
                     'risk_level' => $this->calculateRiskLevel($observation, $config),
                     'trend' => $this->calculateTrend($key, $config['loinc_code']),
-                    'last_updated' => $observation->effective_date
+                    'last_updated' => $observation->effective_date,
                 ];
 
                 $vitalSigns->push($vitalSign);
@@ -102,15 +107,15 @@ class VitalSignsStatus extends Component
                 'status' => 'unknown',
                 'message' => 'No hay datos de signos vitales disponibles',
                 'color' => 'gray',
-                'score' => 0
+                'score' => 0,
             ];
         }
 
         $riskLevels = $vitalSigns->pluck('risk_level');
-        $criticalCount = $riskLevels->filter(fn($level) => $level === 'critical')->count();
-        $highCount = $riskLevels->filter(fn($level) => $level === 'high')->count();
-        $abnormalCount = $riskLevels->filter(fn($level) => in_array($level, ['high', 'low']))->count();
-        $normalCount = $riskLevels->filter(fn($level) => $level === 'normal')->count();
+        $criticalCount = $riskLevels->filter(fn ($level) => $level === 'critical')->count();
+        $highCount = $riskLevels->filter(fn ($level) => $level === 'high')->count();
+        $abnormalCount = $riskLevels->filter(fn ($level) => in_array($level, ['high', 'low']))->count();
+        $normalCount = $riskLevels->filter(fn ($level) => $level === 'normal')->count();
 
         $totalSigns = $vitalSigns->count();
         $score = ($normalCount / $totalSigns) * 100;
@@ -120,7 +125,7 @@ class VitalSignsStatus extends Component
                 'status' => 'critical',
                 'message' => 'Requiere atención médica inmediata',
                 'color' => 'red',
-                'score' => $score
+                'score' => $score,
             ];
         }
 
@@ -129,7 +134,7 @@ class VitalSignsStatus extends Component
                 'status' => 'warning',
                 'message' => 'Algunos signos vitales requieren atención',
                 'color' => 'yellow',
-                'score' => $score
+                'score' => $score,
             ];
         }
 
@@ -138,7 +143,7 @@ class VitalSignsStatus extends Component
                 'status' => 'caution',
                 'message' => 'Monitoreo recomendado',
                 'color' => 'orange',
-                'score' => $score
+                'score' => $score,
             ];
         }
 
@@ -146,7 +151,7 @@ class VitalSignsStatus extends Component
             'status' => 'normal',
             'message' => 'Signos vitales dentro de rango normal',
             'color' => 'green',
-            'score' => $score
+            'score' => $score,
         ];
     }
 
@@ -162,16 +167,15 @@ class VitalSignsStatus extends Component
                 return [
                     'display' => "{$systolic['formatted']}/{$diastolic['formatted']}",
                     'systolic' => $systolic['value'],
-                    'diastolic' => $diastolic['value']
+                    'diastolic' => $diastolic['value'],
                 ];
             }
         }
 
-
         // Para otros signos vitales simples
         return [
             'display' => $observation->formatted_value,
-            'numeric' => $observation->numeric_value
+            'numeric' => $observation->numeric_value,
         ];
     }
 
@@ -225,35 +229,50 @@ class VitalSignsStatus extends Component
             }
         }
 
-
         // Para otros signos vitales
         $value = $observation->numeric_value;
         $normalRange = $config['normal_range'];
 
-        if (!$value || !$normalRange) {
+        if (! $value || ! $normalRange) {
             return 'unknown';
         }
 
         // Casos específicos por tipo de signo vital
         switch ($config['loinc_code']) {
             case '8867-4': // Frecuencia cardíaca
-                if ($value > 120 || $value < 50) return 'critical';
-                if ($value > 100 || $value < 60) return 'abnormal';
+                if ($value > 120 || $value < 50) {
+                    return 'critical';
+                }
+                if ($value > 100 || $value < 60) {
+                    return 'abnormal';
+                }
                 break;
 
             case '8310-5': // Temperatura
-                if ($value > 39.0 || $value < 35.0) return 'critical';
-                if ($value > 37.5 || $value < 36.0) return 'abnormal';
+                if ($value > 39.0 || $value < 35.0) {
+                    return 'critical';
+                }
+                if ($value > 37.5 || $value < 36.0) {
+                    return 'abnormal';
+                }
                 break;
 
             case '2708-6': // Saturación O2
-                if ($value < 90) return 'critical';
-                if ($value < 95) return 'low';
+                if ($value < 90) {
+                    return 'critical';
+                }
+                if ($value < 95) {
+                    return 'low';
+                }
                 break;
 
             case '9279-1': // Frecuencia respiratoria
-                if ($value > 25 || $value < 10) return 'critical';
-                if ($value > 20 || $value < 12) return 'abnormal';
+                if ($value > 25 || $value < 10) {
+                    return 'critical';
+                }
+                if ($value > 20 || $value < 12) {
+                    return 'abnormal';
+                }
                 break;
         }
         /*
@@ -271,7 +290,7 @@ class VitalSignsStatus extends Component
 
     private function calculateTrend($key, $loincCode)
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             return 'stable';
         }
 
@@ -288,7 +307,7 @@ class VitalSignsStatus extends Component
         $latest = $observations->first()->numeric_value;
         $previous = $observations->skip(1)->first()->numeric_value;
 
-        if (!$latest || !$previous) {
+        if (! $latest || ! $previous) {
             return 'stable';
         }
 
@@ -304,9 +323,9 @@ class VitalSignsStatus extends Component
 
     public function render()
     {
-        return view('livewire.patient.dashboard.vital-signs-status',[
+        return view('livewire.patient.dashboard.vital-signs-status', [
             'vitalSigns' => $this->latestVitalSigns,
-            'overallStatus' => $this->overallHealthStatus
+            'overallStatus' => $this->overallHealthStatus,
         ]);
     }
 }

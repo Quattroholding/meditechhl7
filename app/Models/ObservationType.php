@@ -9,5 +9,8 @@ class ObservationType extends Model
 {
     protected $fillable = ['code', 'system', 'display', 'category', 'unit'];
 
-    public function observations(): HasMany { return $this->hasMany(Observation::class); }
+    public function observations(): HasMany
+    {
+        return $this->hasMany(Observation::class);
+    }
 }

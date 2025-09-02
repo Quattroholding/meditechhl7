@@ -5,7 +5,6 @@ namespace App\Livewire\ServiceRequest;
 use App\Models\ServiceRequest;
 use App\Models\ServiceRequestResult;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -16,7 +15,9 @@ class UploadResult extends Component
     use WithFileUploads;
 
     public $showModal = false;
+
     public $serviceRequestId;
+
     public $serviceRequest;
 
     #[Validate('required')]
@@ -60,11 +61,12 @@ class UploadResult extends Component
         $this->serviceRequestId = $serviceRequestId;
         $this->serviceRequest = ServiceRequest::with(['patient', 'practitioner'])->find($serviceRequestId);
 
-        if (!$this->serviceRequest) {
+        if (! $this->serviceRequest) {
             session()->flash('error', __('service_request.not_found'));
+
             return;
         }
-        $this->code=$this->serviceRequest->code;
+        $this->code = $this->serviceRequest->code;
         $this->code_display = $this->serviceRequest->cpt?->description_es;
 
         $this->showModal = true;
@@ -96,15 +98,16 @@ class UploadResult extends Component
 
             if ($existingResult) {
                 session()->flash('error', __('service_request_result.file_already_exists'));
+
                 return;
             }
 
             // Guardar archivo
-            $filePath = $this->file->store('service_request_results/' . $this->serviceRequestId, 'public');
+            $filePath = $this->file->store('service_request_results/'.$this->serviceRequestId, 'public');
 
             // Crear el resultado
             ServiceRequestResult::create([
-                'fhir_id' => 'SRR-' . uniqid(),
+                'fhir_id' => 'SRR-'.uniqid(),
                 'service_request_id' => $this->serviceRequestId,
                 'patient_id' => $this->serviceRequest->patient_id,
                 'practitioner_id' => Auth::user()->practitioner?->id ?? $this->serviceRequest->practitioner_id,
@@ -127,7 +130,6 @@ class UploadResult extends Component
                 'issued_date' => now(),
             ]);
 
-
             // Intentar cambio automático de estado
             try {
                 $this->serviceRequest->autoChangeStatus(
@@ -136,21 +138,21 @@ class UploadResult extends Component
                 );
             } catch (\Exception $e) {
                 // Si falla el cambio automático, continuar sin error
-                \Log::warning('Auto status change failed: ' . $e->getMessage());
+                \Log::warning('Auto status change failed: '.$e->getMessage());
             }
 
             $this->dispatch('showToastr',
                 type: 'success',
-                message:  __('service_request_result.uploaded_successfully'),
+                message: __('service_request_result.uploaded_successfully'),
             );
             $this->dispatch('refreshServiceRequests');
             $this->closeModal();
 
         } catch (\Exception $e) {
-            //session()->flash('error', __('service_request_result.upload_failed') . ': ' . $e->getMessage());
+            // session()->flash('error', __('service_request_result.upload_failed') . ': ' . $e->getMessage());
             $this->dispatch('showToastr',
                 type: 'error',
-                message:  __('service_request_result.upload_failed') . ': ' . $e->getMessage(),
+                message: __('service_request_result.upload_failed').': '.$e->getMessage(),
             );
         }
     }

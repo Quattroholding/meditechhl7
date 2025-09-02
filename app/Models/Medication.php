@@ -25,7 +25,7 @@ class Medication extends Model
     protected $casts = [
         'ingredient' => 'array',
         'is_brand' => 'boolean',
-        'is_over_the_counter' => 'boolean'
+        'is_over_the_counter' => 'boolean',
     ];
 
     public function medicationRequests(): HasMany
@@ -44,9 +44,9 @@ class Medication extends Model
                     [
                         'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm',
                         'code' => $this->code,
-                        'display' => $this->name
-                    ]
-                ]
+                        'display' => $this->name,
+                    ],
+                ],
             ],
             'status' => $this->status,
             'form' => [
@@ -54,28 +54,28 @@ class Medication extends Model
                     [
                         'system' => 'http://snomed.info/sct',
                         'code' => $this->formToCode(),
-                        'display' => $this->form
-                    ]
-                ]
+                        'display' => $this->form,
+                    ],
+                ],
             ],
             'ingredient' => array_map(function ($ing) {
                 return [
                     'item' => [
-                        'reference' => 'Substance/' . Str::slug($ing['item']),
-                        'display' => $ing['item']
+                        'reference' => 'Substance/'.Str::slug($ing['item']),
+                        'display' => $ing['item'],
                     ],
                     'strength' => [
                         'numerator' => [
                             'value' => (float) explode(' ', $ing['strength'])[0],
                             'unit' => explode(' ', $ing['strength'])[1],
                             'system' => 'http://unitsofmeasure.org',
-                            'code' => $this->unitToUcum(explode(' ', $ing['strength'])[1])
-                        ]
-                    ]
+                            'code' => $this->unitToUcum(explode(' ', $ing['strength'])[1]),
+                        ],
+                    ],
                 ];
             }, $this->ingredient),
             'isBrand' => $this->is_brand,
-            'overTheCounter' => $this->is_over_the_counter
+            'overTheCounter' => $this->is_over_the_counter,
         ];
     }
 
@@ -88,7 +88,7 @@ class Medication extends Model
             'Crema' => '385218004',
             'Jarabe' => '385214008',
             'Inhalador' => '421637006',
-            'Gotas' => '385215009'
+            'Gotas' => '385215009',
         ];
 
         return $forms[$this->form] ?? '385055001'; // Default to tablet
@@ -101,7 +101,7 @@ class Medication extends Model
             'mL' => 'mL',
             '%' => '%',
             'mcg' => 'ug',
-            'mg/5mL' => 'mg/5mL'
+            'mg/5mL' => 'mg/5mL',
         ];
 
         return $units[$unit] ?? '1';

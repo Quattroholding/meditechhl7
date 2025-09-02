@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     /**
-    * Handle an authentication attempt.
-    */
+     * Handle an authentication attempt.
+     */
     public function authenticate(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -32,11 +31,17 @@ class LoginController extends Controller
             }
 
             $route = route('admin.dashboard');
-            if($user->hasRole('doctor'))   $route = route('doctor.dashboard');
-            if($user->hasRole('paciente')) $route = route('patient.dashboard');
-            if($user->hasRole('asistente')) $route = route('assistence.dashboard');
+            if ($user->hasRole('doctor')) {
+                $route = route('doctor.dashboard');
+            }
+            if ($user->hasRole('paciente')) {
+                $route = route('patient.dashboard');
+            }
+            if ($user->hasRole('asistente')) {
+                $route = route('assistence.dashboard');
+            }
 
-            return redirect()->intended($route."?show_salute=true");
+            return redirect()->intended($route.'?show_salute=true');
         }
 
         return back()->withErrors([

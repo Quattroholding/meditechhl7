@@ -5,7 +5,6 @@ namespace App\Mail;
 use App\Models\Client;
 use App\Models\Patient;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -16,15 +15,17 @@ class PatientWelcomeMail extends Mailable
     use Queueable, SerializesModels;
 
     public $patient;
+
     public $registrationData;
 
     public $client;
+
     public $clinicInfo;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Patient $patient,Client $client, array $registrationData = [],$register_by='doctor')
+    public function __construct(Patient $patient, Client $client, array $registrationData = [], $register_by = 'doctor')
     {
         $this->patient = $patient;
         $this->client = $client;
@@ -34,7 +35,7 @@ class PatientWelcomeMail extends Mailable
             'address' => '',
             'phone' => $this->client->whatsapp,
             'email' => $this->client->email,
-            'website' => config('app.url')
+            'website' => config('app.url'),
         ];
     }
 
@@ -44,7 +45,7 @@ class PatientWelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '¡Bienvenido a ' . env('APP_NAME') . '! - Registro Completado',
+            subject: '¡Bienvenido a '.env('APP_NAME').'! - Registro Completado',
             from: config('mail.from.address'),
             replyTo: $this->clinicInfo['email']
         );
@@ -60,7 +61,7 @@ class PatientWelcomeMail extends Mailable
             with: [
                 'patient' => $this->patient,
                 'clinicInfo' => $this->clinicInfo,
-                'registrationData' => $this->registrationData
+                'registrationData' => $this->registrationData,
             ]
         );
     }

@@ -4,130 +4,147 @@ namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
 use App\Models\MedicalSpeciality;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Referral extends Component
 {
-
     public $query = '';
+
     public $results = [];
+
     public $encounter_id;
+
     public $encounter;
-    public $selectedLists=[];
-    public $especialistas=[];
-    public $selectedEspecialist=[];
-    public $selectedReason=[];
+
+    public $selectedLists = [];
+
+    public $especialistas = [];
+
+    public $selectedEspecialist = [];
+
+    public $selectedReason = [];
+
     public $saving = false;
+
     public $saved = false;
-    public $savedNota=false;
-    public $savedEspecialist=false;
-    public function mount(){
+
+    public $savedNota = false;
+
+    public $savedEspecialist = false;
+
+    public function mount()
+    {
         $this->encounter = Encounter::find($this->encounter_id);
 
         $this->selectedLists = $this->encounter->referrals()->get();
 
-        foreach ($this->selectedLists as $selected){
-            $responseEspecialist = Http::get( url('api/practitioners'), [ 'dropdown'=>true,  'speciality_id' => $selected->code, ]);
+        foreach ($this->selectedLists as $selected) {
+            $responseEspecialist = Http::get(url('api/practitioners'), ['dropdown' => true,  'speciality_id' => $selected->code]);
             $this->especialistas[$selected->code] = $responseEspecialist->json() ?? [];
-            $this->selectedEspecialist[$selected->code]=$selected->referred_to_id;
-            $this->selectedReason[$selected->code]=$selected->reason;
+            $this->selectedEspecialist[$selected->code] = $selected->referred_to_id;
+            $this->selectedReason[$selected->code] = $selected->reason;
         }
     }
+
     public function updatedQuery()
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+
             return;
         }
 
-        $response = Http::get( url('api/medical_speciality'), [
-            'dropdown'=>true,
+        $response = Http::get(url('api/medical_speciality'), [
+            'dropdown' => true,
             'q' => $this->query,
         ]);
 
         $this->results = $response->json() ?? [];
     }
+
     public function selectOption($option)
     {
-        $this->saved=false;
+        $this->saved = false;
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
-        $referral =\App\Models\Referral::whereEncounterId($this->encounter->id)->whereCode($option)->first();
+        $referral = \App\Models\Referral::whereEncounterId($this->encounter->id)->whereCode($option)->first();
         $specialty = MedicalSpeciality::whereId($option)->first();
-        if(!$referral){
+        if (! $referral) {
             $this->encounter->referrals()->create([
-                'fhir_id' => 'servicerequest-' . Str::uuid(),
-                'identifier' => 'REF-' . fake()->unique()->numerify('#######'),
+                'fhir_id' => 'servicerequest-'.Str::uuid(),
+                'identifier' => 'REF-'.fake()->unique()->numerify('#######'),
                 'status' => 'active',
                 'intent' => 'order',
                 'priority' => 'asap',
                 'code' => $specialty->id,
                 'description' => "Referencia a especialista en $specialty->name",
-                'occurrence_date' =>now(),
+                'occurrence_date' => now(),
                 'supporting_info' => [
                     'speciality_id' => $specialty->id,
                     'speciality_name' => $specialty->name,
                 ],
-                //'referred_to_id' => $referredTo->id, Aun no lo tengo pedeir en el siguiente paso
+                // 'referred_to_id' => $referredTo->id, Aun no lo tengo pedeir en el siguiente paso
                 'patient_id' => $this->encounter->patient_id,
                 'practitioner_id' => $this->encounter->practitioner_id,
             ]);
-            $responseEspecialist = Http::get( url('api/practitioners'), [
-                'dropdown'=>true,
+            $responseEspecialist = Http::get(url('api/practitioners'), [
+                'dropdown' => true,
                 'speciality_id' => $specialty->id,
             ]);
-            $this->especialistas[$specialty->id] =$responseEspecialist->json() ?? [];
-            $this->selectedEspecialist[$specialty->id]=null;
-            $this->selectedReason[$specialty->id]=null;
+            $this->especialistas[$specialty->id] = $responseEspecialist->json() ?? [];
+            $this->selectedEspecialist[$specialty->id] = null;
+            $this->selectedReason[$specialty->id] = null;
         }
 
-        $this->query='';
+        $this->query = '';
         sleep(1);
-        $this->saved=true;
+        $this->saved = true;
 
         $this->selectedLists = $this->encounter->referrals()->get();
-        
+
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->encounter->referrals()->whereId($id)->delete();
         $this->selectedLists = $this->encounter->referrals()->get();
-        
+
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
     }
 
-    public function updatedReason(){
-        $this->savedNota=false;
+    public function updatedReason()
+    {
+        $this->savedNota = false;
     }
 
-     public function setReason($reason,$referral_id)
-     {
-         $this->savedNota=false;
-         $referral = $this->encounter->referrals()->whereId($referral_id)->first();
-         $referral->reason = htmlspecialchars($reason);
-         $referral->save();
-         sleep(1);
-         $this->savedNota=true;
-
-         // Disparar evento para actualizar el estado del botón de finalizar
-         $this->dispatch('findFinishedButtonStatus');
-     }
-
-    public function setEspecialist($specialist,$referral_id)
+    public function setReason($reason, $referral_id)
     {
-        $this->savedEspecialist=false;
+        $this->savedNota = false;
+        $referral = $this->encounter->referrals()->whereId($referral_id)->first();
+        $referral->reason = htmlspecialchars($reason);
+        $referral->save();
+        sleep(1);
+        $this->savedNota = true;
+
+        // Disparar evento para actualizar el estado del botón de finalizar
+        $this->dispatch('findFinishedButtonStatus');
+    }
+
+    public function setEspecialist($specialist, $referral_id)
+    {
+        $this->savedEspecialist = false;
         $referral = $this->encounter->referrals()->whereId($referral_id)->first();
         $referral->referred_to_id = $specialist;
         $referral->save();
         sleep(1);
-        $this->savedEspecialist=true;
-        
+        $this->savedEspecialist = true;
+
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
     }

@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use App\Models\Practitioner;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -18,9 +17,9 @@ class FileController extends Controller
     {
         try {
             $practitioner = Practitioner::findOrFail($practitioner_id);
-            
+
             // Verificar permisos - solo el propio médico o admin pueden ver la firma
-            if (auth()->user()->id !== $practitioner->user_id && !auth()->user()->hasRole('admin')) {
+            if (auth()->user()->id !== $practitioner->user_id && ! auth()->user()->hasRole('admin')) {
                 abort(403, 'No tienes permisos para acceder a este archivo');
             }
 
@@ -31,30 +30,30 @@ class FileController extends Controller
                 ->latest()
                 ->first();
 
-            if (!$file) {
+            if (! $file) {
                 abort(404, 'Archivo de firma no encontrado');
             }
 
             // Verificar que el archivo existe en el almacenamiento
-            if (!Storage::disk('local')->exists($file->path)) {
+            if (! Storage::disk('local')->exists($file->path)) {
                 abort(404, 'Archivo físico no encontrado');
             }
 
             // Obtener contenido del archivo
             $contents = Storage::disk('local')->get($file->path);
-            
+
             // Determinar tipo MIME
             $mimeType = Storage::disk('local')->mimeType($file->path);
-            
+
             // Retornar respuesta con el archivo
             return Response::make($contents, 200, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . $file->name . '"',
+                'Content-Disposition' => 'inline; filename="'.$file->name.'"',
                 'Cache-Control' => 'private, max-age=3600',
             ]);
 
         } catch (\Exception $e) {
-            abort(500, 'Error al servir el archivo: ' . $e->getMessage());
+            abort(500, 'Error al servir el archivo: '.$e->getMessage());
         }
     }
 
@@ -65,9 +64,9 @@ class FileController extends Controller
     {
         try {
             $practitioner = Practitioner::findOrFail($practitioner_id);
-            
+
             // Verificar permisos - solo el propio médico o admin pueden ver el sello
-            if (auth()->user()->id !== $practitioner->user_id && !auth()->user()->hasRole('admin')) {
+            if (auth()->user()->id !== $practitioner->user_id && ! auth()->user()->hasRole('admin')) {
                 abort(403, 'No tienes permisos para acceder a este archivo');
             }
 
@@ -78,30 +77,30 @@ class FileController extends Controller
                 ->latest()
                 ->first();
 
-            if (!$file) {
+            if (! $file) {
                 abort(404, 'Archivo de sello no encontrado');
             }
 
             // Verificar que el archivo existe en el almacenamiento
-            if (!Storage::disk('local')->exists($file->path)) {
+            if (! Storage::disk('local')->exists($file->path)) {
                 abort(404, 'Archivo físico no encontrado');
             }
 
             // Obtener contenido del archivo
             $contents = Storage::disk('local')->get($file->path);
-            
+
             // Determinar tipo MIME
             $mimeType = Storage::disk('local')->mimeType($file->path);
-            
+
             // Retornar respuesta con el archivo
             return Response::make($contents, 200, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . $file->name . '"',
+                'Content-Disposition' => 'inline; filename="'.$file->name.'"',
                 'Cache-Control' => 'private, max-age=3600',
             ]);
 
         } catch (\Exception $e) {
-            abort(500, 'Error al servir el archivo: ' . $e->getMessage());
+            abort(500, 'Error al servir el archivo: '.$e->getMessage());
         }
     }
 
@@ -118,7 +117,7 @@ class FileController extends Controller
                 ->latest()
                 ->first();
 
-            if (!$file || !Storage::disk('local')->exists($file->path)) {
+            if (! $file || ! Storage::disk('local')->exists($file->path)) {
                 return null;
             }
 
@@ -142,7 +141,7 @@ class FileController extends Controller
                 ->latest()
                 ->first();
 
-            if (!$file || !Storage::disk('local')->exists($file->path)) {
+            if (! $file || ! Storage::disk('local')->exists($file->path)) {
                 return null;
             }
 

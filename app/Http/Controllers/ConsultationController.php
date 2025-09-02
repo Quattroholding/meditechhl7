@@ -73,7 +73,7 @@ class ConsultationController extends Controller
                 throw new \Exception('Encounter no encontrado.');
             }
 
-            //CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST A ACTIVE
+            // CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST A ACTIVE
             $encounter->serviceRequests()->update(['status' => 'active']);
 
             // Get billable ChargeItems for this encounter

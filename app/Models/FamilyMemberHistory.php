@@ -9,6 +9,13 @@ class FamilyMemberHistory extends Model
 {
     protected $fillable = ['patient_id', 'family_relationship_id', 'condition', 'onset_age', 'deceased', 'note'];
 
-    public function patient(): BelongsTo { return $this->belongsTo(Patient::class); }
-    public function relationship(): BelongsTo { return $this->belongsTo(FamilyRelationship::class, 'family_relationship_id'); }
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
+    public function relationship(): BelongsTo
+    {
+        return $this->belongsTo(FamilyRelationship::class, 'family_relationship_id');
+    }
 }

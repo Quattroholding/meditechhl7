@@ -7,6 +7,7 @@ use Livewire\Component;
 abstract class BaseWidget extends Component
 {
     public $order;
+
     public $isLoading = true;
 
     public function mount()
@@ -30,9 +31,9 @@ abstract class BaseWidget extends Component
     {
         $skeletonView = view('components.widget-skeleton', [
             'rows' => $rows,
-            'showChart' => $showChart
+            'showChart' => $showChart,
         ])->render();
-        
+
         return $skeletonView;
     }
 }

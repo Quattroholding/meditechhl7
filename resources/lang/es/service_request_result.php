@@ -5,7 +5,7 @@ return [
     'upload_title' => 'Subir Resultado',
     'results_title' => 'Resultados de Solicitud',
     'result_details' => 'Detalles del Resultado',
-    
+
     // Campos del formulario
     'result_type' => 'Tipo de Resultado',
     'status' => 'Estado',
@@ -24,14 +24,14 @@ return [
     'version' => 'Versión',
     'effective_date' => 'Fecha Efectiva',
     'issued_date' => 'Fecha de Emisión',
-    
+
     // Tipos de resultado
     'laboratory' => 'Laboratorio',
     'imaging' => 'Imagenología',
     'pathology' => 'Patología',
     'report' => 'Informe',
     'other' => 'Otro',
-    
+
     // Estados
     'status_final' => 'Final',
     'status_preliminary' => 'Preliminar',
@@ -39,32 +39,32 @@ return [
     'status_amended' => 'Modificado',
     'status_cancelled' => 'Cancelado',
     'status_entered_in_error' => 'Error de Entrada',
-    
+
     // Interpretaciones
     'interpretation_normal' => 'Normal',
     'interpretation_abnormal' => 'Anormal',
     'interpretation_high' => 'Alto',
     'interpretation_low' => 'Bajo',
     'interpretation_critical' => 'Crítico',
-    
+
     // Placeholders
     'code_placeholder' => 'Ej: 85025, 71020, etc.',
     'code_display_placeholder' => 'Descripción del código del resultado',
     'observations_placeholder' => 'Observaciones clínicas sobre el resultado...',
     'notes_placeholder' => 'Notas adicionales o comentarios...',
     'reference_range_placeholder' => 'Ej: 4.0-6.0 mg/dL, Normal: <100',
-    
+
     // Mensajes de ayuda
     'file_help' => 'Formatos soportados: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX',
     'max_size' => 'Tamaño máximo',
-    
+
     // Mensajes de éxito/error
     'uploaded_successfully' => 'Resultado subido exitosamente',
     'upload_failed' => 'Error al subir el resultado',
     'file_already_exists' => 'Este archivo ya existe para esta solicitud',
     'not_found' => 'Solicitud de servicio no encontrada',
     'download_failed' => 'Error al descargar el archivo',
-    
+
     // Acciones
     'upload' => 'Subir Resultado',
     'download' => 'Descargar',
@@ -72,11 +72,11 @@ return [
     'delete' => 'Eliminar',
     'replace' => 'Reemplazar',
     'upload_new' => 'Subir Nuevo Resultado',
-    
+
     // Confirmaciones
     'delete_confirmation' => '¿Estás seguro de eliminar este resultado?',
     'replace_confirmation' => '¿Estás seguro de reemplazar este resultado?',
-    
+
     // Información adicional
     'no_results' => 'No hay resultados disponibles',
     'no_results_description' => 'Aún no se han subido resultados para esta solicitud de servicio.',
@@ -90,7 +90,7 @@ return [
     'upload_first' => 'Subir Primer Resultado',
     'file_not_found' => 'Archivo no encontrado',
     'deleted_successfully' => 'Resultado eliminado exitosamente',
-    
+
     // Validaciones específicas
     'result_type_required' => 'El tipo de resultado es obligatorio',
     'file_required' => 'Debe seleccionar un archivo',

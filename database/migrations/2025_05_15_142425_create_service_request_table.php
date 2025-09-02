@@ -27,10 +27,10 @@ return new class extends Migration
             $table->foreignId('practitioner_id')->constrained('practitioners')->comment('Profesional que realiza la solicitud');
 
             // Campos HL7 estándar
-            $table->enum('status', ['draft', 'active', 'on-hold','revoked','completed','entered-in-error','unknown']);
-            $table->enum('intent', ['proposal', 'plan', 'directive','order','original-order','reflex-order','filler-order','instance-order','option']);
-            $table->enum('priority', ['routine', 'urgent', 'asap','stat']);
-             $table->boolean('do_not_perform')->default(false)->comment('Si es true, indica NO realizar el servicio');
+            $table->enum('status', ['draft', 'active', 'on-hold', 'revoked', 'completed', 'entered-in-error', 'unknown']);
+            $table->enum('intent', ['proposal', 'plan', 'directive', 'order', 'original-order', 'reflex-order', 'filler-order', 'instance-order', 'option']);
+            $table->enum('priority', ['routine', 'urgent', 'asap', 'stat']);
+            $table->boolean('do_not_perform')->default(false)->comment('Si es true, indica NO realizar el servicio');
 
             // Códigos HL7/LOINC
             $table->string('code')->comment('Código del servicio solicitado (LOINC o sistema local)');

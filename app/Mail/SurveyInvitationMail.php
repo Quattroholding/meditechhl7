@@ -2,12 +2,11 @@
 
 namespace App\Mail;
 
-use App\Models\SurveyResponse;
 use App\Models\Encounter;
 use App\Models\Patient;
 use App\Models\Survey;
+use App\Models\SurveyResponse;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -25,8 +24,7 @@ class SurveyInvitationMail extends Mailable
         public Encounter $encounter,
         public Patient $patient,
         public Survey $survey
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -34,7 +32,7 @@ class SurveyInvitationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Encuesta de Satisfacción - ' . config('app.name'),
+            subject: 'Encuesta de Satisfacción - '.config('app.name'),
         );
     }
 
@@ -51,7 +49,7 @@ class SurveyInvitationMail extends Mailable
                 'surveyTitle' => $this->survey->title,
                 'practitionerName' => $this->encounter->practitioner->full_name ?? 'Su médico',
                 'encounterDate' => $this->encounter->start->format('d/m/Y'),
-                'clinicName' => config('app.name')
+                'clinicName' => config('app.name'),
             ]
         );
     }

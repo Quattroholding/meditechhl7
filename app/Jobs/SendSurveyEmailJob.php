@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\SurveyResponse;
 use App\Models\Encounter;
+use App\Models\SurveyResponse;
 use App\Notifications\SendPatientSatisfactionSurvey;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -14,6 +14,7 @@ class SendSurveyEmailJob implements ShouldQueue
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     /**
@@ -35,11 +36,12 @@ class SendSurveyEmailJob implements ShouldQueue
             $patient = $this->surveyResponse->patient;
             $survey = $this->surveyResponse->survey;
 
-            if (!$patient->email) {
+            if (! $patient->email) {
                 Log::warning('No se puede enviar encuesta: paciente sin email', [
                     'patient_id' => $patient->id,
-                    'survey_response_id' => $this->surveyResponse->id
+                    'survey_response_id' => $this->surveyResponse->id,
                 ]);
+
                 return;
             }
 
@@ -54,7 +56,7 @@ class SendSurveyEmailJob implements ShouldQueue
                 'patient_email' => $patient->email,
                 'survey_id' => $survey->id,
                 'survey_response_id' => $this->surveyResponse->id,
-                'encounter_id' => $this->encounter->id
+                'encounter_id' => $this->encounter->id,
             ]);
 
         } catch (\Exception $e) {
@@ -62,7 +64,7 @@ class SendSurveyEmailJob implements ShouldQueue
                 'survey_response_id' => $this->surveyResponse->id,
                 'encounter_id' => $this->encounter->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -77,7 +79,7 @@ class SendSurveyEmailJob implements ShouldQueue
         Log::error('Falló el envío de notificación de encuesta después de todos los intentos', [
             'survey_response_id' => $this->surveyResponse->id,
             'encounter_id' => $this->encounter->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

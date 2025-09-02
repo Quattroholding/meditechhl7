@@ -15,8 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('client_id')->references('id')->on('clients')->onDelete('cascade');
-            $table->string('path_firma',75)->nullable()->comment('Se usara para las recetas');
-            $table->string('path_sello',75)->nullable()->comment('Se usara para las recetas');
+            $table->string('path_firma', 75)->nullable()->comment('Se usara para las recetas');
+            $table->string('path_sello', 75)->nullable()->comment('Se usara para las recetas');
             $table->softDeletes();
             $table->timestamps();
         });

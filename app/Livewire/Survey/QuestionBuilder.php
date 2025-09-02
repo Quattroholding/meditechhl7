@@ -9,12 +9,19 @@ use Livewire\Component;
 class QuestionBuilder extends Component
 {
     public $surveyId;
+
     public $questionId = null;
+
     public $question_text = '';
+
     public $question_type = 'text';
+
     public $is_required = false;
+
     public $options = [];
+
     public $newOption = '';
+
     public $editingQuestion = false;
 
     protected $listeners = ['survey-updated' => 'refreshQuestions'];
@@ -107,7 +114,7 @@ class QuestionBuilder extends Component
 
     public function render()
     {
-        $survey = Survey::with(['questions' => function($query) {
+        $survey = Survey::with(['questions' => function ($query) {
             $query->orderBy('order');
         }])->findOrFail($this->surveyId);
 

@@ -236,7 +236,7 @@ class MedicalHistory2 extends Component
             default => null
         };
 
-        if (!in_array($section, $this->sectionsLoaded)) {
+        if (! in_array($section, $this->sectionsLoaded)) {
             $this->sectionsLoaded[] = $section;
         }
         $this->isLoading = false;
@@ -630,7 +630,7 @@ class MedicalHistory2 extends Component
     {
         $this->activeSection = $section;
         $this->resetPage();
-        
+
         if ($section != 'overview') {
             $this->loadSection($section);
         }

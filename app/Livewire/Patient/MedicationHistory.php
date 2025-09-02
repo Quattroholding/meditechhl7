@@ -2,20 +2,26 @@
 
 namespace App\Livewire\Patient;
 
+use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\Patient;
-use App\Models\Encounter;
-use Livewire\Component;
 use Carbon\Carbon;
+use Livewire\Component;
 
 class MedicationHistory extends Component
 {
     public $showOffcanvas = false;
+
     public $patient_id;
+
     public $patient;
+
     public $medicationHistory = [];
+
     public $groupedByEncounter = [];
+
     public $selectedMedicationIds = [];
+
     public $selectedEncounterId = null;
 
     protected $listeners = ['showMedicationHistory', 'hideMedicationHistory'];
@@ -37,7 +43,7 @@ class MedicationHistory extends Component
     public function loadMedicationHistory()
     {
         $sixMonthsAgo = Carbon::now()->subMonths(6);
-        
+
         $this->medicationHistory = MedicationRequest::with(['medicine', 'encounter', 'practitioner'])
             ->where('patient_id', $this->patient_id)
             ->where('created_at', '>=', $sixMonthsAgo)
@@ -48,6 +54,7 @@ class MedicationHistory extends Component
             ->groupBy('encounter_id')
             ->map(function ($medications, $encounterId) {
                 $encounter = Encounter::find($encounterId);
+
                 return [
                     'encounter' => $encounter,
                     'medications' => $medications,
@@ -60,7 +67,7 @@ class MedicationHistory extends Component
     public function toggleMedicationSelection($medicationId)
     {
         if (in_array($medicationId, $this->selectedMedicationIds)) {
-            $this->selectedMedicationIds = array_filter($this->selectedMedicationIds, fn($id) => $id != $medicationId);
+            $this->selectedMedicationIds = array_filter($this->selectedMedicationIds, fn ($id) => $id != $medicationId);
         } else {
             $this->selectedMedicationIds[] = $medicationId;
         }
@@ -70,11 +77,11 @@ class MedicationHistory extends Component
     {
         $this->selectedEncounterId = $encounterId;
         $encounterMedications = $this->groupedByEncounter[$encounterId]['medications'] ?? collect();
-        
+
         $medicationIds = $encounterMedications->pluck('id')->toArray();
-        
-        if ($this->selectedEncounterId === $encounterId && 
-            !empty(array_intersect($medicationIds, $this->selectedMedicationIds))) {
+
+        if ($this->selectedEncounterId === $encounterId &&
+            ! empty(array_intersect($medicationIds, $this->selectedMedicationIds))) {
             // Si ya está seleccionada, deseleccionar
             $this->selectedMedicationIds = array_diff($this->selectedMedicationIds, $medicationIds);
             $this->selectedEncounterId = null;
@@ -89,15 +96,16 @@ class MedicationHistory extends Component
     {
         if (empty($this->selectedMedicationIds)) {
             session()->flash('message.error', 'No hay medicamentos seleccionados para copiar.');
+
             return;
         }
 
         $selectedMedications = $this->medicationHistory->whereIn('id', $this->selectedMedicationIds);
-        
+
         $this->dispatch('copyMedicationsToCurrentRecipe', $selectedMedications->values()->toArray());
-        
-        session()->flash('message.success', count($selectedMedications) . ' medicamento(s) copiado(s) a la receta actual.');
-        
+
+        session()->flash('message.success', count($selectedMedications).' medicamento(s) copiado(s) a la receta actual.');
+
         $this->hideMedicationHistory();
     }
 

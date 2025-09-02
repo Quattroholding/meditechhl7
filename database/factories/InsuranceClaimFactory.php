@@ -21,14 +21,14 @@ class InsuranceClaimFactory extends Factory
         $billedAmount = $this->faker->randomFloat(2, 5000, 150000);
         $approvedAmount = $this->faker->randomFloat(2, $billedAmount * 0.7, $billedAmount);
         $paidAmount = $this->faker->randomFloat(2, 0, $approvedAmount);
-        
+
         $status = $this->faker->randomElement(['pending', 'submitted', 'processing', 'approved', 'partially_paid', 'paid', 'denied', 'rejected']);
-        
+
         return [
             'patient_insurance_policy_id' => \App\Models\PatientInsurancePolicy::factory(),
             'invoice_id' => \App\Models\Invoice::factory(),
             'encounter_id' => \App\Models\Encounter::factory(),
-            'claim_number' => 'CLM-' . $this->faker->unique()->regexify('[0-9]{8}'),
+            'claim_number' => 'CLM-'.$this->faker->unique()->regexify('[0-9]{8}'),
             'claim_date' => $claimDate,
             'service_date' => $serviceDate,
             'billed_amount' => $billedAmount,
@@ -45,14 +45,14 @@ class InsuranceClaimFactory extends Factory
                 'Out of network provider',
                 'Duplicate claim',
                 'Missing documentation',
-                'Exceeded annual limit'
+                'Exceeded annual limit',
             ]) : null,
             'rejection_details' => $status === 'denied' ? $this->faker->optional()->paragraph() : null,
-            'submitted_date' => in_array($status, ['submitted', 'processing', 'approved', 'paid', 'denied']) 
+            'submitted_date' => in_array($status, ['submitted', 'processing', 'approved', 'paid', 'denied'])
                 ? $this->faker->dateTimeBetween($claimDate, 'now') : null,
-            'processed_date' => in_array($status, ['approved', 'paid', 'denied']) 
+            'processed_date' => in_array($status, ['approved', 'paid', 'denied'])
                 ? $this->faker->dateTimeBetween($claimDate, 'now') : null,
-            'payment_date' => $status === 'paid' 
+            'payment_date' => $status === 'paid'
                 ? $this->faker->dateTimeBetween($claimDate, 'now') : null,
             'authorization_number' => $this->faker->optional()->regexify('[A-Z]{2}[0-9]{6}'),
             'diagnosis_codes' => $this->generateDiagnosisCodes(),
@@ -73,12 +73,12 @@ class InsuranceClaimFactory extends Factory
             'K21.9' => 'Gastro-esophageal reflux disease without esophagitis',
             'F32.9' => 'Major depressive disorder, single episode, unspecified',
             'M54.5' => 'Low back pain',
-            'R50.9' => 'Fever, unspecified'
+            'R50.9' => 'Fever, unspecified',
         ];
 
         $selectedCodes = $this->faker->randomElements($commonCodes, $this->faker->numberBetween(1, 3), false);
-        
-        return array_map(function($code, $description) {
+
+        return array_map(function ($code, $description) {
             return ['code' => $code, 'description' => $description];
         }, array_keys($selectedCodes), $selectedCodes);
     }
@@ -95,12 +95,12 @@ class InsuranceClaimFactory extends Factory
             '71020' => 'Chest X-ray',
             '36415' => 'Venipuncture',
             '12001' => 'Simple repair of superficial wounds',
-            '90471' => 'Immunization administration'
+            '90471' => 'Immunization administration',
         ];
 
         $selectedCodes = $this->faker->randomElements($commonCodes, $this->faker->numberBetween(1, 2), false);
-        
-        return array_map(function($code, $description) {
+
+        return array_map(function ($code, $description) {
             return ['code' => $code, 'description' => $description];
         }, array_keys($selectedCodes), $selectedCodes);
     }

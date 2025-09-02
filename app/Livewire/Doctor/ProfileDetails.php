@@ -8,10 +8,13 @@ use Livewire\Component;
 class ProfileDetails extends Component
 {
     public $practitioner_id;
+
     public $data;
+
     public function render()
     {
         $this->data = Practitioner::find($this->practitioner_id);
+
         return view('livewire.doctor.profile-details');
     }
 }

@@ -20,14 +20,14 @@ class InvoicePaymentFactory extends Factory
         $postingDate = $this->faker->dateTimeBetween($paymentDate, 'now');
         $paymentSource = $this->faker->randomElement(['patient', 'insurance', 'copay', 'deductible', 'coinsurance', 'adjustment', 'refund']);
         $amount = $this->faker->randomFloat(2, 100, 25000);
-        
+
         return [
             'invoice_id' => \App\Models\Invoice::factory(),
             'patient_id' => \App\Models\Patient::factory(),
-            'insurance_claim_id' => $paymentSource === 'insurance' 
-                ? \App\Models\InsuranceClaim::factory() 
+            'insurance_claim_id' => $paymentSource === 'insurance'
+                ? \App\Models\InsuranceClaim::factory()
                 : null,
-            'payment_reference' => 'PAY-' . $this->faker->unique()->regexify('[0-9]{8}'),
+            'payment_reference' => 'PAY-'.$this->faker->unique()->regexify('[0-9]{8}'),
             'amount' => $amount,
             'payment_source' => $paymentSource,
             'payment_method' => $this->getPaymentMethodBySource($paymentSource),
@@ -45,10 +45,10 @@ class InvoicePaymentFactory extends Factory
 
     private function getPaymentMethodBySource(string $source): string
     {
-        return match($source) {
+        return match ($source) {
             'insurance' => 'insurance_payment',
             'patient', 'copay', 'deductible', 'coinsurance' => $this->faker->randomElement([
-                'cash', 'credit_card', 'debit_card', 'check', 'bank_transfer'
+                'cash', 'credit_card', 'debit_card', 'check', 'bank_transfer',
             ]),
             'adjustment', 'refund' => 'adjustment',
             default => 'other'
@@ -57,22 +57,22 @@ class InvoicePaymentFactory extends Factory
 
     private function getPaymentDetails(string $source): ?string
     {
-        return match($source) {
+        return match ($source) {
             'insurance' => 'Insurance payment via electronic transfer',
             'patient' => $this->faker->randomElement([
                 'Cash payment',
-                'Card ending in ' . $this->faker->numberBetween(1000, 9999),
-                'Check #' . $this->faker->numberBetween(100000, 999999),
-                'Bank transfer'
+                'Card ending in '.$this->faker->numberBetween(1000, 9999),
+                'Check #'.$this->faker->numberBetween(100000, 999999),
+                'Bank transfer',
             ]),
-            'copay' => 'Patient copayment - ' . $this->faker->randomElement(['Cash', 'Card']),
+            'copay' => 'Patient copayment - '.$this->faker->randomElement(['Cash', 'Card']),
             'deductible' => 'Deductible payment',
             'coinsurance' => 'Coinsurance payment',
             'adjustment' => $this->faker->randomElement([
                 'Provider discount',
                 'Insurance adjustment',
                 'Billing correction',
-                'Charity care adjustment'
+                'Charity care adjustment',
             ]),
             'refund' => 'Refund processed',
             default => null
@@ -135,7 +135,7 @@ class InvoicePaymentFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'payment_method' => 'credit_card',
-            'payment_details' => 'Card ending in ' . $this->faker->numberBetween(1000, 9999),
+            'payment_details' => 'Card ending in '.$this->faker->numberBetween(1000, 9999),
             'authorization_code' => $this->faker->regexify('[A-Z0-9]{8}'),
         ]);
     }

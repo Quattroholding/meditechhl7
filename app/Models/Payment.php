@@ -55,7 +55,7 @@ class Payment extends BaseModel
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new PaymentScope());
+        static::addGlobalScope(new PaymentScope);
     }
 
     // Relationships
@@ -130,7 +130,7 @@ class Payment extends BaseModel
 
     public function getPaymentMethodLabelAttribute(): string
     {
-        return match($this->payment_method) {
+        return match ($this->payment_method) {
             'cash' => 'Efectivo',
             'credit_card' => 'Tarjeta de Crédito',
             'debit_card' => 'Tarjeta de Débito',
@@ -145,7 +145,7 @@ class Payment extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'Pendiente',
             'completed' => 'Completado',
             'failed' => 'Fallido',

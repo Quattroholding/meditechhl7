@@ -115,7 +115,7 @@ class RegisterPatientRelationships extends Command
             $relationshipsUpdated = 0;
             $relationshipsSkipped = 0;
             $errorCount = 0;
-            $loop_index=0;
+            $loop_index = 0;
 
             foreach ($patients as $patient) {
                 $progressBar->setMessage("Procesando: {$patient->name}");
@@ -144,7 +144,6 @@ class RegisterPatientRelationships extends Command
                         continue;
                     }
 
-
                     // Verificar si la relación ya existe
                     $existingRelationship = PatientRelationship::where('patient_id', $holderPatient->id)
                         ->where('related_patient_id', $patient->id)
@@ -157,8 +156,6 @@ class RegisterPatientRelationships extends Command
 
                         continue;
                     }
-
-
 
                     if (! $isDryRun) {
                         if ($existingRelationship && $force) {

@@ -13,6 +13,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     public function __construct(
@@ -29,12 +30,12 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
     public function via(object $notifiable): array
     {
         $channels = ['mail', 'database'];
-        
+
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
             $channels[] = \App\Channels\WhatsAppChannel::class;
         }
-        
+
         return $channels;
     }
 
@@ -48,7 +49,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
-            ->subject('Recordatorio de Cita Médica - ' . $clinicName)
+            ->subject('Recordatorio de Cita Médica - '.$clinicName)
             ->view('emails.appointment-reminder', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -56,7 +57,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
                 'appointmentTime' => $appointmentDate->format('H:i a'),
                 'durationMinutes' => $this->appointment->minutes_duration,
                 'serviceType' => $this->appointment->service_type ?? 'Consulta general',
-                'specialty' =>  $this->appointment->medicalSpeciality->name ?? 'Medicina General',
+                'specialty' => $this->appointment->medicalSpeciality->name ?? 'Medicina General',
                 'clinicName' => $clinicName,
                 'branchName' => $this->appointment->consultingRoom->branch->name ?? 'N/A',
                 'consultingRoom' => $this->appointment->consultingRoom->name ?? 'N/A',
@@ -117,11 +118,11 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
         $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
         $message .= "🏢 *Clínica:* {$clinicName}\n";
-        
+
         if ($this->appointment->consultingRoom->branch->name ?? null) {
             $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
         }
-        
+
         if ($this->appointment->consultingRoom->name ?? null) {
             $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
         }
@@ -138,7 +139,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
 
         $message .= "Por favor llegue 15 minutos antes de su cita.\n";
         $message .= "Si necesita reprogramar, contáctenos con anticipación.\n\n";
-        $message .= "¡Esperamos verle pronto! 😊";
+        $message .= '¡Esperamos verle pronto! 😊';
 
         return $message;
     }
@@ -153,7 +154,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
             'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

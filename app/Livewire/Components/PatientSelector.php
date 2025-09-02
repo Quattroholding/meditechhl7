@@ -3,8 +3,8 @@
 namespace App\Livewire\Components;
 
 use App\Models\Patient;
-use Livewire\Component;
 use Livewire\Attributes\Modelable;
+use Livewire\Component;
 
 class PatientSelector extends Component
 {
@@ -12,10 +12,15 @@ class PatientSelector extends Component
     public $selectedPatientId = '';
 
     public $searchTerm = '';
+
     public $showDropdown = false;
+
     public $patients = [];
+
     public $selectedPatientName = '';
+
     public $placeholder = 'Buscar paciente...';
+
     public $required = false;
 
     public function mount()
@@ -48,13 +53,13 @@ class PatientSelector extends Component
 
     public function searchPatients()
     {
-        $this->patients = Patient::where(function($query) {
-            $query->where('given_name', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('family_name', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('identifier', 'like', '%' . $this->searchTerm . '%');
+        $this->patients = Patient::where(function ($query) {
+            $query->where('given_name', 'like', '%'.$this->searchTerm.'%')
+                ->orWhere('family_name', 'like', '%'.$this->searchTerm.'%')
+                ->orWhere('identifier', 'like', '%'.$this->searchTerm.'%');
         })
-        ->limit(10)
-        ->get();
+            ->limit(10)
+            ->get();
     }
 
     public function selectPatient($patientId)

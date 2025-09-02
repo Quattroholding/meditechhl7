@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Doctor;
+
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
@@ -9,6 +10,7 @@ use Livewire\Component;
 class NextAppointment extends Component
 {
     public $nextAppointmentTime;
+
     public $timeRemainingPercentage;
 
     public function mount()
@@ -43,7 +45,6 @@ class NextAppointment extends Component
         }
     }
 
-
     public function calculateTimeRemainingPercentage($appointmentStartTime)
     {
         $now = Carbon::now();
@@ -51,12 +52,11 @@ class NextAppointment extends Component
 
         // Calcula la diferencia en minutos entre ahora y la próxima cita
         $diffInMinutes = $now->diffInMinutes($startTime);
-        //dd($diffInMinutes);
+        // dd($diffInMinutes);
 
         // Calcula el porcentaje de tiempo restante en relación con un día completo (1440 minutos)
         $this->timeRemainingPercentage = $diffInMinutes > 0 ? (1 - ($diffInMinutes / 1440)) * 100 : 0;
     }
-
 
     public function render()
     {

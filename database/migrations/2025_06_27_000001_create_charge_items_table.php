@@ -71,9 +71,9 @@ return new class extends Migration
             // Indexes
             $table->index(['patient_id', 'status']);
             $table->index(['encounter_id', 'status']);
-            //$table->index(['performer_practitioner_id', 'occurrence_date_time']);
+            // $table->index(['performer_practitioner_id', 'occurrence_date_time']);
             $table->index(['client_id', 'status']);
-            //$table->index('cpt_code');
+            // $table->index('cpt_code');
         });
     }
 

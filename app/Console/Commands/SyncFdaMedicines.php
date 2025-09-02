@@ -4,10 +4,9 @@ namespace App\Console\Commands;
 
 use App\Models\Medicine;
 use App\Models\MedicineActiveComponent;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class SyncFdaMedicines extends Command
 {
@@ -29,13 +28,14 @@ class SyncFdaMedicines extends Command
     protected $description = 'Synchronize medicines with FDA database - creates, activates, and deactivates medicines monthly';
 
     protected $apiUrl = 'https://api.fda.gov/drug/ndc.json';
+
     protected $stats = [
         'created' => 0,
         'updated' => 0,
         'activated' => 0,
         'deactivated' => 0,
         'skipped' => 0,
-        'errors' => 0
+        'errors' => 0,
     ];
 
     /**
@@ -46,7 +46,7 @@ class SyncFdaMedicines extends Command
         $this->info('🏥 Iniciando sincronización mensual de medicamentos con FDA...');
 
         // Verificar si es necesario hacer sync
-        if (!$this->shouldSync()) {
+        if (! $this->shouldSync()) {
             return 0;
         }
 
@@ -61,10 +61,11 @@ class SyncFdaMedicines extends Command
 
             if (empty($fdaMedicines)) {
                 $this->error('❌ No se pudieron obtener medicamentos de la FDA');
+
                 return 1;
             }
 
-            $this->info("📊 Procesando " . count($fdaMedicines) . " medicamentos de la FDA...");
+            $this->info('📊 Procesando '.count($fdaMedicines).' medicamentos de la FDA...');
 
             $bar = $this->output->createProgressBar(count($fdaMedicines));
             $bar->start();
@@ -89,7 +90,8 @@ class SyncFdaMedicines extends Command
             return 0;
 
         } catch (\Exception $e) {
-            $this->error('❌ Error durante la sincronización: ' . $e->getMessage());
+            $this->error('❌ Error durante la sincronización: '.$e->getMessage());
+
             return 1;
         }
     }
@@ -98,6 +100,7 @@ class SyncFdaMedicines extends Command
     {
         if ($this->option('force')) {
             $this->info('🔄 Sincronización forzada...');
+
             return true;
         }
 
@@ -106,8 +109,9 @@ class SyncFdaMedicines extends Command
             ->orderBy('updated_at', 'desc')
             ->first();
 
-        if (!$lastSync) {
+        if (! $lastSync) {
             $this->info('🆕 Primera sincronización...');
+
             return true;
         }
 
@@ -115,10 +119,12 @@ class SyncFdaMedicines extends Command
 
         if ($daysSinceLastSync < 30) {
             $this->info("⏭️ Última sincronización fue hace {$daysSinceLastSync} días. Saltando sincronización (usar --force para forzar).");
+
             return false;
         }
 
         $this->info("📅 Última sincronización: {$daysSinceLastSync} días atrás. Procediendo...");
+
         return true;
     }
 
@@ -127,6 +133,7 @@ class SyncFdaMedicines extends Command
         if ($this->option('dry-run')) {
             $count = Medicine::where('source', 'FDA')->where('active', true)->count();
             $this->info("🔍 [DRY-RUN] Marcaría {$count} medicamentos FDA como inactivos");
+
             return;
         }
 
@@ -150,25 +157,24 @@ class SyncFdaMedicines extends Command
             $queryParams = [
                 'limit' => $limit,
                 'skip' => $skip,
-                'search' => '_exists_:openfda'
+                'search' => '_exists_:openfda',
             ];
 
             $apiKey = config('services.fda.api_key') ?? '8ZdSuS1DI0Wzk4ayILGrV6X6YtTybeUHkflSkCbf';
-            if (!empty($apiKey)) {
+            if (! empty($apiKey)) {
                 $queryParams['api_key'] = $apiKey;
             }
 
             $response = Http::timeout(30)->get($this->apiUrl, $queryParams);
 
-            if (!$response->successful()) {
-                $this->warn("⚠️ Error en petición (skip: {$skip}): " . $response->status());
+            if (! $response->successful()) {
+                $this->warn("⚠️ Error en petición (skip: {$skip}): ".$response->status());
                 break;
             }
 
             $data = $response->json();
 
-
-            if (!isset($data['results']) || empty($data['results'])) {
+            if (! isset($data['results']) || empty($data['results'])) {
                 $this->info("✅ No hay más medicamentos (skip: {$skip})");
                 break;
             }
@@ -179,13 +185,10 @@ class SyncFdaMedicines extends Command
             // Rate limiting
             usleep(300000); // 0.3 segundos
 
-
-
         } while (count($allMedicines) < $maxTotal && count($data['results']) === $limit);
 
         return $allMedicines;
     }
-
 
     protected function isValidFdaMedicine(array $fdaMedicine): bool
     {
@@ -196,9 +199,9 @@ class SyncFdaMedicines extends Command
         $activeIngredients = $fdaMedicine['active_ingredients'] ?? [];
 
         // Debe tener NDC y al menos un nombre
-        $hasNdc = !empty($productNdc);
-        $hasName = !empty($genericName) || !empty($brandName);
-        $hasIngredients = !empty($activeIngredients);
+        $hasNdc = ! empty($productNdc);
+        $hasName = ! empty($genericName) || ! empty($brandName);
+        $hasIngredients = ! empty($activeIngredients);
 
         return $hasNdc && $hasName && $hasIngredients;
     }
@@ -213,7 +216,7 @@ class SyncFdaMedicines extends Command
         $activeIngredients = $fdaMedicine['active_ingredients'] ?? [];
 
         // Determinar nombre principal
-        $homeName = !empty($brandName) ? $brandName : $genericName;
+        $homeName = ! empty($brandName) ? $brandName : $genericName;
         if (empty($genericName)) {
             $genericName = $homeName;
         }
@@ -329,14 +332,13 @@ class SyncFdaMedicines extends Command
         return false;
     }
 
-
     protected function createNewMedicine(array $data): void
     {
         $medicine = Medicine::create($data);
         $this->stats['created']++;
 
         // Extraer ingredientes activos del arreglo original
-        if (!empty($data['active_ingredients'])) {
+        if (! empty($data['active_ingredients'])) {
             $this->createActiveComponents($medicine, $data['active_ingredients']);
         }
     }
@@ -346,6 +348,7 @@ class SyncFdaMedicines extends Command
         if ($this->option('dry-run')) {
             $count = Medicine::where('source', 'FDA')->where('active', false)->count();
             $this->info("🔍 [DRY-RUN] Desactivaría {$count} medicamentos obsoletos");
+
             return;
         }
 
@@ -363,7 +366,8 @@ class SyncFdaMedicines extends Command
         }
 
         $value = trim($value);
-        return strlen($value) > $maxLength ? substr($value, 0, $maxLength - 3) . '...' : $value;
+
+        return strlen($value) > $maxLength ? substr($value, 0, $maxLength - 3).'...' : $value;
     }
 
     protected function extractDosageFromIngredients(array $activeIngredients): array
@@ -388,11 +392,11 @@ class SyncFdaMedicines extends Command
             $name = $ingredient['name'] ?? '';
             $strength = $ingredient['strength'] ?? '';
 
-            if (!empty($name)) {
+            if (! empty($name)) {
                 MedicineActiveComponent::create([
                     'medicine_id' => $medicine->id,
                     'name' => $this->sanitizeString($name, 100),
-                    'mgs' => $this->sanitizeString($strength, 25) ?: '0'
+                    'mgs' => $this->sanitizeString($strength, 25) ?: '0',
                 ]);
             }
         }
@@ -400,7 +404,7 @@ class SyncFdaMedicines extends Command
 
     protected function updateExistingMedicine(Medicine $medicine, array $data): void
     {
-        $wasInactive = !$medicine->active;
+        $wasInactive = ! $medicine->active;
 
         // Actualizar datos del medicamento
         $medicineData = $data;
@@ -408,7 +412,7 @@ class SyncFdaMedicines extends Command
         $medicine->update($medicineData);
 
         // Actualizar componentes activos si existen
-        if (!empty($data['active_ingredients'])) {
+        if (! empty($data['active_ingredients'])) {
             $this->createActiveComponents($medicine, $data['active_ingredients']);
         }
 
@@ -422,8 +426,9 @@ class SyncFdaMedicines extends Command
     protected function processFdaMedicine(array $fdaMedicine): void
     {
         try {
-            if (!$this->isValidFdaMedicine($fdaMedicine)) {
+            if (! $this->isValidFdaMedicine($fdaMedicine)) {
                 $this->stats['skipped']++;
+
                 return;
             }
 
@@ -431,6 +436,7 @@ class SyncFdaMedicines extends Command
 
             if (empty($medicineData)) {
                 $this->stats['skipped']++;
+
                 return;
             }
 
@@ -440,6 +446,7 @@ class SyncFdaMedicines extends Command
             if ($this->option('dry-run')) {
                 $activeCount = count($medicineData['active_ingredients']);
                 $this->info("🔍 [DRY-RUN] Procesaría: {$medicineData['generic_name']} ({$activeCount} ingredientes)");
+
                 return;
             }
 
@@ -458,7 +465,7 @@ class SyncFdaMedicines extends Command
 
         } catch (\Exception $e) {
             $this->stats['errors']++;
-            $this->warn("⚠️ Error procesando medicamento: " . $e->getMessage());
+            $this->warn('⚠️ Error procesando medicamento: '.$e->getMessage());
         }
     }
 

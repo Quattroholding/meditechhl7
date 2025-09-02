@@ -4,7 +4,6 @@ namespace App\Livewire\Appointment;
 
 use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,13 +12,18 @@ class DataTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $sortField = 'id';
-    public $sortDirection = 'desc';
-    public $pagination=10;
 
-    public $show_create=true;
-    public $showModal=false;
-    public $modalTitle='Confirmar Cita';
+    public $sortField = 'id';
+
+    public $sortDirection = 'desc';
+
+    public $pagination = 10;
+
+    public $show_create = true;
+
+    public $showModal = false;
+
+    public $modalTitle = 'Confirmar Cita';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -47,36 +51,37 @@ class DataTable extends Component
         $this->resetPage();
     }
 
-    public function getDataProperty(){
+    public function getDataProperty()
+    {
         return Appointment::query()->selectRaw('appointments.*')
-            ->leftJoin('patients','patients.id','=','appointments.patient_id')
-            ->leftJoin('practitioners','practitioners.id','=','appointments.practitioner_id')
+            ->leftJoin('patients', 'patients.id', '=', 'appointments.patient_id')
+            ->leftJoin('practitioners', 'practitioners.id', '=', 'appointments.practitioner_id')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
-                    $q->orWhere('service_type', 'like', '%' . $this->search . '%');
-                    $q->orWhere('start', 'like', '%' . $this->search . '%');
-                    $q->orWhere('end', 'like', '%' . $this->search . '%');
-                    $q->orWhere('status', 'like', '%' . $this->search . '%');
-                    $q->orWhereRaw("patients.name like '%" . $this->search . "%'");
-                    $q->orWhereRaw("practitioners.name like '%" . $this->search . "%'");
+                    $q->orWhere('service_type', 'like', '%'.$this->search.'%');
+                    $q->orWhere('start', 'like', '%'.$this->search.'%');
+                    $q->orWhere('end', 'like', '%'.$this->search.'%');
+                    $q->orWhere('status', 'like', '%'.$this->search.'%');
+                    $q->orWhereRaw("patients.name like '%".$this->search."%'");
+                    $q->orWhereRaw("practitioners.name like '%".$this->search."%'");
                 });
             })
-            ->when(!empty($this->patient_id),function ($q){
-                $q->where('patient_id',$this->patient_id);
+            ->when(! empty($this->patient_id), function ($q) {
+                $q->where('patient_id', $this->patient_id);
             })
-            ->when(!empty($this->practitioner_id),function ($q){
-                $q->where('practitioner_id',$this->practitioner_id);
+            ->when(! empty($this->practitioner_id), function ($q) {
+                $q->where('practitioner_id', $this->practitioner_id);
             })
-            ->when(!empty($this->patient_id),function ($q){
+            ->when(! empty($this->patient_id), function ($q) {
                 $q->wherePatientId($this->patient_id);
             })
-            ->when(request()->has('status'),function ($q){
+            ->when(request()->has('status'), function ($q) {
                 $q->whereStatus(request()->get('status'));
             })
-            ->when(request()->has('id'),function ($q){
+            ->when(request()->has('id'), function ($q) {
                 $q->whereId(request()->get('id'));
             })
-            ->when(!empty($this->limit),function ($q){
+            ->when(! empty($this->limit), function ($q) {
                 $q->take($this->limit);
             })
             ->orderBy($this->sortField, $this->sortDirection)
@@ -89,10 +94,10 @@ class DataTable extends Component
         try {
             $data = $this->data;
 
-            return view('livewire.appointment.data-table', [ 'data' => $data, ]);
+            return view('livewire.appointment.data-table', ['data' => $data]);
         } catch (\Exception $e) {
             // Log the error for debugging
-            \Log::error('Invoice DataTable Error: ' . $e->getMessage());
+            \Log::error('Invoice DataTable Error: '.$e->getMessage());
 
             // Return an empty collection to prevent infinite loading
             return view('livewire.appointment.data-table', [

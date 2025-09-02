@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Appointment;
 use App\Models\Branch;
-use App\Models\ConsultingRoom;
 use App\Models\Encounter;
 use App\Models\Patient;
 use App\Models\PatientClient;
@@ -23,24 +22,23 @@ class AppointmentFactory extends Factory
     public function definition()
     {
         // Fechas aleatorias en el futuro (próximos 30 días)
-        //$startDate = $this->faker->dateTimeBetween('now', '+5 days');
-        $addHours = 8+$this->faker->randomNumber(1);
+        // $startDate = $this->faker->dateTimeBetween('now', '+5 days');
+        $addHours = 8 + $this->faker->randomNumber(1);
 
-        $today = now()->format('Y-m-d').' '.$addHours.":00:00";
+        $today = now()->format('Y-m-d').' '.$addHours.':00:00';
         $startDate = Carbon::parse($today);
 
-
         // Duración de la cita entre 15 y 60 minutos
-        $duration = $this->faker->randomElement(['15','30','45','60']);
+        $duration = $this->faker->randomElement(['15', '30', '45', '60']);
         $endDate = (clone $startDate)->modify("+{$duration} minutes");
 
         $patient = Patient::inRandomOrder()->limit(1)->first();
 
         $practitioner = Practitioner::inRandomOrder()->limit(1)->first();
 
-        $specility_id=null;
+        $specility_id = null;
 
-        if($practitioner->qualifications()->first()){
+        if ($practitioner->qualifications()->first()) {
             $specility_id = $practitioner->qualifications()->first()->medical_speciality_id;
         }
 
@@ -53,24 +51,24 @@ class AppointmentFactory extends Factory
             'Urgencia',
             'Vacunación',
             'Chequeo anual',
-            'Botox'
+            'Botox',
         ];
 
         $clientId = $practitioner->user->default_client_id;
 
         $branch = Branch::whereClientId($clientId)->first();
 
-        if($branch){
+        if ($branch) {
 
-            if( $branch->consultingRooms()->inRandomOrder()->take(1)->first()){
+            if ($branch->consultingRooms()->inRandomOrder()->take(1)->first()) {
 
                 $consultingRoomId = $branch->consultingRooms()->inRandomOrder()->take(1)->first()->id;
 
                 return [
-                    'fhir_id' => 'appointment-' . Str::uuid(),
-                    'patient_id' =>$patient->id,
-                    'practitioner_id' =>$practitioner->id,
-                    'identifier' => 'APT-' . $this->faker->unique()->numerify('#######'),
+                    'fhir_id' => 'appointment-'.Str::uuid(),
+                    'patient_id' => $patient->id,
+                    'practitioner_id' => $practitioner->id,
+                    'identifier' => 'APT-'.$this->faker->unique()->numerify('#######'),
                     'status' => $this->faker->randomElement([
                         'proposed',
                         'pending',
@@ -78,27 +76,27 @@ class AppointmentFactory extends Factory
                         'arrived',
                         'fulfilled',
                         'cancelled',
-                        'noshow'
+                        'noshow',
                     ]),
                     'service_type' => $this->faker->randomElement($serviceTypes),
                     'description' => $this->faker->sentence,
                     'start' => $startDate,
                     'end' => $endDate,
                     'minutes_duration' => $duration,
-                    'consulting_room_id'=>$consultingRoomId,
-                    'medical_speciality_id'=>$specility_id,
-                    'client_id'=>$clientId,
+                    'consulting_room_id' => $consultingRoomId,
+                    'medical_speciality_id' => $specility_id,
+                    'client_id' => $clientId,
                     'participant' => json_encode([
                         [
-                            'actor' => 'Patient/' . $patient->fhir_id,
+                            'actor' => 'Patient/'.$patient->fhir_id,
                             'required' => 'required',
-                            'status' => 'accepted'
+                            'status' => 'accepted',
                         ],
                         [
-                            'actor' => 'Practitioner/' . $practitioner->fhir_id,
+                            'actor' => 'Practitioner/'.$practitioner->fhir_id,
                             'required' => 'required',
-                            'status' => 'accepted'
-                        ]
+                            'status' => 'accepted',
+                        ],
                     ]),
                 ];
             }
@@ -114,10 +112,10 @@ class AppointmentFactory extends Factory
             $client_id = $appointment->practitioner->user->default_client_id;
             $patientClient = PatientClient::wherePatientId($appointment->patient_id)->whereClientId($client_id)->first();
 
-            if(!$patientClient){
+            if (! $patientClient) {
                 PatientClient::create([
-                    'patient_id'=>$appointment->patient_id,
-                    'client_id'=>$client_id
+                    'patient_id' => $appointment->patient_id,
+                    'client_id' => $client_id,
                 ]);
             }
         });
@@ -138,7 +136,7 @@ class AppointmentFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'status' => 'cancelled',
-                'description' => 'Cita cancelada: ' . $this->faker->sentence,
+                'description' => 'Cita cancelada: '.$this->faker->sentence,
             ];
         });
     }
@@ -148,7 +146,7 @@ class AppointmentFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'status' => 'fulfilled',
-                'description' => 'Consulta realizada: ' . $this->faker->sentence,
+                'description' => 'Consulta realizada: '.$this->faker->sentence,
             ];
         });
     }
@@ -162,7 +160,6 @@ class AppointmentFactory extends Factory
             ];
         });
     }
-
 
     // State para citas pasadas
     public function past()
@@ -189,8 +186,8 @@ class AppointmentFactory extends Factory
 
             return [
                 'practitioner_id' => $practitioner->id,
-                'service_type' => 'Consulta de ' . $specialty,
-                'description' => 'Consulta especializada en ' . $specialty,
+                'service_type' => 'Consulta de '.$specialty,
+                'description' => 'Consulta especializada en '.$specialty,
             ];
         });
     }
@@ -198,7 +195,7 @@ class AppointmentFactory extends Factory
     public function withEncounter()
     {
         return $this->afterCreating(function (Appointment $appointment) {
-            if(!Encounter::whereAppointmentId($appointment->id)->first()){
+            if (! Encounter::whereAppointmentId($appointment->id)->first()) {
 
                 $type = '4525004'; // consulta de medicina general
                 if ($appointment->medical_speciality_id != '50') {
@@ -212,18 +209,18 @@ class AppointmentFactory extends Factory
                     ->withDiagnoses()
                     ->withServiceRequests()
                     ->withMedicationRequests()
-                    //->withReferral()
+                    // ->withReferral()
                     ->withServices()
-                    ->create([ 'patient_id' => $appointment->patient_id,
-                            'practitioner_id' => $appointment->practitioner_id,
-                            'appointment_id' => $appointment->id,
-                            'identifier' => 'ENC-'.fake()->unique()->numerify('#######'),
-                            'status' => 'in-progress',
-                            'class' => 'SS',
-                            'type' => $type,
-                            'priority' => 'routine',
-                            'start' => $appointment->start,
-                            'medical_speciality_id' => $appointment->medical_speciality_id]);
+                    ->create(['patient_id' => $appointment->patient_id,
+                        'practitioner_id' => $appointment->practitioner_id,
+                        'appointment_id' => $appointment->id,
+                        'identifier' => 'ENC-'.fake()->unique()->numerify('#######'),
+                        'status' => 'in-progress',
+                        'class' => 'SS',
+                        'type' => $type,
+                        'priority' => 'routine',
+                        'start' => $appointment->start,
+                        'medical_speciality_id' => $appointment->medical_speciality_id]);
             }
         });
     }

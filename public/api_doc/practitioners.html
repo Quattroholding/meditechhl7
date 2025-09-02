@@ -270,7 +270,7 @@
                     <span class="endpoint-url">/api/practitioners</span>
                 </div>
 
-                <p>Obtiene la lista de médicos registrados en el sistema con paginación y filtros de búsqueda.</p>
+                <p>Obtiene la lista de médicos registrados en el sistema con paginación y filtros de búsqueda. <strong>Incluye los horarios ocupados de la próxima semana</strong> para facilitar la planificación de citas.</p>
 
                 <div class="section">
                     <h3>Headers Requeridos</h3>
@@ -363,8 +363,34 @@ Authorization: Bearer 1|abcd1234...
                 }
             ],
             "profile_picture_url": "https://ejemplo.com/storage/avatars/practitioner-1.jpg",
-            "years_experience": 15,
-            "consultation_fee": 75.00
+            "next_week_schedule": {
+                "week_start": "2025-09-08",
+                "week_end": "2025-09-14",
+                "booked_appointments": [
+                    {
+                        "start": "2025-09-08 09:00",
+                        "end": "2025-09-08 10:00",
+                        "date": "2025-09-08",
+                        "start_time": "09:00",
+                        "end_time": "10:00",
+                        "status": "booked",
+                        "day_of_week": "Monday",
+                        "day_of_week_es": "Lunes"
+                    },
+                    {
+                        "start": "2025-09-10 14:30",
+                        "end": "2025-09-10 15:30",
+                        "date": "2025-09-10",
+                        "start_time": "14:30",
+                        "end_time": "15:30",
+                        "status": "arrived",
+                        "day_of_week": "Wednesday",
+                        "day_of_week_es": "Miércoles"
+                    }
+                ],
+                "total_appointments": 2,
+                "busy_days": ["2025-09-08", "2025-09-10"]
+            }
         }
     ],
     "pagination": {
@@ -375,9 +401,164 @@ Authorization: Bearer 1|abcd1234...
         "from": 1,
         "to": 5,
         "has_more_pages": true
+    },
+    "next_week_info": {
+        "start_date": "2025-09-08",
+        "end_date": "2025-09-14",
+        "week_dates": [
+            {
+                "date": "2025-09-08",
+                "day_name": "Monday",
+                "day_name_es": "Lunes",
+                "day_short": "Mon",
+                "day_number": "8"
+            },
+            {
+                "date": "2025-09-09",
+                "day_name": "Tuesday",
+                "day_name_es": "Martes",
+                "day_short": "Tue",
+                "day_number": "9"
+            },
+            {
+                "date": "2025-09-10",
+                "day_name": "Wednesday",
+                "day_name_es": "Miércoles",
+                "day_short": "Wed",
+                "day_number": "10"
+            },
+            {
+                "date": "2025-09-11",
+                "day_name": "Thursday",
+                "day_name_es": "Jueves",
+                "day_short": "Thu",
+                "day_number": "11"
+            },
+            {
+                "date": "2025-09-12",
+                "day_name": "Friday",
+                "day_name_es": "Viernes",
+                "day_short": "Fri",
+                "day_number": "12"
+            },
+            {
+                "date": "2025-09-13",
+                "day_name": "Saturday",
+                "day_name_es": "Sábado",
+                "day_short": "Sat",
+                "day_number": "13"
+            },
+            {
+                "date": "2025-09-14",
+                "day_name": "Sunday",
+                "day_name_es": "Domingo",
+                "day_short": "Sun",
+                "day_number": "14"
+            }
+        ]
     }
 }
                     </div>
+                </div>
+
+                <div class="section">
+                    <h3>Campos de Horarios de la Próxima Semana</h3>
+                    <p>La respuesta incluye información detallada sobre los horarios ocupados de la próxima semana para cada practitioner:</p>
+
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>next_week_schedule</code></td>
+                                <td>object</td>
+                                <td>Objeto contenedor con la información de horarios de la próxima semana</td>
+                            </tr>
+                            <tr>
+                                <td><code>week_start</code></td>
+                                <td>date</td>
+                                <td>Fecha de inicio de la semana (Lunes)</td>
+                            </tr>
+                            <tr>
+                                <td><code>week_end</code></td>
+                                <td>date</td>
+                                <td>Fecha de fin de la semana (Domingo)</td>
+                            </tr>
+                            <tr>
+                                <td><code>booked_appointments</code></td>
+                                <td>array</td>
+                                <td>Lista de citas con estado 'booked', 'arrived' o 'fulfilled'</td>
+                            </tr>
+                            <tr>
+                                <td><code>total_appointments</code></td>
+                                <td>integer</td>
+                                <td>Cantidad total de citas ocupadas en la semana</td>
+                            </tr>
+                            <tr>
+                                <td><code>busy_days</code></td>
+                                <td>array</td>
+                                <td>Lista de fechas únicas con citas agendadas</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Campos de cada cita en <code>booked_appointments</code>:</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>start</code></td>
+                                <td>datetime</td>
+                                <td>Fecha y hora de inicio completa (YYYY-MM-DD HH:mm)</td>
+                            </tr>
+                            <tr>
+                                <td><code>end</code></td>
+                                <td>datetime</td>
+                                <td>Fecha y hora de fin completa (YYYY-MM-DD HH:mm)</td>
+                            </tr>
+                            <tr>
+                                <td><code>date</code></td>
+                                <td>date</td>
+                                <td>Solo la fecha de la cita (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>start_time</code></td>
+                                <td>time</td>
+                                <td>Solo la hora de inicio (HH:mm)</td>
+                            </tr>
+                            <tr>
+                                <td><code>end_time</code></td>
+                                <td>time</td>
+                                <td>Solo la hora de fin (HH:mm)</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>string</td>
+                                <td>Estado de la cita: 'booked', 'arrived', 'fulfilled'</td>
+                            </tr>
+                            <tr>
+                                <td><code>day_of_week</code></td>
+                                <td>string</td>
+                                <td>Día de la semana en inglés (Monday, Tuesday, etc.)</td>
+                            </tr>
+                            <tr>
+                                <td><code>day_of_week_es</code></td>
+                                <td>string</td>
+                                <td>Día de la semana en español (Lunes, Martes, etc.)</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -737,7 +918,14 @@ Authorization: Bearer 1|abcd1234...
                     <li><strong>Múltiples Especialidades:</strong> Un médico puede tener múltiples especialidades</li>
                     <li><strong>Multi-Sucursal:</strong> Los médicos pueden trabajar en múltiples sucursales</li>
                     <li><strong>Disponibilidad en Tiempo Real:</strong> La disponibilidad se calcula considerando citas existentes y horarios de trabajo</li>
+                    <li><strong>Horarios de la Próxima Semana:</strong> El endpoint de listado incluye automáticamente los horarios ocupados de la próxima semana (lunes a domingo) con citas de tipo 'booked', 'arrived' y 'fulfilled'</li>
+                    <li><strong>Planificación Avanzada:</strong> La información de horarios permite a los usuarios identificar rápidamente días con mayor/menor disponibilidad para agendar nuevas citas</li>
+                    <li><strong>Información Multilingüe:</strong> Los días de la semana se proporcionan tanto en inglés como en español para mayor usabilidad</li>
                 </ul>
+            </div>
+
+            <div class="note">
+                <strong>Nueva Funcionalidad:</strong> A partir de esta versión, la lista de médicos incluye automáticamente información sobre los horarios ocupados de la próxima semana. Esta funcionalidad mejora significativamente la experiencia de planificación y agendamiento de citas sin requerir peticiones adicionales a la API.
             </div>
         </div>
     </div>

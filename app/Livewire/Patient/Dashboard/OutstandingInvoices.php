@@ -8,10 +8,15 @@ use Livewire\Component;
 class OutstandingInvoices extends Component
 {
     public $patient;
+
     public $limit = 5;
+
     public $order;
+
     public $isLoading = true;
+
     public $outstandingInvoices = [];
+
     public $totalDebt = 0;
 
     protected $listeners = ['loadData'];
@@ -35,8 +40,9 @@ class OutstandingInvoices extends Component
 
     public function loadOutstandingInvoices()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->outstandingInvoices = collect();
+
             return;
         }
 
@@ -50,8 +56,9 @@ class OutstandingInvoices extends Component
 
     public function loadTotalDebt()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->totalDebt = 0;
+
             return;
         }
 

@@ -14,8 +14,9 @@ class UserPolicy
         //
     }
 
-    public function create(User $user){
-        return $user->getCurrentClient()->package->max_users > ($user->getCurrentClient()->users()->role('asistente')->count()+
+    public function create(User $user)
+    {
+        return $user->getCurrentClient()->package->max_users > ($user->getCurrentClient()->users()->role('asistente')->count() +
                 $user->getCurrentClient()->users()->role('admin client')->count() + $user->getCurrentClient()->users()->role('doctor')->count());
     }
 }

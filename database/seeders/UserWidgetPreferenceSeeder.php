@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\UserWidgetPreference;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserWidgetPreferenceSeeder extends Seeder
@@ -18,7 +17,7 @@ class UserWidgetPreferenceSeeder extends Seeder
         $roleMapping = [
             'doctor' => 'doctor',
             'assistant' => 'asistente',
-            'patient' => 'paciente'
+            'patient' => 'paciente',
         ];
 
         foreach ($dashboardTypes as $dashboardType) {
@@ -46,7 +45,7 @@ class UserWidgetPreferenceSeeder extends Seeder
                 }
             }
 
-            $this->command->info('Created default widget preferences for ' . $users->count() . ' ' . $dashboardType . ' users');
+            $this->command->info('Created default widget preferences for '.$users->count().' '.$dashboardType.' users');
         }
     }
 }

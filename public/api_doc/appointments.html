@@ -308,7 +308,7 @@ Authorization: Bearer {token}
                                 <td><code>status</code></td>
                                 <td>string</td>
                                 <td><span class="param-optional">No</span></td>
-                                <td>Filtrar por estado: scheduled, confirmed, cancelled, completed</td>
+                                <td>Filtrar por estado: proposed, booked, checked-in , arrived, fulfilled , cancelled , noshow, entered-in-error </td>
                             </tr>
                             <tr>
                                 <td><code>date_from</code></td>
@@ -329,7 +329,7 @@ Authorization: Bearer {token}
                 <div class="section">
                     <h3>Ejemplo de Petición</h3>
                     <div class="code-block">
-GET /api/appointments?page=1&per_page=5&status=scheduled&date_from=2024-01-01
+GET /api/appointments?page=1&per_page=5&status=booked&date_from=2024-01-01
 Authorization: Bearer 1|abcd1234...
                     </div>
                 </div>

@@ -77,7 +77,7 @@ return new class extends Migration
             $table->index(['charge_item_id']);
             $table->index(['performer_practitioner_id']);
             $table->index(['client_id']);
-            //$table->index('cpt_code');
+            // $table->index('cpt_code');
 
             // Unique constraint
             $table->unique(['invoice_id', 'sequence']);

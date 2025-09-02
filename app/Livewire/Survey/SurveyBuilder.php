@@ -3,15 +3,19 @@
 namespace App\Livewire\Survey;
 
 use App\Models\Survey;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class SurveyBuilder extends Component
 {
     public $surveyId;
+
     public $title = '';
+
     public $description = '';
+
     public $status = 'draft';
+
     public $is_active = true;
 
     public function mount($surveyId = null)
@@ -65,7 +69,7 @@ class SurveyBuilder extends Component
 
     public function render()
     {
-        $survey = $this->surveyId ? Survey::with(['questions' => function($query) {
+        $survey = $this->surveyId ? Survey::with(['questions' => function ($query) {
             $query->orderBy('order');
         }])->find($this->surveyId) : null;
 

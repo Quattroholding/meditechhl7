@@ -14,12 +14,12 @@ class UserWidgetPreference extends Model
         'widget_description',
         'is_visible',
         'order_position',
-        'width'
+        'width',
     ];
 
     protected $casts = [
         'is_visible' => 'boolean',
-        'order_position' => 'integer'
+        'order_position' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -31,32 +31,32 @@ class UserWidgetPreference extends Model
     {
         $widgets = [
             'doctor' => [
-                'new-patients' => ['name' => 'New Patients', 'order' => 1,'description' => 'Pacientes Nuevos','width'=>'col-lg-4'],
-                'old-patients' => ['name' => 'Old Patients', 'order' => 2,'description' => 'Pacientes Antiguos','width'=>'col-lg-4'],
-                'active-patients' => ['name' => 'Active Patients', 'order' => 3,'description' => 'Pacientes Activos','width'=>'col-lg-4'],
-                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 4,'description' => 'Citas para hoy','width'=>'col-lg-6'],
-                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 5,'description' => 'Pacientes por género','width'=>'col-lg-6'],
-                'top-active-conditions' => ['name' => 'Top Active Conditions', 'order' => 6,'description' => 'Top 5 condicones activas','width'=>'col-lg-6'],
-                'top-prescribed-medications' => ['name' => 'Top Prescribed Medications', 'order' => 7,'description' => 'Top 5 medicamentos prescritos','width'=>'col-lg-6'],
-                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 8,'description' => 'Efectividad de Atención','width'=>'col-lg-6'],
-                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 9,'description' => 'Horarios de Mayor Actividad','width'=>'col-lg-6'],
+                'new-patients' => ['name' => 'New Patients', 'order' => 1, 'description' => 'Pacientes Nuevos', 'width' => 'col-lg-4'],
+                'old-patients' => ['name' => 'Old Patients', 'order' => 2, 'description' => 'Pacientes Antiguos', 'width' => 'col-lg-4'],
+                'active-patients' => ['name' => 'Active Patients', 'order' => 3, 'description' => 'Pacientes Activos', 'width' => 'col-lg-4'],
+                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 4, 'description' => 'Citas para hoy', 'width' => 'col-lg-6'],
+                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 5, 'description' => 'Pacientes por género', 'width' => 'col-lg-6'],
+                'top-active-conditions' => ['name' => 'Top Active Conditions', 'order' => 6, 'description' => 'Top 5 condicones activas', 'width' => 'col-lg-6'],
+                'top-prescribed-medications' => ['name' => 'Top Prescribed Medications', 'order' => 7, 'description' => 'Top 5 medicamentos prescritos', 'width' => 'col-lg-6'],
+                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 8, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6'],
+                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 9, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6'],
             ],
             'assistant' => [
-                'new-patients' => ['name' => 'New Patients', 'order' => 1,'description' => 'Pacientes Nuevos','width'=>'col-lg-4'],
-                'old-patients' => ['name' => 'Old Patients', 'order' => 2,'description' => 'Pacientes Antiguos','width'=>'col-lg-4'],
-                'active-patients' => ['name' => 'Active Patients', 'order' => 3,'description' => 'Pacientes Activos','width'=>'col-lg-4'],
-                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 4,'description' => 'Citas para hoy','width'=>'col-lg-6'],
-                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 5,'description' => 'Pacientes por género','width'=>'col-lg-6'],
-                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 6,'description' => 'Efectividad de Atención','width'=>'col-lg-6'],
-                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 7,'description' => 'Horarios de Mayor Actividad','width'=>'col-lg-6'],
+                'new-patients' => ['name' => 'New Patients', 'order' => 1, 'description' => 'Pacientes Nuevos', 'width' => 'col-lg-4'],
+                'old-patients' => ['name' => 'Old Patients', 'order' => 2, 'description' => 'Pacientes Antiguos', 'width' => 'col-lg-4'],
+                'active-patients' => ['name' => 'Active Patients', 'order' => 3, 'description' => 'Pacientes Activos', 'width' => 'col-lg-4'],
+                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 4, 'description' => 'Citas para hoy', 'width' => 'col-lg-6'],
+                'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 5, 'description' => 'Pacientes por género', 'width' => 'col-lg-6'],
+                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 6, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6'],
+                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 7, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6'],
             ],
             'patient' => [
-                'overview' => ['name' => 'Health Overview', 'order' => 1,'description'=>'General','width'=>'col-lg-12'],
-                'upcoming-appointments' => ['name' => 'Upcoming Appointments', 'order' => 2,'description'=>'Proximas citas','width'=>'col-lg-6'],
-                'recent-consultations' => ['name' => 'Recent Consultations', 'order' => 3,'description'=>'Consultas recientes','width'=>'col-lg-6'],
-                'outstanding-invoices' => ['name' => 'Outstanding Invoices', 'order' => 4,'description'=>'Facturas pendientes','width'=>'col-lg-6'],
-                'medical-summary' => ['name' => 'Medical Summary', 'order' => 5,'description'=>'Resumen medico','width'=>'col-lg-6'],
-            ]
+                'overview' => ['name' => 'Health Overview', 'order' => 1, 'description' => 'General', 'width' => 'col-lg-12'],
+                'upcoming-appointments' => ['name' => 'Upcoming Appointments', 'order' => 2, 'description' => 'Proximas citas', 'width' => 'col-lg-6'],
+                'recent-consultations' => ['name' => 'Recent Consultations', 'order' => 3, 'description' => 'Consultas recientes', 'width' => 'col-lg-6'],
+                'outstanding-invoices' => ['name' => 'Outstanding Invoices', 'order' => 4, 'description' => 'Facturas pendientes', 'width' => 'col-lg-6'],
+                'medical-summary' => ['name' => 'Medical Summary', 'order' => 5, 'description' => 'Resumen medico', 'width' => 'col-lg-6'],
+            ],
         ];
 
         return $widgets[$dashboardType] ?? [];
@@ -72,12 +72,13 @@ class UserWidgetPreference extends Model
 
         $visibleWidgets = collect($defaultWidgets)->map(function ($widget, $key) use ($userPreferences) {
             $preference = $userPreferences->get($key);
+
             return [
                 'key' => $key,
                 'name' => $widget['name'],
                 'is_visible' => $preference ? $preference->is_visible : true,
                 'order_position' => $preference ? $preference->order_position : $widget['order'],
-                'width' => $preference ? $preference->width : $widget['width']
+                'width' => $preference ? $preference->width : $widget['width'],
             ];
         })->filter(function ($widget) {
             return $widget['is_visible'];

@@ -3,18 +3,24 @@
 namespace App\Livewire\Patient\Dashboard;
 
 use App\Models\Condition;
-use App\Models\MedicalHistory;
 use App\Models\Encounter;
+use App\Models\MedicalHistory;
 use Livewire\Component;
 
 class MedicalSummary extends Component
 {
     public $patient;
+
     public $order;
+
     public $isLoading = true;
+
     public $activeMedicalConditions = [];
+
     public $allergies = [];
+
     public $currentMedications = [];
+
     public $lastVitalSigns = null;
 
     protected $listeners = ['loadData'];
@@ -41,8 +47,9 @@ class MedicalSummary extends Component
 
     public function loadActiveMedicalConditions()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->activeMedicalConditions = collect();
+
             return;
         }
 
@@ -55,8 +62,9 @@ class MedicalSummary extends Component
 
     public function loadAllergies()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->allergies = collect();
+
             return;
         }
 
@@ -69,8 +77,9 @@ class MedicalSummary extends Component
 
     public function loadCurrentMedications()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->currentMedications = collect();
+
             return;
         }
 
@@ -85,8 +94,9 @@ class MedicalSummary extends Component
 
     public function loadLastVitalSigns()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->lastVitalSigns = null;
+
             return;
         }
 
@@ -98,7 +108,7 @@ class MedicalSummary extends Component
 
         $this->lastVitalSigns = $vitalSigns->isNotEmpty() ? [
             'date' => $vitalSigns->first()->effective_date,
-            'vital_signs' => $vitalSigns
+            'vital_signs' => $vitalSigns,
         ] : null;
     }
 

@@ -15,14 +15,14 @@ return [
 
     'previous' => '&laquo; Previo',
     'next' => 'Siguiente &raquo;',
-    'Showing'=>'Mostrando',
-    'to'=>'del',
-    'of'=>'de',
-    'results'=>'resultados',
-    'al'=>'al',
-    'showing'=>'Mostrando del',
-    'of'=>'de',
-    'to'=>'al',
-    'results'=>'resultados',
+    'Showing' => 'Mostrando',
+    'to' => 'del',
+    'of' => 'de',
+    'results' => 'resultados',
+    'al' => 'al',
+    'showing' => 'Mostrando del',
+    'of' => 'de',
+    'to' => 'al',
+    'results' => 'resultados',
 
 ];

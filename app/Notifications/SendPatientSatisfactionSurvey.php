@@ -2,10 +2,9 @@
 
 namespace App\Notifications;
 
-use App\Models\SurveyResponse;
 use App\Models\Encounter;
 use App\Models\Survey;
-use App\Mail\SurveyInvitationMail;
+use App\Models\SurveyResponse;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -16,6 +15,7 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     /**
@@ -50,14 +50,14 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
         $clinicName = $this->encounter->appointment->client->name;
 
         return (new MailMessage)
-            ->subject('Encuesta de Satisfacción - ' . $clinicName)
+            ->subject('Encuesta de Satisfacción - '.$clinicName)
             ->view('emails.patient-satisfaction-survey', [
                 'patientName' => $notifiable->name,
                 'surveyTitle' => $this->survey->title,
                 'surveyUrl' => $surveyUrl,
                 'practitionerName' => $practitionerName,
                 'encounterDate' => $encounterDate,
-                'clinicName' => $clinicName
+                'clinicName' => $clinicName,
             ]);
     }
 
@@ -89,7 +89,7 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
             'survey_response_id' => $this->surveyResponse->id,
             'encounter_id' => $this->encounter->id,
             'patient_id' => $this->surveyResponse->patient_id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

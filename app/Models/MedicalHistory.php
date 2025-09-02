@@ -11,14 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class MedicalHistory extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'fhir_id', 'patient_id', 'category', 'title', 'description',
-        'recorded_date', 'occurrence_date', 'clinical_status', 'verification_status'
+        'recorded_date', 'occurrence_date', 'clinical_status', 'verification_status',
     ];
 
     protected $casts = [
         'recorded_date' => 'date',
-        'occurrence_date' => 'date'
+        'occurrence_date' => 'date',
     ];
 
     // Relaciones
@@ -37,7 +38,8 @@ class MedicalHistory extends Model
         return $this->hasOne(Procedure::class);
     }
 
-    public function getOccurrenceDateAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getOccurrenceDateAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
     }
 }

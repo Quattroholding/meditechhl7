@@ -2,16 +2,15 @@
 
 namespace App\View\Components;
 
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class SelectInput extends Component
 {
     public string $name;
-    public array $options;
-    public ?array $selected;
 
+    public array $options;
+
+    public ?array $selected;
 
     public function __construct(string $name, array $options = [], array $selected = [])
     {

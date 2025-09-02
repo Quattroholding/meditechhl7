@@ -13,20 +13,20 @@ class MedicationFactory extends Factory
     public function definition()
     {
         $medicationTypes = [
-            'tablet' => ['form' => 'Tableta', 'dose' => $this->faker->numberBetween(50, 1000) . ' mg'],
-            'capsule' => ['form' => 'Cápsula', 'dose' => $this->faker->numberBetween(50, 500) . ' mg'],
-            'injection' => ['form' => 'Inyección', 'dose' => $this->faker->numberBetween(1, 10) . ' mL'],
-            'cream' => ['form' => 'Crema', 'dose' => $this->faker->numberBetween(1, 5) . '%'],
-            'syrup' => ['form' => 'Jarabe', 'dose' => $this->faker->numberBetween(5, 20) . ' mg/5mL'],
-            'inhaler' => ['form' => 'Inhalador', 'dose' => $this->faker->numberBetween(50, 500) . ' mcg/dosis'],
-            'drops' => ['form' => 'Gotas', 'dose' => $this->faker->numberBetween(0.1, 2) . '%'],
+            'tablet' => ['form' => 'Tableta', 'dose' => $this->faker->numberBetween(50, 1000).' mg'],
+            'capsule' => ['form' => 'Cápsula', 'dose' => $this->faker->numberBetween(50, 500).' mg'],
+            'injection' => ['form' => 'Inyección', 'dose' => $this->faker->numberBetween(1, 10).' mL'],
+            'cream' => ['form' => 'Crema', 'dose' => $this->faker->numberBetween(1, 5).'%'],
+            'syrup' => ['form' => 'Jarabe', 'dose' => $this->faker->numberBetween(5, 20).' mg/5mL'],
+            'inhaler' => ['form' => 'Inhalador', 'dose' => $this->faker->numberBetween(50, 500).' mcg/dosis'],
+            'drops' => ['form' => 'Gotas', 'dose' => $this->faker->numberBetween(0.1, 2).'%'],
         ];
 
         $type = $this->faker->randomElement(array_keys($medicationTypes));
         $name = $this->generateMedicationName($type);
 
         return [
-            'fhir_id' => 'medication-' . Str::uuid(),
+            'fhir_id' => 'medication-'.Str::uuid(),
             'code' => $this->generateRxNormCode(),
             'name' => $name,
             'form' => $medicationTypes[$type]['form'],
@@ -35,8 +35,8 @@ class MedicationFactory extends Factory
             'ingredient' => json_encode([
                 [
                     'item' => $this->generateActiveIngredient(),
-                    'strength' => $this->generateStrength($medicationTypes[$type]['dose'])
-                ]
+                    'strength' => $this->generateStrength($medicationTypes[$type]['dose']),
+                ],
             ]),
             'manufacturer' => $this->faker->randomElement([
                 'Pfizer',
@@ -45,7 +45,7 @@ class MedicationFactory extends Factory
                 'Merck',
                 'GSK',
                 'AstraZeneca',
-                'Sanofi'
+                'Sanofi',
             ]),
             'is_brand' => $this->faker->boolean(70),
             'is_over_the_counter' => $this->faker->boolean(30),
@@ -95,9 +95,9 @@ class MedicationFactory extends Factory
     public function withForm(string $form)
     {
         $forms = [
-            'tablet' => ['form' => 'Tableta', 'dose' => $this->faker->numberBetween(50, 1000) . ' mg'],
-            'capsule' => ['form' => 'Cápsula', 'dose' => $this->faker->numberBetween(50, 500) . ' mg'],
-            'injection' => ['form' => 'Inyección', 'dose' => $this->faker->numberBetween(1, 10) . ' mL'],
+            'tablet' => ['form' => 'Tableta', 'dose' => $this->faker->numberBetween(50, 1000).' mg'],
+            'capsule' => ['form' => 'Cápsula', 'dose' => $this->faker->numberBetween(50, 500).' mg'],
+            'injection' => ['form' => 'Inyección', 'dose' => $this->faker->numberBetween(1, 10).' mL'],
         ];
 
         return $this->state(function (array $attributes) use ($form, $forms) {
@@ -135,7 +135,7 @@ class MedicationFactory extends Factory
         $prefix = $this->faker->randomElement($prefixes[$type]);
         $suffix = $this->faker->randomElement($suffixes[$type]);
 
-        return $prefix . $suffix;
+        return $prefix.$suffix;
     }
 
     protected function generateGenericName(): string
@@ -145,10 +145,10 @@ class MedicationFactory extends Factory
             'done', 'epam', 'fenac', 'flur', 'gab', 'gest', 'glit', 'ine', 'lukast', 'mab', 'micin',
             'mycin', 'nacin', 'olol', 'oxacin', 'pramine', 'pril', 'profen', 'ridone', 'sartan',
             'semide', 'setron', 'statin', 'terol', 'thiazide', 'tidine', 'trel', 'triptyline', 'vir',
-            'vudine', 'xaban', 'zepam', 'zodone', 'zolam', 'zosin'
+            'vudine', 'xaban', 'zepam', 'zodone', 'zolam', 'zosin',
         ];
 
-        return ucfirst($this->faker->randomElement($stems)) . $this->faker->randomElement($stems);
+        return ucfirst($this->faker->randomElement($stems)).$this->faker->randomElement($stems);
     }
 
     protected function generateActiveIngredient(): string
@@ -157,7 +157,7 @@ class MedicationFactory extends Factory
             'Acetaminophen', 'Amoxicillin', 'Azithromycin', 'Ciprofloxacin', 'Dexamethasone',
             'Diazepam', 'Enalapril', 'Fluoxetine', 'Hydrochlorothiazide', 'Ibuprofen',
             'Insulin glargine', 'Levothyroxine', 'Lisinopril', 'Metformin', 'Omeprazole',
-            'Paracetamol', 'Prednisone', 'Simvastatin', 'Tramadol', 'Warfarin'
+            'Paracetamol', 'Prednisone', 'Simvastatin', 'Tramadol', 'Warfarin',
         ];
 
         return $this->faker->randomElement($ingredients);
@@ -166,7 +166,7 @@ class MedicationFactory extends Factory
     protected function generateRxNormCode(): string
     {
         // Simula un código RxNorm (6 dígitos)
-        return 'RXNORM-' . $this->faker->unique()->numerify('######');
+        return 'RXNORM-'.$this->faker->unique()->numerify('######');
     }
 
     protected function generateStrength(string $dose): string
@@ -181,7 +181,7 @@ class MedicationFactory extends Factory
         }
 
         // Para tabletas, cápsulas, etc.
-        return $amount . ' mg';
+        return $amount.' mg';
     }
 
     protected function generateBrandName(): string
@@ -189,6 +189,6 @@ class MedicationFactory extends Factory
         $prefixes = ['Zyr', 'Xan', 'Pro', 'Cele', 'Lip', 'Nex', 'Pla', 'Vic', 'Syn', 'Adv'];
         $suffixes = ['tec', 'tor', 'cor', 'via', 'lex', 'max', 'din', 'lor', 'pan', 'tin'];
 
-        return $this->faker->randomElement($prefixes) . $this->faker->randomElement($suffixes);
+        return $this->faker->randomElement($prefixes).$this->faker->randomElement($suffixes);
     }
 }

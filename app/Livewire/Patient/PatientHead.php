@@ -11,8 +11,11 @@ use Livewire\WithFileUploads;
 class PatientHead extends Component
 {
     use WithFileUploads;
+
     public $data;
+
     public $showModal;
+
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
 
@@ -21,27 +24,30 @@ class PatientHead extends Component
         return view('livewire.patient.patient-head');
     }
 
-    public function mount($patient_id){
+    public function mount($patient_id)
+    {
         $this->data = Patient::find($patient_id);
     }
 
     public function updatedAvatar()
     {
-        $service = new FileService();
-        $data['record_id'] =$this->data->id;
+        $service = new FileService;
+        $data['record_id'] = $this->data->id;
         $data['folder'] = 'patients';
-        $data['type']='avatar';
-        $service->guardarArchivos([$this->avatar],$data);
+        $data['type'] = 'avatar';
+        $service->guardarArchivos([$this->avatar], $data);
 
         $this->data->user->profile_picture = $this->data->avatar()->path;
         $this->data->user->save();
     }
 
-    public function openModalNote($patientId){
-        $practitioner_id=null;
-        if(auth()->user()->hasRole('doctor'))
+    public function openModalNote($patientId)
+    {
+        $practitioner_id = null;
+        if (auth()->user()->hasRole('doctor')) {
             $practitioner_id = auth()->user()->practitioner->id;
+        }
 
-        $this->dispatch('openModal',$patientId,$practitioner_id);
+        $this->dispatch('openModal', $patientId, $practitioner_id);
     }
 }

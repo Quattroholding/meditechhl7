@@ -30,8 +30,11 @@ class Services extends Component
     public $customPrice = null;
 
     public $serviceNotes = '';
-    public $rapidAccess=[];
+
+    public $rapidAccess = [];
+
     public $servicesCatalog;
+
     public $saved = false;
 
     protected $rules = [
@@ -78,7 +81,7 @@ class Services extends Component
 
         // Buscar en el catálogo de servicios disponibles
         $this->results = ServiceCatalog::active()
-            //->where('client_id', $this->encounter->client_id)
+            // ->where('client_id', $this->encounter->client_id)
             ->where(function ($query) {
                 $query->where('name', 'like', '%'.$this->query.'%')
                     ->orWhere('description', 'like', '%'.$this->query.'%')
@@ -136,7 +139,7 @@ class Services extends Component
 
             $chargeItem = ChargeItem::whereEncounterId($this->encounter->id)->whereServiceCatalogId($this->selectedServiceId)->first();
 
-            if(!$chargeItem){
+            if (! $chargeItem) {
                 // Crear ChargeItem usando el método del ServiceCatalog
                 $chargeItem = $service->createChargeItem(
                     patientId: $this->encounter->patient_id,
@@ -154,11 +157,11 @@ class Services extends Component
 
                 DB::commit();
 
-                //session()->flash('message.success', 'Servicio agregado exitosamente a la consulta.');
+                // session()->flash('message.success', 'Servicio agregado exitosamente a la consulta.');
 
                 $this->resetForm();
                 $this->loadSelectedServices();
-            }else{
+            } else {
                 $this->dispatch('showToastr',
                     type: 'error',
                     message: '¡Servicio ya esta agregado a la  consulta.!'

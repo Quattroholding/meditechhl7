@@ -13,8 +13,11 @@ class DataTable extends Component
     use WithPagination;
 
     public $search;
+
     public $sortField = 'id';
+
     public $sortDirection = 'asc';
+
     public $pagination = 10;
 
     public function sortBy($field)
@@ -41,20 +44,20 @@ class DataTable extends Component
             ->withCount('results')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
-                    $q->orWhere('id', 'like', '%' . $this->search . '%')
-                      ->orWhere('code', 'like', '%' . $this->search . '%')
-                      ->orWhere('code_display', 'like', '%' . $this->search . '%')
-                      ->orWhere('service_type', 'like', '%' . $this->search . '%')
-                      ->orWhere('status', 'like', '%' . $this->search . '%')
-                      ->orWhere('intent', 'like', '%' . $this->search . '%')
-                      ->orWhere('priority', 'like', '%' . $this->search . '%')
-                      ->orWhere('service_type', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('patient', function ($q) {
-                          $q->where('name', 'like', '%' . $this->search . '%');
-                      })
-                      ->orWhereHas('practitioner', function ($q) {
-                          $q->where('name', 'like', '%' . $this->search . '%');
-                      });
+                    $q->orWhere('id', 'like', '%'.$this->search.'%')
+                        ->orWhere('code', 'like', '%'.$this->search.'%')
+                        ->orWhere('code_display', 'like', '%'.$this->search.'%')
+                        ->orWhere('service_type', 'like', '%'.$this->search.'%')
+                        ->orWhere('status', 'like', '%'.$this->search.'%')
+                        ->orWhere('intent', 'like', '%'.$this->search.'%')
+                        ->orWhere('priority', 'like', '%'.$this->search.'%')
+                        ->orWhere('service_type', 'like', '%'.$this->search.'%')
+                        ->orWhereHas('patient', function ($q) {
+                            $q->where('name', 'like', '%'.$this->search.'%');
+                        })
+                        ->orWhereHas('practitioner', function ($q) {
+                            $q->where('name', 'like', '%'.$this->search.'%');
+                        });
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)

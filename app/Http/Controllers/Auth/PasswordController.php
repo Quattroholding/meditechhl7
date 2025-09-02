@@ -15,9 +15,9 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        try{
+        try {
             $validated = $request->validateWithBag('updatePassword', [
-                //'current_password' => ['required', 'current_password'],
+                // 'current_password' => ['required', 'current_password'],
                 'password' => ['required', Password::defaults(), 'confirmed'],
             ]);
 
@@ -25,9 +25,9 @@ class PasswordController extends Controller
                 'password' => Hash::make($validated['password']),
             ]);
 
-            session()->flash('message.success','Contraseña actualizada con exito.');
-        }catch (\Exception $e){
-            session()->flash('message.error',$e->getMessage());
+            session()->flash('message.success', 'Contraseña actualizada con exito.');
+        } catch (\Exception $e) {
+            session()->flash('message.error', $e->getMessage());
         }
 
         return back()->with('status', 'password-updated');

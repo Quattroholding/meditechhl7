@@ -33,7 +33,10 @@ class PatientController extends Controller
 
         $patient = $user->patient()->with(['clients', 'primaryInsurance', 'secondaryInsurance'])->first();
         $profile_picture_path = '';
-        if($patient->avatar()) $profile_picture_path = url('storage/'.$patient->avatar()->path);
+        if ($patient->avatar()) {
+            $profile_picture_path = url('storage/'.$patient->avatar()->path);
+        }
+
         return response()->json([
             'data' => [
                 'patient' => [
@@ -65,7 +68,7 @@ class PatientController extends Controller
                     'secondary_insurance' => $patient->secondaryInsurance,
                     'created_at' => $patient->created_at,
                     'updated_at' => $patient->updated_at,
-                    'profile_picture_url'=>$profile_picture_path,
+                    'profile_picture_url' => $profile_picture_path,
                 ],
                 'user' => [
                     'id' => $user->id,
@@ -249,7 +252,7 @@ class PatientController extends Controller
     {
         $user = $request->user();
         $patient = DB::table('patients')->where('user_id', $user->id)->first();
-        if (!$patient) {
+        if (! $patient) {
             return response()->json([
                 'message' => 'Perfil del paciente no encontrado.',
             ], 404);
@@ -262,7 +265,7 @@ class PatientController extends Controller
                 'file',
                 'image',
                 'mimes:jpeg,jpg,png,gif,webp',
-                'max:5120' // 5MB max
+                'max:5120', // 5MB max
             ],
         ], [
             'profile_picture.required' => 'La imagen de perfil es obligatoria.',
@@ -280,11 +283,11 @@ class PatientController extends Controller
         }
 
         try {
-            $fileService = new FileService();
-            $file =  $request->file('profile_picture');
+            $fileService = new FileService;
+            $file = $request->file('profile_picture');
             $ext = $file->getClientOriginalExtension();
 
-            $filename = 'patient_profile_' . $user->id . '_' . time();
+            $filename = 'patient_profile_'.$user->id.'_'.time();
 
             // Subir el archivo
             $profilePicturePath = $fileService->uploadSingleFile(
@@ -297,17 +300,17 @@ class PatientController extends Controller
                 // Actualizar el campo profile_picture en la tabla users usando DB directo
                 DB::table('users')->where('id', $user->id)->update([
                     'profile_picture' => $profilePicturePath,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
 
                 DB::table('files')->insert([
-                    'user_id'=>$user->id,
-                    'table_name'=>'patients',
-                    'record_id'=>$patient->id,
-                    'name'=>basename($profilePicturePath),
-                    'path'=>$profilePicturePath,
-                    'extention'=>$ext,
-                    'type'=>'avatar',
+                    'user_id' => $user->id,
+                    'table_name' => 'patients',
+                    'record_id' => $patient->id,
+                    'name' => basename($profilePicturePath),
+                    'path' => $profilePicturePath,
+                    'extention' => $ext,
+                    'type' => 'avatar',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -319,7 +322,7 @@ class PatientController extends Controller
                     'message' => 'Foto de perfil actualizada exitosamente.',
                     'data' => [
                         'profile_picture' => $profilePicturePath,
-                        'profile_picture_url' => url('storage/' . $profilePicturePath),
+                        'profile_picture_url' => url('storage/'.$profilePicturePath),
                         'updated_at' => $updatedUser->updated_at,
                     ],
                 ]);
@@ -361,7 +364,9 @@ class PatientController extends Controller
 
             // Build response with paginated collections
             $profile_picture_path = '';
-            if($patient->avatar()) $profile_picture_path = url('storage/'.$patient->avatar()->path);
+            if ($patient->avatar()) {
+                $profile_picture_path = url('storage/'.$patient->avatar()->path);
+            }
             $response = [
                 'patient_info' => [
                     'id' => $patient->id,
@@ -378,11 +383,10 @@ class PatientController extends Controller
                     'marital_status' => $patient->marital_status,
                     'phone' => $patient->phone,
                     'email' => $patient->email,
-                    'profile_picture_url'=>$profile_picture_path,
+                    'profile_picture_url' => $profile_picture_path,
                 ],
                 'collections' => [],
             ];
-
 
             // Get paginated collections based on request
             $collections = [

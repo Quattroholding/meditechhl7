@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Procedure extends BaseModel
 {
     protected $fillable = [
@@ -20,13 +19,13 @@ class Procedure extends BaseModel
         'reason',
         'outcome',
         'complication',
-        'follow_up'
+        'follow_up',
     ];
 
     protected $casts = [
         'performed_date' => 'date',
         'complication' => 'array',
-        'follow_up' => 'array'
+        'follow_up' => 'array',
     ];
 
     // Relaciones
@@ -50,7 +49,8 @@ class Procedure extends BaseModel
         return $this->belongsTo(Practitioner::class);
     }
 
-    public function cpt(){
-        return $this->belongsTo(CptCode::class,'code','code');
+    public function cpt()
+    {
+        return $this->belongsTo(CptCode::class, 'code', 'code');
     }
 }

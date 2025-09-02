@@ -10,8 +10,11 @@ use Livewire\Component;
 class ProfileAbout extends Component
 {
     public $practitioner_id;
+
     public $data;
+
     public $qualifications;
+
     public function render()
     {
         $this->data = Practitioner::find($this->practitioner_id);
@@ -19,16 +22,19 @@ class ProfileAbout extends Component
 
         return view('livewire.doctor.profile-about');
     }
+
     #[On('loadQualifications')]
-    public function loadQualifications(){
+    public function loadQualifications()
+    {
         $this->qualifications = $this->data->qualifications()->get();
     }
 
-    public function setDefaultSpecialty($id){
+    public function setDefaultSpecialty($id)
+    {
         // Quitar el default de todas las especialidades del doctor
-        PractitionerQualification::where('practitioner_id',$this->practitioner_id)->update(['default' => 0]);
+        PractitionerQualification::where('practitioner_id', $this->practitioner_id)->update(['default' => 0]);
         // Marcar la especialidad seleccionada como default
-        PractitionerQualification::where('id', $id) ->update(['default' => 1]);
+        PractitionerQualification::where('id', $id)->update(['default' => 1]);
 
         $this->loadQualifications();
 

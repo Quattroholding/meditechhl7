@@ -18,7 +18,7 @@ class PatientInsurancePolicyFactory extends Factory
     {
         $effectiveDate = $this->faker->dateTimeBetween('-2 years', 'now');
         $expirationDate = $this->faker->dateTimeBetween($effectiveDate, '+1 year');
-        
+
         return [
             'patient_id' => \App\Models\Patient::factory(),
             'insurance_company_id' => \App\Models\InsuranceCompany::factory(),

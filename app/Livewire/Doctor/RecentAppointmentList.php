@@ -2,20 +2,26 @@
 
 namespace App\Livewire\Doctor;
 
+use App\Models\Appointment;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use App\Models\Appointment;
 
 class RecentAppointmentList extends Component
 {
     public $appointments;
+
     public $appointment_date;
+
     public $appointment_time;
+
     public $modalTitle;
+
     public $showModal;
+
     public $order;
+
     public $isLoading = true;
-    //protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
+    // protected $listeners = ['refreshAppointments' => 'refreshAppointments'];
 
     public function mount()
     {
@@ -33,11 +39,11 @@ class RecentAppointmentList extends Component
     #[On('loadAppointments')]
     public function loadAppointments()
     {
-        $today =  \Carbon\Carbon::today();
+        $today = \Carbon\Carbon::today();
 
         $this->appointments = Appointment::whereDate('start', $today)
-                                        ->orderBy('start')
-                                        ->get();
+            ->orderBy('start')
+            ->get();
     }
 
     public function render()
@@ -45,10 +51,11 @@ class RecentAppointmentList extends Component
         return view('livewire.doctor.recent-appointment-list');
     }
 
-    public function editAppointment($appointmentId){
-        //dd('aqui');
+    public function editAppointment($appointmentId)
+    {
+        // dd('aqui');
         $this->modalTitle = 'Actualizar Cita';
-        $this->dispatch('editAppointmentModal',$appointmentId);
+        $this->dispatch('editAppointmentModal', $appointmentId);
     }
 
     public function updateStatus($appointmentId, $newStatus)
@@ -63,11 +70,11 @@ class RecentAppointmentList extends Component
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
 
-                if($current_status=='proposed' && $newStatus=='booked'){
+                if ($current_status == 'proposed' && $newStatus == 'booked') {
                     $appointment->notifyPatientAboutConfirmation();
                 }
 
-                if($newStatus=='checked-in'){
+                if ($newStatus == 'checked-in') {
                     $this->dispatch('showToastr'.$appointmentId,
                         type: 'success',
                         message: '¡Espere por favor en unos segundos empezara su consulta!'
@@ -79,8 +86,8 @@ class RecentAppointmentList extends Component
         }
     }
 
-    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal','Nueva Cita');
+        $this->dispatch('openAppointmentModal', 'Nueva Cita');
     }
 }
