@@ -878,4 +878,31 @@ class AppointmentController extends Controller
             'status' => $appointment->status,
         ]);
     }
+
+    public function destroyV1(Request $request, $id)
+    {
+
+        $appointment = Appointment::where('id', $id)->first();
+
+        if (! $appointment) {
+            return response()->json(['message' => 'Cita no encontrada'], 404);
+        }
+
+        if (! $this->canCancelAppointment($appointment)) {
+            return response()->json([
+                'message' => 'No se puede cancelar esta cita',
+            ], 422);
+        }
+
+        $appointment->update(['status' => 'cancelled']);
+
+        // Notificar al médico sobre la cancelación
+        if (in_array($appointment->status, ['booked', 'confirmed'])) {
+            $appointment->notifyPatientAboutCancellation('Cancelada por el paciente');
+        }
+
+        return response()->json([
+            'message' => 'Cita cancelada exitosamente',
+        ]);
+    }
 }
