@@ -78,7 +78,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/appointments/{appointment}', [AppointmentController::class, 'showV1']);
     Route::put('/appointments/{appointment}', [AppointmentController::class, 'updateV1']);
     Route::patch('/appointments/{appointment}', [AppointmentController::class, 'updateV1']);
-    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']); // Keep original destroy method
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroyV1']); // Keep original destroy method
     Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailabilityV1']);
 
     Route::apiResource('medicines', MedicineController::class);
