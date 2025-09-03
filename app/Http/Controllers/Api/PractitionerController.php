@@ -119,10 +119,13 @@ class PractitionerController extends Controller
 
             // Validate request parameters
             $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-                'date' => 'required|date|after_or_equal:today',
+                'date' => 'nullable|date|after_or_equal:today',
                 'duration' => 'nullable|integer|min:15|max:480',
                 'days' => 'nullable|integer|min:1|max:14', // Number of days to check
             ]);
+
+            if(!$request->has('date')) $date = now();
+
 
             if ($validator->fails()) {
                 return response()->json([
@@ -131,7 +134,7 @@ class PractitionerController extends Controller
                 ], 422);
             }
 
-            $startDate = Carbon::parse($request->date);
+            $startDate = Carbon::parse($date);
             $duration = $request->get('duration', 30); // Default 30 minutes
             $daysToCheck = $request->get('days', 1); // Default 1 day
 
