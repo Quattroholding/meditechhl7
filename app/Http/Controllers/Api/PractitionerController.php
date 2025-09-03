@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PractitionerResource;
 use App\Models\Appointment;
 use App\Models\Practitioner;
+use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -112,7 +113,7 @@ class PractitionerController extends Controller
     {
         try {
 
-            $practitioner = Practitioner::find($practitionerId);
+            $practitioner = Practitioner::with('user')->find($practitionerId);
             if (! $practitioner) {
                 return response()->json(['message' => 'Médico no encontrado'], 404);
             }
@@ -124,9 +125,6 @@ class PractitionerController extends Controller
                 'days' => 'nullable|integer|min:1|max:14', // Number of days to check
             ]);
 
-            if(!$request->has('date')) $date = now();
-
-
             if ($validator->fails()) {
                 return response()->json([
                     'message' => 'Parámetros de validación incorrectos',
@@ -134,6 +132,7 @@ class PractitionerController extends Controller
                 ], 422);
             }
 
+            $date = $request->get('date', now()->format('Y-m-d'));
             $startDate = Carbon::parse($date);
             $duration = $request->get('duration', 30); // Default 30 minutes
             $daysToCheck = $request->get('days', 1); // Default 1 day
@@ -235,7 +234,7 @@ class PractitionerController extends Controller
                     'occupancy_rate' => $totalSlots > 0 ? round((($totalSlots - $availableSlots) / $totalSlots) * 100, 1) : 0,
                 ],
             ]);
-        }catch (\Exception$e){
+        } catch (\Exception$e) {
             return response()->json(['error' => $e->getMessage()]);
         }
 
@@ -371,20 +370,70 @@ class PractitionerController extends Controller
     }
 
     /**
-     * Traducir nombres de días al español
+     * Get day name in Spanish
      */
-    private function getDayNameInSpanish(string $dayName): string
+    private function getDayNameInSpanish($dayOfWeek)
     {
         $days = [
-            'Monday' => 'Lunes',
-            'Tuesday' => 'Martes',
-            'Wednesday' => 'Miércoles',
-            'Thursday' => 'Jueves',
-            'Friday' => 'Viernes',
-            'Saturday' => 'Sábado',
-            'Sunday' => 'Domingo',
+            0 => 'Domingo',
+            1 => 'Lunes',
+            2 => 'Martes',
+            3 => 'Miércoles',
+            4 => 'Jueves',
+            5 => 'Viernes',
+            6 => 'Sábado',
         ];
 
-        return $days[$dayName] ?? $dayName;
+        return $days[$dayOfWeek];
+    }
+
+    /**
+     * Get practitioner working hours for a specific day
+     * Checks user_working_hours table first, falls back to defaults
+     */
+    private function getPractitionerWorkingHours($practitioner, $dayOfWeek)
+    {
+        // Convert numeric day to string format
+        $dayNames = [
+            0 => 'sunday',
+            1 => 'monday',
+            2 => 'tuesday',
+            3 => 'wednesday',
+            4 => 'thursday',
+            5 => 'friday',
+            6 => 'saturday',
+        ];
+
+        $dayName = $dayNames[$dayOfWeek];
+
+        // Check if practitioner has a user and working hours configured
+        if ($practitioner->user) {
+            $workingHour = UserWorkingHour::where('user_id', $practitioner->user->id)
+                ->where('day_of_week', $dayName)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if ($workingHour) {
+                return [
+                    'start' => $workingHour->start_time,
+                    'end' => $workingHour->end_time,
+                    'lunch_start' => '12:00', // Default lunch time since it's not in the table
+                    'lunch_end' => '13:00',   // Default lunch time since it's not in the table
+                ];
+            }
+        }
+
+        // Skip weekends by default if no custom schedule
+        if ($dayOfWeek == 0 || $dayOfWeek == 6) {
+            return null;
+        }
+
+        // Default working hours
+        return [
+            'start' => '08:00',
+            'end' => '17:00',
+            'lunch_start' => '12:00',
+            'lunch_end' => '13:00',
+        ];
     }
 }

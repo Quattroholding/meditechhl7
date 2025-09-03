@@ -989,11 +989,165 @@ Accept: application/json
                 </div>
 
                 <div class="section">
+                    <h3>Parámetros Específicos</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>date</td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Fecha de inicio en formato YYYY-MM-DD (debe ser hoy o futura)</td>
+                            </tr>
+                            <tr>
+                                <td>duration</td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Duración de cada slot en minutos (15-480, default: 30)</td>
+                            </tr>
+                            <tr>
+                                <td>days</td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Número de días a consultar (1-14, default: 1)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
                     <h3>Ejemplo de Petición</h3>
                     <div class="code-block">
-GET /api/v1/practitioners/1/availability?date=2024-02-15&duration=30
+GET /api/v1/practitioners/1/availability?date=2024-02-15&duration=30&days=3
 Authorization: Bearer mdt_abc123...
 Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Disponibilidad obtenida correctamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "practitioner": {
+        "id": 1,
+        "name": "Dr. Juan Pérez"
+    },
+    "duration_minutes": 30,
+    "availability": [
+        {
+            "date": "2024-02-15",
+            "day_name": "Jueves",
+            "day_of_week": 4,
+            "slots": [
+                {
+                    "time": "09:00",
+                    "end_time": "09:30",
+                    "available": true,
+                    "reason": null
+                },
+                {
+                    "time": "09:30",
+                    "end_time": "10:00",
+                    "available": true,
+                    "reason": null
+                },
+                {
+                    "time": "10:00",
+                    "end_time": "10:30",
+                    "available": false,
+                    "reason": "Cita existente"
+                },
+                {
+                    "time": "10:30",
+                    "end_time": "11:00",
+                    "available": true,
+                    "reason": null
+                },
+                {
+                    "time": "12:00",
+                    "end_time": "12:30",
+                    "available": false,
+                    "reason": "Hora de almuerzo"
+                },
+                {
+                    "time": "14:00",
+                    "end_time": "14:30",
+                    "available": true,
+                    "reason": null
+                }
+            ]
+        },
+        {
+            "date": "2024-02-16",
+            "day_name": "Viernes",
+            "day_of_week": 5,
+            "slots": [
+                {
+                    "time": "09:00",
+                    "end_time": "09:30",
+                    "available": true,
+                    "reason": null
+                },
+                {
+                    "time": "09:30",
+                    "end_time": "10:00",
+                    "available": false,
+                    "reason": "Cita existente"
+                }
+            ]
+        },
+        {
+            "date": "2024-02-17",
+            "day_name": "Sábado",
+            "day_of_week": 6,
+            "slots": [],
+            "reason": "Día no laborable"
+        }
+    ],
+    "summary": {
+        "total_slots": 8,
+        "available_slots": 5,
+        "occupancy_rate": 37.5
+    }
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas de Error</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-404">404</span>
+                        <span>Médico no encontrado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Médico no encontrado"
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-422">422</span>
+                        <span>Parámetros de validación incorrectos</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Parámetros de validación incorrectos",
+    "errors": {
+        "date": ["La fecha debe ser hoy o futura"],
+        "duration": ["La duración debe estar entre 15 y 480 minutos"]
+    }
+}
                     </div>
                 </div>
             </div>
@@ -1053,10 +1207,10 @@ Accept: application/json
             <div class="info-box">
                 <h4>Información Adicional sobre Médicos</h4>
                 <ul style="margin: 0.5rem 0; padding-left: 2rem;">
-                    <li><strong>Horarios de Trabajo:</strong> Los médicos tienen horarios configurables por día de la semana</li>
+                    <li><strong>Horarios de Trabajo:</strong> Los médicos tienen horarios configurables por día de la semana mediante la tabla <code>user_working_hours</code>. Si no hay configuración personalizada, se usan horarios por defecto (08:00-17:00, lunes a viernes)</li>
                     <li><strong>Múltiples Especialidades:</strong> Un médico puede tener múltiples especialidades</li>
                     <li><strong>Multi-Sucursal:</strong> Los médicos pueden trabajar en múltiples sucursales</li>
-                    <li><strong>Disponibilidad en Tiempo Real:</strong> La disponibilidad se calcula considerando citas existentes y horarios de trabajo</li>
+                    <li><strong>Disponibilidad en Tiempo Real:</strong> La disponibilidad se calcula considerando citas existentes, horarios de trabajo personalizados y horarios de almuerzo (12:00-13:00 por defecto)</li>
                     <li><strong>Horarios de la Próxima Semana:</strong> El endpoint de listado incluye automáticamente los horarios ocupados de la próxima semana (lunes a domingo) con citas de tipo 'booked', 'arrived' y 'fulfilled'</li>
                     <li><strong>Planificación Avanzada:</strong> La información de horarios permite a los usuarios identificar rápidamente días con mayor/menor disponibilidad para agendar nuevas citas</li>
                     <li><strong>Información Multilingüe:</strong> Los días de la semana se proporcionan tanto en inglés como en español para mayor usabilidad</li>
