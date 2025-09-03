@@ -143,7 +143,7 @@ class AppointmentController extends Controller
 
             // Check conflicts
             $conflicts = Appointment::where('practitioner_id', $request->practitioner_id)
-                ->whereNotIn('status',['cancelled','noshow','entered-in-error'])
+                ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->whereBetween('start', [$startTime, $endTime])
                         ->orWhereBetween('end', [$startTime, $endTime])
@@ -457,17 +457,17 @@ class AppointmentController extends Controller
         // Add search functionality
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->whereHas('patient', function($patientQuery) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('patient', function ($patientQuery) use ($search) {
                     $patientQuery->where('name', 'like', "%{$search}%")
-                                ->orWhere('identifier', 'like', "%{$search}%")
-                                ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('identifier', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
                 })
-                ->orWhereHas('practitioner', function($practitionerQuery) use ($search) {
-                    $practitionerQuery->where('name', 'like', "%{$search}%")
-                                    ->orWhere('identifier', 'like', "%{$search}%");
-                })
-                ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhereHas('practitioner', function ($practitionerQuery) use ($search) {
+                        $practitionerQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('identifier', 'like', "%{$search}%");
+                    })
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -509,7 +509,7 @@ class AppointmentController extends Controller
         }
 
         // Pagination
-        $perPage = min(max((int)$request->get('per_page', 15), 1), 100);
+        $perPage = min(max((int) $request->get('per_page', 15), 1), 100);
         $appointments = $query->paginate($perPage);
 
         return response()->json([
@@ -598,13 +598,13 @@ class AppointmentController extends Controller
 
             // Check for conflicts
             $conflicts = Appointment::where('practitioner_id', $request->practitioner_id)
-                ->whereNotIn('status',['cancelled','noshow','entered-in-error'])
+                ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->whereBetween('start', [$startTime, $endTime])
                         ->orWhereBetween('end', [$startTime, $endTime])
                         ->orWhere(function ($q) use ($startTime, $endTime) {
                             $q->where('start', '<=', $startTime)
-                              ->where('end', '>=', $endTime);
+                                ->where('end', '>=', $endTime);
                         });
                 })
                 ->exists();
@@ -618,7 +618,6 @@ class AppointmentController extends Controller
             $practitioner = Practitioner::find($request->practitioner_id);
             $client_id = $practitioner->user->default_client_id;
 
-
             // Create appointment
             $appointment = Appointment::create([
                 'fhir_id' => 'appointment-'.Str::uuid(),
@@ -628,13 +627,13 @@ class AppointmentController extends Controller
                 'start' => $startTime,
                 'end' => $endTime,
                 'status' => 'booked',
-                'service_type'=>$request->service_type,
+                'service_type' => $request->service_type,
                 'description' => $request->description,
                 'minutes_duration' => $request->minutes_duration,
                 'medical_speciality_id' => $request->medical_speciality_id,
                 'consulting_room_id' => $request->consulting_room_id,
                 'original_requested_datetime' => $startTime,
-                'client_id'=> $client_id,
+                'client_id' => $client_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -702,7 +701,7 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::find($id);
 
-        if (!$appointment) {
+        if (! $appointment) {
             return response()->json(['message' => 'Cita no encontrada'], 404);
         }
 
@@ -741,7 +740,7 @@ class AppointmentController extends Controller
                             ->orWhereBetween('end', [$startTime, $endTime])
                             ->orWhere(function ($q) use ($startTime, $endTime) {
                                 $q->where('start', '<=', $startTime)
-                                  ->where('end', '>=', $endTime);
+                                    ->where('end', '>=', $endTime);
                             });
                     })
                     ->exists();
@@ -819,9 +818,9 @@ class AppointmentController extends Controller
     public function showV1($id)
     {
         $appointment = Appointment::with(['patient', 'practitioner', 'medicalSpeciality', 'consultingRoom'])
-                                 ->find($id);
+            ->find($id);
 
-        if (!$appointment) {
+        if (! $appointment) {
             return response()->json(['message' => 'Cita no encontrada'], 404);
         }
 
@@ -864,19 +863,167 @@ class AppointmentController extends Controller
         ]);
     }
 
-    public function checkAvailabilityV1(Request $request, $id)
+    public function checkAvailabilityV1(Request $request, $practitionerId)
     {
-        $appointment = Appointment::where('id', $id)->first();
+        // Validate the practitioner exists
+        $practitioner = Practitioner::find($practitionerId);
+        if (! $practitioner) {
+            return response()->json(['message' => 'Médico no encontrado'], 404);
+        }
 
-        if (! $appointment) {
-            return response()->json(['message' => 'Cita no encontrada'], 404);
+        // Validate request parameters
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'date' => 'required|date|after_or_equal:today',
+            'duration' => 'nullable|integer|min:15|max:480',
+            'days' => 'nullable|integer|min:1|max:14', // Number of days to check
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Parámetros de validación incorrectos',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $startDate = Carbon::parse($request->date);
+        $duration = $request->get('duration', 30); // Default 30 minutes
+        $daysToCheck = $request->get('days', 1); // Default 1 day
+
+        $availability = [];
+
+        for ($i = 0; $i < $daysToCheck; $i++) {
+            $currentDate = $startDate->copy()->addDays($i);
+
+            // Skip weekends if practitioner doesn't work weekends (this could be configurable)
+            $dayOfWeek = $currentDate->dayOfWeek;
+
+            $dayAvailability = [
+                'date' => $currentDate->format('Y-m-d'),
+                'day_name' => $this->getDayNameInSpanish($dayOfWeek),
+                'day_of_week' => $dayOfWeek,
+                'slots' => [],
+            ];
+
+            // Define working hours (this should ideally come from practitioner's schedule)
+            $workingHours = $this->getPractitionerWorkingHours($practitioner, $dayOfWeek);
+
+            if ($workingHours) {
+                $startTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['start']);
+                $endTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['end']);
+                $lunchStart = $workingHours['lunch_start'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_start']) : null;
+                $lunchEnd = $workingHours['lunch_end'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_end']) : null;
+
+                // Get existing appointments for this day
+                $existingAppointments = Appointment::where('practitioner_id', $practitionerId)
+                    ->whereDate('start', $currentDate->format('Y-m-d'))
+                    ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
+                    ->get(['start', 'end']);
+
+                // Generate time slots
+                $currentSlot = $startTime->copy();
+
+                while ($currentSlot->copy()->addMinutes($duration)->lte($endTime)) {
+                    $slotEnd = $currentSlot->copy()->addMinutes($duration);
+
+                    // Check if slot is during lunch break
+                    $isDuringLunch = false;
+                    if ($lunchStart && $lunchEnd) {
+                        $isDuringLunch = ($currentSlot->lt($lunchEnd) && $slotEnd->gt($lunchStart));
+                    }
+
+                    // Check if slot conflicts with existing appointments
+                    $hasConflict = false;
+                    foreach ($existingAppointments as $appointment) {
+                        $appointmentStart = Carbon::parse($appointment->start);
+                        $appointmentEnd = Carbon::parse($appointment->end);
+
+                        if (($currentSlot->lt($appointmentEnd) && $slotEnd->gt($appointmentStart))) {
+                            $hasConflict = true;
+                            break;
+                        }
+                    }
+
+                    $dayAvailability['slots'][] = [
+                        'time' => $currentSlot->format('H:i'),
+                        'end_time' => $slotEnd->format('H:i'),
+                        'available' => ! $hasConflict && ! $isDuringLunch && $currentSlot->gt(now()),
+                        'reason' => $hasConflict ? 'Cita existente' : ($isDuringLunch ? 'Hora de almuerzo' : ($currentSlot->lte(now()) ? 'Hora pasada' : null)),
+                    ];
+
+                    $currentSlot->addMinutes($duration);
+                }
+            } else {
+                // No working hours for this day
+                $dayAvailability['slots'] = [];
+                $dayAvailability['reason'] = 'Día no laborable';
+            }
+
+            $availability[] = $dayAvailability;
+        }
+
+        // Calculate summary statistics
+        $totalSlots = 0;
+        $availableSlots = 0;
+        foreach ($availability as $day) {
+            foreach ($day['slots'] as $slot) {
+                $totalSlots++;
+                if ($slot['available']) {
+                    $availableSlots++;
+                }
+            }
         }
 
         return response()->json([
-            'can_cancel' => $this->canCancelAppointment($appointment),
-            'can_reschedule' => $this->canRescheduleAppointment($appointment),
-            'status' => $appointment->status,
+            'practitioner' => [
+                'id' => $practitioner->id,
+                'name' => $practitioner->name,
+            ],
+            'duration_minutes' => $duration,
+            'availability' => $availability,
+            'summary' => [
+                'total_slots' => $totalSlots,
+                'available_slots' => $availableSlots,
+                'occupancy_rate' => $totalSlots > 0 ? round((($totalSlots - $availableSlots) / $totalSlots) * 100, 1) : 0,
+            ],
         ]);
+    }
+
+    /**
+     * Get day name in Spanish
+     */
+    private function getDayNameInSpanish($dayOfWeek)
+    {
+        $days = [
+            0 => 'Domingo',
+            1 => 'Lunes',
+            2 => 'Martes',
+            3 => 'Miércoles',
+            4 => 'Jueves',
+            5 => 'Viernes',
+            6 => 'Sábado',
+        ];
+
+        return $days[$dayOfWeek];
+    }
+
+    /**
+     * Get practitioner working hours for a specific day
+     * This is a simplified version - in a real implementation, this would come from a schedule table
+     */
+    private function getPractitionerWorkingHours($practitioner, $dayOfWeek)
+    {
+        // Skip weekends by default
+        if ($dayOfWeek == 0 || $dayOfWeek == 6) {
+            return null;
+        }
+
+        // Default working hours - this should come from database
+        return [
+            'start' => '08:00',
+            'end' => '17:00',
+            'lunch_start' => '12:00',
+            'lunch_end' => '13:00',
+        ];
     }
 
     public function destroyV1(Request $request, $id)
