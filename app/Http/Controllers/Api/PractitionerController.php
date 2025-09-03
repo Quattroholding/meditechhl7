@@ -18,7 +18,7 @@ class PractitionerController extends Controller
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
         $practitioners = Practitioner::with(['specialties', 'user.clients'])
-            ->when($request->id,function ($query) use ($request){
+            ->when($request->id, function ($query) use ($request) {
                 return $query->whereId($request->id);
             })
             ->when($request->speciality_id, function ($query, $specialityId) {
@@ -48,8 +48,6 @@ class PractitionerController extends Controller
                 });
             })
             ->paginate($perPage);
-
-
 
         // Calcular fechas de la próxima semana (lunes a domingo)
         $nextWeekStart = now()->next('Monday')->startOfDay();
@@ -89,10 +87,7 @@ class PractitionerController extends Controller
             return $practitioner;
         });
 
-
-
         $practitioners->setCollection(collect($practitionersWithSchedule));
-
 
         return response()->json([
             'data' => PractitionerResource::collection($practitioners->items()),

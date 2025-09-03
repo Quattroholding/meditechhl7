@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BranchController;
@@ -472,6 +473,15 @@ Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])
 // Insurance Companies Routes
 Route::middleware(['auth', 'first.login', 'permission:manage insurances'])->group(function () {
     Route::resource('insurances', InsuranceController::class);
+});
+
+// API Tokens Routes (Admin only)
+Route::middleware(['auth', 'first.login', 'role:admin'])->group(function () {
+    Route::resource('api-tokens', ApiTokenController::class);
+    //Route::get('/api-tokens/create', [ApiTokenController::class, 'create'])->name('api-tokens.create');
+    //Route::get('/api-tokens/{apiToken}/edit', [ApiTokenController::class, 'edit'])->name('api-tokens.edit');
+    Route::post('/api-tokens/{apiToken}/toggle', [ApiTokenController::class, 'toggle'])->name('api-tokens.toggle');
+    Route::post('/api-tokens/{apiToken}/regenerate', [ApiTokenController::class, 'regenerate'])->name('api-tokens.regenerate');
 });
 
 // Test route for broadcast
