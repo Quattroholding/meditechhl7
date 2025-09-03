@@ -111,49 +111,126 @@ class PractitionerController extends Controller
     public function availability(Request $request, $practitionerId): JsonResponse
     {
         try {
-            $request->validate([
+
+            $practitioner = Practitioner::find($practitionerId);
+            if (! $practitioner) {
+                return response()->json(['message' => 'Médico no encontrado'], 404);
+            }
+
+            // Validate request parameters
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
                 'date' => 'required|date|after_or_equal:today',
-                'duration' => 'integer|min:15|max:180',
+                'duration' => 'nullable|integer|min:15|max:480',
+                'days' => 'nullable|integer|min:1|max:14', // Number of days to check
             ]);
 
-            $practitioner = Practitioner::findOrFail($practitionerId);
-            $date = Carbon::parse($request->date);
-            $duration = (int) ($request->duration ?? 30); // Default 30 minutes
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Parámetros de validación incorrectos',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
 
-            // Obtener citas existentes para ese día
-            $existingAppointments = Appointment::where('practitioner_id', $practitionerId)
-                ->whereDate('start', $date->format('Y-m-d'))
-                ->whereNotIn('status',['cancelled','noshow','entered-in-error'])
-                ->orderBy('start')
-                ->get(['start', 'end']);
+            $startDate = Carbon::parse($request->date);
+            $duration = $request->get('duration', 30); // Default 30 minutes
+            $daysToCheck = $request->get('days', 1); // Default 1 day
 
-            // Horarios de trabajo por defecto (esto debería venir de la configuración del médico)
-            $workingHours = [
-                'start' => '08:00',
-                'end' => '17:00',
-                'lunch_break' => [
-                    'start' => '12:00',
-                    'end' => '13:00',
-                ],
-            ];
+            $availability = [];
 
-            // Generar slots disponibles
-            $availableSlots = $this->generateAvailableSlots(
-                $date,
-                $workingHours,
-                $existingAppointments,
-                $duration
-            );
+            for ($i = 0; $i < $daysToCheck; $i++) {
+                $currentDate = $startDate->copy()->addDays($i);
+
+                // Skip weekends if practitioner doesn't work weekends (this could be configurable)
+                $dayOfWeek = $currentDate->dayOfWeek;
+
+                $dayAvailability = [
+                    'date' => $currentDate->format('Y-m-d'),
+                    'day_name' => $this->getDayNameInSpanish($dayOfWeek),
+                    'day_of_week' => $dayOfWeek,
+                    'slots' => [],
+                ];
+
+                // Define working hours (this should ideally come from practitioner's schedule)
+                $workingHours = $this->getPractitionerWorkingHours($practitioner, $dayOfWeek);
+
+                if ($workingHours) {
+                    $startTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['start']);
+                    $endTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['end']);
+                    $lunchStart = $workingHours['lunch_start'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_start']) : null;
+                    $lunchEnd = $workingHours['lunch_end'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_end']) : null;
+
+                    // Get existing appointments for this day
+                    $existingAppointments = Appointment::where('practitioner_id', $practitioner->id)
+                        ->whereDate('start', $currentDate->format('Y-m-d'))
+                        ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
+                        ->get(['start', 'end']);
+
+                    // Generate time slots
+                    $currentSlot = $startTime->copy();
+
+                    while ($currentSlot->copy()->addMinutes($duration)->lte($endTime)) {
+                        $slotEnd = $currentSlot->copy()->addMinutes($duration);
+
+                        // Check if slot is during lunch break
+                        $isDuringLunch = false;
+                        if ($lunchStart && $lunchEnd) {
+                            $isDuringLunch = ($currentSlot->lt($lunchEnd) && $slotEnd->gt($lunchStart));
+                        }
+
+                        // Check if slot conflicts with existing appointments
+                        $hasConflict = false;
+                        foreach ($existingAppointments as $appointment) {
+                            $appointmentStart = Carbon::parse($appointment->start);
+                            $appointmentEnd = Carbon::parse($appointment->end);
+
+                            if (($currentSlot->lt($appointmentEnd) && $slotEnd->gt($appointmentStart))) {
+                                $hasConflict = true;
+                                break;
+                            }
+                        }
+
+                        $dayAvailability['slots'][] = [
+                            'time' => $currentSlot->format('H:i'),
+                            'end_time' => $slotEnd->format('H:i'),
+                            'available' => ! $hasConflict && ! $isDuringLunch && $currentSlot->gt(now()),
+                            'reason' => $hasConflict ? 'Cita existente' : ($isDuringLunch ? 'Hora de almuerzo' : ($currentSlot->lte(now()) ? 'Hora pasada' : null)),
+                        ];
+
+                        $currentSlot->addMinutes($duration);
+                    }
+                } else {
+                    // No working hours for this day
+                    $dayAvailability['slots'] = [];
+                    $dayAvailability['reason'] = 'Día no laborable';
+                }
+
+                $availability[] = $dayAvailability;
+            }
+
+            // Calculate summary statistics
+            $totalSlots = 0;
+            $availableSlots = 0;
+            foreach ($availability as $day) {
+                foreach ($day['slots'] as $slot) {
+                    $totalSlots++;
+                    if ($slot['available']) {
+                        $availableSlots++;
+                    }
+                }
+            }
 
             return response()->json([
-                'date' => $date->format('Y-m-d'),
                 'practitioner' => [
                     'id' => $practitioner->id,
                     'name' => $practitioner->name,
                 ],
-                'available_slots' => $availableSlots,
-                'working_hours' => $workingHours,
-                'total_slots' => count($availableSlots),
+                'duration_minutes' => $duration,
+                'availability' => $availability,
+                'summary' => [
+                    'total_slots' => $totalSlots,
+                    'available_slots' => $availableSlots,
+                    'occupancy_rate' => $totalSlots > 0 ? round((($totalSlots - $availableSlots) / $totalSlots) * 100, 1) : 0,
+                ],
             ]);
         }catch (\Exception$e){
             return response()->json(['error' => $e->getMessage()]);

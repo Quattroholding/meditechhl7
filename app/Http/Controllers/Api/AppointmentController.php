@@ -863,10 +863,16 @@ class AppointmentController extends Controller
         ]);
     }
 
-    public function checkAvailabilityV1(Request $request, $practitionerId)
+    public function checkAvailabilityV1(Request $request, $appointmentId)
     {
+        $appointment = Appointment::find($appointmentId);
+
+        if (! $appointment) {
+            return response()->json(['message' => 'Cita no encontrada'], 404);
+        }
+
         // Validate the practitioner exists
-        $practitioner = Practitioner::find($practitionerId);
+        $practitioner = Practitioner::find($appointment->practitioner_id);
         if (! $practitioner) {
             return response()->json(['message' => 'Médico no encontrado'], 404);
         }
@@ -914,7 +920,7 @@ class AppointmentController extends Controller
                 $lunchEnd = $workingHours['lunch_end'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_end']) : null;
 
                 // Get existing appointments for this day
-                $existingAppointments = Appointment::where('practitioner_id', $practitionerId)
+                $existingAppointments = Appointment::where('practitioner_id', $practitioner->id)
                     ->whereDate('start', $currentDate->format('Y-m-d'))
                     ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
                     ->get(['start', 'end']);
