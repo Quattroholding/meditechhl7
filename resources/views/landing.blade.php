@@ -22,6 +22,7 @@
                 <li><a href="#como-funciona">COMO FUNCIONA</a></li>
                 <li><a href="#planes">PLANES Y PRECIOS</a></li>
                 <li><a href="#contacto">CONTACTO</a></li>
+                <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
             <button class="search-btn">
                 <img src="{{ asset('landing/images/search-icon.svg') }}" alt="Buscar">

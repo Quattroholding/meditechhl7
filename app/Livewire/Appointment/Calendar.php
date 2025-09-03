@@ -256,13 +256,15 @@ class Calendar extends Component
 
         try {
             $appointment = Appointment::find($appointmentId);
+
             $current_status = $appointment->status;
             if ($appointment) {
 
                 $appointment->update(['status' => $newStatus]);
+
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
-                $this->loadStats();
+                //$this->loadStats();
 
                 if ($current_status == 'proposed' && $newStatus == 'booked') {
                     $appointment->notifyPatientAboutConfirmation();
@@ -276,7 +278,7 @@ class Calendar extends Component
                 }
             }
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al actualizar el estado.');
+            session()->flash('message.error', 'Error al actualizar el estado :' . $e->getMessage());
         }
     }
 

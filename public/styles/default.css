@@ -179,7 +179,7 @@ centered::before, .centered::after {
 }
 
 .data-header {
-    background: linear-gradient(135deg, rgb(12,149,71,1), rgb(12,149,71,0.5));
+    background: linear-gradient(135deg, rgb(1,51,138,1), rgb(0,193,255,1));
     color: white;
     border-radius: 20px;
     padding: 30px;
@@ -268,15 +268,15 @@ centered::before, .centered::after {
         display: flex;
         flex-wrap: wrap;
     }
-    
+
 }
 
 @media (min-width: 526px) and (max-width: 767px) {
-  
+
     .nav-item{
         width: 50%;
     }
-    
+
 }
 @media (max-width: 521px) {
     .nav-item{

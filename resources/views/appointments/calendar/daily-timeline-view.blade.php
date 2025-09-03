@@ -779,7 +779,7 @@
                         @endif
 
                         @if(auth()->user()->can('cancelled',$appModel))
-                            <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'canceled')"  class="action-btn btn-cancel">
+                            <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'cancelled')"  class="action-btn btn-cancel">
                                 ❌ Cancelar
                             </button>
                         @endif

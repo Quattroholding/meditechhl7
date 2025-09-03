@@ -1429,7 +1429,7 @@ textarea.form-control {
 	padding: 10px 15px;
 }
 .login-right .btn-primary:hover {
-	background: linear-gradient(60.39deg,rgb(12,149,71,1),rgb(12,149,71,0.5));
+	background: linear-gradient(60.39deg, rgb(72 58 141), rgb(35 89 209 / 50%));
 	border: 1px solid #00318b;
 }
 .next-sign {
