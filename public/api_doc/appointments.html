@@ -812,6 +812,628 @@ Authorization: Bearer {token}
                     </div>
                 </div>
             </div>
+
+            <!-- API v1 Endpoints -->
+            <h2 style="color: #2d3748; margin: 3rem 0 2rem 0; padding: 1rem; background: #f7fafc; border-left: 4px solid #48bb78; border-radius: 4px;">
+                <i class="fas fa-code"></i> API v1 - Integración Externa
+            </h2>
+
+            <div class="note">
+                <strong>Autenticación API v1:</strong> Estos endpoints requieren un token API válido con los scopes apropiados.
+                <div class="code-block" style="margin-top: 0.5rem;">Authorization: Bearer {api-token}</div>
+            </div>
+
+            <div class="endpoint" id="v1-list-appointments">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/appointments</span>
+                </div>
+
+                <p>Lista todas las citas del sistema con filtros avanzados y paginación. Diseñado para integraciones externas.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Número de página (por defecto: 1)</td>
+                            </tr>
+                            <tr>
+                                <td><code>per_page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Elementos por página (1-100, por defecto: 15)</td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Buscar por paciente, médico o descripción</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por estado: requested, confirmed, booked, arrived, fulfilled, cancelled, no_show</td>
+                            </tr>
+                            <tr>
+                                <td><code>patient_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por ID del paciente</td>
+                            </tr>
+                            <tr>
+                                <td><code>practitioner_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por ID del médico</td>
+                            </tr>
+                            <tr>
+                                <td><code>medical_speciality_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por especialidad médica</td>
+                            </tr>
+                            <tr>
+                                <td><code>date_from</code></td>
+                                <td>date</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Fecha de inicio del filtro (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>date_to</code></td>
+                                <td>date</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Fecha de fin del filtro (YYYY-MM-DD)</td>
+                            </tr>
+                            <tr>
+                                <td><code>order_by</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Ordenar por: start, end, created_at, updated_at, status</td>
+                            </tr>
+                            <tr>
+                                <td><code>order_direction</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Dirección: asc, desc (por defecto: desc)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/appointments?status=booked&date_from=2024-03-01&per_page=10
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "fhir_id": "appointment-abc123",
+            "identifier": "APT-20240301-0001",
+            "status": "booked",
+            "description": "Consulta de seguimiento",
+            "start": "2024-03-15T09:00:00.000000Z",
+            "end": "2024-03-15T09:30:00.000000Z",
+            "minutes_duration": 30,
+            "formatted_date": "15/03/2024",
+            "formatted_time": "09:00 - 09:30",
+            "patient": {
+                "id": 1,
+                "name": "María González",
+                "identifier": "8-123-456",
+                "email": "maria@ejemplo.com",
+                "phone": "+507 6000-1234"
+            },
+            "practitioner": {
+                "id": 1,
+                "name": "Dr. Juan Pérez",
+                "identifier": "8-765-432"
+            },
+            "medical_speciality": {
+                "id": 3,
+                "name": "Cardiología"
+            },
+            "consulting_room": {
+                "id": 1,
+                "name": "Consultorio 101",
+                "location": "Primer piso"
+            },
+            "created_at": "2024-03-01T10:00:00.000000Z",
+            "updated_at": "2024-03-01T10:00:00.000000Z"
+        }
+    ],
+    "meta": {
+        "current_page": 1,
+        "per_page": 10,
+        "total": 1,
+        "last_page": 1,
+        "from": 1,
+        "to": 1,
+        "has_more_pages": false
+    },
+    "links": {
+        "first": "https://ejemplo.com/api/v1/appointments?page=1",
+        "last": "https://ejemplo.com/api/v1/appointments?page=1",
+        "prev": null,
+        "next": null
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-create-appointment">
+                <div class="endpoint-header">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-url">/api/v1/appointments</span>
+                </div>
+
+                <p>Crea una nueva cita médica en el sistema.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+Content-Type: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros del Cuerpo</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>patient_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>ID del paciente</td>
+                            </tr>
+                            <tr>
+                                <td><code>practitioner_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>ID del médico</td>
+                            </tr>
+                            <tr>
+                                <td><code>start</code></td>
+                                <td>datetime</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Fecha y hora de inicio (ISO 8601)</td>
+                            </tr>
+                            <tr>
+                                <td><code>minutes_duration</code></td>
+                                <td>integer</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Duración en minutos (15-480)</td>
+                            </tr>
+                            <tr>
+                                <td><code>service_type</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>Tipo de servicio</td>
+                            </tr>
+                            <tr>
+                                <td><code>medical_speciality_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>ID de la especialidad médica</td>
+                            </tr>
+                            <tr>
+                                <td><code>description</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Descripción adicional</td>
+                            </tr>
+                            <tr>
+                                <td><code>consulting_room_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>ID del consultorio</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+POST /api/v1/appointments
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+Content-Type: application/json
+
+{
+    "patient_id": 1,
+    "practitioner_id": 1,
+    "start": "2024-03-15T09:00:00",
+    "minutes_duration": 30,
+    "service_type": "Consulta General",
+    "medical_speciality_id": 3,
+    "description": "Consulta de seguimiento",
+    "consulting_room_id": 1
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-201">201</span>
+                        <span>Cita creada exitosamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Cita creada exitosamente",
+    "data": {
+        "id": 1,
+        "fhir_id": "appointment-abc123",
+        "identifier": "APT-20240301-0001",
+        "status": "booked",
+        "service_type": "Consulta General",
+        "description": "Consulta de seguimiento",
+        "start": "2024-03-15T09:00:00.000000Z",
+        "end": "2024-03-15T09:30:00.000000Z",
+        "minutes_duration": 30,
+        "patient": {
+            "id": 1,
+            "name": "María González",
+            "identifier": "8-123-456"
+        },
+        "practitioner": {
+            "id": 1,
+            "name": "Dr. Juan Pérez",
+            "identifier": "8-765-432"
+        },
+        "medical_speciality": {
+            "id": 3,
+            "name": "Cardiología"
+        },
+        "consulting_room": {
+            "id": 1,
+            "name": "Consultorio 101"
+        },
+        "created_at": "2024-03-01T10:00:00.000000Z",
+        "updated_at": "2024-03-01T10:00:00.000000Z"
+    }
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-409">409</span>
+                        <span>Conflicto de horario</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "El horario solicitado no está disponible"
+}
+                    </div>
+
+                    <div class="response-codes">
+                        <span class="status-code status-422">422</span>
+                        <span>Datos de validación incorrectos</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Datos de validación incorrectos",
+    "errors": {
+        "start": ["La fecha de inicio debe ser futura"],
+        "patient_id": ["El paciente no existe"]
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-show-appointment">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/appointments/{id}</span>
+                </div>
+
+                <p>Obtiene los detalles de una cita específica.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td>integer</td>
+                                <td>ID de la cita</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/appointments/1
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "data": {
+        "id": 1,
+        "fhir_id": "appointment-abc123",
+        "identifier": "APT-20240301-0001",
+        "status": "booked",
+        "description": "Consulta de seguimiento",
+        "start": "2024-03-15T09:00:00.000000Z",
+        "end": "2024-03-15T09:30:00.000000Z",
+        "minutes_duration": 30,
+        "formatted_date": "15/03/2024",
+        "formatted_time": "09:00 - 09:30",
+        "patient": {
+            "id": 1,
+            "name": "María González",
+            "identifier": "8-123-456",
+            "email": "maria@ejemplo.com",
+            "phone": "+507 6000-1234"
+        },
+        "practitioner": {
+            "id": 1,
+            "name": "Dr. Juan Pérez",
+            "identifier": "8-765-432"
+        },
+        "medical_speciality": {
+            "id": 3,
+            "name": "Cardiología"
+        },
+        "consulting_room": {
+            "id": 1,
+            "name": "Consultorio 101",
+            "location": "Primer piso"
+        },
+        "created_at": "2024-03-01T10:00:00.000000Z",
+        "updated_at": "2024-03-01T10:00:00.000000Z"
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-update-appointment">
+                <div class="endpoint-header">
+                    <span class="method put">PUT</span>
+                    <span class="endpoint-url">/api/v1/appointments/{id}</span>
+                </div>
+
+                <p>Actualiza una cita existente. Solo se actualizan los campos proporcionados.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+Content-Type: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros del Cuerpo (Opcionales)</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>patient_id</code></td>
+                                <td>integer</td>
+                                <td>ID del paciente</td>
+                            </tr>
+                            <tr>
+                                <td><code>practitioner_id</code></td>
+                                <td>integer</td>
+                                <td>ID del médico</td>
+                            </tr>
+                            <tr>
+                                <td><code>start</code></td>
+                                <td>datetime</td>
+                                <td>Fecha y hora de inicio</td>
+                            </tr>
+                            <tr>
+                                <td><code>minutes_duration</code></td>
+                                <td>integer</td>
+                                <td>Duración en minutos (15-480)</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>string</td>
+                                <td>Estado: requested, confirmed, booked, arrived, fulfilled, cancelled, no_show</td>
+                            </tr>
+                            <tr>
+                                <td><code>description</code></td>
+                                <td>string</td>
+                                <td>Descripción</td>
+                            </tr>
+                            <tr>
+                                <td><code>medical_speciality_id</code></td>
+                                <td>integer</td>
+                                <td>ID de la especialidad médica</td>
+                            </tr>
+                            <tr>
+                                <td><code>consulting_room_id</code></td>
+                                <td>integer</td>
+                                <td>ID del consultorio</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+PUT /api/v1/appointments/1
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+Content-Type: application/json
+
+{
+    "status": "confirmed",
+    "description": "Consulta de seguimiento - confirmada"
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "message": "Cita actualizada exitosamente",
+    "data": {
+        // Datos de la cita actualizada (mismo formato que show)
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-delete-appointment">
+                <div class="endpoint-header">
+                    <span class="method delete">DELETE</span>
+                    <span class="endpoint-url">/api/v1/appointments/{id}</span>
+                </div>
+
+                <p>Cancela una cita existente. Utiliza el mismo método que la API Sanctum.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+DELETE /api/v1/appointments/1
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "message": "Cita cancelada exitosamente"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-appointment-availability">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/appointments/{id}/availability</span>
+                </div>
+
+                <p>Verifica la disponibilidad y opciones para una cita específica.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/appointments/1/availability
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "can_cancel": true,
+    "can_reschedule": false,
+    "status": "booked"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>Características de la API v1 para Citas</h4>
+                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
+                    <li><strong>Acceso Completo:</strong> Las integraciones externas pueden gestionar citas de todos los pacientes</li>
+                    <li><strong>Filtros Avanzados:</strong> Múltiples opciones de filtrado por fecha, estado, médico, etc.</li>
+                    <li><strong>Validación de Conflictos:</strong> Verificación automática de disponibilidad antes de crear/actualizar</li>
+                    <li><strong>Estados de Cita:</strong> Soporte completo para todo el flujo de estados de citas médicas</li>
+                    <li><strong>Notificaciones:</strong> Las citas creadas vía API v1 envían notificaciones automáticamente</li>
+                    <li><strong>Integración FHIR:</strong> Todos los datos siguen estándares FHIR para interoperabilidad</li>
+                </ul>
+            </div>
         </div>
     </div>
 

@@ -110,50 +110,55 @@ class PractitionerController extends Controller
 
     public function availability(Request $request, $practitionerId): JsonResponse
     {
-        $request->validate([
-            'date' => 'required|date|after_or_equal:today',
-            'duration' => 'integer|min:15|max:180',
-        ]);
+        try {
+            $request->validate([
+                'date' => 'required|date|after_or_equal:today',
+                'duration' => 'integer|min:15|max:180',
+            ]);
 
-        $practitioner = Practitioner::findOrFail($practitionerId);
-        $date = Carbon::parse($request->date);
-        $duration = (int) ($request->duration ?? 30); // Default 30 minutes
+            $practitioner = Practitioner::findOrFail($practitionerId);
+            $date = Carbon::parse($request->date);
+            $duration = (int) ($request->duration ?? 30); // Default 30 minutes
 
-        // Obtener citas existentes para ese día
-        $existingAppointments = Appointment::where('practitioner_id', $practitionerId)
-            ->whereDate('start', $date->format('Y-m-d'))
-            ->where('status', '!=', 'cancelled')
-            ->orderBy('start')
-            ->get(['start', 'end']);
+            // Obtener citas existentes para ese día
+            $existingAppointments = Appointment::where('practitioner_id', $practitionerId)
+                ->whereDate('start', $date->format('Y-m-d'))
+                ->whereNotIn('status',['cancelled','noshow','entered-in-error'])
+                ->orderBy('start')
+                ->get(['start', 'end']);
 
-        // Horarios de trabajo por defecto (esto debería venir de la configuración del médico)
-        $workingHours = [
-            'start' => '08:00',
-            'end' => '17:00',
-            'lunch_break' => [
-                'start' => '12:00',
-                'end' => '13:00',
-            ],
-        ];
+            // Horarios de trabajo por defecto (esto debería venir de la configuración del médico)
+            $workingHours = [
+                'start' => '08:00',
+                'end' => '17:00',
+                'lunch_break' => [
+                    'start' => '12:00',
+                    'end' => '13:00',
+                ],
+            ];
 
-        // Generar slots disponibles
-        $availableSlots = $this->generateAvailableSlots(
-            $date,
-            $workingHours,
-            $existingAppointments,
-            $duration
-        );
+            // Generar slots disponibles
+            $availableSlots = $this->generateAvailableSlots(
+                $date,
+                $workingHours,
+                $existingAppointments,
+                $duration
+            );
 
-        return response()->json([
-            'date' => $date->format('Y-m-d'),
-            'practitioner' => [
-                'id' => $practitioner->id,
-                'name' => $practitioner->name,
-            ],
-            'available_slots' => $availableSlots,
-            'working_hours' => $workingHours,
-            'total_slots' => count($availableSlots),
-        ]);
+            return response()->json([
+                'date' => $date->format('Y-m-d'),
+                'practitioner' => [
+                    'id' => $practitioner->id,
+                    'name' => $practitioner->name,
+                ],
+                'available_slots' => $availableSlots,
+                'working_hours' => $workingHours,
+                'total_slots' => count($availableSlots),
+            ]);
+        }catch (\Exception$e){
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
     }
 
     private function generateAvailableSlots($date, $workingHours, $existingAppointments, $duration)
