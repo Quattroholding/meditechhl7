@@ -19,7 +19,7 @@ class Create extends Component
 
     public $patient_id;
 
-    public $patients=[];
+    public $patients = [];
 
     public $id_type = 'CC';
 
@@ -110,8 +110,10 @@ class Create extends Component
 
     public function render()
     {
-        $this->client_id =1;
-        if(auth()->user()->getCurrentClient()) $this->client_id = auth()->user()->getCurrentClient()->id;
+        $this->client_id = 1;
+        if (auth()->user()->getCurrentClient()) {
+            $this->client_id = auth()->user()->getCurrentClient()->id;
+        }
 
         // Load primary patients for dependent selection
         $this->loadPrimaryPatients();
@@ -147,16 +149,15 @@ class Create extends Component
 
         $this->patientDontExists = true;
         $this->patientExists = false;
-        $this->patients = array();
+        $this->patients = [];
         $query = DB::table('patients')
             ->whereRaw("(identifier ='".$this->id_number."' or identifier ='".$this->id_number."-SELF' or identifier ='".$this->id_number."-SPOUSE' or identifier ='".$this->id_number."-CHILD' or identifier ='".$this->id_number."-CHILDDISAB')")
             ->get();
 
-        if ($query->count()>0) {
+        if ($query->count() > 0) {
             $this->patientDontExists = false;
             $this->patientExists = true;
             $this->patients = $query->pluck('id');
-
 
         }
     }
@@ -169,13 +170,12 @@ class Create extends Component
             if (! $pc) {
                 PatientClient::create([
                     'client_id' => $this->client_id,
-                    'patient_id' =>$patient_id,
+                    'patient_id' => $patient_id,
                 ]);
             }
         }
 
         session()->flash('message.success', 'Paciente asociado exitosamente.');
-
 
         $this->id_number = null;
         $this->patientExists = false;

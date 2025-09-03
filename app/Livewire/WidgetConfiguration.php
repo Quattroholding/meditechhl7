@@ -8,7 +8,9 @@ use Livewire\Component;
 class WidgetConfiguration extends Component
 {
     public $dashboardType;
+
     public $widgets = [];
+
     public $showModal = false;
 
     public function mount($dashboardType = 'doctor')
@@ -27,13 +29,14 @@ class WidgetConfiguration extends Component
 
         $this->widgets = collect($defaultWidgets)->map(function ($widget, $key) use ($userPreferences) {
             $preference = $userPreferences->get($key);
+
             return [
                 'key' => $key,
                 'name' => $widget['name'],
-                'description' =>  $preference ? $preference->widget_description :  $widget['description'],
+                'description' => $preference ? $preference->widget_description : $widget['description'],
                 'is_visible' => $preference ? $preference->is_visible : true,
                 'order_position' => $preference ? $preference->order_position : $widget['order'],
-                'width' => $preference ? $preference->width :  $widget['width']
+                'width' => $preference ? $preference->width : $widget['width'],
             ];
         })->sortBy('order_position')->values()->toArray();
     }
@@ -41,22 +44,26 @@ class WidgetConfiguration extends Component
     public function toggleWidget($widgetKey)
     {
         $widget = collect($this->widgets)->firstWhere('key', $widgetKey);
-        if (!$widget) return;
+        if (! $widget) {
+            return;
+        }
 
-        $widget['is_visible'] = !$widget['is_visible'];
+        $widget['is_visible'] = ! $widget['is_visible'];
 
         // Update in widgets array
         $this->widgets = collect($this->widgets)->map(function ($w) use ($widgetKey, $widget) {
             return $w['key'] === $widgetKey ? $widget : $w;
         })->toArray();
 
-        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'],$widget['description'], $widget['width']);
+        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['description'], $widget['width']);
     }
 
     public function changeWidgetWidth($widgetKey, $width)
     {
         $widget = collect($this->widgets)->firstWhere('key', $widgetKey);
-        if (!$widget) return;
+        if (! $widget) {
+            return;
+        }
 
         $widget['width'] = $width;
 
@@ -65,7 +72,7 @@ class WidgetConfiguration extends Component
             return $w['key'] === $widgetKey ? $widget : $w;
         })->toArray();
 
-        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'],$widget['description'], $widget['width']);
+        $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['description'], $widget['width']);
     }
 
     public function updateOrder($orderedWidgets)
@@ -73,36 +80,37 @@ class WidgetConfiguration extends Component
         // Update the widgets array with new order
         $this->widgets = collect($orderedWidgets)->map(function ($widget, $index) {
             $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
+
             return [
                 'key' => $widget['key'],
                 'name' => $existingWidget['name'],
                 'description' => $existingWidget['description'],
                 'is_visible' => $widget['is_visible'],
                 'order_position' => $widget['order_position'],
-                'width' => $existingWidget['width'] ?? 'col-lg-6'
+                'width' => $existingWidget['width'] ?? 'col-lg-6',
             ];
         })->toArray();
 
         // Save preferences to database
         foreach ($orderedWidgets as $widget) {
             $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
-            $this->savePreference($widget['key'], $widget['is_visible'], $widget['order_position'],$widget['description'], $existingWidget['width'] ?? 'col-lg-6');
+            $this->savePreference($widget['key'], $widget['is_visible'], $widget['order_position'], $widget['description'], $existingWidget['width'] ?? 'col-lg-6');
         }
     }
 
-    private function savePreference($widgetKey, $isVisible, $orderPosition,$description, $width = 'col-lg-6')
+    private function savePreference($widgetKey, $isVisible, $orderPosition, $description, $width = 'col-lg-6')
     {
         UserWidgetPreference::updateOrCreate(
             [
                 'user_id' => auth()->id(),
                 'dashboard_type' => $this->dashboardType,
-                'widget_name' => $widgetKey
+                'widget_name' => $widgetKey,
             ],
             [
                 'is_visible' => $isVisible,
                 'order_position' => $orderPosition,
                 'width' => $width,
-                'widget_description' => $description
+                'widget_description' => $description,
             ]
         );
     }

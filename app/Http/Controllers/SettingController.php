@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
@@ -45,7 +44,7 @@ class SettingController extends Controller
         $client = Client::findOrFail($client_id);
 
         // Verificar permisos - solo admin o usuarios del cliente pueden acceder
-        if (!auth()->user()->hasRole('admin') && !auth()->user()->clients->contains($client_id)) {
+        if (! auth()->user()->hasRole('admin') && ! auth()->user()->clients->contains($client_id)) {
             abort(403, 'No tienes permisos para acceder a la configuración de este cliente.');
         }
 

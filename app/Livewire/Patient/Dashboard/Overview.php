@@ -6,16 +6,20 @@ use App\Models\Appointment;
 use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\Invoice;
-use App\Models\MedicalHistory;
 use Livewire\Component;
 
 class Overview extends Component
 {
     public $patient;
+
     public $order;
+
     public $isLoading = true;
+
     public $stats = [];
+
     public $vitalSigns = null;
+
     public $nextAppointment = null;
 
     protected $listeners = ['loadData'];
@@ -38,8 +42,9 @@ class Overview extends Component
 
     public function loadStats()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->stats = [];
+
             return;
         }
 
@@ -79,8 +84,9 @@ class Overview extends Component
 
     public function loadVitalSigns()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->vitalSigns = null;
+
             return;
         }
 
@@ -96,8 +102,9 @@ class Overview extends Component
 
     public function loadNextAppointment()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->nextAppointment = null;
+
             return;
         }
 
@@ -109,9 +116,9 @@ class Overview extends Component
             ->first();
     }
 
-    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal','Nueva Cita');
+        $this->dispatch('openAppointmentModal', 'Nueva Cita');
     }
 
     public function render()

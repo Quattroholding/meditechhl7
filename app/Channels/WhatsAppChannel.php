@@ -3,8 +3,8 @@
 namespace App\Channels;
 
 use Illuminate\Notifications\Notification;
-use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Log;
+use Twilio\Rest\Client;
 
 class WhatsAppChannel
 {
@@ -25,14 +25,15 @@ class WhatsAppChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (!$this->client) {
+        if (! $this->client) {
             Log::error('WhatsApp notification failed: Twilio credentials not configured');
+
             return;
         }
 
         $message = $notification->toWhatsApp($notifiable);
 
-        if (!$message) {
+        if (! $message) {
             return;
         }
 
@@ -40,11 +41,12 @@ class WhatsAppChannel
             // Get the WhatsApp phone number from the notifiable model
             $phoneNumber = $this->getPhoneNumber($notifiable);
 
-            if (!$phoneNumber) {
+            if (! $phoneNumber) {
                 Log::warning('WhatsApp notification skipped: No phone number for user', [
                     'user_id' => $notifiable->id ?? null,
-                    'notification' => get_class($notification)
+                    'notification' => get_class($notification),
                 ]);
+
                 return;
             }
 
@@ -60,14 +62,14 @@ class WhatsAppChannel
             Log::info('WhatsApp notification sent successfully', [
                 'user_id' => $notifiable->id ?? null,
                 'phone' => $phoneNumber,
-                'notification' => get_class($notification)
+                'notification' => get_class($notification),
             ]);
 
         } catch (\Exception $e) {
             Log::error('WhatsApp notification failed', [
                 'user_id' => $notifiable->id ?? null,
                 'error' => $e->getMessage(),
-                'notification' => get_class($notification)
+                'notification' => get_class($notification),
             ]);
         }
     }
@@ -88,14 +90,14 @@ class WhatsAppChannel
         // Check for whatsapp_phone first, then fall back to phone
         $phone = $notifiable->whatsapp_phone ?? $notifiable->phone ?? null;
 
-        if (!$phone) {
+        if (! $phone) {
             return null;
         }
 
         // Ensure phone number is in international format
-        if (!str_starts_with($phone, '+')) {
+        if (! str_starts_with($phone, '+')) {
             // Assume Colombian number if no country code
-            $phone = '+507' . ltrim($phone, '0');
+            $phone = '+507'.ltrim($phone, '0');
         }
 
         return $phone;

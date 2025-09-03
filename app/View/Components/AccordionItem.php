@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class AccordionItem extends Component
 {
     public $title;
+
     public $isOpen;
 
     public function __construct($title, $isOpen = false)

@@ -8,36 +8,42 @@ use Livewire\Component;
 
 class DoctorWorkingHoursForm extends Component
 {
-
     public $workingHours = [];
+
     public $star_times = [];
+
     public $end_times = [];
+
     public $clientId;
+
     public $consulting_room_id;
+
     public $branch_id;
 
     public function mount()
     {
-        if(auth()->user()->clients()->first()){
+        if (auth()->user()->clients()->first()) {
             $this->clientId = auth()->user()->clients()->first()->id;
             $client = auth()->user()->clients()->first();
 
             $branch = $client->branches()->first();
-            if($branch) {
+            if ($branch) {
                 $this->branch_id = $branch->id;
                 $room = $branch->consultingRooms()->first();
-                if($room) $this->consulting_room_id = $room->id;
+                if ($room) {
+                    $this->consulting_room_id = $room->id;
+                }
             }
 
         }
-        $days = [__('lunes'), __('martes'),__('miercoles'), __('jueves'), __('viernes'), __('sabado'), __('domingo')];
+        $days = [__('lunes'), __('martes'), __('miercoles'), __('jueves'), __('viernes'), __('sabado'), __('domingo')];
         foreach ($days as $day) {
             $this->workingHours[$day] = [
                 'enabled' => false,
-                //'start' => Carbon::parse('7:00')->format('h:i A'),
-                //'end' =>  Carbon::parse('18:00')->format('h:i A'),
+                // 'start' => Carbon::parse('7:00')->format('h:i A'),
+                // 'end' =>  Carbon::parse('18:00')->format('h:i A'),
                 'start' => '08:00',
-                'end' =>  '18:00',
+                'end' => '18:00',
             ];
         }
 
@@ -61,9 +67,9 @@ class DoctorWorkingHoursForm extends Component
             if ($config['enabled']) {
                 UserWorkingHour::create([
                     'user_id' => auth()->id(),
-                    'client_id'=> $this->clientId,
+                    'client_id' => $this->clientId,
                     'branch_id' => $this->branch_id,
-                    'consulting_room_id'=> $this->consulting_room_id,
+                    'consulting_room_id' => $this->consulting_room_id,
                     'day_of_week' => $day,
                     'start_time' => Carbon::parse($config['start'])->format('H:i'),
                     'end_time' => Carbon::parse($config['end'])->format('H:i'),
@@ -74,14 +80,17 @@ class DoctorWorkingHoursForm extends Component
         session()->flash('message', 'Horario actualizado con éxito.');
     }
 
-    public function changeEnabled($day){
+    public function changeEnabled($day)
+    {
 
-        $this->workingHours[$day]['enabled']=$this->workingHours[$day]['enabled'];
+        $this->workingHours[$day]['enabled'] = $this->workingHours[$day]['enabled'];
     }
 
-    public function setStartDayTime($day){
-        $this->workingHours[$day]['start']=$this->workingHours[$day]['start'];
+    public function setStartDayTime($day)
+    {
+        $this->workingHours[$day]['start'] = $this->workingHours[$day]['start'];
     }
+
     public function render()
     {
         return view('livewire.settings.doctor-working-hours-form');

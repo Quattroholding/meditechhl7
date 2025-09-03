@@ -13,6 +13,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     public function __construct(
@@ -24,12 +25,12 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
     public function via($notifiable)
     {
         $channels = ['mail', 'database'];
-        
+
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
             $channels[] = \App\Channels\WhatsAppChannel::class;
         }
-        
+
         return $channels;
     }
 
@@ -45,7 +46,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             : 'Cita Médica Confirmada';
 
         return (new MailMessage)
-            ->subject($subject . ' - ' . $clinicName)
+            ->subject($subject.' - '.$clinicName)
             ->view('emails.appointment-confirmed', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -89,8 +90,8 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'comment' => $this->appointment->comment,
             'patient_instruction' => $this->appointment->patient_instruction,
             'message' => $wasDateChanged
-                ? 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido reprogramada y confirmada.'
-                : 'Su cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido confirmada.',
+                ? 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido reprogramada y confirmada.'
+                : 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido confirmada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }
@@ -120,11 +121,11 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
         $message .= "🕐 *Hora:* {$confirmedDate->format('H:i a')}\n";
         $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
         $message .= "🏢 *Clínica:* {$clinicName}\n";
-        
+
         if ($this->appointment->consultingRoom->branch->name ?? null) {
             $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
         }
-        
+
         if ($this->appointment->consultingRoom->name ?? null) {
             $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
         }
@@ -138,7 +139,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
         }
 
         $message .= "\nPor favor llegue 15 minutos antes de su cita.\n";
-        $message .= "¡Esperamos verle pronto! 😊";
+        $message .= '¡Esperamos verle pronto! 😊';
 
         return $message;
     }
@@ -152,7 +153,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'appointment_id' => $this->appointment->id,
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

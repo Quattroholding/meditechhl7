@@ -1,0 +1,31 @@
+IMAGES NEEDED FOR THE LANDING PAGE:
+
+Please add the following images to this directory (/public/landing/images/):
+
+HEADER:
+- logo.png - Company logo for the header
+- search-icon.png - Small search icon for the search button
+
+HERO SECTION:
+- dna-hand.png - Main hero image showing DNA strand in a hand (futuristic/medical theme)
+
+WHAT IS SECTION:
+- medical-records.png - Image representing electronic medical records
+- devices.png - Image showing multiple devices (PC, tablet, smartphone)
+- security.png - Image representing security and compliance
+
+TARGET AUDIENCE:
+- healthcare-professionals.png - Image of healthcare professionals
+- clinics-centers.png - Image representing clinics and medical centers
+- hospitals-networks.png - Image of hospitals and healthcare networks
+
+KEY FEATURES:
+- digital-records.png - Icon for digital records functionality
+- smart-scheduling.png - Icon for smart scheduling
+- compliance-security.png - Icon for compliance and security
+- reports-metrics.png - Icon for reports and metrics
+- telemedicine.png - Icon for telemedicine
+- integration.png - Icon for integration capabilities
+
+All images should be optimized for web use (preferably PNG format with transparent backgrounds for icons, JPG for photos).
+The style is modern, medical/healthcare themed with blue and teal color schemes.

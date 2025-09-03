@@ -4,11 +4,10 @@ namespace Database\Factories;
 
 use App\Models\Branch;
 use App\Models\Client;
+use App\Models\Package;
 use App\Models\User;
 use App\Models\UserClient;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Client>
@@ -25,11 +24,12 @@ class ClientFactory extends Factory
         return [
             'name' => fake()->company(),
             'ruc' => fake()->randomNumber(7),
-            'dv' => fake()->numberBetween(10,99),
-            'long_name' =>fake()->name(),
+            'dv' => fake()->numberBetween(10, 99),
+            'long_name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'whatsapp' => fake()->phoneNumber,
-            'logo'=>fake()->imageUrl(),
+            'logo' => fake()->imageUrl(),
+            'package_id' => Package::ramdom()->first()->id,
         ];
     }
 
@@ -47,13 +47,13 @@ class ClientFactory extends Factory
             $user = User::factory()
                 ->asAdminClient()
                 ->create([
-                    'first_name' =>$givenName,
+                    'first_name' => $givenName,
                     'last_name' => $last_name,
-                    'email' => substr($givenName,0,1).$last_name.'@clinica.com',
-                    'default_client_id'=>$c->id,
+                    'email' => substr($givenName, 0, 1).$last_name.'@clinica.com',
+                    'default_client_id' => $c->id,
                 ]);
 
-            Branch::factory()->count(1)->create(['client_id'=>$c->id]);
+            Branch::factory()->count(1)->create(['client_id' => $c->id]);
 
             UserClient::create([
                 'user_id' => $user->id,

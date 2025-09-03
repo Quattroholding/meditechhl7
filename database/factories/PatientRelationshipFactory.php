@@ -41,12 +41,12 @@ class PatientRelationshipFactory extends Factory
         $familyName = $this->faker->lastName;
 
         return [
-            'fhir_id' => 'related-person-' . Str::uuid(),
+            'fhir_id' => 'related-person-'.Str::uuid(),
             'patient_id' => \App\Models\Patient::factory(),
             'related_patient_id' => null, // Will be set when creating actual patient relationships
             'identifier' => $this->faker->unique()->regexify('[0-9]{8}-[0-9]{4}'),
             'identifier_type' => $this->faker->randomElement(['CC', 'CE', 'PA']),
-            'name' => $givenName . ' ' . $familyName,
+            'name' => $givenName.' '.$familyName,
             'given_name' => $givenName,
             'family_name' => $familyName,
             'gender' => $gender,

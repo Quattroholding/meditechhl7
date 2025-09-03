@@ -49,7 +49,7 @@ return new class extends Migration
             $table->decimal('total_net', 12, 2)->default(0.00)->comment('Total payable amount'); // Total payable amount
 
             // Payment information
-            $table->enum('payment_status', ['paid', 'partial', 'pending', 'overdue', 'cancelled','unpaid'])->default('pending');
+            $table->enum('payment_status', ['paid', 'partial', 'pending', 'overdue', 'cancelled', 'unpaid'])->default('pending');
             $table->decimal('amount_paid', 12, 2)->default(0.00);
             $table->decimal('amount_due', 12, 2)->default(0.00);
             $table->date('payment_date')->nullable();

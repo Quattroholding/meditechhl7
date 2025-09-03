@@ -8,9 +8,13 @@ use Livewire\Component;
 class RecentConsultations extends Component
 {
     public $patient;
+
     public $limit = 5;
+
     public $order;
+
     public $isLoading = true;
+
     public $recentConsultations = [];
 
     protected $listeners = ['loadData'];
@@ -32,8 +36,9 @@ class RecentConsultations extends Component
 
     public function loadRecentConsultations()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->recentConsultations = collect();
+
             return;
         }
 

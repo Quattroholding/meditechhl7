@@ -317,7 +317,7 @@ class Invoice extends BaseModel
     {
         $totalPatientResponsibility = $this->patient_copay_amount + $this->patient_deductible_amount + $this->patient_coinsurance_amount;
         $totalPatientPaid = $this->patient_paid_amount;
-        
+
         return $totalPatientResponsibility - $totalPatientPaid;
     }
 

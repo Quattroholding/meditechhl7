@@ -10,20 +10,21 @@ use Illuminate\Notifications\Messages\MailMessage;
 class ResetPasswordNotification extends ResetPassword implements ShouldQueue
 {
     use Queueable;
+
     /**
      * Get the mail representation of the notification.
      */
     public function toMail($notifiable): MailMessage
     {
         $expireTime = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
-        $expireTimeInMinutes = $expireTime . ' minutos';
+        $expireTimeInMinutes = $expireTime.' minutos';
 
         return (new MailMessage)
-            ->subject('Restablecer Contraseña - ' . config('app.name'))
+            ->subject('Restablecer Contraseña - '.config('app.name'))
             ->view('emails.reset-password', [
                 'actionUrl' => $this->resetUrl($notifiable),
                 'expireTime' => $expireTimeInMinutes,
-                'user' => $notifiable
+                'user' => $notifiable,
             ]);
     }
 

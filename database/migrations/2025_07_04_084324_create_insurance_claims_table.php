@@ -37,7 +37,7 @@ return new class extends Migration
             $table->json('procedure_codes')->nullable(); // CPT codes
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->index(['status', 'claim_date']);
             $table->index(['patient_insurance_policy_id', 'status']);
         });

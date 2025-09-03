@@ -8,12 +8,19 @@ use Livewire\Component;
 class CreateForm extends Component
 {
     public $generic_name = '';
+
     public $home_name = '';
+
     public $ndc_code = '';
+
     public $type = '';
+
     public $mgs = '';
+
     public $mgs_type = '';
+
     public $active = 1;
+
     public $narcotic = 0;
 
     protected $rules = [
@@ -24,7 +31,7 @@ class CreateForm extends Component
         'mgs' => 'required|string|max:50',
         'mgs_type' => 'required|string|max:50',
         'active' => 'required',
-        'narcotic' => 'required'
+        'narcotic' => 'required',
     ];
 
     protected $messages = [
@@ -32,7 +39,7 @@ class CreateForm extends Component
         'type.required' => 'El tipo de medicamento es obligatorio.',
         'mgs.required' => 'La dosis es obligatoria.',
         'mgs_type.required' => 'El tipo de dosis es obligatorio.',
-        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.'
+        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.',
     ];
 
     public function render()
@@ -56,7 +63,7 @@ class CreateForm extends Component
                 'active' => $this->active,
                 'client_id' => auth()->user()->getCurrentClient()->id,
                 'user_id' => auth()->user()->id,
-                'source'=>'CUSTOM',
+                'source' => 'CUSTOM',
             ];
 
             Medicine::create($medicineData);
@@ -66,7 +73,7 @@ class CreateForm extends Component
             return redirect()->route('medicine.index');
 
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al guardar el medicamento: ' . $e->getMessage());
+            session()->flash('message.error', 'Error al guardar el medicamento: '.$e->getMessage());
         }
     }
 

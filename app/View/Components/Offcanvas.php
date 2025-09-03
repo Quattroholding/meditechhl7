@@ -1,4 +1,5 @@
 <?php
+
 // app/View/Components/Offcanvas.php
 
 namespace App\View\Components;
@@ -8,10 +9,15 @@ use Illuminate\View\Component;
 class Offcanvas extends Component
 {
     public $id;
+
     public $title;
+
     public $position;
+
     public $backdrop;
+
     public $scroll;
+
     public $size;
 
     public function __construct(
@@ -41,7 +47,7 @@ class Offcanvas extends Component
             'top' => 'offcanvas-top',
             'right' => 'offcanvas-end',
             'bottom' => 'offcanvas-bottom',
-            'left' => 'offcanvas-start'
+            'left' => 'offcanvas-start',
         ];
 
         return $classes[$this->position] ?? 'offcanvas-end';
@@ -54,14 +60,14 @@ class Offcanvas extends Component
                 'sm' => 'offcanvas-size-sm-vertical',
                 'md' => 'offcanvas-size-md-vertical',
                 'lg' => 'offcanvas-size-lg-vertical',
-                'xl' => 'offcanvas-size-xl-vertical'
+                'xl' => 'offcanvas-size-xl-vertical',
             ];
         } else {
             $sizes = [
                 'sm' => 'offcanvas-size-sm',
                 'md' => 'offcanvas-size-md',
                 'lg' => 'offcanvas-size-lg',
-                'xl' => 'offcanvas-size-xl'
+                'xl' => 'offcanvas-size-xl',
             ];
         }
 

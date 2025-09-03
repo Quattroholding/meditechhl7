@@ -113,7 +113,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'settings.create_working_hour_user', 'description' => 'Configurar horario laboral', 'module' => 'configuracones'],
             ['name' => 'settings.signature_and_seal', 'description' => 'Configurar firma y sello digital de medico', 'module' => 'configuracones'],
 
-            //Service Request
+            // Service Request
             ['name' => 'service_request.view', 'description' => 'Ver lista de Solicitud de Examenes', 'module' => 'examenes'],
             ['name' => 'service_request.upload_result', 'description' => 'Subir Resultado', 'module' => 'examenes'],
             // Dashboard access

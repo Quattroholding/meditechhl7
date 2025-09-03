@@ -1,5 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
+        @include('partials.message')
         <div class="card card-table show-entire">
             <div class="card-body">
                 <!-- Table Header -->
@@ -76,6 +77,13 @@
                                                 <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endcan
+                                        @if(auth()->user()->hasRole('admin') && !$practitioner->user_id)
+                                            <button wire:click="createUser({{ $practitioner->id }})"
+                                                    class="btn btn-warning btn-sm"
+                                                    title="Crear usuario">
+                                                <i class="fa-solid fa-user-plus m-r-5"></i>
+                                            </button>
+                                        @endif
                                         {{--}}@can('practitioners.delete')
                                             <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_practitioner" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                 <i class="fa fa-trash-alt m-r-5"></i>

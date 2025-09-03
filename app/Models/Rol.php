@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rol extends Model
 {
-    protected $table='roles';
+    protected $table = 'roles';
 
     /**
      * The "booted" method of the model.
      */
     protected static function booted(): void
     {
-        static::addGlobalScope(new RolScope());
+        static::addGlobalScope(new RolScope);
     }
 }

@@ -12,12 +12,17 @@ class DataTable extends Component
     use WithPagination;
 
     public $search = '';
+
     public $sortField = 'id';
+
     public $sortDirection = 'desc';
+
     public $pagination = 10;
 
     public $show_create = true;
+
     public $showModal = false;
+
     public $modalTitle = 'Usuario';
 
     protected $queryString = [
@@ -41,38 +46,38 @@ class DataTable extends Component
         $this->resetPage();
     }
 
-   /*public function activateUser($userId)
-    {
-        try {
-            $user = User::findOrFail($userId);
-            
-            $user->active = true;
-            $user->save();
-            // Mensaje de éxito
-            session()->flash('message.success', 'Usuario activado exitosamente');
-        } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al activar el usuario');
-        }
-    }*/
+    /*public function activateUser($userId)
+     {
+         try {
+             $user = User::findOrFail($userId);
+
+             $user->active = true;
+             $user->save();
+             // Mensaje de éxito
+             session()->flash('message.success', 'Usuario activado exitosamente');
+         } catch (\Exception $e) {
+             session()->flash('message.error', 'Error al activar el usuario');
+         }
+     }*/
 
     public function render()
     {
-        $data = User::when(auth()->user()->hasRole('admin client') or auth()->user()->hasRole('doctor'),function ($q){
-            $q->whereHas('clients',function ($q2){
-                $q2->whereIn('user_clients.client_id',auth()->user()->clients()->pluck('client_id'));
+        $data = User::when(auth()->user()->hasRole('admin client') or auth()->user()->hasRole('doctor'), function ($q) {
+            $q->whereHas('clients', function ($q2) {
+                $q2->whereIn('user_clients.client_id', auth()->user()->clients()->pluck('client_id'));
             });
         })
-        //->whereDoesntHave('practitioner')
-        ->whereDoesntHave('patient')
-        ->when($this->search, function (Builder $query) {
-            $query->where(function ($q) {
-                $q->orWhere('first_name', 'like', '%' . $this->search . '%');
-                $q->orWhere('last_name', 'like', '%' . $this->search . '%');
-                $q->orWhere('email', 'like', '%' . $this->search . '%');
-            });
-        })
-        ->orderBy($this->sortField, $this->sortDirection)
-        ->paginate($this->pagination);
+        // ->whereDoesntHave('practitioner')
+            ->whereDoesntHave('patient')
+            ->when($this->search, function (Builder $query) {
+                $query->where(function ($q) {
+                    $q->orWhere('first_name', 'like', '%'.$this->search.'%');
+                    $q->orWhere('last_name', 'like', '%'.$this->search.'%');
+                    $q->orWhere('email', 'like', '%'.$this->search.'%');
+                });
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->pagination);
 
         return view('livewire.user.data-table', ['data' => $data]);
 

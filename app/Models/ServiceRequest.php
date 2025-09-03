@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -95,7 +94,7 @@ class ServiceRequest extends BaseModel
         }
 
         // Si es borrador y no tiene estado específico, activar automáticamente
-        if ($this->status === 'draft' || !$this->status) {
+        if ($this->status === 'draft' || ! $this->status) {
             return 'active';
         }
 
@@ -107,7 +106,7 @@ class ServiceRequest extends BaseModel
      */
     public function changeStatusTo($newStatus, $reason = null, $changeType = 'manual', $userId = null)
     {
-        if (!$this->isValidTransition($this->status, $newStatus)) {
+        if (! $this->isValidTransition($this->status, $newStatus)) {
             throw new \InvalidArgumentException(__('service_request.invalid_status_transition'));
         }
 
@@ -148,10 +147,10 @@ class ServiceRequest extends BaseModel
             'revoked' => ['entered-in-error'],
             'completed' => ['entered-in-error'],
             'entered-in-error' => [],
-            'unknown' => ['draft', 'active', 'entered-in-error']
+            'unknown' => ['draft', 'active', 'entered-in-error'],
         ];
 
-        if (!$fromStatus) {
+        if (! $fromStatus) {
             return in_array($toStatus, ['draft', 'active']);
         }
 

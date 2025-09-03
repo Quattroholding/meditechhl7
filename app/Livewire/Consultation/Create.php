@@ -8,20 +8,24 @@ use App\Models\EncounterSection;
 use App\Models\EncounterTemplate;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Create extends Component
 {
     public $encounter_id;
+
     public $encounter;
+
     public $patient;
+
     public $appointment;
 
     public $encounter_sections;
+
     public $secciones;
 
-    public function mount(){
+    public function mount()
+    {
         $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
 
         if ($encounter_sections_user->count() > 0) {

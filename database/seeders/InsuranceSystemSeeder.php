@@ -3,14 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Client;
+use App\Models\Encounter;
+use App\Models\InsuranceClaim;
 use App\Models\InsuranceCompany;
+use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Patient;
 use App\Models\PatientInsurancePolicy;
-use App\Models\Invoice;
-use App\Models\InsuranceClaim;
-use App\Models\InvoicePayment;
-use App\Models\Encounter;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InsuranceSystemSeeder extends Seeder
@@ -24,19 +23,19 @@ class InsuranceSystemSeeder extends Seeder
 
         // Get existing clients
         $clients = Client::all();
-        
+
         if ($clients->isEmpty()) {
             $this->command->warn('No clients found. Creating a test client...');
             $client = Client::factory()->create([
                 'name' => 'Centro Médico Demo',
-                'code' => 'CMD-001'
+                'code' => 'CMD-001',
             ]);
             $clients = collect([$client]);
         }
 
         foreach ($clients as $client) {
             $this->command->info("Creating insurance data for client: {$client->name}");
-            
+
             // Create insurance companies for this client
             $insuranceCompanies = InsuranceCompany::factory()
                 ->count(5)
@@ -44,13 +43,13 @@ class InsuranceSystemSeeder extends Seeder
                 ->create(['client_id' => $client->id]);
 
             // Get patients for this client
-            $patients = Patient::whereHas('clients', function($query) use ($client) {
+            $patients = Patient::whereHas('clients', function ($query) use ($client) {
                 $query->where('client_id', $client->id);
             })->limit(20)->get();
 
             if ($patients->isEmpty()) {
                 $this->command->warn("No patients found for client {$client->name}. Creating test patients...");
-                
+
                 // Create patients manually to avoid factory issues
                 $patients = collect();
                 for ($i = 0; $i < 10; $i++) {
@@ -87,7 +86,7 @@ class InsuranceSystemSeeder extends Seeder
 
                     // Create encounters and invoices for patients with insurance
                     $encounters = Encounter::where('patient_id', $patient->id)->limit(3)->get();
-                    
+
                     if ($encounters->isEmpty()) {
                         $encounters = collect();
                         for ($j = 0; $j < 2; $j++) {
@@ -181,8 +180,8 @@ class InsuranceSystemSeeder extends Seeder
             'Patient Payments' => InvoicePayment::patientPayments()->count(),
         ];
 
-        $this->command->table(['Item', 'Count'], 
-            collect($stats)->map(fn($count, $item) => [$item, $count])->toArray()
+        $this->command->table(['Item', 'Count'],
+            collect($stats)->map(fn ($count, $item) => [$item, $count])->toArray()
         );
     }
 }

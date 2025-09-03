@@ -10,11 +10,11 @@ class Allergy extends Model
     protected $fillable = [
         'medical_history_id', 'code', 'substance', 'type', 'category',
         'criticality', 'reaction_severity', 'reaction_manifestation',
-        'reaction_description', 'reaction_onset', 'note'
+        'reaction_description', 'reaction_onset', 'note',
     ];
 
     protected $casts = [
-        'reaction_onset' => 'date'
+        'reaction_onset' => 'date',
     ];
 
     // Relaciones

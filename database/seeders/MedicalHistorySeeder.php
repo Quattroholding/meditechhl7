@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\MedicalHistory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MedicalHistorySeeder extends Seeder
@@ -13,7 +12,7 @@ class MedicalHistorySeeder extends Seeder
      */
     public function run(): void
     {
-      MedicalHistory::factory()
+        MedicalHistory::factory()
             ->count(3)
             ->state(['category' => 'social-history'])
             ->create();

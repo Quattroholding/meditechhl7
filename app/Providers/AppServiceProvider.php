@@ -32,13 +32,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-       //Paginator::useTailwind();
-       Appointment::observe(AppointmentObserver::class);
-       Encounter::observe(EncounterObserver::class);
-       User::observe(UserObserver::class);
-       Gate::policy(Appointment::class,AppointmentPolicy::class);
-       Gate::policy(Patient::class,PatientPolicy::class);
-       Gate::policy(Encounter::class,ConsultationPolicy::class);
-       Gate::policy(User::class,UserPolicy::class);
+        // Paginator::useTailwind();
+        Appointment::observe(AppointmentObserver::class);
+        Encounter::observe(EncounterObserver::class);
+        User::observe(UserObserver::class);
+        Gate::policy(Appointment::class, AppointmentPolicy::class);
+        Gate::policy(Patient::class, PatientPolicy::class);
+        Gate::policy(Encounter::class, ConsultationPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
     }
 }

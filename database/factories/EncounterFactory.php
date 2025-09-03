@@ -1,23 +1,19 @@
 <?php
+
 namespace Database\Factories;
 
-use App\Models\{Condition,
-    CptCode,
-    Encounter,
-    MedicalSpeciality,
-    Medicine,
-    Patient,
-    Practitioner,
-    Appointment,
-    ClinicalObservationType,
-    Medication,
-    PresentIllness,
-    PresentIllnesType,
-    Procedure,
-    MedicationRequest,
-    Referral,
-    ServiceCatalog,
-    ChargeItem};
+use App\Models\Appointment;
+use App\Models\ChargeItem;
+use App\Models\ClinicalObservationType;
+use App\Models\Condition;
+use App\Models\CptCode;
+use App\Models\Encounter;
+use App\Models\MedicalSpeciality;
+use App\Models\Medicine;
+use App\Models\Practitioner;
+use App\Models\PresentIllnesType;
+use App\Models\Procedure;
+use App\Models\ServiceCatalog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EncounterFactory extends Factory
@@ -26,30 +22,32 @@ class EncounterFactory extends Factory
 
     public function definition()
     {
-        $appointment = Appointment::whereIn('status',['fulfilled'])->inRandomOrder()->limit(1)->first();
+        $appointment = Appointment::whereIn('status', ['fulfilled'])->inRandomOrder()->limit(1)->first();
 
         $startDate = $this->faker->dateTimeBetween($appointment->end, '+30 days');
         // Duración de la cita entre 15 y 60 minutos
         $duration = $this->faker->numberBetween(15, 60);
         $endDate = (clone $startDate)->modify("+{$duration} minutes");
 
-        $type ='4525004'; // consulta de medicina general
-        if($appointment->medical_speciality_id <> '50')   $type ='26172008'; // consulta de especialidad
+        $type = '4525004'; // consulta de medicina general
+        if ($appointment->medical_speciality_id != '50') {
+            $type = '26172008';
+        } // consulta de especialidad
 
         return [
-            'fhir_id' => 'encounter-' . $this->faker->uuid(),
+            'fhir_id' => 'encounter-'.$this->faker->uuid(),
             'patient_id' => $appointment->patient_id,
             'practitioner_id' => $appointment->practitioner_id,
             'appointment_id' => $appointment->id,
-            'identifier' => 'ENC-' . $this->faker->unique()->numerify('#######'),
+            'identifier' => 'ENC-'.$this->faker->unique()->numerify('#######'),
             'status' => $this->faker->randomElement(['planned', 'arrived', 'in-progress', 'finished', 'cancelled']),
             'class' => $this->faker->randomElement(['AMB', 'EMER', 'FLD', 'HH', 'IMP']),
             'type' => $type,
             'priority' => $this->faker->randomElement(['routine', 'urgent', 'asap', 'stat']),
-            'reason' => $this->faker->sentence(), //CHIEF COMPLAINT
+            'reason' => $this->faker->sentence(), // CHIEF COMPLAINT
             'start' => $startDate,
             'end' => $endDate,
-            'medical_speciality_id'=>$appointment->medical_speciality_id,
+            'medical_speciality_id' => $appointment->medical_speciality_id,
         ];
     }
 
@@ -121,16 +119,17 @@ class EncounterFactory extends Factory
             }
         });
     }
+
     public function withVitalSigns($count = 3)
     {
-        return $this->afterCreating(function (Encounter $encounter) use ($count) {
+        return $this->afterCreating(function (Encounter $encounter) {
             $vitalSignTypes = ClinicalObservationType::vitalSigns()->get();
 
             foreach ($vitalSignTypes as $type) {
                 $value = $this->generateVitalSignValue($type);
 
                 $encounter->vitalSigns()->create([
-                    'fhir_id' => 'observation-' . $this->faker->uuid(),
+                    'fhir_id' => 'observation-'.$this->faker->uuid(),
                     'code' => $type->code,
                     'status' => 'final',
                     'category' => 'vital-signs',
@@ -154,11 +153,11 @@ class EncounterFactory extends Factory
                 $findings = $this->generateExamFindings($type);
 
                 $encounter->physicalExams()->create([
-                    'fhir_id' => 'observation-' . $this->faker->uuid(),
+                    'fhir_id' => 'observation-'.$this->faker->uuid(),
                     'code' => $type->code,
                     'status' => 'final',
                     'category' => 'exam',
-                    'description' => $type->name . ' realizado durante la consulta',
+                    'description' => $type->name.' realizado durante la consulta',
                     'finding' => $findings,
                     'effective_date' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
                     'patient_id' => $encounter->patient_id,
@@ -175,19 +174,19 @@ class EncounterFactory extends Factory
             $location = PresentIllnesType::whereType('location')->inRandomOrder()->limit(1)->first();
             $severity = PresentIllnesType::whereType('severity')->inRandomOrder()->limit(1)->first();
             $timing = PresentIllnesType::whereType('timing')->inRandomOrder()->limit(1)->first();
-            $duration= PresentIllnesType::whereType('duration')->inRandomOrder()->limit(1)->first();
+            $duration = PresentIllnesType::whereType('duration')->inRandomOrder()->limit(1)->first();
 
             $encounter->presentIllnesses()->create([
-                'fhir_id' => 'condition-' . $this->faker->uuid(),
+                'fhir_id' => 'condition-'.$this->faker->uuid(),
                 'description' => $this->faker->paragraph(1),
-                'location' =>$location->value,
+                'location' => $location->value,
                 'severity' => $severity->value,
                 'duration' => $duration->value,
-                'timing' =>$timing->value,
+                'timing' => $timing->value,
                 'onset' => $this->faker->randomElement(['sudden', 'acute', 'gradual']),
-                'aggravating_factors' =>  $this->faker->paragraph(3),
-                'alleviating_factors' =>  $this->faker->paragraph(3),
-                'associated_symptoms' =>  $this->faker->paragraph(3),
+                'aggravating_factors' => $this->faker->paragraph(3),
+                'alleviating_factors' => $this->faker->paragraph(3),
+                'associated_symptoms' => $this->faker->paragraph(3),
                 'patient_id' => $encounter->patient_id,
                 'practitioner_id' => $encounter->practitioner_id,
             ]);
@@ -202,9 +201,9 @@ class EncounterFactory extends Factory
                 $examTypes = CptCode::inRandomOrder()->limit(1)->first();
 
                 $encounter->procedures()->create([
-                    'fhir_id' => 'procedure-' . $this->faker->uuid(),
+                    'fhir_id' => 'procedure-'.$this->faker->uuid(),
                     'code' => $examTypes->code,
-                    'identifier'=>$examTypes->type,
+                    'identifier' => $examTypes->type,
                     'status' => $this->faker->randomElement(['preparation', 'in-progress', 'not-done', 'completed']),
                     'performed_date' => $this->faker->dateTimeBetween($encounter->start, $encounter->end),
                     'reason' => $this->faker->sentence(),
@@ -223,26 +222,26 @@ class EncounterFactory extends Factory
                 $examTypes = CptCode::inRandomOrder()->limit(1)->first();
 
                 $encounter->serviceRequests()->create([
-                    'fhir_id' => 'servicerequest-' . $this->faker->uuid(),
+                    'fhir_id' => 'servicerequest-'.$this->faker->uuid(),
                     'patient_id' => $encounter->patient_id,
                     'practitioner_id' => $encounter->practitioner_id,
                     'status' => $this->faker->randomElement(['draft', 'active', 'on-hold', 'completed']),
                     'intent' => $this->faker->randomElement(['order', 'original-order', 'reflex-order']),
                     'priority' => $this->faker->randomElement(['routine', 'urgent', 'asap', 'stat']),
                     'do_not_perform' => $this->faker->boolean(10),
-                    'code' =>$examTypes->code,
-                    'service_type'=>$examTypes->type,
+                    'code' => $examTypes->code,
+                    'service_type' => $examTypes->type,
                     'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
                     'code_display' => $this->faker->sentence(3),
                     'quantity' => $this->faker->numberBetween(1, 3),
-                    'occurrence_start' =>$encounter->start,
+                    'occurrence_start' => $encounter->start,
                     'body_site' => [
                         'code' => $this->faker->randomElement(['HEAD', 'CHEST', 'ABDOMEN']),
-                        'display' => $this->faker->word
+                        'display' => $this->faker->word,
                     ],
                     'note' => $this->faker->optional()->sentence,
-                    'authored_on' =>$encounter->start,
-                    'last_updated' =>$encounter->start,
+                    'authored_on' => $encounter->start,
+                    'last_updated' => $encounter->start,
                 ]);
             }
         });
@@ -263,15 +262,15 @@ class EncounterFactory extends Factory
                 $dosage_instruction = $this->generateDosageInstruction();
 
                 $medArr = [
-                    'fhir_id' => 'medicationrequest-' . $this->faker->uuid(),
-                    'identifier' => 'RX-' . $this->faker->unique()->numerify('#######'),
+                    'fhir_id' => 'medicationrequest-'.$this->faker->uuid(),
+                    'identifier' => 'RX-'.$this->faker->unique()->numerify('#######'),
                     'status' => 'active',
                     'intent' => 'order',
                     'medication_id' => $medication->id,
-                    'dosage_instruction' =>$dosage_instruction,
-                    'dosage_text'=>$dosage_instruction['text'],
-                    'quantity'=> $this->faker->numberBetween(1, 30),
-                    'refills'=> $this->faker->numberBetween(1, 5),
+                    'dosage_instruction' => $dosage_instruction,
+                    'dosage_text' => $dosage_instruction['text'],
+                    'quantity' => $this->faker->numberBetween(1, 30),
+                    'refills' => $this->faker->numberBetween(1, 5),
                     'valid_from' => now(),
                     'valid_to' => now()->addDays($this->faker->numberBetween(7, 30)),
                     'patient_id' => $encounter->patient_id,
@@ -287,11 +286,11 @@ class EncounterFactory extends Factory
         return $this->afterCreating(function (Encounter $encounter) {
 
             $specialty = MedicalSpeciality::inRandomOrder()->limit(1)->first();
-            $referredTo = Practitioner::factory()->specialist($specialty->name,$specialty->id);
+            $referredTo = Practitioner::factory()->specialist($specialty->name, $specialty->id);
 
             $encounter->referrals()->create([
-                'fhir_id' => 'servicerequest-' . $this->faker->uuid(),
-                'identifier' => 'REF-' . $this->faker->unique()->numerify('#######'),
+                'fhir_id' => 'servicerequest-'.$this->faker->uuid(),
+                'identifier' => 'REF-'.$this->faker->unique()->numerify('#######'),
                 'status' => 'active',
                 'intent' => 'order',
                 'code' => $specialty->id,
@@ -355,16 +354,16 @@ class EncounterFactory extends Factory
                 $chargeItemClientId = $clientId ?? $service->client_id;
 
                 ChargeItem::create([
-                    'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                    'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                    'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                    'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                     'status' => 'billable',
                     'code' => [
                         'text' => $service->name,
                         'coding' => [[
                             'code' => $service->cpt_code,
                             'system' => 'http://www.ama-assn.org/go/cpt',
-                            'display' => $service->name
-                        ]]
+                            'display' => $service->name,
+                        ]],
                     ],
                     'patient_id' => $encounter->patient_id,
                     'encounter_id' => $encounter->id,
@@ -391,16 +390,16 @@ class EncounterFactory extends Factory
                     $chargeItemClientId = $clientId ?? $service->client_id;
 
                     ChargeItem::create([
-                        'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                        'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                        'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                        'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                         'status' => 'billable',
                         'code' => [
                             'text' => $service->name,
                             'coding' => [[
                                 'code' => $service->cpt_code,
                                 'system' => 'http://www.ama-assn.org/go/cpt',
-                                'display' => $service->name
-                            ]]
+                                'display' => $service->name,
+                            ]],
                         ],
                         'patient_id' => $encounter->patient_id,
                         'encounter_id' => $encounter->id,
@@ -430,16 +429,16 @@ class EncounterFactory extends Factory
                         $chargeItemClientId = $clientId ?? $service->client_id;
 
                         ChargeItem::create([
-                            'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                            'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                            'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                            'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                             'status' => 'billable',
                             'code' => [
                                 'text' => $service->name,
                                 'coding' => [[
                                     'code' => $service->cpt_code,
                                     'system' => 'http://www.ama-assn.org/go/cpt',
-                                    'display' => $service->name
-                                ]]
+                                    'display' => $service->name,
+                                ]],
                             ],
                             'patient_id' => $encounter->patient_id,
                             'encounter_id' => $encounter->id,
@@ -503,13 +502,13 @@ class EncounterFactory extends Factory
         $durations = ['por 7 días', 'por 10 días', 'por 2 semanas', 'hasta terminarlo', 'según sea necesario'];
 
         return [
-            'text' => $this->faker->randomElement([1, 2]) . ' ' . $this->faker->randomElement(['tableta', 'cápsula', 'aplicación']) .
-                ' ' . $this->faker->randomElement($frequencies) .
-                ' ' . $this->faker->randomElement($routes) .
-                ' ' . $this->faker->randomElement($durations),
+            'text' => $this->faker->randomElement([1, 2]).' '.$this->faker->randomElement(['tableta', 'cápsula', 'aplicación']).
+                ' '.$this->faker->randomElement($frequencies).
+                ' '.$this->faker->randomElement($routes).
+                ' '.$this->faker->randomElement($durations),
             'route' => $this->faker->randomElement($routes),
             'frequency' => $this->faker->randomElement($frequencies),
-            'duration' => $this->faker->randomElement($durations)
+            'duration' => $this->faker->randomElement($durations),
         ];
     }
 
@@ -562,16 +561,16 @@ class EncounterFactory extends Factory
                 $chargeItemClientId = $clientId ?? $service->client_id;
 
                 ChargeItem::create([
-                    'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                    'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                    'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                    'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                     'status' => $this->faker->randomElement(['billable']),
                     'code' => [
                         'text' => $service->name,
                         'coding' => [[
                             'code' => $service->cpt_code,
                             'system' => 'http://www.ama-assn.org/go/cpt',
-                            'display' => $service->name
-                        ]]
+                            'display' => $service->name,
+                        ]],
                     ],
                     'patient_id' => $encounter->patient_id,
                     'encounter_id' => $encounter->id,
@@ -627,16 +626,16 @@ class EncounterFactory extends Factory
                     $chargeItemClientId = $clientId ?? $service->client_id;
 
                     ChargeItem::create([
-                        'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                        'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                        'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                        'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                         'status' => 'billable',
                         'code' => [
                             'text' => $service->name,
                             'coding' => [[
                                 'code' => $service->cpt_code,
                                 'system' => 'http://www.ama-assn.org/go/cpt',
-                                'display' => $service->name
-                            ]]
+                                'display' => $service->name,
+                            ]],
                         ],
                         'patient_id' => $encounter->patient_id,
                         'encounter_id' => $encounter->id,
@@ -689,16 +688,16 @@ class EncounterFactory extends Factory
                         $chargeItemClientId = $clientId ?? $service->client_id;
 
                         ChargeItem::create([
-                            'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                            'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                            'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                            'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                             'status' => 'billable',
                             'code' => [
                                 'text' => $service->name,
                                 'coding' => [[
                                     'code' => $service->cpt_code,
                                     'system' => 'http://www.ama-assn.org/go/cpt',
-                                    'display' => $service->name
-                                ]]
+                                    'display' => $service->name,
+                                ]],
                             ],
                             'patient_id' => $encounter->patient_id,
                             'encounter_id' => $encounter->id,
@@ -737,16 +736,16 @@ class EncounterFactory extends Factory
                 $chargeItemClientId = $clientId ?? $service->client_id;
 
                 ChargeItem::create([
-                    'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                    'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                    'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                    'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                     'status' => 'billable',
                     'code' => [
                         'text' => $service->name,
                         'coding' => [[
                             'code' => $service->cpt_code,
                             'system' => 'http://www.ama-assn.org/go/cpt',
-                            'display' => $service->name
-                        ]]
+                            'display' => $service->name,
+                        ]],
                     ],
                     'patient_id' => $encounter->patient_id,
                     'encounter_id' => $encounter->id,
@@ -773,16 +772,16 @@ class EncounterFactory extends Factory
                     $chargeItemClientId = $clientId ?? $service->client_id;
 
                     ChargeItem::create([
-                        'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                        'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                        'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                        'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                         'status' => 'billable',
                         'code' => [
                             'text' => $service->name,
                             'coding' => [[
                                 'code' => $service->cpt_code,
                                 'system' => 'http://www.ama-assn.org/go/cpt',
-                                'display' => $service->name
-                            ]]
+                                'display' => $service->name,
+                            ]],
                         ],
                         'patient_id' => $encounter->patient_id,
                         'encounter_id' => $encounter->id,
@@ -811,16 +810,16 @@ class EncounterFactory extends Factory
                         $chargeItemClientId = $clientId ?? $service->client_id;
 
                         ChargeItem::create([
-                            'fhir_id' => 'chargeitem-' . $this->faker->uuid(),
-                            'identifier' => 'CHG-' . $this->faker->unique()->numerify('#######'),
+                            'fhir_id' => 'chargeitem-'.$this->faker->uuid(),
+                            'identifier' => 'CHG-'.$this->faker->unique()->numerify('#######'),
                             'status' => 'billable',
                             'code' => [
                                 'text' => $service->name,
                                 'coding' => [[
                                     'code' => $service->cpt_code,
                                     'system' => 'http://www.ama-assn.org/go/cpt',
-                                    'display' => $service->name
-                                ]]
+                                    'display' => $service->name,
+                                ]],
                             ],
                             'patient_id' => $encounter->patient_id,
                             'encounter_id' => $encounter->id,
@@ -841,6 +840,7 @@ class EncounterFactory extends Factory
 
     /**
      * Alias for withCompleteEncounter (now includes services by default)
+     *
      * @deprecated Use withCompleteEncounter() instead
      */
     public function withCompleteEncounterAndServices()

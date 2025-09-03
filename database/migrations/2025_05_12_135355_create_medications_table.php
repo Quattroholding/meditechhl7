@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('strength')->nullable();
             $table->json('ingredient')->nullable();
             $table->json('extension')->nullable()->comment('Extensiones FHIR');
-            $table->string('product_type',100)->nullable();
+            $table->string('product_type', 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

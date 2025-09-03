@@ -20,7 +20,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 // Canal privado para notificaciones del doctor
 Broadcast::channel('doctor.{doctorId}', function ($user, $doctorId) {
     // Solo el doctor puede escuchar su propio canal
-    return $user->hasRole('doctor') && 
-           $user->practitioner && 
+    return $user->hasRole('doctor') &&
+           $user->practitioner &&
            (int) $user->practitioner->id === (int) $doctorId;
 });

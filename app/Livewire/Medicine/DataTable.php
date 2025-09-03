@@ -13,8 +13,11 @@ class DataTable extends Component
     use WithPagination;
 
     public $search;
+
     public $sortField = 'id';
+
     public $sortDirection = 'asc';
+
     public $pagination = 10;
 
     public function sortBy($field)
@@ -39,12 +42,12 @@ class DataTable extends Component
         $data = Medicine::query()
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
-                    $q->orWhere('generic_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('home_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('ndc_code', 'like', '%' . $this->search . '%')
-                      ->orWhere('type', 'like', '%' . $this->search . '%')
-                      ->orWhere('mgs', 'like', '%' . $this->search . '%')
-                      ->orWhere('mgs_type', 'like', '%' . $this->search . '%');
+                    $q->orWhere('generic_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('home_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('ndc_code', 'like', '%'.$this->search.'%')
+                        ->orWhere('type', 'like', '%'.$this->search.'%')
+                        ->orWhere('mgs', 'like', '%'.$this->search.'%')
+                        ->orWhere('mgs_type', 'like', '%'.$this->search.'%');
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
@@ -53,15 +56,18 @@ class DataTable extends Component
         return view('livewire.medicine.data-table', ['data' => $data]);
     }
 
-    public function openModal($id=null){
-        if($id){
-            $this->dispatch('editMedicineModal',$id);
-        }else{
-            $this->dispatch('openMedicineModal','Crear Medicamento');
+    public function openModal($id = null)
+    {
+        if ($id) {
+            $this->dispatch('editMedicineModal', $id);
+        } else {
+            $this->dispatch('openMedicineModal', 'Crear Medicamento');
         }
     }
+
     #[On('refreshMedicines')]
-    public function refreshMedicines(){
+    public function refreshMedicines()
+    {
         $this->resetPage();
     }
 }

@@ -39,7 +39,7 @@ class Show extends Component
 
                 // Simulate async loading delay
                 $this->dispatch('tab-loading', $tab);
-                
+
                 // Delay the actual loading to show skeleton animation
                 $this->js("
                     setTimeout(() => {

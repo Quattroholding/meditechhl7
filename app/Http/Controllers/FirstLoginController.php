@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class FirstLoginController extends Controller
 {
@@ -13,7 +12,7 @@ class FirstLoginController extends Controller
         $user = auth()->user();
 
         // Redirect if user has already completed first login
-        if (!is_null($user->first_login_at)) {
+        if (! is_null($user->first_login_at)) {
             return redirect()->route('dashboard');
         }
 
@@ -25,9 +24,11 @@ class FirstLoginController extends Controller
         $user = auth()->user();
 
         // Validate if user hasn't completed first login
-        $route = route('profile.edit',$user->id);
-        if($user->practitioner)  $route = route('practitioner.profile',$user->practitioner->id);
-        if (!is_null($user->first_login_at)) {
+        $route = route('profile.edit', $user->id);
+        if ($user->practitioner) {
+            $route = route('practitioner.profile', $user->practitioner->id);
+        }
+        if (! is_null($user->first_login_at)) {
             return redirect($route);
         }
 
@@ -42,7 +43,7 @@ class FirstLoginController extends Controller
         ]);
 
         // Verify current password
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta']);
         }
 

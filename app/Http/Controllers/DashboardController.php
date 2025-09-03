@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appointment;
-use App\Models\Consultation;
-use App\Models\Encounter;
 use App\Models\Patient;
 use App\Models\UserWidgetPreference;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function admin(Request $request){
-        $dashboard = array();
-        return view('Dashboard.index',compact('dashboard'));
+    public function admin(Request $request)
+    {
+        $dashboard = [];
+
+        return view('Dashboard.index', compact('dashboard'));
     }
-    public function admin_client(Request $request){
-        $dashboard = array();
-        return view('Dashboard.index',compact('dashboard'));
+
+    public function admin_client(Request $request)
+    {
+        $dashboard = [];
+
+        return view('Dashboard.index', compact('dashboard'));
     }
-    public function doctor(Request $request){
+
+    public function doctor(Request $request)
+    {
 
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'doctor');
@@ -38,9 +42,10 @@ class DashboardController extends Controller
 
         return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));
     }
-    public function patient(Request $request){
-        $patient = Patient::find(auth()->user()->patient->id);
 
+    public function patient(Request $request)
+    {
+        $patient = Patient::find(auth()->user()->patient->id);
 
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'patient');
@@ -53,10 +58,11 @@ class DashboardController extends Controller
             'medical-summary' => 'patient.dashboard.medical-summary',
         ];
 
-
         return view('Dashboard.patient-dashboard', compact('patient', 'visibleWidgets', 'widgetComponents'));
     }
-    public function assistence(Request $request){
+
+    public function assistence(Request $request)
+    {
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'assistant');
 
@@ -70,6 +76,6 @@ class DashboardController extends Controller
             'activity-heatmap' => 'doctor.activity-heatmap',
         ];
 
-        return view('Dashboard.assistence-dashboard', compact( 'visibleWidgets', 'widgetComponents'));
+        return view('Dashboard.assistence-dashboard', compact('visibleWidgets', 'widgetComponents'));
     }
 }

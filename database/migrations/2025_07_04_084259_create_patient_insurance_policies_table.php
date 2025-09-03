@@ -33,7 +33,7 @@ return new class extends Migration
             $table->json('coverage_details')->nullable(); // Para detalles específicos de cobertura
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+            $table->softDeletes();
             $table->index(['patient_id', 'priority']);
             $table->unique(['patient_id', 'policy_number', 'insurance_company_id'], 'patient_policy_unique');
         });

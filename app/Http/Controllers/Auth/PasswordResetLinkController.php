@@ -25,12 +25,12 @@ class PasswordResetLinkController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    { //dd('aqui');
+    { // dd('aqui');
         $request->validate([
             'email' => ['required', 'email'],
         ]);
         // Registrar el correo electrónico en los logs
-        Log::info('Solicitud de restablecimiento de contraseña para: ' . $request->email);
+        Log::info('Solicitud de restablecimiento de contraseña para: '.$request->email);
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
@@ -40,18 +40,19 @@ class PasswordResetLinkController extends Controller
         );
 
         // Registrar el estado del envío del enlace de restablecimiento de contraseña
-        Log::info('Estado del envío del enlace de restablecimiento de contraseña: ' . $status);
-        //$request->session()->flash('message.success','Correo enviado con éxito.');
+        Log::info('Estado del envío del enlace de restablecimiento de contraseña: '.$status);
+        // $request->session()->flash('message.success','Correo enviado con éxito.');
         /*return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))
                     : back()->withInput($request->only('email'))
                         ->withErrors(['email' => __($status)]);*/
         if ($status == Password::RESET_LINK_SENT) {
             $request->session()->flash('message.success', 'Envio de instrucciones de recuperación de contraseña al correo enviado con exito.');
+
             return back()->with('status', __($status));
         } else {
             return back()->withInput($request->only('email'))
-                         ->withErrors(['email' => __($status)]);
+                ->withErrors(['email' => __($status)]);
         }
 
     }

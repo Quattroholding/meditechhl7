@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->longText('description');
             $table->longText('description_es')->nullable();
-            $table->string('code',15);
-            $table->string('type',20)->comment('imagen , procedimiento , laboratorio');
+            $table->string('code', 15);
+            $table->string('type', 20)->comment('imagen , procedimiento , laboratorio');
             $table->foreignId('medical_speciality_id')->nullable()->references('id')->on('medical_specialties')->nullable()->onDelete('cascade');
             $table->boolean('duplicity')->default(0);
             $table->boolean('is_body')->default(0)->comment('Used to khown if this is printed on body image');

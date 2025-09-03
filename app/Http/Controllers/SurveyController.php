@@ -39,7 +39,7 @@ class SurveyController extends Controller
 
     public function show(Survey $survey)
     {
-        $survey->load(['questions' => function($query) {
+        $survey->load(['questions' => function ($query) {
             $query->orderBy('order');
         }]);
 
@@ -77,7 +77,7 @@ class SurveyController extends Controller
     public function publicForm(string $token)
     {
         $surveyResponse = SurveyResponse::where('token', $token)->firstOrFail();
-        $survey = $surveyResponse->survey->load(['questions' => function($query) {
+        $survey = $surveyResponse->survey->load(['questions' => function ($query) {
             $query->orderBy('order');
         }]);
 

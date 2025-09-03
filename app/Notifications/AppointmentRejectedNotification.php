@@ -13,6 +13,7 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     public function __construct(
@@ -34,7 +35,7 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
-            ->subject('Cita Médica No Disponible - ' . $clinicName)
+            ->subject('Cita Médica No Disponible - '.$clinicName)
             ->view('emails.appointment-rejected', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -67,7 +68,7 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'service_type' => $this->appointment->service_type,
             'duration_minutes' => $this->appointment->minutes_duration,
-            'message' => 'Su solicitud de cita con Dr. ' . $this->appointment->practitioner->name . ' ha sido rechazada.',
+            'message' => 'Su solicitud de cita con Dr. '.$this->appointment->practitioner->name.' ha sido rechazada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }
@@ -82,7 +83,7 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
             'rejection_reason' => $this->rejectionReason,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

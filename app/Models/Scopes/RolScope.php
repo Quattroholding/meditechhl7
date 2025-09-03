@@ -13,10 +13,10 @@ class RolScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if(auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {
-            $builder->whereIn('id',[3]);
-        }elseif(auth()->user() && auth()->user()->hasRole('admin client')){
-            $builder->whereIn('id',[5]);
+        if (auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {
+            $builder->whereIn('id', [3]);
+        } elseif (auth()->user() && auth()->user()->hasRole('admin client')) {
+            $builder->whereIn('id', [5]);
         }
     }
 }

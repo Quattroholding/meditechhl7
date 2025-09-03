@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-
-    public function index(){
+    public function index()
+    {
         return view('Invoice.index');
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $invoice = Invoice::with([
             'patient',
             'encounter',
@@ -21,14 +22,14 @@ class InvoiceController extends Controller
             'performerPractitioner.user',
             'issuerOrganization',
             'client',
-            'lineItems.chargeItem'
+            'lineItems.chargeItem',
         ])->findOrFail($id);
 
         // Verify user has access to this invoice
-        //$userClientIds = auth()->user()->clients()->pluck('client_id')->toArray();
-        //if (!in_array($invoice->client_id, $userClientIds)) {
+        // $userClientIds = auth()->user()->clients()->pluck('client_id')->toArray();
+        // if (!in_array($invoice->client_id, $userClientIds)) {
         //    abort(403, __('invoice.errors.permission_denied'));
-        //}
+        // }
 
         return view('Invoice.show', compact('invoice'));
     }
@@ -47,10 +48,10 @@ class InvoiceController extends Controller
             ])->findOrFail($invoice_id);
 
             // Verify user has access to this invoice
-            //$userClientIds = auth()->user()->clients()->pluck('client_id')->toArray();
-            //if (! in_array($invoice->client_id, $userClientIds)) {
+            // $userClientIds = auth()->user()->clients()->pluck('client_id')->toArray();
+            // if (! in_array($invoice->client_id, $userClientIds)) {
             //    abort(403, 'No tiene permisos para acceder a esta factura.');
-            //}
+            // }
 
             $data = [
                 'invoice' => $invoice,

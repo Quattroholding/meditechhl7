@@ -51,7 +51,7 @@ return new class extends Migration
                 'patient_balance_amount',
                 'insurance_status',
                 'has_insurance',
-                'insurance_notes'
+                'insurance_notes',
             ]);
         });
     }

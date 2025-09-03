@@ -16,6 +16,7 @@ class SendAppointmentReminderJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     /**
@@ -33,11 +34,12 @@ class SendAppointmentReminderJob implements ShouldQueue
     public function handle(): void
     {
         // Verify appointment still exists and is in booked status
-        if (!$this->appointment->exists || $this->appointment->status !== 'booked') {
+        if (! $this->appointment->exists || $this->appointment->status !== 'booked') {
             Log::info('Appointment reminder job cancelled - appointment no longer exists or not booked', [
                 'appointment_id' => $this->appointment->id,
-                'status' => $this->appointment->status ?? 'deleted'
+                'status' => $this->appointment->status ?? 'deleted',
             ]);
+
             return;
         }
 
@@ -45,19 +47,21 @@ class SendAppointmentReminderJob implements ShouldQueue
         if ($this->appointment->start->isPast()) {
             Log::info('Appointment reminder job cancelled - appointment is in the past', [
                 'appointment_id' => $this->appointment->id,
-                'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s')
+                'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
             ]);
+
             return;
         }
 
         // Get the patient
         $patient = $this->appointment->patient;
-        
-        if (!$patient || !$patient->email) {
+
+        if (! $patient || ! $patient->email) {
             Log::warning('Appointment reminder job cancelled - patient not found or no email', [
                 'appointment_id' => $this->appointment->id,
-                'patient_id' => $this->appointment->patient_id
+                'patient_id' => $this->appointment->patient_id,
             ]);
+
             return;
         }
 
@@ -69,16 +73,16 @@ class SendAppointmentReminderJob implements ShouldQueue
                 'appointment_id' => $this->appointment->id,
                 'patient_id' => $patient->id,
                 'patient_email' => $patient->email,
-                'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s')
+                'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send appointment reminder', [
                 'appointment_id' => $this->appointment->id,
                 'patient_id' => $patient->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             throw $e; // Re-throw to trigger job retry
         }
     }
@@ -93,7 +97,7 @@ class SendAppointmentReminderJob implements ShouldQueue
             'patient_id' => $this->appointment->patient_id,
             'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

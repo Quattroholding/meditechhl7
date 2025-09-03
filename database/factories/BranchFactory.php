@@ -20,11 +20,11 @@ class BranchFactory extends Factory
     public function definition(): array
     {
         return [
-            'client_id'=>Client::inRandomOrder()->take(1)->first()->id,
-            'name'=>fake()->name,
-            'phone'=>fake()->phoneNumber,
-            'address'=>fake()->address,
-            'type'=>fake()->randomElement(['clinica','hospital','centro de salud','consultorio']),
+            'client_id' => Client::inRandomOrder()->take(1)->first()->id,
+            'name' => fake()->name,
+            'phone' => fake()->phoneNumber,
+            'address' => fake()->address,
+            'type' => fake()->randomElement(['clinica', 'hospital', 'centro de salud', 'consultorio']),
         ];
     }
 
@@ -34,18 +34,24 @@ class BranchFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Branch $b) {
-            $cant=1;
-            if($b->type=='hospital') $cant=10;
-            if($b->type=='clinica') $cant=5;
-            if($b->type=="centro de salud") $cant=2;
+            $cant = 1;
+            if ($b->type == 'hospital') {
+                $cant = 10;
+            }
+            if ($b->type == 'clinica') {
+                $cant = 5;
+            }
+            if ($b->type == 'centro de salud') {
+                $cant = 2;
+            }
 
-            for($i=1;$i<=$cant;$i++){
+            for ($i = 1; $i <= $cant; $i++) {
                 $floor = fake()->randomNumber(2);
                 ConsultingRoom::create([
-                    'branch_id'=>$b->id,
-                    'name'=>'CONSULTORIO '.$i,
-                    'number'=>$floor.'-'.$i,
-                    'floor'=>$floor,
+                    'branch_id' => $b->id,
+                    'name' => 'CONSULTORIO '.$i,
+                    'number' => $floor.'-'.$i,
+                    'floor' => $floor,
                 ]);
             }
         });

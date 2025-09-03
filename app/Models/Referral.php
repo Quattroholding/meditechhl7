@@ -3,20 +3,19 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Referral extends BaseModel
 {
     protected $fillable = [
-        'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id','practitioner_id',
+        'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id', 'practitioner_id',
         'identifier', 'status', 'intent', 'priority', 'code', 'reason',
-        'description', 'occurrence_date', 'note','supporting_info'
+        'description', 'occurrence_date', 'note', 'supporting_info',
     ];
 
     protected $casts = [
         'occurrence_date' => 'date',
-        'supporting_info' => 'array'
+        'supporting_info' => 'array',
     ];
 
     // Relaciones
@@ -37,14 +36,16 @@ class Referral extends BaseModel
 
     public function referredTo(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class, 'referred_to_id')->withDefault(['name'=>'N/A']);
+        return $this->belongsTo(Practitioner::class, 'referred_to_id')->withDefault(['name' => 'N/A']);
     }
 
-    public function speciality(){
-        return $this->belongsTo(MedicalSpeciality::class,'code');
+    public function speciality()
+    {
+        return $this->belongsTo(MedicalSpeciality::class, 'code');
     }
 
-    public function getOccurrenceDateAttribute($attr) {
-        return Carbon::parse($attr)->format('d-m-Y'); //Change the format to whichever you desire
+    public function getOccurrenceDateAttribute($attr)
+    {
+        return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
     }
 }

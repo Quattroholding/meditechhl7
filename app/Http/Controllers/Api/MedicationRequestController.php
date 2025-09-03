@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreMedicationRequestRequest;
 use App\Http\Resources\Api\MedicationRequestResource;
 use App\Models\MedicationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MedicationRequestController extends Controller
@@ -18,25 +18,25 @@ class MedicationRequestController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = MedicationRequest::with(['patient', 'practitioner', 'medicine', 'encounter']);
-        
+
         if ($request->has('patient_id')) {
             $query->where('patient_id', $request->patient_id);
         }
-        
+
         if ($request->has('practitioner_id')) {
             $query->where('practitioner_id', $request->practitioner_id);
         }
-        
+
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
-        
+
         if ($request->has('encounter_id')) {
             $query->where('encounter_id', $request->encounter_id);
         }
 
         $medicationRequests = $query->latest()->paginate(15);
-        
+
         return MedicationRequestResource::collection($medicationRequests);
     }
 
@@ -46,15 +46,15 @@ class MedicationRequestController extends Controller
     public function store(StoreMedicationRequestRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
-        
+
         $medicationRequest = MedicationRequest::create($validatedData);
-        
+
         $medicationRequest->load(['patient', 'practitioner', 'medicine', 'encounter']);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Medication request created successfully.',
-            'data' => new MedicationRequestResource($medicationRequest)
+            'data' => new MedicationRequestResource($medicationRequest),
         ], 201);
     }
 
@@ -64,10 +64,10 @@ class MedicationRequestController extends Controller
     public function show(MedicationRequest $medicationRequest): JsonResponse
     {
         $medicationRequest->load(['patient', 'practitioner', 'medicine', 'encounter']);
-        
+
         return response()->json([
             'success' => true,
-            'data' => new MedicationRequestResource($medicationRequest)
+            'data' => new MedicationRequestResource($medicationRequest),
         ]);
     }
 
@@ -77,15 +77,15 @@ class MedicationRequestController extends Controller
     public function update(StoreMedicationRequestRequest $request, MedicationRequest $medicationRequest): JsonResponse
     {
         $validatedData = $request->validated();
-        
+
         $medicationRequest->update($validatedData);
-        
+
         $medicationRequest->load(['patient', 'practitioner', 'medicine', 'encounter']);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Medication request updated successfully.',
-            'data' => new MedicationRequestResource($medicationRequest)
+            'data' => new MedicationRequestResource($medicationRequest),
         ]);
     }
 
@@ -95,10 +95,10 @@ class MedicationRequestController extends Controller
     public function destroy(MedicationRequest $medicationRequest): JsonResponse
     {
         $medicationRequest->delete();
-        
+
         return response()->json([
             'success' => true,
-            'message' => 'Medication request deleted successfully.'
+            'message' => 'Medication request deleted successfully.',
         ]);
     }
 }

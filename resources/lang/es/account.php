@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title'=>'Cuenta',
-    'titles'=>'Cuentas',
-    'payments'=>'Pagos',
-    'invoices'=>'Facturas',
+    'title' => 'Cuenta',
+    'titles' => 'Cuentas',
+    'payments' => 'Pagos',
+    'invoices' => 'Facturas',
 ];

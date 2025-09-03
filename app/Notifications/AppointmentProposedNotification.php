@@ -13,6 +13,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
     use Queueable;
 
     public $tries = 3;
+
     public $backoff = [60, 300, 600];
 
     public function __construct(
@@ -33,7 +34,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
-            ->subject('Nueva Solicitud de Cita Médica - ' . $clinicName)
+            ->subject('Nueva Solicitud de Cita Médica - '.$clinicName)
             ->view('emails.appointment-proposed', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
@@ -72,7 +73,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'description' => $this->appointment->description,
             'comment' => $this->appointment->comment,
-            'message' => 'Nueva solicitud de cita de ' . $this->appointment->patient->name . ' para el ' . $this->appointment->original_requested_datetime->format('d/m/Y H:i'),
+            'message' => 'Nueva solicitud de cita de '.$this->appointment->patient->name.' para el '.$this->appointment->original_requested_datetime->format('d/m/Y H:i'),
             'sent_at' => now()->toDateTimeString(),
         ];
     }
@@ -86,7 +87,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
             'appointment_id' => $this->appointment->id,
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

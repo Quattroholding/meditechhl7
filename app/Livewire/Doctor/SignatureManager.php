@@ -2,26 +2,35 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Models\Practitioner;
 use App\Models\File;
+use App\Models\Practitioner;
 use App\Services\FileService;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
 
 class SignatureManager extends Component
 {
     use WithFileUploads;
 
     public $practitioner_id;
+
     public $practitioner;
+
     public $signature_file;
+
     public $seal_file;
+
     public $signature_preview;
+
     public $seal_preview;
+
     public $existing_signature;
+
     public $existing_seal;
+
     public $uploading_signature = false;
+
     public $uploading_seal = false;
 
     protected $rules = [
@@ -63,7 +72,7 @@ class SignatureManager extends Component
     public function updatedSignatureFile()
     {
         $this->validateOnly('signature_file');
-        
+
         if ($this->signature_file) {
             $this->signature_preview = $this->signature_file->temporaryUrl();
         }
@@ -72,7 +81,7 @@ class SignatureManager extends Component
     public function updatedSealFile()
     {
         $this->validateOnly('seal_file');
-        
+
         if ($this->seal_file) {
             $this->seal_preview = $this->seal_file->temporaryUrl();
         }
@@ -91,12 +100,12 @@ class SignatureManager extends Component
             }
 
             // Subir nueva firma
-            $fileService = new FileService();
+            $fileService = new FileService;
             $data = [
                 'record_id' => $this->practitioner_id,
                 'folder' => 'practitioners',
                 'type' => 'signature',
-                'name' => 'signature_' . $this->practitioner_id . '_' . time()
+                'name' => 'signature_'.$this->practitioner_id.'_'.time(),
             ];
 
             $fileService->guardarArchivos([$this->signature_file], $data, true);
@@ -114,7 +123,7 @@ class SignatureManager extends Component
 
         } catch (\Exception $e) {
             $this->uploading_signature = false;
-            session()->flash('error', 'Error al subir la firma: ' . $e->getMessage());
+            session()->flash('error', 'Error al subir la firma: '.$e->getMessage());
         }
     }
 
@@ -131,12 +140,12 @@ class SignatureManager extends Component
             }
 
             // Subir nuevo sello
-            $fileService = new FileService();
+            $fileService = new FileService;
             $data = [
                 'record_id' => $this->practitioner_id,
                 'folder' => 'practitioners',
                 'type' => 'seal',
-                'name' => 'seal_' . $this->practitioner_id . '_' . time()
+                'name' => 'seal_'.$this->practitioner_id.'_'.time(),
             ];
 
             $fileService->guardarArchivos([$this->seal_file], $data, true);
@@ -154,7 +163,7 @@ class SignatureManager extends Component
 
         } catch (\Exception $e) {
             $this->uploading_seal = false;
-            session()->flash('error', 'Error al subir el sello: ' . $e->getMessage());
+            session()->flash('error', 'Error al subir el sello: '.$e->getMessage());
         }
     }
 
@@ -166,7 +175,7 @@ class SignatureManager extends Component
                 $this->existing_signature = null;
                 session()->flash('message', 'Firma eliminada exitosamente.');
             } catch (\Exception $e) {
-                session()->flash('error', 'Error al eliminar la firma: ' . $e->getMessage());
+                session()->flash('error', 'Error al eliminar la firma: '.$e->getMessage());
             }
         }
     }
@@ -179,7 +188,7 @@ class SignatureManager extends Component
                 $this->existing_seal = null;
                 session()->flash('message', 'Sello eliminado exitosamente.');
             } catch (\Exception $e) {
-                session()->flash('error', 'Error al eliminar el sello: ' . $e->getMessage());
+                session()->flash('error', 'Error al eliminar el sello: '.$e->getMessage());
             }
         }
     }

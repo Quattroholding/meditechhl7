@@ -11,12 +11,19 @@ class DataTable extends Component
     use WithPagination;
 
     public $search = '';
+
     public $perPage = 10;
+
     public $sortField = 'payment_date';
+
     public $sortDirection = 'desc';
+
     public $paymentMethod = '';
+
     public $status = '';
+
     public $dateFrom = '';
+
     public $dateTo = '';
 
     protected $queryString = ['search', 'paymentMethod', 'status', 'dateFrom', 'dateTo'];
@@ -46,7 +53,8 @@ class DataTable extends Component
         $this->resetPage();
     }
 
-    public function clickedDateTo(){
+    public function clickedDateTo()
+    {
         $this->resetPage();
     }
 
@@ -64,15 +72,15 @@ class DataTable extends Component
     {
         return Payment::with(['invoice', 'patient', 'client'])
             ->when($this->search, function ($query) {
-                return $query->where('payment_number', 'like', '%' . $this->search . '%')
-                       ->orWhere('reference_number', 'like', '%' . $this->search . '%')
-                       ->orWhere('transaction_id', 'like', '%' . $this->search . '%')
-                       ->orWhereHas('patient', function ($q) {
-                           $q->where('name', 'like', '%' . $this->search . '%');
-                       })
-                       ->orWhereHas('invoice', function ($q) {
-                           $q->where('invoice_number', 'like', '%' . $this->search . '%');
-                       });
+                return $query->where('payment_number', 'like', '%'.$this->search.'%')
+                    ->orWhere('reference_number', 'like', '%'.$this->search.'%')
+                    ->orWhere('transaction_id', 'like', '%'.$this->search.'%')
+                    ->orWhereHas('patient', function ($q) {
+                        $q->where('name', 'like', '%'.$this->search.'%');
+                    })
+                    ->orWhereHas('invoice', function ($q) {
+                        $q->where('invoice_number', 'like', '%'.$this->search.'%');
+                    });
             })
             ->when($this->paymentMethod, function ($query) {
                 return $query->where('payment_method', $this->paymentMethod);

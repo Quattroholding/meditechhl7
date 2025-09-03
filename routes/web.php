@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BranchController;
@@ -18,8 +19,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -34,11 +35,11 @@ Route::get('/', function () {
         ->limit(12)
         ->get();
 
-    $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function($query) {
+    $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function ($query) {
         $query->where('active', true);
     })->get();
 
-    return view('welcome', compact('practitioners', 'specialties'));
+    return view('landing', compact('practitioners', 'specialties'));
 })->name('welcome');
 
 Route::get('/register', function () {
@@ -392,7 +393,6 @@ Route::group(['prefix' => 'service_requests', 'middleware' => ['auth', 'verified
 
     Route::get('/', [ServiceRequestController::class, 'index'])->middleware('permission:service_request.view')->name('service_request.index');
 
-
 });
 
 Route::group(['prefix' => 'api'], function () {
@@ -473,6 +473,15 @@ Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])
 // Insurance Companies Routes
 Route::middleware(['auth', 'first.login', 'permission:manage insurances'])->group(function () {
     Route::resource('insurances', InsuranceController::class);
+});
+
+// API Tokens Routes (Admin only)
+Route::middleware(['auth', 'first.login', 'role:admin'])->group(function () {
+    Route::resource('api-tokens', ApiTokenController::class);
+    //Route::get('/api-tokens/create', [ApiTokenController::class, 'create'])->name('api-tokens.create');
+    //Route::get('/api-tokens/{apiToken}/edit', [ApiTokenController::class, 'edit'])->name('api-tokens.edit');
+    Route::post('/api-tokens/{apiToken}/toggle', [ApiTokenController::class, 'toggle'])->name('api-tokens.toggle');
+    Route::post('/api-tokens/{apiToken}/regenerate', [ApiTokenController::class, 'regenerate'])->name('api-tokens.regenerate');
 });
 
 // Test route for broadcast

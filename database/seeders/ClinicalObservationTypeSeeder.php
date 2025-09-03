@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\ClinicalObservationType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ClinicalObservationTypeSeeder extends Seeder
@@ -26,8 +25,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Termómetro oral, axilar o timpánico',
                 'possible_abnormalities' => [
                     'Fiebre' => '>37.5°C',
-                    'Hipotermia' => '<36.0°C'
-                ]
+                    'Hipotermia' => '<36.0°C',
+                ],
             ],
             [
                 'code' => '8867-4',
@@ -41,8 +40,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Palpación de pulso radial durante 60 segundos',
                 'possible_abnormalities' => [
                     'Taquicardia' => '>100 lpm',
-                    'Bradicardia' => '<60 lpm'
-                ]
+                    'Bradicardia' => '<60 lpm',
+                ],
             ],
             [
                 'code' => '8480-6',
@@ -56,8 +55,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Esfigmomanómetro braquial',
                 'possible_abnormalities' => [
                     'Hipertensión' => '>140 mmHg',
-                    'Hipotensión' => '<90 mmHg'
-                ]
+                    'Hipotensión' => '<90 mmHg',
+                ],
             ],
             [
                 'code' => '8462-4',
@@ -71,8 +70,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Esfigmomanómetro braquial',
                 'possible_abnormalities' => [
                     'Hipertensión' => '>90 mmHg',
-                    'Hipotensión' => '<60 mmHg'
-                ]
+                    'Hipotensión' => '<60 mmHg',
+                ],
             ],
             [
                 'code' => '9279-1',
@@ -87,8 +86,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'possible_abnormalities' => [
                     'Taquipnea' => '>20 rpm',
                     'Bradipnea' => '<12 rpm',
-                    'Apnea' => '0 rpm'
-                ]
+                    'Apnea' => '0 rpm',
+                ],
             ],
             [
                 'code' => '2708-6',
@@ -102,8 +101,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Pulsioxímetro en dedo',
                 'possible_abnormalities' => [
                     'Hipoxemia' => '<90%',
-                    'Hipoxia severa' => '<80%'
-                ]
+                    'Hipoxia severa' => '<80%',
+                ],
             ],
             [
                 'code' => '29463-7',
@@ -118,8 +117,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'possible_abnormalities' => [
                     'Bajo peso' => 'IMC <18.5',
                     'Sobrepeso' => 'IMC >25',
-                    'Obesidad' => 'IMC >30'
-                ]
+                    'Obesidad' => 'IMC >30',
+                ],
             ],
             [
                 'code' => '8302-2',
@@ -131,7 +130,7 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'max_normal_value' => null,
                 'description' => 'Estatura del paciente',
                 'procedure' => 'Estadiómetro',
-                'possible_abnormalities' => []
+                'possible_abnormalities' => [],
             ],
             [
                 'code' => '39156-5',
@@ -147,8 +146,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Bajo peso' => '<18.5',
                     'Normal' => '18.5-24.9',
                     'Sobrepeso' => '25-29.9',
-                    'Obesidad' => '≥30'
-                ]
+                    'Obesidad' => '≥30',
+                ],
             ],
             [
                 'code' => '85354-9',
@@ -162,13 +161,13 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Glucometría con punción digital',
                 'possible_abnormalities' => [
                     'Hipoglucemia' => '<70 mg/dL',
-                    'Hiperglucemia' => '>126 mg/dL en ayunas'
-                ]
-            ]
+                    'Hiperglucemia' => '>126 mg/dL en ayunas',
+                ],
+            ],
         ];
 
         $physicalExams = [
-            //CONSITUCIONAL
+            // CONSITUCIONAL
             [
                 'code' => '24825-0',
                 'name' => 'Examen Constitucional',
@@ -183,8 +182,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Malnutrición',
                     'Alteración del desarrollo',
                     'Facies patológicas',
-                    'Posturas anormales'
-                ]
+                    'Posturas anormales',
+                ],
             ],
             // HEENT (Cabeza, Ojos, Oídos, Nariz y Garganta)
             [
@@ -202,8 +201,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Ojos' => ['Ictericia', 'Anisocoria', 'Conjuntivitis'],
                     'Oídos' => ['Otitis', 'Hipoacusia', 'Secreción'],
                     'Nariz' => ['Desviación septal', 'Epistaxis', 'Pólipos'],
-                    'Garganta' => ['Faringitis', 'Amigdalitis', 'Masas']
-                ]
+                    'Garganta' => ['Faringitis', 'Amigdalitis', 'Masas'],
+                ],
             ],
             // Examen de Ojos (Detallado)
             [
@@ -220,8 +219,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Cataratas',
                     'Glaucoma',
                     'Retinopatía',
-                    'Estrabismo'
-                ]
+                    'Estrabismo',
+                ],
             ],
             // PULMONAR
             [
@@ -238,8 +237,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Crepitaciones',
                     'Sibilancias',
                     'Roncos',
-                    'Disminución del murmullo vesicular'
-                ]
+                    'Disminución del murmullo vesicular',
+                ],
             ],
             // CARDIOVASCULAR
             [
@@ -256,8 +255,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Soplos cardíacos',
                     'Arritmias',
                     'Edemas',
-                    'Pulsos disminuidos'
-                ]
+                    'Pulsos disminuidos',
+                ],
             ],
             // Examen de Pecho/Senos
             [
@@ -272,8 +271,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                 'procedure' => 'Inspección, palpación en cuadrantes',
                 'possible_abnormalities' => [
                     'Mamas' => ['Nódulos', 'Secreción', 'Retracción'],
-                    'Pared torácica' => ['Deformidades', 'Tumefacciones']
-                ]
+                    'Pared torácica' => ['Deformidades', 'Tumefacciones'],
+                ],
             ],
             // GASTROINTESTINAL
             [
@@ -290,8 +289,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Dolor a la palpación',
                     'Masas palpables',
                     'Hepatomegalia',
-                    'Esplenomegalia'
-                ]
+                    'Esplenomegalia',
+                ],
             ],
             // Examen Linfático
             [
@@ -309,14 +308,14 @@ class ClinicalObservationTypeSeeder extends Seeder
                         'Cervicales',
                         'Axilares',
                         'Inguinales',
-                        'Generalizadas'
+                        'Generalizadas',
                     ],
                     'Características' => [
                         'Dolorosas',
                         'Fijas',
-                        'Blandas/Duras'
-                    ]
-                ]
+                        'Blandas/Duras',
+                    ],
+                ],
             ],
             // NEUROLOGICO
             [
@@ -333,8 +332,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Reflejos anormales',
                     'Déficit motor',
                     'Déficit sensitivo',
-                    'Alteración de pares craneales'
-                ]
+                    'Alteración de pares craneales',
+                ],
             ],
             // MUSCOESQUELETICO
             [
@@ -351,8 +350,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Limitación de movimiento',
                     'Dolor articular',
                     'Deformidades',
-                    'Hipersensibilidad'
-                ]
+                    'Hipersensibilidad',
+                ],
             ],
             // DERMATOLOGICO
             [
@@ -369,8 +368,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Lesiones cutáneas',
                     'Erupciones',
                     'Cambios en la pigmentación',
-                    'Alteraciones en uñas'
-                ]
+                    'Alteraciones en uñas',
+                ],
             ],
             // Examen Psiquiátrico
             [
@@ -388,16 +387,16 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Memoria' => ['Amnesia', 'Déficit de memoria reciente'],
                     'Ánimo' => ['Depresión', 'Euforia', 'Labilidad emocional'],
                     'Pensamiento' => ['Delirios', 'Ideas obsesivas'],
-                    'Percepción' => ['Alucinaciones', 'Ilusiones']
-                ]
+                    'Percepción' => ['Alucinaciones', 'Ilusiones'],
+                ],
             ],
         ];
 
-        foreach ($vitalSigns as $vs){
+        foreach ($vitalSigns as $vs) {
             ClinicalObservationType::create($vs);
         }
 
-        foreach ($physicalExams as $pe){
+        foreach ($physicalExams as $pe) {
             ClinicalObservationType::create($pe);
         }
 

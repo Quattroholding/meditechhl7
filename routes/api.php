@@ -60,3 +60,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
 });
+
+// API Token routes - Full access with IP restrictions
+Route::middleware('api.token')->prefix('v1')->group(function () {
+    // All endpoints with full access
+    Route::get('/practitioners', [PractitionerController::class, 'index']);
+    Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
+    Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
+
+    Route::apiResource('appointments', AppointmentController::class);
+    Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailability']);
+
+    Route::apiResource('medicines', MedicineController::class);
+    Route::get('/clients/{clientId}/medicines', [MedicineController::class, 'getByClient']);
+
+    Route::apiResource('branches', BranchController::class);
+    Route::get('/clients/{clientId}/branches', [BranchController::class, 'getByClient']);
+
+    Route::apiResource('consulting-rooms', ConsultingRoomController::class);
+    Route::get('/branches/{branchId}/consulting-rooms', [ConsultingRoomController::class, 'getByBranch']);
+    Route::get('/clients/{clientId}/consulting-rooms', [ConsultingRoomController::class, 'getByClient']);
+
+    Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
+});

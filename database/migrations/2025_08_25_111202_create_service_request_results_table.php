@@ -42,13 +42,13 @@ return new class extends Migration
             $table->string('file_name')->comment('Nombre original del archivo');
             $table->string('file_type')->comment('Tipo MIME del archivo (application/pdf, application/msword, etc.)');
             $table->bigInteger('file_size')->comment('Tamaño del archivo en bytes');
-            
+
             // Hash para verificar integridad
             $table->string('file_hash')->comment('Hash SHA256 del archivo para verificar integridad');
 
             // Metadatos adicionales
             $table->json('metadata')->nullable()->comment('Metadatos adicionales del archivo en formato JSON');
-            
+
             // Fecha/hora del resultado
             $table->dateTime('result_date')->comment('Fecha/hora cuando se generó el resultado');
             $table->dateTime('uploaded_at')->comment('Fecha/hora de carga del archivo');
@@ -59,7 +59,7 @@ return new class extends Migration
 
             // Campos para interpretación
             $table->enum('interpretation', ['critical', 'high', 'low', 'normal', 'abnormal', 'better', 'worse', 'resistant', 'susceptible', 'intermediate'])->nullable()->comment('Interpretación del resultado');
-            
+
             // Referencias
             $table->text('reference_range')->nullable()->comment('Rango de referencia');
             $table->json('specimen_info')->nullable()->comment('Información de la muestra en formato JSON');

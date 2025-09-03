@@ -8,12 +8,16 @@ use Livewire\Component;
 
 class FinishedButton extends Component
 {
-    public  $encounter_id;
-    public  $encounter;
-    public  $enabled=false;
-    public  $messages=[];
+    public $encounter_id;
 
-    public function mount(){
+    public $encounter;
+
+    public $enabled = false;
+
+    public $messages = [];
+
+    public function mount()
+    {
 
         $this->encounter = Encounter::find($this->encounter_id);
 
@@ -28,64 +32,65 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-         $this->enabled =  $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
+        $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
 
     }
 
-    public function validateReason(){
+    public function validateReason()
+    {
 
         $return = true;
 
-        if(!empty($this->encounter->reason)){
+        if (! empty($this->encounter->reason)) {
             unset($this->messages[1]);
-        }
-        else{
+        } else {
             $return = false;
-            $this->messages[1]='- Queja Principal';
+            $this->messages[1] = '- Queja Principal';
         }
 
         return $return;
     }
 
-    public function validatePresentIllnesses(){
+    public function validatePresentIllnesses()
+    {
 
         $return = true;
-        if(!$this->encounter->presentIllnesses){
+        if (! $this->encounter->presentIllnesses) {
             $return = false;
-            $this->messages[2]='- Ubicación';
-            $this->messages[3]='- Gravedad';
-            $this->messages[4]='- Duración';
-            $this->messages[5]='- Momento';
-            $this->messages[6]='- Descripción';
-        }else{
-            if(empty($this->encounter->presentIllnesses->location)){
-                $this->messages[2]='- Ubicación';
+            $this->messages[2] = '- Ubicación';
+            $this->messages[3] = '- Gravedad';
+            $this->messages[4] = '- Duración';
+            $this->messages[5] = '- Momento';
+            $this->messages[6] = '- Descripción';
+        } else {
+            if (empty($this->encounter->presentIllnesses->location)) {
+                $this->messages[2] = '- Ubicación';
                 $return = false;
-            }else{
+            } else {
                 unset($this->messages[2]);
             }
-            if(empty($this->encounter->presentIllnesses->severity)){
-                $this->messages[3]='- Gravedad';
+            if (empty($this->encounter->presentIllnesses->severity)) {
+                $this->messages[3] = '- Gravedad';
                 $return = false;
-            }else{
+            } else {
                 unset($this->messages[3]);
             }
-            if(empty($this->encounter->presentIllnesses->duration)){
-                $this->messages[4]='- Duración';
+            if (empty($this->encounter->presentIllnesses->duration)) {
+                $this->messages[4] = '- Duración';
                 $return = false;
-            }else{
+            } else {
                 unset($this->messages[4]);
             }
-            if(empty($this->encounter->presentIllnesses->timing)){
-                $this->messages[5]='- Momento';
+            if (empty($this->encounter->presentIllnesses->timing)) {
+                $this->messages[5] = '- Momento';
                 $return = false;
-            }else{
+            } else {
                 unset($this->messages[5]);
             }
-            if(empty($this->encounter->presentIllnesses->description)){
-                $this->messages[6]='- Descripción';
+            if (empty($this->encounter->presentIllnesses->description)) {
+                $this->messages[6] = '- Descripción';
                 $return = false;
-            }else{
+            } else {
                 unset($this->messages[6]);
             }
         }
@@ -93,95 +98,106 @@ class FinishedButton extends Component
         return $return;
     }
 
-    public function validateCondition(){
+    public function validateCondition()
+    {
 
-        if($this->encounter->diagnoses->count()>0){
+        if ($this->encounter->diagnoses->count() > 0) {
             unset($this->messages[7]);
+
             return true;
-        }else{
-            $this->messages[7]='- Al menos un diagnostico';
+        } else {
+            $this->messages[7] = '- Al menos un diagnostico';
+
             return false;
         }
     }
 
-    public function validateMedicationRequests(){
+    public function validateMedicationRequests()
+    {
         $medicationRequests = $this->encounter->medicationRequests();
-        
+
         // Si no hay medicamentos agregados, la validación pasa
-        if($medicationRequests->count() === 0) {
+        if ($medicationRequests->count() === 0) {
             unset($this->messages[8]);
+
             return true;
         }
-        
+
         $incompleMedications = [];
-        
-        foreach($medicationRequests->get() as $medication) {
+
+        foreach ($medicationRequests->get() as $medication) {
             $missingFields = [];
-            
-            if(empty($medication->route)) {
+
+            if (empty($medication->route)) {
                 $missingFields[] = 'vía';
             }
-            
-            if(empty($medication->frequency)) {
+
+            if (empty($medication->frequency)) {
                 $missingFields[] = 'frecuencia';
             }
-            
-            if(empty($medication->quantity)) {
+
+            if (empty($medication->quantity)) {
                 $missingFields[] = 'cantidad';
             }
-            
-            if(empty($medication->duration)) {
+
+            if (empty($medication->duration)) {
                 $missingFields[] = 'duración';
             }
-            
-            if(!empty($missingFields)) {
+
+            if (! empty($missingFields)) {
                 $medicationName = $medication->medicine->full_name ?? 'Medicamento';
-                $incompleMedications[] = $medicationName . ' (' . implode(', ', $missingFields) . ')';
+                $incompleMedications[] = $medicationName.' ('.implode(', ', $missingFields).')';
             }
         }
-        
-        if(!empty($incompleMedications)) {
-            $this->messages[8] = '- Medicamentos incompletos: ' . implode(', ', $incompleMedications);
+
+        if (! empty($incompleMedications)) {
+            $this->messages[8] = '- Medicamentos incompletos: '.implode(', ', $incompleMedications);
+
             return false;
         } else {
             unset($this->messages[8]);
+
             return true;
         }
     }
 
-    public function validateReferrals(){
+    public function validateReferrals()
+    {
         $referrals = $this->encounter->referrals();
-        
+
         // Si no hay referrals agregados, la validación pasa
-        if($referrals->count() === 0) {
+        if ($referrals->count() === 0) {
             unset($this->messages[9]);
+
             return true;
         }
-        
+
         $incompleteReferrals = [];
-        
-        foreach($referrals->get() as $referral) {
+
+        foreach ($referrals->get() as $referral) {
             $missingFields = [];
-            
-            if(empty($referral->reason)) {
+
+            if (empty($referral->reason)) {
                 $missingFields[] = 'motivo de referencia';
             }
-            
-            if(empty($referral->referred_to_id)) {
+
+            if (empty($referral->referred_to_id)) {
                 $missingFields[] = 'especialista asignado';
             }
-            
-            if(!empty($missingFields)) {
+
+            if (! empty($missingFields)) {
                 $specialtyName = $referral->speciality->name ?? 'Especialidad desconocida';
-                $incompleteReferrals[] = $specialtyName . ' (' . implode(', ', $missingFields) . ')';
+                $incompleteReferrals[] = $specialtyName.' ('.implode(', ', $missingFields).')';
             }
         }
-        
-        if(!empty($incompleteReferrals)) {
-            $this->messages[9] = '- Referencias incompletas: ' . implode(', ', $incompleteReferrals);
+
+        if (! empty($incompleteReferrals)) {
+            $this->messages[9] = '- Referencias incompletas: '.implode(', ', $incompleteReferrals);
+
             return false;
         } else {
             unset($this->messages[9]);
+
             return true;
         }
     }

@@ -36,7 +36,7 @@ return new class extends Migration
                 'medication',
                 'supply',
                 'facility',
-                'other'
+                'other',
             ]);
 
             // Pricing information
@@ -92,7 +92,7 @@ return new class extends Migration
             $table->index(['service_type', 'is_active']);
             $table->index(['specialty', 'is_active']);
             $table->index(['client_id', 'is_active']);
-            //$table->index('cpt_code');
+            // $table->index('cpt_code');
             $table->index('revenue_code');
         });
     }

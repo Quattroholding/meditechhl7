@@ -87,12 +87,12 @@ class ServiceRequestResult extends BaseModel
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     public function isFinal(): bool
@@ -122,11 +122,12 @@ class ServiceRequestResult extends BaseModel
 
     public function verifyFileIntegrity(): bool
     {
-        if (!Storage::exists($this->file_path)) {
+        if (! Storage::exists($this->file_path)) {
             return false;
         }
 
         $currentHash = hash_file('sha256', Storage::path($this->file_path));
+
         return $currentHash === $this->file_hash;
     }
 

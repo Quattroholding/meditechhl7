@@ -3,7 +3,6 @@
 namespace App\Livewire\Medicine;
 
 use App\Models\Medicine;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -12,21 +11,35 @@ class ModalSave extends Component
 {
     #[Modelable]
     public $showModal;
+
     public $medicine;
+
     public $title;
+
     public $buttonSaveTitle = 'Guardar Medicamento';
 
     public $generic_name = '';
+
     public $home_name = '';
+
     public $ndc_code = '';
+
     public $type = '';
+
     public $mgs = '';
+
     public $mgs_type = '';
+
     public $instructions = '';
+
     public $side_effects = '';
+
     public $contraindications = '';
+
     public $interactions = '';
+
     public $active = 1;
+
     public $narcotic = 1;
 
     protected $rules = [
@@ -42,7 +55,7 @@ class ModalSave extends Component
         'contraindications' => 'nullable|string',
         'interactions' => 'nullable|string',
         */
-        'active' => 'required'
+        'active' => 'required',
     ];
 
     protected $messages = [
@@ -50,7 +63,7 @@ class ModalSave extends Component
         'type.required' => 'El tipo de medicamento es obligatorio.',
         'mgs.required' => 'La dosis es obligatoria.',
         'mgs_type.required' => 'El tipo de dosis es obligatorio.',
-        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.'
+        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.',
     ];
 
     public function render()
@@ -112,7 +125,7 @@ class ModalSave extends Component
                 'narcotic' => $this->narcotic,
                 'active' => $this->active,
                 'client_id' => auth()->user()->getCurrentClient()->id,
-                'user_id' => auth()->user()->id
+                'user_id' => auth()->user()->id,
             ];
 
             if ($this->medicine) {
@@ -135,7 +148,7 @@ class ModalSave extends Component
 
         } catch (\Exception $e) {
             $this->closeModal();
-            session()->flash('message.error', 'Error al guardar el medicamento: ' . $e->getMessage());
+            session()->flash('message.error', 'Error al guardar el medicamento: '.$e->getMessage());
         }
     }
 

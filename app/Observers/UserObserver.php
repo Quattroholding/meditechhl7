@@ -59,18 +59,18 @@ class UserObserver
     {
         // Get user roles
         $userRoles = $user->getRoleNames()->toArray();
-        
+
         // Map roles to dashboard types
         $dashboardTypes = [];
-        
+
         if (in_array('doctor', $userRoles)) {
             $dashboardTypes[] = 'doctor';
         }
-        
+
         if (in_array('asistente', $userRoles)) {
             $dashboardTypes[] = 'assistant';
         }
-        
+
         if (in_array('paciente', $userRoles)) {
             $dashboardTypes[] = 'patient';
         }
@@ -98,13 +98,13 @@ class UserObserver
                 [
                     'user_id' => $userId,
                     'dashboard_type' => $dashboardType,
-                    'widget_name' => $widgetKey
+                    'widget_name' => $widgetKey,
                 ],
                 [
                     'widget_description' => $widgetConfig['description'] ?? $widgetConfig['name'],
                     'is_visible' => true, // All widgets visible by default
                     'order_position' => $widgetConfig['order'],
-                    'width' => $widgetConfig['width'] ?? 'col-lg-6'
+                    'width' => $widgetConfig['width'] ?? 'col-lg-6',
                 ]
             );
         }

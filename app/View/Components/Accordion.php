@@ -8,7 +8,6 @@ use Illuminate\View\Component;
 
 class Accordion extends Component
 {
-
     public $allowMultiple;
 
     /**

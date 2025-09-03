@@ -12,7 +12,9 @@ use Livewire\Component;
 class StatusManager extends Component
 {
     public $showModal = false;
+
     public $serviceRequestId;
+
     public $serviceRequest;
 
     #[Validate('required')]
@@ -31,7 +33,7 @@ class StatusManager extends Component
         'revoked' => ['entered-in-error'],
         'completed' => ['entered-in-error'],
         'entered-in-error' => [],
-        'unknown' => ['draft', 'active', 'entered-in-error']
+        'unknown' => ['draft', 'active', 'entered-in-error'],
     ];
 
     #[On('openStatusManagerModal')]
@@ -40,8 +42,9 @@ class StatusManager extends Component
         $this->serviceRequestId = $serviceRequestId;
         $this->serviceRequest = ServiceRequest::find($serviceRequestId);
 
-        if (!$this->serviceRequest) {
+        if (! $this->serviceRequest) {
             session()->flash('error', __('service_request.not_found'));
+
             return;
         }
 
@@ -59,7 +62,7 @@ class StatusManager extends Component
     {
         $this->statusHistory = StatusHistoryLog::where('model_name', ServiceRequest::class)
             ->where('record_id', $this->serviceRequestId)
-            //->where('new_status', 'status')
+            // ->where('new_status', 'status')
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -68,6 +71,7 @@ class StatusManager extends Component
     public function getAvailableStatuses()
     {
         $currentStatus = $this->serviceRequest->status ?? 'draft';
+
         return $this->validStatuses[$currentStatus] ?? [];
     }
 
@@ -75,29 +79,31 @@ class StatusManager extends Component
     {
         $this->validate();
 
-        if (!$this->serviceRequest) {
+        if (! $this->serviceRequest) {
             session()->flash('error', __('service_request.not_found'));
+
             return;
         }
 
         $currentStatus = $this->serviceRequest->status;
 
         // Validar transición
-        if (!$this->isValidTransition($currentStatus, $this->newStatus)) {
+        if (! $this->isValidTransition($currentStatus, $this->newStatus)) {
             session()->flash('error', __('service_request.invalid_status_transition'));
+
             return;
         }
 
         try {
             // Registrar cambio en el historial antes de actualizar
             StatusHistoryLog::create([
-                'table_name'=>'service_requests',
-                'model_name'=> 'App\Models\ServiceRequest',
-                'record_id'=>$this->serviceRequest->id,
-                'user_id'=>Auth::user()->id,
+                'table_name' => 'service_requests',
+                'model_name' => 'App\Models\ServiceRequest',
+                'record_id' => $this->serviceRequest->id,
+                'user_id' => Auth::user()->id,
                 'old_status' => $currentStatus,
                 'new_status' => $this->newStatus,
-                'observation'=> $this->statusReason ?: __('service_request.manual_status_change'),
+                'observation' => $this->statusReason ?: __('service_request.manual_status_change'),
                 'change_type' => 'manual',
             ]);
 
@@ -110,23 +116,23 @@ class StatusManager extends Component
             session()->flash('message.success', __('service_request.status_changed_successfully'));
             $this->dispatch('showToastrStatusManager',
                 type: 'success',
-                message:__('service_request.status_changed_successfully'),
+                message: __('service_request.status_changed_successfully'),
             );
             $this->dispatch('refreshServiceRequests');
             $this->closeModal();
 
         } catch (\Exception $e) {
-            session()->flash('message.error', __('service_request.status_change_failed') . ': ' . $e->getMessage());
+            session()->flash('message.error', __('service_request.status_change_failed').': '.$e->getMessage());
             $this->dispatch('showToastrStatusManager',
                 type: 'error',
-                message:  __('service_request.status_change_failed') . ': ' . $e->getMessage(),
+                message: __('service_request.status_change_failed').': '.$e->getMessage(),
             );
         }
     }
 
     public function isValidTransition($fromStatus, $toStatus)
     {
-        if (!$fromStatus) {
+        if (! $fromStatus) {
             return in_array($toStatus, ['draft', 'active']);
         }
 
@@ -135,7 +141,7 @@ class StatusManager extends Component
 
     public function getStatusColor($status)
     {
-        return match($status) {
+        return match ($status) {
             'draft' => 'secondary',
             'active' => 'primary',
             'on-hold' => 'warning',
@@ -150,7 +156,7 @@ class StatusManager extends Component
     public function render()
     {
         return view('livewire.service-request.status-manager', [
-            'availableStatuses' => $this->getAvailableStatuses()
+            'availableStatuses' => $this->getAvailableStatuses(),
         ]);
     }
 }

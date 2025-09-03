@@ -13,15 +13,22 @@ class PaymentModal extends Component
 {
     #[Modelable]
     public $showModal = false;
+
     public $invoice;
+
     public $invoiceId;
 
     // Payment form fields
     public $amount;
+
     public $payment_date;
+
     public $payment_method = 'cash';
+
     public $reference_number;
+
     public $transaction_id;
+
     public $notes;
 
     protected $rules = [
@@ -51,17 +58,19 @@ class PaymentModal extends Component
     {
         $this->payment_date = now()->format('Y-m-d');
     }
+
     #[On('openPaymentModal')]
     public function openModal($invoiceId)
     {
         $this->invoiceId = $invoiceId;
         $this->invoice = Invoice::with(['patient', 'payments'])->find($invoiceId);
 
-        if (!$this->invoice) {
+        if (! $this->invoice) {
             $this->dispatch('showToastr', [
                 'type' => 'error',
-                'message' => 'Factura no encontrada.'
+                'message' => 'Factura no encontrada.',
             ]);
+
             return;
         }
 
@@ -82,17 +91,19 @@ class PaymentModal extends Component
     {
         $this->validate();
 
-        if (!$this->invoice) {
+        if (! $this->invoice) {
             $this->dispatch('showToastr', [
                 'type' => 'error',
-                'message' => 'Factura no encontrada.'
+                'message' => 'Factura no encontrada.',
             ]);
+
             return;
         }
 
         // Validate amount doesn't exceed balance
         if ($this->amount > $this->invoice->balance) {
             $this->addError('amount', 'El monto no puede ser mayor al saldo pendiente de $'.number_format($this->invoice->balance, 2));
+
             return;
         }
 
@@ -130,7 +141,7 @@ class PaymentModal extends Component
 
             $this->dispatch('showToastr', [
                 'type' => 'success',
-                'message' => '¡Pago registrado exitosamente!'
+                'message' => '¡Pago registrado exitosamente!',
             ]);
 
             $this->dispatch('paymentSaved');
@@ -139,7 +150,7 @@ class PaymentModal extends Component
         } catch (\Exception $e) {
             $this->dispatch('showToastr', [
                 'type' => 'error',
-                'message' => 'Error al registrar el pago: '.$e->getMessage()
+                'message' => 'Error al registrar el pago: '.$e->getMessage(),
             ]);
         }
     }

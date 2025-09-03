@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class VitalSign  extends BaseModel
+
+class VitalSign extends BaseModel
 {
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status',
         'code', 'category', 'value', 'unit', 'interpretation', 'note',
-        'effective_date', 'issued_date', 'body_site', 'method'
+        'effective_date', 'issued_date', 'body_site', 'method',
     ];
 
     protected $casts = [
         'effective_date' => 'datetime',
         'issued_date' => 'datetime',
-        'value' => 'decimal:2'
+        'value' => 'decimal:2',
     ];
 
     // Relaciones
@@ -45,7 +44,7 @@ class VitalSign  extends BaseModel
     {
         $code = $this->code;
 
-        if (!$code || !isset($code['coding'])) {
+        if (! $code || ! isset($code['coding'])) {
             return null;
         }
 
@@ -61,7 +60,7 @@ class VitalSign  extends BaseModel
     {
         $code = $this->code;
 
-        if (!$code) {
+        if (! $code) {
             return 'N/A';
         }
 
@@ -82,7 +81,7 @@ class VitalSign  extends BaseModel
     {
         $value = $this->value;
 
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -104,7 +103,7 @@ class VitalSign  extends BaseModel
     {
         $value = $this->value;
 
-        if (!$value || !isset($value['unit'])) {
+        if (! $value || ! isset($value['unit'])) {
             return null;
         }
 
@@ -129,7 +128,7 @@ class VitalSign  extends BaseModel
     // Obtener componentes para observaciones complejas (como presión arterial)
     public function getComponentsAttribute(): array
     {
-        if (!$this->component || !is_array($this->component)) {
+        if (! $this->component || ! is_array($this->component)) {
             return [];
         }
 
@@ -155,8 +154,8 @@ class VitalSign  extends BaseModel
                 'value' => $numericValue,
                 'unit' => $unit,
                 'formatted' => $numericValue !== null
-                    ? number_format($numericValue, 0) . ($unit ? " {$unit}" : '')
-                    : 'N/A'
+                    ? number_format($numericValue, 0).($unit ? " {$unit}" : '')
+                    : 'N/A',
             ];
         })->toArray();
     }
@@ -167,7 +166,7 @@ class VitalSign  extends BaseModel
         $referenceRange = $this->reference_range;
         $value = $this->numeric_value;
 
-        if (!$referenceRange || !$value || !isset($referenceRange[0])) {
+        if (! $referenceRange || ! $value || ! isset($referenceRange[0])) {
             return true; // Asumimos normal si no hay rango definido
         }
 
@@ -217,14 +216,14 @@ class VitalSign  extends BaseModel
     public function scopeVitalSigns($query)
     {
         return $query->whereJsonContains('category', [
-            ['coding' => [['code' => 'vital-signs']]]
+            ['coding' => [['code' => 'vital-signs']]],
         ]);
     }
 
     public function scopeByLoincCode($query, string $loincCode)
     {
         return $query->whereJsonContains('code', [
-            'coding' => [['system' => 'http://loinc.org', 'code' => $loincCode]]
+            'coding' => [['system' => 'http://loinc.org', 'code' => $loincCode]],
         ]);
     }
 

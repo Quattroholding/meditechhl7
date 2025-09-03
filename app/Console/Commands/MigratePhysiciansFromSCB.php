@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\CreatePractitionerUserAction;
+use App\Models\Client;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +24,8 @@ class MigratePhysiciansFromSCB extends Command
                             {--dry-run : Ejecutar en modo simulación sin guardar cambios}
                             {--batch-size=100 : Número de médicos a procesar por lote}
                             {--limit= : Limitar el número total de médicos a migrar}
-                            {--force-remigrate : Ignorar flag de migración y procesar todos los médicos}';
+                            {--force-remigrate : Ignorar flag de migración y procesar todos los médicos}
+                            {--create-users : Crear usuarios inactivos para los practicantes migrados}';
 
     /**
      * The console command description.
@@ -40,6 +44,7 @@ class MigratePhysiciansFromSCB extends Command
             $batchSize = (int) $this->option('batch-size', 100);
             $limit = $this->option('limit') ? (int) $this->option('limit') : null;
             $forceRemigrate = $this->option('force-remigrate');
+            $createUsers = $this->option('create-users');
 
             if ($isDryRun) {
                 $this->warn('🧪 Ejecutando en modo DRY-RUN - No se guardarán cambios');
@@ -47,6 +52,10 @@ class MigratePhysiciansFromSCB extends Command
 
             if ($forceRemigrate) {
                 $this->warn('⚠️  Modo FORCE-REMIGRATE activado - Se procesarán todos los médicos');
+            }
+
+            if ($createUsers) {
+                $this->info('👥 Opción CREATE-USERS activada - Se crearán usuarios inactivos para los practicantes');
             }
 
             $this->info('👩‍⚕️ Iniciando migración de médicos/practicantes desde SCB...');
@@ -138,6 +147,27 @@ class MigratePhysiciansFromSCB extends Command
             $migratedCount = 0;
             $skippedCount = 0;
             $errorCount = 0;
+            $usersCreatedCount = 0;
+
+            // Initialize user creation action if needed
+            $userAction = null;
+            $defaultClient = null;
+            if ($createUsers && ! $isDryRun) {
+                $userAction = new CreatePractitionerUserAction;
+                $defaultClient = Client::first();
+
+                if (! $defaultClient) {
+                    $this->error('❌ No se encontró un cliente por defecto para crear usuarios');
+
+                    return Command::FAILURE;
+                }
+
+                // Create a dummy admin user for context
+                $adminUser = User::first();
+                auth()->login($adminUser);
+
+                $this->info("👤 Usuario por defecto establecido para creación: {$defaultClient->name}");
+            }
 
             foreach ($scb_physicians as $physician) {
                 $physicianName = "{$physician->name} {$physician->surrname}";
@@ -160,7 +190,7 @@ class MigratePhysiciansFromSCB extends Command
                             $identifier = fake()->unique()->regexify($this->getIdPattern('CC'));
                         }
                         $practitioner->identifier = $identifier;
-                        $practitioner->registry = $physician->registro;
+                        $practitioner->registry = $physician->registro ?? fake()->unique()->numerify('#######');
                         $practitioner->birth_date = Carbon::now()->subYear(40);
                         $practitioner->address = strtolower($physician->address);
                         $practitioner->gender = fake()->randomElement(['male', 'female']);
@@ -187,6 +217,29 @@ class MigratePhysiciansFromSCB extends Command
                                         ],
                                     ];
                                     $practitioner->specialties()->sync($specialtyData);
+                                }
+                            }
+
+                            // Create inactive user if option is enabled
+                            if ($createUsers && $userAction && ! User::where('email', $practitioner->email)->exists()) {
+                                try {
+                                    $user = $userAction->execute($practitioner, false);
+                                    $practitioner->user_id = $user->id;
+
+                                    $practitioner->update(['user_id' => $user->id]);
+
+                                    // Ensure user is associated with the default client
+                                    if (! $user->clients()->where('client_id', $defaultClient->id)->exists()) {
+                                        $user->clients()->attach($defaultClient->id);
+                                    }
+
+                                    if (! $user->default_client_id) {
+                                        $user->update(['default_client_id' => $defaultClient->id]);
+                                    }
+
+                                    $usersCreatedCount++;
+                                } catch (\Exception $userError) {
+                                    Log::error("Error creando usuario para médico {$physician->code}: ".$userError->getMessage());
                                 }
                             }
 
@@ -235,6 +288,10 @@ class MigratePhysiciansFromSCB extends Command
                 ['Médicos omitidos (ya existían)', $skippedCount],
                 ['Errores encontrados', $errorCount],
             ];
+
+            if ($createUsers) {
+                $summaryData[] = ['Usuarios creados (inactivos)', $usersCreatedCount];
+            }
 
             if ($forceRemigrate) {
                 $summaryData[] = ['Modo force-remigrate', 'SÍ'];

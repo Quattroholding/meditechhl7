@@ -16,11 +16,11 @@ class ClinicalObservationType extends Model
         'max_normal_value',
         'description',
         'procedure',
-        'possible_abnormalities'
+        'possible_abnormalities',
     ];
 
     protected $casts = [
-        'possible_abnormalities' => 'array'
+        'possible_abnormalities' => 'array',
     ];
 
     public function scopeVitalSigns($query)

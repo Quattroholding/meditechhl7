@@ -2,22 +2,25 @@
 
 namespace App\Livewire\Permission;
 
-use Livewire\Attributes\Modelable;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 
 class ModalSave extends Component
 {
     public $permission;
+
     public $name = '';
+
     public $description = '';
+
     public $isEdit = false;
-    public $showModal=false;
+
+    public $showModal = false;
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'description' => 'nullable|string|max:500'
+        'description' => 'nullable|string|max:500',
     ];
 
     protected $messages = [
@@ -41,14 +44,14 @@ class ModalSave extends Component
         $this->resetForm();
         if ($permissionId) {
             $this->loadPermission($permissionId);
-            $this->showModal=true;
+            $this->showModal = true;
         }
     }
 
     public function closeModal()
     {
         $this->resetForm();
-        $this->showModal=false;
+        $this->showModal = false;
     }
 
     private function loadPermission($permissionId)
@@ -76,7 +79,7 @@ class ModalSave extends Component
         // Check for unique name
         if ($this->isEdit) {
             $this->validate([
-                'name' => 'required|string|max:255|unique:permissions,name,' . $this->permission->id,
+                'name' => 'required|string|max:255|unique:permissions,name,'.$this->permission->id,
             ]);
         } else {
             $this->validate([
@@ -87,19 +90,19 @@ class ModalSave extends Component
         if ($this->isEdit) {
             $this->permission->update([
                 'name' => $this->name,
-                'description' => $this->description
+                'description' => $this->description,
             ]);
         } else {
             Permission::create([
                 'name' => $this->name,
-                'description' => $this->description
+                'description' => $this->description,
             ]);
         }
 
         $this->dispatch('swal:alert', [
             'type' => 'success',
             'title' => 'Éxito',
-            'text' => $this->isEdit ? 'Permiso actualizado exitosamente.' : 'Permiso creado exitosamente.'
+            'text' => $this->isEdit ? 'Permiso actualizado exitosamente.' : 'Permiso creado exitosamente.',
         ]);
 
         $this->dispatch('permission-saved');

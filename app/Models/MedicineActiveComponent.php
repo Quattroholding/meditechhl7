@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class MedicineActiveComponent extends BaseModel
 {
-    protected $fillable=['medicine_id', 'name', 'mgs'];
+    protected $fillable = ['medicine_id', 'name', 'mgs'];
 
-    public function medicine(){
+    public function medicine()
+    {
         return $this->belongsTo(Medicine::class);
     }
 }

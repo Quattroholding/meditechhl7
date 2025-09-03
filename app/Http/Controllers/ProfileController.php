@@ -32,14 +32,15 @@ class ProfileController extends Controller
             auth()->user()->email_verified_at = null;
         }
 
-        if(auth()->user()->save()){
+        if (auth()->user()->save()) {
 
-            if($request->has('clients'))
+            if ($request->has('clients')) {
                 auth()->user()->clients()->sync($request->clients);
+            }
 
-            session()->flash('message.success','Actualizado con exito!');
-        }else{
-            session()->flash('message.error','Hubo un error y no se pudo actualizar!');
+            session()->flash('message.success', 'Actualizado con exito!');
+        } else {
+            session()->flash('message.error', 'Hubo un error y no se pudo actualizar!');
         }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

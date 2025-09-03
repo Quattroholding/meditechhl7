@@ -44,6 +44,7 @@ class PractitionerResource extends JsonResource
             'profile_photo' => $this->avatar() ?
                 config('app.url').'/storage/'.$this->avatar()->path : '',
             'active' => $this->active,
+            'next_week_schedule' => $this->when(isset($this->next_week_schedule), $this->next_week_schedule),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

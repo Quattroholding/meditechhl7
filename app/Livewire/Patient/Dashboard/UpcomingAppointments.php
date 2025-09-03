@@ -8,13 +8,21 @@ use Livewire\Component;
 class UpcomingAppointments extends Component
 {
     public $patient;
+
     public $limit = 5;
+
     public $appointment_date;
+
     public $appointment_time;
+
     public $modalTitle;
+
     public $showModal;
+
     public $order;
+
     public $isLoading = true;
+
     public $upcomingAppointments = [];
 
     protected $listeners = ['loadData'];
@@ -36,8 +44,9 @@ class UpcomingAppointments extends Component
 
     public function loadUpcomingAppointments()
     {
-        if (!$this->patient) {
+        if (! $this->patient) {
             $this->upcomingAppointments = collect();
+
             return;
         }
 
@@ -59,24 +68,24 @@ class UpcomingAppointments extends Component
         if ($appointment && $appointment->start > now()->addHours(24)) {
             $appointment->update([
                 'status' => 'cancelled',
-                'cancellation_reason' => 'Cancelado por el paciente'
+                'cancellation_reason' => 'Cancelado por el paciente',
             ]);
 
             $this->dispatch('showToastr', [
                 'type' => 'success',
-                'message' => 'Cita cancelada exitosamente.'
+                'message' => 'Cita cancelada exitosamente.',
             ]);
         } else {
             $this->dispatch('showToastr', [
                 'type' => 'error',
-                'message' => 'No se puede cancelar esta cita. Debe hacerlo con al menos 24 horas de anticipación.'
+                'message' => 'No se puede cancelar esta cita. Debe hacerlo con al menos 24 horas de anticipación.',
             ]);
         }
     }
 
-    public function openModal($date = null, $time = null,$modalTitle='Nueva Cita')
+    public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal','Nueva Cita');
+        $this->dispatch('openAppointmentModal', 'Nueva Cita');
     }
 
     public function render()

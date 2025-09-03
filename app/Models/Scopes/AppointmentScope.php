@@ -13,24 +13,24 @@ class AppointmentScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if(auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner){  // el doctor solo ve sus citas
-            $builder->where('practitioner_id',auth()->user()->practitioner->id);
-            $builder->whereHas('patient',function ($q){
-                $q->whereHas('clients',function ($q2){
-                    $q2->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
+        if (auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {  // el doctor solo ve sus citas
+            $builder->where('practitioner_id', auth()->user()->practitioner->id);
+            $builder->whereHas('patient', function ($q) {
+                $q->whereHas('clients', function ($q2) {
+                    $q2->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
                 });
             });
-        }elseif(auth()->user() && auth()->user()->hasRole('paciente') && auth()->user()->patient->id){ // el asistente ve todas las citas de los doctores asociados a cu cliente
-            $builder->where('patient_id',auth()->user()->patient->id);
-        }elseif(auth()->user() && auth()->user()->hasRole('asistente') || auth()->user() && auth()->user()->hasRole('admin client')){ // el asistente ve todas las citas de los doctores asociados a cu cliente
-            $builder->whereHas('patient',function ($q){
-                $q->whereHas('clients',function ($q2){
-                   $q2->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
+        } elseif (auth()->user() && auth()->user()->hasRole('paciente') && auth()->user()->patient->id) { // el asistente ve todas las citas de los doctores asociados a cu cliente
+            $builder->where('patient_id', auth()->user()->patient->id);
+        } elseif (auth()->user() && auth()->user()->hasRole('asistente') || auth()->user() && auth()->user()->hasRole('admin client')) { // el asistente ve todas las citas de los doctores asociados a cu cliente
+            $builder->whereHas('patient', function ($q) {
+                $q->whereHas('clients', function ($q2) {
+                    $q2->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
                 });
-            })->whereHas('practitioner',function ($q){
-                $q->whereHas('user',function ($q2){
-                    $q2->whereHas('clients',function ($q3){
-                        $q3->whereIn('client_id',auth()->user()->clients()->pluck('client_id'));
+            })->whereHas('practitioner', function ($q) {
+                $q->whereHas('user', function ($q2) {
+                    $q2->whereHas('clients', function ($q3) {
+                        $q3->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
                     });
                 });
             });

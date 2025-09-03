@@ -266,7 +266,7 @@ class ServiceCatalog extends BaseModel
         return ChargeItem::create([
             'fhir_id' => 'charge-'.Str::uuid(),
             'status' => 'billable',
-            'service_catalog_id'=>$this->id,
+            'service_catalog_id' => $this->id,
             'code' => [
                 'coding' => [
                     [

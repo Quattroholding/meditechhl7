@@ -14,7 +14,7 @@ class Survey extends BaseModel
         'is_active',
         'status',
         'client_id',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [
@@ -23,7 +23,7 @@ class Survey extends BaseModel
 
     protected static function booted()
     {
-        //static::addGlobalScope(new ClientScope);
+        // static::addGlobalScope(new ClientScope);
     }
 
     public function client(): BelongsTo

@@ -281,6 +281,18 @@
                         </a>
                     </li>
                 @endcan
+                @role('admin')
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-key"></i></span>
+                        <span> Tokens API </span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('api-tokens') ? 'active' : '' }}"  href="{{ route('api-tokens.index') }}">Gestionar Tokens</a></li>
+                        <li><a class="{{ Request::is('api-tokens/create') ? 'active' : '' }}"  href="{{ route('api-tokens.create') }}">Crear Token</a></li>
+                    </ul>
+                </li>
+                @endrole
+                
                 @canany(['manage-roles', 'manage-permissions'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">

@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            
+
             $table->index(['invoice_id', 'payment_date']);
             $table->index(['patient_id', 'payment_date']);
             $table->index(['payment_source', 'status']);

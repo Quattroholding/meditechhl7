@@ -2,27 +2,33 @@
 
 namespace App\Livewire;
 
-use App\Models\Consultation;
-use App\Models\ConsultationData;
-use App\Models\ConsultationField;
-use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Livewire\Component;
 
 class SearchDropdown extends Component
 {
     public $query = '';
-    public $results = [];
-    public $selectedOption = null;
-    public $path;
-    public $consultation_field_id;
-    public $consultation_field;
-    public $consultation;
-    public $is_patient = false;
-    public $selectedLists=[];
 
-    public function mount($path,$consultation_field_id=null,$is_patient=false){
+    public $results = [];
+
+    public $selectedOption = null;
+
+    public $path;
+
+    public $consultation_field_id;
+
+    public $consultation_field;
+
+    public $consultation;
+
+    public $is_patient = false;
+
+    public $selectedLists = [];
+
+    public function mount($path, $consultation_field_id = null, $is_patient = false)
+    {
         $this->path = url($path);
-        $this->is_patient=$is_patient;
+        $this->is_patient = $is_patient;
 
     }
 
@@ -30,11 +36,12 @@ class SearchDropdown extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+
             return;
         }
 
         $response = Http::get($this->path, [
-            'dropdown'=>true,
+            'dropdown' => true,
             'q' => $this->query,
         ]);
 
@@ -52,5 +59,4 @@ class SearchDropdown extends Component
     {
         return view('livewire.search-dropdown');
     }
-
 }

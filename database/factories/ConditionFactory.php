@@ -17,21 +17,20 @@ class ConditionFactory extends Factory
     {
         $condition = Icd10Code::inRandomOrder()->first();
 
-
         $onsetDate = $this->faker->dateTimeBetween('-5 years', 'now');
         $abatementDate = $this->faker->boolean(30)
             ? $this->faker->dateTimeBetween($onsetDate, 'now')
             : null;
 
         return [
-            'fhir_id' => 'condition-' . Str::uuid(),
+            'fhir_id' => 'condition-'.Str::uuid(),
             'patient_id' => Patient::factory(),
             'practitioner_id' => Practitioner::factory(),
-            'identifier' => 'DX-' . $this->faker->unique()->numerify('#######'),
+            'identifier' => 'DX-'.$this->faker->unique()->numerify('#######'),
             'clinical_status' => $abatementDate ? 'resolved' : $this->faker->randomElement(['active', 'recurrence', 'relapse']),
             'verification_status' => $this->faker->randomElement(['confirmed', 'provisional', 'differential']),
             'code' => $condition->code,
-            'category' =>null,
+            'category' => null,
             'severity' => $this->faker->randomElement(['mild', 'moderate', 'severe', 'critical']),
             'onset_date' => $onsetDate,
             'abatement_date' => $abatementDate,
@@ -67,14 +66,14 @@ class ConditionFactory extends Factory
             return [
                 'clinical_status' => 'active',
                 'abatement_date' => null,
-                'note' => 'Condición crónica. ' . $this->faker->sentence(),
+                'note' => 'Condición crónica. '.$this->faker->sentence(),
             ];
         });
     }
 
     public function withCategory(string $category)
     {
-        $conditions = array_filter($this->getCommonConditions(), function($cond) use ($category) {
+        $conditions = array_filter($this->getCommonConditions(), function ($cond) use ($category) {
             return $cond['category'] === $category;
         });
 
@@ -100,60 +99,60 @@ class ConditionFactory extends Factory
             [
                 'code' => 'A09',
                 'category' => 'infectious',
-                'description' => 'Diarrea y gastroenteritis de presunto origen infeccioso'
+                'description' => 'Diarrea y gastroenteritis de presunto origen infeccioso',
             ],
             [
                 'code' => 'J18.9',
                 'category' => 'infectious',
-                'description' => 'Neumonía, no especificada'
+                'description' => 'Neumonía, no especificada',
             ],
 
             // Enfermedades crónicas
             [
                 'code' => 'E11.65',
                 'category' => 'chronic',
-                'description' => 'Diabetes mellitus tipo 2 con hiperglucemia'
+                'description' => 'Diabetes mellitus tipo 2 con hiperglucemia',
             ],
             [
                 'code' => 'I10',
                 'category' => 'chronic',
-                'description' => 'Hipertensión esencial (primaria)'
+                'description' => 'Hipertensión esencial (primaria)',
             ],
 
             // Enfermedades cardiovasculares
             [
                 'code' => 'I25.10',
                 'category' => 'cardiovascular',
-                'description' => 'Enfermedad aterosclerótica del corazón sin angina de pecho'
+                'description' => 'Enfermedad aterosclerótica del corazón sin angina de pecho',
             ],
 
             // Trastornos musculoesqueléticos
             [
                 'code' => 'M54.5',
                 'category' => 'musculoskeletal',
-                'description' => 'Lumbalgia baja'
+                'description' => 'Lumbalgia baja',
             ],
 
             // Trastornos mentales
             [
                 'code' => 'F32.9',
                 'category' => 'mental',
-                'description' => 'Episodio depresivo, no especificado'
+                'description' => 'Episodio depresivo, no especificado',
             ],
 
             // Lesiones
             [
                 'code' => 'S72.001A',
                 'category' => 'injury',
-                'description' => 'Fractura de fémur no especificada, inicial'
+                'description' => 'Fractura de fémur no especificada, inicial',
             ],
 
             // Condiciones respiratorias
             [
                 'code' => 'J45.909',
                 'category' => 'respiratory',
-                'description' => 'Asma no especificada, no controlada'
-            ]
+                'description' => 'Asma no especificada, no controlada',
+            ],
         ];
     }
 
@@ -161,10 +160,10 @@ class ConditionFactory extends Factory
     public function configure()
     {
         return $this->afterMaking(function (Condition $condition) {
-            if (!$condition->patient_id) {
+            if (! $condition->patient_id) {
                 $condition->patient()->associate(Patient::factory()->create());
             }
-            if (!$condition->practitioner_id) {
+            if (! $condition->practitioner_id) {
                 $condition->practitioner()->associate(Practitioner::factory()->create());
             }
         });

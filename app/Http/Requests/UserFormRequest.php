@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-
+use Illuminate\Foundation\Http\FormRequest;
 
 class UserFormRequest extends FormRequest
 {
@@ -29,18 +27,18 @@ class UserFormRequest extends FormRequest
         $rules['rol'] = 'required|integer';
         switch ($rol) {
             case '5':
-            /*------VALIDACIÓN PARA ASISTENTE------*/
+                /* ------VALIDACIÓN PARA ASISTENTE------ */
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = 'required|string|confirmed';//|min:8';
+                $rules['password'] = 'required|string|confirmed'; // |min:8';
                 $rules['clients'] = 'required|array|min:1';
                 break;
             case '3':
                 $rules['first_name'] = 'required|string|max:255';
                 $rules['last_name'] = 'required|string|max:255';
                 $rules['email'] = 'required|email|unique:users,email';
-                $rules['password'] = 'required|string|confirmed';//|min:8';
+                $rules['password'] = 'required|string|confirmed'; // |min:8';
                 $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
                 $rules['clients'] = 'required|array|min:1';
                 break;

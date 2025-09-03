@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('medicine_active_components', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('medicine_id')->references('id')->on('medicines')->nullable()->onDelete('cascade');
-            $table->string('name',100);
-            $table->string('mgs',25);
+            $table->string('name', 100);
+            $table->string('mgs', 25);
             $table->softDeletes();
             $table->timestamps();
         });

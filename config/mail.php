@@ -15,7 +15,7 @@ return [
     */
 
     'default' => env('MAIL_MAILER', 'log'),
-    'testing_mode'=> env('MAIL_TESTING_MODE', false),
+    'testing_mode' => env('MAIL_TESTING_MODE', false),
     'testing_patient_email' => env('MAIL_TESTING_PATIENT_EMAIL', 'patient@meditec.com'),
     'testing_practitioner_email' => env('MAIL_TESTING_PRACTITIONER_EMAIL', 'patient@meditec.com'),
 

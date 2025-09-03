@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('user_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->nullable()->onDelete('cascade');
-            $table->string('user_name',75);
-            $table->string('tabla',100);
+            $table->string('user_name', 75);
+            $table->string('tabla', 100);
             $table->integer('table_id');
-            $table->string('action',25);
-            $table->string('columna',75)->nullable();
+            $table->string('action', 25);
+            $table->string('columna', 75)->nullable();
             $table->longText('old_value')->nullable();
             $table->longText('new_value')->nullable();
             $table->longText('observation');

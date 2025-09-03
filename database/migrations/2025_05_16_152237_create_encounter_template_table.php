@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('encounter_template', function (Blueprint $table) {
             $table->id();
-            $table->string('type',15)->comment('MASTER , CLIENT , USER');
+            $table->string('type', 15)->comment('MASTER , CLIENT , USER');
             $table->foreignId('client_id')->nullable()->references('id')->on('clients')->onDelete('cascade')->comment('Client Owner if type CLIENT');
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade')->comment('User Owner if type USER');
             $table->foreignId('encounter_section_id')->nullable()->references('id')->on('encounter_sections')->onDelete('cascade')->comment('Secion Available');
@@ -21,7 +21,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
-
 
     }
 

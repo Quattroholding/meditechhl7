@@ -2,16 +2,19 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Models\EncounterDiagnosis;
 use App\Models\Condition;
+use App\Models\EncounterDiagnosis;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class TopActiveConditions extends Component
 {
     public $timeFrame = '30'; // Por defecto últimos 30 días
+
     public $topConditions = [];
+
     public $order;
+
     public $isLoading = true;
 
     public function mount()
@@ -43,13 +46,13 @@ class TopActiveConditions extends Component
                 'conditions.category',
                 DB::raw('COUNT(*) as count'),
                 DB::raw('COUNT(DISTINCT encounter_diagnoses.encounter_id) as encounter_count'),
-                DB::raw('COUNT(DISTINCT encounters.patient_id) as patient_count')
+                DB::raw('COUNT(DISTINCT encounters.patient_id) as patient_count'),
             ])
             ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
             ->join('conditions', 'encounter_diagnoses.condition_id', '=', 'conditions.id')
             ->where('encounters.practitioner_id', $practitionerId)
             ->where('encounters.status', 'finished')
-            ->when($days > 0, function($query) use ($days) {
+            ->when($days > 0, function ($query) use ($days) {
                 return $query->where('encounters.start', '>=', now()->subDays($days));
             })
             ->groupBy('conditions.code', 'conditions.category')
@@ -59,6 +62,7 @@ class TopActiveConditions extends Component
             ->map(function ($item) {
                 // Obtener la descripción de la condición
                 $condition = Condition::where('code', $item->code)->first();
+
                 return [
                     'code' => $item->code,
                     'description' => $condition ? $condition->icd10Code->description_es : 'Condición no especificada',
@@ -66,7 +70,7 @@ class TopActiveConditions extends Component
                     'count' => $item->count,
                     'encounter_count' => $item->encounter_count,
                     'patient_count' => $item->patient_count,
-                    'percentage' => 0 // Se calculará después
+                    'percentage' => 0, // Se calculará después
                 ];
             });
 
@@ -74,6 +78,7 @@ class TopActiveConditions extends Component
         $totalCount = $this->topConditions->sum('count');
         $this->topConditions = $this->topConditions->map(function ($condition) use ($totalCount) {
             $condition['percentage'] = $totalCount > 0 ? round(($condition['count'] / $totalCount) * 100, 1) : 0;
+
             return $condition;
         });
     }
@@ -85,7 +90,7 @@ class TopActiveConditions extends Component
             '#36A2EB', // Azul
             '#FFCE56', // Amarillo
             '#4BC0C0', // Verde azulado
-            '#9966FF'  // Morado
+            '#9966FF',  // Morado
         ];
 
         return $colors[$index % count($colors)];

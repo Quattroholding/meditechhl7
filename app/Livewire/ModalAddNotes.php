@@ -11,9 +11,13 @@ class ModalAddNotes extends Component
 {
     #[Modelable]
     public $showModal;
+
     public $note;
+
     public $practitioner_id;
+
     public $patient_id;
+
     public $encounter_id;
 
     public function render()
@@ -22,26 +26,27 @@ class ModalAddNotes extends Component
     }
 
     #[On('openModal')]
-    public function openModal($patient_id=null,$practitioner_id=null,$encounter_id=null)
+    public function openModal($patient_id = null, $practitioner_id = null, $encounter_id = null)
     {
-        $this->note='';
-        $this->patient_id=$patient_id;
-        $this->practitioner_id=$practitioner_id;
-        $this->encounter_id=$encounter_id;
-        $this->showModal=true;
+        $this->note = '';
+        $this->patient_id = $patient_id;
+        $this->practitioner_id = $practitioner_id;
+        $this->encounter_id = $encounter_id;
+        $this->showModal = true;
     }
 
-    public function saveNote(){
+    public function saveNote()
+    {
 
         Note::create([
-            'user_id'=>auth()->user()->id,
-            'practitioner_id'=>$this->practitioner_id,
-            'patient_id'=>$this->patient_id,
-            'encounter_id'=>$this->encounter_id,
-            'note'=>$this->note,
+            'user_id' => auth()->user()->id,
+            'practitioner_id' => $this->practitioner_id,
+            'patient_id' => $this->patient_id,
+            'encounter_id' => $this->encounter_id,
+            'note' => $this->note,
         ]);
-        $this->note='';
-        $this->showModal=false;
+        $this->note = '';
+        $this->showModal = false;
 
         $this->dispatch('showToastr',
             type: 'success',
@@ -49,7 +54,8 @@ class ModalAddNotes extends Component
         );
     }
 
-    public function closeModal(){
-        $this->showModal=false;
+    public function closeModal()
+    {
+        $this->showModal = false;
     }
 }

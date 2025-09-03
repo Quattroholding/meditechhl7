@@ -15,22 +15,23 @@ class PatientPolicy
         //
     }
 
-    public function addMedicalHistory(){
+    public function addMedicalHistory() {}
 
-    }
-
-    public function profile(User $user,Patient $patient){
+    public function profile(User $user, Patient $patient)
+    {
 
         return ($user->hasRole('paciente') && $patient->user_id == $user->id) or
                ($user->hasRole('doctor') && $patient->user_id == $user->id)
             or $user->hasRole('admin');
     }
 
-    public function edit_profile(User $user,Patient $patient){
-       return ($user->hasRole('paciente') && $patient->user_id == $user->id) or $user->hasRole('admin');
+    public function edit_profile(User $user, Patient $patient)
+    {
+        return ($user->hasRole('paciente') && $patient->user_id == $user->id) or $user->hasRole('admin');
     }
 
-    public function edit_access(User $user,Patient $patient){
+    public function edit_access(User $user, Patient $patient)
+    {
         return ($user->hasRole('paciente') && $patient->user_id == $user->id) or $user->hasRole('admin');
     }
 }

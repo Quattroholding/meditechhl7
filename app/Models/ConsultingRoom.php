@@ -9,27 +9,31 @@ use Illuminate\Database\Eloquent\Model;
 class ConsultingRoom extends BaseModel
 {
     use HasFactory;
-    protected $fillable=['id','branch_id','name','number','floor','active'];
+
+    protected $fillable = ['id', 'branch_id', 'name', 'number', 'floor', 'active'];
 
     /**
      * The "booted" method of the model.
      */
     protected static function booted(): void
     {
-        static::addGlobalScope(new ConsultingRoomScope());
+        static::addGlobalScope(new ConsultingRoomScope);
     }
 
-    public function branch(){
+    public function branch()
+    {
         return $this->belongsTo(Branch::class)->withDefault([
-            'name'=>'',
+            'name' => '',
         ]);
     }
 
-    public function getFullNameBranchAttribute(){
+    public function getFullNameBranchAttribute()
+    {
         return $this->name.' ('.$this->branch->name.')';
     }
 
-    public function getBranchNameAttribute(){
+    public function getBranchNameAttribute()
+    {
         return $this->branch->name;
     }
 }

@@ -4,17 +4,22 @@ namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class ActivityHeatmap extends Component
 {
     public $timeFrame = '30'; // Por defecto últimos 30 días
+
     public $heatmapData = [];
+
     public $peakHours = [];
+
     public $peakDays = [];
+
     public $totalAppointments = 0;
+
     public $order;
+
     public $isLoading = true;
 
     // Días de la semana en español
@@ -25,7 +30,7 @@ class ActivityHeatmap extends Component
         3 => 'Miércoles',
         4 => 'Jueves',
         5 => 'Viernes',
-        6 => 'Sábado'
+        6 => 'Sábado',
     ];
 
     // Horarios de trabajo (8 AM - 8 PM)
@@ -58,7 +63,7 @@ class ActivityHeatmap extends Component
         // Obtener citas confirmadas y finalizadas
         $appointments = Appointment::query()
             ->whereIn('status', ['booked', 'arrived', 'checked-in', 'fulfilled'])
-            ->when($days > 0, function($query) use ($days) {
+            ->when($days > 0, function ($query) use ($days) {
                 return $query->where('start', '>=', now()->subDays($days));
             })
             ->get();
@@ -122,26 +127,40 @@ class ActivityHeatmap extends Component
 
     public function getIntensityClass($value)
     {
-        if ($this->totalAppointments == 0) return 'intensity-0';
+        if ($this->totalAppointments == 0) {
+            return 'intensity-0';
+        }
 
         $maxValue = max(array_map('max', $this->heatmapData));
-        if ($maxValue == 0) return 'intensity-0';
+        if ($maxValue == 0) {
+            return 'intensity-0';
+        }
 
         $percentage = ($value / $maxValue) * 100;
 
-        if ($percentage >= 80) return 'intensity-5';
-        if ($percentage >= 60) return 'intensity-4';
-        if ($percentage >= 40) return 'intensity-3';
-        if ($percentage >= 20) return 'intensity-2';
-        if ($percentage > 0) return 'intensity-1';
+        if ($percentage >= 80) {
+            return 'intensity-5';
+        }
+        if ($percentage >= 60) {
+            return 'intensity-4';
+        }
+        if ($percentage >= 40) {
+            return 'intensity-3';
+        }
+        if ($percentage >= 20) {
+            return 'intensity-2';
+        }
+        if ($percentage > 0) {
+            return 'intensity-1';
+        }
 
         return 'intensity-0';
     }
 
     public function getFormattedHour($hour)
     {
-        return $hour < 12 ? $hour . ':00 AM' :
-               ($hour == 12 ? '12:00 PM' : ($hour - 12) . ':00 PM');
+        return $hour < 12 ? $hour.':00 AM' :
+               ($hour == 12 ? '12:00 PM' : ($hour - 12).':00 PM');
     }
 
     public function getDayName($dayIndex)

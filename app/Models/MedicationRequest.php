@@ -12,7 +12,7 @@ class MedicationRequest extends Model
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'medication_id',
         'identifier', 'status', 'intent', 'priority', 'reason', 'dosage_instruction',
         'dosage_text', 'route', 'frequency', 'quantity', 'refills', 'valid_from',
-        'valid_to', 'substitution_allowed', 'note', 'medication', 'narcotic','client_id','branch_id','consulting_room_id',
+        'valid_to', 'substitution_allowed', 'note', 'medication', 'narcotic', 'client_id', 'branch_id', 'consulting_room_id',
     ];
 
     protected $casts = [

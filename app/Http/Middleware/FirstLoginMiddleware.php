@@ -21,7 +21,7 @@ class FirstLoginMiddleware
             // Check if user has doctor role and hasn't completed first login
             if (is_null($user->first_login_at)) {
                 // Skip middleware for password change routes to avoid infinite redirect
-                if (!$request->routeIs('first-login.*') && !$request->routeIs('logout')) {
+                if (! $request->routeIs('first-login.*') && ! $request->routeIs('logout')) {
                     return redirect()->route('first-login.show');
                 }
             }

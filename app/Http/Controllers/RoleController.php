@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -23,7 +22,7 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
-            'permissions' => 'array'
+            'permissions' => 'array',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -41,6 +40,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role = Role::findOrFail($id);
+
         return view('roles.edit', compact('role'));
     }
 
@@ -49,8 +49,8 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'permissions' => 'array'
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
+            'permissions' => 'array',
         ]);
 
         DB::transaction(function () use ($request, $role) {

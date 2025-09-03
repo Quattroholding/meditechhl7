@@ -15,9 +15,10 @@ class ConsultationPolicy
         //
     }
 
-    public function edit(User $user,Encounter $encounter){
+    public function edit(User $user, Encounter $encounter)
+    {
 
-        return ($user->hasRole('admin') or ($user->hasRole('doctor') and $user->practitioner->id == $encounter->practitioner_id));
+        return $user->hasRole('admin') or ($user->hasRole('doctor') and $user->practitioner->id == $encounter->practitioner_id);
 
     }
 }

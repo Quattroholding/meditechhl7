@@ -8,14 +8,21 @@ use Livewire\Component;
 class Reason extends Component
 {
     public $reason;
+
     public $encounter_id;
+
     public $encounter;
+
     public $section_name;
+
     public $section_id;
+
     public $saving = false;
+
     public $saved = false;
 
-    public function mount(){
+    public function mount()
+    {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->reason = $this->encounter->reason;
 
@@ -43,13 +50,13 @@ class Reason extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: ' . $e->getMessage());
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
     }
 
-    public function updatedReason(){
+    public function updatedReason()
+    {
         $this->saved = false;
-
 
     }
 }

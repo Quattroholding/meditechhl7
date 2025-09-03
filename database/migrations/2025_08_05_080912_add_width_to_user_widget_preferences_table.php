@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user_widget_preferences', function (Blueprint $table) {
-            $table->enum('width', ['col-lg-3','col-lg-4', 'col-lg-6', 'col-lg-9', 'col-lg-12'])->default('col-lg-6')->after('order_position');
+            $table->enum('width', ['col-lg-3', 'col-lg-4', 'col-lg-6', 'col-lg-9', 'col-lg-12'])->default('col-lg-6')->after('order_position');
         });
     }
 

@@ -3,19 +3,25 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\Encounter;
-use App\Models\Appointment;
 use Carbon\Carbon;
 use Livewire\Component;
 
 class PatientSatisfaction extends Component
 {
     public $timeFrame = '30'; // Por defecto últimos 30 días
+
     public $satisfactionData = [];
+
     public $averageRating = 0;
+
     public $totalReviews = 0;
+
     public $ratingDistribution = [];
+
     public $recentComments = [];
+
     public $order;
+
     public $isLoading = true;
 
     // Comentarios de ejemplo basados en ratings
@@ -25,31 +31,31 @@ class PatientSatisfaction extends Component
             'El doctor me explicó todo claramente, quedé muy satisfecho.',
             'Atención de primera calidad, lo recomiendo ampliamente.',
             'Muy buen trato y diagnóstico preciso.',
-            'Profesional excepcional, resolvió todas mis dudas.'
+            'Profesional excepcional, resolvió todas mis dudas.',
         ],
         4 => [
             'Buena atención, aunque tuve que esperar un poco.',
             'El doctor fue amable y profesional.',
             'Quedé satisfecho con la consulta.',
             'Buen diagnóstico y tratamiento.',
-            'Atención adecuada, volvería a consultar.'
+            'Atención adecuada, volvería a consultar.',
         ],
         3 => [
             'Atención regular, podría mejorar la comunicación.',
             'La consulta fue correcta pero algo apresurada.',
             'Servicio promedio, cumplió con las expectativas.',
-            'Atención básica, sin destacar particularmente.'
+            'Atención básica, sin destacar particularmente.',
         ],
         2 => [
             'La consulta fue muy rápida, esperaba más tiempo.',
             'Podría mejorar la explicación del diagnóstico.',
-            'Atención algo fría, falta calidez humana.'
+            'Atención algo fría, falta calidez humana.',
         ],
         1 => [
             'No quedé satisfecho con la consulta.',
             'Esperaba mejor atención y más tiempo.',
-            'La consulta fue muy apresurada.'
-        ]
+            'La consulta fue muy apresurada.',
+        ],
     ];
 
     public function mount()
@@ -82,7 +88,7 @@ class PatientSatisfaction extends Component
         $encounters = Encounter::query()
             ->where('practitioner_id', $practitionerId)
             ->where('status', 'finished')
-            ->when($days > 0, function($query) use ($days) {
+            ->when($days > 0, function ($query) use ($days) {
                 return $query->where('start', '>=', now()->subDays($days));
             })
             ->with(['patient'])
@@ -116,7 +122,7 @@ class PatientSatisfaction extends Component
                     'comment' => $this->getRandomComment($rating),
                     'patient_name' => $encounter->patient->name ?? 'Paciente Anónimo',
                     'date' => Carbon::parse($encounter->start)->format('d/m/Y'),
-                    'encounter_id' => $encounter->id
+                    'encounter_id' => $encounter->id,
                 ];
             }
         }
@@ -127,7 +133,7 @@ class PatientSatisfaction extends Component
         foreach ($this->ratingDistribution as $rating => $count) {
             $this->ratingDistribution[$rating] = [
                 'count' => $count,
-                'percentage' => round(($count / $this->totalReviews) * 100, 1)
+                'percentage' => round(($count / $this->totalReviews) * 100, 1),
             ];
         }
     }
@@ -142,7 +148,7 @@ class PatientSatisfaction extends Component
             'duration' => $this->calculateDurationFactor($encounter),
             'specialty' => $this->calculateSpecialtyFactor($encounter),
             'time_of_day' => $this->calculateTimeOfDayFactor($encounter),
-            'random' => mt_rand(-1, 1) * 0.5 // Factor aleatorio
+            'random' => mt_rand(-1, 1) * 0.5, // Factor aleatorio
         ];
 
         $finalRating = $baseRating + array_sum($factors);
@@ -156,9 +162,14 @@ class PatientSatisfaction extends Component
         // Encounters más largos tienden a tener mejor rating
         if ($encounter->start && $encounter->end) {
             $duration = Carbon::parse($encounter->end)->diffInMinutes(Carbon::parse($encounter->start));
-            if ($duration > 30) return 0.5;
-            if ($duration < 15) return -0.5;
+            if ($duration > 30) {
+                return 0.5;
+            }
+            if ($duration < 15) {
+                return -0.5;
+            }
         }
+
         return 0;
     }
 
@@ -172,15 +183,23 @@ class PatientSatisfaction extends Component
     {
         // Horarios pico pueden tener ratings ligeramente menores
         $hour = Carbon::parse($encounter->start)->hour;
-        if ($hour >= 9 && $hour <= 11) return 0.2; // Mañana
-        if ($hour >= 14 && $hour <= 16) return 0.1; // Tarde temprano
-        if ($hour >= 17) return -0.1; // Tarde tardía
+        if ($hour >= 9 && $hour <= 11) {
+            return 0.2;
+        } // Mañana
+        if ($hour >= 14 && $hour <= 16) {
+            return 0.1;
+        } // Tarde temprano
+        if ($hour >= 17) {
+            return -0.1;
+        } // Tarde tardía
+
         return 0;
     }
 
     private function getRandomComment($rating)
     {
         $comments = $this->sampleComments[$rating] ?? $this->sampleComments[3];
+
         return $comments[array_rand($comments)];
     }
 
@@ -198,7 +217,7 @@ class PatientSatisfaction extends Component
             2 => '#fd7e14', // Naranja
             3 => '#ffc107', // Amarillo
             4 => '#20c997', // Verde claro
-            5 => '#28a745'  // Verde
+            5 => '#28a745',  // Verde
         ];
 
         return $colors[$rating] ?? '#6c757d';
@@ -206,10 +225,19 @@ class PatientSatisfaction extends Component
 
     public function getOverallRatingColor()
     {
-        if ($this->averageRating >= 4.5) return '#28a745';
-        if ($this->averageRating >= 4.0) return '#20c997';
-        if ($this->averageRating >= 3.5) return '#ffc107';
-        if ($this->averageRating >= 3.0) return '#fd7e14';
+        if ($this->averageRating >= 4.5) {
+            return '#28a745';
+        }
+        if ($this->averageRating >= 4.0) {
+            return '#20c997';
+        }
+        if ($this->averageRating >= 3.5) {
+            return '#ffc107';
+        }
+        if ($this->averageRating >= 3.0) {
+            return '#fd7e14';
+        }
+
         return '#dc3545';
     }
 

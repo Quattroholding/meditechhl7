@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\Practitioner;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -30,37 +30,38 @@ class AuthController extends Controller
             ]);
         }
 
-        // Verificar que el usuario es un paciente
-        if (! $user->hasRole('paciente')) {
+        // Detectar el tipo de usuario y obtener información específica
+        $userType = $this->getUserType($user);
+
+        if (! $userType) {
             throw ValidationException::withMessages([
-                'email' => ['Acceso no autorizado para pacientes.'],
+                'email' => ['Usuario sin rol válido para acceso móvil.'],
             ]);
         }
 
-        $patient = Patient::whereUserId($user->id)->first();
+        // Obtener datos específicos según el tipo de usuario
+        $specificData = $this->getUserSpecificData($user, $userType);
 
-        if (! $patient) {
+        if (! $specificData) {
             throw ValidationException::withMessages([
-                'email' => ['No se encontró información del paciente.'],
+                'email' => ['No se encontró información completa del usuario.'],
             ]);
         }
 
-        $token = $user->createToken('patient-app')->plainTextToken;
+        $tokenName = $userType === 'patient' ? 'patient-app' : 'practitioner-app';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'message' => 'Login exitoso',
             'token' => $token,
+            'user_type' => $userType,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->full_name,
                 'email' => $user->email,
+                'default_client_id' => $user->default_client_id,
             ],
-            'patient' => [
-                'id' => $patient->id,
-                'name' => $patient->name,
-                'phone' => $patient->phone,
-                'birth_date' => $patient->birth_date,
-            ],
+            $userType => $specificData,
         ]);
     }
 
@@ -80,7 +81,7 @@ class AuthController extends Controller
 
         $user = User::whereEmail($request->email)->first();
 
-        if(!$user){
+        if (! $user) {
             // Crear usuario
             $user = User::create([
                 'first_name' => $request->given_name,
@@ -88,7 +89,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-        }else{
+        } else {
             $user->first_name = $request->given_name;
             $user->last_name = $request->family_name;
             $user->password = Hash::make($request->password);
@@ -97,16 +98,16 @@ class AuthController extends Controller
 
         $user->assignRole('paciente');
 
-        $patient =Patient::whereLike('identifier',$request->identifier.'%')
-            ->orWhere('email',$request->email)
+        $patient = Patient::whereLike('identifier', $request->identifier.'%')
+            ->orWhere('email', $request->email)
             ->first();
 
-        if(!$patient){
+        if (! $patient) {
             // Crear paciente
             $patient = Patient::create([
                 'user_id' => $user->id,
-                'identifier' =>$request->identifier,
-                'identifier_type'=>$request->identifier_type,
+                'identifier' => $request->identifier,
+                'identifier_type' => $request->identifier_type,
                 'given_name' => $request->given_name,
                 'family_name' => $request->family_name,
                 'name' => $request->given_name.' '.$request->family_name,
@@ -115,13 +116,12 @@ class AuthController extends Controller
                 'whatsapp_phone' => $request->phone,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                'fhir_id'=> 'patient-'.Str::uuid(),
+                'fhir_id' => 'patient-'.Str::uuid(),
                 'communication' => json_encode(['language' => 'es', 'preferred' => true]),
-                'address'=>$request->address,
+                'address' => $request->address,
             ]);
 
-
-        }else{
+        } else {
             $patient->given_name = $request->given_name;
             $patient->family_name = $request->family_name;
             $patient->email = $request->email;
@@ -169,38 +169,52 @@ class AuthController extends Controller
     public function refresh(Request $request)
     {
         $user = $request->user();
+        $userType = $this->getUserType($user);
+
+        if (! $userType) {
+            return response()->json([
+                'message' => 'Usuario sin rol válido.',
+            ], 403);
+        }
+
         $user->tokens()->delete();
 
-        $token = $user->createToken('patient-app')->plainTextToken;
+        $tokenName = $userType === 'patient' ? 'patient-app' : 'practitioner-app';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'message' => 'Token renovado',
             'token' => $token,
+            'user_type' => $userType,
         ]);
     }
 
     public function user(Request $request)
     {
         $user = $request->user();
-        $patient = Patient::where('email', $user->email)->first();
+        $userType = $this->getUserType($user);
+
+        if (! $userType) {
+            return response()->json([
+                'message' => 'Usuario sin rol válido.',
+            ], 403);
+        }
+
+        $specificData = $this->getUserSpecificData($user, $userType);
 
         return response()->json([
+            'user_type' => $userType,
             'user' => [
                 'id' => $user->id,
-                'name' => $user->name,
+                'name' => $user->full_name,
                 'email' => $user->email,
             ],
-            'patient' => $patient ? [
-                'id' => $patient->id,
-                'name' => $patient->name,
-                'phone' => $patient->phone,
-                'birth_date' => $patient->birth_date,
-            ] : null,
+            $userType => $specificData,
         ]);
     }
 
     /**
-     * Send a password reset email to the patient
+     * Send a password reset email to the user (patient or practitioner)
      */
     public function forgotPassword(Request $request)
     {
@@ -208,26 +222,28 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
 
-        // Verificar que el email corresponde a un usuario con rol paciente
+        // Verificar que el email corresponde a un usuario válido
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'No se encontró un usuario con este email.',
             ], 404);
         }
 
-        if (!$user->hasRole('paciente')) {
+        // Verificar que es un usuario con rol válido para móvil
+        $userType = $this->getUserType($user);
+        if (! $userType) {
             return response()->json([
-                'message' => 'Este email no corresponde a un paciente.',
+                'message' => 'Este email no corresponde a un usuario válido.',
             ], 403);
         }
 
-        // Verificar que existe el registro de paciente
-        $patient = Patient::whereUserId($user->id)->first();
-        if (!$patient) {
+        // Verificar que existe el registro específico (patient o practitioner)
+        $specificData = $this->getUserSpecificData($user, $userType);
+        if (! $specificData) {
             return response()->json([
-                'message' => 'No se encontró información del paciente.',
+                'message' => 'No se encontró información completa del usuario.',
             ], 404);
         }
 
@@ -246,7 +262,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Reset the patient's password
+     * Reset the user's password (patient or practitioner)
      */
     public function resetPassword(Request $request)
     {
@@ -256,12 +272,20 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Verificar que el email corresponde a un usuario con rol paciente
+        // Verificar que el email corresponde a un usuario válido
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !$user->hasRole('paciente')) {
+        if (! $user) {
             return response()->json([
-                'message' => 'Email no válido o no corresponde a un paciente.',
+                'message' => 'Email no válido.',
+            ], 403);
+        }
+
+        // Verificar que es un usuario con rol válido para móvil
+        $userType = $this->getUserType($user);
+        if (! $userType) {
+            return response()->json([
+                'message' => 'Usuario sin rol válido.',
             ], 403);
         }
 
@@ -286,6 +310,76 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'No se pudo restablecer la contraseña. El enlace puede haber expirado.',
         ], 400);
+    }
+
+    /**
+     * Detect user type based on roles
+     */
+    private function getUserType(User $user): ?string
+    {
+        if ($user->hasRole('paciente')) {
+            return 'patient';
+        } elseif ($user->hasRole('doctor')) {
+            return 'practitioner';
+        }
+
+        return null;
+    }
+
+    /**
+     * Get user-specific data based on type
+     */
+    private function getUserSpecificData(User $user, string $userType): ?array
+    {
+        switch ($userType) {
+            case 'patient':
+                $patient = Patient::where('user_id', $user->id)->first();
+                if (! $patient) {
+                    return null;
+                }
+
+                return [
+                    'id' => $patient->id,
+                    'name' => $patient->name,
+                    'phone' => $patient->phone,
+                    'birth_date' => $patient->birth_date,
+                    'gender' => $patient->gender,
+                    'identifier' => $patient->identifier,
+                    'identifier_type' => $patient->identifier_type,
+                ];
+
+            case 'practitioner':
+                $practitioner = Practitioner::where('user_id', $user->id)->first();
+                if (! $practitioner) {
+                    return null;
+                }
+
+                // Get all clients this practitioner has access to
+                $clients = $user->clients()->select('clients.id', 'clients.name', 'clients.phone', 'clients.address')->get();
+
+                return [
+                    'id' => $practitioner->id,
+                    'name' => $practitioner->name,
+                    'phone' => $practitioner->phone,
+                    'birth_date' => $practitioner->birth_date,
+                    'gender' => $practitioner->gender,
+                    'identifier' => $practitioner->identifier,
+                    'registry' => $practitioner->registry,
+                    'active' => $practitioner->active,
+                    'clients' => $clients->map(function ($client) {
+                        return [
+                            'id' => $client->id,
+                            'name' => $client->name,
+                            'phone' => $client->phone,
+                            'address' => $client->address,
+                        ];
+                    })->toArray(),
+                    'clients_count' => $clients->count(),
+                ];
+
+            default:
+                return null;
+        }
     }
 
     private function getIdPattern($type)

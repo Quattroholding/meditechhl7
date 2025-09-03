@@ -4,52 +4,76 @@ namespace App\Livewire\Settings;
 
 use App\Models\CptCode;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
-use App\Models\Lista;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class ServiceCatalog extends Component
 {
     use WithPagination;
+
     public $clientId;
+
     public $practitionerId;
+
     public $created = [];
 
     // Data table properties
     public $search = '';
+
     public $perPage = 5;
+
     public $sortField = 'created_at';
+
     public $sortDirection = 'desc';
 
     // Fields for CPT-based services
     public $query;
+
     public $results = [];
+
     public $cpt_id;
+
     public $cpt_price;
+
     public $cpt_specialty;
+
     public $cpt_complexity = 'medium';
+
     public $cpt_duration;
+
     public $cpt_requires_auth = false;
+
     public $cpt_covered_insurance = true;
+
     public $cpt_patient_copay = 0;
 
     // Fields for custom services
     public $custom_name;
+
     public $custom_description;
+
     public $custom_service_type;
+
     public $custom_price;
+
     public $custom_specialty;
+
     public $custom_complexity = 'medium';
+
     public $custom_duration;
+
     public $custom_requires_auth = false;
+
     public $custom_covered_insurance = true;
+
     public $custom_patient_copay = 0;
+
     public $custom_revenue_code;
 
     // Edit mode
     public $editingId = null;
+
     public $editingService = [];
 
     protected $rules = [
@@ -76,7 +100,7 @@ class ServiceCatalog extends Component
 
     public function mount()
     {
-        if(auth()->user()->hasRole('doctor')){
+        if (auth()->user()->hasRole('doctor')) {
             $this->practitionerId = auth()->user()->practitioner->id;
         }
         if (auth()->user()->clients()->first()) {
@@ -99,10 +123,10 @@ class ServiceCatalog extends Component
     {
         return ServiceCatalogModel::where('client_id', $this->clientId)
             ->when($this->search, function ($query) {
-                return $query->where('name', 'like', '%' . $this->search . '%')
-                           ->orWhere('description', 'like', '%' . $this->search . '%')
-                           ->orWhere('cpt_code', 'like', '%' . $this->search . '%')
-                           ->orWhere('specialty', 'like', '%' . $this->search . '%');
+                return $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('description', 'like', '%'.$this->search.'%')
+                    ->orWhere('cpt_code', 'like', '%'.$this->search.'%')
+                    ->orWhere('specialty', 'like', '%'.$this->search.'%');
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
@@ -127,6 +151,7 @@ class ServiceCatalog extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+
             return;
         }
 
@@ -230,7 +255,7 @@ class ServiceCatalog extends Component
 
         $this->dispatch('showToastr', [
             'type' => 'success',
-            'message' => '¡Servicio personalizado guardado exitosamente!'
+            'message' => '¡Servicio personalizado guardado exitosamente!',
         ]);
 
         $this->loadServices();
@@ -241,7 +266,7 @@ class ServiceCatalog extends Component
     {
         $service = ServiceCatalogModel::find($id);
 
-        if (!$service || $service->created_by !== auth()->id()) {
+        if (! $service || $service->created_by !== auth()->id()) {
             return;
         }
 
@@ -272,7 +297,7 @@ class ServiceCatalog extends Component
 
         $service = ServiceCatalogModel::find($this->editingId);
 
-        if (!$service || $service->created_by !== auth()->id()) {
+        if (! $service || $service->created_by !== auth()->id()) {
             return;
         }
 
@@ -292,7 +317,7 @@ class ServiceCatalog extends Component
 
         $this->dispatch('showToastr', [
             'type' => 'success',
-            'message' => '¡Servicio actualizado exitosamente!'
+            'message' => '¡Servicio actualizado exitosamente!',
         ]);
 
         $this->loadServices();
@@ -309,18 +334,18 @@ class ServiceCatalog extends Component
     {
         $service = ServiceCatalogModel::find($id);
 
-        if (!$service || $service->created_by !== auth()->id()) {
+        if (! $service || $service->created_by !== auth()->id()) {
             return;
         }
 
         $service->update([
-            'is_active' => !$service->is_active,
+            'is_active' => ! $service->is_active,
             'updated_by' => auth()->id(),
         ]);
 
         $this->dispatch('showToastr', [
             'type' => 'info',
-            'message' => $service->is_active ? 'Servicio activado' : 'Servicio desactivado'
+            'message' => $service->is_active ? 'Servicio activado' : 'Servicio desactivado',
         ]);
 
         $this->loadServices();
@@ -330,7 +355,7 @@ class ServiceCatalog extends Component
     {
         $service = ServiceCatalogModel::find($id);
 
-        if (!$service || $service->created_by !== auth()->id()) {
+        if (! $service || $service->created_by !== auth()->id()) {
             return;
         }
 
@@ -338,7 +363,7 @@ class ServiceCatalog extends Component
 
         $this->dispatch('showToastr', [
             'type' => 'error',
-            'message' => '¡Servicio eliminado exitosamente!'
+            'message' => '¡Servicio eliminado exitosamente!',
         ]);
 
         $this->loadServices();
@@ -349,7 +374,7 @@ class ServiceCatalog extends Component
         $this->reset([
             'cpt_id', 'cpt_price', 'cpt_specialty', 'cpt_complexity',
             'cpt_duration', 'cpt_requires_auth', 'cpt_covered_insurance',
-            'cpt_patient_copay', 'query'
+            'cpt_patient_copay', 'query',
         ]);
         $this->cpt_complexity = 'medium';
         $this->cpt_covered_insurance = true;
@@ -361,7 +386,7 @@ class ServiceCatalog extends Component
             'custom_name', 'custom_description', 'custom_service_type',
             'custom_price', 'custom_specialty', 'custom_complexity',
             'custom_duration', 'custom_requires_auth', 'custom_covered_insurance',
-            'custom_patient_copay', 'custom_revenue_code'
+            'custom_patient_copay', 'custom_revenue_code',
         ]);
         $this->custom_complexity = 'medium';
         $this->custom_covered_insurance = true;
@@ -372,15 +397,15 @@ class ServiceCatalog extends Component
         return [
             'consultation' => 'Consulta',
             'procedure' => 'Procedimiento',
-            //'diagnostic' => 'Diagnóstico',
+            // 'diagnostic' => 'Diagnóstico',
             'therapeutic' => 'Terapéutico',
             'surgical' => 'Quirúrgico',
             'laboratory' => 'Laboratorio',
             'imaging' => 'Imagenología',
-            //'medication' => 'Medicamento',
+            // 'medication' => 'Medicamento',
             'supply' => 'Suministro',
-            //'facility' => 'Facilidad',
-            'other' => 'Otro'
+            // 'facility' => 'Facilidad',
+            'other' => 'Otro',
         ];
     }
 
@@ -389,7 +414,7 @@ class ServiceCatalog extends Component
         return [
             'low' => 'Baja',
             'medium' => 'Media',
-            'high' => 'Alta'
+            'high' => 'Alta',
         ];
     }
 }

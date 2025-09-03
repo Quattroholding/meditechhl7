@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('encounter_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100);
-            $table->string('name_esp',100);
-            $table->string('table_list',60)->nullable();
-            $table->string('table_list_filter',100)->nullable();
-            $table->string('livewire_component_name',150)->nullable();
+            $table->string('name', 100);
+            $table->string('name_esp', 100);
+            $table->string('table_list', 60)->nullable();
+            $table->string('table_list_filter', 100)->nullable();
+            $table->string('livewire_component_name', 150)->nullable();
             $table->json('livewire_component_fields')->nullable();
-            $table->string('category',50)->nullable();
+            $table->string('category', 50)->nullable();
             $table->integer('medical_speciality_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

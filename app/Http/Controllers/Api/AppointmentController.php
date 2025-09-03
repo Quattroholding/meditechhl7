@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\AppointmentStatus;
 use App\Models\ConsultingRoom;
 use App\Models\Patient;
+use App\Models\PatientClient;
 use App\Models\Practitioner;
 use App\Models\User;
 use Carbon\Carbon;
@@ -183,8 +185,19 @@ class AppointmentController extends Controller
 
             $app = Appointment::find($appointmentId);
 
-            $app->addPatientToPractitionerClient();
-            $app->notifyPractitionerAboutProposal();
+            if ($app) {
+                PatientClient::create([
+                    'patient_id' => $patient->id,
+                    'client_id' => $client_id,
+                ]);
+                AppointmentStatus::create([
+                    'appointment_id' => $app->id,
+                    'status' => $app->status,
+                    'user_id' => $user->id, // Asume que estás usando autenticación
+                ]);
+                $app->addPatientToPractitionerClient();
+                $app->notifyPractitionerAboutProposal();
+            }
 
             return response()->json([
                 'message' => 'Cita creada exitosamente',

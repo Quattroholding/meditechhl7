@@ -13,7 +13,7 @@ class SurveyQuestion extends BaseModel
         'question_type',
         'options',
         'is_required',
-        'order'
+        'order',
     ];
 
     protected $casts = [

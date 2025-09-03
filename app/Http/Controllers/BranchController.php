@@ -7,27 +7,31 @@ use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $model = Branch::class;
-        return view('clients.branchs.index',compact('model'));
+
+        return view('clients.branchs.index', compact('model'));
     }
 
-    public function create(){
+    public function create()
+    {
         return view('clients.branchs.create');
     }
 
-    public function store(Request $request){
-        //dd($request->all());
+    public function store(Request $request)
+    {
+        // dd($request->all());
         $validated = $request->validate([
-            "client_id" => "required",
-            "name" => "required",
-            "phone" => "required",
-            "full_phone" => "required",
-            "address" => "required",
-            "type" => "required"
+            'client_id' => 'required',
+            'name' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
+            'address' => 'required',
+            'type' => 'required',
         ]);
 
-        $model = new Branch();
+        $model = new Branch;
         $model->client_id = $request->client_id;
         $model->name = $request->name;
         $model->phone = $request->full_phone;
@@ -35,54 +39,57 @@ class BranchController extends Controller
         $model->type = $request->type;
         $model->active = 1;
 
-        if($model->save()){
-            $request->session()->flash('message.success','Sucursal registrada con éxito.');
-        }else{
-            $request->session()->flash('message.success','Hubo un error y no se pudo crear la sucursal.');
+        if ($model->save()) {
+            $request->session()->flash('message.success', 'Sucursal registrada con éxito.');
+        } else {
+            $request->session()->flash('message.success', 'Hubo un error y no se pudo crear la sucursal.');
         }
 
         return redirect(route('client.branch.index'));
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
 
         $data = Branch::findOrFail($id);
 
-        return view('clients.branchs.edit',compact('data'));
+        return view('clients.branchs.edit', compact('data'));
     }
 
-    public function update(Request $request,$id){
+    public function update(Request $request, $id)
+    {
 
         $validated = $request->validate([
-            "client_id" => "required",
-            "name" => "required",
-            "phone" => "required",
-            "full_phone" => "required",
-            "address" => "required",
-            "type" => "required"
+            'client_id' => 'required',
+            'name' => 'required',
+            'phone' => 'required',
+            'full_phone' => 'required',
+            'address' => 'required',
+            'type' => 'required',
         ]);
 
-        $model =  Branch::findOrFail($id);
+        $model = Branch::findOrFail($id);
         $model->fill($request->all());
 
-        if($model->save()){
-            $request->session()->flash('message.success','Sucursal actualizada con éxito.');
-        }else{
-            $request->session()->flash('message.success','Hubo un error y no se pudo crear la sucursal.');
+        if ($model->save()) {
+            $request->session()->flash('message.success', 'Sucursal actualizada con éxito.');
+        } else {
+            $request->session()->flash('message.success', 'Hubo un error y no se pudo crear la sucursal.');
         }
 
-        return redirect(route('client.branch.edit',$id));
+        return redirect(route('client.branch.edit', $id));
     }
 
-    public function destroy(Request $request,$id){
+    public function destroy(Request $request, $id)
+    {
 
         try {
             $data = Branch::findOrFail($id);
             $data->delete();
 
-            session()->flash('message.success','Eliminado con exito.');
-        }catch (\Exception $e){
-            session()->flash('message.error',$e->getMessage());
+            session()->flash('message.success', 'Eliminado con exito.');
+        } catch (\Exception $e) {
+            session()->flash('message.error', $e->getMessage());
         }
 
         return redirect(route('client.branch.index'));

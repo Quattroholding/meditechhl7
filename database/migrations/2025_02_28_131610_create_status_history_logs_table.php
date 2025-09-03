@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('status_history_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->nullable()->onDelete('cascade');
-            $table->string('table_name',100);
-            $table->string('model_name',100);
+            $table->string('table_name', 100);
+            $table->string('model_name', 100);
             $table->integer('record_id');
-            $table->string('old_status',75)->nullable();
-            $table->string('new_status',100);
-            $table->string('change_type',20)->default('auto');
+            $table->string('old_status', 75)->nullable();
+            $table->string('new_status', 100);
+            $table->string('change_type', 20)->default('auto');
             $table->text('observation')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -30,7 +30,7 @@ class InsuranceCompanyFactory extends Factory
             'ARS Futuro',
             'Primera ARS',
             'ARS BMI',
-            'Seguros La Colonial'
+            'Seguros La Colonial',
         ];
 
         $companyName = $this->faker->randomElement($insuranceCompanies);
@@ -39,7 +39,7 @@ class InsuranceCompanyFactory extends Factory
         return [
             'client_id' => \App\Models\Client::factory(),
             'name' => $companyName,
-            'code' => $code . '-' . $this->faker->unique()->numberBetween(100, 999),
+            'code' => $code.'-'.$this->faker->unique()->numberBetween(100, 999),
             'email' => $this->faker->unique()->companyEmail(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),

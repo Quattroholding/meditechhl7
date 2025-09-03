@@ -7,6 +7,7 @@ use App\Http\Resources\Api\PractitionerResource;
 use App\Models\Appointment;
 use App\Models\Practitioner;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PractitionerController extends Controller
@@ -17,6 +18,9 @@ class PractitionerController extends Controller
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
         $practitioners = Practitioner::with(['specialties', 'user.clients'])
+            ->when($request->id, function ($query) use ($request) {
+                return $query->whereId($request->id);
+            })
             ->when($request->speciality_id, function ($query, $specialityId) {
                 return $query->whereHas('specialties', function ($q) use ($specialityId) {
                     $q->where('medical_specialties.id', $specialityId);
@@ -45,6 +49,46 @@ class PractitionerController extends Controller
             })
             ->paginate($perPage);
 
+        // Calcular fechas de la próxima semana (lunes a domingo)
+        $nextWeekStart = now()->next('Monday')->startOfDay();
+        $nextWeekEnd = $nextWeekStart->copy()->endOfWeek();
+
+        // Obtener horarios ocupados para cada practitioner
+        $practitionersWithSchedule = $practitioners->getCollection()->map(function ($practitioner) use ($nextWeekStart, $nextWeekEnd) {
+            // Obtener citas ocupadas de la próxima semana con estados específicos
+
+            $bookedAppointments = Appointment::where('practitioner_id', $practitioner->id)
+                ->whereBetween('start', [$nextWeekStart, $nextWeekEnd])
+                ->whereIn('status', ['booked', 'arrived', 'fulfilled'])
+                ->orderBy('start')
+                ->get(['start', 'end', 'status'])
+                ->map(function ($appointment) {
+                    return [
+                        'start' => $appointment->start->format('Y-m-d H:i'),
+                        'end' => $appointment->end->format('Y-m-d H:i'),
+                        'date' => $appointment->start->format('Y-m-d'),
+                        'start_time' => $appointment->start->format('H:i'),
+                        'end_time' => $appointment->end->format('H:i'),
+                        'status' => $appointment->status,
+                        'day_of_week' => $appointment->start->format('l'), // Monday, Tuesday, etc.
+                        'day_of_week_es' => $this->getDayNameInSpanish($appointment->start->format('l')),
+                    ];
+                });
+
+            // Agregar los horarios ocupados al practitioner
+            $practitioner->next_week_schedule = [
+                'week_start' => $nextWeekStart->format('Y-m-d'),
+                'week_end' => $nextWeekEnd->format('Y-m-d'),
+                'booked_appointments' => $bookedAppointments->toArray(),
+                'total_appointments' => $bookedAppointments->count(),
+                'busy_days' => $bookedAppointments->pluck('date')->unique()->values()->toArray(),
+            ];
+
+            return $practitioner;
+        });
+
+        $practitioners->setCollection(collect($practitionersWithSchedule));
+
         return response()->json([
             'data' => PractitionerResource::collection($practitioners->items()),
             'pagination' => [
@@ -56,10 +100,15 @@ class PractitionerController extends Controller
                 'to' => $practitioners->lastItem(),
                 'has_more_pages' => $practitioners->hasMorePages(),
             ],
+            'next_week_info' => [
+                'start_date' => $nextWeekStart->format('Y-m-d'),
+                'end_date' => $nextWeekEnd->format('Y-m-d'),
+                'week_dates' => $this->getWeekDates($nextWeekStart),
+            ],
         ]);
     }
 
-    public function availability(Request $request, $practitionerId)
+    public function availability(Request $request, $practitionerId): JsonResponse
     {
         $request->validate([
             'date' => 'required|date|after_or_equal:today',
@@ -212,5 +261,45 @@ class PractitionerController extends Controller
             'consulting_rooms' => $activeConsultingRooms,
             'total' => $activeConsultingRooms->count(),
         ]);
+    }
+
+    /**
+     * Obtener las fechas de la semana especificada
+     */
+    private function getWeekDates($weekStart): array
+    {
+        $dates = [];
+        $current = $weekStart->copy();
+
+        for ($i = 0; $i < 7; $i++) {
+            $dates[] = [
+                'date' => $current->format('Y-m-d'),
+                'day_name' => $current->format('l'),
+                'day_name_es' => $this->getDayNameInSpanish($current->format('l')),
+                'day_short' => $current->format('D'),
+                'day_number' => $current->format('j'),
+            ];
+            $current->addDay();
+        }
+
+        return $dates;
+    }
+
+    /**
+     * Traducir nombres de días al español
+     */
+    private function getDayNameInSpanish(string $dayName): string
+    {
+        $days = [
+            'Monday' => 'Lunes',
+            'Tuesday' => 'Martes',
+            'Wednesday' => 'Miércoles',
+            'Thursday' => 'Jueves',
+            'Friday' => 'Viernes',
+            'Saturday' => 'Sábado',
+            'Sunday' => 'Domingo',
+        ];
+
+        return $days[$dayName] ?? $dayName;
     }
 }

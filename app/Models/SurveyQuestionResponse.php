@@ -10,7 +10,7 @@ class SurveyQuestionResponse extends BaseModel
         'survey_response_id',
         'survey_question_id',
         'answer_text',
-        'answer_data'
+        'answer_data',
     ];
 
     protected $casts = [

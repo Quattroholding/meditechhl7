@@ -12,9 +12,13 @@ class DataTable extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
+
     public $perPage = 5;
+
     public $sortField = 'created_at';
+
     public $sortDirection = 'desc';
 
     protected $queryString = [
@@ -51,11 +55,11 @@ class DataTable extends Component
             ->with(['patient', 'encounter', 'performerPractitioner', 'client'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('invoice_number', 'like', '%' . $this->search . '%')
+                    $q->where('invoice_number', 'like', '%'.$this->search.'%')
                         ->orWhereHas('patient', function ($patientQuery) {
-                            $patientQuery->where('name', 'like', '%' . $this->search . '%')
-                                ->orWhere('given_name', 'like', '%' . $this->search . '%')
-                                ->orWhere('family_name', 'like', '%' . $this->search . '%');
+                            $patientQuery->where('name', 'like', '%'.$this->search.'%')
+                                ->orWhere('given_name', 'like', '%'.$this->search.'%')
+                                ->orWhere('family_name', 'like', '%'.$this->search.'%');
                         });
                 });
             })
@@ -109,7 +113,7 @@ class DataTable extends Component
             ]);
         } catch (\Exception $e) {
             // Log the error for debugging
-            \Log::error('Invoice DataTable Error: ' . $e->getMessage());
+            \Log::error('Invoice DataTable Error: '.$e->getMessage());
 
             // Return an empty collection to prevent infinite loading
             return view('livewire.invoice.data-table', [
@@ -118,12 +122,14 @@ class DataTable extends Component
         }
     }
 
-    public function openPaymentModal($invoiceId){
-        $this->dispatch('openPaymentModal',$invoiceId);
+    public function openPaymentModal($invoiceId)
+    {
+        $this->dispatch('openPaymentModal', $invoiceId);
     }
 
     #[On('paymentSaved')]
-    public function paymentSaved(){
+    public function paymentSaved()
+    {
 
         dd('aqui');
         $invoices = $this->invoices;

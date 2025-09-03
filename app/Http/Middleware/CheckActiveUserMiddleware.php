@@ -15,10 +15,12 @@ class CheckActiveUserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-          if (auth()->check() && !auth()->user()->active) {
+        if (auth()->check() && ! auth()->user()->active) {
             auth()->logout();
+
             return redirect()->back()->with('message.error', 'Tu cuenta ha sido desactivada');
         }
+
         return $next($request);
     }
 }
