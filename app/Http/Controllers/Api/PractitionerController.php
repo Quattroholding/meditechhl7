@@ -7,6 +7,7 @@ use App\Http\Resources\Api\PractitionerResource;
 use App\Models\Appointment;
 use App\Models\Practitioner;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PractitionerController extends Controller
@@ -48,6 +49,8 @@ class PractitionerController extends Controller
             })
             ->paginate($perPage);
 
+
+
         // Calcular fechas de la próxima semana (lunes a domingo)
         $nextWeekStart = now()->next('Monday')->startOfDay();
         $nextWeekEnd = $nextWeekStart->copy()->endOfWeek();
@@ -55,6 +58,7 @@ class PractitionerController extends Controller
         // Obtener horarios ocupados para cada practitioner
         $practitionersWithSchedule = $practitioners->getCollection()->map(function ($practitioner) use ($nextWeekStart, $nextWeekEnd) {
             // Obtener citas ocupadas de la próxima semana con estados específicos
+
             $bookedAppointments = Appointment::where('practitioner_id', $practitioner->id)
                 ->whereBetween('start', [$nextWeekStart, $nextWeekEnd])
                 ->whereIn('status', ['booked', 'arrived', 'fulfilled'])
@@ -74,8 +78,7 @@ class PractitionerController extends Controller
                 });
 
             // Agregar los horarios ocupados al practitioner
-            $practitionerArray = $practitioner->toArray();
-            $practitionerArray['next_week_schedule'] = [
+            $practitioner->next_week_schedule = [
                 'week_start' => $nextWeekStart->format('Y-m-d'),
                 'week_end' => $nextWeekEnd->format('Y-m-d'),
                 'booked_appointments' => $bookedAppointments->toArray(),
@@ -83,10 +86,13 @@ class PractitionerController extends Controller
                 'busy_days' => $bookedAppointments->pluck('date')->unique()->values()->toArray(),
             ];
 
-            return $practitionerArray;
+            return $practitioner;
         });
 
+
+
         $practitioners->setCollection(collect($practitionersWithSchedule));
+
 
         return response()->json([
             'data' => PractitionerResource::collection($practitioners->items()),
@@ -107,7 +113,7 @@ class PractitionerController extends Controller
         ]);
     }
 
-    public function availability(Request $request, $practitionerId)
+    public function availability(Request $request, $practitionerId): JsonResponse
     {
         $request->validate([
             'date' => 'required|date|after_or_equal:today',
