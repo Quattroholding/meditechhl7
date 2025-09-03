@@ -6,7 +6,7 @@
                 <div class="skeleton-chart"></div>
             </div>
         @else
-            <h5 class="text-primary">{{__('Pacientes por género')}}</h5>
+            <h5 class="text-base">{{__('Pacientes por género')}}</h5>
             <div id="radial-patients-active"></div>
         @endif
     </div>

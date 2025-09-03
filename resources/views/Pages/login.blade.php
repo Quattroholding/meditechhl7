@@ -51,7 +51,7 @@
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        <a href="{{ url('forgot-password') }}" class="text-primary">{{__('¿Se te olvidó la contraseña?')}}</a>
+                                        <a href="{{ url('forgot-password') }}" class="text-base">{{__('¿Se te olvidó la contraseña?')}}</a>
                                     </div>
                                     <div class="form-group login-btn">
                                         <button class="btn btn-primary btn-block" type="submit">{{__('Ingresar')}}</button>
@@ -60,7 +60,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}" class="text-primary">{{__('Regístrate')}}</a></p>
+                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}" class="text-base">{{__('Regístrate')}}</a></p>
                                     <!-- Social Login -->
                                     <div class="social-login">
 
