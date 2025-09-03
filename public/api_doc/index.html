@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meditech2 API Documentation</title>
+    <title>Meditec PTY API Documentation</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -194,7 +194,7 @@
 <body>
     <div class="header">
         <div class="container">
-            <h1><i class="fas fa-stethoscope"></i> Meditech2 API</h1>
+            <h1><i class="fas fa-stethoscope"></i> Meditec PTY API</h1>
             <p>Documentación completa de la API del sistema de gestión médica</p>
         </div>
     </div>
@@ -202,7 +202,7 @@
     <nav class="nav">
         <div class="container nav-container">
             <div class="logo">
-                <strong>Meditech2 API Docs</strong>
+                <strong>Meditec PTY API Docs</strong>
             </div>
             <ul class="nav-links">
                 <li><a href="#overview"><i class="fas fa-home"></i> Inicio</a></li>
@@ -219,25 +219,31 @@
     <div class="main-content">
         <div class="container">
             <div class="intro">
-                <h2 id="overview">Bienvenido a la API de Meditech2</h2>
-                <p>Esta documentación proporciona información completa sobre todos los endpoints disponibles en la API de Meditech2, un sistema completo de gestión médica multi-tenant.</p>
+                <h2 id="overview">Bienvenido a la API de Meditec PTY</h2>
+                <p>Esta documentación proporciona información completa sobre todos los endpoints disponibles en la API de Meditec PTY, un sistema completo de gestión médica multi-tenant.</p>
 
                 <h3>Características principales:</h3>
                 <ul style="margin: 1rem 0; padding-left: 2rem;">
                     <li>Sistema multi-tenant con aislamiento de datos por cliente</li>
-                    <li>Autenticación basada en tokens Sanctum</li>
+                    <li>Autenticación basada en tokens Sanctum y API Tokens</li>
                     <li>Gestión completa de pacientes y médicos</li>
                     <li>Sistema de citas médicas</li>
                     <li>Cumplimiento con estándares FHIR</li>
                     <li>Soporte para múltiples roles: pacientes, médicos, asistentes y administradores</li>
+                    <li>API v1 con tokens para integración externa</li>
                 </ul>
 
-                <h3>URL Base:</h3>
-                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>https://tu-dominio.com/api</code></pre>
+                <h3>URLs Base:</h3>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>https://meditecpty.com/api      (Sanctum Auth)
+https://meditecpty.com/api/v1   (API Token Auth)</code></pre>
 
                 <h3>Autenticación:</h3>
-                <p>La API utiliza tokens Bearer para la autenticación. Incluye el token en el header Authorization:</p>
-                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>Authorization: Bearer {tu-token}</code></pre>
+                <p><strong>Para usuarios autenticados (Sanctum):</strong></p>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>Authorization: Bearer {sanctum-token}</code></pre>
+
+                <p><strong>Para integraciones externas (API v1):</strong></p>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>Authorization: Bearer {api-token}</code></pre>
+                <p>Los tokens API incluyen restricciones por IP y scopes para mayor seguridad.</p>
             </div>
 
             <div class="api-sections">
@@ -262,8 +268,15 @@
                     <h3><i class="fas fa-calendar-alt" style="color: #48bb78;"></i> Citas Médicas <span class="status-badge status-ready">Listo</span></h3>
                     <p>Gestión completa de citas médicas, incluyendo disponibilidad y programación.</p>
                     <div class="endpoints">
-                        <strong>Endpoints incluidos:</strong><br>
+                        <strong>API Sanctum:</strong><br>
                         • GET /appointments<br>
+                        • POST /appointments<br>
+                        • GET /appointments/{id}<br>
+                        • PUT /appointments/{id}<br>
+                        • DELETE /appointments/{id}<br>
+                        • GET /appointments/{id}/availability
+                        <strong>API v1:</strong><br>
+                        • GET /v1/appointments<br>
                         • POST /appointments<br>
                         • GET /appointments/{id}<br>
                         • PUT /appointments/{id}<br>
@@ -278,13 +291,15 @@
                     <h3><i class="fas fa-user-injured" style="color: #ed8936;"></i> Pacientes <span class="status-badge status-ready">Listo</span></h3>
                     <p>Endpoints para gestión de pacientes, historial médico y datos personales.</p>
                     <div class="endpoints">
-                        <strong>Endpoints incluidos:</strong><br>
-                        • GET /patients<br>
+                        <strong>API Sanctum:</strong><br>
                         • GET /patient/profile<br>
                         • PUT /patient/personal-data<br>
                         • PUT /patient/credentials<br>
                         • GET /patient/medical-history<br>
-                        • POST /patient/profile-picture
+                        • POST /patient/profile-picture<br><br>
+                        <strong>API v1:</strong><br>
+                        • GET /v1/patients<br>
+                        • GET /v1/patients/{id}/medical-history
                     </div>
                     <br>
                     <a href="patients.html" class="btn">Ver Documentación</a>
@@ -294,12 +309,16 @@
                     <h3><i class="fas fa-user-md" style="color: #9f7aea;"></i> Médicos <span class="status-badge status-ready">Listo</span></h3>
                     <p>Gestión de médicos, especialidades, disponibilidad y consultorios.</p>
                     <div class="endpoints">
-                        <strong>Endpoints incluidos:</strong><br>
+                        <strong>API Sanctum:</strong><br>
                         • GET /practitioners<br>
                         • GET /practitioners/{id}/availability<br>
                         • GET /practitioners/{id}/consulting-rooms<br>
-                        • GET /medical-specialities<br>
-                        • GET /consulting-rooms
+                        • GET /medical-specialities<br><br>
+                        <strong>API v1:</strong><br>
+                        • GET /v1/practitioners<br>
+                        • GET /v1/practitioners/{id}/availability<br>
+                        • GET /v1/practitioners/{id}/consulting-rooms<br>
+                        • GET /v1/medical-specialities
                     </div>
                     <br>
                     <a href="practitioners.html" class="btn">Ver Documentación</a>
@@ -337,7 +356,7 @@
 
     <div class="footer">
         <div class="container">
-            <p>&copy; 2024 Meditech2. Documentación de API generada automáticamente.</p>
+            <p>&copy; 2025 Meditec PTY. Documentación de API.</p>
             <p>Última actualización: <span id="last-update"></span></p>
         </div>
     </div>

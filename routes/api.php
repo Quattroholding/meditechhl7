@@ -68,8 +68,18 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
 
-    Route::apiResource('appointments', AppointmentController::class);
-    Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailability']);
+    // Patients
+    Route::get('/patients', [PatientController::class, 'index']);
+    Route::get('/patients/{patientId}/medical-history', [PatientController::class, 'getMedicalHistory']);
+
+    // Appointments with v1-specific methods
+    Route::get('/appointments', [AppointmentController::class, 'indexV1']);
+    Route::post('/appointments', [AppointmentController::class, 'storeV1']);
+    Route::get('/appointments/{appointment}', [AppointmentController::class, 'showV1']);
+    Route::put('/appointments/{appointment}', [AppointmentController::class, 'updateV1']);
+    Route::patch('/appointments/{appointment}', [AppointmentController::class, 'updateV1']);
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']); // Keep original destroy method
+    Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailabilityV1']);
 
     Route::apiResource('medicines', MedicineController::class);
     Route::get('/clients/{clientId}/medicines', [MedicineController::class, 'getByClient']);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Médicos - Meditech2 API</title>
+    <title>Médicos - Meditec PTY API</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -233,16 +233,16 @@
     <nav class="nav">
         <div class="container nav-container">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditec PTY API Docs</strong></a>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="auth.html">Autenticación</a></li>
-                <li><a href="appointments.html">Citas</a></li>
-                <li><a href="patients.html">Pacientes</a></li>
-                <li><a href="practitioners.html" class="active">Médicos</a></li>
-                <li><a href="catalogs.html">Catálogos</a></li>
-                <li><a href="notifications.html">Notificaciones</a></li>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="auth.html"><i class="fas fa-key"></i> Autenticación</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Citas</a></li>
+                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+                <li><a href="practitioners.html"><i class="fas fa-user-md"></i> Médicos</a></li>
+                <li><a href="catalogs.html"><i class="fas fa-pills"></i> Catálogos</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notificaciones</a></li>
             </ul>
         </div>
     </nav>
@@ -252,16 +252,26 @@
             <div class="toc">
                 <h3>Índice de Contenidos</h3>
                 <ul>
+                    <li><strong>API Sanctum (auth:sanctum)</strong></li>
                     <li><a href="#list-practitioners">GET /practitioners - Listar Médicos</a></li>
                     <li><a href="#practitioner-availability">GET /practitioners/{id}/availability - Disponibilidad</a></li>
                     <li><a href="#practitioner-consulting-rooms">GET /practitioners/{id}/consulting-rooms - Consultorios</a></li>
                     <li><a href="#medical-specialities">GET /medical-specialities - Especialidades Médicas</a></li>
                     <li><a href="#consulting-rooms">GET /consulting-rooms - Lista de Consultorios</a></li>
+                    <li><strong>API v1 (api.token)</strong></li>
+                    <li><a href="#v1-list-practitioners">GET /v1/practitioners - Listar Médicos</a></li>
+                    <li><a href="#v1-practitioner-availability">GET /v1/practitioners/{id}/availability - Disponibilidad</a></li>
+                    <li><a href="#v1-practitioner-consulting-rooms">GET /v1/practitioners/{id}/consulting-rooms - Consultorios</a></li>
+                    <li><a href="#v1-medical-specialities">GET /v1/medical-specialities - Especialidades Médicas</a></li>
                 </ul>
             </div>
 
             <div class="note">
-                <strong>Nota:</strong> Los endpoints de médicos están diseñados para facilitar la búsqueda y selección de profesionales médicos por parte de pacientes y administradores del sistema.
+                <strong>Nota:</strong> Los endpoints de médicos están disponibles en dos versiones:
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>API Sanctum (/api/*):</strong> Para usuarios autenticados con tokens Sanctum</li>
+                    <li><strong>API v1 (/api/v1/*):</strong> Para integraciones externas con tokens API que incluyen restricciones por IP y scopes</li>
+                </ul>
             </div>
 
             <div class="endpoint" id="list-practitioners">
@@ -907,6 +917,135 @@ Authorization: Bearer 1|abcd1234...
         }
     ]
 }
+                    </div>
+                </div>
+            </div>
+
+            <!-- API v1 Endpoints -->
+            <h2 style="color: #2d3748; margin: 3rem 0 2rem 0; padding: 1rem; background: #f7fafc; border-left: 4px solid #4299e1; border-radius: 4px;">
+                <i class="fas fa-code"></i> API v1 - Integración Externa
+            </h2>
+
+            <div class="note">
+                <strong>Autenticación API v1:</strong> Estos endpoints requieren un token API válido con los scopes apropiados.
+                <div class="code-block" style="margin-top: 0.5rem;">Authorization: Bearer {api-token}</div>
+            </div>
+
+            <div class="endpoint" id="v1-list-practitioners">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/practitioners</span>
+                </div>
+
+                <p>Endpoint idéntico al de Sanctum pero con autenticación por token API. Incluye los horarios ocupados de la próxima semana.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <p>Los mismos parámetros que <a href="#list-practitioners">GET /practitioners</a></p>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/practitioners?page=1&per_page=5
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta</h3>
+                    <p>Formato de respuesta idéntico al endpoint de Sanctum.</p>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-practitioner-availability">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/practitioners/{id}/availability</span>
+                </div>
+
+                <p>Disponibilidad de horarios para integración externa.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros</h3>
+                    <p>Los mismos parámetros que <a href="#practitioner-availability">GET /practitioners/{id}/availability</a></p>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/practitioners/1/availability?date=2024-02-15&duration=30
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-practitioner-consulting-rooms">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/practitioners/{id}/consulting-rooms</span>
+                </div>
+
+                <p>Consultorios disponibles para un médico específico (integración externa).</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/practitioners/1/consulting-rooms
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-medical-specialities">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/medical-specialities</span>
+                </div>
+
+                <p>Lista de especialidades médicas para integración externa.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/medical-specialities
+Authorization: Bearer mdt_abc123...
+Accept: application/json
                     </div>
                 </div>
             </div>

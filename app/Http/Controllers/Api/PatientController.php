@@ -18,6 +18,393 @@ use Illuminate\Validation\Rules\Password;
 class PatientController extends Controller
 {
     /**
+     * Display a listing of patients
+     */
+    public function index(Request $request): JsonResponse {
+        $query = Patient::with(['primaryInsurance', 'secondaryInsurance']);
+
+        // Add search functionality
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('identifier', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->has('status')) {
+            if ($request->status === 'active') {
+                $query->where('active', true)->whereNull('deceased_date');
+            } elseif ($request->status === 'inactive') {
+                $query->where('active', false);
+            } elseif ($request->status === 'deceased') {
+                $query->whereNotNull('deceased_date');
+            }
+        }
+
+        // Filter by gender
+        if ($request->has('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        // Filter by age range
+        if ($request->has('age_from') || $request->has('age_to')) {
+            if ($request->has('age_from')) {
+                $ageFrom = (int)$request->age_from;
+                $dateFrom = now()->subYears($ageFrom + 1)->format('Y-m-d');
+                $query->where('birth_date', '<=', $dateFrom);
+            }
+            if ($request->has('age_to')) {
+                $ageTo = (int)$request->age_to;
+                $dateTo = now()->subYears($ageTo)->format('Y-m-d');
+                $query->where('birth_date', '>=', $dateTo);
+            }
+        }
+
+        // Ordering
+        $orderBy = $request->get('order_by', 'created_at');
+        $orderDirection = $request->get('order_direction', 'desc');
+
+        $allowedOrderColumns = ['name', 'created_at', 'updated_at', 'birth_date', 'identifier'];
+        if (in_array($orderBy, $allowedOrderColumns)) {
+            $query->orderBy($orderBy, $orderDirection);
+        }
+
+        // Pagination
+        $perPage = min(max((int)$request->get('per_page', 15), 1), 100);
+        $patients = $query->paginate($perPage);
+
+        return response()->json([
+            'data' => $patients->map(function ($patient) {
+                $profile_picture_path = '';
+                if ($patient->avatar()) {
+                    $profile_picture_path = url('storage/' . $patient->avatar()->path);
+                }
+
+                return [
+                    'id' => $patient->id,
+                    'fhir_id' => $patient->fhir_id,
+                    'identifier' => $patient->identifier,
+                    'identifier_type' => $patient->identifier_type,
+                    'name' => $patient->name,
+                    'given_name' => $patient->given_name,
+                    'family_name' => $patient->family_name,
+                    'gender' => $patient->gender,
+                    'birth_date' => $patient->birth_date,
+                    'age' => $patient->age,
+                    'phone' => $patient->phone,
+                    'whatsapp_phone' => $patient->whatsapp_phone,
+                    'email' => $patient->email,
+                    'marital_status' => $patient->marital_status,
+                    'blood_type' => $patient->blood_type,
+                    'active' => $patient->active,
+                    'deceased' => $patient->deceased,
+                    'deceased_date' => $patient->deceased_date,
+                    'primary_insurance' => $patient->primaryInsurance ? [
+                        'id' => $patient->primaryInsurance->id,
+                        'name' => $patient->primaryInsurance->name,
+                        'policy_number' => $patient->primaryInsurance->policy_number,
+                    ] : null,
+                    'secondary_insurance' => $patient->secondaryInsurance ? [
+                        'id' => $patient->secondaryInsurance->id,
+                        'name' => $patient->secondaryInsurance->name,
+                        'policy_number' => $patient->secondaryInsurance->policy_number,
+                    ] : null,
+                    'profile_picture_url' => $profile_picture_path,
+                    'created_at' => $patient->created_at,
+                    'updated_at' => $patient->updated_at,
+                ];
+            }),
+            'meta' => [
+                'current_page' => $patients->currentPage(),
+                'per_page' => $patients->perPage(),
+                'total' => $patients->total(),
+                'last_page' => $patients->lastPage(),
+                'from' => $patients->firstItem(),
+                'to' => $patients->lastItem(),
+                'has_more_pages' => $patients->hasMorePages(),
+            ],
+            'links' => [
+                'first' => $patients->url(1),
+                'last' => $patients->url($patients->lastPage()),
+                'prev' => $patients->previousPageUrl(),
+                'next' => $patients->nextPageUrl(),
+            ],
+        ]);
+    }
+
+    /**
+     * Get a patient's medical history by patient ID (for API v1)
+     */
+    public function getMedicalHistory(Request $request, int $patientId): JsonResponse {
+        // Find the patient
+        $patient = Patient::with([
+            'medicalHistories',
+            'encounters.practitioner',
+            'encounters.serviceRequests',
+            'encounters.vitalSigns',
+            'conditions.icd10Code',
+            'conditions.practitioner',
+            'vitalSigns.practitioner',
+            'physicalExams.practitioner',
+            'medicationRequests.medicine',
+            'medicationRequests.practitioner',
+            'serviceRequests.practitioner',
+            'procedures.practitioner',
+            'allergies',
+        ])->find($patientId);
+
+        if (!$patient) {
+            return response()->json([
+                'message' => 'Paciente no encontrado.',
+            ], 404);
+        }
+
+        // Get profile picture
+        $profile_picture_path = '';
+        if ($patient->avatar()) {
+            $profile_picture_path = url('storage/' . $patient->avatar()->path);
+        }
+
+        return response()->json([
+            'data' => [
+                'patient_info' => [
+                    'id' => $patient->id,
+                    'fhir_id' => $patient->fhir_id,
+                    'identifier' => $patient->identifier,
+                    'identifier_type' => $patient->identifier_type,
+                    'name' => $patient->name,
+                    'given_name' => $patient->given_name,
+                    'family_name' => $patient->family_name,
+                    'gender' => $patient->gender,
+                    'birth_date' => $patient->birth_date,
+                    'age' => $patient->age,
+                    'blood_type' => $patient->blood_type,
+                    'marital_status' => $patient->marital_status,
+                    'phone' => $patient->phone,
+                    'email' => $patient->email,
+                    'profile_picture_url' => $profile_picture_path,
+                ],
+                'medical_history' => $patient->medicalHistories->map(function ($history) {
+                    return [
+                        'id' => $history->id,
+                        'fhir_id' => $history->fhir_id,
+                        'category' => $history->category,
+                        'title' => $history->title,
+                        'description' => $history->description,
+                        'recorded_date' => $history->recorded_date,
+                        'occurrence_date' => $history->occurrence_date,
+                        'clinical_status' => $history->clinical_status,
+                        'verification_status' => $history->verification_status,
+                        'created_at' => $history->created_at,
+                        'updated_at' => $history->updated_at,
+                    ];
+                }),
+                'encounters' => $patient->encounters->map(function ($encounter) {
+                    return [
+                        'id' => $encounter->id,
+                        'fhir_id' => $encounter->fhir_id,
+                        'identifier' => $encounter->identifier,
+                        'status' => $encounter->status,
+                        'class' => $encounter->class,
+                        'type' => $encounter->type,
+                        'priority' => $encounter->priority,
+                        'reason' => $encounter->reason,
+                        'start' => $encounter->start,
+                        'end' => $encounter->end,
+                        'practitioner' => $encounter->practitioner ? [
+                            'id' => $encounter->practitioner->id,
+                            'name' => $encounter->practitioner->name,
+                        ] : null,
+                        'appointment_id' => $encounter->appointment_id,
+                        'medical_speciality_id' => $encounter->medical_speciality_id,
+                        'created_at' => $encounter->created_at,
+                        'updated_at' => $encounter->updated_at,
+                    ];
+                }),
+                'conditions' => $patient->conditions->map(function ($condition) {
+                    return [
+                        'id' => $condition->id,
+                        'fhir_id' => $condition->fhir_id,
+                        'identifier' => $condition->identifier,
+                        'clinical_status' => $condition->clinical_status,
+                        'verification_status' => $condition->verification_status,
+                        'code' => $condition->code,
+                        'category' => $condition->category,
+                        'severity' => $condition->severity,
+                        'onset_date' => $condition->onset_date,
+                        'onset_info' => $condition->onset_info,
+                        'abatement_date' => $condition->abatement_date,
+                        'recorded_date' => $condition->recorded_date,
+                        'note' => $condition->note,
+                        'evidence' => $condition->evidence,
+                        'icd10_code' => $condition->icd10Code ? [
+                            'code' => $condition->icd10Code->code,
+                            'description' => $condition->icd10Code->description_es,
+                        ] : null,
+                        'practitioner' => $condition->practitioner ? [
+                            'id' => $condition->practitioner->id,
+                            'name' => $condition->practitioner->name,
+                        ] : null,
+                        'created_at' => $condition->created_at,
+                        'updated_at' => $condition->updated_at,
+                    ];
+                }),
+                'vital_signs' => $patient->vitalSigns->map(function ($vitalSign) {
+                    return [
+                        'id' => $vitalSign->id,
+                        'fhir_id' => $vitalSign->fhir_id,
+                        'status' => $vitalSign->status,
+                        'code' => $vitalSign->code,
+                        'category' => $vitalSign->category,
+                        'description' => $vitalSign->observationType->name,
+                        'value' => $vitalSign->value,
+                        'unit' => $vitalSign->observationType->default_unit,
+                        'min_normal_value' => $vitalSign->observationType->min_normal_value,
+                        'max_normal_value' => $vitalSign->observationType->max_normal_value,
+                        'interpretation' => $vitalSign->interpretation,
+                        'note' => $vitalSign->note,
+                        'effective_date' => $vitalSign->effective_date,
+                        'issued_date' => $vitalSign->issued_date,
+                        'body_site' => $vitalSign->body_site,
+                        'method' => $vitalSign->method,
+                        'practitioner' => $vitalSign->practitioner ? [
+                            'id' => $vitalSign->practitioner->id,
+                            'name' => $vitalSign->practitioner->name,
+                        ] : null,
+                        'encounter_id' => $vitalSign->encounter_id,
+                        'created_at' => $vitalSign->created_at,
+                        'updated_at' => $vitalSign->updated_at,
+                    ];
+                }),
+                'physical_exams' => $patient->physicalExams->map(function ($exam) {
+                    return [
+                        'id' => $exam->id,
+                        'fhir_id' => $exam->fhir_id,
+                        'status' => $exam->status,
+                        'category' => $exam->category,
+                        'code' => $exam->code,
+                        'description' => $exam->observationType->name,
+                        'method' => $exam->method,
+                        'conclusion' => $exam->conclusion,
+                        'effective_date' => $exam->effective_date,
+                        'body_site' => $exam->body_site,
+                        'finding' => $exam->finding,
+                        'media' => $exam->media,
+                        'practitioner' => $exam->practitioner ? [
+                            'id' => $exam->practitioner->id,
+                            'name' => $exam->practitioner->name,
+                        ] : null,
+                        'encounter_id' => $exam->encounter_id,
+                        'created_at' => $exam->created_at,
+                        'updated_at' => $exam->updated_at,
+                    ];
+                }),
+                'medications' => $patient->medicationRequests->map(function ($medication) {
+                    return [
+                        'id' => $medication->id,
+                        'fhir_id' => $medication->fhir_id,
+                        'identifier' => $medication->identifier,
+                        'status' => $medication->status,
+                        'intent' => $medication->intent,
+                        'priority' => $medication->priority,
+                        'reason' => $medication->reason,
+                        'dosage_instruction' => $medication->dosage_instruction,
+                        'dosage_text' => $medication->dosage_text,
+                        'route' => $medication->route,
+                        'frequency' => $medication->frequency,
+                        'quantity' => $medication->quantity,
+                        'refills' => $medication->refills,
+                        'valid_from' => $medication->valid_from,
+                        'valid_to' => $medication->valid_to,
+                        'substitution_allowed' => $medication->substitution_allowed,
+                        'note' => $medication->note,
+                        'medication'=>$medication->medication,
+                        'medicine' => $medication->medicine ? [
+                            'id' => $medication->medicine->id,
+                            'name' => $medication->medicine->full_name,
+                        ] : null,
+                        'practitioner' => $medication->practitioner ? [
+                            'id' => $medication->practitioner->id,
+                            'name' => $medication->practitioner->name,
+                        ] : null,
+                        'encounter_id' => $medication->encounter_id,
+                        'created_at' => $medication->created_at,
+                        'updated_at' => $medication->updated_at,
+                    ];
+                }),
+                'service_requests' => $patient->serviceRequests->map(function ($service) {
+                    return [
+                        'id' => $service->id,
+                        'fhir_id' => $service->fhir_id,
+                        'identifier' => $service->identifier,
+                        'status' => $service->status,
+                        'intent' => $service->intent,
+                        'priority' => $service->priority,
+                        'code' => $service->code,
+                        'description' => $service->cpt->description_es,
+                        'category' => $service->category,
+                        'quantity' => $service->quantity,
+                        'subject' => $service->subject,
+                        'occurrence_date' => $service->occurrence_date,
+                        'authored_on' => $service->authored_on,
+                        'requester_reference' => $service->requester_reference,
+                        'performer_type' => $service->performer_type,
+                        'reason_code' => $service->reason_code,
+                        'note' => $service->note,
+                        'practitioner' => $service->practitioner ? [
+                            'id' => $service->practitioner->id,
+                            'name' => $service->practitioner->name,
+                        ] : null,
+                        'encounter_id' => $service->encounter_id,
+                        'created_at' => $service->created_at,
+                        'updated_at' => $service->updated_at,
+                    ];
+                }),
+                'procedures' => $patient->procedures->map(function ($procedure) {
+                    return [
+                        'id' => $procedure->id,
+                        'fhir_id' => $procedure->fhir_id,
+                        'identifier' => $procedure->identifier,
+                        'status' => $procedure->status,
+                        'category' => $procedure->category,
+                        'code' => $procedure->code,
+                        'performed_date' => $procedure->performed_date,
+                        'location' => $procedure->location,
+                        'outcome' => $procedure->outcome,
+                        'note' => $procedure->note,
+                        'practitioner' => $procedure->practitioner ? [
+                            'id' => $procedure->practitioner->id,
+                            'name' => $procedure->practitioner->name,
+                        ] : null,
+                        'encounter_id' => $procedure->encounter_id,
+                        'created_at' => $procedure->created_at,
+                        'updated_at' => $procedure->updated_at,
+                    ];
+                }),
+                'allergies' => $patient->allergies->map(function ($allergy) {
+                    return [
+                        'id' => $allergy->id,
+                        'fhir_id' => $allergy->fhir_id,
+                        'category' => $allergy->category,
+                        'title' => $allergy->title,
+                        'description' => $allergy->description,
+                        'recorded_date' => $allergy->recorded_date,
+                        'occurrence_date' => $allergy->occurrence_date,
+                        'clinical_status' => $allergy->clinical_status,
+                        'verification_status' => $allergy->verification_status,
+                        'created_at' => $allergy->created_at,
+                        'updated_at' => $allergy->updated_at,
+                    ];
+                }),
+            ],
+        ]);
+    }
+
+    /**
      * Get the authenticated patient's profile
      */
     public function profile(Request $request): JsonResponse

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citas Médicas - Meditech2 API</title>
+    <title>Citas Médicas - Meditec PTY API</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -233,16 +233,16 @@
     <nav class="nav">
         <div class="container nav-container">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditec PTY API Docs</strong></a>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="auth.html">Autenticación</a></li>
-                <li><a href="appointments.html" class="active">Citas</a></li>
-                <li><a href="patients.html">Pacientes</a></li>
-                <li><a href="practitioners.html">Médicos</a></li>
-                <li><a href="catalogs.html">Catálogos</a></li>
-                <li><a href="notifications.html">Notificaciones</a></li>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="auth.html"><i class="fas fa-key"></i> Autenticación</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Citas</a></li>
+                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+                <li><a href="practitioners.html"><i class="fas fa-user-md"></i> Médicos</a></li>
+                <li><a href="catalogs.html"><i class="fas fa-pills"></i> Catálogos</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notificaciones</a></li>
             </ul>
         </div>
     </nav>
@@ -252,17 +252,29 @@
             <div class="toc">
                 <h3>Índice de Contenidos</h3>
                 <ul>
+                    <li><strong>API Sanctum (auth:sanctum)</strong></li>
                     <li><a href="#list-appointments">GET /appointments - Listar Citas</a></li>
                     <li><a href="#create-appointment">POST /appointments - Crear Cita</a></li>
                     <li><a href="#show-appointment">GET /appointments/{id} - Ver Cita</a></li>
                     <li><a href="#update-appointment">PUT /appointments/{id} - Actualizar Cita</a></li>
                     <li><a href="#delete-appointment">DELETE /appointments/{id} - Cancelar Cita</a></li>
                     <li><a href="#appointment-availability">GET /appointments/{id}/availability - Disponibilidad</a></li>
+                    <li><strong>API v1 (api.token)</strong></li>
+                    <li><a href="#v1-list-appointments">GET /v1/appointments - Listar Citas</a></li>
+                    <li><a href="#v1-create-appointment">POST /v1/appointments - Crear Cita</a></li>
+                    <li><a href="#v1-show-appointment">GET /v1/appointments/{id} - Ver Cita</a></li>
+                    <li><a href="#v1-update-appointment">PUT /v1/appointments/{id} - Actualizar Cita</a></li>
+                    <li><a href="#v1-delete-appointment">DELETE /v1/appointments/{id} - Cancelar Cita</a></li>
+                    <li><a href="#v1-appointment-availability">GET /v1/appointments/{id}/availability - Disponibilidad</a></li>
                 </ul>
             </div>
 
             <div class="note">
-                <strong>Nota:</strong> Todos los endpoints de citas requieren autenticación mediante token Bearer. Los pacientes solo pueden ver y gestionar sus propias citas, mientras que los médicos pueden gestionar citas asignadas a ellos.
+                <strong>Nota:</strong> Los endpoints de pacientes están disponibles en dos versiones:
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>API Sanctum (/api/*):</strong> Para usuarios autenticados (pacientes ven su información, admins ven todo)</li>
+                    <li><strong>API v1 (/api/v1/*):</strong> Para integraciones externas con acceso completo según tokens API y scopes</li>
+                </ul>
             </div>
 
             <div class="endpoint" id="list-appointments">
@@ -329,7 +341,7 @@ Authorization: Bearer {token}
                 <div class="section">
                     <h3>Ejemplo de Petición</h3>
                     <div class="code-block">
-GET /api/appointments?page=1&per_page=5&status=booked&date_from=2024-01-01
+GET /api/appointments?page=1&per_page=5&status=booked&date_from=2025-09-01
 Authorization: Bearer 1|abcd1234...
                     </div>
                 </div>
@@ -345,7 +357,7 @@ Authorization: Bearer 1|abcd1234...
     "data": [
         {
             "id": 1,
-            "status": "scheduled",
+            "status": "booked",
             "description": "Consulta general",
             "start": "2024-02-15 10:00:00",
             "end": "2024-02-15 10:30:00",
@@ -428,16 +440,22 @@ Content-Type: application/json
                         </thead>
                         <tbody>
                             <tr>
+                                <td><code>patient_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>ID del paciente</td>
+                            </tr>
+                            <tr>
                                 <td><code>practitioner_id</code></td>
                                 <td>integer</td>
                                 <td><span class="param-required">Sí</span></td>
                                 <td>ID del médico</td>
                             </tr>
                             <tr>
-                                <td><code>consulting_room_id</code></td>
+                                <td><code>medical_speciality_id</code></td>
                                 <td>integer</td>
-                                <td><span class="param-optional">No</span></td>
-                                <td>ID del consultorio</td>
+                                <td><span class="param-required">Sí</span></td>
+                                <td>ID de la especialidad</td>
                             </tr>
                             <tr>
                                 <td><code>start</code></td>
@@ -448,8 +466,20 @@ Content-Type: application/json
                             <tr>
                                 <td><code>minutes_duration</code></td>
                                 <td>integer</td>
-                                <td><span class="param-optional">No</span></td>
+                                <td><span class="param-required">SI</span></td>
                                 <td>Duración en minutos (por defecto: 30)</td>
+                            </tr>
+                            <tr>
+                                <td><code>service_type</code></td>
+                                <td>string</td>
+                                <td><span class="param-required">SI</span></td>
+                                <td>Tipo de cita </td>
+                            </tr>
+                            <tr>
+                                <td><code>consulting_room_id</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>ID del consultorio</td>
                             </tr>
                             <tr>
                                 <td><code>description</code></td>
@@ -457,12 +487,7 @@ Content-Type: application/json
                                 <td><span class="param-optional">No</span></td>
                                 <td>Descripción de la cita</td>
                             </tr>
-                            <tr>
-                                <td><code>service_type</code></td>
-                                <td>string</td>
-                                <td><span class="param-optional">No</span></td>
-                                <td>Motivo de la cita</td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -475,7 +500,9 @@ Authorization: Bearer 1|abcd1234...
 Content-Type: application/json
 
 {
+    "patient_id": 1,
     "practitioner_id": 1,
+    "medical_speciality_id": 32,
     "consulting_room_id": 1,
     "start": "2024-02-15 10:00:00",
     "minutes_duration": 30,
@@ -496,7 +523,7 @@ Content-Type: application/json
     "message": "Cita creada exitosamente",
     "appointment": {
         "id": 2,
-        "status": "scheduled",
+        "status": "booked",
         "description": "Consulta general",
         "start": "2024-02-15 10:00:00",
         "end": "2024-02-15 10:30:00",
@@ -572,11 +599,11 @@ Authorization: Bearer {token}
                     <div class="code-block">
 {
     "id": 1,
-    "status": "scheduled",
+    "status": "booked",
     "description": "Consulta general",
     "start": "2024-02-15 10:00:00",
     "end": "2024-02-15 10:30:00",
-    "reason": "Revisión médica anual",
+    "service_type": "Revisión médica anual",
     "practitioner": {
         "id": 1,
         "name": "Dr. Juan Pérez",
@@ -606,7 +633,7 @@ Authorization: Bearer {token}
                 <p>Actualiza una cita existente (reprogramación).</p>
 
                 <div class="warning">
-                    <strong>Importante:</strong> Solo se pueden actualizar citas que estén en estado 'scheduled' y que no hayan pasado su fecha límite de cancelación.
+                    <strong>Importante:</strong> Solo se pueden actualizar citas que estén en estado 'booked' y que no hayan pasado su fecha límite de cancelación.
                 </div>
 
                 <div class="section">
@@ -662,7 +689,7 @@ Content-Type: application/json
     "message": "Cita actualizada exitosamente",
     "appointment": {
         "id": 1,
-        "status": "scheduled",
+        "status": "booked",
         "start": "2024-02-16 14:00:00",
         "end": "2024-02-16 14:30:00"
     }

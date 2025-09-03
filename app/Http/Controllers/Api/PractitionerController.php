@@ -50,8 +50,8 @@ class PractitionerController extends Controller
             ->paginate($perPage);
 
         // Calcular fechas de la próxima semana (lunes a domingo)
-        $nextWeekStart = now()->next('Monday')->startOfDay();
-        $nextWeekEnd = $nextWeekStart->copy()->endOfWeek();
+        $nextWeekStart = now();
+        $nextWeekEnd = now()->endOfWeek();
 
         // Obtener horarios ocupados para cada practitioner
         $practitionersWithSchedule = $practitioners->getCollection()->map(function ($practitioner) use ($nextWeekStart, $nextWeekEnd) {

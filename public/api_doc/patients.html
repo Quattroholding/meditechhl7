@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacientes - Meditech2 API</title>
+    <title>Pacientes - Meditec PTY API</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -241,16 +241,16 @@
     <nav class="nav">
         <div class="container nav-container">
             <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditech2 API Docs</strong></a>
+                <a href="index.html" style="text-decoration: none; color: #2d3748;"><strong>← Meditec PTY API Docs</strong></a>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="auth.html">Autenticación</a></li>
-                <li><a href="appointments.html">Citas</a></li>
-                <li><a href="patients.html" class="active">Pacientes</a></li>
-                <li><a href="practitioners.html">Médicos</a></li>
-                <li><a href="catalogs.html">Catálogos</a></li>
-                <li><a href="notifications.html">Notificaciones</a></li>
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="auth.html"><i class="fas fa-key"></i> Autenticación</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Citas</a></li>
+                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+                <li><a href="practitioners.html"><i class="fas fa-user-md"></i> Médicos</a></li>
+                <li><a href="catalogs.html"><i class="fas fa-pills"></i> Catálogos</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notificaciones</a></li>
             </ul>
         </div>
     </nav>
@@ -260,6 +260,7 @@
             <div class="toc">
                 <h3>Índice de Contenidos</h3>
                 <ul>
+                    <li><strong>API Sanctum (auth:sanctum)</strong></li>
                     <li><a href="#get-profile">GET /patient/profile - Obtener Perfil</a></li>
                     <li><a href="#update-personal-data">PUT /patient/personal-data - Actualizar Datos Personales</a></li>
                     <li><a href="#update-credentials">PUT /patient/credentials - Actualizar Credenciales</a></li>
@@ -267,11 +268,18 @@
                     <li><a href="#get-medical-history">GET /patient/medical-history - Obtener Historia Médica</a></li>
                     <li><a href="#get-medical-history-section">GET /patient/medical-history/{section} - Sección Específica</a></li>
                     <li><a href="#list-patients">GET /patients - Listar Pacientes (Admin)</a></li>
+                    <li><strong>API v1 (api.token)</strong></li>
+                    <li><a href="#v1-list-patients">GET /v1/patients - Listar Pacientes</a></li>
+                    <li><a href="#v1-patient-medical-history">GET /v1/patients/{id}/medical-history - Historia Médica</a></li>
                 </ul>
             </div>
 
             <div class="note">
-                <strong>Nota:</strong> Los endpoints de pacientes están diseñados principalmente para uso de aplicaciones móviles de pacientes. Los pacientes solo pueden acceder a su propia información, mientras que los administradores pueden listar todos los pacientes.
+                <strong>Nota:</strong> Los endpoints de pacientes están disponibles en dos versiones:
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>API Sanctum (/api/*):</strong> Para usuarios autenticados (pacientes ven su información, admins ven todo)</li>
+                    <li><strong>API v1 (/api/v1/*):</strong> Para integraciones externas con acceso completo según tokens API y scopes</li>
+                </ul>
             </div>
 
             <div class="endpoint" id="get-profile">
@@ -851,6 +859,283 @@ Authorization: Bearer {admin-token}
 }
                     </div>
                 </div>
+            </div>
+
+            <!-- API v1 Endpoints -->
+            <h2 style="color: #2d3748; margin: 3rem 0 2rem 0; padding: 1rem; background: #f7fafc; border-left: 4px solid #ed8936; border-radius: 4px;">
+                <i class="fas fa-code"></i> API v1 - Integración Externa
+            </h2>
+
+            <div class="note">
+                <strong>Autenticación API v1:</strong> Estos endpoints requieren un token API válido con los scopes apropiados.
+                <div class="code-block" style="margin-top: 0.5rem;">Authorization: Bearer {api-token}</div>
+            </div>
+
+            <div class="endpoint" id="v1-list-patients">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/patients</span>
+                </div>
+
+                <p>Lista todos los pacientes del sistema con paginación y filtros de búsqueda. Diseñado para integraciones externas.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Número de página (por defecto: 1)</td>
+                            </tr>
+                            <tr>
+                                <td><code>per_page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Elementos por página (1-100, por defecto: 15)</td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Buscar por nombre, identificación, email o teléfono</td>
+                            </tr>
+                            <tr>
+                                <td><code>status</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por estado: active, inactive, deceased</td>
+                            </tr>
+                            <tr>
+                                <td><code>gender</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por género: male, female, other</td>
+                            </tr>
+                            <tr>
+                                <td><code>age_from</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Edad mínima para filtrar</td>
+                            </tr>
+                            <tr>
+                                <td><code>age_to</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Edad máxima para filtrar</td>
+                            </tr>
+                            <tr>
+                                <td><code>order_by</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Ordenar por: name, created_at, updated_at, birth_date, identifier</td>
+                            </tr>
+                            <tr>
+                                <td><code>order_direction</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Dirección de orden: asc, desc (por defecto: desc)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/patients?page=1&per_page=10&search=maria&status=active
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "data": [
+        {
+            "id": 1,
+            "fhir_id": "patient-123",
+            "identifier": "8-123-456",
+            "identifier_type": "CC",
+            "name": "María González Pérez",
+            "given_name": "María",
+            "family_name": "González",
+            "gender": "female",
+            "birth_date": "1990-05-15",
+            "age": 34,
+            "phone": "+507 6000-1234",
+            "whatsapp_phone": "+507 6000-1234",
+            "email": "maria@ejemplo.com",
+            "marital_status": "casado",
+            "blood_type": "O+",
+            "active": true,
+            "deceased": false,
+            "deceased_date": null,
+            "primary_insurance": {
+                "id": 1,
+                "name": "Seguro Social",
+                "policy_number": "SS-123456"
+            },
+            "secondary_insurance": null,
+            "profile_picture_url": "https://ejemplo.com/storage/patients/maria.jpg",
+            "created_at": "2023-01-15T10:00:00.000000Z",
+            "updated_at": "2024-01-15T10:00:00.000000Z"
+        }
+    ],
+    "meta": {
+        "current_page": 1,
+        "per_page": 10,
+        "total": 1,
+        "last_page": 1,
+        "from": 1,
+        "to": 1,
+        "has_more_pages": false
+    },
+    "links": {
+        "first": "https://ejemplo.com/api/v1/patients?page=1",
+        "last": "https://ejemplo.com/api/v1/patients?page=1",
+        "prev": null,
+        "next": null
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-patient-medical-history">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/patients/{patientId}/medical-history</span>
+                </div>
+
+                <p>Obtiene el historial médico completo de un paciente específico por su ID.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>patientId</code></td>
+                                <td>integer</td>
+                                <td>ID del paciente</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/patients/1/medical-history
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa (200)</h3>
+                    <div class="code-block">
+{
+    "data": {
+        "patient_info": {
+            "id": 1,
+            "fhir_id": "patient-123",
+            "identifier": "8-123-456",
+            "identifier_type": "CC",
+            "name": "María González Pérez",
+            "given_name": "María",
+            "family_name": "González",
+            "gender": "female",
+            "birth_date": "1990-05-15",
+            "age": 34,
+            "blood_type": "O+",
+            "marital_status": "casado",
+            "phone": "+507 6000-1234",
+            "email": "maria@ejemplo.com",
+            "profile_picture_url": "https://ejemplo.com/storage/patients/maria.jpg"
+        },
+        "medical_history": [
+            {
+                "id": 1,
+                "fhir_id": "history-123",
+                "category": "problem-list-item",
+                "title": "Hipertensión arterial",
+                "description": "Hipertensión arterial diagnosticada en 2020",
+                "recorded_date": "2020-03-15",
+                "occurrence_date": "2020-03-15",
+                "clinical_status": "active",
+                "verification_status": "confirmed",
+                "created_at": "2023-01-15T10:00:00.000000Z",
+                "updated_at": "2023-01-15T10:00:00.000000Z"
+            }
+        ],
+        "encounters": [],
+        "conditions": [],
+        "vital_signs": [],
+        "physical_exams": [],
+        "medications": [],
+        "service_requests": [],
+        "procedures": [],
+        "allergies": []
+    }
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta de Error (404)</h3>
+                    <div class="code-block">
+{
+    "message": "Paciente no encontrado."
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>Características de la API v1 para Pacientes</h4>
+                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
+                    <li><strong>Acceso Completo:</strong> Las integraciones externas pueden acceder a todos los pacientes del sistema</li>
+                    <li><strong>Filtros Avanzados:</strong> Búsqueda por múltiples criterios incluyendo edad, estado y género</li>
+                    <li><strong>Historial Médico Completo:</strong> Acceso a toda la información médica de cualquier paciente</li>
+                    <li><strong>Seguridad por IP:</strong> Los tokens API están restringidos por direcciones IP específicas</li>
+                    <li><strong>Scopes Granulares:</strong> Control de acceso basado en scopes configurables</li>
+                    <li><strong>Paginación Eficiente:</strong> Manejo optimizado de grandes volúmenes de datos</li>
+                </ul>
             </div>
         </div>
     </div>
