@@ -256,12 +256,14 @@
                     <li><a href="#list-practitioners">GET /practitioners - Listar Médicos</a></li>
                     <li><a href="#practitioner-availability">GET /practitioners/{id}/availability - Disponibilidad</a></li>
                     <li><a href="#practitioner-consulting-rooms">GET /practitioners/{id}/consulting-rooms - Consultorios</a></li>
+                    <li><a href="#practitioner-service-catalog">GET /practitioners/{id}/service-catalog - Catálogo de Servicios</a></li>
                     <li><a href="#medical-specialities">GET /medical-specialities - Especialidades Médicas</a></li>
                     <li><a href="#consulting-rooms">GET /consulting-rooms - Lista de Consultorios</a></li>
                     <li><strong>API v1 (api.token)</strong></li>
                     <li><a href="#v1-list-practitioners">GET /v1/practitioners - Listar Médicos</a></li>
                     <li><a href="#v1-practitioner-availability">GET /v1/practitioners/{id}/availability - Disponibilidad</a></li>
                     <li><a href="#v1-practitioner-consulting-rooms">GET /v1/practitioners/{id}/consulting-rooms - Consultorios</a></li>
+                    <li><a href="#v1-practitioner-service-catalog">GET /v1/practitioners/{id}/service-catalog - Catálogo de Servicios</a></li>
                     <li><a href="#v1-medical-specialities">GET /v1/medical-specialities - Especialidades Médicas</a></li>
                 </ul>
             </div>
@@ -785,6 +787,202 @@ Authorization: Bearer {token}
                 </div>
             </div>
 
+            <div class="endpoint" id="practitioner-service-catalog">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/practitioners/{id}/service-catalog</span>
+                </div>
+
+                <p>Obtiene el catálogo de servicios disponibles para un médico específico.</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {token}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Ruta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td>integer</td>
+                                <td>ID del médico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Tipo</th>
+                                <th>Requerido</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>service_type</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por tipo de servicio</td>
+                            </tr>
+                            <tr>
+                                <td><code>specialty</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por especialidad médica</td>
+                            </tr>
+                            <tr>
+                                <td><code>cpt_code</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por código CPT</td>
+                            </tr>
+                            <tr>
+                                <td><code>complexity</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar por nivel de complejidad</td>
+                            </tr>
+                            <tr>
+                                <td><code>covered_by_insurance</code></td>
+                                <td>boolean</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar servicios cubiertos por seguro</td>
+                            </tr>
+                            <tr>
+                                <td><code>requires_authorization</code></td>
+                                <td>boolean</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Filtrar servicios que requieren autorización</td>
+                            </tr>
+                            <tr>
+                                <td><code>min_price</code></td>
+                                <td>decimal</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Precio mínimo (usar con max_price)</td>
+                            </tr>
+                            <tr>
+                                <td><code>max_price</code></td>
+                                <td>decimal</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Precio máximo (usar con min_price)</td>
+                            </tr>
+                            <tr>
+                                <td><code>search</code></td>
+                                <td>string</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Búsqueda en nombre, descripción y códigos</td>
+                            </tr>
+                            <tr>
+                                <td><code>per_page</code></td>
+                                <td>integer</td>
+                                <td><span class="param-optional">No</span></td>
+                                <td>Elementos por página (1-100, default: 20)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/practitioners/1/service-catalog?specialty=cardiologia&covered_by_insurance=true&per_page=10
+Authorization: Bearer 1|abcd1234...
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Catálogo de servicios obtenido correctamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "practitioner": {
+        "id": 1,
+        "name": "Dr. Juan Pérez"
+    },
+    "data": [
+        {
+            "id": 1,
+            "fhir_id": "service-12345",
+            "code": "CAR_0001",
+            "cpt_code": "93000",
+            "name": "Electrocardiograma",
+            "description": "Registro de la actividad eléctrica del corazón",
+            "service_type": "diagnostic",
+            "base_price": 50.00,
+            "effective_price": 57.50,
+            "currency": "USD",
+            "duration_minutes": 30,
+            "estimated_duration_hours": 0.5,
+            "specialty": "cardiologia",
+            "complexity": "low",
+            "requires_authorization": false,
+            "covered_by_insurance": true,
+            "patient_copay": 10.00,
+            "insurance_allowable": 45.00,
+            "is_active": true,
+            "is_currently_available": true,
+            "effective_date": "2024-01-01",
+            "expiration_date": null,
+            "profit_margin": 20.00,
+            "profit_margin_percentage": 53.33,
+            "client": {
+                "id": 1,
+                "name": "Hospital Central",
+                "code": "HC001"
+            }
+        }
+    ],
+    "pagination": {
+        "current_page": 1,
+        "per_page": 10,
+        "total": 25,
+        "last_page": 3,
+        "from": 1,
+        "to": 10,
+        "has_more_pages": true
+    },
+    "filters_applied": {
+        "specialty": "cardiologia",
+        "covered_by_insurance": true,
+        "per_page": 10
+    }
+}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuestas de Error</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-404">404</span>
+                        <span>Médico no encontrado</span>
+                    </div>
+                    <div class="code-block">
+{
+    "message": "Médico no encontrado"
+}
+                    </div>
+                </div>
+            </div>
+
             <div class="endpoint" id="medical-specialities">
                 <div class="endpoint-header">
                     <span class="method get">GET</span>
@@ -1174,6 +1372,78 @@ Accept: application/json
 GET /api/v1/practitioners/1/consulting-rooms
 Authorization: Bearer mdt_abc123...
 Accept: application/json
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint" id="v1-practitioner-service-catalog">
+                <div class="endpoint-header">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-url">/api/v1/practitioners/{id}/service-catalog</span>
+                </div>
+
+                <p>Catálogo de servicios disponibles para un médico específico (integración externa).</p>
+
+                <div class="section">
+                    <h3>Headers Requeridos</h3>
+                    <div class="code-block">
+Authorization: Bearer {api-token}
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Parámetros de Consulta</h3>
+                    <p>Los mismos parámetros que <a href="#practitioner-service-catalog">GET /practitioners/{id}/service-catalog</a></p>
+                </div>
+
+                <div class="section">
+                    <h3>Ejemplo de Petición</h3>
+                    <div class="code-block">
+GET /api/v1/practitioners/1/service-catalog?specialty=cardiologia&per_page=5
+Authorization: Bearer mdt_abc123...
+Accept: application/json
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Respuesta Exitosa</h3>
+                    <div class="response-codes">
+                        <span class="status-code status-200">200</span>
+                        <span>Catálogo de servicios obtenido correctamente</span>
+                    </div>
+                    <div class="code-block">
+{
+    "practitioner": {
+        "id": 1,
+        "name": "Dr. Juan Pérez"
+    },
+    "data": [
+        {
+            "id": 1,
+            "code": "CAR_0001",
+            "cpt_code": "93000",
+            "name": "Electrocardiograma",
+            "description": "Registro de la actividad eléctrica del corazón",
+            "service_type": "diagnostic",
+            "base_price": 50.00,
+            "effective_price": 57.50,
+            "duration_minutes": 30,
+            "specialty": "cardiologia",
+            "complexity": "low",
+            "requires_authorization": false,
+            "covered_by_insurance": true,
+            "is_currently_available": true
+        }
+    ],
+    "pagination": {
+        "current_page": 1,
+        "per_page": 5,
+        "total": 12,
+        "last_page": 3,
+        "has_more_pages": true
+    }
+}
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\PractitionerResource;
 use App\Models\Appointment;
 use App\Models\Practitioner;
+use App\Models\ServiceCatalog;
 use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -371,10 +372,12 @@ class PractitionerController extends Controller
 
     /**
      * Get day name in Spanish
+     * Accepts both numeric day (0-6) and English day name string
      */
     private function getDayNameInSpanish($dayOfWeek)
     {
-        $days = [
+        // Handle numeric days
+        $numericDays = [
             0 => 'Domingo',
             1 => 'Lunes',
             2 => 'Martes',
@@ -384,7 +387,24 @@ class PractitionerController extends Controller
             6 => 'Sábado',
         ];
 
-        return $days[$dayOfWeek];
+        // Handle string day names
+        $stringDays = [
+            'Sunday' => 'Domingo',
+            'Monday' => 'Lunes',
+            'Tuesday' => 'Martes',
+            'Wednesday' => 'Miércoles',
+            'Thursday' => 'Jueves',
+            'Friday' => 'Viernes',
+            'Saturday' => 'Sábado',
+        ];
+
+        // If it's numeric, use numeric array
+        if (is_numeric($dayOfWeek)) {
+            return $numericDays[$dayOfWeek] ?? 'Desconocido';
+        }
+
+        // If it's a string, use string array
+        return $stringDays[$dayOfWeek] ?? 'Desconocido';
     }
 
     /**
@@ -435,5 +455,161 @@ class PractitionerController extends Controller
             'lunch_start' => '12:00',
             'lunch_end' => '13:00',
         ];
+    }
+
+    /**
+     * Get service catalog for a specific practitioner
+     */
+    public function serviceCatalog(Request $request, $practitionerId): JsonResponse
+    {
+        try {
+            $practitioner = Practitioner::find($practitionerId);
+            if (! $practitioner) {
+                return response()->json(['message' => 'Médico no encontrado'], 404);
+            }
+
+            // Build query for service catalog
+            $query = ServiceCatalog::active()
+                ->forPractitioner($practitionerId);
+
+            // Apply filters
+            if ($request->has('service_type')) {
+                $query->byServiceType($request->service_type);
+            }
+
+            if ($request->has('specialty')) {
+                $query->bySpecialty($request->specialty);
+            }
+
+            if ($request->has('cpt_code')) {
+                $query->byCptCode($request->cpt_code);
+            }
+
+            if ($request->has('complexity')) {
+                $query->byComplexity($request->complexity);
+            }
+
+            if ($request->has('covered_by_insurance')) {
+                $query->coveredByInsurance();
+            }
+
+            if ($request->has('requires_authorization')) {
+                $query->requiresAuthorization();
+            }
+
+            if ($request->has('min_price') && $request->has('max_price')) {
+                $query->byPriceRange($request->min_price, $request->max_price);
+            }
+
+            if ($request->has('search')) {
+                $searchTerm = trim($request->search);
+                if (! empty($searchTerm)) {
+                    $query->where(function ($q) use ($searchTerm) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%'.strtolower($searchTerm).'%'])
+                            ->orWhereRaw('LOWER(description) LIKE ?', ['%'.strtolower($searchTerm).'%'])
+                            ->orWhere('code', 'like', "%$searchTerm%")
+                            ->orWhere('cpt_code', 'like', "%$searchTerm%")
+                            ->orWhere('hcpcs_code', 'like', "%$searchTerm%")
+                            ->orWhere('icd10_pcs_code', 'like', "%$searchTerm%")
+                            ->orWhere('snomed_code', 'like', "%$searchTerm%");
+                    });
+                }
+            }
+
+            // Pagination
+            $perPage = min(max($request->input('per_page', 20), 1), 100);
+            $services = $query->with(['client', 'practitioner'])
+                ->orderBy('name')
+                ->paginate($perPage);
+
+            // Transform data for API response
+            $servicesData = $services->getCollection()->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'fhir_id' => $service->fhir_id,
+                    'code' => $service->code,
+                    'cpt_code' => $service->cpt_code,
+                    'hcpcs_code' => $service->hcpcs_code,
+                    'icd10_pcs_code' => $service->icd10_pcs_code,
+                    'snomed_code' => $service->snomed_code,
+                    'name' => $service->name,
+                    'description' => $service->description,
+                    'service_type' => $service->service_type,
+                    'base_price' => $service->base_price,
+                    'effective_price' => $service->effective_price,
+                    'currency' => $service->currency,
+                    'billing_unit' => $service->billing_unit,
+                    'duration_minutes' => $service->duration_minutes,
+                    'estimated_duration_hours' => $service->estimated_duration_hours,
+                    'specialty' => $service->specialty,
+                    'body_system' => $service->body_system,
+                    'complexity' => $service->complexity,
+                    'requires_authorization' => $service->requires_authorization,
+                    'covered_by_insurance' => $service->covered_by_insurance,
+                    'patient_copay' => $service->patient_copay,
+                    'insurance_allowable' => $service->insurance_allowable,
+                    'revenue_code' => $service->revenue_code,
+                    'cost_center' => $service->cost_center,
+                    'gl_account' => $service->gl_account,
+                    'cost_estimate' => $service->cost_estimate,
+                    'profit_margin' => $service->profit_margin,
+                    'profit_margin_percentage' => $service->profit_margin_percentage,
+                    'markup_percentage' => $service->markup_percentage,
+                    'is_active' => $service->is_active,
+                    'is_currently_available' => $service->is_currently_available,
+                    'effective_date' => $service->effective_date?->format('Y-m-d'),
+                    'expiration_date' => $service->expiration_date?->format('Y-m-d'),
+                    'available_locations' => $service->available_locations,
+                    'qualified_practitioners' => $service->qualified_practitioners,
+                    'insurance_codes' => $service->insurance_codes,
+                    'coding_systems' => $service->coding_systems,
+                    'related_services' => $service->related_services,
+                    'clinical_notes' => $service->clinical_notes,
+                    'prerequisites' => $service->prerequisites,
+                    'client' => $service->client ? [
+                        'id' => $service->client->id,
+                        'name' => $service->client->name,
+                        'code' => $service->client->code,
+                    ] : null,
+                    'created_at' => $service->created_at,
+                    'updated_at' => $service->updated_at,
+                ];
+            });
+
+            return response()->json([
+                'practitioner' => [
+                    'id' => $practitioner->id,
+                    'name' => $practitioner->name,
+                ],
+                'data' => $servicesData,
+                'pagination' => [
+                    'current_page' => $services->currentPage(),
+                    'per_page' => $services->perPage(),
+                    'total' => $services->total(),
+                    'last_page' => $services->lastPage(),
+                    'from' => $services->firstItem(),
+                    'to' => $services->lastItem(),
+                    'has_more_pages' => $services->hasMorePages(),
+                ],
+                'filters_applied' => [
+                    'service_type' => $request->service_type,
+                    'specialty' => $request->specialty,
+                    'cpt_code' => $request->cpt_code,
+                    'complexity' => $request->complexity,
+                    'covered_by_insurance' => $request->boolean('covered_by_insurance'),
+                    'requires_authorization' => $request->boolean('requires_authorization'),
+                    'price_range' => $request->has('min_price') && $request->has('max_price') ? [
+                        'min' => $request->min_price,
+                        'max' => $request->max_price,
+                    ] : null,
+                    'search' => $request->search,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener el catálogo de servicios',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

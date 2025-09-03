@@ -189,8 +189,6 @@ class ServiceCatalog extends Component
 
         $cpt = CptCode::whereId($this->cpt_id)->first();
 
-        dd($this);
-
         ServiceCatalogModel::create([
             'name' => $cpt->description_es ?? $cpt->description,
             'description' => $cpt->description_es ?? $cpt->description,

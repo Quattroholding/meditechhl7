@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
+    Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
 });
 
@@ -67,6 +68,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
+    Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
 
     // Patients
     Route::get('/patients', [PatientController::class, 'index']);
