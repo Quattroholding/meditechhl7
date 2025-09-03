@@ -105,7 +105,7 @@ class Practitioner extends BaseModel
         if($this->avatar()) $path = url('storage/'.$this->avatar()->path);
 
         return '<div class="profile-image m-0">
-                  <a href="'.url('practitioners/'.$this->id.'/profile').'" >
+                  <a href="'.url('practitioners/'.$this->id.'/profile').'"  class= "text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
                                     </a>

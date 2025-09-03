@@ -20,6 +20,7 @@
     --primary-dark: #0a7b3a;
     --secondary-dark: #0689b3;
     --tertiary-dark: #1e336e;
+
 }
 
 /* Asegúrate de que este CSS se cargue después del CSS de la librería */
@@ -47,6 +48,7 @@
 .bg-secondary { background-color: var(--secondary) !important; }
 .bg-info { background-color: var(--info) !important; }
 .text-primary { color: var(--primary) !important; }
+.text-base { color: var(--primary) !important; }
 .text-secondary { color: var(--secondary) !important; }
 .text-info { color: var(--info) !important; }
 .border-primary { border-color: var(--primary) !important; }

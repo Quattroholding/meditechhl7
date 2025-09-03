@@ -248,7 +248,7 @@ class Patient extends BaseModel
         }
 
         return '<div class="profile-image m-0">
-                  <a href="'.$route.'" title="'.$title.'">
+                  <a href="'.$route.'" title="'.$title.'" class= "text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
                                     </a>
