@@ -164,7 +164,7 @@ class User extends Authenticatable
         }
 
         return '<div class="profile-image">
-                  <a href="'.url('patient/'.$this->id.'/pofile').'" >
+                  <a href="'.url('patient/'.$this->id.'/pofile').'" class= "text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$prefix.$this->first_name.' '.$this->last_name.'
                                     </a>
