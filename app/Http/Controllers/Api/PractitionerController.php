@@ -469,8 +469,7 @@ class PractitionerController extends Controller
             }
 
             // Build query for service catalog
-            $query = ServiceCatalog::active()
-                ->forPractitioner($practitionerId);
+            $query = ServiceCatalog::active()->wherePractitionerId($practitionerId);
 
             // Apply filters
             if ($request->has('service_type')) {
