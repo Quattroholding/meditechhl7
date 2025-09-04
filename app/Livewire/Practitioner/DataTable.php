@@ -66,15 +66,15 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = Practitioner::selectRaw('practitioners.*')
-            ->leftJoin('practitioner_qualifications', 'practitioners.id', '=', 'practitioner_qualifications.practitioner_id')
+        $data = Practitioner::query()->selectRaw('id,name,birth_date,identifier,email,
+        (SELECT display FROM practitioner_qualifications  pq WHERE pq.practitioner_id  = practitioners.id AND pq.default=1) as display')
             ->when($this->search, function (Builder $query) {
-                $query->where(function ($q) { // Asegura que las condiciones sean correctas
-                    $q->orWhere('birth_date', 'like', '%'.$this->search.'%');
-                    $q->orWhere('identifier', 'like', '%'.$this->search.'%');
-                    $q->orWhere('email', 'like', '%'.$this->search.'%');
-                    $q->orWhere('name', 'like', '%'.$this->search.'%');
-                    $q->orWhere('display', 'like', '%'.$this->search.'%');
+                $query->where(function ($q) {
+                    $q->where('birth_date', 'like', '%'.$this->search.'%')
+                      ->orWhere('identifier', 'like', '%'.$this->search.'%')
+                      ->orWhere('email', 'like', '%'.$this->search.'%')
+                      ->orWhere('name', 'like', '%'.$this->search.'%');
+                      //->orWhereRaw("(SELECT display FROM practitioner_qualifications pq WHERE pq.practitioner_id = practitioners.id AND pq.default = 1) LIKE ?", ['%'.$this->search.'%']);
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
