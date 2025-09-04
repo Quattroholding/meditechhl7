@@ -18,6 +18,8 @@ class ManageInsurances extends Component
     public $showSmallButton=false;
 
     public $existingInsurances = [];
+    
+    public $isEditing = false;
 
     // Insurance form fields
     #[Validate('required')]
@@ -99,12 +101,21 @@ class ManageInsurances extends Component
 
     public function updatedInsuranceCompanyId()
     {
+        // Don't override values when editing
+        if ($this->isEditing) {
+            return;
+        }
+        
         if ($this->insurance_company_id) {
             $company = InsuranceCompany::find($this->insurance_company_id);
             if ($company) {
-                // Set default values from insurance company
-                $this->custom_coverage_percentage = $company->default_coverage_percentage ?? 80;
-                $this->custom_copay_amount = $company->default_copay_amount ?? 0;
+                // Set default values from insurance company only if fields are empty
+                if (empty($this->custom_coverage_percentage)) {
+                    $this->custom_coverage_percentage = $company->default_coverage_percentage ?? 80;
+                }
+                if (empty($this->custom_copay_amount)) {
+                    $this->custom_copay_amount = $company->default_copay_amount ?? 0;
+                }
             }
         }
     }
@@ -153,10 +164,10 @@ class ManageInsurances extends Component
             // Emit event to refresh parent component
             $this->dispatch('insurance-relationship-saved'.$this->practitioner_id);
 
-            /*$this->dispatch('showToastrMI'.$this->practitioner_id,
+            $this->dispatch('showToastrMI'.$this->practitioner_id,
                 type: 'success',
                 message: $message,
-            );*/
+            );
 
         } catch (\Exception $e) {
             $this->dispatch('showToastrMI'.$this->practitioner_id,
@@ -168,6 +179,7 @@ class ManageInsurances extends Component
 
     private function resetForm()
     {
+        $this->isEditing = false;
         $this->insurance_company_id = '';
         $this->accepts = true;
         $this->custom_coverage_percentage = '';
@@ -184,6 +196,7 @@ class ManageInsurances extends Component
             ->first();
 
         if ($insurance) {
+            $this->isEditing = true;
             $this->insurance_company_id = $insuranceCompanyId;
             $this->accepts = $insurance->pivot->accepts;
             $this->custom_coverage_percentage = $insurance->pivot->custom_coverage_percentage;

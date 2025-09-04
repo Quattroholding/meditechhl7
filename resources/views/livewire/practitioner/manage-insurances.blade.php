@@ -47,28 +47,30 @@
                                     <tr>
                                         <td>{{ $insurance->name }}</td>
                                         <td>
-                                            @if($insurance->pivot->accepts)
+                                            @if($insurance->pivot && $insurance->pivot->accepts)
                                                 <span class="badge bg-success">Sí Acepta</span>
-                                            @else
+                                            @elseif($insurance->pivot && !$insurance->pivot->accepts)
                                                 <span class="badge bg-danger">No Acepta</span>
+                                            @else
+                                                <span class="badge bg-secondary">Sin configurar</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($insurance->pivot->custom_coverage_percentage)
+                                            @if($insurance->pivot && $insurance->pivot->custom_coverage_percentage)
                                                 {{ number_format($insurance->pivot->custom_coverage_percentage, 2) }}%
                                             @else
                                                 <span class="text-muted">Defecto ({{ $insurance->default_coverage_percentage ?? 'N/A' }}%)</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($insurance->pivot->custom_copay_amount)
+                                            @if($insurance->pivot && $insurance->pivot->custom_copay_amount)
                                                 ${{ number_format($insurance->pivot->custom_copay_amount, 2) }}
                                             @else
                                                 <span class="text-muted">Defecto (${{ $insurance->default_copay_amount ?? 'N/A' }})</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if($insurance->pivot->notes)
+                                            @if($insurance->pivot && $insurance->pivot->notes)
                                                 <span title="{{ $insurance->pivot->notes }}">
                                                     {{ Str::limit($insurance->pivot->notes, 30) }}
                                                 </span>
@@ -77,9 +79,14 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ \Carbon\Carbon::parse($insurance->pivot->created_at)->format('d/m/Y') }}
+                                            @if($insurance->pivot && $insurance->pivot->created_at)
+                                                {{ \Carbon\Carbon::parse($insurance->pivot->created_at)->format('d/m/Y') }}
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
                                         </td>
                                         <td>
+                                            @if($insurance->pivot)
                                             <div class="btn-group" role="group">
                                                 <button wire:click="editInsurance({{ $insurance->id }})"
                                                         class="btn btn-sm btn-warning"
@@ -93,6 +100,9 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
+                                            @else
+                                                <span class="text-muted">No configurado</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
