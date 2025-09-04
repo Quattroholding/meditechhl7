@@ -60,6 +60,11 @@ class DataTable extends Component
                         });
                 });
             })
+            ->when(auth()->user()->hasRole('doctor'), function (Builder $query) {
+                $query->whereHas('practitioner', function ($q) {
+                    $q->where('user_id',auth()->id());
+                });
+            })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
 
