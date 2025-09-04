@@ -44,6 +44,7 @@ class TopPrescribedMedications extends Component
                 'medicines.id as medicine_id',
                 'medicines.generic_name',
                 'medicines.home_name',
+                'medication_requests.medication',
                 'medicines.type',
                 'medicines.mgs',
                 'medicines.mgs_type',
@@ -55,7 +56,7 @@ class TopPrescribedMedications extends Component
                 DB::raw('AVG(CAST(medication_requests.quantity AS DECIMAL(10,2))) as avg_quantity'),
             ])
             ->join('encounters', 'medication_requests.encounter_id', '=', 'encounters.id')
-            ->join('medicines', 'medication_requests.medication_id', '=', 'medicines.id')
+            ->leftJoin('medicines', 'medication_requests.medication_id', '=', 'medicines.id')
             ->where('medication_requests.practitioner_id', $practitionerId)
             ->where('medication_requests.status', '!=', 'cancelled')
             ->when($days > 0, function ($query) use ($days) {
@@ -65,6 +66,7 @@ class TopPrescribedMedications extends Component
                 'medicines.id',
                 'medicines.generic_name',
                 'medicines.home_name',
+                'medication_requests.medication',
                 'medicines.type',
                 'medicines.mgs',
                 'medicines.mgs_type',
@@ -79,6 +81,7 @@ class TopPrescribedMedications extends Component
                     'medicine_id' => $item->medicine_id,
                     'generic_name' => $item->generic_name,
                     'home_name' => $item->home_name ?: $item->generic_name,
+                    'medication' => $item->medication ,
                     'concentration' => $item->mgs.' '.$item->mgs_type,
                     'type' => $item->type,
                     'frequency' => $item->frequency ?: 'No especificada',

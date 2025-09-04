@@ -89,7 +89,6 @@ class MigrateAppointmentsFromSCB extends Command
                             AND a.STATUS IN ('completada','cerrada')
                             AND a.DELETED_AT IS NULL
                             AND c.DELETED_AT IS NULL
-                            AND cr.TYPE = 'INTERNO'
                             AND c.CHIEF_COMPLAINT NOT LIKE 'SOAP'
                             AND c.CHIEF_COMPLAINT NOT LIKE '-SOAP'
                             AND c.CHIEF_COMPLAINT NOT LIKE '-soap'
@@ -517,6 +516,11 @@ class MigrateAppointmentsFromSCB extends Command
         $severity = PresentIllnesType::whereScbId($appSCB->severity)->first();
         $duration = PresentIllnesType::whereScbId($appSCB->duration)->first();
         $timing = PresentIllnesType::whereScbId($appSCB->timing)->first();
+        $severidad = 'unknown';
+
+        if($severity && in_array($severity->value,['mild','moderate','severe','disabling','unknown'])){
+            $severidad = $severity->value;
+        }
 
         $encounter->presentIllnesses()->create([
             'fhir_id' => 'condition-'.fake()->uuid(),
@@ -525,7 +529,7 @@ class MigrateAppointmentsFromSCB extends Command
             'aggravating_factors' => strtolower($appSCB->modifying_factor),
             'locations' => array_values($location),
             'location' => count($location) > 0 ? $location[0] : null,
-            'severity' => $severity ? $severity->value : 'unknown',
+            'severity' =>$severidad,
             'duration' => $duration ? $duration->value : 'unknown',
             'timing' => $timing ? $timing->value : 'unknown',
             'patient_id' => $encounter->patient_id,
@@ -599,7 +603,7 @@ class MigrateAppointmentsFromSCB extends Command
                             'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
                             'file_path' => $rs->path,
                             'file_name' => $rs->doc_name,
-                            'file_type' => $rs->doc_type,
+                            'file_type' => $rs->doc_type ?? 'EXME',
                             'file_size' => fake()->numberBetween(1024, 5242880), // 1KB to 5MB,
                             'file_hash' => $file_hash,
                             'metadata' => [

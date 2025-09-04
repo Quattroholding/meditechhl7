@@ -65,7 +65,7 @@ class TopActiveConditions extends Component
 
                 return [
                     'code' => $item->code,
-                    'description' => $condition ? $condition->icd10Code->description_es : 'Condición no especificada',
+                    'description' => $condition->icd10Code ? $condition->icd10Code->description_es : $condition->onset_info,
                     'category' => $item->category,
                     'count' => $item->count,
                     'encounter_count' => $item->encounter_count,

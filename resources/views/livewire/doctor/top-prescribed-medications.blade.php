@@ -60,7 +60,7 @@
                                     <i class="{{ $this->getMedicationIcon($medication['type']) }} me-2"
                                        style="color: {{ $this->getColorForMedication($index) }};"></i>
                                     <div>
-                                        <span class="medication-name">{{ $medication['home_name'] }}</span>
+                                        <span class="medication-name">{{ $medication['home_name'] ?? $medication['medication'] }}</span>
                                         @if($medication['home_name'] !== $medication['generic_name'])
                                             <small class="text-muted d-block">{{ $medication['generic_name'] }}</small>
                                         @endif
