@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\MedicationRequestController;
 use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PractitionerController;
+use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
+use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
+use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -60,6 +63,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
+
+    // Recepy System - Prescription Management
+    Route::prefix('recepy')->group(function () {
+        // Doctor Profiles
+        Route::apiResource('doctor-profiles', RecepyDoctorProfileController::class);
+        Route::get('users/{userId}/doctor-profile', [RecepyDoctorProfileController::class, 'getByUser']);
+        
+        // Prescriptions
+        Route::apiResource('prescriptions', RecepyPrescriptionController::class);
+        Route::patch('prescriptions/{id}/status', [RecepyPrescriptionController::class, 'updateStatus']);
+        Route::get('doctor-profiles/{doctorProfileId}/prescriptions', [RecepyPrescriptionController::class, 'getByDoctorProfile']);
+        
+        // Prescription Medications (nested under prescriptions)
+        Route::prefix('prescriptions/{prescriptionId}/medications')->group(function () {
+            Route::get('/', [RecepyPrescriptionMedicationController::class, 'index']);
+            Route::post('/', [RecepyPrescriptionMedicationController::class, 'store']);
+            Route::get('/{medicationId}', [RecepyPrescriptionMedicationController::class, 'show']);
+            Route::put('/{medicationId}', [RecepyPrescriptionMedicationController::class, 'update']);
+            Route::delete('/{medicationId}', [RecepyPrescriptionMedicationController::class, 'destroy']);
+            Route::patch('/{medicationId}/toggle-active', [RecepyPrescriptionMedicationController::class, 'toggleActive']);
+            Route::put('/order', [RecepyPrescriptionMedicationController::class, 'updateOrder']);
+            Route::put('/bulk-update', [RecepyPrescriptionMedicationController::class, 'bulkUpdate']);
+        });
+    });
 });
 
 // API Token routes - Full access with IP restrictions
