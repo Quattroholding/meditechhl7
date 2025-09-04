@@ -6,7 +6,7 @@
     </button>
     @endif
     @if($showSmallButton)
-        <button wire:click="openModal()" class="btn btn-warning btn-sm"> 🛡️  </button>
+        <button wire:click="openModal()" class="btn btn-secondary btn-sm"> <i class="fa-solid fa fa-shield"></i> </button>
     @endif
 
     @if($showInsuranceModal)
@@ -206,7 +206,7 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             // Listen for success/error messages
-            Livewire.on('showToastrManageInsurances', (event) => {
+            Livewire.on('showToastrMI{{$practitioner_id}}', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,
@@ -216,8 +216,8 @@
             });
 
             // Close modal on successful insurance relationship save
-            Livewire.on('insurance-relationship-saved', () => {
-                toastr.success('Relación con seguro guardada exitosamente', '', {
+            Livewire.on('insurance-relationship-saved{{$practitioner_id}}', () => {
+                toastr.success('Seguro agregado exitosamente', '', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',

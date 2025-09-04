@@ -151,15 +151,15 @@ class ManageInsurances extends Component
             $this->resetForm();
 
             // Emit event to refresh parent component
-            $this->dispatch('insurance-relationship-saved');
+            $this->dispatch('insurance-relationship-saved'.$this->practitioner_id);
 
-            $this->dispatch('showToastrManageInsurances',
+            /*$this->dispatch('showToastrMI'.$this->practitioner_id,
                 type: 'success',
                 message: $message,
-            );
+            );*/
 
         } catch (\Exception $e) {
-            $this->dispatch('showToastrManageInsurances',
+            $this->dispatch('showToastrMI'.$this->practitioner_id,
                 type: 'error',
                 message: 'Error al guardar la relación: '.$e->getMessage(),
             );
@@ -198,12 +198,12 @@ class ManageInsurances extends Component
             $this->practitioner->insuranceCompanies()->detach($insuranceCompanyId);
             $this->loadExistingInsurances();
 
-            $this->dispatch('showToastrManageInsurances',
+            $this->dispatch('showToastrMI'.$this->practitioner_id,
                 type: 'success',
                 message: 'Relación con seguro eliminada exitosamente.',
             );
         } catch (\Exception $e) {
-            $this->dispatch('showToastrManageInsurances',
+            $this->dispatch('showToastrMI'.$this->practitioner_id,
                 type: 'error',
                 message: 'Error al eliminar la relación: '.$e->getMessage(),
             );

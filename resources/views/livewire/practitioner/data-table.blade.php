@@ -81,7 +81,7 @@
                                             <button wire:click="createUser({{ $practitioner->id }})"
                                                     class="btn btn-warning btn-sm"
                                                     title="Crear usuario">
-                                                <i class="fa-solid fa-user-plus m-r-5"></i>
+                                                <i class="fa-solid fa-user-plus"></i>
                                             </button>
 
                                         @endif
