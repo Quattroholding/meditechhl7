@@ -355,7 +355,7 @@ class AuthController extends Controller
                 }
 
                 // Get all clients this practitioner has access to
-                $clients = $user->clients()->select('clients.id', 'clients.name', 'clients.phone', 'clients.address')->get();
+                $clients = $user->clients()->select('clients.id', 'clients.name', 'clients.whatsapp', 'clients.long_name')->get();
 
                 return [
                     'id' => $practitioner->id,
@@ -370,8 +370,8 @@ class AuthController extends Controller
                         return [
                             'id' => $client->id,
                             'name' => $client->name,
-                            'phone' => $client->phone,
-                            'address' => $client->address,
+                            'phone' => $client->whatsapp,
+                            'long_name' => $client->long_name,
                         ];
                     })->toArray(),
                     'clients_count' => $clients->count(),
