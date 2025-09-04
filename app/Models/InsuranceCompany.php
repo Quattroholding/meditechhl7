@@ -38,7 +38,7 @@ class InsuranceCompany extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new ClientScope);
+       // static::addGlobalScope(new ClientScope);
     }
 
     public function client(): BelongsTo
@@ -54,6 +54,29 @@ class InsuranceCompany extends Model
     public function activePolicies(): HasMany
     {
         return $this->patientPolicies()->where('is_active', true);
+    }
+
+    public function practitioners()
+    {
+        return $this->belongsToMany(Practitioner::class, 'practitioner_insurance_company')
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
+    }
+
+    public function acceptingPractitioners()
+    {
+        return $this->belongsToMany(Practitioner::class, 'practitioner_insurance_company')
+                    ->wherePivot('accepts', true)
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
+    }
+
+    public function rejectingPractitioners()
+    {
+        return $this->belongsToMany(Practitioner::class, 'practitioner_insurance_company')
+                    ->wherePivot('accepts', false)
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
     }
 
     public function scopeActive($query)

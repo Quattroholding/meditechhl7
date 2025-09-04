@@ -82,7 +82,7 @@ Route::get('/autologin', function () {
         $route = route('assistence.dashboard');
     }
 
-    $user = \App\Models\User::role(request()->get('role'))->inRandomOrder()->limit(1)->first();
+    $user = \App\Models\User::role(request()->get('role'))->whereActive(1)->inRandomOrder()->limit(1)->first();
 
     if ($user) {
         Auth::login($user);

@@ -41,6 +41,16 @@ class PractitionerResource extends JsonResource
                         'code' => $client->code ?? null,
                     ];
                 }) : [],
+            'insurances' => $this->insuranceCompanies ? $this->insuranceCompanies->map(function ($insurance) {
+                return [
+                    'id' => $insurance->id,
+                    'name' => $insurance->name,
+                    'accepts'=>$insurance->pivot->name ?? null,
+                    'custom_coverage_percentage'=>$insurance->pivot->custom_coverage_percentage ?? null,
+                    'custom_copay_amount'=>$insurance->pivot->custom_copay_amount ?? null,
+                    'notes'=>$insurance->pivot->notes ?? null
+                ];
+            }) : [],
             'profile_photo' => $this->avatar() ?
                 config('app.url').'/storage/'.$this->avatar()->path : '',
             'active' => $this->active,

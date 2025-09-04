@@ -19,7 +19,7 @@ class PractitionerController extends Controller
         $perPage = $request->input('per_page', 10); // Default 10 items per page
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
-        $practitioners = Practitioner::with(['specialties', 'user.clients'])
+        $practitioners = Practitioner::with(['specialties', 'user.clients','insuranceCompanies'])
             ->when($request->id, function ($query) use ($request) {
                 return $query->whereId($request->id);
             })

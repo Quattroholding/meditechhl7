@@ -68,6 +68,29 @@ class Practitioner extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function insuranceCompanies()
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
+    }
+
+    public function acceptedInsurances()
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
+                    ->wherePivot('accepts', true)
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
+    }
+
+    public function rejectedInsurances()
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
+                    ->wherePivot('accepts', false)
+                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+                    ->withTimestamps();
+    }
+
     public function avatar()
     {
         return $this->files()->whereType('avatar')->latest()->first();
