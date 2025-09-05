@@ -38,7 +38,21 @@ class PractitionerResource extends JsonResource
                     return [
                         'id' => $client->id,
                         'name' => $client->name,
-                        'code' => $client->code ?? null,
+                        'long_name' => $client->long_name,
+                        'ruc' => $client->ruc,
+                        'dv' => $client->dv,
+                        'whatsapp' => $client->whatsapp,
+
+                        'logo' => $client->logo ?? null,
+                        'branches'=> $client->branches->map(function ($branch) {
+                            return [
+                                'id' => $branch->id,
+                                'name' => $branch->name,
+                                'phone' => $branch->phone ?? null,
+                                'address' => $branch->address ?? null,
+                                'type' => $branch->type ?? null,
+                            ];
+                        })
                     ];
                 }) : [],
             'insurances' => $this->insuranceCompanies ? $this->insuranceCompanies->map(function ($insurance) {

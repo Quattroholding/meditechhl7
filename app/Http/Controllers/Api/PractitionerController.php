@@ -93,6 +93,11 @@ class PractitionerController extends Controller
 
         return response()->json([
             'data' => PractitionerResource::collection($practitioners->items()),
+            'next_week_info' => [
+                'start_date' => $nextWeekStart->format('Y-m-d'),
+                'end_date' => $nextWeekEnd->format('Y-m-d'),
+                'week_dates' => $this->getWeekDates($nextWeekStart),
+            ],
             'pagination' => [
                 'current_page' => $practitioners->currentPage(),
                 'per_page' => $practitioners->perPage(),
@@ -101,11 +106,6 @@ class PractitionerController extends Controller
                 'from' => $practitioners->firstItem(),
                 'to' => $practitioners->lastItem(),
                 'has_more_pages' => $practitioners->hasMorePages(),
-            ],
-            'next_week_info' => [
-                'start_date' => $nextWeekStart->format('Y-m-d'),
-                'end_date' => $nextWeekEnd->format('Y-m-d'),
-                'week_dates' => $this->getWeekDates($nextWeekStart),
             ],
         ]);
     }
