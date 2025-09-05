@@ -15,6 +15,8 @@ class RecepyDoctorProfile extends Model
         'user_id',
         'logo',
         'address',
+        'speciality',
+        'facility',
         'phone',
         'email',
         'signature',

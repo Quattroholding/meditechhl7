@@ -47,6 +47,8 @@ class RecepyDoctorProfileController extends Controller
             'user_id' => 'required|exists:users,id|unique:recepy_doctor_profiles,user_id',
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
+            'speciality' => 'nullable|string|max:100',
+            'facility' => 'nullable|string|max:100',
             'email' => 'nullable|email',
             'medical_license_number' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
