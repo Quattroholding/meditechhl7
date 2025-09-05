@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\Branch;
+use App\Models\ConsultingRoom;
 use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -9,31 +11,34 @@ use Livewire\Component;
 class DoctorWorkingHoursForm extends Component
 {
     public $workingHours = [];
-
     public $star_times = [];
-
     public $end_times = [];
-
     public $clientId;
-
+    public $client;
     public $consulting_room_id;
-
     public $branch_id;
+    public $branches=[];
+    public $rooms=[];
+
+    protected $rules = [
+        'branch_id' => 'required|exists:branches,id',
+        'consulting_room_id' => 'required|exists:consulting_rooms,id',
+    ];
+
+    protected $messages = [
+        // 'patient_id.required' => 'Debe seleccionar un paciente.',
+        'branch_id.required' => 'Debe seleccionar una sucursal.',
+        'consulting_room_id.required' => 'Debe seleccionar un consultorio.',
+    ];
 
     public function mount()
     {
         if (auth()->user()->clients()->first()) {
             $this->clientId = auth()->user()->clients()->first()->id;
-            $client = auth()->user()->clients()->first();
+            $this->client = auth()->user()->clients()->first();
 
-            $branch = $client->branches()->first();
-            if ($branch) {
-                $this->branch_id = $branch->id;
-                $room = $branch->consultingRooms()->first();
-                if ($room) {
-                    $this->consulting_room_id = $room->id;
-                }
-            }
+            $this->loadBranches();
+            $this->loadRooms();
 
         }
         $days = [__('lunes'), __('martes'), __('miercoles'), __('jueves'), __('viernes'), __('sabado'), __('domingo')];
@@ -59,8 +64,18 @@ class DoctorWorkingHoursForm extends Component
 
     }
 
+    public function loadBranches(){
+        $this->branches =Branch::pluck('name','id')->toArray();
+    }
+
+    public function loadRooms(){
+        $this->rooms = ConsultingRoom::pluck('name','id')->toArray();
+    }
+
     public function save()
     {
+        $this->validate();
+
         UserWorkingHour::where('user_id', auth()->id())->delete();
 
         foreach ($this->workingHours as $day => $config) {
@@ -77,7 +92,7 @@ class DoctorWorkingHoursForm extends Component
             }
         }
 
-        session()->flash('message', 'Horario actualizado con éxito.');
+        session()->flash('message.success', 'Horario actualizado con éxito.');
     }
 
     public function changeEnabled($day)
@@ -89,6 +104,16 @@ class DoctorWorkingHoursForm extends Component
     public function setStartDayTime($day)
     {
         $this->workingHours[$day]['start'] = $this->workingHours[$day]['start'];
+    }
+
+    public function filterRooms()
+    {
+        if($this->branch_id){
+            $this->rooms = ConsultingRoom::whereBranchId($this->branch_id)->pluck('name','id')->toArray();
+        }else{
+            $this->loadRooms();
+        }
+
     }
 
     public function render()

@@ -25,8 +25,9 @@ return new class extends Migration
             $table->date('prescription_date');
             $table->string('prescription_number')->unique(); // Número único de la receta
             $table->enum('status', ['active', 'completed', 'cancelled'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
-            
+
             $table->index('doctor_profile_id');
             $table->index('prescription_date');
             $table->index('status');

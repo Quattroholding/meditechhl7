@@ -31,6 +31,11 @@ class Branch extends BaseModel
         return $this->hasMany(ConsultingRoom::class);
     }
 
+    public function workingHours()
+    {
+        return $this->hasMany(UserWorkingHour::class,'branch_id');
+    }
+
     public function getClientNameAttribute()
     {
         return $this->client->name;

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('seal')->nullable(); // Ruta del sello
             $table->string('medical_license_number')->nullable(); // Número de registro médico
             $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('user_id');

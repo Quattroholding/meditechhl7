@@ -33,8 +33,7 @@ class PractitionerResource extends JsonResource
                     'description' => $specialty->description ?? null,
                 ];
             }) : [],
-            'clients' => $this->user && $this->user->clients ?
-                $this->user->clients->map(function ($client) {
+            'clients' => $this->user && $this->user->clients ?  $this->user->clients->map(function ($client) {
                     return [
                         'id' => $client->id,
                         'name' => $client->name,
@@ -42,19 +41,10 @@ class PractitionerResource extends JsonResource
                         'ruc' => $client->ruc,
                         'dv' => $client->dv,
                         'whatsapp' => $client->whatsapp,
-
                         'logo' => $client->logo ?? null,
-                        'branches'=> $client->branches->map(function ($branch) {
-                            return [
-                                'id' => $branch->id,
-                                'name' => $branch->name,
-                                'phone' => $branch->phone ?? null,
-                                'address' => $branch->address ?? null,
-                                'type' => $branch->type ?? null,
-                            ];
-                        })
+                        ''
                     ];
-                }) : [],
+            }) : [],
             'insurances' => $this->insuranceCompanies ? $this->insuranceCompanies->map(function ($insurance) {
                 return [
                     'id' => $insurance->id,
@@ -65,8 +55,16 @@ class PractitionerResource extends JsonResource
                     'notes'=>$insurance->pivot->notes ?? null
                 ];
             }) : [],
-            'profile_photo' => $this->avatar() ?
-                config('app.url').'/storage/'.$this->avatar()->path : '',
+            'working_hours' =>  $this->user->workingHours->map(function ($workingHour) {
+                return [
+                    'id' => $workingHour->id,
+                    'day_of_week' => $workingHour->day_of_week,
+                    'start_time' => $workingHour->start_time,
+                    'end_time' => $workingHour->end_time,
+                    'branch'=> $workingHour->branch,
+                ];
+            }),
+            'profile_photo' => $this->avatar() ?   config('app.url').'/storage/'.$this->avatar()->path : '',
             'active' => $this->active,
             'next_week_schedule' => $this->when(isset($this->next_week_schedule), $this->next_week_schedule),
             'created_at' => $this->created_at,

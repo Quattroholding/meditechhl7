@@ -24,8 +24,9 @@ return new class extends Migration
             $table->integer('quantity')->nullable(); // Cantidad a dispensar
             $table->integer('line_order')->default(1); // Orden de la línea en la receta
             $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
-            
+
             $table->index('prescription_id');
             $table->index(['prescription_id', 'line_order']);
         });

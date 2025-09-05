@@ -1,18 +1,19 @@
 <div>
     {{-- Knowing others is intelligence; knowing yourself is true wisdom. --}}
+    @include('partials.message')
     <form wire:submit.prevent="save" class="space-y-4">
         <div class="row">
             <div class="col-12 col-md-6 col-xl-6">
                 <div class="input-block local-forms">
                     <x-input-label for="branch_id" :value="__('Sucursal')" />
-                    <x-select-input name="branch_id" :options="\App\Models\Branch::pluck('name','id')->toArray()"  class="block w-full" wire:model="branch_id"/>
+                    <x-select-input name="branch_id" :options="$branches"  class="block w-full" wire:model="branch_id" wire:change="filterRooms()"/>
                     <x-input-error :messages="$errors->get('branch_id')" class="mt-2" />
                 </div>
             </div>
             <div class="col-12 col-md-6 col-xl-6">
                 <div class="input-block local-forms">
                     <x-input-label for="consulting_room_id" :value="__('Consultorio')" />
-                    <x-select-input  name="consulting_room_id" :options="\App\Models\ConsultingRoom::pluck('name','id')->toArray()"  class="block w-full" wire:model="consulting_room_id"/>
+                    <x-select-input  name="consulting_room_id" :options="$rooms"  class="block w-full" wire:model="consulting_room_id"/>
                     <x-input-error :messages="$errors->get('consulting_room_id')" class="mt-2" />
                 </div>
             </div>

@@ -17,4 +17,14 @@ class UserWorkingHour extends BaseModel
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function consultingRoom()
+    {
+        return $this->belongsTo(ConsultingRoom::class);
+    }
 }
