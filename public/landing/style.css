@@ -91,7 +91,8 @@ h1, h2, h3, .logo {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #2D1B69 0%, #1E3A8A 50%, #0F4C75 100%);
+    background-image: url("images/Portada.png");
+    background-size: cover;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -122,7 +123,7 @@ h1, h2, h3, .logo {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 80px;
     position: relative;
     z-index: 2;
 }
@@ -146,7 +147,7 @@ h1, h2, h3, .logo {
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 300;
     color: white;
     font-weight: bold;
@@ -208,22 +209,23 @@ h1, h2, h3, .logo {
 
 /* What is Section */
 .what-is-section {
-    padding: 5rem 0;
+    padding: 3rem 0;
     background: white;
 }
 
 .section-header {
     text-align: left;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    display: inline-block;
 }
 
 .section-header h2 {
     background: #00338c;
     color: white;
-    padding: .5rem 2rem;
+    padding: 1rem 2rem;
     border-radius: 40px;
     display: inline-block;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
 }
 
@@ -249,9 +251,9 @@ h1, h2, h3, .logo {
     align-items: flex-start;
     gap: 1.5rem;
     padding: 1.5rem;
-    background: #f8f9fa;
+    /*background: #f8f9fa;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);*/
 }
 
 .feature-number {
@@ -277,37 +279,37 @@ h1, h2, h3, .logo {
 }
 
 .feature-image {
-    width: 100px;
+    /*width: 100px;
     height: 80px;
     object-fit: contain;
-    margin-top: 1rem;
+    margin-top: 1rem;*/
 }
 
 /* Target Audience Section */
 .audience-section {
     padding: 5rem 0;
-    background: #f8f9fa;
+    background: #00338c;
 }
 
 .audience-section h2 {
-    text-align: center;
-    background: #1E3A8A;
-    color: white;
+    text-align: left;
+    background:#fff;
+    color:  #1E3A8A;
     padding: 1rem 2rem;
-    border-radius: 25px;
+    border-radius: 40px;
     display: inline-block;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
-    margin: 0 auto 2rem;
+    margin-bottom: 2.5rem;
     display: block;
     max-width: fit-content;
 }
 
-.audience-section > p {
-    text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 3rem;
-    color: #555;
+.audience-section  p {
+    text-align: left;
+    font-size: 1.7rem;
+    margin-bottom: 1rem;
+    color: #fff;
 }
 
 .audience-grid {
@@ -319,9 +321,9 @@ h1, h2, h3, .logo {
 .audience-item {
     text-align: center;
     padding: 2rem;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: transparent;
+    /*border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);*/
     transition: transform 0.3s ease;
 }
 
@@ -330,17 +332,16 @@ h1, h2, h3, .logo {
 }
 
 .audience-image {
-    width: 120px;
-    height: 120px;
+
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 1.5rem;
 }
 
 .audience-item h3 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
+    color: #fff;
     line-height: 1.4;
 }
 
@@ -351,15 +352,15 @@ h1, h2, h3, .logo {
 }
 
 .features-section h2 {
-    text-align: center;
+    text-align: left;
     background: #1E3A8A;
     color: white;
     padding: 1rem 2rem;
-    border-radius: 25px;
+    border-radius: 40px;
     display: inline-block;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
-    margin: 0 auto 3rem;
+    margin: 0 0 3rem;
     display: block;
     max-width: fit-content;
 }
@@ -373,8 +374,8 @@ h1, h2, h3, .logo {
 .key-feature {
     text-align: center;
     padding: 2rem;
-    background: #f8f9fa;
-    border-radius: 15px;
+    /*background: #f8f9fa;
+    border-radius: 15px;*/
     transition: transform 0.3s ease;
 }
 
@@ -383,20 +384,20 @@ h1, h2, h3, .logo {
 }
 
 .key-feature-icon {
-    width: 80px;
+    /*width: 80px;
     height: 80px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;*/
 }
 
 .key-feature h3 {
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #333;
+    color: #1E3A8A;
 }
 
 .key-feature p {
-    color: #666;
+    color: #1E3A8A;
     line-height: 1.6;
 }
 
@@ -408,22 +409,22 @@ h1, h2, h3, .logo {
 }
 
 .why-choose-section h2 {
-    background: #00D4AA;
-    color: #2D1B69;
+    background: #fff;
+    color: #1E3A8A;
     padding: 1rem 2rem;
-    border-radius: 25px;
+    border-radius: 40px;
     display: inline-block;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
-    margin: 0 auto 2rem;
-    display: block;
+    margin: 0 0 2rem;
+    display: inline-block;
     max-width: fit-content;
-    text-align: center;
+    text-align: left;
 }
 
 .why-choose-section > .container > p {
-    text-align: center;
-    font-size: 1.1rem;
+    text-align: left;
+    font-size: 1.6rem;
     margin-bottom: 1rem;
     opacity: 0.9;
 }
@@ -439,15 +440,16 @@ h1, h2, h3, .logo {
 }
 
 .benefit-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: #00a0d0;
     padding: 1rem 1.5rem;
-    border-radius: 25px;
-    text-align: center;
+    border-radius: 40px;
+    text-align: left;
 }
 
 .benefit-text {
-    font-weight: 500;
-    font-size: 1.1rem;
+    font-weight: bolder;
+    font-size: 1.5rem;
+
 }
 
 .cta-section {

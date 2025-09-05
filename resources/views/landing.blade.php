@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soluciones MEDITEC - Innovación tecnológica al servicio de la salud</title>
-    <link rel="stylesheet" href="{{ asset('landing/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('landing/style.css?time='.time()) }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <header class="header">
         <nav class="nav">
             <div class="nav-brand">
-                <img src="{{ asset('landing/images/logo.svg') }}" alt="Meditec" class="logo">
+                <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo " height="40px">
             </div>
             <ul class="nav-menu">
                 <li><a href="#inicio">INICIO</a></li>
@@ -36,10 +36,7 @@
         <div class="hero-background">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title">
-                        Soluciones<br>
-                        <span class="hero-title-green">MEDITEC</span>
-                    </h1>
+
                     <p class="hero-subtitle">
                         Innovación<br>
                         tecnológica al<br>
@@ -48,7 +45,7 @@
                     </p>
                 </div>
                 <div class="hero-graphics">
-                    <img src="{{ asset('landing/images/dna-hand.png') }}" alt="DNA in hand" class="hero-image">
+
                     <div class="medical-icons">
                         <div class="medical-cross cross-1">+</div>
                         <div class="medical-cross cross-2">+</div>
@@ -63,7 +60,8 @@
     <section class="what-is-section">
         <div class="container">
             <div class="section-header">
-                <h2>¿Qué es Soluciones Meditec?</h2>
+                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Clínicas y centros médicos">
+                <h2>   ¿Qué es Soluciones Meditec?</h2>
             </div>
             <p class="section-description">
                 Soluciones Meditec es una plataforma integral que digitaliza un software médico.<br><br>
@@ -77,7 +75,7 @@
                     <div class="feature-number">1</div>
                     <div class="feature-content">
                         <h3>Gestionar historias clínicas electrónicas de forma segura, ágil y actualizada.</h3>
-                        <img src="{{ asset('landing/images/medical-records.png') }}" alt="Historias clínicas" class="feature-image">
+                        <img src="{{ asset('landing/images/Foto-2.png') }}" alt="Historias clínicas" class="feature-image">
                     </div>
                 </div>
 
@@ -85,7 +83,7 @@
                     <div class="feature-number">2</div>
                     <div class="feature-content">
                         <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet e smartphone).</h3>
-                        <img src="{{ asset('landing/images/devices.png') }}" alt="Dispositivos" class="feature-image">
+                        <img src="{{ asset('landing/images/Foto-3.png') }}" alt="Dispositivos" class="feature-image">
                     </div>
                 </div>
 
@@ -93,7 +91,7 @@
                     <div class="feature-number">3</div>
                     <div class="feature-content">
                         <h3>Cumplir con regulaciones de privacidad y estándares de seguridad internacional.</h3>
-                        <img src="{{ asset('landing/images/security.png') }}" alt="Seguridad" class="feature-image">
+                        <img src="{{ asset('landing/images/Foto-1.png') }}" alt="Seguridad" class="feature-image">
                     </div>
                 </div>
             </div>
@@ -108,17 +106,17 @@
 
             <div class="audience-grid">
                 <div class="audience-item">
-                    <img src="{{ asset('landing/images/healthcare-professionals.png') }}" alt="Profesionales de la salud" class="audience-image">
+                    <img src="{{ asset('landing/images/Foto-4.png') }}" alt="Profesionales de la salud" class="audience-image">
                     <h3>Profesionales de la salud independientes</h3>
                 </div>
 
                 <div class="audience-item">
-                    <img src="{{ asset('landing/images/clinics-centers.png') }}" alt="Clínicas y centros médicos" class="audience-image">
+                    <img src="{{ asset('landing/images/Foto-5.png') }}" alt="Clínicas y centros médicos" class="audience-image">
                     <h3>Clínicas y centros médicos de todos los tamaños</h3>
                 </div>
 
                 <div class="audience-item">
-                    <img src="{{ asset('landing/images/hospitals-networks.png') }}" alt="Hospitales y redes de salud" class="audience-image">
+                    <img src="{{ asset('landing/images/Foto-6.png') }}" alt="Hospitales y redes de salud" class="audience-image">
                     <h3>Hospitales y redes de salud corporativas</h3>
                 </div>
             </div>
@@ -132,39 +130,33 @@
 
             <div class="key-features-grid">
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/digital-records.png') }}" alt="Registros digitales" class="key-feature-icon">
+                    <img src="{{ asset('landing/images/Icono-1.png') }}" alt="Registros digitales" class="key-feature-icon">
                     <h3>Registro médico digital centralizado</h3>
                     <p>Almacena, consulta y gestiona el historial médico del paciente con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/smart-scheduling.png') }}" alt="Programación inteligente" class="key-feature-icon">
+                    <img src="{{ asset('landing/images/Icono-2.png') }}" alt="Programación inteligente" class="key-feature-icon">
                     <h3>Programación inteligente</h3>
                     <p>Optimiza consulta y organiza la agenda médica automáticamente con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/compliance-security.png') }}" alt="Cumplimiento y seguridad" class="key-feature-icon">
+                    <img src="{{ asset('landing/images/Icono-3.png') }}" alt="Cumplimiento y seguridad" class="key-feature-icon">
                     <h3>Cumplimiento y seguridad</h3>
                     <p>Protege la privacidad del paciente cumpliendo con estándares médicos y administrativos desde un solo lugar.</p>
                 </div>
 
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/reports-metrics.png') }}" alt="Reportes y métricas" class="key-feature-icon">
+                    <img src="{{ asset('landing/images/Icono-4.png') }}" alt="Reportes y métricas" class="key-feature-icon">
                     <h3>Reportes y métricas</h3>
                     <p>Genera informes personalizados que facilitan el seguimiento de pacientes, indicadores de atención y reportes estadísticos para facilitar la toma de decisiones estratégicas.</p>
                 </div>
 
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/telemedicine.png') }}" alt="Telemedicina" class="key-feature-icon">
-                    <h3>Telemedicina</h3>
-                    <p>Permite consultas remotas ampliando la cobertura médica para mejorar la accesibilidad a servicios médicos desde la comodidad del hogar.</p>
-                </div>
-
-                <div class="key-feature">
-                    <img src="{{ asset('landing/images/integration.png') }}" alt="Integración" class="key-feature-icon">
-                    <h3>Integración</h3>
-                    <p>Se integra fácilmente a sistemas existentes, permitiendo un flujo de trabajo sin interrupciones complicadas, datos compartidos e históricos.</p>
+                    <img src="{{ asset('landing/images/Icono-5.png') }}" alt="Multidispositivo" class="key-feature-icon">
+                    <h3>Multidispositivo</h3>
+                    <p>Accede desde donde estés <br/> No requiere instalaciones complejas , solo conexión a internet.</p>
                 </div>
             </div>
         </div>
@@ -173,7 +165,8 @@
     <!-- Why Choose Section -->
     <section class="why-choose-section">
         <div class="container">
-            <h2>¿Por qué elegir Soluciones Meditec?</h2>
+            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco" >
+            <h2> ¿Por qué elegir Soluciones Meditec?</h2>
             <p>Porque creemos que la tecnología debe estar al servicio de la salud.</p>
             <p>Con Soluciones Meditec, tendrás:</p>
 
@@ -206,8 +199,10 @@
             <div class="footer-content">
                 <div class="footer-contact">
                     <p>Contáctanos:</p>
-                    <p>📧 respaldo@meditecpty.com</p>
-                    <p>📞 +507 124-4567</p>
+                    <p>
+                        <img src="{{ asset('landing/images/Icono-6.png') }}" alt="Logo Blanco" > info@meditecpty.com
+                        <img src="{{ asset('landing/images/Icono-7.png') }}" alt="Logo Blanco" > +507 124-4567
+                    </p>
                 </div>
             </div>
         </div>
