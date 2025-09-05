@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Recepy;
 use App\Http\Controllers\Controller;
 use App\Models\Recepy\RecepyPrescription;
 use App\Models\Recepy\RecepyDoctorProfile;
+use App\Services\PrescriptionPdfService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -245,5 +246,197 @@ class RecepyPrescriptionController extends Controller
             'success' => true,
             'data' => $prescriptions
         ]);
+    }
+
+    public function downloadPdf($id, PrescriptionPdfService $pdfService)
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        try {
+            return $pdfService->downloadPdf($prescription);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function streamPdf($id, PrescriptionPdfService $pdfService)
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        try {
+            return $pdfService->streamPdf($prescription);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function generatePdfUrl($id, PrescriptionPdfService $pdfService): JsonResponse
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        try {
+            // Save PDF to storage and get path
+            $pdfPath = $pdfService->savePdf($prescription);
+            
+            // Generate URL for the saved PDF
+            $pdfUrl = asset('storage/' . $pdfPath);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'pdf_url' => $pdfUrl,
+                    'pdf_path' => $pdfPath,
+                    'filename' => basename($pdfPath)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // PDF methods with doctor profile ID parameter
+    public function downloadPdfWithProfile($id, Request $request, PrescriptionPdfService $pdfService)
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        // Validate doctor profile ID parameter
+        $validator = Validator::make($request->all(), [
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            return $pdfService->downloadPdfWithProfile($prescription, $request->doctor_profile_id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function streamPdfWithProfile($id, Request $request, PrescriptionPdfService $pdfService)
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        // Validate doctor profile ID parameter
+        $validator = Validator::make($request->all(), [
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            return $pdfService->streamPdfWithProfile($prescription, $request->doctor_profile_id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function generatePdfUrlWithProfile($id, Request $request, PrescriptionPdfService $pdfService): JsonResponse
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        // Validate doctor profile ID parameter
+        $validator = Validator::make($request->all(), [
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // Save PDF to storage and get path
+            $pdfPath = $pdfService->savePdfWithProfile($prescription, $request->doctor_profile_id);
+            
+            // Generate URL for the saved PDF
+            $pdfUrl = asset('storage/' . $pdfPath);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'pdf_url' => $pdfUrl,
+                    'pdf_path' => $pdfPath,
+                    'filename' => basename($pdfPath)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar PDF: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

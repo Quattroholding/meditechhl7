@@ -75,6 +75,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('prescriptions/{id}/status', [RecepyPrescriptionController::class, 'updateStatus']);
         Route::get('doctor-profiles/{doctorProfileId}/prescriptions', [RecepyPrescriptionController::class, 'getByDoctorProfile']);
         
+        // PDF Generation (original methods - use prescription's doctor profile)
+        Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
+        Route::get('prescriptions/{id}/pdf/stream', [RecepyPrescriptionController::class, 'streamPdf']);
+        Route::get('prescriptions/{id}/pdf/url', [RecepyPrescriptionController::class, 'generatePdfUrl']);
+        
+        // PDF Generation with custom doctor profile (receives doctor_profile_id parameter)
+        Route::post('prescriptions/{id}/pdf/download-with-profile', [RecepyPrescriptionController::class, 'downloadPdfWithProfile']);
+        Route::post('prescriptions/{id}/pdf/stream-with-profile', [RecepyPrescriptionController::class, 'streamPdfWithProfile']);
+        Route::post('prescriptions/{id}/pdf/url-with-profile', [RecepyPrescriptionController::class, 'generatePdfUrlWithProfile']);
+        
         // Prescription Medications (nested under prescriptions)
         Route::prefix('prescriptions/{prescriptionId}/medications')->group(function () {
             Route::get('/', [RecepyPrescriptionMedicationController::class, 'index']);

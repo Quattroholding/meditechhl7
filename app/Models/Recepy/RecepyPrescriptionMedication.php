@@ -4,9 +4,12 @@ namespace App\Models\Recepy;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RecepyPrescriptionMedication extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'recepy_prescription_medications';
 
     protected $fillable = [
