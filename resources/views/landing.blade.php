@@ -70,16 +70,18 @@
                 Centraliza procesos, mejora la eficiencia y eleva la calidad de atención, permitiendo:
             </p>
 
-            <div class="features-grid">
-                <div class="feature-item">
+            <div class="features-grid container">
+                <div class="feature-item row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="feature-number">1</div>
                     <div class="feature-content">
                         <h3>Gestionar historias clínicas electrónicas de forma segura, ágil y actualizada.</h3>
                         <img src="{{ asset('landing/images/Foto-2.png') }}" alt="Historias clínicas" class="feature-image">
                     </div>
+                    </div>
                 </div>
 
-                <div class="feature-item">
+                <div class="feature-item row">
                     <div class="feature-number">2</div>
                     <div class="feature-content">
                         <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet e smartphone).</h3>
@@ -87,7 +89,7 @@
                     </div>
                 </div>
 
-                <div class="feature-item">
+                <div class="feature-item row">
                     <div class="feature-number">3</div>
                     <div class="feature-content">
                         <h3>Cumplir con regulaciones de privacidad y estándares de seguridad internacional.</h3>
@@ -184,12 +186,14 @@
                     <span class="benefit-text">Una mejor experiencia para pacientes y tu equipo</span>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="cta-section">
-                <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
-                <a class="cta-button" href="{{route('patient.register')}}">Regístrate aquí</a>
-                <p class="cta-subtitle">Forma parte de la revolución Soluciones Meditec</p>
-            </div>
+    <section class="cta-section">
+        <div class="register-section">
+            <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
+            <a class="cta-button" href="{{route('patient.register')}}">Regístrate aquí</a>
+            <p class="cta-subtitle">Forma parte de la revolución Soluciones Meditec</p>
         </div>
     </section>
 
@@ -199,9 +203,10 @@
             <div class="footer-content">
                 <div class="footer-contact">
                     <p>Contáctanos:</p>
+                    <span><i class="fa fa-user-injured"></i></span>
                     <p>
-                        <img src="{{ asset('landing/images/Icono-6.png') }}" alt="Logo Blanco" > info@meditecpty.com
-                        <img src="{{ asset('landing/images/Icono-7.png') }}" alt="Logo Blanco" > +507 124-4567
+                        <img src="{{ asset('landing/images/Icono-6.png') }}" alt="Logo Blanco" class="footer-icon"> info@meditecpty.com
+                        <img src="{{ asset('landing/images/Icono-7.png') }}" alt="Logo Blanco" class="ft-icon"> +507 124-4567
                     </p>
                 </div>
             </div>
