@@ -71,29 +71,27 @@
             </p>
 
             <div class="features-grid container">
-                <div class="feature-item row">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="feature-item">
+                    <img src="{{ asset('landing/images/Foto-2.png') }}" alt="Historias clínicas" class="feature-image">
                     <div class="feature-number">1</div>
                     <div class="feature-content">
                         <h3>Gestionar historias clínicas electrónicas de forma segura, ágil y actualizada.</h3>
-                        <img src="{{ asset('landing/images/Foto-2.png') }}" alt="Historias clínicas" class="feature-image">
-                    </div>
                     </div>
                 </div>
 
-                <div class="feature-item row">
+                <div class="feature-item">
                     <div class="feature-number">2</div>
                     <div class="feature-content">
                         <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet e smartphone).</h3>
-                        <img src="{{ asset('landing/images/Foto-3.png') }}" alt="Dispositivos" class="feature-image">
                     </div>
+                    <img src="{{ asset('landing/images/Foto-3.png') }}" alt="Dispositivos" class="feature-image">
                 </div>
 
-                <div class="feature-item row">
+                <div class="feature-item">
+                    <img src="{{ asset('landing/images/Foto-1.png') }}" alt="Seguridad" class="feature-image">
                     <div class="feature-number">3</div>
                     <div class="feature-content">
                         <h3>Cumplir con regulaciones de privacidad y estándares de seguridad internacional.</h3>
-                        <img src="{{ asset('landing/images/Foto-1.png') }}" alt="Seguridad" class="feature-image">
                     </div>
                 </div>
             </div>
