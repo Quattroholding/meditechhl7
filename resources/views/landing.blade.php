@@ -38,9 +38,9 @@
                 <div class="hero-text">
 
                     <p class="hero-subtitle">
-                        Innovación<br>
-                        tecnológica al<br>
-                        servicio de la<br>
+                        Innovación
+                        tecnológica al
+                        servicio de la
                         salud.
                     </p>
                 </div>
