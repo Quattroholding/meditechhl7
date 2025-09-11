@@ -247,36 +247,51 @@ h1, h2, h3, .logo {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(1, minmax(350px, 1fr));
+    grid-template-columns: repeat(1, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 3rem;
 }
 
 .feature-item {
-    display: flex;
+    /*display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: self-start;
     gap: 1.5rem;
     margin: 0 auto;
-    /*padding: 1.5rem;
+    padding: 1.5rem;
     background: #f8f9fa;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);*/
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
 }
 
 .feature-number {
-    /*background: #1E3A8A;*/
+    /*background: #1E3A8A;
     color: #1E3A8A;
     /*width: 40px;
     height: 40px;
-    border-radius: 50%;*/
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 4.2rem;
-    flex-shrink: 0;
+    flex-shrink: 0;*/
+    width: 50px;
+    height: 50px;
+    color: #1E3A8A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .feature-content h3 {
@@ -292,9 +307,14 @@ h1, h2, h3, .logo {
     /*width: 100px;
     height: 80px;
     object-fit: contain;
-    margin-top: 1rem;*/
+    margin-top: 1rem;
     max-width: 350px;
-    vertical-align: middle;
+    vertical-align: middle;*/
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 20px;
 
 }
 
@@ -561,8 +581,43 @@ h1, h2, h3, .logo {
         font-size: 2.5rem;
     }
 
-    .hero-subtitle {
+    .hero-subtitle{
         font-size: 1.2rem;
+    }
+
+    .section-header h2,
+    .audience-section h2,
+    .features-section h2,
+    .why-choose-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .section-description,
+    .audience-section p,
+    .audience-item h3,
+    .key-feature h3,
+    .why-choose-section > .container > p,
+    .cta-section p:first-child,
+    .cta-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .feature-content h3 {
+        font-size: 1.09rem;
+    }
+
+    .benefit-text {
+        font-size: 1.25rem;
+    }
+    .cta-button,
+    .key-feature p,
+    .footer-contact p
+    {
+        font-size: 0.95rem;
+    }
+    .key-feature-icon{
+        max-width: 120px;
+        max-height: 120px;
     }
 
     .features-grid {
@@ -570,16 +625,18 @@ h1, h2, h3, .logo {
     }
 
     .feature-item {
-        flex-direction: column;
+        flex-direction: row;
         text-align: center;
+        padding: 15px;
     }
+
 
     .feature-content h3{
         max-width: 350px;
     }
 
-    .feture-image {
-        max-width: 150px;
+    .feature-image {
+        max-width: 250px;
     }
 
    /* .audience-grid {
@@ -590,7 +647,7 @@ h1, h2, h3, .logo {
             height: 300px;
     }*/
     .key-features-grid {
-        grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
     }
 
     .benefits-list {
@@ -598,6 +655,99 @@ h1, h2, h3, .logo {
     }
 }
 
+@media (max-width: 695px){
+    .section-header h2,
+    .audience-section h2,
+    .features-section h2,
+    .why-choose-section h2 {
+        font-size: 1.4rem;
+        padding: 0.7rem 1.2rem;
+    }
+
+    .section-description,
+    .audience-section p,
+    .audience-item h3,
+    .key-feature h3,
+    .why-choose-section > .container > p,
+    .cta-section p:first-child,
+    .cta-subtitle {
+        font-size: 1.05rem;
+    }
+
+    .feature-content h3 {
+        font-size: 1rem;
+    }
+
+    .benefit-text {
+        font-size: 1.1rem;
+    }
+    .cta-button,
+    .key-feature p,
+    .footer-contact p
+    {
+        font-size: 0.85rem;
+    }
+    .audience-image {
+        max-width: 200px;
+        max-height: 200px;
+    }
+    .audience-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .key-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 554px){
+    .section-header h2,
+    .audience-section h2,
+    .features-section h2,
+    .why-choose-section h2 {
+        font-size: 1.3rem;
+        padding: 0.7rem 1.2rem;
+    }
+
+    .section-description,
+    .audience-section p,
+    .audience-item h3,
+    .key-feature h3,
+    .why-choose-section > .container > p,
+    .cta-section p:first-child,
+    .cta-subtitle {
+        font-size: 1rem;
+    }
+
+    .feature-content h3 {
+        font-size: 0.8rem;
+    }
+
+    .benefit-text {
+        font-size: 1.05rem;
+    }
+    .cta-button,
+    .key-feature p,
+    .footer-contact p
+    {
+        font-size: 0.85rem;
+    }
+    .audience-image {
+        max-width: 175px;
+        max-height: 175px;
+    }
+    .audience-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .key-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .feature-image {
+        max-width: 200px;
+    }
+    .feature-number {
+        font-size: 2.8rem;
+    }
+}
 @media (max-width: 480px) {
     .hero-title {
         font-size: 2rem;
@@ -607,8 +757,8 @@ h1, h2, h3, .logo {
     .audience-section h2,
     .features-section h2,
     .why-choose-section h2 {
-        font-size: 1.2rem;
-        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        padding: 0.4rem 1.1rem;
     }
     .section-description,
     .audience-section p,
@@ -617,10 +767,33 @@ h1, h2, h3, .logo {
     .why-choose-section > .container > p,
     .cta-section p:first-child,
     .benefit-text,
-    .cta-subtitle,
-    .feature-content h3
+    .cta-subtitle
     {
-        font-size: 1.05rem;
+        font-size: 0.9rem;
+    }
+
+    .feature-image {
+        max-width: 250px;
+        vertical-align: middle;
+    }
+
+    /* Estilo específico para el item-2 */
+    .custom-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .custom-item .feature-image {
+        order: -1; /* La imagen aparece primero */
+    }
+
+    .custom-item .feature-number {
+        order: 0; /* El número aparece después de la imagen */
+    }
+
+    .custom-item .feature-content {
+        order: 1; /* El texto aparece al final */
     }
 
     .key-feature p,
@@ -630,8 +803,11 @@ h1, h2, h3, .logo {
         font-size: 0.9rem;
     }
 
+
     .feature-item {
         padding: 1rem;
+        flex-direction: column;
+        text-align: center;
     }
 
     .audience-item {
@@ -640,5 +816,8 @@ h1, h2, h3, .logo {
 
     .key-feature {
         padding: 1.5rem;
+    }
+    .benefits-list {
+        padding: 0;
     }
 }

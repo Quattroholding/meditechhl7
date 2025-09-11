@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="feature-item">
+                <div class="feature-item custom-item">
                     <div class="feature-number">2</div>
                     <div class="feature-content">
                         <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet e smartphone).</h3>
@@ -188,10 +188,12 @@
     </section>
 
     <section class="cta-section">
-        <div class="register-section">
-            <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
-            <a class="cta-button" href="{{route('patient.register')}}">Regístrate aquí</a>
-            <p class="cta-subtitle">Forma parte de la revolución Soluciones Meditec</p>
+        <div class="container">
+            <div class="register-section">
+                <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
+                <a class="cta-button" href="{{route('patient.register')}}">Regístrate aquí</a>
+                <p class="cta-subtitle">Forma parte de la revolución Soluciones Meditec</p>
+            </div>
         </div>
     </section>
 
