@@ -24,10 +24,10 @@
                 <li><a href="#contacto">CONTACTO</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
-            <button class="search-btn">
+            {{--}}<button class="search-btn">
                 <img src="{{ asset('landing/images/search-icon.svg') }}" alt="Buscar">
                 BUSCAR
-            </button>
+            </button>{{--}}
         </nav>
     </header>
 
@@ -44,14 +44,14 @@
                         salud.
                     </p>
                 </div>
-                <div class="hero-graphics">
+                <!---<div class="hero-graphics">
 
                     <div class="medical-icons">
                         <div class="medical-cross cross-1">+</div>
                         <div class="medical-cross cross-2">+</div>
                         <div class="medical-cross cross-3">+</div>
                     </div>
-                </div>
+                </div>--->
             </div>
         </div>
     </section>
@@ -60,7 +60,7 @@
     <section class="what-is-section">
         <div class="container">
             <div class="section-header">
-                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Clínicas y centros médicos">
+                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Clínicas y centros médicos" class="logo-color">
                 <h2>   ¿Qué es Soluciones Meditec?</h2>
             </div>
             <p class="section-description">
@@ -165,7 +165,7 @@
     <!-- Why Choose Section -->
     <section class="why-choose-section">
         <div class="container">
-            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco" >
+            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
             <h2> ¿Por qué elegir Soluciones Meditec?</h2>
             <p>Porque creemos que la tecnología debe estar al servicio de la salud.</p>
             <p>Con Soluciones Meditec, tendrás:</p>

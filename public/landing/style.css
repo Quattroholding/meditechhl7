@@ -250,6 +250,9 @@ h1, h2, h3, .logo {
     grid-template-columns: repeat(1, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 3rem;
+    justify-items: center;
+    padding: 0;
+    justify-content: space-between;
 }
 
 .feature-item {
@@ -752,6 +755,15 @@ h1, h2, h3, .logo {
     .hero-title {
         font-size: 2rem;
     }
+    .hero{
+        max-width: 100%; /* Ajusta el ancho al 100% del contenedor */
+        height: auto; /* Mantiene la proporción de la imagen */
+        object-fit: contain; /* Asegura que la imagen no se corte */
+        background-position: right;
+    }
+    .hero-content{
+        margin: 4rem 0 0 0;
+    }
 
     .section-header h2,
     .audience-section h2,
@@ -802,7 +814,25 @@ h1, h2, h3, .logo {
     {
         font-size: 0.9rem;
     }
+    .audience-section p,
+    .section-description,
+    .why-choose-section > .container > p,
+    .section-header h2,
+    .why-choose-section h2,
+    .benefit-item{
+        text-align: center;
+    }
+    .logo-blanco,
+    .logo-color {
+        max-width: 60px;
+        max-height: 60px;
+    }
 
+    .benefit-text {
+        background: #00a0d0;
+        border-radius: 40px;
+        padding: 0.4rem 1.2rem;
+    }
 
     .feature-item {
         padding: 1rem;
