@@ -572,6 +572,7 @@ h1, h2, h3, .logo {
     height: 50px;
     width: 1.4rem;
     position: relative;
+    display: none;
 }
 .ham-menu span {
     width: 30px;
@@ -646,6 +647,9 @@ h1, h2, h3, .logo {
 @media (max-width: 768px) {
     .nav-menu {
         display: none;
+    }
+    .ham-menu {
+        display: block;
     }
  
     .nav {
