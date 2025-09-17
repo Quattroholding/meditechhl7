@@ -13,8 +13,13 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav">
+            <div class="ham-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <div class="nav-brand">
-                <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo " height="40px">
+                <img src="{{ asset('landing/images/Icono-8.png') }}" class="logo-header" alt="Logo " height="40px">
             </div>
             <ul class="nav-menu">
                 <li><a href="#inicio">INICIO</a></li>
@@ -28,7 +33,18 @@
                 <img src="{{ asset('landing/images/search-icon.svg') }}" alt="Buscar">
                 BUSCAR
             </button>{{--}}
+            
         </nav>
+        <div class="off-screen-menu">
+            <ul class="nav-mobile">
+                <li><a href="#inicio">INICIO</a></li>
+                <li><a href="#quienes-somos">QUIENES SOMOS</a></li>
+                <li><a href="#como-funciona">COMO FUNCIONA</a></li>
+                <li><a href="#planes">PLANES Y PRECIOS</a></li>
+                <li><a href="#contacto">CONTACTO</a></li>
+                <li><a href="{{route('login')}}">INGRESAR</a></li>
+            </ul>
+        </div>
     </header>
 
     <!-- Hero Section -->
@@ -212,5 +228,13 @@
             </div>
         </div>
     </footer>
+    <script>
+        const hamMenu = document.querySelector('.ham-menu');
+        const offScreenMenu = document.querySelector('.off-screen-menu');
+        hamMenu.addEventListener('click', () => {
+            hamMenu.classList.toggle('active');
+            offScreenMenu.classList.toggle('active');
+        })
+    </script>
 </body>
 </html>
