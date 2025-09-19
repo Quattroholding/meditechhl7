@@ -234,7 +234,9 @@ h1, h2, h3, .logo {
 .section-header {
     text-align: left;
     margin-bottom: 1rem;
-    display: inline-block;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2.5rem;
 }
 
 .section-header h2 {
@@ -245,7 +247,6 @@ h1, h2, h3, .logo {
     display: inline-block;
     font-size: 2rem;
     font-weight: 600;
-    margin-bottom: 2.5rem;
 }
 
 .section-description {
@@ -459,6 +460,13 @@ h1, h2, h3, .logo {
     color: white;
 }
 
+.why-choose-header {
+    display: flex;
+    align-items: center;
+    margin: 0 0 2.5rem;
+    gap: 10px;
+}
+
 .why-choose-section h2 {
     background: #fff;
     color: #1E3A8A;
@@ -467,7 +475,6 @@ h1, h2, h3, .logo {
     display: inline-block;
     font-size: 2rem;
     font-weight: 600;
-    margin: 0 0 2.5rem;
     display: inline-block;
     max-width: fit-content;
     text-align: left;
@@ -649,7 +656,7 @@ h1, h2, h3, .logo {
         display: none;
     }
     .ham-menu {
-        display: block;
+        display: block ;
     }
  
     .nav {

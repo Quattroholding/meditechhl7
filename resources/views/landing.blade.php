@@ -181,8 +181,10 @@
     <!-- Why Choose Section -->
     <section class="why-choose-section">
         <div class="container">
-            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
-            <h2> ¿Por qué elegir Soluciones Meditec?</h2>
+            <div class="why-choose-header">
+                <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
+                <h2> ¿Por qué elegir Soluciones Meditec?</h2>
+            </div>
             <p>Porque creemos que la tecnología debe estar al servicio de la salud.</p>
             <p>Con Soluciones Meditec, tendrás:</p>
 
