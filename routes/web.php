@@ -464,6 +464,22 @@ Route::middleware(['auth', 'first.login'])->group(function () {
 
 });
 
+// Temporal route for testing PDF template
+Route::get('/test-pdf/{id}', function ($id) {
+    try {
+        $prescription = \App\Models\Recepy\RecepyPrescription::with(['doctorProfile.user', 'activeMedications'])
+            ->find($id);
+
+        if (!$prescription) {
+            return response('Prescription not found', 404);
+        }
+
+        return view('pdf.prescription', compact('prescription'));
+    } catch (\Exception $e) {
+        return response('Error: ' . $e->getMessage(), 500);
+    }
+});
+
 // Survey Routes
 Route::middleware(['auth', 'first.login', 'permission:surveys.view'])->group(function () {
     Route::resource('surveys', SurveyController::class);

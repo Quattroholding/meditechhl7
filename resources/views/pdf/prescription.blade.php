@@ -256,7 +256,7 @@
         }
 
         @page {
-            margin: 25mm;
+            margin: 30mm 25mm 80mm 25mm;
         }
 
         .page-break {
@@ -266,41 +266,93 @@
         .no-break {
             page-break-inside: avoid;
         }
+
+        .fixed-header {
+            position: fixed;
+            top: -2mm;
+            left: 0;
+            right: 0;
+            height: 25mm;
+            background: white;
+            padding: 5mm;
+        }
+
+        .fixed-footer {
+            position: fixed;
+            bottom: -20mm;
+            left: 0;
+            right: 0;
+            height: 70mm;
+            background: white;
+            padding: 5mm;
+            text-align: center;
+        }
+
+        .content-wrapper {
+            margin-top: 10mm;
+            margin-bottom: 10mm;
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="prescription-header">
-        <div class="header-left">
-            @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                <img src="{{ public_path('storage/' . $prescription->doctorProfile->logo) }}" alt="Logo" class="doctor-logo">
-            @endif
-            <div class="doctor-info">
-                <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
-                @if($prescription->doctorProfile->speciality)
-                    <p><strong>{{ $prescription->doctorProfile->speciality }}</strong></p>
+    <!-- Fixed Header for all pages -->
+    <div class="fixed-header">
+        <div class="prescription-header">
+            <div class="header-left">
+                @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
+                    <img src="{{ public_path('storage/' . $prescription->doctorProfile->logo) }}" alt="Logo" class="doctor-logo">
                 @endif
+                <div class="doctor-info">
+                    <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
+                    @if($prescription->doctorProfile->speciality)
+                        <p><strong>{{ $prescription->doctorProfile->speciality }}</strong></p>
+                    @endif
+                    @if($prescription->doctorProfile->medical_license_number)
+                        <p>Reg. Médico: {{ $prescription->doctorProfile->medical_license_number }}</p>
+                    @endif
+                </div>
+            </div>
+            <div class="header-right">
                 @if($prescription->doctorProfile->facility)
                     <p>{{ $prescription->doctorProfile->facility }}</p>
-                @endif
-                @if($prescription->doctorProfile->address)
-                    <p>📍 {{ $prescription->doctorProfile->address }}</p>
                 @endif
                 @if($prescription->doctorProfile->phone)
                     <p>📞 {{ $prescription->doctorProfile->phone }}</p>
                 @endif
-                @if($prescription->doctorProfile->email)
-                    <p>✉️ {{ $prescription->doctorProfile->email }}</p>
-                @endif
             </div>
         </div>
-        <div class="header-right">
+    </div>
+
+    <!-- Fixed Footer for all pages -->
+    <div class="fixed-footer">
+        <div class="signature-section">
+            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
+                <img src="{{ public_path('storage/' . $prescription->doctorProfile->signature) }}" alt="Firma" class="doctor-signature">
+                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
+                    <img src="{{ public_path('storage/' . $prescription->doctorProfile->seal) }}" alt="Sello" class="doctor-seal">
+                @endif
+            @else
+                <div class="signature-line"></div>
+            @endif
+
+            <div class="doctor-name">
+                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
+            </div>
+            @if($prescription->doctorProfile->speciality)
+                <div style="font-size: 10px; margin-bottom: 2px;">
+                    {{ $prescription->doctorProfile->speciality }}
+                </div>
+            @endif
             @if($prescription->doctorProfile->medical_license_number)
-                <p><strong>Reg. Médico:</strong></p>
-                <p>{{ $prescription->doctorProfile->medical_license_number }}</p>
+                <div class="license-number">
+                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
+                </div>
             @endif
         </div>
     </div>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
 
     <!-- Prescription Number -->
     <div class="prescription-number">
@@ -425,31 +477,7 @@
     </div>
     @endif
 
-    <!-- Signature -->
-    <div class="signature-section no-break">
-        @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
-            <img src="{{ public_path('storage/' . $prescription->doctorProfile->signature) }}" alt="Firma" class="doctor-signature">
-            @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
-                <img src="{{ public_path('storage/' . $prescription->doctorProfile->seal) }}" alt="Sello" class="doctor-seal">
-            @endif
-        @else
-            <div class="signature-line"></div>
-        @endif
-
-        <div class="doctor-name">
-            {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
-        </div>
-        @if($prescription->doctorProfile->speciality)
-            <div style="font-size: 10px; margin-bottom: 2px;">
-                {{ $prescription->doctorProfile->speciality }}
-            </div>
-        @endif
-        @if($prescription->doctorProfile->medical_license_number)
-            <div class="license-number">
-                Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
-            </div>
-        @endif
-    </div>
+    </div> <!-- End content-wrapper -->
 
     <!-- Footer -->
     <div class="footer">
