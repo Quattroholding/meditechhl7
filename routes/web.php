@@ -23,6 +23,7 @@ use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -459,6 +460,8 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/practitioner/{practitioner_id}/seal', [FileController::class, 'serveSeal'])
         ->name('practitioner.seal');
 
+    Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
+
 });
 
 // Survey Routes
@@ -495,3 +498,5 @@ Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
 
     return 'Appointment not found';
 })->middleware('auth')->name('test.broadcast');
+
+
