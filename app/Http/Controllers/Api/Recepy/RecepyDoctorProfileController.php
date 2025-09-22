@@ -202,4 +202,117 @@ class RecepyDoctorProfileController extends Controller
             'data' => $profile
         ]);
     }
+
+    public function uploadFile(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'doctor_profile_id' => 'required|exists:recepy_doctor_profiles,id',
+            'file_type' => 'required|in:logo,signature,seal',
+            'file' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $profile = RecepyDoctorProfile::find($request->doctor_profile_id);
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no encontrado'
+            ], 404);
+        }
+
+        try {
+            $fileType = $request->file_type;
+            $file = $request->file('file');
+
+            // Delete old file if exists
+            if ($profile->$fileType) {
+                Storage::disk('public')->delete($profile->$fileType);
+            }
+
+            // Store new file
+            $path = $file->store("recepy/{$fileType}s", 'public');
+
+            // Update profile
+            $profile->update([$fileType => $path]);
+
+            // Load the updated profile with user relationship
+            $profile->load('user');
+
+            return response()->json([
+                'success' => true,
+                'message' => ucfirst($fileType) . ' subido exitosamente',
+                'data' => [
+                    'profile' => $profile,
+                    'file_path' => $path,
+                    'file_url' => asset('storage/' . $path)
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al subir archivo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteFile(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'doctor_profile_id' => 'required|exists:recepy_doctor_profiles,id',
+            'file_type' => 'required|in:logo,signature,seal',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $profile = RecepyDoctorProfile::find($request->doctor_profile_id);
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no encontrado'
+            ], 404);
+        }
+
+        try {
+            $fileType = $request->file_type;
+
+            // Delete file if exists
+            if ($profile->$fileType) {
+                Storage::disk('public')->delete($profile->$fileType);
+                
+                // Update profile to remove file reference
+                $profile->update([$fileType => null]);
+            }
+
+            // Load the updated profile with user relationship
+            $profile->load('user');
+
+            return response()->json([
+                'success' => true,
+                'message' => ucfirst($fileType) . ' eliminado exitosamente',
+                'data' => $profile
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar archivo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -70,6 +70,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('doctor-profiles', RecepyDoctorProfileController::class);
         Route::get('users/{userId}/doctor-profile', [RecepyDoctorProfileController::class, 'getByUser']);
         
+        // File Management for Doctor Profiles
+        Route::post('doctor-profiles/upload-file', [RecepyDoctorProfileController::class, 'uploadFile']);
+        Route::delete('doctor-profiles/delete-file', [RecepyDoctorProfileController::class, 'deleteFile']);
+        
         // Prescriptions
         Route::apiResource('prescriptions', RecepyPrescriptionController::class);
         Route::patch('prescriptions/{id}/status', [RecepyPrescriptionController::class, 'updateStatus']);
