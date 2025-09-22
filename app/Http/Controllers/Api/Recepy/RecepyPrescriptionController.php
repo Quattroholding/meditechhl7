@@ -260,6 +260,11 @@ class RecepyPrescriptionController extends Controller
         }
 
         try {
+
+            if(request()->has('view')) return view('pdf.prescription', [
+                'prescription' => $prescription
+            ]);
+
             return $pdfService->downloadPdf($prescription);
         } catch (\Exception $e) {
             return response()->json([
@@ -304,7 +309,7 @@ class RecepyPrescriptionController extends Controller
         try {
             // Save PDF to storage and get path
             $pdfPath = $pdfService->savePdf($prescription);
-            
+
             // Generate URL for the saved PDF
             $pdfUrl = asset('storage/' . $pdfPath);
 
@@ -420,7 +425,7 @@ class RecepyPrescriptionController extends Controller
         try {
             // Save PDF to storage and get path
             $pdfPath = $pdfService->savePdfWithProfile($prescription, $request->doctor_profile_id);
-            
+
             // Generate URL for the saved PDF
             $pdfUrl = asset('storage/' . $pdfPath);
 

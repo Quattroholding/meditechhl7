@@ -17,6 +17,7 @@
             line-height: 1.4;
             color: #333;
             background: white;
+            margin: 2em;
         }
 
         .prescription-header {
@@ -308,7 +309,7 @@
 
     <!-- Date -->
     <div class="prescription-date">
-        {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }}, 
+        {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
         {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
     </div>
 
@@ -370,7 +371,7 @@
     <!-- Medications -->
     <div class="medications-section">
         <h3>Rp/ MEDICACIÓN PRESCRITA</h3>
-        
+
         @foreach($prescription->activeMedications as $index => $medication)
         <div class="medication-item no-break">
             <div class="medication-header">
@@ -385,7 +386,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <div class="medication-details">
                 <div class="medication-line">
                     <strong>Dosis:</strong> {{ $medication->dosage }}
@@ -404,7 +405,7 @@
                 </div>
                 @endif
             </div>
-            
+
             @if($medication->instructions)
             <div class="medication-instructions">
                 <strong>Instrucciones:</strong> {{ $medication->instructions }}
@@ -434,7 +435,7 @@
         @else
             <div class="signature-line"></div>
         @endif
-        
+
         <div class="doctor-name">
             {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
         </div>
@@ -452,7 +453,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        Esta receta médica fue generada digitalmente el {{ now()->format('d/m/Y H:i') }} | 
+        Esta receta médica fue generada digitalmente el {{ now()->format('d/m/Y H:i') }} |
         Receta N° {{ $prescription->prescription_number }}
     </div>
 </body>
