@@ -265,7 +265,7 @@ class RecepyPrescriptionController extends Controller
                 'prescription' => $prescription
             ]);
 
-            return $pdfService->downloadPdf($prescription);
+            return $pdfService->streamPdf($prescription);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

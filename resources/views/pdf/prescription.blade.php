@@ -22,8 +22,8 @@
 
         .prescription-header {
             border-bottom: 2px solid #2c5aa0;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+            padding-bottom: 0px;
+            margin-bottom: 0px;
             display: table;
             width: 100%;
         }
@@ -210,7 +210,7 @@
         }
 
         .signature-section {
-            margin-top: 40px;
+            margin-top: 10px;
             text-align: center;
         }
 
@@ -256,7 +256,7 @@
         }
 
         @page {
-            margin: 30mm 25mm 80mm 25mm;
+            margin: 50mm 25mm 90mm 25mm;
         }
 
         .page-break {
@@ -272,7 +272,7 @@
             top: -2mm;
             left: 0;
             right: 0;
-            height: 25mm;
+            height: 35mm;
             background: white;
             padding: 5mm;
         }
@@ -289,8 +289,8 @@
         }
 
         .content-wrapper {
-            margin-top: 10mm;
-            margin-bottom: 10mm;
+            margin-top: 40mm;
+            margin-bottom: 80mm;
         }
     </style>
 </head>
@@ -300,7 +300,7 @@
         <div class="prescription-header">
             <div class="header-left">
                 @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                    <img src="{{ public_path('storage/' . $prescription->doctorProfile->logo) }}" alt="Logo" class="doctor-logo">
+                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
                 @endif
                 <div class="doctor-info">
                     <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
@@ -319,37 +319,15 @@
                 @if($prescription->doctorProfile->phone)
                     <p>📞 {{ $prescription->doctorProfile->phone }}</p>
                 @endif
+                    <!-- Date -->
+                    <div class="prescription-date">
+                        {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
+                        {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
+                    </div>
             </div>
         </div>
     </div>
 
-    <!-- Fixed Footer for all pages -->
-    <div class="fixed-footer">
-        <div class="signature-section">
-            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
-                <img src="{{ public_path('storage/' . $prescription->doctorProfile->signature) }}" alt="Firma" class="doctor-signature">
-                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
-                    <img src="{{ public_path('storage/' . $prescription->doctorProfile->seal) }}" alt="Sello" class="doctor-seal">
-                @endif
-            @else
-                <div class="signature-line"></div>
-            @endif
-
-            <div class="doctor-name">
-                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
-            </div>
-            @if($prescription->doctorProfile->speciality)
-                <div style="font-size: 10px; margin-bottom: 2px;">
-                    {{ $prescription->doctorProfile->speciality }}
-                </div>
-            @endif
-            @if($prescription->doctorProfile->medical_license_number)
-                <div class="license-number">
-                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
-                </div>
-            @endif
-        </div>
-    </div>
 
     <!-- Content Wrapper -->
     <div class="content-wrapper">
@@ -359,11 +337,7 @@
         RECETA MÉDICA N° {{ $prescription->prescription_number }}
     </div>
 
-    <!-- Date -->
-    <div class="prescription-date">
-        {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
-        {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
-    </div>
+
 
     <!-- Patient Information -->
     <div class="patient-section no-break">
@@ -441,21 +415,16 @@
 
             <div class="medication-details">
                 <div class="medication-line">
-                    <strong>Dosis:</strong> {{ $medication->dosage }}
-                </div>
-                <div class="medication-line">
-                    <strong>Frecuencia:</strong> {{ $medication->frequency }}
-                </div>
-                @if($medication->duration)
-                <div class="medication-line">
-                    <strong>Duración:</strong> {{ $medication->duration }}
-                </div>
-                @endif
-                @if($medication->quantity)
-                <div class="medication-line">
+                    <strong>Dosis:</strong> {{ $medication->dosage }} |
+                    <strong>Frecuencia:</strong> {{ $medication->frequency }} |
+                    @if($medication->duration)
+                    <strong>Duración:</strong> {{ $medication->duration }} |
+                    @endif
+                    @if($medication->quantity)
                     <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
+                    @endif
                 </div>
-                @endif
+
             </div>
 
             @if($medication->instructions)
@@ -479,8 +448,33 @@
 
     </div> <!-- End content-wrapper -->
 
+
     <!-- Footer -->
     <div class="footer">
+        <div class="signature-section">
+            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
+                <img src="data:image/{{ pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature))) }}" alt="Firma" class="doctor-signature">
+                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
+                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal))) }}" alt="Sello" class="doctor-seal">
+                @endif
+            @else
+                <div class="signature-line"></div>
+            @endif
+
+            <div class="doctor-name">
+                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
+            </div>
+            @if($prescription->doctorProfile->speciality)
+                <div style="font-size: 10px; margin-bottom: 2px;">
+                    {{ $prescription->doctorProfile->speciality }}
+                </div>
+            @endif
+            @if($prescription->doctorProfile->medical_license_number)
+                <div class="license-number">
+                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
+                </div>
+            @endif
+        </div>
         Esta receta médica fue generada digitalmente el {{ now()->format('d/m/Y H:i') }} |
         Receta N° {{ $prescription->prescription_number }}
     </div>
