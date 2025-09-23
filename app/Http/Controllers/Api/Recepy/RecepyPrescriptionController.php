@@ -46,7 +46,7 @@ class RecepyPrescriptionController extends Controller
         }
 
         $prescriptions = $query->orderBy('prescription_date', 'desc')
-                              ->paginate(15);
+                              ->paginate(3);
 
         return response()->json([
             'success' => true,
