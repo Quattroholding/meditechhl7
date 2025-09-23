@@ -64,7 +64,7 @@ class PrescriptionPdfService
         return $pdf->download($filename);
     }
 
-    public function streamPdf(RecepyPrescription $prescription): \Symfony\Component\HttpFoundation\Response
+    public function unstreamPdf(RecepyPrescription $prescription): \Symfony\Component\HttpFoundation\Response
     {
         // Load prescription with all relationships
         $prescription->load([
@@ -114,7 +114,7 @@ class PrescriptionPdfService
     {
         // Clean patient name for filename
         $patientName = $this->sanitizeForFilename($prescription->patient_name);
-        
+
         // Generate filename: RX-2025-123456_Maria_Gonzalez_2025-01-01.pdf
         return sprintf(
             '%s_%s_%s.pdf',
@@ -128,13 +128,13 @@ class PrescriptionPdfService
     {
         // Remove accents and special characters
         $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
-        
+
         // Replace spaces with underscores and remove non-alphanumeric characters
         $string = preg_replace('/[^a-zA-Z0-9\-_]/', '_', $string);
-        
+
         // Remove multiple underscores
         $string = preg_replace('/_+/', '_', $string);
-        
+
         // Remove leading/trailing underscores
         return trim($string, '_');
     }
@@ -165,14 +165,14 @@ class PrescriptionPdfService
         }
 
         $age = $prescription->patient_age;
-        
+
         if ($age >= 1) {
             return $age . ' años';
         }
 
         // For babies less than 1 year old, show months
         $months = $prescription->patient_birth_date->diffInMonths(now());
-        
+
         if ($months >= 1) {
             return $months . ' meses';
         }
@@ -222,7 +222,7 @@ class PrescriptionPdfService
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
         $prescription->setRelation('doctorProfile', $doctorProfile);
-        
+
         // Load medications
         $prescription->load('activeMedications');
 
@@ -249,7 +249,7 @@ class PrescriptionPdfService
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
         $prescription->setRelation('doctorProfile', $doctorProfile);
-        
+
         // Load medications
         $prescription->load('activeMedications');
 
@@ -279,7 +279,7 @@ class PrescriptionPdfService
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
         $prescription->setRelation('doctorProfile', $doctorProfile);
-        
+
         // Load medications
         $prescription->load('activeMedications');
 
@@ -308,7 +308,7 @@ class PrescriptionPdfService
     {
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
-        
+
         // Generate PDF content
         $pdfContent = $this->generatePdfWithProfile($prescription, $doctorProfileId);
 
@@ -328,10 +328,10 @@ class PrescriptionPdfService
     {
         // Clean patient name for filename
         $patientName = $this->sanitizeForFilename($prescription->patient_name);
-        
+
         // Clean doctor name for filename
         $doctorName = $this->sanitizeForFilename($doctorProfile->user->first_name . '_' . $doctorProfile->user->last_name);
-        
+
         // Generate filename: RX-2025-123456_Dr_Juan_Perez_Maria_Gonzalez_2025-01-01.pdf
         return sprintf(
             '%s_%s_%s_%s.pdf',

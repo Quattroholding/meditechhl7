@@ -256,7 +256,7 @@
         }
 
         @page {
-            margin: 50mm 25mm 90mm 25mm;
+            margin: 20mm 25mm 20mm 25mm;
         }
 
         .page-break {
@@ -267,36 +267,51 @@
             page-break-inside: avoid;
         }
 
-        .fixed-header {
-            position: fixed;
-            top: -2mm;
-            left: 0;
-            right: 0;
-            height: 35mm;
-            background: white;
-            padding: 5mm;
+        .page-header {
+            margin-bottom: 30px;
         }
 
-        .fixed-footer {
-            position: fixed;
-            bottom: -20mm;
-            left: 0;
-            right: 0;
-            height: 70mm;
-            background: white;
-            padding: 5mm;
-            text-align: center;
+        .page-footer {
+            margin-top: 50px;
+            page-break-inside: avoid;
         }
 
-        .content-wrapper {
-            margin-top: 40mm;
-            margin-bottom: 80mm;
+        .page-number {
+            position: absolute;
+            top: 30mm;
+            right: 25px;
+            font-size: 10px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
         }
     </style>
 </head>
 <body>
-    <!-- Fixed Header for all pages -->
-    <div class="fixed-header">
+    @php
+        // Calcular total de páginas antes de mostrar cualquier contenido
+        $allMedications = $prescription->activeMedications->toArray();
+        $totalMedications = count($allMedications);
+        $medicationsPerFirstPage = 2;
+        $medicationsPerSubsequentPage = 4;
+
+        // Calcular total de páginas
+        $totalPages = 1; // Primera página siempre existe
+        if ($totalMedications > $medicationsPerFirstPage) {
+            $remainingMedications = $totalMedications - $medicationsPerFirstPage;
+            $totalPages += ceil($remainingMedications / $medicationsPerSubsequentPage);
+        }
+
+        $currentPage = 1;
+        $printedMedications = 0;
+    @endphp
+    <!-- Page Header -->
+    <div class="page-header">
+        <!-- Page Number -->
+        <div class="page-number">Página 1 de {{ $totalPages }}</div>
+
         <div class="prescription-header">
             <div class="header-left">
                 @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
@@ -329,128 +344,210 @@
     </div>
 
 
-    <!-- Content Wrapper -->
-    <div class="content-wrapper">
 
-    <!-- Prescription Number -->
-    <div class="prescription-number">
-        RECETA MÉDICA N° {{ $prescription->prescription_number }}
-    </div>
-
-
-
-    <!-- Patient Information -->
-    <div class="patient-section no-break">
-        <h3>INFORMACIÓN DEL PACIENTE</h3>
-        <div class="patient-info">
-            <div class="patient-left">
-                <div class="info-row">
-                    <span class="info-label">Nombre:</span>
-                    <strong>{{ $prescription->patient_name }}</strong>
-                </div>
-                @if($prescription->patient_document)
-                <div class="info-row">
-                    <span class="info-label">Cédula:</span>
-                    {{ $prescription->patient_document }}
-                </div>
-                @endif
-                @if($prescription->patient_birth_date)
-                <div class="info-row">
-                    <span class="info-label">Edad:</span>
-                    {{ \Carbon\Carbon::parse($prescription->patient_birth_date)->age }} años
-                </div>
-                @endif
-            </div>
-            <div class="patient-right">
-                @if($prescription->patient_gender)
-                <div class="info-row">
-                    <span class="info-label">Sexo:</span>
-                    {{ $prescription->patient_gender == 'M' ? 'Masculino' : ($prescription->patient_gender == 'F' ? 'Femenino' : 'Otro') }}
-                </div>
-                @endif
-                @if($prescription->patient_phone)
-                <div class="info-row">
-                    <span class="info-label">Teléfono:</span>
-                    {{ $prescription->patient_phone }}
-                </div>
-                @endif
-                @if($prescription->patient_address)
-                <div class="info-row">
-                    <span class="info-label">Dirección:</span>
-                    {{ $prescription->patient_address }}
-                </div>
-                @endif
-            </div>
+        <!-- Prescription Number -->
+        <div class="prescription-number">
+            RECETA MÉDICA N° {{ $prescription->prescription_number }}
         </div>
-    </div>
-
-    <!-- Diagnosis -->
-    @if($prescription->diagnosis)
-    <div class="diagnosis-section no-break">
-        <h4>DIAGNÓSTICO:</h4>
-        <div class="diagnosis-content">
-            {{ $prescription->diagnosis }}
-        </div>
-    </div>
-    @endif
-
-    <!-- Medications -->
-    <div class="medications-section">
-        <h3>Rp/ MEDICACIÓN PRESCRITA</h3>
-
-        @foreach($prescription->activeMedications as $index => $medication)
-        <div class="medication-item no-break">
-            <div class="medication-header">
-                <div class="medication-number">{{ $index + 1 }}.</div>
-                <div class="medication-name">
-                    {{ $medication->medication_name }}
-                    @if($medication->presentation || $medication->concentration)
-                        <span style="font-weight: normal;">
-                            @if($medication->presentation) - {{ $medication->presentation }}@endif
-                            @if($medication->concentration) {{ $medication->concentration }}@endif
-                        </span>
+        <!-- Patient Information -->
+        <div class="patient-section no-break">
+            <h3>INFORMACIÓN DEL PACIENTE</h3>
+            <div class="patient-info">
+                <div class="patient-left">
+                    <div class="info-row">
+                        <span class="info-label">Nombre:</span>
+                        <strong>{{ $prescription->patient_name }}</strong>
+                    </div>
+                    @if($prescription->patient_document)
+                    <div class="info-row">
+                        <span class="info-label">Cédula:</span>
+                        {{ $prescription->patient_document }}
+                    </div>
+                    @endif
+                    @if($prescription->patient_birth_date)
+                    <div class="info-row">
+                        <span class="info-label">Edad:</span>
+                        {{ \Carbon\Carbon::parse($prescription->patient_birth_date)->age }} años
+                    </div>
+                    @endif
+                </div>
+                <div class="patient-right">
+                    @if($prescription->patient_gender)
+                    <div class="info-row">
+                        <span class="info-label">Sexo:</span>
+                        {{ $prescription->patient_gender == 'M' ? 'Masculino' : ($prescription->patient_gender == 'F' ? 'Femenino' : 'Otro') }}
+                    </div>
+                    @endif
+                    @if($prescription->patient_phone)
+                    <div class="info-row">
+                        <span class="info-label">Teléfono:</span>
+                        {{ $prescription->patient_phone }}
+                    </div>
+                    @endif
+                    @if($prescription->patient_address)
+                    <div class="info-row">
+                        <span class="info-label">Dirección:</span>
+                        {{ $prescription->patient_address }}
+                    </div>
                     @endif
                 </div>
             </div>
-
-            <div class="medication-details">
-                <div class="medication-line">
-                    <strong>Dosis:</strong> {{ $medication->dosage }} |
-                    <strong>Frecuencia:</strong> {{ $medication->frequency }} |
-                    @if($medication->duration)
-                    <strong>Duración:</strong> {{ $medication->duration }} |
-                    @endif
-                    @if($medication->quantity)
-                    <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
-                    @endif
-                </div>
-
-            </div>
-
-            @if($medication->instructions)
-            <div class="medication-instructions">
-                <strong>Instrucciones:</strong> {{ $medication->instructions }}
-            </div>
-            @endif
         </div>
-        @endforeach
-    </div>
 
-    <!-- Additional Notes -->
-    @if($prescription->additional_notes)
-    <div class="notes-section no-break">
-        <h4>NOTAS ADICIONALES:</h4>
-        <div class="notes-content">
-            {{ $prescription->additional_notes }}
+        <!-- Diagnosis -->
+        @if($prescription->diagnosis)
+        <div class="diagnosis-section no-break">
+            <h4>DIAGNÓSTICO:</h4>
+            <div class="diagnosis-content">
+                {{ $prescription->diagnosis }}
+            </div>
         </div>
-    </div>
-    @endif
+        @endif
 
-    </div> <!-- End content-wrapper -->
+        <!-- Medications -->
+        <div class="medications-section">
+            <h3>Rp/ MEDICACIÓN PRESCRITA</h3>
 
+            @while($printedMedications < $totalMedications)
+                @php
+                    if($currentPage == 1) {
+                        $medicationsThisPage = min($medicationsPerFirstPage, $totalMedications - $printedMedications);
+                    } else {
+                        $medicationsThisPage = min($medicationsPerSubsequentPage, $totalMedications - $printedMedications);
+                    }
 
-    <!-- Footer -->
-    <div class="footer">
+                    $pageEndIndex = $printedMedications + $medicationsThisPage;
+                @endphp
+
+                @for($i = $printedMedications; $i < $pageEndIndex; $i++)
+                    @php $medication = (object) $allMedications[$i]; @endphp
+                    <div class="medication-item no-break">
+                        <div class="medication-header">
+                            <div class="medication-number">{{ $i + 1 }}.</div>
+                            <div class="medication-name">
+                                {{ $medication->medication_name }}
+                                @if($medication->presentation || $medication->concentration)
+                                    <span style="font-weight: normal;">
+                                        @if($medication->presentation) - {{ $medication->presentation }}@endif
+                                        @if($medication->concentration) {{ $medication->concentration }}@endif
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="medication-details">
+                            <div class="medication-line">
+                                <strong>Dosis:</strong> {{ $medication->dosage }} |
+                                <strong>Frecuencia:</strong> {{ $medication->frequency }} |
+                                @if($medication->duration)
+                                <strong>Duración:</strong> {{ $medication->duration }} |
+                                @endif
+                                @if($medication->quantity)
+                                <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($medication->instructions)
+                        <div class="medication-instructions">
+                            <strong>Instrucciones:</strong> {{ $medication->instructions }}
+                        </div>
+                        @endif
+                    </div>
+                @endfor
+
+                @php
+                    $printedMedications = $pageEndIndex;
+                    $currentPage++;
+                @endphp
+
+                @if($printedMedications < $totalMedications)
+                    <!-- Footer para página actual -->
+                    <div class="page-footer">
+                        <div class="signature-section">
+                            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
+                                <img src="data:image/{{ pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature))) }}" alt="Firma" class="doctor-signature">
+                                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
+                                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal))) }}" alt="Sello" class="doctor-seal">
+                                @endif
+                            @else
+                                <div class="signature-line"></div>
+                            @endif
+
+                            <div class="doctor-name">
+                                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
+                            </div>
+                            @if($prescription->doctorProfile->speciality)
+                                <div style="font-size: 10px; margin-bottom: 2px;">
+                                    {{ $prescription->doctorProfile->speciality }}
+                                </div>
+                            @endif
+                            @if($prescription->doctorProfile->medical_license_number)
+                                <div class="license-number">
+                                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Salto de página -->
+                    <div class="page-break"></div>
+
+                    <!-- Header para página siguiente -->
+                    <div class="page-header">
+                        <!-- Page Number -->
+                        <div class="page-number">Página {{ $currentPage }} de {{ $totalPages }}</div>
+
+                        <div class="prescription-header">
+                            <div class="header-left">
+                                @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
+                                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
+                                @endif
+                                <div class="doctor-info">
+                                    <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
+                                    @if($prescription->doctorProfile->speciality)
+                                        <p><strong>{{ $prescription->doctorProfile->speciality }}</strong></p>
+                                    @endif
+                                    @if($prescription->doctorProfile->medical_license_number)
+                                        <p>Reg. Médico: {{ $prescription->doctorProfile->medical_license_number }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="header-right">
+                                @if($prescription->doctorProfile->facility)
+                                    <p>{{ $prescription->doctorProfile->facility }}</p>
+                                @endif
+                                @if($prescription->doctorProfile->phone)
+                                    <p>📞 {{ $prescription->doctorProfile->phone }}</p>
+                                @endif
+                                <div class="prescription-date">
+                                    {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
+                                    {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Título de medicamentos para páginas siguientes -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #2c5aa0; font-size: 14px; text-align: center; text-transform: uppercase; letter-spacing: 1px;">Rp/ MEDICACIÓN PRESCRITA (Continuación)</h3>
+                    </div>
+                @endif
+            @endwhile
+        </div>
+
+        <!-- Additional Notes -->
+        @if($prescription->additional_notes)
+        <div class="notes-section no-break">
+            <h4>NOTAS ADICIONALES:</h4>
+            <div class="notes-content">
+                {{ $prescription->additional_notes }}
+            </div>
+        </div>
+        @endif
+
+    <!-- Page Footer -->
+    <div class="page-footer">
         <div class="signature-section">
             @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
                 <img src="data:image/{{ pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature))) }}" alt="Firma" class="doctor-signature">
@@ -475,6 +572,10 @@
                 </div>
             @endif
         </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
         Esta receta médica fue generada digitalmente el {{ now()->format('d/m/Y H:i') }} |
         Receta N° {{ $prescription->prescription_number }}
     </div>
