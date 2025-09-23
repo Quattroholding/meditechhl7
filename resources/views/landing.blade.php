@@ -23,10 +23,10 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#inicio">INICIO</a></li>
-                <li><a href="#quienes-somos">QUIENES SOMOS</a></li>
-                <li><a href="#como-funciona">COMO FUNCIONA</a></li>
+                <li><a href="#what-is-section">QUIENES SOMOS</a></li>
+                <li><a href="#features-section">COMO FUNCIONA</a></li>
                 <li><a href="#planes">PLANES Y PRECIOS</a></li>
-                <li><a href="#contacto">CONTACTO</a></li>
+                <li><a href="#footer">CONTACTO</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
             {{--}}<button class="search-btn">
@@ -51,6 +51,9 @@
     <section class="hero" id="inicio">
         <div class="hero-background">
             <div class="hero-content">
+                <div class="hero-logo">
+                    <img src="{{ asset('landing/images/logo-letras.png') }}" alt="">
+                </div>
                 <div class="hero-text">
 
                     <p class="hero-subtitle">
@@ -73,7 +76,7 @@
     </section>
 
     <!-- What is Soluciones Meditec Section -->
-    <section class="what-is-section">
+    <section class="what-is-section" id="what-is-section">
         <div class="container">
             <div class="section-header">
                 <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Clínicas y centros médicos" class="logo-color">
