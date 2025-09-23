@@ -69,26 +69,26 @@ Route::middleware('auth:sanctum')->group(function () {
         // Doctor Profiles
         Route::apiResource('doctor-profiles', RecepyDoctorProfileController::class);
         Route::get('users/{userId}/doctor-profile', [RecepyDoctorProfileController::class, 'getByUser']);
-        
+
         // File Management for Doctor Profiles
         Route::post('doctor-profiles/upload-file', [RecepyDoctorProfileController::class, 'uploadFile']);
         Route::delete('doctor-profiles/delete-file', [RecepyDoctorProfileController::class, 'deleteFile']);
-        
+
         // Prescriptions
         Route::apiResource('prescriptions', RecepyPrescriptionController::class);
         Route::patch('prescriptions/{id}/status', [RecepyPrescriptionController::class, 'updateStatus']);
         Route::get('doctor-profiles/{doctorProfileId}/prescriptions', [RecepyPrescriptionController::class, 'getByDoctorProfile']);
-        
+
         // PDF Generation (original methods - use prescription's doctor profile)
         Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
         Route::get('prescriptions/{id}/pdf/stream', [RecepyPrescriptionController::class, 'streamPdf']);
         Route::get('prescriptions/{id}/pdf/url', [RecepyPrescriptionController::class, 'generatePdfUrl']);
-        
+
         // PDF Generation with custom doctor profile (receives doctor_profile_id parameter)
         Route::post('prescriptions/{id}/pdf/download-with-profile', [RecepyPrescriptionController::class, 'downloadPdfWithProfile']);
         Route::post('prescriptions/{id}/pdf/stream-with-profile', [RecepyPrescriptionController::class, 'streamPdfWithProfile']);
         Route::post('prescriptions/{id}/pdf/url-with-profile', [RecepyPrescriptionController::class, 'generatePdfUrlWithProfile']);
-        
+
         // Prescription Medications (nested under prescriptions)
         Route::prefix('prescriptions/{prescriptionId}/medications')->group(function () {
             Route::get('/', [RecepyPrescriptionMedicationController::class, 'index']);
@@ -98,7 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{medicationId}', [RecepyPrescriptionMedicationController::class, 'destroy']);
             Route::patch('/{medicationId}/toggle-active', [RecepyPrescriptionMedicationController::class, 'toggleActive']);
             Route::put('/order', [RecepyPrescriptionMedicationController::class, 'updateOrder']);
-            Route::put('/bulk-update', [RecepyPrescriptionMedicationController::class, 'bulkUpdate']);
+            Route::post('/bulk-update', [RecepyPrescriptionMedicationController::class, 'bulkUpdate']);
         });
     });
 });
