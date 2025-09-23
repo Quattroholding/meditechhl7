@@ -499,3 +499,43 @@ final response = await http.patch(
   body: jsonEncode({'status': 'completed'}),
 );
 ```
+
+### Generar PDF con Perfil Específico
+```dart
+// Generar URL del PDF con perfil de doctor específico
+final response = await http.post(
+  Uri.parse('https://tu-dominio.com/api/recepy/prescriptions/1/pdf/url-with-profile'),
+  headers: {
+    'Authorization': 'Bearer $token',
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: jsonEncode({
+    'doctor_profile_id': 2  // ID del perfil del doctor a usar
+  }),
+);
+
+if (response.statusCode == 200) {
+  final data = jsonDecode(response.body);
+  final pdfUrl = data['data']['pdf_url'];
+  // Usar URL para descargar o mostrar PDF
+}
+
+// Descarga directa con perfil específico
+final downloadResponse = await http.post(
+  Uri.parse('https://tu-dominio.com/api/recepy/prescriptions/1/pdf/download-with-profile'),
+  headers: {
+    'Authorization': 'Bearer $token',
+    'Content-Type': 'application/json',
+  },
+  body: jsonEncode({
+    'doctor_profile_id': 2
+  }),
+);
+
+// Guardar el PDF binario
+if (downloadResponse.statusCode == 200) {
+  final bytes = downloadResponse.bodyBytes;
+  // Guardar en dispositivo
+}
+```
