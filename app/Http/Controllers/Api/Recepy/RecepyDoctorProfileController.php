@@ -44,7 +44,8 @@ class RecepyDoctorProfileController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id|unique:recepy_doctor_profiles,user_id',
+            //'user_id' => 'required|exists:users,id|unique:recepy_doctor_profiles,user_id',
+            'user_id' => 'required|exists:users,id',
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'speciality' => 'nullable|string|max:100',
@@ -294,7 +295,7 @@ class RecepyDoctorProfileController extends Controller
             // Delete file if exists
             if ($profile->$fileType) {
                 Storage::disk('public')->delete($profile->$fileType);
-                
+
                 // Update profile to remove file reference
                 $profile->update([$fileType => null]);
             }
