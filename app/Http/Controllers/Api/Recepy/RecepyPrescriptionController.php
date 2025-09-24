@@ -13,13 +13,58 @@ use Illuminate\Support\Facades\DB;
 
 class RecepyPrescriptionController extends Controller
 {
+    /**
+     * Verificar si una prescripción pertenece al usuario autenticado
+     */
+    private function prescriptionBelongsToUser($prescription): bool
+    {
+        if (!$prescription) {
+            return false;
+        }
+
+        return RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->exists();
+    }
     public function index(Request $request): JsonResponse
     {
-        $query = RecepyPrescription::with(['doctorProfile.user', 'medications']);
+        // Solo mostrar prescripciones de los perfiles del doctor autenticado
+        $userDoctorProfileIds = RecepyDoctorProfile::where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->pluck('id');
 
-        // Filter by doctor profile if provided
+        if ($userDoctorProfileIds->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'data' => [],
+                    'current_page' => 1,
+                    'total' => 0
+                ]
+            ]);
+        }
+
+        $query = RecepyPrescription::with(['doctorProfile.user', 'medications'])
+            ->whereIn('doctor_profile_id', $userDoctorProfileIds);
+
+        // Filter by doctor profile if provided (but still within user's profiles)
         if ($request->has('doctor_profile_id')) {
-            $query->where('doctor_profile_id', $request->doctor_profile_id);
+            $requestedProfileId = $request->doctor_profile_id;
+            // Verificar que el profile solicitado pertenece al usuario
+            if ($userDoctorProfileIds->contains($requestedProfileId)) {
+                $query->where('doctor_profile_id', $requestedProfileId);
+            } else {
+                // Si solicita un perfil que no le pertenece, devolver vacío
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'data' => [],
+                        'current_page' => 1,
+                        'total' => 0
+                    ]
+                ]);
+            }
         }
 
         // Filter by status if provided
@@ -68,6 +113,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         return response()->json([
             'success' => true,
             'data' => $prescription
@@ -105,6 +158,19 @@ class RecepyPrescriptionController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Verificar que el doctor_profile_id pertenece al usuario autenticado
+        $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->first();
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no válido'
+            ], 403);
         }
 
         try {
@@ -154,6 +220,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'patient_name' => 'sometimes|required|string|max:255',
             'patient_document' => 'nullable|string|max:50',
@@ -196,6 +270,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         $prescription->delete();
 
         return response()->json([
@@ -209,6 +291,14 @@ class RecepyPrescriptionController extends Controller
         $prescription = RecepyPrescription::find($id);
 
         if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Receta no encontrada'
@@ -259,6 +349,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         try {
 
             if(request()->has('view')) return view('pdf.prescription', [
@@ -285,6 +383,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         try {
             return $pdfService->streamPdf($prescription);
         } catch (\Exception $e) {
@@ -300,6 +406,14 @@ class RecepyPrescriptionController extends Controller
         $prescription = RecepyPrescription::find($id);
 
         if (!$prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Receta no encontrada'
@@ -341,6 +455,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
             'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
@@ -352,6 +474,19 @@ class RecepyPrescriptionController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Verificar que el doctor_profile_id pertenece al usuario autenticado
+        $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->first();
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no válido'
+            ], 403);
         }
 
         try {
@@ -375,6 +510,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
             'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
@@ -386,6 +529,19 @@ class RecepyPrescriptionController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Verificar que el doctor_profile_id pertenece al usuario autenticado
+        $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->first();
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no válido'
+            ], 403);
         }
 
         try {
@@ -409,6 +565,14 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (!$this->prescriptionBelongsToUser($prescription)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Receta no encontrada'
+            ], 404);
+        }
+
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
             'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
@@ -420,6 +584,19 @@ class RecepyPrescriptionController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Verificar que el doctor_profile_id pertenece al usuario autenticado
+        $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->first();
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no válido'
+            ], 403);
         }
 
         try {

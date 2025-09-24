@@ -13,7 +13,9 @@ class RecepyDoctorProfileController extends Controller
 {
     public function index(): JsonResponse
     {
+        // Solo mostrar perfiles del usuario autenticado
         $profiles = RecepyDoctorProfile::with('user')
+            ->where('user_id', auth()->id())
             ->where('is_active', true)
             ->get();
 
@@ -26,7 +28,9 @@ class RecepyDoctorProfileController extends Controller
     public function show($id): JsonResponse
     {
         $profile = RecepyDoctorProfile::with(['user', 'prescriptions'])
-            ->find($id);
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if (!$profile) {
             return response()->json([
@@ -44,8 +48,7 @@ class RecepyDoctorProfileController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            //'user_id' => 'required|exists:users,id|unique:recepy_doctor_profiles,user_id',
-            'user_id' => 'required|exists:users,id',
+            // El user_id siempre será el del usuario autenticado
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'speciality' => 'nullable|string|max:100',
@@ -66,6 +69,8 @@ class RecepyDoctorProfileController extends Controller
         }
 
         $data = $validator->validated();
+        // Forzar el user_id al usuario autenticado
+        $data['user_id'] = auth()->id();
 
         // Handle file uploads
         if ($request->hasFile('logo')) {
@@ -92,7 +97,9 @@ class RecepyDoctorProfileController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $profile = RecepyDoctorProfile::find($id);
+        $profile = RecepyDoctorProfile::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if (!$profile) {
             return response()->json([
@@ -156,7 +163,9 @@ class RecepyDoctorProfileController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $profile = RecepyDoctorProfile::find($id);
+        $profile = RecepyDoctorProfile::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if (!$profile) {
             return response()->json([
@@ -184,10 +193,21 @@ class RecepyDoctorProfileController extends Controller
         ]);
     }
 
-    public function getByUser($userId): JsonResponse
+    public function getByUser($userId = null): JsonResponse
     {
+        // Si no se proporciona userId, usar el del usuario autenticado
+        // Si se proporciona, verificar que sea el mismo que el autenticado
+        $targetUserId = $userId ?? auth()->id();
+
+        if ($userId && $userId != auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No autorizado para acceder a este perfil'
+            ], 403);
+        }
+
         $profile = RecepyDoctorProfile::with('user')
-            ->where('user_id', $userId)
+            ->where('user_id', $targetUserId)
             ->where('is_active', true)
             ->first();
 
@@ -220,7 +240,9 @@ class RecepyDoctorProfileController extends Controller
             ], 422);
         }
 
-        $profile = RecepyDoctorProfile::find($request->doctor_profile_id);
+        $profile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if (!$profile) {
             return response()->json([
@@ -280,7 +302,9 @@ class RecepyDoctorProfileController extends Controller
             ], 422);
         }
 
-        $profile = RecepyDoctorProfile::find($request->doctor_profile_id);
+        $profile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if (!$profile) {
             return response()->json([
