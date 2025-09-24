@@ -18,7 +18,7 @@ body {
     color: #333;
 }
 section[id] {
-    scroll-margin-top: 80px;
+    scroll-margin-top: 70px;
 }
 h1, h2, h3, .logo {
     font-family: 'Montserrat', sans-serif;

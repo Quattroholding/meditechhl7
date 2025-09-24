@@ -25,8 +25,7 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
-                <li><a href="#planes">PLANES Y PRECIOS</a></li>
-                <li><a href="#footer">CONTACTO</a></li>
+                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
             {{--}}<button class="search-btn">
@@ -144,46 +143,46 @@
     </section>
 
     <!-- Key Features Section -->
-    <section class="features-section">
+    <section class="features-section" id="features-section">
         <div class="container">
             <h2>Funcionalidades clave</h2>
 
             <div class="key-features-grid">
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-1.png') }}" alt="Registros digitales" class="key-feature-icon">
-                    <h3>Registro médico digital centralizado</h3>
-                    <p>Almacena, consulta y gestiona el historial médico del paciente con facilidad y precisión.</p>
+                    <h3>Historia clínica digital centralizada</h3>
+                    <p>Consulta, actualiza y gestiona el historial médica de cada paciente con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-2.png') }}" alt="Programación inteligente" class="key-feature-icon">
-                    <h3>Programación inteligente</h3>
+                    <h3>Directorio médico inteligente</h3>
                     <p>Optimiza consulta y organiza la agenda médica automáticamente con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-3.png') }}" alt="Cumplimiento y seguridad" class="key-feature-icon">
-                    <h3>Cumplimiento y seguridad</h3>
-                    <p>Protege la privacidad del paciente cumpliendo con estándares médicos y administrativos desde un solo lugar.</p>
+                    <h3>Gestión de citas y personal</h3>
+                    <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
                 </div>
 
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-4.png') }}" alt="Reportes y métricas" class="key-feature-icon">
                     <h3>Reportes y métricas</h3>
-                    <p>Genera informes personalizados que facilitan el seguimiento de pacientes, indicadores de atención y reportes estadísticos para facilitar la toma de decisiones estratégicas.</p>
+                    <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados que facilita la toma de decisiones clínicas y administrativas.</p>
                 </div>
 
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-5.png') }}" alt="Multidispositivo" class="key-feature-icon">
                     <h3>Multidispositivo</h3>
-                    <p>Accede desde donde estés <br/> No requiere instalaciones complejas , solo conexión a internet.</p>
+                    <p>Accede desde donde estés <br/> No requiere instalaciones complejas, solo conexión a internet.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Why Choose Section -->
-    <section class="why-choose-section">
+    <section class="why-choose-section" id="why-choose-section">
         <div class="container">
             <div class="why-choose-header">
                 <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
@@ -194,7 +193,7 @@
 
             <div class="benefits-list">
                 <div class="benefit-item">
-                    <span class="benefit-text">Mayor control y organizativa</span>
+                    <span class="benefit-text">Mayor control y organización</span>
                 </div>
                 <div class="benefit-item">
                     <span class="benefit-text">Datos seguros y siempre disponibles</span>
