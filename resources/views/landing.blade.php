@@ -50,6 +50,7 @@
     <!-- Hero Section -->
     <section class="hero" id="inicio">
         <div class="hero-background">
+            <div class="container">
             <div class="hero-content">
                 <div class="hero-logo">
                     <img src="{{ asset('landing/images/logo-letras.png') }}" alt="">
@@ -71,7 +72,7 @@
                         <div class="medical-cross cross-3">+</div>
                     </div>
                 </div>--->
-            </div>
+            </div></div>
         </div>
     </section>
 
