@@ -595,7 +595,7 @@ h1, h2, h3, .logo {
 }
     /* mobile menu */
     .off-screen-menu {
-        background-color: #000000bc;
+        background: linear-gradient(135deg, #2d1b69a1 20%, #1e3b8ab0 50%);
         height: 100vh;
         width: 100%;
         max-width: 450px;
