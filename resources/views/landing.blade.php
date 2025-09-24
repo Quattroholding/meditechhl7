@@ -37,10 +37,9 @@
         <div class="off-screen-menu">
             <ul class="nav-mobile">
                 <li><a href="#inicio">INICIO</a></li>
-                <li><a href="#quienes-somos">QUIENES SOMOS</a></li>
-                <li><a href="#como-funciona">COMO FUNCIONA</a></li>
-                <li><a href="#planes">PLANES Y PRECIOS</a></li>
-                <li><a href="#contacto">CONTACTO</a></li>
+                <li><a href="#what-is-section">QUIENES SOMOS</a></li>
+                <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
         </div>
