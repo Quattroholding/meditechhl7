@@ -239,6 +239,13 @@
             hamMenu.classList.toggle('active');
             offScreenMenu.classList.toggle('active');
         })
+        const menuLinks = document.querySelectorAll('.nav-mobile a[href^="#"]');
+        menuLinks.forEach(menuLinks => {
+            menuLinks.addEventListener("click", function () {
+                hamMenu.classList.remove('active');
+                offScreenMenu.classList.remove('active');
+            })
+        })
 
                // Función para manejar el scroll del navbar
         function handleNavbarScroll() {
