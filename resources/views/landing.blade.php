@@ -11,7 +11,7 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
+    <header class="header" id="header">
         <nav class="nav">
             <div class="ham-menu">
                 <span></span>
@@ -241,6 +241,41 @@
             hamMenu.classList.toggle('active');
             offScreenMenu.classList.toggle('active');
         })
+
+               // Función para manejar el scroll del navbar
+        function handleNavbarScroll() {
+            const navbar = document.getElementById('header');
+            const heroSection = document.getElementById('inicio');
+            const heroHeight = heroSection.offsetHeight;
+            const scrollY = window.scrollY;
+
+            // Si el scroll supera la altura de la primera sección
+    if (scrollY > heroHeight - 100) { // -100px para que el cambio sea más suave
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+        }
+
+        // Agregar el event listener para el scroll
+        window.addEventListener('scroll', handleNavbarScroll);
+
+        // Smooth scrolling para los enlaces del menú
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Llamar la función al cargar la página por si ya hay scroll
+        handleNavbarScroll();
     </script>
 </body>
 </html>

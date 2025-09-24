@@ -32,14 +32,24 @@ h1, h2, h3, .logo {
 
 /* Header Styles */
 .header {
-    background: linear-gradient(135deg, #2D1B69 0%, #1E3A8A 100%);
+    /*background: linear-gradient(135deg, #2D1B69 0%, #1E3A8A 100%);*/
+    background: transparent;
     padding: 1rem 0;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; /*nuevo*/
+    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);*/
 }
+/* NUEVO: Estado con scroll - fondo visible */
+.header.scrolled {
+    background: linear-gradient(135deg, #2D1B69 0%, #1E3A8A 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0; /* Ligeramente menos padding cuando tiene fondo */
+}
+
 
 .logo-header {
     margin-left: auto;
@@ -49,6 +59,7 @@ h1, h2, h3, .logo {
 .nav {
     display: flex;
     justify-content: space-between;
+    background: transparent;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
@@ -82,6 +93,7 @@ h1, h2, h3, .logo {
 
 .nav-menu a {
     color: white;
+    position: relative;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.9rem;
@@ -89,7 +101,21 @@ h1, h2, h3, .logo {
 }
 
 .nav-menu a:hover {
-    color:#0c9547;
+    transform: translateY(-2px);
+}
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: white;
+    transition: width 0.3s ease;
+    }
+
+.nav-menu a:hover::after {
+    width: 100%;
 }
 
 .search-btn {
@@ -126,7 +152,7 @@ h1, h2, h3, .logo {
     align-items: center;
     position: relative;
     overflow: hidden;
-    margin-top: 80px;
+    /*margin-top: 80px;*/
 }
 
 .hero-background {
@@ -671,15 +697,21 @@ h1, h2, h3, .logo {
 }
 @media (min-width: 1401px) and (max-width: 1600px) {
     .hero-logo img {
-        width: 600px;
-        height: 300px;
+        width: 450px;
+        height: 225px;
+    }
+    .hero-content {
+      margin-bottom: 200px;
     }
 
 }
-@media (min-width: 1300px) and (max-width: 1400px) {
+@media (max-width: 1400px) {
     .hero-logo img {
-        width: 550px;
-        height: 275px;
+        width: 400px;
+        height: 200px;
+    }
+    .hero-content {
+        margin-bottom: 150px;
     }
 
 }
@@ -714,8 +746,8 @@ h1, h2, h3, .logo {
         flex-direction: column;
         text-align: center;
         gap: 0.5rem;
-        margin: 4rem 0 0 0;
         padding: 0 40px;
+        margin-bottom: 300px;
     }
 
     .hero-title {
@@ -724,14 +756,14 @@ h1, h2, h3, .logo {
 
     .hero-subtitle{
         font-size: 1.2rem;
+        margin: 0;
+        width: 150px;
+        text-align: left;
     }
 
-    .hero-logo {
-        height: 120px;
-    }
     .hero-logo  img{
-        width: 300px;
-        height: 150px;
+        width: 350px;
+        height: 175px;
     }
     
     .section-header h2,
@@ -912,11 +944,8 @@ h1, h2, h3, .logo {
     }
     .hero-content{
         align-items: center;
-        margin-bottom: 32rem;
+        margin-bottom: 27rem;
         margin-top: 0;
-    }
-    .hero-logo {
-     
     }
     .hero-logo img{
         width: 200px;
