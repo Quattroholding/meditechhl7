@@ -11,7 +11,7 @@ use App\Models\User;
 class RecepyDoctorProfile extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'recepy_doctor_profiles';
 
     protected $fillable = [
@@ -25,6 +25,7 @@ class RecepyDoctorProfile extends Model
         'signature',
         'seal',
         'medical_license_number',
+        'medical_code_number',
         'is_active'
     ];
 

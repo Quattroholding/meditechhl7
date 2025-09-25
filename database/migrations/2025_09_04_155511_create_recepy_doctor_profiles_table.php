@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('signature')->nullable(); // Ruta de la firma digital
             $table->text('seal')->nullable(); // Ruta del sello
             $table->string('medical_license_number')->nullable(); // Número de registro médico
+            $table->string('medical_code_number',35)->nullable(); // Número de registro médico
             $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();

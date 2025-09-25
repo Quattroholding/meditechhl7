@@ -327,6 +327,19 @@ class RecepyPrescriptionController extends Controller
 
     public function getByDoctorProfile($doctorProfileId): JsonResponse
     {
+        // Verificar que el doctor_profile_id pertenece al usuario autenticado
+        $doctorProfile = RecepyDoctorProfile::where('id', $doctorProfileId)
+            ->where('user_id', auth()->id())
+            ->where('is_active', true)
+            ->first();
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil de doctor no encontrado'
+            ], 404);
+        }
+
         $prescriptions = RecepyPrescription::with(['medications'])
             ->where('doctor_profile_id', $doctorProfileId)
             ->orderBy('prescription_date', 'desc')

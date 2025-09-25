@@ -55,6 +55,7 @@ class RecepyDoctorProfileController extends Controller
             'facility' => 'nullable|string|max:100',
             'email' => 'nullable|email',
             'medical_license_number' => 'nullable|string',
+            'medical_code_number' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'seal' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
