@@ -960,6 +960,16 @@ h1, h2, h3, .logo {
         height: 100px;
     }
 
+    .feature-number {
+        margin-right: 0;
+    }
+
+    .audience-section h2,
+    .features-section h2 {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .section-header h2,
     .audience-section h2,
     .features-section h2,
@@ -1015,7 +1025,7 @@ h1, h2, h3, .logo {
     .section-header h2,
     .why-choose-section h2,
     .benefit-item{
-        text-align: center;
+        text-align: justify;
     }
     .logo-blanco,
     .logo-color {
