@@ -669,6 +669,14 @@ h1, h2, h3, .logo {
     font-size: 1.1rem;
 }
 
+.contact-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5rem;
+    justify-content: center;
+}
+
 .footer-contact p:first-child {
     font-weight: 400;
     margin-bottom: 1rem;
@@ -711,7 +719,7 @@ h1, h2, h3, .logo {
         height: 200px;
     }
     .hero-content {
-        margin-bottom: 150px;
+        margin-bottom: 120px;
     }
 
 }
@@ -747,7 +755,7 @@ h1, h2, h3, .logo {
         text-align: center;
         gap: 0.5rem;
         padding: 0 40px;
-        margin-bottom: 300px;
+        margin-bottom: 200px;
     }
 
     .hero-title {
@@ -944,12 +952,22 @@ h1, h2, h3, .logo {
     }
     .hero-content{
         align-items: center;
-        margin-bottom: 27rem;
+        margin-bottom: 18rem;
         margin-top: 0;
     }
     .hero-logo img{
         width: 200px;
         height: 100px;
+    }
+
+    .feature-number {
+        margin-right: 0;
+    }
+
+    .audience-section h2,
+    .features-section h2 {
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .section-header h2,
@@ -1007,7 +1025,7 @@ h1, h2, h3, .logo {
     .section-header h2,
     .why-choose-section h2,
     .benefit-item{
-        text-align: center;
+        text-align: justify;
     }
     .logo-blanco,
     .logo-color {
@@ -1036,5 +1054,53 @@ h1, h2, h3, .logo {
     }
     .benefits-list {
         padding: 0;
+    }
+}
+@media (max-width: 446px) {
+    .benefit-text {
+        padding: 5px;
+    }
+    .contact-info {
+        flex-direction: column;
+        gap: 0;
+    }
+    .contact-email, .contact-phone {
+        margin-bottom: 0 !important;
+    }
+}
+@media (max-width: 418px) {
+    .benefit-text {
+        padding: 3px;
+        font-size: 0.8rem;
+    }
+
+}
+@media (max-width: 376px) {
+    .benefit-text {
+        background: transparent;
+        padding: 0%;
+    }
+    .benefit-item {
+        background: #00a0d0;
+        border-radius: 15px;
+        padding: 5px;
+    }
+    .benefits-list {
+        align-items: center;
+    }
+
+}
+
+@media (max-width: 338px) {
+
+    .why-choose-header, .section-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .logo-blanco{
+        max-width: 50px;
+        max-height: 50px;
     }
 }
