@@ -711,7 +711,7 @@ h1, h2, h3, .logo {
         height: 200px;
     }
     .hero-content {
-        margin-bottom: 150px;
+        margin-bottom: 120px;
     }
 
 }
@@ -747,7 +747,7 @@ h1, h2, h3, .logo {
         text-align: center;
         gap: 0.5rem;
         padding: 0 40px;
-        margin-bottom: 300px;
+        margin-bottom: 200px;
     }
 
     .hero-title {
@@ -944,7 +944,7 @@ h1, h2, h3, .logo {
     }
     .hero-content{
         align-items: center;
-        margin-bottom: 27rem;
+        margin-bottom: 18rem;
         margin-top: 0;
     }
     .hero-logo img{
@@ -1036,5 +1036,18 @@ h1, h2, h3, .logo {
     }
     .benefits-list {
         padding: 0;
+    }
+}
+@media (max-width: 446px) {
+    .benefit-text {
+        font-size: 0.85rem;
+    }
+}
+@media (max-width: 338px) {
+
+    .why-choose-header, .section-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
