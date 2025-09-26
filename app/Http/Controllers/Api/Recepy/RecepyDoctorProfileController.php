@@ -73,26 +73,17 @@ class RecepyDoctorProfileController extends Controller
         // Forzar el user_id al usuario autenticado
         $data['user_id'] = auth()->id();
 
-        // Handle file uploads preserving original extensions
+        // Handle file uploads
         if ($request->hasFile('logo')) {
-            $logoFile = $request->file('logo');
-            $logoExtension = $logoFile->getClientOriginalExtension();
-            $logoFilename = uniqid() . '.' . $logoExtension;
-            $data['logo'] = $logoFile->storeAs('recepy/logos', $logoFilename, 'public');
+            $data['logo'] = $request->file('logo')->store('recepy/logos', 'public');
         }
 
         if ($request->hasFile('signature')) {
-            $signatureFile = $request->file('signature');
-            $signatureExtension = $signatureFile->getClientOriginalExtension();
-            $signatureFilename = uniqid() . '.' . $signatureExtension;
-            $data['signature'] = $signatureFile->storeAs('recepy/signatures', $signatureFilename, 'public');
+            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'public');
         }
 
         if ($request->hasFile('seal')) {
-            $sealFile = $request->file('seal');
-            $sealExtension = $sealFile->getClientOriginalExtension();
-            $sealFilename = uniqid() . '.' . $sealExtension;
-            $data['seal'] = $sealFile->storeAs('recepy/seals', $sealFilename, 'public');
+            $data['seal'] = $request->file('seal')->store('recepy/seals', 'public');
         }
 
         $profile = RecepyDoctorProfile::create($data);
@@ -139,35 +130,26 @@ class RecepyDoctorProfileController extends Controller
 
         $data = $validator->validated();
 
-        // Handle file uploads and delete old files preserving original extensions
+        // Handle file uploads and delete old files
         if ($request->hasFile('logo')) {
             if ($profile->logo) {
                 Storage::disk('public')->delete($profile->logo);
             }
-            $logoFile = $request->file('logo');
-            $logoExtension = $logoFile->getClientOriginalExtension();
-            $logoFilename = uniqid() . '.' . $logoExtension;
-            $data['logo'] = $logoFile->storeAs('recepy/logos', $logoFilename, 'public');
+            $data['logo'] = $request->file('logo')->store('recepy/logos', 'public');
         }
 
         if ($request->hasFile('signature')) {
             if ($profile->signature) {
                 Storage::disk('public')->delete($profile->signature);
             }
-            $signatureFile = $request->file('signature');
-            $signatureExtension = $signatureFile->getClientOriginalExtension();
-            $signatureFilename = uniqid() . '.' . $signatureExtension;
-            $data['signature'] = $signatureFile->storeAs('recepy/signatures', $signatureFilename, 'public');
+            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'public');
         }
 
         if ($request->hasFile('seal')) {
             if ($profile->seal) {
                 Storage::disk('public')->delete($profile->seal);
             }
-            $sealFile = $request->file('seal');
-            $sealExtension = $sealFile->getClientOriginalExtension();
-            $sealFilename = uniqid() . '.' . $sealExtension;
-            $data['seal'] = $sealFile->storeAs('recepy/seals', $sealFilename, 'public');
+            $data['seal'] = $request->file('seal')->store('recepy/seals', 'public');
         }
 
         $profile->update($data);
@@ -279,10 +261,8 @@ class RecepyDoctorProfileController extends Controller
                 Storage::disk('public')->delete($profile->$fileType);
             }
 
-            // Store new file preserving original extension
-            $originalExtension = $file->getClientOriginalExtension();
-            $filename = uniqid() . '.' . $originalExtension;
-            $path = $file->storeAs("recepy/{$fileType}s", $filename, 'public');
+            // Store new file
+            $path = $file->store("recepy/{$fileType}s", 'public');
 
             // Update profile
             $profile->update([$fileType => $path]);
