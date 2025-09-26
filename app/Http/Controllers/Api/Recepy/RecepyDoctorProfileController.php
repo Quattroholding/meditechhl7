@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Recepy\RecepyDoctorProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -256,6 +257,10 @@ class RecepyDoctorProfileController extends Controller
             $fileType = $request->file_type;
             $file = $request->file('file');
 
+            $ext = $file->getClientOriginalExtension();
+            Log::info("La info del archivo antes de subir es :".$file->getBasename());
+            Log::info($file->getFileInfo());
+            Log::info("La extension del archivo antes de subir es :".$ext);
             // Delete old file if exists
             if ($profile->$fileType) {
                 Storage::disk('public')->delete($profile->$fileType);
