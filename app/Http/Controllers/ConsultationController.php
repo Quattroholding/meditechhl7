@@ -43,7 +43,7 @@ class ConsultationController extends Controller
                 'patient_id' => $appointment->patient_id,
                 'practitioner_id' => $appointment->practitioner_id,
                 'appointment_id' => $appointment->id,
-                'identifier' => 'ENC-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'ENC-'.strtoupper(Str::random(7)),
                 'status' => 'in-progress',
                 'class' => 'SS',
                 'type' => $type,

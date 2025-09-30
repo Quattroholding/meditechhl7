@@ -232,7 +232,7 @@ class ModalSave extends Component
             $minutes = (int) $this->duration;
             $appointmentData = [
                 'fhir_id' => 'appointment-'.Str::uuid(),
-                'identifier' => 'APT-'.Str::random(7),
+                'identifier' => 'APT-'.strtoupper(Str::random(7)),
                 'patient_id' => $this->patient_id,
                 'practitioner_id' => $this->doctor_id,
                 'client_id' => $client_id,
