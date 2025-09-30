@@ -356,7 +356,7 @@ class RecepyPrescriptionController extends Controller
         ]);
     }
 
-    public function downloadPdf($id, PrescriptionPdfService $pdfService)
+    public function downloadPdf($id, Request $request, PrescriptionPdfService $pdfService)
     {
         $prescription = RecepyPrescription::find($id);
 
@@ -367,17 +367,51 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
-        // Verificar que la prescripción pertenece al usuario autenticado
-        if (! $this->prescriptionBelongsToUser($prescription)) {
+        // Validate Bearer token from request
+        $token = $request->bearerToken();
+
+        if (! $token) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada',
-            ], 404);
+                'message' => 'Token de autenticación requerido',
+            ], 401);
+        }
+
+        // Find user by token (Sanctum personal access token)
+        $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+
+        if (! $personalAccessToken) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token inválido o expirado',
+            ], 401);
+        }
+
+        $user = $personalAccessToken->tokenable;
+
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado',
+            ], 401);
+        }
+
+        // Verificar que la prescripción pertenece al usuario del token
+        $belongsToUser = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
+            ->where('user_id', $user->id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (! $belongsToUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tiene permiso para acceder a esta receta',
+            ], 403);
         }
 
         try {
 
-            if (request()->has('view')) {
+            if ($request->has('view')) {
                 return view('pdf.prescription', [
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,

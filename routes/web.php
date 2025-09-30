@@ -470,9 +470,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
         ->name('recepy.prescription.pdf');
 
-    Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
-
 });
+
+// Public Prescription PDF Download with Token Authentication
+Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
 
 // Survey Routes
 Route::middleware(['auth', 'first.login', 'permission:surveys.view'])->group(function () {

@@ -13,7 +13,13 @@
                     <td>{{$mp->dosage_text}}</td>
                 @else
                     <td>{{$mp->medication}}</td>
-                    <td>{{$mp->dosage_instruction}}</td>
+                    <td>
+                        @if(is_array($mp->dosage_instruction))
+                          {{$mp->dosage_instruction['text']}}
+                        @else
+                            {{$mp->dosage_instruction}}
+                        @endif
+                    </td>
                 @endif
             </tr>
         @endforeach
