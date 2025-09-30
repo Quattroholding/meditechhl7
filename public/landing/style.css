@@ -1013,8 +1013,8 @@ body.loaded .hero {
     }
     .hero-content{
         align-items: center;
-        margin-bottom: 18rem;
-        margin-top: 0;
+        margin-bottom: 10rem;
+        margin-top: 5rem;
     }
     .hero-logo img{
         width: 200px;
