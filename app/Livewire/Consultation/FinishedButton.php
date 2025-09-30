@@ -181,9 +181,9 @@ class FinishedButton extends Component
                 $missingFields[] = 'motivo de referencia';
             }
 
-            if (empty($referral->referred_to_id)) {
+            /*if (empty($referral->referred_to_id)) {
                 $missingFields[] = 'especialista asignado';
-            }
+            }*/
 
             if (! empty($missingFields)) {
                 $specialtyName = $referral->speciality->name ?? 'Especialidad desconocida';

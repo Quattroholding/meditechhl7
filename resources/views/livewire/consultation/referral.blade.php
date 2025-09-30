@@ -38,7 +38,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="sprite-trash-container" ani="1" style="cursor:pointer" onclick="remove_multivalue_item_value()">
+                    <div class="sprite-trash-container" ani="1" style="cursor:pointer" wire:click="delete({{$s->id}})">
                         <div class="sprite-trash"></div>
                         <div>Borrar</div>
                     </div>

@@ -91,6 +91,11 @@ class PatientRelationship extends BaseModel
         return $this->belongsTo(Patient::class);
     }
 
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'patient_clients','patient_id');
+    }
+
     public function relatedPatient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'related_patient_id');

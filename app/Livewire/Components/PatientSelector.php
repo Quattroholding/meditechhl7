@@ -54,8 +54,7 @@ class PatientSelector extends Component
     public function searchPatients()
     {
         $this->patients = Patient::where(function ($query) {
-            $query->where('given_name', 'like', '%'.$this->searchTerm.'%')
-                ->orWhere('family_name', 'like', '%'.$this->searchTerm.'%')
+            $query->where('name', 'like', '%'.$this->searchTerm.'%')
                 ->orWhere('identifier', 'like', '%'.$this->searchTerm.'%');
         })
             ->limit(10)

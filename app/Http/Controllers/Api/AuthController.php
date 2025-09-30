@@ -104,6 +104,7 @@ class AuthController extends Controller
                 $user->default_client_id = 1;
             }
             $user->save();
+            $user->clients()->sync(['client_id' => 1, 'created_at' => now()->format('Y-m-d H:i:s'), 'updated_at' => now()->format('Y-m-d H:i:s'), 'user_id' =>1]);
         }
 
         // Asignar rol según el tipo de usuario
@@ -117,13 +118,17 @@ class AuthController extends Controller
 
             if (! $practitioner) {
                 // Crear practitioner
+                $prefix = 'Dr. ';
+                if ($request->gender == 'female') {
+                    $prefix = 'Dra. ';
+                }
                 $practitioner = Practitioner::create([
                     'user_id' => $user->id,
                     'identifier' => $request->identifier,
                     'identifier_type' => $request->identifier_type,
                     'given_name' => $request->given_name,
                     'family_name' => $request->family_name,
-                    'name' => $request->given_name.' '.$request->family_name,
+                    'name' => $prefix.$request->given_name.' '.$request->family_name,
                     'email' => $request->email,
                     'phone' => $request->phone,
                     'birth_date' => $request->birth_date,

@@ -22,7 +22,8 @@ class BaseModel extends Model
 
             if (count($changes) > 0) {
                 foreach ($changes as $attr => $value) {
-                    if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION'])) {
+                    if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION']) && !is_array($model->$attr) && !is_array($model->getOriginal($attr))) {
+
                         $accion = "Se modifico la columna ($attr) : de [{$model->getOriginal($attr)}] a [{$model->$attr}]";
                         $user_id = User::first()->id;
                         $user_name = 'Administrador Del Sistema';

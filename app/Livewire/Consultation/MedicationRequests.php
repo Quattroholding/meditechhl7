@@ -170,7 +170,7 @@ class MedicationRequests extends Component
 
         $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
         $medicine_type = '';
-        if ($requestMedicine) {
+        if ($requestMedicine->medicine) {
             $medicine_type = $requestMedicine->medicine->type;
         }
 
@@ -197,7 +197,12 @@ class MedicationRequests extends Component
         foreach ($selectedMedications as $medication) {
             // Verificar si el medicamento ya existe en la receta actual
             $existingMedication = $this->encounter->medicationRequests()
-                ->where('medication_id', $medication['medication_id'])
+                ->when(!empty($medication['medication_id']),function ($query) use ($medication) {
+                    return $query->where('medication_id', $medication['medication_id']);
+                })
+                ->when(!empty($medication['medication']),function ($query) use ($medication) {
+                    return $query->where('medication', $medication['medication']);
+                })
                 ->first();
 
             if (! $existingMedication) {
@@ -208,6 +213,7 @@ class MedicationRequests extends Component
                     'status' => 'active',
                     'intent' => 'order',
                     'medication_id' => $medication['medication_id'],
+                    'medication' => $medication['medication'],
                     'quantity' => $medication['quantity'],
                     'frequency' => $medication['frequency'],
                     'duration' => $medication['duration'],
