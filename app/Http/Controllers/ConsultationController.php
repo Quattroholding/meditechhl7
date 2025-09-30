@@ -39,7 +39,7 @@ class ConsultationController extends Controller
         } // consulta de especialidad
 
         if (! $consultation) {
-            $consultation = Encounter::create(['fhir_id' => 'encounter-'.fake()->uuid(),
+            $consultation = Encounter::create(['fhir_id' => 'encounter-'.Str::uuid(),
                 'patient_id' => $appointment->patient_id,
                 'practitioner_id' => $appointment->practitioner_id,
                 'appointment_id' => $appointment->id,
