@@ -2,11 +2,11 @@
 
 namespace App\Models\Recepy;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 
 class RecepyDoctorProfile extends Model
 {
@@ -26,7 +26,8 @@ class RecepyDoctorProfile extends Model
         'seal',
         'medical_license_number',
         'medical_code_number',
-        'is_active'
+        'is_active',
+        'recepy_background_color',
     ];
 
     protected $casts = [

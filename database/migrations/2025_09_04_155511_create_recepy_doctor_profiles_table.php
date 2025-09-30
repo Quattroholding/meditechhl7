@@ -16,15 +16,16 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('logo')->nullable(); // Ruta del logo de la receta
             $table->text('address')->nullable(); // Dirección del médico
-            $table->string('speciality',100)->nullable(); // Especialidad medica
-            $table->string('facility',100)->nullable(); // Centro médico
+            $table->string('speciality', 100)->nullable(); // Especialidad medica
+            $table->string('facility', 100)->nullable(); // Centro médico
             $table->string('phone', 20)->nullable(); // Teléfono
             $table->string('email')->nullable(); // Email del médico
             $table->text('signature')->nullable(); // Ruta de la firma digital
             $table->text('seal')->nullable(); // Ruta del sello
             $table->string('medical_license_number')->nullable(); // Número de registro médico
-            $table->string('medical_code_number',35)->nullable(); // Número de registro médico
+            $table->string('medical_code_number', 35)->nullable(); // Número de registro médico
             $table->boolean('is_active')->default(true);
+            $table->string('recepy_background_color', 30)->default('FFFFFF');
             $table->softDeletes();
             $table->timestamps();
 

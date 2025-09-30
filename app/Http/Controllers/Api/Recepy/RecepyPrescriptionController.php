@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api\Recepy;
 
 use App\Http\Controllers\Controller;
-use App\Models\Recepy\RecepyPrescription;
 use App\Models\Recepy\RecepyDoctorProfile;
+use App\Models\Recepy\RecepyPrescription;
 use App\Services\PrescriptionPdfService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class RecepyPrescriptionController extends Controller
 {
@@ -18,7 +19,7 @@ class RecepyPrescriptionController extends Controller
      */
     private function prescriptionBelongsToUser($prescription): bool
     {
-        if (!$prescription) {
+        if (! $prescription) {
             return false;
         }
 
@@ -27,6 +28,7 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->exists();
     }
+
     public function index(Request $request): JsonResponse
     {
         // Solo mostrar prescripciones de los perfiles del doctor autenticado
@@ -40,8 +42,8 @@ class RecepyPrescriptionController extends Controller
                 'data' => [
                     'data' => [],
                     'current_page' => 1,
-                    'total' => 0
-                ]
+                    'total' => 0,
+                ],
             ]);
         }
 
@@ -61,8 +63,8 @@ class RecepyPrescriptionController extends Controller
                     'data' => [
                         'data' => [],
                         'current_page' => 1,
-                        'total' => 0
-                    ]
+                        'total' => 0,
+                    ],
                 ]);
             }
         }
@@ -86,16 +88,16 @@ class RecepyPrescriptionController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('patient_name', 'like', "%{$search}%")
-                  ->orWhere('prescription_number', 'like', "%{$search}%");
+                    ->orWhere('prescription_number', 'like', "%{$search}%");
             });
         }
 
         $prescriptions = $query->orderBy('prescription_date', 'desc')
-                              ->paginate(5);
+            ->paginate(5);
 
         return response()->json([
             'success' => true,
-            'data' => $prescriptions
+            'data' => $prescriptions,
         ]);
     }
 
@@ -103,27 +105,27 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::with([
             'doctorProfile.user',
-            'activeMedications'
+            'activeMedications',
         ])->find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $prescription
+            'data' => $prescription,
         ]);
     }
 
@@ -133,6 +135,7 @@ class RecepyPrescriptionController extends Controller
             'doctor_profile_id' => 'required|exists:recepy_doctor_profiles,id',
             'patient_name' => 'required|string|max:255',
             'patient_document' => 'nullable|string|max:50',
+            'patient_age' => 'nullable|integer|max:110',
             'patient_birth_date' => 'nullable|date',
             'patient_gender' => 'nullable|in:M,F,O',
             'patient_address' => 'nullable|string',
@@ -156,7 +159,7 @@ class RecepyPrescriptionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -166,10 +169,10 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no válido'
+                'message' => 'Perfil de doctor no válido',
             ], 403);
         }
 
@@ -197,14 +200,15 @@ class RecepyPrescriptionController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Receta creada exitosamente',
-                'data' => $prescription
+                'data' => $prescription,
             ], 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear la receta: ' . $e->getMessage()
+                'message' => 'Error al crear la receta: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -213,24 +217,25 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         $validator = Validator::make($request->all(), [
             'patient_name' => 'sometimes|required|string|max:255',
             'patient_document' => 'nullable|string|max:50',
+            'patient_age' => 'nullable|integer|max:110',
             'patient_birth_date' => 'nullable|date',
             'patient_gender' => 'nullable|in:M,F,O',
             'patient_address' => 'nullable|string',
@@ -245,7 +250,7 @@ class RecepyPrescriptionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -255,7 +260,7 @@ class RecepyPrescriptionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Receta actualizada exitosamente',
-            'data' => $prescription
+            'data' => $prescription,
         ]);
     }
 
@@ -263,18 +268,18 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -282,7 +287,7 @@ class RecepyPrescriptionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Receta eliminada exitosamente'
+            'message' => 'Receta eliminada exitosamente',
         ]);
     }
 
@@ -290,29 +295,29 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:active,completed,cancelled'
+            'status' => 'required|in:active,completed,cancelled',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Estado inválido'
+                'message' => 'Estado inválido',
             ], 422);
         }
 
@@ -321,7 +326,7 @@ class RecepyPrescriptionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Estado de receta actualizado exitosamente',
-            'data' => $prescription
+            'data' => $prescription,
         ]);
     }
 
@@ -333,10 +338,10 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
@@ -347,7 +352,7 @@ class RecepyPrescriptionController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $prescriptions
+            'data' => $prescriptions,
         ]);
     }
 
@@ -355,32 +360,35 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         try {
 
-            if(request()->has('view')) return view('pdf.prescription', [
-                'prescription' => $prescription
-            ]);
+            if (request()->has('view')) {
+                return view('pdf.prescription', [
+                    'prescription' => $prescription,
+                    'pdfService' => $pdfService,
+                ]);
+            }
 
             return $pdfService->unstreamPdf($prescription);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -389,18 +397,18 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -409,7 +417,7 @@ class RecepyPrescriptionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -418,18 +426,18 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -437,21 +445,21 @@ class RecepyPrescriptionController extends Controller
             // Save PDF to storage and get path
             $pdfPath = $pdfService->savePdf($prescription);
 
-            // Generate URL for the saved PDF
-            $pdfUrl = asset('storage/' . $pdfPath);
+            // Generate protected URL for the saved PDF
+            $pdfUrl = route('recepy.prescription.pdf', ['filename' => basename($pdfPath)]);
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'pdf_url' => $pdfUrl,
                     'pdf_path' => $pdfPath,
-                    'filename' => basename($pdfPath)
-                ]
+                    'filename' => basename($pdfPath),
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -461,31 +469,31 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
-            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -495,19 +503,20 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no válido'
+                'message' => 'Perfil de doctor no válido',
             ], 403);
         }
 
         try {
+
             return $pdfService->downloadPdfWithProfile($prescription, $request->doctor_profile_id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -516,31 +525,31 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
-            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -550,10 +559,10 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no válido'
+                'message' => 'Perfil de doctor no válido',
             ], 403);
         }
 
@@ -562,7 +571,7 @@ class RecepyPrescriptionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -571,31 +580,31 @@ class RecepyPrescriptionController extends Controller
     {
         $prescription = RecepyPrescription::find($id);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Verificar que la prescripción pertenece al usuario autenticado
-        if (!$this->prescriptionBelongsToUser($prescription)) {
+        if (! $this->prescriptionBelongsToUser($prescription)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
         // Validate doctor profile ID parameter
         $validator = Validator::make($request->all(), [
-            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id'
+            'doctor_profile_id' => 'required|integer|exists:recepy_doctor_profiles,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -605,10 +614,10 @@ class RecepyPrescriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no válido'
+                'message' => 'Perfil de doctor no válido',
             ], 403);
         }
 
@@ -616,22 +625,68 @@ class RecepyPrescriptionController extends Controller
             // Save PDF to storage and get path
             $pdfPath = $pdfService->savePdfWithProfile($prescription, $request->doctor_profile_id);
 
-            // Generate URL for the saved PDF
-            $pdfUrl = asset('storage/' . $pdfPath);
+            // Generate protected URL for the saved PDF
+            $pdfUrl = route('recepy.prescription.pdf', ['filename' => basename($pdfPath)]);
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'pdf_url' => $pdfUrl,
                     'pdf_path' => $pdfPath,
-                    'filename' => basename($pdfPath)
-                ]
+                    'filename' => basename($pdfPath),
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al generar PDF: ' . $e->getMessage()
+                'message' => 'Error al generar PDF: '.$e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Serve private PDF files for authenticated users only
+     */
+    public function servePdf(Request $request, $filename)
+    {
+        // Construct the full file path
+        $filePath = 'prescriptions/'.$filename;
+
+        // Check if file exists in private storage
+        if (! Storage::disk('local')->exists($filePath)) {
+            abort(404, 'PDF no encontrado');
+        }
+
+        // Extract prescription number from filename to find the prescription
+        // Filename format: RX-2025-123456_Patient_Name_2025-01-01.pdf
+        $prescriptionNumber = '';
+        if (preg_match('/^([^_]+)_/', $filename, $matches)) {
+            $prescriptionNumber = $matches[1];
+        }
+
+        if (empty($prescriptionNumber)) {
+            abort(404, 'PDF no válido');
+        }
+
+        // Find the prescription by number
+        $prescription = RecepyPrescription::where('prescription_number', $prescriptionNumber)->first();
+
+        if (! $prescription) {
+            abort(404, 'Prescripción no encontrada');
+        }
+
+        // Verify that the prescription belongs to the authenticated user
+        if (! $this->prescriptionBelongsToUser($prescription)) {
+            abort(403, 'No autorizado para acceder a este PDF');
+        }
+
+        // Get file content and MIME type
+        $fileContents = Storage::disk('local')->get($filePath);
+
+        // Return PDF response
+        return response($fileContents)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="'.$filename.'"')
+            ->header('Cache-Control', 'private, max-age=3600');
     }
 }
