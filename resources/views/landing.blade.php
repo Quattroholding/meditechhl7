@@ -13,6 +13,14 @@
     <link rel="preload" as="image" href="{{ asset('landing/images/logo-letras.png') }}">
 </head>
 <body>
+     <!-- Loader Screen -->
+    <div id="loader" class="loader-screen">
+        <div class="loader-content">
+            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Loading" class="loader-logo">
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+    
     <!-- Header -->
     <header class="header" id="header">
         <nav class="nav">
@@ -288,6 +296,29 @@
 
         // Llamar la función al cargar la página por si ya hay scroll
         handleNavbarScroll();
+
+         // Loader para esperar a que cargue el background
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('loader');
+        const body = document.body;
+        
+        // Esperar un momento adicional para asegurar que todo cargó
+        setTimeout(() => {
+            loader.classList.add('hidden');
+            body.classList.add('loaded');
+            
+            // Remover el loader del DOM después de la transición
+            setTimeout(() => {
+                loader.remove();
+            }, 500);
+        }, 300);
+    });
+    
+    // Prevenir FOUC (Flash of Unstyled Content)
+    document.addEventListener('DOMContentLoaded', function() {
+        const heroBackground = new Image();
+        heroBackground.src = "{{ asset('landing/images/LANDING-PORTADA.png') }}";
+    });
     </script>
 </body>
 </html>
