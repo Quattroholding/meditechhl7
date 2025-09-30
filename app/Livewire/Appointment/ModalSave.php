@@ -210,6 +210,19 @@ class ModalSave extends Component
                 $practitioner_suggested_datetime = $this->appointment->practitioner_suggested_datetime;
             }
 
+            // Verificar disponibilidad
+            if (! $this->checkAvailability()) {
+                // $this->closeModal();
+                // session()->flash('message.error', 'El doctor no está disponible en ese horario.');
+                $this->dispatch('cita-message', message: 'El doctor no está disponible en ese horario.');
+                $this->dispatch('showToastr',
+                    type: 'error',
+                    message: 'El doctor no está disponible en ese horario.',
+                );
+
+                return;
+            }
+
             if ($this->confirm) {
                 $practitioner_suggested_datetime = $start->format('Y-m-d H:i');
                 $this->status = 'booked';
@@ -219,7 +232,7 @@ class ModalSave extends Component
             $minutes = (int) $this->duration;
             $appointmentData = [
                 'fhir_id' => 'appointment-'.Str::uuid(),
-                'identifier' => 'APT-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'APT-'.Str::numbers(7),
                 'patient_id' => $this->patient_id,
                 'practitioner_id' => $this->doctor_id,
                 'client_id' => $client_id,
@@ -235,18 +248,7 @@ class ModalSave extends Component
                 'practitioner_suggested_datetime' => $practitioner_suggested_datetime,
                 'comment' => $this->notes,
             ];
-            // Verificar disponibilidad
-            if (! $this->checkAvailability()) {
-                // $this->closeModal();
-                // session()->flash('message.error', 'El doctor no está disponible en ese horario.');
-                $this->dispatch('cita-message', message: 'El doctor no está disponible en ese horario.');
-                $this->dispatch('showToastr',
-                    type: 'error',
-                    message: 'El doctor no está disponible en ese horario.',
-                );
 
-                return;
-            }
 
             if ($this->appointment) {
                 // Actualizar cita existente

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -77,9 +78,14 @@ class AuthController extends Controller
             'phone' => 'required|string|max:20',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female,unknown',
+            'user_type' => 'nullable|in:patient,practitioner', // Nuevo parámetro opcional
+            'registry' => 'required_if:user_type,practitioner|string|max:50', // Registro médico para practitioners
         ]);
 
-        $user = User::whereEmail($request->email)->first();
+        // Determinar el tipo de usuario a crear (por defecto: patient)
+        $userType = $request->user_type ?? 'patient';
+
+        $user = User::where('email', $request->email)->first();
 
         if (! $user) {
             // Crear usuario
@@ -88,73 +94,185 @@ class AuthController extends Controller
                 'last_name' => $request->family_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'default_client_id' => $userType === 'practitioner' ? 1 : null, // client_id = 1 para practitioners
             ]);
         } else {
             $user->first_name = $request->given_name;
             $user->last_name = $request->family_name;
             $user->password = Hash::make($request->password);
+            if ($userType === 'practitioner') {
+                $user->default_client_id = 1;
+            }
             $user->save();
         }
 
-        $user->assignRole('paciente');
+        // Asignar rol según el tipo de usuario
+        if ($userType === 'practitioner') {
+            $user->assignRole('doctor');
 
-        $patient = Patient::whereLike('identifier', $request->identifier.'%')
-            ->orWhere('email', $request->email)
-            ->first();
+            // Buscar practitioner existente
+            $practitioner = Practitioner::where('identifier', $request->identifier)
+                ->orWhere('email', $request->email)
+                ->first();
 
-        if (! $patient) {
-            // Crear paciente
-            $patient = Patient::create([
-                'user_id' => $user->id,
-                'identifier' => $request->identifier,
-                'identifier_type' => $request->identifier_type,
-                'given_name' => $request->given_name,
-                'family_name' => $request->family_name,
-                'name' => $request->given_name.' '.$request->family_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'whatsapp_phone' => $request->phone,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'fhir_id' => 'patient-'.Str::uuid(),
-                'communication' => json_encode(['language' => 'es', 'preferred' => true]),
-                'address' => $request->address,
-            ]);
+            if (! $practitioner) {
+                // Crear practitioner
+                $practitioner = Practitioner::create([
+                    'user_id' => $user->id,
+                    'identifier' => $request->identifier,
+                    'identifier_type' => $request->identifier_type,
+                    'given_name' => $request->given_name,
+                    'family_name' => $request->family_name,
+                    'name' => $request->given_name.' '.$request->family_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'birth_date' => $request->birth_date,
+                    'gender' => $request->gender,
+                    'registry' => $request->registry,
+                    'active' => true,
+                    'fhir_id' => 'practitioner-'.Str::uuid(),
+                ]);
+
+
+            }
+            else {
+                // Actualizar practitioner existente
+                $practitioner->update([
+                    'user_id' => $user->id,
+                    'given_name' => $request->given_name,
+                    'family_name' => $request->family_name,
+                    'name' => $request->given_name.' '.$request->family_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'birth_date' => $request->birth_date,
+                    'gender' => $request->gender,
+                    'registry' => $request->registry,
+                    'identifier_type' => $request->identifier_type,
+                    'identifier' => strtoupper($request->identifier),
+                ]);
+            }
+
+            // Relacionar practitioner con client_id = 1
+            if (!$user->clients()->where('client_id', 1)->exists()) {
+                $user->clients()->attach(1);
+            }
+
+            // Crear RecepyDoctorProfile automáticamente
+            $doctorProfile = RecepyDoctorProfile::where('user_id', $user->id)->first();
+
+            if (!$doctorProfile) {
+                $doctorProfile = RecepyDoctorProfile::create([
+                    'user_id' => $user->id,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'medical_license_number' => $request->registry,
+                    'is_active' => true,
+                    'recepy_background_color' => 'ffffff', // Color de fondo por defecto
+                ]);
+            } else {
+                // Actualizar perfil existente
+                $doctorProfile->update([
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'medical_license_number' => $request->registry,
+                    'is_active' => true,
+                ]);
+            }
+
+            $token = $user->createToken('practitioner-app')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Registro de practitioner exitoso',
+                'token' => $token,
+                'user_type' => 'practitioner',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->first_name.' '.$user->last_name,
+                    'email' => $user->email,
+                    'default_client_id' => $user->default_client_id,
+                ],
+                'practitioner' => [
+                    'id' => $practitioner->id,
+                    'name' => $practitioner->name,
+                    'phone' => $practitioner->phone,
+                    'birth_date' => $practitioner->birth_date,
+                    'registry' => $practitioner->registry,
+                    'active' => $practitioner->active,
+                ],
+                'doctor_profile' => [
+                    'id' => $doctorProfile->id,
+                    'email' => $doctorProfile->email,
+                    'phone' => $doctorProfile->phone,
+                    'medical_license_number' => $doctorProfile->medical_license_number,
+                    'is_active' => $doctorProfile->is_active,
+                    'recepy_background_color' => $doctorProfile->recepy_background_color,
+                ],
+            ], 201);
 
         } else {
-            $patient->given_name = $request->given_name;
-            $patient->family_name = $request->family_name;
-            $patient->email = $request->email;
-            $patient->phone = $request->phone;
-            $patient->whatsapp_phone = $request->phone;
-            $patient->name = $request->given_name.' '.$request->family_name;
-            $patient->gender = $request->gender;
-            $patient->birth_date = $request->birth_date;
-            $patient->address = $request->address;
-            $patient->marital_status = $request->marital_status;
-            $patient->identifier_type = $request->identifier_type;
-            $patient->identifier = strtoupper($request->identifier);
-            $patient->user_id = $user->id;
-            $patient->save();
+            // Crear paciente (comportamiento original)
+            $user->assignRole('paciente');
+
+            $patient = Patient::where('identifier', 'LIKE', $request->identifier.'%')
+                ->orWhere('email', $request->email)
+                ->first();
+
+            if (! $patient) {
+                // Crear paciente
+                $patient = Patient::create([
+                    'user_id' => $user->id,
+                    'identifier' => $request->identifier,
+                    'identifier_type' => $request->identifier_type,
+                    'given_name' => $request->given_name,
+                    'family_name' => $request->family_name,
+                    'name' => $request->given_name.' '.$request->family_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'whatsapp_phone' => $request->phone,
+                    'birth_date' => $request->birth_date,
+                    'gender' => $request->gender,
+                    'fhir_id' => 'patient-'.Str::uuid(),
+                    'communication' => json_encode(['language' => 'es', 'preferred' => true]),
+                    'address' => $request->address,
+                ]);
+            } else {
+                // Actualizar paciente existente
+                $patient->update([
+                    'user_id' => $user->id,
+                    'given_name' => $request->given_name,
+                    'family_name' => $request->family_name,
+                    'name' => $request->given_name.' '.$request->family_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'whatsapp_phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'birth_date' => $request->birth_date,
+                    'address' => $request->address,
+                    'marital_status' => $request->marital_status,
+                    'identifier_type' => $request->identifier_type,
+                    'identifier' => strtoupper($request->identifier),
+                ]);
+            }
+
+            $token = $user->createToken('patient-app')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Registro de paciente exitoso',
+                'token' => $token,
+                'user_type' => 'patient',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->first_name.' '.$user->last_name,
+                    'email' => $user->email,
+                ],
+                'patient' => [
+                    'id' => $patient->id,
+                    'name' => $patient->name,
+                    'phone' => $patient->phone,
+                    'birth_date' => $patient->birth_date,
+                ],
+            ], 201);
         }
-
-        $token = $user->createToken('patient-app')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Registro exitoso',
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->first_name.' '.$user->last_name,
-                'email' => $user->email,
-            ],
-            'patient' => [
-                'id' => $patient->id,
-                'name' => $patient->name,
-                'phone' => $patient->phone,
-                'birth_date' => $patient->birth_date,
-            ],
-        ], 201);
     }
 
     public function logout(Request $request)

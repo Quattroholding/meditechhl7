@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class RecepyPrescription extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'recepy_prescriptions';
 
     protected $fillable = [
         'doctor_profile_id',
         'patient_name',
         'patient_document',
+        'patient_age',
         'patient_birth_date',
         'patient_gender',
         'patient_address',
@@ -32,6 +33,7 @@ class RecepyPrescription extends Model
     protected $casts = [
         'patient_birth_date' => 'date',
         'prescription_date' => 'date',
+        'patient_age'=>'integer',
     ];
 
     public function doctorProfile(): BelongsTo
@@ -61,17 +63,5 @@ class RecepyPrescription extends Model
                 $prescription->prescription_number = 'RX-' . date('Y') . '-' . str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
             }
         });
-    }
-
-    protected function patientAge(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                if (!$this->patient_birth_date) {
-                    return null;
-                }
-                return $this->patient_birth_date->diffInYears(now());
-            }
-        );
     }
 }

@@ -15,569 +15,430 @@
             font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 12px;
             line-height: 1.4;
-            color: #333;
-            background: white;
-            margin: 2em;
+            color: #000;
+            background: #{{ $prescription->doctorProfile->recepy_background_color ?? 'ffffff' }};
+            margin: 0;
+            padding: 15mm;
+            height: 150vh;
         }
 
-        .prescription-header {
-            border-bottom: 2px solid #2c5aa0;
-            padding-bottom: 0px;
-            margin-bottom: 0px;
+        .prescription-container {
+            border: 2px solid #000;
+            height: calc(100vh - 30mm);
+            position: relative;
+            padding: 10px;
+            page-break-after: always;
+            box-sizing: border-box;
+        }
+
+        .prescription-container:last-child {
+            page-break-after: avoid;
+        }
+
+        .header-section {
             display: table;
             width: 100%;
-        }
-
-        .header-left {
-            display: table-cell;
-            width: 70%;
-            vertical-align: top;
-        }
-
-        .header-right {
-            display: table-cell;
-            width: 30%;
-            vertical-align: top;
-            text-align: right;
-        }
-
-        .doctor-logo {
-            max-width: 80px;
-            max-height: 80px;
-            margin-bottom: 10px;
-        }
-
-        .doctor-info h2 {
-            color: #2c5aa0;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .doctor-info p {
-            margin-bottom: 3px;
-            font-size: 11px;
+            margin-bottom: 15px;
         }
 
         .prescription-number {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: center;
+            display: table-cell;
+            width: 35%;
+            vertical-align: top;
             font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 20px;
+            font-size: 12px;
         }
 
-        .patient-section {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .patient-section h3 {
-            color: #2c5aa0;
-            font-size: 14px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 5px;
-        }
-
-        .patient-info {
-            display: table;
-            width: 100%;
-        }
-
-        .patient-left, .patient-right {
+        .logo-section {
             display: table-cell;
             width: 50%;
+            text-align: center;
+            vertical-align: top;
+            border: 0px solid #000;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo-box {
+            border: 0px solid #000;
+            padding: 20px;
+            margin-bottom: 5px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-logo {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .facility-info {
+            display: table-cell;
+            width: 35%;
+            vertical-align: top;
+            padding-left: 15px;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .patient-info-section {
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .patient-line {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .patient-field {
+            display: table-cell;
+            padding-right: 20px;
             vertical-align: top;
         }
 
-        .patient-right {
-            padding-left: 20px;
+        .patient-field.name {
+            width: 75%;
         }
 
-        .info-row {
-            margin-bottom: 5px;
+        .patient-field.age {
+            width: 25%;
         }
 
-        .info-label {
+        .patient-field.bottom-row {
+            width: 33.33%;
+        }
+
+        .patient-field.age {
+            padding-right: 0;
+        }
+
+        .patient-field.bottom-row:last-child {
+            padding-right: 0;
+        }
+
+        .field-label {
             font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .field-value {
+            border-bottom: 1px solid #000;
+            min-width: 100px;
             display: inline-block;
-            min-width: 60px;
+            padding-bottom: 1px;
         }
 
-        .prescription-date {
-            text-align: right;
-            margin-bottom: 20px;
-            font-size: 11px;
+        .patient-field.name {
+            display: flex;
+            align-items: baseline;
         }
 
-        .medications-section {
-            margin-bottom: 30px;
+        .patient-field.name .field-label {
+            margin-right: 5px;
+            flex-shrink: 0;
         }
 
-        .medications-section h3 {
-            color: #2c5aa0;
-            font-size: 14px;
+        .patient-field.name .field-value {
+            flex: 1;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-right: 10px;
+        }
+
+        .rx-section {
+            border: 2px solid #000;
             margin-bottom: 15px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            position: relative;
+            min-height: 460px;
+        }
+
+        .rx-header {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: {{ '#' . ($prescription->doctorProfile->recepy_background_color ?? 'ffffff') }};
+            padding: 0 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .rx-content {
+            padding: 20px 15px 15px 15px;
         }
 
         .medication-item {
-            border: 1px solid #dee2e6;
             margin-bottom: 15px;
-            padding: 12px;
-            background: white;
-        }
-
-        .medication-header {
-            display: table;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-
-        .medication-number {
-            display: table-cell;
-            width: 30px;
-            font-weight: bold;
-            font-size: 16px;
-            color: #2c5aa0;
-            vertical-align: top;
+            font-size: 11px;
         }
 
         .medication-name {
-            display: table-cell;
             font-weight: bold;
-            font-size: 13px;
-            vertical-align: top;
-        }
-
-        .medication-details {
-            margin-left: 30px;
-            margin-top: 5px;
-        }
-
-        .medication-line {
             margin-bottom: 3px;
         }
 
-        .medication-instructions {
-            background: #f8f9fa;
-            padding: 8px;
-            margin-top: 8px;
-            margin-left: 30px;
-            border-left: 3px solid #2c5aa0;
-            font-style: italic;
-        }
-
-        .diagnosis-section {
-            margin-bottom: 20px;
-        }
-
-        .diagnosis-section h4 {
-            color: #2c5aa0;
-            font-size: 12px;
+        .medication-details {
+            margin-left: 10px;
             margin-bottom: 5px;
+        }
+
+        .dx-section {
+            border: 2px solid #000;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 130px;
+        }
+
+        .dx-header {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: {{ '#' . ($prescription->doctorProfile->recepy_background_color ?? 'ffffff') }};
+            padding: 0 5px;
             font-weight: bold;
+            font-size: 14px;
         }
 
-        .diagnosis-content {
-            background: #f8f9fa;
-            padding: 10px;
-            border-left: 3px solid #2c5aa0;
+        .dx-content {
+            padding: 20px 15px 15px 15px;
+            font-size: 11px;
         }
 
-        .notes-section {
-            margin-bottom: 30px;
-        }
-
-        .notes-section h4 {
-            color: #2c5aa0;
-            font-size: 12px;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .notes-content {
-            background: #f8f9fa;
-            padding: 10px;
-            border-left: 3px solid #28a745;
+        .seal-section {
+            position: initial;
+            bottom: 100px;
+            right: 10px;
+            text-align: right;
+            z-index: 10;
         }
 
         .signature-section {
-            margin-top: 10px;
+            position: initial;
+            bottom: 40px;
+            right: 10px;
             text-align: center;
-        }
-
-        .doctor-signature {
-            max-width: 150px;
-            max-height: 80px;
-            margin-bottom: 10px;
-        }
-
-        .doctor-seal {
-            max-width: 80px;
-            max-height: 80px;
-            margin-left: 20px;
-            vertical-align: top;
+            z-index: 10;
         }
 
         .signature-line {
-            border-top: 1px solid #333;
-            width: 200px;
-            margin: 20px auto 5px;
+            border-top: 1px solid #000;
+            width: 300px;
+            margin-bottom: 5px;
+            margin-top: 30px;
+            margin-left: 350px;
         }
 
-        .doctor-name {
+        .signature-text {
+            font-size: 10px;
             font-weight: bold;
-            margin-bottom: 2px;
+            margin-left: 330px;
+
+
         }
 
-        .license-number {
-            font-size: 10px;
-            color: #666;
+        .doctor-signature {
+            max-width: 200px;
+            max-height: 60px;
+            margin-bottom: 5px;
         }
 
-        .footer {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 10px;
-            color: #666;
-            border-top: 1px solid #dee2e6;
-            padding-top: 10px;
+        .doctor-seal {
+            max-width: 200px;
+            max-height: 60px;
+            margin-left: 10px;
+            vertical-align: top;
         }
 
         @page {
-            margin: 20mm 25mm 20mm 25mm;
-        }
-
-        .page-break {
-            page-break-after: always;
-        }
-
-        .no-break {
-            page-break-inside: avoid;
-        }
-
-        .page-header {
-            margin-bottom: 30px;
-        }
-
-        .page-footer {
-            margin-top: 50px;
-            page-break-inside: avoid;
-        }
-
-        .page-number {
-            position: absolute;
-            top: 30mm;
-            right: 25px;
-            font-size: 10px;
-            color: #666;
-            background: #f8f9fa;
-            padding: 5px 10px;
-            border-radius: 3px;
-            border: 1px solid #dee2e6;
+            margin: 0;
         }
     </style>
 </head>
 <body>
     @php
-        // Calcular total de páginas antes de mostrar cualquier contenido
-        $allMedications = $prescription->activeMedications->toArray();
-        $totalMedications = count($allMedications);
-        $medicationsPerFirstPage = 2;
-        $medicationsPerSubsequentPage = 4;
+        // Preparar URLs de firmas y sellos para uso en todo el documento
+        $signatureDataUri = '';
+        $sealDataUri = '';
 
-        // Calcular total de páginas
-        $totalPages = 1; // Primera página siempre existe
-        if ($totalMedications > $medicationsPerFirstPage) {
-            $remainingMedications = $totalMedications - $medicationsPerFirstPage;
-            $totalPages += ceil($remainingMedications / $medicationsPerSubsequentPage);
+        if(!empty($pdfService)) {
+            if($prescription->doctorProfile->signature) {
+                if($pdfService->isPrivateImage($prescription->doctorProfile->signature)) {
+
+                    $signatureDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->signature);
+                } elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->signature))) {
+                    $signatureDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature)));
+                }
+            }
+            if($prescription->doctorProfile->seal) {
+                if($pdfService->isPrivateImage($prescription->doctorProfile->seal)) {
+                    $sealDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->seal);
+                } elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->seal))) {
+                    $sealDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal)));
+                }
+            }
+        } else {
+            // Fallback if pdfService is not available
+            if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature))) {
+                $signatureDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature)));
+            }
+            if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal))) {
+                $sealDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal)));
+            }
         }
 
-        $currentPage = 1;
-        $printedMedications = 0;
+        // Dividir medicamentos en páginas de 5
+        $allMedications = $prescription->activeMedications->toArray();
+        $medicationsPerPage = 5;
+        $totalPages = ceil(count($allMedications) / $medicationsPerPage);
+        $medicationPages = array_chunk($allMedications, $medicationsPerPage);
     @endphp
-    <!-- Page Header -->
-    <div class="page-header">
-        <!-- Page Number -->
-        <div class="page-number">Página 1 de {{ $totalPages }}</div>
 
-        <div class="prescription-header">
-            <div class="header-left">
-                @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
-                @endif
-                <div class="doctor-info">
-                    <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
-                    @if($prescription->doctorProfile->speciality)
-                        <p><strong>{{ $prescription->doctorProfile->speciality }}</strong></p>
-                    @endif
-                    @if($prescription->doctorProfile->medical_license_number)
-                        <p>Reg. Médico: {{ $prescription->doctorProfile->medical_license_number }}</p>
-                    @endif
+    @foreach($medicationPages as $pageIndex => $pageMedications)
+        <div class="prescription-container">
+            <!-- Header Section -->
+            <div class="header-section">
+                <div class="prescription-number">
+                    No.{{ $prescription->prescription_number ?? '0001' }}
                 </div>
-            </div>
-            <div class="header-right">
-                @if($prescription->doctorProfile->facility)
-                    <p>{{ $prescription->doctorProfile->facility }}</p>
-                @endif
-                @if($prescription->doctorProfile->phone)
-                    <p>📞 {{ $prescription->doctorProfile->phone }}</p>
-                @endif
-                    <!-- Date -->
-                    <div class="prescription-date">
-                        {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
-                        {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
-                    </div>
-            </div>
-        </div>
-    </div>
 
-
-
-        <!-- Prescription Number -->
-        <div class="prescription-number">
-            RECETA MÉDICA N° {{ $prescription->prescription_number }}
-        </div>
-        <!-- Patient Information -->
-        <div class="patient-section no-break">
-            <h3>INFORMACIÓN DEL PACIENTE</h3>
-            <div class="patient-info">
-                <div class="patient-left">
-                    <div class="info-row">
-                        <span class="info-label">Nombre:</span>
-                        <strong>{{ $prescription->patient_name }}</strong>
-                    </div>
-                    @if($prescription->patient_document)
-                    <div class="info-row">
-                        <span class="info-label">Cédula:</span>
-                        {{ $prescription->patient_document }}
-                    </div>
-                    @endif
-                    @if($prescription->patient_birth_date)
-                    <div class="info-row">
-                        <span class="info-label">Edad:</span>
-                        {{ \Carbon\Carbon::parse($prescription->patient_birth_date)->age }} años
-                    </div>
-                    @endif
-                </div>
-                <div class="patient-right">
-                    @if($prescription->patient_gender)
-                    <div class="info-row">
-                        <span class="info-label">Sexo:</span>
-                        {{ $prescription->patient_gender == 'M' ? 'Masculino' : ($prescription->patient_gender == 'F' ? 'Femenino' : 'Otro') }}
-                    </div>
-                    @endif
-                    @if($prescription->patient_phone)
-                    <div class="info-row">
-                        <span class="info-label">Teléfono:</span>
-                        {{ $prescription->patient_phone }}
-                    </div>
-                    @endif
-                    @if($prescription->patient_address)
-                    <div class="info-row">
-                        <span class="info-label">Dirección:</span>
-                        {{ $prescription->patient_address }}
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <!-- Diagnosis -->
-        @if($prescription->diagnosis)
-        <div class="diagnosis-section no-break">
-            <h4>DIAGNÓSTICO:</h4>
-            <div class="diagnosis-content">
-                {{ $prescription->diagnosis }}
-            </div>
-        </div>
-        @endif
-
-        <!-- Medications -->
-        <div class="medications-section">
-            <h3>Rp/ MEDICACIÓN PRESCRITA</h3>
-
-            @while($printedMedications < $totalMedications)
-                @php
-                    if($currentPage == 1) {
-                        $medicationsThisPage = min($medicationsPerFirstPage, $totalMedications - $printedMedications);
-                    } else {
-                        $medicationsThisPage = min($medicationsPerSubsequentPage, $totalMedications - $printedMedications);
-                    }
-
-                    $pageEndIndex = $printedMedications + $medicationsThisPage;
-                @endphp
-
-                @for($i = $printedMedications; $i < $pageEndIndex; $i++)
-                    @php $medication = (object) $allMedications[$i]; @endphp
-                    <div class="medication-item no-break">
-                        <div class="medication-header">
-                            <div class="medication-number">{{ $i + 1 }}.</div>
-                            <div class="medication-name">
-                                {{ $medication->medication_name }}
-                                @if($medication->presentation || $medication->concentration)
-                                    <span style="font-weight: normal;">
-                                        @if($medication->presentation) - {{ $medication->presentation }}@endif
-                                        @if($medication->concentration) {{ $medication->concentration }}@endif
-                                    </span>
+                <div class="logo-section">
+                    <div class="logo-box">
+                        @if($prescription->doctorProfile->logo)
+                            @if(!empty($pdfService) && $pdfService->isPrivateImage($prescription->doctorProfile->logo))
+                                @php $logoDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->logo); @endphp
+                                @if($logoDataUri)
+                                    <img src="{{ $logoDataUri }}" alt="Logo" class="doctor-logo">
+                                @else
+                                    LOGO
                                 @endif
-                            </div>
-                        </div>
-
-                        <div class="medication-details">
-                            <div class="medication-line">
-                                <strong>Dosis:</strong> {{ $medication->dosage }} |
-                                <strong>Frecuencia:</strong> {{ $medication->frequency }} |
-                                @if($medication->duration)
-                                <strong>Duración:</strong> {{ $medication->duration }} |
-                                @endif
-                                @if($medication->quantity)
-                                <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
-                                @endif
-                            </div>
-                        </div>
-
-                        @if($medication->instructions)
-                        <div class="medication-instructions">
-                            <strong>Instrucciones:</strong> {{ $medication->instructions }}
-                        </div>
+                            @elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
+                                <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
+                            @else
+                                LOGO
+                            @endif
+                        @else
+                            LOGO
                         @endif
                     </div>
-                @endfor
+                    <strong>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</strong>
+                </div>
 
-                @php
-                    $printedMedications = $pageEndIndex;
-                    $currentPage++;
-                @endphp
-
-                @if($printedMedications < $totalMedications)
-                    <!-- Footer para página actual -->
-                    <div class="page-footer">
-                        <div class="signature-section">
-                            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
-                                <img src="data:image/{{ pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature))) }}" alt="Firma" class="doctor-signature">
-                                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
-                                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal))) }}" alt="Sello" class="doctor-seal">
-                                @endif
-                            @else
-                                <div class="signature-line"></div>
-                            @endif
-
-                            <div class="doctor-name">
-                                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
-                            </div>
-                            @if($prescription->doctorProfile->speciality)
-                                <div style="font-size: 10px; margin-bottom: 2px;">
-                                    {{ $prescription->doctorProfile->speciality }}
-                                </div>
-                            @endif
-                            @if($prescription->doctorProfile->medical_license_number)
-                                <div class="license-number">
-                                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Salto de página -->
-                    <div class="page-break"></div>
-
-                    <!-- Header para página siguiente -->
-                    <div class="page-header">
-                        <!-- Page Number -->
-                        <div class="page-number">Página {{ $currentPage }} de {{ $totalPages }}</div>
-
-                        <div class="prescription-header">
-                            <div class="header-left">
-                                @if($prescription->doctorProfile->logo && file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
-                                @endif
-                                <div class="doctor-info">
-                                    <h2>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</h2>
-                                    @if($prescription->doctorProfile->speciality)
-                                        <p><strong>{{ $prescription->doctorProfile->speciality }}</strong></p>
-                                    @endif
-                                    @if($prescription->doctorProfile->medical_license_number)
-                                        <p>Reg. Médico: {{ $prescription->doctorProfile->medical_license_number }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="header-right">
-                                @if($prescription->doctorProfile->facility)
-                                    <p>{{ $prescription->doctorProfile->facility }}</p>
-                                @endif
-                                @if($prescription->doctorProfile->phone)
-                                    <p>📞 {{ $prescription->doctorProfile->phone }}</p>
-                                @endif
-                                <div class="prescription-date">
-                                    {{ $prescription->doctorProfile->address ? explode(',', $prescription->doctorProfile->address)[0] ?? 'Caracas' : 'Caracas' }},
-                                    {{ \Carbon\Carbon::parse($prescription->prescription_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Título de medicamentos para páginas siguientes -->
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="color: #2c5aa0; font-size: 14px; text-align: center; text-transform: uppercase; letter-spacing: 1px;">Rp/ MEDICACIÓN PRESCRITA (Continuación)</h3>
-                    </div>
-                @endif
-            @endwhile
-        </div>
-
-        <!-- Additional Notes -->
-        @if($prescription->additional_notes)
-        <div class="notes-section no-break">
-            <h4>NOTAS ADICIONALES:</h4>
-            <div class="notes-content">
-                {{ $prescription->additional_notes }}
+                <div class="facility-info">
+                    @if($prescription->doctorProfile->facility)
+                        {{ $prescription->doctorProfile->facility }}<br>
+                    @endif
+                    @if($prescription->doctorProfile->address)
+                        {{ $prescription->doctorProfile->address }}<br>
+                    @endif
+                    @if($prescription->doctorProfile->phone)
+                        Tel: {{ $prescription->doctorProfile->phone }}
+                    @endif
+                </div>
             </div>
-        </div>
-        @endif
 
-    <!-- Page Footer -->
-    <div class="page-footer">
-        <div class="signature-section">
-            @if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature)))
-                <img src="data:image/{{ pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature))) }}" alt="Firma" class="doctor-signature">
-                @if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal)))
-                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal))) }}" alt="Sello" class="doctor-seal">
+            <!-- Patient Information -->
+            <div class="patient-info-section">
+                <div class="patient-line">
+                    <div class="patient-field name">
+                        <span class="field-label">Nombre</span>
+                        <span class="field-value">{{ $prescription->patient_name }}</span>
+                    </div>
+                    <div class="patient-field age">
+                        <span class="field-label">Edad </span>
+                        <span class="field-value">
+                            @if($prescription->patient_age)
+                                {{ $prescription->patient_age }}
+                            @endif
+                        </span>
+                    </div>
+                </div>
+
+                <div class="patient-line">
+                    <div class="patient-field bottom-row">
+                        <span class="field-label">Cédula</span>
+                        <span class="field-value">{{ $prescription->patient_document ?? '' }}</span>
+                    </div>
+                    <div class="patient-field bottom-row">
+                        <span class="field-label">No. SS</span>
+                        <span class="field-value"></span>
+                    </div>
+                    <div class="patient-field bottom-row">
+                        <span class="field-label">Fecha</span>
+                        <span class="field-value">
+                            {{ \Carbon\Carbon::parse($prescription->prescription_date)->format('d/m/Y') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rx Section (Medicamentos) - Max 5 per page -->
+            <div class="rx-section">
+                <div class="rx-header">Rx</div>
+                <div class="rx-content">
+                    @foreach($pageMedications as $index => $medication)
+                        @php $medication = (object) $medication; @endphp
+                        <div class="medication-item">
+                            <div class="medication-name">
+                                {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{ $medication->medication_name }}
+                                @if($medication->presentation || $medication->concentration)
+                                    - {{ $medication->presentation }} {{ $medication->concentration }}
+                                @endif
+                            </div>
+                            <div class="medication-details">
+                                <strong>Dosis:</strong> {{ $medication->dosage }} |
+                                <strong>Frecuencia:</strong> {{ $medication->frequency }}
+                                @if($medication->duration)
+                                    | <strong>Duración:</strong> {{ $medication->duration }}
+                                @endif
+                                @if($medication->quantity)
+                                    | <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
+                                @endif
+                            </div>
+                            @if($medication->instructions)
+                                <div class="medication-details">
+                                    <strong>Instrucciones:</strong> {{ $medication->instructions }}
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Dx Section (Diagnósticos) - Appears on every page -->
+            <div class="dx-section">
+                <div class="dx-header">Dx</div>
+                <div class="dx-content">
+                    @if($prescription->diagnosis)
+                        {{ $prescription->diagnosis }}
+                    @endif
+
+                    @if($prescription->additional_notes)
+                        <br><br>
+                        <strong>Notas adicionales:</strong><br>
+                        {{ $prescription->additional_notes }}
+                    @endif
+                </div>
+            </div>
+
+            <div class="seal-section">
+                @if($signatureDataUri)
+                    <img src="{{ $signatureDataUri }}" alt="Firma" class="doctor-signature">
+                    @if($sealDataUri)
+                        <img src="{{ $sealDataUri }}" alt="Sello" class="doctor-seal">
+                    @endif
                 @endif
-            @else
+            </div>
+
+            <!-- Signature Section - Appears on every page -->
+            <div class="signature-section">
+
                 <div class="signature-line"></div>
-            @endif
-
-            <div class="doctor-name">
-                {{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}
+                <div class="signature-text">Firma y Sello del Médico</div>
             </div>
-            @if($prescription->doctorProfile->speciality)
-                <div style="font-size: 10px; margin-bottom: 2px;">
-                    {{ $prescription->doctorProfile->speciality }}
-                </div>
-            @endif
-            @if($prescription->doctorProfile->medical_license_number)
-                <div class="license-number">
-                    Registro Médico: {{ $prescription->doctorProfile->medical_license_number }}
-                </div>
-            @endif
         </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        Esta receta médica fue generada digitalmente el {{ now()->format('d/m/Y H:i') }} |
-        Receta N° {{ $prescription->prescription_number }}
-    </div>
+    @endforeach
 </body>
 </html>

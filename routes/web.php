@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
+use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppointmentController;
@@ -23,7 +25,6 @@ use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -460,6 +461,15 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/practitioner/{practitioner_id}/seal', [FileController::class, 'serveSeal'])
         ->name('practitioner.seal');
 
+    // Recepy Doctor Profile Private File Serving Routes
+    Route::get('/recepy/doctor/file/{type}/{filename}', [RecepyDoctorProfileController::class, 'serveFile'])
+        ->where('type', 'signature|seal')
+        ->name('recepy.doctor.file');
+
+    // Recepy Prescription Private PDF Serving Route
+    Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
+        ->name('recepy.prescription.pdf');
+
     Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
 
 });
@@ -481,8 +491,8 @@ Route::middleware(['auth', 'first.login', 'permission:manage insurances'])->grou
 // API Tokens Routes (Admin only)
 Route::middleware(['auth', 'first.login', 'role:admin'])->group(function () {
     Route::resource('api-tokens', ApiTokenController::class);
-    //Route::get('/api-tokens/create', [ApiTokenController::class, 'create'])->name('api-tokens.create');
-    //Route::get('/api-tokens/{apiToken}/edit', [ApiTokenController::class, 'edit'])->name('api-tokens.edit');
+    // Route::get('/api-tokens/create', [ApiTokenController::class, 'create'])->name('api-tokens.create');
+    // Route::get('/api-tokens/{apiToken}/edit', [ApiTokenController::class, 'edit'])->name('api-tokens.edit');
     Route::post('/api-tokens/{apiToken}/toggle', [ApiTokenController::class, 'toggle'])->name('api-tokens.toggle');
     Route::post('/api-tokens/{apiToken}/regenerate', [ApiTokenController::class, 'regenerate'])->name('api-tokens.regenerate');
 });
@@ -498,5 +508,3 @@ Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
 
     return 'Appointment not found';
 })->middleware('auth')->name('test.broadcast');
-
-

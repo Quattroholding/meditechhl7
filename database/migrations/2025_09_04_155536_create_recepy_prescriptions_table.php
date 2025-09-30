@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('doctor_profile_id')->constrained('recepy_doctor_profiles')->onDelete('cascade');
             $table->string('patient_name');
             $table->string('patient_document')->nullable(); // Documento de identidad del paciente
+            $table->integer('patient_age')->nullable(); // Edad del paciente
             $table->date('patient_birth_date')->nullable();
             $table->enum('patient_gender', ['M', 'F', 'O'])->nullable(); // M: Masculino, F: Femenino, O: Otro
             $table->text('patient_address')->nullable();

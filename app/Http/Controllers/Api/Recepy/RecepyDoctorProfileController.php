@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api\Recepy;
 
 use App\Http\Controllers\Controller;
 use App\Models\Recepy\RecepyDoctorProfile;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class RecepyDoctorProfileController extends Controller
 {
@@ -21,7 +22,7 @@ class RecepyDoctorProfileController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $profiles
+            'data' => $profiles,
         ]);
     }
 
@@ -32,16 +33,16 @@ class RecepyDoctorProfileController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $profile
+            'data' => $profile,
         ]);
     }
 
@@ -55,16 +56,18 @@ class RecepyDoctorProfileController extends Controller
             'facility' => 'nullable|string|max:100',
             'email' => 'nullable|email',
             'medical_license_number' => 'nullable|string',
+            'medical_code_number' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'seal' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'recepy_background_color' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -78,11 +81,11 @@ class RecepyDoctorProfileController extends Controller
         }
 
         if ($request->hasFile('signature')) {
-            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'public');
+            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'local');
         }
 
         if ($request->hasFile('seal')) {
-            $data['seal'] = $request->file('seal')->store('recepy/seals', 'public');
+            $data['seal'] = $request->file('seal')->store('recepy/seals', 'local');
         }
 
         $profile = RecepyDoctorProfile::create($data);
@@ -91,7 +94,7 @@ class RecepyDoctorProfileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Perfil de doctor creado exitosamente',
-            'data' => $profile
+            'data' => $profile,
         ], 201);
     }
 
@@ -101,10 +104,10 @@ class RecepyDoctorProfileController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
@@ -117,13 +120,14 @@ class RecepyDoctorProfileController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'seal' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'recepy_background_color' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -139,16 +143,16 @@ class RecepyDoctorProfileController extends Controller
 
         if ($request->hasFile('signature')) {
             if ($profile->signature) {
-                Storage::disk('public')->delete($profile->signature);
+                Storage::disk('local')->delete($profile->signature);
             }
-            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'public');
+            $data['signature'] = $request->file('signature')->store('recepy/signatures', 'local');
         }
 
         if ($request->hasFile('seal')) {
             if ($profile->seal) {
-                Storage::disk('public')->delete($profile->seal);
+                Storage::disk('local')->delete($profile->seal);
             }
-            $data['seal'] = $request->file('seal')->store('recepy/seals', 'public');
+            $data['seal'] = $request->file('seal')->store('recepy/seals', 'local');
         }
 
         $profile->update($data);
@@ -157,7 +161,7 @@ class RecepyDoctorProfileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Perfil de doctor actualizado exitosamente',
-            'data' => $profile
+            'data' => $profile,
         ]);
     }
 
@@ -167,10 +171,10 @@ class RecepyDoctorProfileController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
@@ -179,17 +183,17 @@ class RecepyDoctorProfileController extends Controller
             Storage::disk('public')->delete($profile->logo);
         }
         if ($profile->signature) {
-            Storage::disk('public')->delete($profile->signature);
+            Storage::disk('local')->delete($profile->signature);
         }
         if ($profile->seal) {
-            Storage::disk('public')->delete($profile->seal);
+            Storage::disk('local')->delete($profile->seal);
         }
 
         $profile->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Perfil de doctor eliminado exitosamente'
+            'message' => 'Perfil de doctor eliminado exitosamente',
         ]);
     }
 
@@ -202,7 +206,7 @@ class RecepyDoctorProfileController extends Controller
         if ($userId && $userId != auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'No autorizado para acceder a este perfil'
+                'message' => 'No autorizado para acceder a este perfil',
             ], 403);
         }
 
@@ -211,16 +215,16 @@ class RecepyDoctorProfileController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado para este usuario'
+                'message' => 'Perfil de doctor no encontrado para este usuario',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $profile
+            'data' => $profile,
         ]);
     }
 
@@ -236,7 +240,7 @@ class RecepyDoctorProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -244,10 +248,10 @@ class RecepyDoctorProfileController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
@@ -255,13 +259,19 @@ class RecepyDoctorProfileController extends Controller
             $fileType = $request->file_type;
             $file = $request->file('file');
 
-            // Delete old file if exists
+            $ext = $file->getClientOriginalExtension();
+            Log::info('La info del archivo antes de subir es :'.$file->getBasename());
+            Log::info($file->getFileInfo());
+            Log::info('La extension del archivo antes de subir es :'.$ext);
+            // Delete old file if exists - use appropriate disk
             if ($profile->$fileType) {
-                Storage::disk('public')->delete($profile->$fileType);
+                $disk = ($fileType === 'signature' || $fileType === 'seal') ? 'local' : 'public';
+                Storage::disk($disk)->delete($profile->$fileType);
             }
 
-            // Store new file
-            $path = $file->store("recepy/{$fileType}s", 'public');
+            // Store new file - signatures and seals go to private storage
+            $disk = ($fileType === 'signature' || $fileType === 'seal') ? 'local' : 'public';
+            $path = $file->store("recepy/{$fileType}s", $disk);
 
             // Update profile
             $profile->update([$fileType => $path]);
@@ -271,18 +281,20 @@ class RecepyDoctorProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => ucfirst($fileType) . ' subido exitosamente',
+                'message' => ucfirst($fileType).' subido exitosamente',
                 'data' => [
                     'profile' => $profile,
                     'file_path' => $path,
-                    'file_url' => asset('storage/' . $path)
-                ]
+                    'file_url' => ($fileType === 'signature' || $fileType === 'seal')
+                        ? route('recepy.doctor.file', ['type' => $fileType, 'filename' => basename($path)])
+                        : asset('storage/'.$path),
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al subir archivo: ' . $e->getMessage()
+                'message' => 'Error al subir archivo: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -298,7 +310,7 @@ class RecepyDoctorProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -306,19 +318,20 @@ class RecepyDoctorProfileController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             return response()->json([
                 'success' => false,
-                'message' => 'Perfil de doctor no encontrado'
+                'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
 
         try {
             $fileType = $request->file_type;
 
-            // Delete file if exists
+            // Delete file if exists - use appropriate disk
             if ($profile->$fileType) {
-                Storage::disk('public')->delete($profile->$fileType);
+                $disk = ($fileType === 'signature' || $fileType === 'seal') ? 'local' : 'public';
+                Storage::disk($disk)->delete($profile->$fileType);
 
                 // Update profile to remove file reference
                 $profile->update([$fileType => null]);
@@ -329,15 +342,53 @@ class RecepyDoctorProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => ucfirst($fileType) . ' eliminado exitosamente',
-                'data' => $profile
+                'message' => ucfirst($fileType).' eliminado exitosamente',
+                'data' => $profile,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al eliminar archivo: ' . $e->getMessage()
+                'message' => 'Error al eliminar archivo: '.$e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Serve private files (signatures and seals) for authenticated users only
+     */
+    public function serveFile(Request $request, $type, $filename)
+    {
+        // Validate file type
+        if (! in_array($type, ['signature', 'seal'])) {
+            abort(404);
+        }
+
+        // Construct the full file path
+        $filePath = "recepy/{$type}s/".$filename;
+
+        // Check if file exists in private storage
+        if (! Storage::disk('local')->exists($filePath)) {
+            abort(404);
+        }
+
+        // Find the profile that owns this file
+        $profile = RecepyDoctorProfile::where($type, $filePath)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        // If user doesn't own this file, deny access
+        if (! $profile) {
+            abort(403, 'No autorizado para acceder a este archivo');
+        }
+
+        // Get file content and MIME type
+        $fileContents = Storage::disk('local')->get($filePath);
+        $mimeType = Storage::disk('local')->mimeType($filePath);
+
+        // Return file response
+        return response($fileContents)
+            ->header('Content-Type', $mimeType)
+            ->header('Cache-Control', 'private, max-age=3600');
     }
 }

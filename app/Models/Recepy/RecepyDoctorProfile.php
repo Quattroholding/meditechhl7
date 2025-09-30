@@ -2,16 +2,16 @@
 
 namespace App\Models\Recepy;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 
 class RecepyDoctorProfile extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'recepy_doctor_profiles';
 
     protected $fillable = [
@@ -25,7 +25,9 @@ class RecepyDoctorProfile extends Model
         'signature',
         'seal',
         'medical_license_number',
-        'is_active'
+        'medical_code_number',
+        'is_active',
+        'recepy_background_color',
     ];
 
     protected $casts = [

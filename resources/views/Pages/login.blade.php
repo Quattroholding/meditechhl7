@@ -2,10 +2,10 @@
     <div class="container-fluid px-0">
         <div class="row">
             <!-- Login logo -->
-            <div class="col-lg-6 login-wrap" 
+            <div class="col-lg-6 login-wrap"
             style= "background-image: url('{{ URL::asset('/assets/img/img-front.png') }}');
                     background-size: cover;
-                    background-repeat: no-repeat; 
+                    background-repeat: no-repeat;
                     background-position: center; ">
 
             </div>
@@ -18,11 +18,13 @@
                             <div class="login-right-wrap">
                                 <div class="account-logo">
                                     <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
+                                    @if(env('APP_ENV')=='local')
                                     <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
                                     <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
                                     <a href="{{route('autologin',['role'=>'asistente'])}}" class="btn btn-primary">Asistente</a>
+                                    @endif
                                 </div>
                                 @include('partials.message')
 

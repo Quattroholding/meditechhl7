@@ -291,7 +291,8 @@ class MedicalHistory2 extends Component
 
             // Ordenar encounters por fecha más reciente
             $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-                return $group['encounter']->start ?? $group['encounter']->created_at;
+                if($group['encounter'])
+                    return $group['encounter']->start ?? $group['encounter']->created_at;
             });
 
             // Implementar paginación para encounters agrupados
@@ -382,7 +383,8 @@ class MedicalHistory2 extends Component
 
             // Ordenar encounters por fecha más reciente
             $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-                return $group['encounter']->start ?? $group['encounter']->created_at;
+                if($group['encounter'])
+                    return $group['encounter']->start ?? $group['encounter']->created_at;
             });
 
             // Implementar paginación para encounters agrupados
@@ -500,7 +502,8 @@ class MedicalHistory2 extends Component
 
         // Ordenar encounters por fecha más reciente
         $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-            return $group['encounter']->start ?? $group['encounter']->created_at;
+            if($group['encounter'])
+                return $group['encounter']->start ?? $group['encounter']->created_at;
         });
 
         // Implementar paginación manual para encounters agrupados
