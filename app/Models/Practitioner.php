@@ -13,7 +13,7 @@ class Practitioner extends BaseModel
     use HasFactory,Notifiable;
 
     protected $fillable = [
-        'fhir_id', 'identifier', 'name', 'given_name', 'family_name',
+        'fhir_id', 'identifier', 'name', 'given_name', 'family_name','user_id',
         'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'identifier_type',
     ];
 
