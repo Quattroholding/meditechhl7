@@ -72,12 +72,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Recepy System - Prescription Management
     Route::prefix('recepy')->group(function () {
         // Doctor Profiles
+        Route::delete('doctor-profiles/delete-file', [RecepyDoctorProfileController::class, 'deleteFile']);
         Route::apiResource('doctor-profiles', RecepyDoctorProfileController::class);
         Route::get('users/{userId}/doctor-profile', [RecepyDoctorProfileController::class, 'getByUser']);
 
         // File Management for Doctor Profiles
         Route::post('doctor-profiles/upload-file', [RecepyDoctorProfileController::class, 'uploadFile']);
-        Route::delete('doctor-profiles/delete-file', [RecepyDoctorProfileController::class, 'deleteFile']);
+
 
         // Prescriptions
         Route::apiResource('prescriptions', RecepyPrescriptionController::class);
