@@ -198,12 +198,52 @@ class MedicalHistory2 extends Component
         })->toArray();
 
         // Resumen general del paciente
+        // Aplicar filtros según rol
+        $isDoctor = auth()->user()->hasRole('doctor');
+        $practitionerId = $isDoctor ? auth()->user()->practitioner->id : null;
+
+        // Total encounters
+        $encountersQuery = Encounter::where('patient_id', $this->patientId);
+        if ($isDoctor) {
+            $encountersQuery->where('practitioner_id', $practitionerId);
+        }
+        $totalEncounters = $encountersQuery->count();
+        $lastVisit = $encountersQuery->latest('created_at')->first()?->created_at;
+
+        // Active conditions
+        $activeConditions = Condition::where('patient_id', $this->patientId)->where('clinical_status', 'active')->count();
+
+        // Total requests (medicamentos + servicios)
+        $medicationRequestsQuery = MedicationRequest::where('patient_id', $this->patientId);
+        if ($isDoctor) {
+            $medicationRequestsQuery->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
+        $serviceRequestsQuery = ServiceRequest::where('patient_id', $this->patientId);
+        if ($isDoctor) {
+            $serviceRequestsQuery->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+        $totalRequests = $medicationRequestsQuery->count() + $serviceRequestsQuery->count();
+
+        // Vital signs count
+        $vitalSignsQuery = VitalSign::where('patient_id', $this->patientId);
+        if ($isDoctor) {
+            $vitalSignsQuery->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+        $vitalSignsCount = $vitalSignsQuery->count();
+
         $this->overviewData = [
-            'total_encounters' => Encounter::where('patient_id', $this->patientId)->count(),
-            'active_conditions' => Condition::where('patient_id', $this->patientId)->where('clinical_status', 'active')->count(),
-            'last_visit' => Encounter::where('patient_id', $this->patientId)->latest('created_at')->first()?->created_at,
-            'total_requests' => MedicationRequest::where('patient_id', $this->patientId)->count() + ServiceRequest::where('patient_id', $this->patientId)->count(),
-            'vital_signs_count' => VitalSign::where('patient_id', $this->patientId)->count(),
+            'total_encounters' => $totalEncounters,
+            'active_conditions' => $activeConditions,
+            'last_visit' => $lastVisit,
+            'total_requests' => $totalRequests,
+            'vital_signs_count' => $vitalSignsCount,
             'allergies' => $allergies,
             'medications' => $medications,
             'total_notes' => $totalNotes,
@@ -272,6 +312,14 @@ class MedicalHistory2 extends Component
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'observationType'])
             ->orderBy('effective_date', 'desc');
 
+        // Si es doctor, filtrar solo signos vitales de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $query->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
         $vitalSigns = $this->applyFilters($query, 'effective_date')->get();
 
         if ($this->groupVitalSignsByEncounter) {
@@ -291,8 +339,9 @@ class MedicalHistory2 extends Component
 
             // Ordenar encounters por fecha más reciente
             $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-                if($group['encounter'])
+                if ($group['encounter']) {
                     return $group['encounter']->start ?? $group['encounter']->created_at;
+                }
             });
 
             // Implementar paginación para encounters agrupados
@@ -365,6 +414,14 @@ class MedicalHistory2 extends Component
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'observationType'])
             ->orderBy('created_at', 'desc');
 
+        // Si es doctor, filtrar solo exámenes físicos de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $query->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
         $physicalExams = $this->applyFilters($query, 'created_at')->get();
 
         if ($this->groupPhysicalExamsByEncounter) {
@@ -383,8 +440,9 @@ class MedicalHistory2 extends Component
 
             // Ordenar encounters por fecha más reciente
             $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-                if($group['encounter'])
+                if ($group['encounter']) {
                     return $group['encounter']->start ?? $group['encounter']->created_at;
+                }
             });
 
             // Implementar paginación para encounters agrupados
@@ -437,6 +495,14 @@ class MedicalHistory2 extends Component
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner'])
             ->orderBy('created_at', 'desc');
 
+        // Si es doctor, filtrar solo present illnesses de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $query->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
         $allPresentIllnesses = $this->applyFilters($query, 'created_at')->get();
 
         // Implementar paginación para present illnesses
@@ -461,12 +527,30 @@ class MedicalHistory2 extends Component
         $medicationsQuery = MedicationRequest::where('patient_id', $this->patientId)
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner'])
             ->orderBy('created_at', 'desc');
+
+        // Si es doctor, filtrar solo medicamentos de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $medicationsQuery->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
         $medications = $this->applyFilters($medicationsQuery, 'created_at')->get();
 
         // Cargar servicios
         $servicesQuery = ServiceRequest::where('patient_id', $this->patientId)
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'cpt'])
             ->orderBy('created_at', 'desc');
+
+        // Si es doctor, filtrar solo servicios de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $servicesQuery->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
         $services = $this->applyFilters($servicesQuery, 'created_at')->get();
 
         // Agrupar por encounter
@@ -502,8 +586,9 @@ class MedicalHistory2 extends Component
 
         // Ordenar encounters por fecha más reciente
         $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
-            if($group['encounter'])
+            if ($group['encounter']) {
                 return $group['encounter']->start ?? $group['encounter']->created_at;
+            }
         });
 
         // Implementar paginación manual para encounters agrupados

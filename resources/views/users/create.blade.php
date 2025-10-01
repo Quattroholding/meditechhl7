@@ -26,7 +26,7 @@
                                     <h4>  {{ __('generic.create') }}
                                         @if(request()->get('role_id')==2)
                                             {{ __('user.doctor') }}
-                                        @elseif(request()->get('role_id')==5)
+                                        @elseif(request()->get('role_id')==3)
                                             {{ __('user.asistent') }}
                                         @else
                                             {{ __('user.title') }}
@@ -240,10 +240,10 @@
                     /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
                     case 5:
                     /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
-                    case 5:
+                    case 1:
                         $("#whatsapp").show();
                     /*-----FORMULARIO PARA ROLE ADMIN-----*/
-                    case 1:
+                    case 3:
                         //$("#client").show();
                         $('#first_name').show();
                         $("#last_name").show();
@@ -254,7 +254,7 @@
                         $("#confirm_password").show();
                         break;
                     /*-----FORMULARIO PARA ROLE DOCTOR-----*/
-                    case 3:
+                    case 2:
                         $("#client_id").show();
                         $("#id_type").show();
                         $("#id_number").show();

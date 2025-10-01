@@ -6,7 +6,7 @@
                     <div class="illness-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                         <div>
                             <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
-                                🤒 {{ $illness->encounter->reason }}
+                                🤒 {{ $illness->encounter->reason ?? 'Enfermedad Actual' }}
                             </h3>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                 @if($illness->severity)

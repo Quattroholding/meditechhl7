@@ -72,7 +72,7 @@ class RoomController extends Controller
             $request->session()->flash('message.success', 'Hubo un error y no se pudo crear el consultorio.');
         }
 
-        return redirect(route('client.room.edit', $id));
+        return redirect(route('client.room.index'));
     }
 
     public function destroy($id)
