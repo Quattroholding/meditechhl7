@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MedicalSpecialityController;
 use App\Http\Controllers\Api\MedicationRequestController;
 use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\PractitionerAuthorizationController;
 use App\Http\Controllers\Api\PractitionerController;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
@@ -63,6 +64,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
+
+    // Practitioner Authorization
+    Route::get('/practitioner/prescription-authorization/status', [PractitionerAuthorizationController::class, 'getPrescriptionAuthorizationStatus']);
+    Route::post('/practitioner/prescription-authorization', [PractitionerAuthorizationController::class, 'updatePrescriptionAuthorization']);
 
     // Recepy System - Prescription Management
     Route::prefix('recepy')->group(function () {

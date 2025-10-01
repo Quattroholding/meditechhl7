@@ -13,13 +13,16 @@ class Practitioner extends BaseModel
     use HasFactory,Notifiable;
 
     protected $fillable = [
-        'fhir_id', 'identifier', 'name', 'given_name', 'family_name','user_id',
+        'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
         'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'identifier_type',
+        'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
         'active' => 'boolean',
+        'prescription_authorization' => 'boolean',
+        'prescription_authorization_date' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -71,24 +74,24 @@ class Practitioner extends BaseModel
     public function insuranceCompanies()
     {
         return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
-                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
-                    ->withTimestamps();
+            ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+            ->withTimestamps();
     }
 
     public function acceptedInsurances()
     {
         return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
-                    ->wherePivot('accepts', true)
-                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
-                    ->withTimestamps();
+            ->wherePivot('accepts', true)
+            ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+            ->withTimestamps();
     }
 
     public function rejectedInsurances()
     {
         return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')
-                    ->wherePivot('accepts', false)
-                    ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
-                    ->withTimestamps();
+            ->wherePivot('accepts', false)
+            ->withPivot('accepts', 'custom_coverage_percentage', 'custom_copay_amount', 'notes')
+            ->withTimestamps();
     }
 
     public function avatar()
