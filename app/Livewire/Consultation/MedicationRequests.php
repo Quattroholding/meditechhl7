@@ -85,7 +85,7 @@ class MedicationRequests extends Component
         if (! $medicine_request) {
             $this->encounter->medicationRequests()->create([
                 'fhir_id' => 'medicationrequest-'.Str::uuid(),
-                'identifier' => 'RX-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'RX-'.strtoupper(Str::random(7)),
                 'status' => 'active',
                 'intent' => 'order',
                 'medication_id' => $medicine->id,
@@ -209,7 +209,7 @@ class MedicationRequests extends Component
                 // Crear nueva receta basada en la histórica
                 $newMedicationRequest = $this->encounter->medicationRequests()->create([
                     'fhir_id' => 'medicationrequest-'.Str::uuid(),
-                    'identifier' => 'RX-'.fake()->unique()->numerify('#######'),
+                    'identifier' => 'RX-'.strtoupper(Str::random(7)),
                     'status' => 'active',
                     'intent' => 'order',
                     'medication_id' => $medication['medication_id'],

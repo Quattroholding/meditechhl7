@@ -5,6 +5,7 @@ namespace App\Livewire\Consultation;
 use App\Models\CptCode;
 use App\Models\Encounter;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Procedures extends Component
@@ -54,7 +55,7 @@ class Procedures extends Component
         if (! $procedure) {
 
             $this->encounter->procedures()->create([
-                'fhir_id' => 'procedure-'.fake()->uuid(),
+                'fhir_id' => 'procedure-'.Str::uuid(),
                 'code' => $cpt->code,
                 'identifier' => $cpt->type,
                 'status' => 'in-progress',

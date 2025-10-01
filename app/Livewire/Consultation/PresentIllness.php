@@ -4,6 +4,7 @@ namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
 use App\Models\PresentIllnesType;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class PresentIllness extends Component
@@ -83,7 +84,7 @@ class PresentIllness extends Component
     public function create()
     {
         $this->present_illness = $this->encounter->presentIllnesses()->create([
-            'fhir_id' => 'condition-'.fake()->uuid(),
+            'fhir_id' => 'condition-'.Str::uuid(),
             'description' => '',
             'location' => $this->location,
             'severity' => $this->severity,

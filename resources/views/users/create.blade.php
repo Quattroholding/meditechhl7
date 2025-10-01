@@ -13,7 +13,6 @@
             <!-- /Page Header -->
             <div class="row">
                 <div class="col-sm-12">
-                    @include('partials.message')
                     @cannot('create',auth()->user())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                            {{__('user.plan_error_message')}}

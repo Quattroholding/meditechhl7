@@ -4,6 +4,7 @@ namespace App\Livewire\Consultation;
 
 use App\Models\ClinicalObservationType;
 use App\Models\Encounter;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class VitalSigns extends Component
@@ -60,7 +61,7 @@ class VitalSigns extends Component
                 if (! $vs) {
                     $vsType = ClinicalObservationType::whereCode($code)->first();
                     $this->encounter->vitalSigns()->create([
-                        'fhir_id' => 'observation-'.fake()->uuid(),
+                        'fhir_id' => 'observation-'.Str::uuid(),
                         'code' => $code,
                         'status' => 'final',
                         'category' => 'vital-signs',
@@ -97,7 +98,7 @@ class VitalSigns extends Component
 
             if (! $imc) {
                 $this->encounter->vitalSigns()->create([
-                    'fhir_id' => 'observation-'.fake()->uuid(),
+                    'fhir_id' => 'observation-'.Str::uuid(),
                     'code' => '39156-5',
                     'status' => 'final',
                     'category' => 'vital-signs',

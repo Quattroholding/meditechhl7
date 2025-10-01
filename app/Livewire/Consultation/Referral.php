@@ -75,7 +75,7 @@ class Referral extends Component
         if (! $referral) {
             $this->encounter->referrals()->create([
                 'fhir_id' => 'servicerequest-'.Str::uuid(),
-                'identifier' => 'REF-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'REF-'.strtoupper(Str::random(7)),
                 'status' => 'active',
                 'intent' => 'order',
                 'priority' => 'asap',
