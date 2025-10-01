@@ -36,6 +36,8 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'doctor_profile_id' =>$id,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
@@ -107,6 +109,8 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'doctor_profile_id' =>$id,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
@@ -174,6 +178,8 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'doctor_profile_id' =>$id,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
@@ -193,6 +199,8 @@ class RecepyDoctorProfileController extends Controller
 
         return response()->json([
             'success' => true,
+            'doctor_profile_id' =>$id,
+            'user_id' => auth()->id(),
             'message' => 'Perfil de doctor eliminado exitosamente',
         ]);
     }
@@ -218,6 +226,7 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado para este usuario',
             ], 404);
         }
@@ -251,6 +260,8 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'doctor_profile_id' => $request->doctor_profile_id,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }
