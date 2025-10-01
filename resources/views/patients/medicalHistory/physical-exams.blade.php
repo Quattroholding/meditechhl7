@@ -2,6 +2,7 @@
     @if($sectionData && count($sectionData) > 0)
         <div class="exams-grid" style="display: grid; gap: 25px;">
             @foreach($sectionData as $exam)
+                @if($exam)
                 <div class="exam-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease; hover: border-color: #3b82f6;">
                     <div class="exam-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                         <div>
@@ -9,7 +10,9 @@
                                 🔍 Examen Físico
                             </h3>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                @if($exam)
                                 <span class="badge badge-active">{{ ucfirst($exam->name) }}</span>
+                                @endif
                                 @if($exam->observationType && $exam->observationType->system)
                                     <span class="badge" style="background: #e0f2fe; color: #0277bd;">
                                         {{ $exam->observationType->system }}
@@ -150,6 +153,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             @endforeach
         </div>
         {{--}}
