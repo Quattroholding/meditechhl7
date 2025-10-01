@@ -166,7 +166,7 @@ class MedicalDirectory extends Component
 
             $appointmentData = [
                 'fhir_id' => 'appointment-'.Str::uuid(),
-                'identifier' => 'APT-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'APT-'.strtoupper(Str::random(7)),
                 'patient_id' => $this->patient_id,
                 'practitioner_id' => $this->doctor_id,
                 'client_id' => $client_id,
