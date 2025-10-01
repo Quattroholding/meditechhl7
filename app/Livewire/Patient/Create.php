@@ -124,7 +124,11 @@ class Create extends Component
     public function loadPrimaryPatients()
     {
         if ($this->is_dependent) {
+            // Only load patients from the current client to avoid 403 errors
             $this->primary_patients = Patient::select('id', 'name', 'identifier')
+                ->whereHas('clients', function ($query) {
+                    $query->where('clients.id', $this->client_id);
+                })
                 ->orderBy('name')
                 ->get()
                 ->toArray();

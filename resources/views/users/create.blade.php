@@ -13,6 +13,7 @@
             <!-- /Page Header -->
             <div class="row">
                 <div class="col-sm-12">
+                    @include('partials.message')
                     @cannot('create',auth()->user())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                            {{__('user.plan_error_message')}}
@@ -177,16 +178,18 @@
                             <div class="row">
                                 <div class="col-12 col-md-6 col-xl-6" style="display: none" id="password">
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="update_password_password" :value="__('Contraseña')" />
-                                        <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                        <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-label for="password" :value="__('Contraseña')" />
+                                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                        <p>&nbsp;</p>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-6" style="display: none" id="confirm_password">
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" />
-                                        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" /><p>&nbsp;</p>
+                                        <x-input-label for="password_confirmation" :value="__('user.confirm_password')" />
+                                        <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                        <p>&nbsp;</p>
                                     </div>
                                 </div>
                             </div>

@@ -66,12 +66,14 @@
                 <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control btn-fonts">
             </div>
             <div>
+                @if(!auth()->user()->hasRole('doctor'))
                 <select wire:model.live="selectedDoctor" class="form-control btn-fonts">
                     <option value="">Todos los doctores</option>
                     @foreach($doctors as $key=>$val)
                         <option value="{{ $key }}">{{ $val }}</option>
                     @endforeach
                 </select>
+                @endif
             </div>
             <div>
                 <select wire:model.live="selectedStatus" class="form-control btn-fonts">
@@ -91,12 +93,13 @@
             <div>
                 <button wire:click="exportFHIR" class="btn btn-secondary">Exportar FHIR</button>
             </div>
-            {{--}}
+
             <div class="col-xl-3 col-md-6 text-end">
                 <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full btn-fonts">
                     ⚙️ Configurar Bloques
                 </button>
             </div>
+           {{--}}
         </div>
 
         <!-- NUEVA SECCIÓN: Configuración de Bloques de Tiempo -->
