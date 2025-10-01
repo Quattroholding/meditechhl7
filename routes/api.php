@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PractitionerAuthorizationController;
 use App\Http\Controllers\Api\PractitionerController;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
+use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use Illuminate\Support\Facades\Route;
@@ -79,7 +80,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // File Management for Doctor Profiles
         Route::post('doctor-profiles/upload-file', [RecepyDoctorProfileController::class, 'uploadFile']);
 
-
         // Prescriptions
         Route::apiResource('prescriptions', RecepyPrescriptionController::class);
         Route::patch('prescriptions/{id}/status', [RecepyPrescriptionController::class, 'updateStatus']);
@@ -106,6 +106,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/order', [RecepyPrescriptionMedicationController::class, 'updateOrder']);
             Route::post('/bulk-update', [RecepyPrescriptionMedicationController::class, 'bulkUpdate']);
         });
+
+        // Medication Types
+        Route::get('medication-types', [RecepyMedicationTypeController::class, 'index']);
     });
 });
 
