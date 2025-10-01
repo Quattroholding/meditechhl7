@@ -321,6 +321,8 @@ class RecepyDoctorProfileController extends Controller
         if (! $profile) {
             return response()->json([
                 'success' => false,
+                'doctor_profile_id' =>$request->doctor_profile_id,
+                'user_id' => auth()->id(),
                 'message' => 'Perfil de doctor no encontrado',
             ], 404);
         }

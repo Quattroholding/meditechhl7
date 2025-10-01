@@ -103,7 +103,7 @@
                     @endif
 
                     <!-- Working Hours -->
-                    @if($practitioner->user->workingHours->count() > 0)
+                    @if($practitioner->user && $practitioner->user->workingHours->count() > 0)
                         <div class="border-t border-gray-200 px-6 py-4">
                             <h4 class="text-sm font-medium text-gray-900 mb-3">{{__('Horario Laboral')}}</h4>
                             <div class="space-y-2">

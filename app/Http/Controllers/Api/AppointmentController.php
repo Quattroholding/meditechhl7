@@ -621,7 +621,7 @@ class AppointmentController extends Controller
             // Create appointment
             $appointment = Appointment::create([
                 'fhir_id' => 'appointment-'.Str::uuid(),
-                'identifier' => 'APT-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'APT-'.strtoupper(Str::random(7)),
                 'patient_id' => $request->patient_id,
                 'practitioner_id' => $request->practitioner_id,
                 'start' => $startTime,

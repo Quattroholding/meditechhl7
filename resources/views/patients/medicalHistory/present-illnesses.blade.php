@@ -6,7 +6,7 @@
                     <div class="illness-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                         <div>
                             <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
-                                🤒 {{ $illness->encounter->reason ?? 'Enfermedad Actual' }}
+                                🤒 {{ $illness->encounter->reason }}
                             </h3>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                 @if($illness->severity)
@@ -25,9 +25,8 @@
                             </div>
                         </div>
                         <div style="text-align: right; font-size: 12px; color: #64748b;">
-                            <div><strong>Inicio:</strong> {{ Carbon\Carbon::parse($illness->onset_date)->format('d/m/Y') }}</div>
                             @if($illness->duration)
-                                <div><strong>Duración:</strong> {{ $illness->duration }}</div>
+                                <div><strong>📅 Consulta:</strong> {{  Carbon\Carbon::parse($illness->encounter->end)->format('d/m/Y') }}</div>
                             @endif
                         </div>
                     </div>
@@ -46,6 +45,26 @@
 
                     <!-- Síntomas y Características -->
                     <div class="symptoms-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        @if($illness->onset_date)
+                            <div class="symptom-item">
+                                <div style="font-size: 12px; color: #dc2626; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fa fa-clock"></i> Inicio
+                                </div>
+                                <div style="background: #fef2f2; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151;">
+                                    {{ Carbon\Carbon::parse($illness->onset_date)->format('d/m/Y') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if($illness->duration)
+                            <div class="symptom-item">
+                                <div style="font-size: 12px; color: #dc2626; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fa fa-shield"></i> Duración
+                                </div>
+                                <div style="background: #fef2f2; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151;">
+                                    {{ $illness->duration }}
+                                </div>
+                            </div>
+                        @endif
                         @if($illness->location)
                             <div class="symptom-item">
                                 <div style="font-size: 12px; color: #dc2626; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;">
@@ -165,7 +184,7 @@
                 </div>
             @endforeach
         </div>
-        
+
         <!-- Pagination Controls -->
         @if(isset($sectionData['last_page']) && $sectionData['last_page'] > 1)
             <div style="margin-top: 30px; display: flex; justify-content: center;">
