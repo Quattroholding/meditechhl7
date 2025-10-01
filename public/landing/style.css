@@ -206,7 +206,7 @@ body.loaded .hero {
     background-image: url("images/LANDING-PORTADA.png");
     background-size: cover;
     background-position: left;
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -238,11 +238,12 @@ body.loaded .hero {
 
 .hero-content {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
     flex-direction: column;
     max-width: 1200px;
     margin-bottom: 400px;
+    min-height: 60vh;
+    justify-content: center;
     z-index: 2;
 }
 
@@ -1012,8 +1013,8 @@ body.loaded .hero {
     }
     .hero-content{
         align-items: center;
-        margin-bottom: 18rem;
-        margin-top: 0;
+        margin-bottom: 10rem;
+        margin-top: 5rem;
     }
     .hero-logo img{
         width: 200px;
