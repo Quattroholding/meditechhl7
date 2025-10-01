@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Practitioner;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PractitionerAuthorizationController extends Controller
 {
@@ -19,10 +18,8 @@ class PractitionerAuthorizationController extends Controller
             'prescription_authorization_terms' => 'required_if:prescription_authorization,true|string',
         ]);
 
-        $user = Auth::user();
-
-        // Verificar que el usuario tenga un practitioner asociado
-        $practitioner = Practitioner::where('user_id', $user->id)->first();
+        // Verificar que el usuario tenga un practitioner asociado (sin scope)
+        $practitioner = DB::table('practitioners')->where('user_id', auth()->id())->first();
 
         if (! $practitioner) {
             return response()->json([
@@ -33,12 +30,18 @@ class PractitionerAuthorizationController extends Controller
 
         // Solo permitir activar la autorización, no desactivarla por API
         if ($validated['prescription_authorization'] === true) {
-            $practitioner->update([
-                'prescription_authorization' => true,
-                'prescription_authorization_date' => now(),
-                'prescription_authorization_ip' => $request->ip(),
-                'prescription_authorization_terms' => $validated['prescription_authorization_terms'],
-            ]);
+            DB::table('practitioners')
+                ->where('id', $practitioner->id)
+                ->update([
+                    'prescription_authorization' => true,
+                    'prescription_authorization_date' => now(),
+                    'prescription_authorization_ip' => $request->ip(),
+                    'prescription_authorization_terms' => $validated['prescription_authorization_terms'],
+                    'updated_at' => now(),
+                ]);
+
+            // Recargar el practitioner para obtener los datos actualizados
+            $practitioner = DB::table('practitioners')->where('id', $practitioner->id)->first();
 
             return response()->json([
                 'success' => true,
@@ -61,9 +64,8 @@ class PractitionerAuthorizationController extends Controller
      */
     public function getPrescriptionAuthorizationStatus()
     {
-        $user = Auth::user();
-
-        $practitioner = Practitioner::where('user_id', $user->id)->first();
+        // Buscar practitioner sin scope
+        $practitioner = DB::table('practitioners')->where('user_id', auth()->id())->first();
 
         if (! $practitioner) {
             return response()->json([
@@ -72,13 +74,26 @@ class PractitionerAuthorizationController extends Controller
             ], 404);
         }
 
+        // Verificar firma y sello desde la tabla files
+        $hasSignature = DB::table('files')
+            ->where('fileable_type', 'App\Models\Practitioner')
+            ->where('fileable_id', $practitioner->id)
+            ->where('type', 'signature')
+            ->exists();
+
+        $hasSeal = DB::table('files')
+            ->where('fileable_type', 'App\Models\Practitioner')
+            ->where('fileable_id', $practitioner->id)
+            ->where('type', 'seal')
+            ->exists();
+
         return response()->json([
             'success' => true,
             'data' => [
-                'prescription_authorization' => $practitioner->prescription_authorization,
+                'prescription_authorization' => (bool) $practitioner->prescription_authorization,
                 'prescription_authorization_date' => $practitioner->prescription_authorization_date,
-                'has_signature' => $practitioner->signature() !== null,
-                'has_seal' => $practitioner->seal() !== null,
+                'has_signature' => $hasSignature,
+                'has_seal' => $hasSeal,
             ],
         ]);
     }
