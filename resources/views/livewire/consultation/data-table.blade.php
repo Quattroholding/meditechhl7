@@ -20,9 +20,11 @@
                                 <th data-column="id" data-priority="1" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('id')">
                                     Id @if ($sortDirection === 'asc') ▲ @else ▼ @endif
                                 </th>
+                                @if(!auth()->user()->hasRole('doctor'))
                                 <th data-column="practitioner" data-priority="2" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('practitioners.name')">
                                     {{__('encounter.practitioner')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
                                 </th>
+                                @endif
                                 <th data-column="patient" data-priority="3" class="border-b border-gray-300 p-2 cursor-pointer" wire:click="sortBy('patients.name')">
                                     {{__('encounter.patient')}} @if ($sortDirection === 'asc') ▲ @else ▼ @endif
                                 </th>
@@ -49,9 +51,11 @@
                                         </span>
                                         <span class="cell-content">{{$dato->id}}</span>
                                     </td>
+                                    @if(!auth()->user()->hasRole('doctor'))
                                     <td data-column="practitioner" data-priority="2" data-label="{{__('encounter.practitioner')}}">
                                         <span class="cell-content">{!!  $dato->practitioner->profile_name !!}</span>
                                     </td>
+                                    @endif
                                     <td data-column="patient" data-priority="3" data-label="{{__('encounter.patient')}}">
                                         <span class="cell-content">{!!  $dato->patient->profile_name !!}</span>
                                     </td>

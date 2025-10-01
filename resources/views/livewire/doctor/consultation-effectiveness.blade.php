@@ -67,7 +67,7 @@
                 <div class="col-md-3">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-success">{{ $conversionRate }}%</h5>
-                        <small class="text-muted">Tasa Completación</small>
+                        <small class="text-muted">Tasa Completadas</small>
                     </div>
                 </div>
                 <div class="col-md-3">

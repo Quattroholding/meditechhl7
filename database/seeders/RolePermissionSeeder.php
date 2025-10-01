@@ -174,6 +174,7 @@ class RolePermissionSeeder extends Seeder
             'patients.view',
             'patients.create',
             'patients.edit',
+            'patients.update',
             'patients.medical_history',
             'patients.add_note',
             'patients.insurance',

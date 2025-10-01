@@ -55,34 +55,36 @@
                                     @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
                                     <td data-column="name" data-priority="7" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
+                                                @can('patients.edit')
+                                                    <a  href="{{ route('patient.show',$patient->id) }}" class="btn btn-info btn-sm" title="{{__('generic.show')}}">
+                                                        <i  class="fa-solid fa-eye m-r-5  text-white"></i>
+                                                    </a>
+                                                    <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
+                                                        <i  class="fa-solid fa-pen-to-square m-r-5"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('patients.medical_history')
+                                                    <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-dark btn-sm" title="{{__('patient.medical_history')}}">
+                                                        <i  class="fa fa-file-text-o m-r-5"></i>
+                                                    </a>
+                                                @endcan
                                                 @can('patients.add_note')
                                                 <a wire:click="openModalNote({{ $patient->id }})" class="btn btn-warning btn-sm" title="Add Note">
                                                     <i  class="fa-solid fa-sticky-note m-r-5"></i>
                                                 </a>
                                                 @endcan
 
-                                                @can('patients.insurance')
-                                                <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{__('Gestionar Seguros')}}">
-                                                    <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
-                                                </a>
-                                                @endcan
-                                                @can('patients.medical_history')
-                                                <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-dark btn-sm" title="{{__('patient.medical_history')}}">
-                                                    <i  class="fa fa-file-text-o m-r-5"></i>
-                                                </a>
-                                                @endcan
+
+
                                                 @if(auth()->user()->can('profile',$patient))
                                                 <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">
                                                     <i  class="fa-solid fa-cog m-r-5"></i>
                                                 </a>
                                                 @endif
-                                                @can('patients.edit')
-                                                <a  href="{{ route('patient.show',$patient->id) }}" class="btn btn-info btn-sm" title="{{__('generic.show')}}">
-                                                    <i  class="fa-solid fa-eye m-r-5  text-white"></i>
-                                                </a>
-                                                <a  href="{{ route('patient.edit',$patient->id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
-                                                    <i  class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                </a>
+                                                @can('patients.insurance')
+                                                    <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{__('Gestionar Seguros')}}">
+                                                        <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
+                                                    </a>
                                                 @endcan
                                                {{--}}@can('patients.delete')
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('patient.destroy', $patient->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">

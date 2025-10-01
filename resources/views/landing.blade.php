@@ -20,7 +20,7 @@
             <div class="loader-spinner"></div>
         </div>
     </div>
-    
+
     <!-- Header -->
     <header class="header" id="header">
         <nav class="nav">
@@ -43,7 +43,7 @@
                 <img src="{{ asset('landing/images/search-icon.svg') }}" alt="Buscar">
                 BUSCAR
             </button>{{--}}
-            
+
         </nav>
         <div class="off-screen-menu">
             <ul class="nav-mobile">
@@ -111,7 +111,7 @@
                 <div class="feature-item custom-item">
                     <div class="feature-number">2</div>
                     <div class="feature-content">
-                        <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet e smartphone).</h3>
+                        <h3>Acceder a la información del paciente en cualquier momento y desde cualquier dispositivo (PC, tablet y/o smartphone).</h3>
                     </div>
                     <img src="{{ asset('landing/images/Foto-3.png') }}" alt="Dispositivos" class="feature-image">
                 </div>
@@ -141,7 +141,7 @@
 
                 <div class="audience-item">
                     <img src="{{ asset('landing/images/Foto-5.png') }}" alt="Clínicas y centros médicos" class="audience-image">
-                    <h3>Clínicas y centros médicos de todos los tamaños</h3>
+                    <h3>Clínicas y centros médicos de todos los niveles de atención</h3>
                 </div>
 
                 <div class="audience-item">
@@ -158,22 +158,23 @@
             <h2>Funcionalidades clave</h2>
 
             <div class="key-features-grid">
+
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/Icono-1.png') }}" alt="Registros digitales" class="key-feature-icon">
-                    <h3>Historia clínica digital centralizada</h3>
-                    <p>Consulta, actualiza y gestiona el historial médica de cada paciente con facilidad y precisión.</p>
+                    <img src="{{ asset('landing/images/Icono-3.png') }}" alt="Cumplimiento y seguridad" class="key-feature-icon">
+                    <h3>Gestión de citas y personal</h3>
+                    <p>Administra de forma integral las citas médicas y coordina la disponibilidad de tu equipo médico y administrativo. Permite agendar citas en línea, coordinar horarios y gestionar la atención que brinda tu personal, desde una sola plataforma.</p>
                 </div>
 
                 <div class="key-feature">
                     <img src="{{ asset('landing/images/Icono-2.png') }}" alt="Programación inteligente" class="key-feature-icon">
                     <h3>Directorio médico inteligente</h3>
-                    <p>Optimiza consulta y organiza la agenda médica automáticamente con facilidad y precisión.</p>
+                    <p>Centraliza la información de médicos, especialidades y horarios en un sistema dinámico que organiza y actualiza automáticamente la agenda médica con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
-                    <img src="{{ asset('landing/images/Icono-3.png') }}" alt="Cumplimiento y seguridad" class="key-feature-icon">
-                    <h3>Gestión de citas y personal</h3>
-                    <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
+                    <img src="{{ asset('landing/images/Icono-1.png') }}" alt="Registros digitales" class="key-feature-icon">
+                    <h3>Historia clínica digital centralizada</h3>
+                    <p>Consulta, actualiza y gestiona el historial médica de cada paciente con facilidad y precisión.</p>
                 </div>
 
                 <div class="key-feature">
@@ -203,16 +204,16 @@
 
             <div class="benefits-list">
                 <div class="benefit-item">
-                    <span class="benefit-text">Mayor control y organización</span>
+                    <span class="benefit-text">Toda tu clínica en una sola plataforma digital, simple y segura</span>
                 </div>
                 <div class="benefit-item">
-                    <span class="benefit-text">Datos seguros y siempre disponibles</span>
+                    <span class="benefit-text">Mejora la organización y gestión de los servicios que ofreces</span>
                 </div>
                 <div class="benefit-item">
-                    <span class="benefit-text">Menos papeleo = más tiempo para tus pacientes</span>
+                    <span class="benefit-text">Reduce errores, optimiza procesos y mejora la experiencia de tus pacientes </span>
                 </div>
                 <div class="benefit-item">
-                    <span class="benefit-text">Una mejor experiencia para pacientes y tu equipo</span>
+                    <span class="benefit-text">Conéctate desde cualquier lugar y dispositivo</span>
                 </div>
             </div>
         </div>
@@ -301,19 +302,19 @@
     window.addEventListener('load', function() {
         const loader = document.getElementById('loader');
         const body = document.body;
-        
+
         // Esperar un momento adicional para asegurar que todo cargó
         setTimeout(() => {
             loader.classList.add('hidden');
             body.classList.add('loaded');
-            
+
             // Remover el loader del DOM después de la transición
             setTimeout(() => {
                 loader.remove();
             }, 500);
         }, 300);
     });
-    
+
     // Prevenir FOUC (Flash of Unstyled Content)
     document.addEventListener('DOMContentLoaded', function() {
         const heroBackground = new Image();

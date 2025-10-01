@@ -173,12 +173,20 @@ class PatientController extends Controller
             return view('Pages.error-403');
         }
 
+        $client_id = 1;
+        if (auth()->user()->getCurrentClient()) {
+            $client_id = auth()->user()->getCurrentClient()->id;
+        }
+
         // Load existing relationships
         $relationships = $data->relationships()->with('relatedPatient')->get();
         $currentRelationship = $relationships->first();
 
         // Load all patients for dependency selection (excluding current patient)
         $availablePatients = Patient::where('id', '!=', $id)
+            ->whereHas('clients', function ($query) use($client_id){
+                $query->where('clients.id', $client_id);
+            })
             ->select('id', 'name', 'identifier')
             ->orderBy('name')
             ->get();
@@ -191,7 +199,7 @@ class PatientController extends Controller
         // dd($request->all());
         $validated = $request->validate([
             'identifier' => 'required',
-            'id_type' => 'required',
+            'identifier_type' => 'required',
             'given_name' => 'required',
             'family_name' => 'required',
             'gender' => 'required',
@@ -207,7 +215,7 @@ class PatientController extends Controller
         $model = Patient::findOrFail($id);
         $model->fill($request->except('birth_date', 'id_type', 'phone'));
         $model->name = $request->given_name.' '.$request->family_name;
-        $model->identifier_type = $request->id_type;
+        $model->identifier_type = $request->identifier_type;
         $model->phone = $request->full_phone;
         $model->birth_date = substr($request->birth_date, 6, 4).'-'.substr($request->birth_date, 3, 2).'-'.substr($request->birth_date, 0, 2);
 
