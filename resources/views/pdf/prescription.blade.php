@@ -306,21 +306,10 @@
 
                 <div class="logo-section">
                     <div class="logo-box">
-                        @if($prescription->doctorProfile->logo)
-                            @if(!empty($pdfService) && $pdfService->isPrivateImage($prescription->doctorProfile->logo))
-                                @php $logoDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->logo); @endphp
-                                @if($logoDataUri)
-                                    <img src="{{ $logoDataUri }}" alt="Logo" class="doctor-logo">
-                                @else
-                                    LOGO
-                                @endif
-                            @elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                                <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
-                            @else
-                                LOGO
-                            @endif
+                        @if(file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
+                            <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
                         @else
-                            LOGO
+                            LOGO CLINICA
                         @endif
                     </div>
                     <strong>{{ $prescription->doctorProfile->user->first_name }} {{ $prescription->doctorProfile->user->last_name }}</strong>
