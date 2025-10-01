@@ -645,6 +645,8 @@ class MedicalHistory2 extends Component
     {
         if (auth()->user()->hasRole('doctor')) {
             $query = Note::wherePractitionerId(auth()->user()->practitioner->id)->where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
+        }elseif(auth()->user()->hasRole('admin')){
+            $query = Note::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
         }
 
         $this->personalNotes = $this->applyFilters($query, 'created_at')->get();

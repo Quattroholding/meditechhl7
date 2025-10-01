@@ -104,6 +104,7 @@
                     <i class="feather-activity me-2 text-primary"></i>Información Médica
                 </h5>
                 <div class="row">
+                    {{--}}
                     <div class="col-md-4">
                         <div class="info-item mb-3">
                             <label class="info-label">ID FHIR</label>
@@ -112,6 +113,7 @@
                             </p>
                         </div>
                     </div>
+                    {{--}}
                     <div class="col-md-4">
                         <div class="info-item mb-3">
                             <label class="info-label">Estado</label>

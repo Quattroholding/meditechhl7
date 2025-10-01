@@ -9,10 +9,8 @@
                                 🔍 Examen Físico
                             </h3>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                @if($exam->observationType->name)
-                                    <span class="badge badge-active">{{ ucfirst($exam->name) }}</span>
-                                @endif
-                                @if($exam->observationType->system)
+                                <span class="badge badge-active">{{ ucfirst($exam->name) }}</span>
+                                @if($exam->observationType && $exam->observationType->system)
                                     <span class="badge" style="background: #e0f2fe; color: #0277bd;">
                                         {{ $exam->observationType->system }}
                                     </span>
