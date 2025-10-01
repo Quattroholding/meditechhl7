@@ -325,6 +325,9 @@ class RecepyDoctorProfileController extends Controller
             ], 422);
         }
 
+        Log::info('Los datos enviados son :');
+        Log::info($request->all());
+
         $profile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
             ->where('user_id', auth()->id())
             ->first();
