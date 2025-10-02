@@ -1,4 +1,32 @@
 <div class="conditions-content">
+    <!-- Search Bar -->
+    <div style="margin-bottom: 25px;">
+        <div style="position: relative; max-width: 500px;">
+            <input
+                type="text"
+                wire:model.live.debounce.300ms="conditionsSearchTerm"
+                placeholder="🔍 Buscar por nombre o código ICD-10..."
+                style="width: 100%; padding: 12px 40px 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; outline: none; transition: all 0.3s ease;"
+                onfocus="this.style.borderColor='#7c3aed'; this.style.boxShadow='0 0 0 3px rgba(124, 58, 237, 0.1)'"
+                onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+            >
+            @if($conditionsSearchTerm)
+                <button
+                    wire:click="$set('conditionsSearchTerm', '')"
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: #94a3b8; font-size: 18px; padding: 5px;"
+                    title="Limpiar búsqueda"
+                >
+                    ✕
+                </button>
+            @endif
+        </div>
+        @if($conditionsSearchTerm)
+            <div style="margin-top: 10px; font-size: 13px; color: #64748b;">
+                Buscando: <strong style="color: #7c3aed;">{{ $conditionsSearchTerm }}</strong>
+            </div>
+        @endif
+    </div>
+
     @if($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : count($sectionData) > 0))
         <div class="conditions-grid" style="display: grid; gap: 20px;">
             @foreach((isset($sectionData['data']) ? $sectionData['data'] : $sectionData) as $condition)

@@ -105,6 +105,9 @@ class MedicalHistory2 extends Component
 
     public $totalPresentIllnessCount = 0;
 
+    // Filtros de búsqueda por sección
+    public $conditionsSearchTerm = '';
+
     protected $paginationTheme = 'bootstrap';
 
     protected $queryString = [
@@ -486,6 +489,14 @@ class MedicalHistory2 extends Component
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'icd10Code'])
             ->orderBy('onset_date', 'desc');
 
+        // Aplicar filtro de búsqueda por nombre o código ICD-10
+        if ($this->conditionsSearchTerm) {
+            $query->where(function ($q) {
+                $q->where('onset_info', 'like', '%'.$this->conditionsSearchTerm.'%')
+                    ->orWhere('code', 'like', '%'.$this->conditionsSearchTerm.'%');
+            });
+        }
+
         $allConditions = $this->applyFilters($query, 'onset_date')->get();
 
         // Implementar paginación para conditions
@@ -728,6 +739,12 @@ class MedicalHistory2 extends Component
     public function updatedSearchTerm()
     {
         $this->resetPage();
+        $this->reloadCurrentSection();
+    }
+
+    public function updatedConditionsSearchTerm()
+    {
+        $this->currentConditionsPage = 1;
         $this->reloadCurrentSection();
     }
 
