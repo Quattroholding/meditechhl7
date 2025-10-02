@@ -126,7 +126,9 @@
                                                             <th>{{ __('encounter.vital_sign_type') }}</th>
                                                             <th>{{ __('encounter.value') }}</th>
                                                             <th>{{ __('encounter.unit') }}</th>
+                                                            {{--}}
                                                             <th>{{ __('encounter.recorded_date') }}</th>
+                                                            {{--}}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -135,7 +137,9 @@
                                                                 <td>{{ $vitalSign->observationType->description ?? $vitalSign->code }}</td>
                                                                 <td>{{ $vitalSign->value }}</td>
                                                                 <td>{{ $vitalSign->observationType->default_unit ?? $vitalSign->unit }}</td>
+                                                                {{--}}
                                                                 <td>{{ $vitalSign->effective_date ? $vitalSign->effective_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                                {{--}}
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -152,7 +156,15 @@
                                         <div class="card-body">
                                                 <dl class="dl-horizontal">
                                                     <dt>{{ __('encounter.location') }}</dt>
-                                                    <dd>{{$encounter->presentIllnesses->location}}</dd>
+                                                    <dd>
+                                                        @if(isset(json_decode($encounter->presentIllnesses)->location) && json_decode($encounter->presentIllnesses->location))
+                                                            @foreach(json_decode($encounter->presentIllnesses->location) as $v)
+                                                               {{$v[0]}}
+                                                            @endforeach
+                                                        @else
+                                                            {{$encounter->presentIllnesses->location}}
+                                                        @endif
+                                                    </dd>
                                                     <dt>{{ __('encounter.severity') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->severity}}</dd>
                                                     <dt>{{ __('encounter.duration') }}</dt>
@@ -185,7 +197,9 @@
                                                     <tr>
                                                         <th>{{ __('encounter.body_system') }}</th>
                                                         <th>{{ __('encounter.findings') }}</th>
+                                                        {{--}}
                                                         <th>{{ __('encounter.exam_date') }}</th>
+                                                        {{--}}
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -198,7 +212,9 @@
                                                                     {{$value}}
                                                                 @endforeach
                                                             </td>
+                                                            {{--}}
                                                             <td>{{ $exam->effective_date ? $exam->effective_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                            {{--}}
                                                         </tr>
                                                     @endforeach
                                                     </tbody>
@@ -269,7 +285,7 @@
                                                                 <td>{{ $service->cpt->description_es }}</td>
                                                                 <td>{{$service->service_type}}</td>
                                                                 <td>
-                                                                    <span class="badge badge-{{ $service->status == 'active' ? 'success' : 'secondary' }}">
+                                                                    <span class="badge bg-{{ $service->status == 'active' ? 'success' : 'secondary' }}">
                                                                         {{ ucfirst($service->status) }}
                                                                     </span>
                                                                 </td>

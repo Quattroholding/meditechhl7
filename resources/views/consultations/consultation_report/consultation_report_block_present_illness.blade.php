@@ -77,7 +77,15 @@ $exit_text[0] = "";
                 ?>
                 <tr>
                     <td>{!! $item['label'] !!}:</td>
-                    <td>{!! line_if_empty(urldecode($exit_text[0])) !!}</td>
+                    <td>
+                        @if(isset(json_decode($exit_text[0])->location))
+                            @foreach(json_decode($exit_text[0]) as $v)
+                                {{$v[0]}}
+                            @endforeach
+                        @else
+                          {!! line_if_empty(urldecode($exit_text[0])) !!}
+                        @endif
+                    </td>
                 </tr>
             @endif
         @endforeach

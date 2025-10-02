@@ -409,4 +409,14 @@ class Patient extends BaseModel
                 return $contact->getContactInfo();
             })->toArray();
     }
+
+    public function getGenderAttribute($attr): string
+    {
+        if(strtolower($attr)=='female'){
+            return 'Femenino';
+        }
+
+        return 'Masculino';
+
+    }
 }

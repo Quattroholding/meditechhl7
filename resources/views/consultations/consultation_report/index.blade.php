@@ -214,10 +214,10 @@
 
     <!--------------------- Plan -------------------------------------------------------->
     @include('consultations.consultation_report.consultation_report_block_plan')
-
+    {{--}}
     <!--------------------- General notes ----------------------------------------------->
     @include('consultations.consultation_report.consultation_report_block_general_notes')
-
+    {{--}}
     <!--------------------- Preguntas Urología - Índice Internacional de Síntomas Prostáticos ----------------------------------------------->
     @if($Test_Urologia_Resultado>-1)
         @include('consultations.consultation_report.consultation_urologia_index_internacional_sintomas_prostaticos', ['Test_Urologia_Resultado' => $Test_Urologia_Resultado])

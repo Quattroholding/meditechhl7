@@ -6,7 +6,9 @@ use App\Models\Client;
 use App\Models\ClientTheme;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
+use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\ServiceRequest;
+use App\Services\PrescriptionPdfService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,10 +56,12 @@ class MedicalDocumentController extends Controller
                 'date' => Carbon::parse($encounter->end),
                 'prescriptionNumber' => 'RX-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
+                'doctorProfile'=>RecepyDoctorProfile::whereUserId($encounter->practitioner->user_id)->first(),
+                'pdfService'=> new PrescriptionPdfService(),
             ];
 
             // Generar PDF
-            $pdf = PDF::loadView('documents.prescription', $data);
+            $pdf = PDF::loadView('documents.prescription-new', $data);
             $pdf->setPaper('letter', 'portrait');
 
             // Nombre del archivo
