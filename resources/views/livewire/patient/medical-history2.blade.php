@@ -588,6 +588,7 @@
                          <span class="nav-count">{{ $overviewData['total_notes'] ?? 0 }}</span>
                     </div>
                 </li>
+                @if(auth()->user()->hasRole('doctor'))
                 <li class="nav-item">
                     <div wire:click="changeSection('personal-notes')"
                          class="nav-link {{ $activeSection === 'personal-notes' ? 'active' : '' }}">
@@ -596,6 +597,7 @@
                         <span class="nav-count">{{ $overviewData['total_personal_notes'] ?? 0 }}</span>
                     </div>
                 </li>
+                @endif
             </ul>
         </div>
 
@@ -839,7 +841,9 @@
                             @include('patients.medicalHistory.medical-notes')
                             @break
                         @case('personal-notes')
+                            @if(auth()->user()->hasRole('doctor'))
                             @include('patients.medicalHistory.personal-notes')
+                            @endif
                             @break
                     @endswitch
                 @endif
