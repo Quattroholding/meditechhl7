@@ -1,8 +1,7 @@
 <div class="physical-exams-content">
-    @if($sectionData && count($sectionData) > 0)
+    @if($sectionData['grouped_by_encounter'] && count($sectionData['grouped_by_encounter']) > 0)
         <div class="exams-grid" style="display: grid; gap: 25px;">
             @foreach($sectionData as $exam)
-                @if($exam)
                 <div class="exam-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease; hover: border-color: #3b82f6;">
                     <div class="exam-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                         <div>
@@ -153,7 +152,6 @@
                         </div>
                     </div>
                 </div>
-                @endif
             @endforeach
         </div>
         {{--}}

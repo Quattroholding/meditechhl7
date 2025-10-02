@@ -1,5 +1,5 @@
 <div class="vital-signs-content">
-    @if($sectionData && count($sectionData) > 0)
+    @if($sectionData['grouped_by_encounter'] && count($sectionData['grouped_by_encounter']) > 0)
         <!-- Tabla completa -->
         <div class="data-table-container">
             <table class="data-table">

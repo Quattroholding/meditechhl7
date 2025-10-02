@@ -801,7 +801,7 @@
                                     🤒 {{ $encountersPerPage }} por página
                                 </span>
                             </div>
-                            @include('patients.medicalHistory.present-illnesses')
+                            @include('patients.medicalHistory.present-illnesses-grouped')
                             @break
                         @case('medical-requests')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">

@@ -91,7 +91,14 @@
                                             </div>
                                             @if($medication->dosage_instruction)
                                                 <div style="background: white; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151; border: 1px solid #d1fae5;">
-                                                    <strong>📋 Instrucciones:</strong> {{ $medication->dosage_instruction }}
+                                                    <strong>📋 Instrucciones:</strong>
+                                                    @if(is_array($medication->dosage_instruction))
+                                                        @foreach($medication->dosage_instruction as $i)
+                                                            {{ $i }}
+                                                        @endforeach
+                                                    @else
+                                                        {{$medication->dosage_instruction}}
+                                                    @endif
                                                 </div>
                                             @endif
                                         </div>
@@ -210,15 +217,15 @@
                 </div>
             @endforeach
         </div>
-        
+
         <!-- Pagination Controls -->
         @if(isset($sectionData['last_page']) && $sectionData['last_page'] > 1)
             <div style="margin-top: 30px; display: flex; justify-content: center;">
                 <nav style="display: flex; align-items: center; gap: 10px;">
                     <!-- Previous Button -->
                     @if($sectionData['current_page'] > 1)
-                        <button wire:click="previousEncounterPage" 
-                                class="pagination-btn" 
+                        <button wire:click="previousEncounterPage"
+                                class="pagination-btn"
                                 style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
                             ← Anterior
                         </button>
@@ -236,7 +243,7 @@
                                     {{ $page }}
                                 </span>
                             @else
-                                <button wire:click="gotoEncounterPage({{ $page }})" 
+                                <button wire:click="gotoEncounterPage({{ $page }})"
                                         style="background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; min-width: 40px; text-align: center; transition: all 0.3s ease;">
                                     {{ $page }}
                                 </button>
@@ -246,8 +253,8 @@
 
                     <!-- Next Button -->
                     @if($sectionData['current_page'] < $sectionData['last_page'])
-                        <button wire:click="nextEncounterPage" 
-                                class="pagination-btn" 
+                        <button wire:click="nextEncounterPage"
+                                class="pagination-btn"
                                 style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
                             Siguiente →
                         </button>
@@ -261,7 +268,7 @@
 
             <!-- Pagination Info -->
             <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #64748b;">
-                Mostrando consultas {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }} 
+                Mostrando consultas {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
                 de {{ $sectionData['total_encounters'] ?? 0 }} total
             </div>
         @endif

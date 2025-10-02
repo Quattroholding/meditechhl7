@@ -424,6 +424,20 @@ class MedicalHistory2 extends Component
 
         $physicalExams = $this->applyFilters($query, 'created_at')->get();
 
+        // Filtrar exámenes que tengan al menos un hallazgo o dato registrado
+        $physicalExams = $physicalExams->filter(function ($exam) {
+            return $exam->name ||
+                   $exam->finding ||
+                   $exam->cardiovascular_findings ||
+                   $exam->respiratory_findings ||
+                   $exam->abdominal_findings ||
+                   $exam->neurological_findings ||
+                   $exam->musculoskeletal_findings ||
+                   $exam->skin_findings ||
+                   $exam->impression ||
+                   $exam->recommendations;
+        });
+
         if ($this->groupPhysicalExamsByEncounter) {
             // Agrupar por encounter
             $groupedExams = $physicalExams->groupBy('encounter_id');
@@ -463,6 +477,7 @@ class MedicalHistory2 extends Component
         } else {
             $this->physicalExams = $physicalExams;
         }
+
     }
 
     private function loadConditions()
@@ -505,19 +520,40 @@ class MedicalHistory2 extends Component
 
         $allPresentIllnesses = $this->applyFilters($query, 'created_at')->get();
 
-        // Implementar paginación para present illnesses
-        $this->totalPresentIllnessCount = $allPresentIllnesses->count();
+        // Agrupar por encounter
+        $groupedIllnesses = $allPresentIllnesses->groupBy('encounter_id');
+
+        // Crear estructura agrupada por encounter
+        $encounterGroups = [];
+
+        foreach ($groupedIllnesses as $encounterId => $illnesses) {
+            $encounterGroups[$encounterId] = [
+                'encounter' => $illnesses->first()->encounter,
+                'present_illnesses' => $illnesses,
+            ];
+        }
+
+        // Ordenar encounters por fecha más reciente
+        $encounterGroups = collect($encounterGroups)->sortByDesc(function ($group) {
+            if ($group['encounter']) {
+                return $group['encounter']->start ?? $group['encounter']->created_at;
+            }
+        });
+
+        // Implementar paginación para encounters agrupados
+        $this->totalPresentIllnessCount = $encounterGroups->count();
         $offset = ($this->currentPresentIllnessPage - 1) * $this->encountersPerPage;
-        $paginatedPresentIllnesses = $allPresentIllnesses->slice($offset, $this->encountersPerPage);
+        $paginatedGroups = $encounterGroups->slice($offset, $this->encountersPerPage);
 
         $this->presentIllnesses = [
-            'data' => $paginatedPresentIllnesses,
+            'grouped_by_encounter' => $paginatedGroups,
             'total' => $this->totalPresentIllnessCount,
             'current_page' => $this->currentPresentIllnessPage,
             'per_page' => $this->encountersPerPage,
             'last_page' => ceil($this->totalPresentIllnessCount / $this->encountersPerPage),
             'from' => $this->totalPresentIllnessCount > 0 ? $offset + 1 : 0,
             'to' => min($offset + $this->encountersPerPage, $this->totalPresentIllnessCount),
+            'original_illnesses' => $allPresentIllnesses,
         ];
     }
 
@@ -645,7 +681,7 @@ class MedicalHistory2 extends Component
     {
         if (auth()->user()->hasRole('doctor')) {
             $query = Note::wherePractitionerId(auth()->user()->practitioner->id)->where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
-        }elseif(auth()->user()->hasRole('admin')){
+        } elseif (auth()->user()->hasRole('admin')) {
             $query = Note::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
         }
 
