@@ -226,7 +226,15 @@
                                                         @foreach($encounter->medicationRequests as $medication)
                                                             <tr>
                                                                 <td>{{ $medication->medicine ? $medication->medicine->full_name :  $medication->medication }}</td>
-                                                                <td>{{ $medication->dosage_instruction }}</td>
+                                                                <td>
+                                                                    @if(is_array($medication->dosage_instruction))
+                                                                        @foreach($medication->dosage_instruction as $i)
+                                                                            {{$i}}
+                                                                        @endforeach
+                                                                    @else
+                                                                    {{ $medication->dosage_instruction }}
+                                                                    @endif
+                                                                </td>
                                                                 <td>{!! $medication->status !!}</td>
                                                             </tr>
                                                         @endforeach

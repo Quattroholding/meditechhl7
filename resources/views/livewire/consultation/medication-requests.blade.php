@@ -21,14 +21,14 @@
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
                                                    wire:model="quantitys.{{$m->id}}"
                                                    name="quantity" type="number"
-                                                   class="block mt-1 w-full" placeholder="Ejemplo : 2 tabletas"/>
+                                                   class="block mt-1 w-full" placeholder="Ejemplo : 2"/>
                                 </div>
                                 <div class="input-block local-forms">
                                     <x-input-label for="frecuency" :value="__('Frecuencia (Horas)')" />
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'frequency')"
                                                    wire:model="frecuencies.{{$m->id}}"
                                                    name="frequency" type="number"
-                                                   class="block mt-1 w-full" placeholder="Ejemplo : Cada 12 horas"/>
+                                                   class="block mt-1 w-full" placeholder="Ejemplo : 12"/>
                                 </div>
 
                             </td>
@@ -53,7 +53,7 @@
                                     <x-input-label for="duration" :value="__('Duración (Días)')" />
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'duration')"
                                                    wire:model="durations.{{$m->id}}"
-                                                   name="duration" type="number"  class="block mt-1 w-full" placeholder="Ejemplo : por 5 dias"/>
+                                                   name="duration" type="number"  class="block mt-1 w-full" placeholder="Ejemplo : 5"/>
                                 </div>
                             </td>
                         </tr>
