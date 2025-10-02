@@ -238,5 +238,14 @@ class EncounterSecctionSeeder extends Seeder
             ],
         ]);
 
+        EncounterSection::create([
+            'name' => 'General Note',
+            'name_esp' => 'Nota General',
+            'table_list' => null,
+            'table_list_filter' => null,
+            'livewire_component_name' => 'consultation.general_note',
+            'livewire_component_fields' => [['name' => 'general_note', 'type' => 'textarea', 'table_list_id' => null]],
+        ]);
+
     }
 }
