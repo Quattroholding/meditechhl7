@@ -90,11 +90,11 @@ class ConsultationController extends Controller
             $invoice = null;
 
             if ($chargeItems->count() > 0) {
-                // Find or create patient account
-                $patient = Patient::find($appointment->patient_id);
+                // Find or create patient account - use encounter's patient_id instead of appointment's
+                $patient = Patient::find($encounter->patient_id);
 
                 if (! $patient) {
-                    throw new \Exception("Patient {$appointment->patient_id} not found for appointment {$appointment->id}");
+                    throw new \Exception("Patient {$encounter->patient_id} not found for encounter {$encounter->id}");
                 }
 
                 // Get client_id from user or appointment
@@ -163,7 +163,7 @@ class ConsultationController extends Controller
                         'identifier' => $identifier,
                         'status' => 'issued',
                         'type' => 'invoice',
-                        'patient_id' => $appointment->patient_id,
+                        'patient_id' => $encounter->patient_id,
                         'encounter_id' => $encounter->id,
                         'account_id' => $account->id,
                         'date' => now(),
@@ -176,8 +176,8 @@ class ConsultationController extends Controller
                         'total_amount' => 0,
                         'amount_due' => 0,
                         'payment_status' => 'unpaid',
-                        'recipient_patient_id' => $appointment->patient_id,
-                        'performer_practitioner_id' => $appointment->practitioner_id,
+                        'recipient_patient_id' => $encounter->patient_id,
+                        'performer_practitioner_id' => $encounter->practitioner_id,
                         'client_id' => $clientId,
                         'issuer_organization_id' => $clientId,
                         'created_by' => auth()->id(),
@@ -187,8 +187,8 @@ class ConsultationController extends Controller
                     \Log::error('Failed to create invoice', [
                         'error' => $e->getMessage(),
                         'account_id' => $account->id,
-                        'patient_id' => $appointment->patient_id,
-                        'practitioner_id' => $appointment->practitioner_id,
+                        'patient_id' => $encounter->patient_id,
+                        'practitioner_id' => $encounter->practitioner_id,
                         'encounter_id' => $encounter->id,
                         'client_id' => $clientId,
                     ]);
