@@ -28,7 +28,14 @@ class AppointmentObserver
      */
     public function updated(Appointment $appointment): void
     {
-        //
+        if ($appointment->isDirty('status')) {
+            AppointmentStatus::create([
+                'appointment_id' => $appointment->id,
+                'previous_status' => $appointment->getOriginal('status'),
+                'status' => $appointment->status,
+                'user_id' => auth()->id(), // Asume que estás usando autenticación
+            ]);
+        }
     }
 
     /**
@@ -36,6 +43,7 @@ class AppointmentObserver
      */
     public function updating(Appointment $appointment): void
     {
+
         if ($appointment->isDirty('status')) {
             AppointmentStatus::create([
                 'appointment_id' => $appointment->id,

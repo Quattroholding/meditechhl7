@@ -260,7 +260,6 @@ class Calendar extends Component
             $current_status = $appointment->status;
             if ($appointment) {
 
-
                 $appointment->status = $newStatus;
                 $appointment->save();
 
