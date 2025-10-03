@@ -59,7 +59,8 @@ class ConsultationController extends Controller
     public function finished(Request $request, $appointment_id)
     {
         try {
-            DB::beginTransaction();
+            // Note: Not using DB::beginTransaction() here because Account creation
+            // needs to be committed before Invoice can reference it via foreign key
 
             $appointment = Appointment::find($appointment_id);
             if (! $appointment) {
@@ -236,8 +237,6 @@ class ConsultationController extends Controller
             $encounter->end = now();
             $encounter->save();
 
-            DB::commit();
-
             if ($invoice) {
                 $downloadUrl = route('invoice.download', $invoice->id);
                 session()->flash('message.success', '¡Consulta finalizada con éxito! Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>');
@@ -248,7 +247,6 @@ class ConsultationController extends Controller
             return redirect(route('consultation.index'));
 
         } catch (\Exception $e) {
-            DB::rollBack();
             session()->flash('message.error', 'Error al finalizar consulta: '.$e->getMessage());
 
             return back()->withInput();
