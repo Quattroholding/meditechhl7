@@ -119,7 +119,20 @@ class Invoice extends BaseModel
                 $model->client_id = auth()->user()?->getCurrentClient()?->id;
             }
             if (empty($model->invoice_number)) {
-                $model->invoice_number = $model->generateInvoiceNumber();
+                // Generate unique invoice number with retry logic
+                $attempts = 0;
+                do {
+                    $invoiceNumber = $model->generateInvoiceNumber();
+                    $exists = static::withoutGlobalScope(InvoiceScope::class)
+                        ->where('invoice_number', $invoiceNumber)
+                        ->exists();
+                    $attempts++;
+                    if ($attempts > 10) {
+                        throw new \Exception('Could not generate unique invoice number after 10 attempts');
+                    }
+                } while ($exists);
+
+                $model->invoice_number = $invoiceNumber;
             }
         });
     }
