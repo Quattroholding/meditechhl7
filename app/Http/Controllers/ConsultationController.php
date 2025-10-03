@@ -139,31 +139,50 @@ class ConsultationController extends Controller
 
                 $identifier = 'INV-'.now()->format('Ymd').'-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT);
 
+                // Verify all foreign keys exist before creating invoice
+                $practitioner = \App\Models\Practitioner::find($appointment->practitioner_id);
+                if (! $practitioner) {
+                    throw new \Exception("Practitioner {$appointment->practitioner_id} not found");
+                }
+
                 // Create invoice for this encounter
-                $invoice = Invoice::create([
-                    'fhir_id' => 'invoice-'.Str::uuid(),
-                    'identifier' => $identifier,
-                    'status' => 'issued',
-                    'type' => 'invoice',
-                    'patient_id' => $appointment->patient_id,
-                    'encounter_id' => $encounter->id,
-                    'account_id' => $account->id,
-                    'date' => now(),
-                    'issue_date' => now(),
-                    'due_date' => now()->addDays(30), // 30 days payment term
-                    'payment_terms' => '30 días',
-                    'currency' => 'USD',
-                    'subtotal_amount' => 0,
-                    'tax_amount' => 0,
-                    'total_amount' => 0,
-                    'amount_due' => 0,
-                    'payment_status' => 'unpaid',
-                    'recipient_patient_id' => $appointment->patient_id,
-                    'performer_practitioner_id' => $appointment->practitioner_id,
-                    'client_id' => $clientId,
-                    'issuer_organization_id' => $clientId,
-                    'created_by' => auth()->id(),
-                ]);
+                try {
+                    $invoice = Invoice::create([
+                        'fhir_id' => 'invoice-'.Str::uuid(),
+                        'identifier' => $identifier,
+                        'status' => 'issued',
+                        'type' => 'invoice',
+                        'patient_id' => $appointment->patient_id,
+                        'encounter_id' => $encounter->id,
+                        'account_id' => $account->id,
+                        'date' => now(),
+                        'issue_date' => now(),
+                        'due_date' => now()->addDays(30), // 30 days payment term
+                        'payment_terms' => '30 días',
+                        'currency' => 'USD',
+                        'subtotal_amount' => 0,
+                        'tax_amount' => 0,
+                        'total_amount' => 0,
+                        'amount_due' => 0,
+                        'payment_status' => 'unpaid',
+                        'recipient_patient_id' => $appointment->patient_id,
+                        'performer_practitioner_id' => $appointment->practitioner_id,
+                        'client_id' => $clientId,
+                        'issuer_organization_id' => $clientId,
+                        'created_by' => auth()->id(),
+                        // Let the model generate invoice_number automatically
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    \Log::error('Failed to create invoice', [
+                        'error' => $e->getMessage(),
+                        'account_id' => $account->id,
+                        'patient_id' => $appointment->patient_id,
+                        'practitioner_id' => $appointment->practitioner_id,
+                        'encounter_id' => $encounter->id,
+                        'client_id' => $clientId,
+                    ]);
+                    throw new \Exception('Error creating invoice: '.$e->getMessage());
+                }
 
                 $subtotal = 0;
                 $lineItemNumber = 1;
