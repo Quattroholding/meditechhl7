@@ -260,7 +260,11 @@ class Calendar extends Component
             $current_status = $appointment->status;
             if ($appointment) {
 
-                $appointment->update(['status' => $newStatus]);
+
+                $appointment->status = $newStatus;
+                $appointment->save();
+
+                //$appointment->update(['status' => $newStatus]);
 
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
