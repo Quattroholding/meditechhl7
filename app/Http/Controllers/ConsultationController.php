@@ -102,14 +102,38 @@ class ConsultationController extends Controller
 
                 if (! $account) {
                     // Create account within the transaction
-                    $account = Account::createPatientAccount($patient, [
-                        'client_id' => $currentClientId,
-                        'created_by' => auth()->id(),
-                    ]);
+                    try {
+                        $account = Account::create([
+                            'fhir_id' => 'account-'.Str::uuid(),
+                            'name' => "Patient Account - {$patient->name}",
+                            'description' => "Primary account for patient {$patient->name}",
+                            'type' => [
+                                'coding' => [
+                                    [
+                                        'system' => 'http://terminology.hl7.org/CodeSystem/account-type',
+                                        'code' => 'patient',
+                                        'display' => 'Patient Account',
+                                    ],
+                                ],
+                            ],
+                            'status' => 'active',
+                            'patient_id' => $patient->id,
+                            'client_id' => $currentClientId,
+                            'created_by' => auth()->id(),
+                        ]);
 
-                    // Verify the account was created successfully
-                    if (! $account || ! $account->id) {
-                        throw new \Exception('No se pudo crear la cuenta del paciente. Client ID: '.$currentClientId.' Patient ID: '.$patient->id);
+                        // Verify the account was created successfully
+                        if (! $account || ! $account->id) {
+                            throw new \Exception('Account object is null or missing ID after creation');
+                        }
+
+                        \Log::info('Account created successfully', [
+                            'account_id' => $account->id,
+                            'patient_id' => $patient->id,
+                            'client_id' => $currentClientId,
+                        ]);
+                    } catch (\Exception $e) {
+                        throw new \Exception('Error creating patient account: '.$e->getMessage());
                     }
                 }
 
