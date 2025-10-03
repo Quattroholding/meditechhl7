@@ -275,6 +275,7 @@ class ConsultationController extends Controller
             'serviceRequests',
             'referrals',
             'physicalExams',
+            'diagnoses.condition.icd10Code',
         ])->findOrFail($encounter_id);
 
         return view('consultations.view', compact('encounter'));

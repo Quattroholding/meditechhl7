@@ -18,6 +18,7 @@ return [
     'date' => 'Fecha',
     'description' => 'Descripción',
     'diagnostic' => 'Diagnóstico',
+    'diagnostics' => 'Diagnósticos',
     'diagnostic_notes' => 'Notas de diagnóstico',
     'diagnostics' => 'Diagnósticos',
     'disabilities' => 'Discapacidades',

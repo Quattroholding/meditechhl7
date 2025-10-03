@@ -37,6 +37,13 @@
                                     </button>
                                 </li>
                                 @endif
+                                @if($encounter->diagnoses->count() > 0)
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosis" type="button" role="tab" aria-controls="diagnosis" aria-selected="false">
+                                            <i class="fa fa-stethoscope"></i> {{ __('consultation.diagnostics') }}
+                                        </button>
+                                    </li>
+                                @endif
                                 @if($encounter->physicalExams->count() > 0)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="exams-tab" data-bs-toggle="tab" data-bs-target="#exams" type="button" role="tab" aria-controls="exams" aria-selected="false">
@@ -186,6 +193,42 @@
                                     </div>
                                 </div>
                                 @endif
+                                @if($encounter->diagnoses->count()>0)
+                                    <!-- Present Illness Tab -->
+                                    <div class="tab-pane fade" id="diagnosis" role="tabpanel" aria-labelledby="diagnosis-tab">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>{{ __('encounter.code') }}</th>
+                                                            <th>{{ __('encounter.description') }}</th>
+                                                            <th>{{ __('encounter.category') }}</th>
+                                                            <th>{{ __('encounter.clinical_status') }}</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        @foreach($encounter->diagnoses as $diag)
+                                                            <tr>
+                                                                <td>{{ $diag->condition->code }}</td>
+                                                                <td>{{ $diag->condition->onset_info ?? $diag->condition->icd10Code->description_es }}</td>
+                                                                <td>{{ $diag->condition->category ?? 'ICD10'}}</td>
+                                                                <td>
+                                                                    <span class="badge bg-{{ $diag->condition->clinical_status == 'active' ? 'success' : 'secondary' }}">
+                                                                        {{ ucfirst($diag->condition->clinical_status) }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                                 @if($encounter->physicalExams->count() > 0)
                                 <!-- Physical Exams Tab -->
                                 <div class="tab-pane fade" id="exams" role="tabpanel" aria-labelledby="exams-tab">
@@ -243,13 +286,7 @@
                                                             <tr>
                                                                 <td>{{ $medication->medicine ? $medication->medicine->full_name :  $medication->medication }}</td>
                                                                 <td>
-                                                                    @if(is_array($medication->dosage_instruction))
-                                                                        @foreach($medication->dosage_instruction as $i)
-                                                                            {{$i}}
-                                                                        @endforeach
-                                                                    @else
-                                                                    {{ $medication->dosage_instruction }}
-                                                                    @endif
+                                                                    {{$medication->dosage_text ?? $medication->dosage_instruction }}
                                                                 </td>
                                                                 <td>{!! $medication->status !!}</td>
                                                             </tr>
