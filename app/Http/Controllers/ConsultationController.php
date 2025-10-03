@@ -101,23 +101,15 @@ class ConsultationController extends Controller
                     ->first();
 
                 if (! $account) {
+                    // Create account within the transaction
                     $account = Account::createPatientAccount($patient, [
                         'client_id' => $currentClientId,
                         'created_by' => auth()->id(),
                     ]);
 
-                    // Refresh the account from database to ensure it has the correct ID
-                    $account->refresh();
-
-                    // Verify the account was created successfully and exists in DB
-                    if (! $account || ! $account->id || ! $account->exists) {
-                        throw new \Exception('No se pudo crear la cuenta del paciente. Account ID: '.($account->id ?? 'null'));
-                    }
-
-                    // Double check the account exists in the database
-                    $accountCheck = Account::find($account->id);
-                    if (! $accountCheck) {
-                        throw new \Exception("La cuenta {$account->id} fue creada pero no se puede encontrar en la base de datos.");
+                    // Verify the account was created successfully
+                    if (! $account || ! $account->id) {
+                        throw new \Exception('No se pudo crear la cuenta del paciente. Client ID: '.$currentClientId.' Patient ID: '.$patient->id);
                     }
                 }
 
