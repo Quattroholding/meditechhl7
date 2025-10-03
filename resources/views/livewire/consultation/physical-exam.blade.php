@@ -7,6 +7,7 @@
                 wire:keyup.debounce.300ms="save('{{$vs->code}}')"
                 wire:change="save('{{$vs->code}}')"
                 :value="$values[$vs->code]"
+                placelholder="Ej : Normal"
                 class="mt-1 block w-full bottom-0" rows="2">{{$values[$vs->code]}}</x-textarea-input>
 
             <!-- Indicadores de estado -->

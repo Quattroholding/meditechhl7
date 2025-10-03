@@ -593,7 +593,7 @@
                     <div wire:click="changeSection('personal-notes')"
                          class="nav-link {{ $activeSection === 'personal-notes' ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fa fa-sticky-note"></i> </span>
-                        <span class="nav-text">Notas</span>
+                        <span class="nav-text">Notas Privadas</span>
                         <span class="nav-count">{{ $overviewData['total_personal_notes'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -637,7 +637,7 @@
                             @case('medical-notes')
                                 📒 Notas Médicas
                             @case('personal-notes')
-                                 Notas
+                                 Notas Privadas
                             @break
                         @endswitch
                     </h2>

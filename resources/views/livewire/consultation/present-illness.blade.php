@@ -24,7 +24,7 @@
                             <div>
                                 <img src="/items/{{$pic}}.png" style="width:60px">
                             </div>
-                            <span>{{$i->value}} | {{$i->value_esp}}</span>
+                            <span> {{ucfirst($i->value_esp)}} | {{ucfirst($i->value)}}</span>
                         </div>
                     @endforeach
                 </div>

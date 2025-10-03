@@ -86,13 +86,22 @@ class ConsultationController extends Controller
             if ($chargeItems->count() > 0) {
                 // Find or create patient account
                 $patient = Patient::find($appointment->patient_id);
+
+                // Get client_id from user or appointment
+                $currentClientId = $clientId ?? auth()->user()->getCurrentClient()?->id;
+
                 $account = Account::where('patient_id', $patient->id)
-                    ->where('client_id', $encounter->client_id)
+                    ->where('client_id', $currentClientId)
                     ->active()
                     ->first();
 
                 if (! $account) {
-                    $account = Account::createPatientAccount($patient);
+                    $account = Account::createPatientAccount($patient, ['client_id' => $currentClientId]);
+
+                    // Verify the account was created successfully
+                    if (! $account || ! $account->id) {
+                        throw new \Exception('No se pudo crear la cuenta del paciente.');
+                    }
                 }
 
                 $identifier = 'INV-'.now()->format('Ymd').'-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT);

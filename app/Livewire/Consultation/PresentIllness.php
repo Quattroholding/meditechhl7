@@ -58,7 +58,7 @@ class PresentIllness extends Component
         $this->location = [];
         foreach ($arr as $key => $value) {
             $this->items[$key]['title'] = $value;
-            $this->items[$key]['items'] = PresentIllnesType::whereType($key)->get();
+            $this->items[$key]['items'] = PresentIllnesType::whereType($key)->orderBy('value_esp')->get();
             if ($this->present_illness) {
                 if ($key == 'location') {
                     $this->location[$key] = $this->encounter->presentIllnesses->locations;
