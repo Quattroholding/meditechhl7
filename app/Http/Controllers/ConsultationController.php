@@ -86,6 +86,13 @@ class ConsultationController extends Controller
                 ->where('status', 'billable')
                 ->get();
 
+            // Log charge items for debugging
+            \Log::info('ChargeItems for encounter', [
+                'encounter_id' => $encounter->id,
+                'billable_count' => $chargeItems->count(),
+                'all_charge_items' => ChargeItem::where('encounter_id', $encounter->id)->get(['id', 'status', 'service_description'])->toArray(),
+            ]);
+
             $invoice = null;
 
             if ($chargeItems->count() > 0) {
