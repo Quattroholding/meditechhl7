@@ -93,6 +93,10 @@ class ConsultationController extends Controller
                 // Find or create patient account
                 $patient = Patient::find($appointment->patient_id);
 
+                if (! $patient) {
+                    throw new \Exception("Patient {$appointment->patient_id} not found for appointment {$appointment->id}");
+                }
+
                 // Get client_id from user or appointment
                 $currentClientId = $clientId ?? auth()->user()->getCurrentClient()?->id;
 
@@ -100,6 +104,12 @@ class ConsultationController extends Controller
                     ->where('client_id', $currentClientId)
                     ->active()
                     ->first();
+
+                \Log::info('Creating invoice for patient', [
+                    'appointment_patient_id' => $appointment->patient_id,
+                    'patient_found_id' => $patient->id,
+                    'account_id' => $account?->id,
+                ]);
 
                 if (! $account) {
                     // Create account within the transaction
