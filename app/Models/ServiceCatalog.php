@@ -248,9 +248,35 @@ class ServiceCatalog extends BaseModel
     public function generateServiceCode(): string
     {
         $prefix = strtoupper(substr($this->service_type ?? 'SVC', 0, 3));
-        $number = static::where('code', 'like', $prefix.'%')->count() + 1;
 
-        return $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT);
+        // Buscar el último número usado para este prefijo (sin scope global)
+        $lastCode = static::withoutGlobalScope(ServiceCatalogScope::class)
+            ->where('code', 'like', $prefix.'_%')
+            ->where('client_id', $this->client_id ?? auth()->user()?->getCurrentClient()?->id)
+            ->orderByRaw('CAST(SUBSTRING(code, '.(strlen($prefix) + 2).') AS UNSIGNED) DESC')
+            ->value('code');
+
+        if ($lastCode) {
+            // Extraer el número del último código y sumar 1
+            preg_match('/'.$prefix.'_(\d+)/', $lastCode, $matches);
+            $number = isset($matches[1]) ? (int) $matches[1] + 1 : 1;
+        } else {
+            $number = 1;
+        }
+
+        // Verificar que el código no exista (por si acaso) - sin scope global
+        do {
+            $code = $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT);
+            $exists = static::withoutGlobalScope(ServiceCatalogScope::class)
+                ->where('code', $code)
+                ->where('client_id', $this->client_id ?? auth()->user()?->getCurrentClient()?->id)
+                ->exists();
+            if ($exists) {
+                $number++;
+            }
+        } while ($exists);
+
+        return $code;
     }
 
     public function createChargeItem(

@@ -21,6 +21,8 @@
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
                                                    wire:model="quantitys.{{$m->id}}"
                                                    name="quantity" type="number"
+                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                                   min="0" step="1"
                                                    class="block mt-1 w-full" placeholder="Ejemplo : 2"/>
                                 </div>
                                 <div class="input-block local-forms">
@@ -28,6 +30,8 @@
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'frequency')"
                                                    wire:model="frecuencies.{{$m->id}}"
                                                    name="frequency" type="number"
+                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                                   min="0" step="1"
                                                    class="block mt-1 w-full" placeholder="Ejemplo : 12"/>
                                 </div>
 
@@ -53,7 +57,10 @@
                                     <x-input-label for="duration" :value="__('Duración (Días)')" />
                                     <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'duration')"
                                                    wire:model="durations.{{$m->id}}"
-                                                   name="duration" type="number"  class="block mt-1 w-full" placeholder="Ejemplo : 5"/>
+                                                   name="duration" type="number"
+                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                                   min="0" step="1"
+                                                   class="block mt-1 w-full" placeholder="Ejemplo : 5"/>
                                 </div>
                             </td>
                         </tr>

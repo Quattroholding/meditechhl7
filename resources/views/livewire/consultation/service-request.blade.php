@@ -137,8 +137,10 @@
     </div>
 
     <div style="height:200px;">&nbsp;</div>
+        {{--}}
         <script>
             document.addEventListener('livewire:initialized', () => {
+                alert('aqui')
                 Livewire.on('showToastr', (event) => {
                     toastr[event.type](event.message, '', {
                         closeButton: true,
@@ -149,4 +151,5 @@
                 });
             });
         </script>
+        {{--}}
 </div>

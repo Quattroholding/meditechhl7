@@ -33,4 +33,16 @@
     </div>
     @include('consultations.partials.side_menu',array('appointment_id'=>$appointment->id,'patient_id'=>$patient->id,'encounter_id'=>$encounter_id))
     @include('consultations.partials.patient_info',array('id'=>$patient->id))
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrConsultation', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>

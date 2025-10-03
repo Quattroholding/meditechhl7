@@ -121,16 +121,22 @@ class Services extends Component
         $this->validate();
 
         if (! $this->selectedServiceId) {
-            session()->flash('error', 'Debe seleccionar un servicio válido.');
-
+            //session()->flash('error', 'Debe seleccionar un servicio válido.');
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'Debe seleccionar un servicio válido.'
+            );
             return;
         }
 
         $service = ServiceCatalog::findOrFail($this->selectedServiceId);
 
         if (! $service) {
-            session()->flash('error', 'Servicio no encontrado.');
-
+            //session()->flash('error', 'Servicio no encontrado.');
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message:   'Servicio no encontrado.'
+            );
             return;
         }
 
@@ -161,16 +167,26 @@ class Services extends Component
 
                 $this->resetForm();
                 $this->loadSelectedServices();
+
+                // Dispatch event to fix scroll freeze after offcanvas closes
+                $this->dispatch('service-selected');
             } else {
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrConsultation',
                     type: 'error',
                     message: '¡Servicio ya esta agregado a la  consulta.!'
                 );
+
+                // Also dispatch event to close offcanvas even on error
+                $this->dispatch('service-selected');
             }
 
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Error al agregar el servicio: '.$e->getMessage());
+            //session()->flash('error', 'Error al agregar el servicio: '.$e->getMessage());
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message:  'Error al agregar el servicio: '.$e->getMessage()
+            );
         }
     }
 
@@ -179,24 +195,38 @@ class Services extends Component
         $chargeItem = ChargeItem::find($chargeItemId);
 
         if (! $chargeItem || $chargeItem->encounter_id != $this->encounter_id) {
-            session()->flash('error', 'ChargeItem no encontrado.');
-
+            //session()->flash('error', 'ChargeItem no encontrado.');
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: 'Item no encontrado.'
+            );
             return;
         }
 
         // Verificar que no esté facturado
         if ($chargeItem->status === 'billed') {
-            session()->flash('error', 'No se puede eliminar un servicio que ya ha sido facturado.');
-
+            //session()->flash('error', 'No se puede eliminar un servicio que ya ha sido facturado.');
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message:'No se puede eliminar un servicio que ya ha sido facturado.'
+            );
             return;
         }
 
         try {
             $chargeItem->delete();
-            session()->flash('message.success', 'Servicio eliminado del encounter.');
+            //session()->flash('message.success', 'Servicio eliminado del encounter.');
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: 'Servicio eliminado del encounter.'
+            );
             $this->loadSelectedServices();
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al eliminar el servicio.');
+            //session()->flash('error', 'Error al eliminar el servicio.');
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: 'Error al eliminar el servicio.'
+            );
         }
     }
 

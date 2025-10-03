@@ -79,54 +79,6 @@
     @endif
     <!-- Add new service form -->
     <div class="">
-        <!-- Service search -->
-        {{--}}
-        <div class="selector-field selector-field-on local-forms position-relative">
-            <input type="text"
-                   wire:model.live="query"
-                   class="form-control"
-                   placeholder="Buscar por nombre, descripción o código CPT..."
-                   id="service_search">
-
-            <!-- Loading spinner -->
-            <div wire:loading wire:target="updatedQuery" class="position-absolute" style="right: 10px; top: 35px;">
-                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="sr-only">Buscando...</span>
-                </div>
-            </div>
-
-            <!-- Search results dropdown -->
-            @if(!empty($results))
-                <div class="position-absolute w-100 bg-white border rounded shadow-lg mt-1" style="z-index: 1000; max-height: 300px; overflow-y: auto;">
-                    @foreach($results as $result)
-                        <div class="p-3 border-bottom cursor-pointer hover-bg-light"
-                             wire:click="selectService({{ json_encode($result) }})">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <div class="font-weight-bold">{{ $result['name'] }}</div>
-                                    @if(!empty($result['cpt_code']))
-                                        <small class="text-muted">CPT: {{ $result['cpt_code'] }}</small>
-                                    @endif
-                                    @if(!empty($result['description']) && $result['description'] !== $result['name'])
-                                        <div class="text-muted small">{{ Str::limit($result['description'], 100) }}</div>
-                                    @endif
-                                    <div class="text-info small">
-                                        Tipo: {{ ucfirst(str_replace('_', ' ', $result['service_type'])) }}
-                                        @if($result['duration_minutes'])
-                                            | Duración: {{ $result['duration_minutes'] }} min
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="font-weight-bold text-success">${{ number_format($result['price'], 2) }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-        {{--}}
         @php $id =\Illuminate\Support\Str::uuid();@endphp
         <div class="selector-field selector-field-on">
             <table style="width:100%">
@@ -153,19 +105,6 @@
                 </tr>
                 </tbody>
             </table>
-            {{--}}
-         <x-offcanvas id="offcanvasRight{{$id}}" title="Listado de acceso rapido" position="right" size="xl" wire:ignore.self>
-
-             @foreach($rapidAccess as $i)
-                 <div class="sel-list-item sel-code-{{$i->cpt->code}}" wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
-                     <div class="sel-list-item-code">{{$i->cpt->code}}</div>
-                     <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
-                     <div class="preloader-space"></div><div class="preloader-space-2">
-                     </div>
-                 </div>
-             @endforeach
-         </x-offcanvas>
-         {{--}}
             <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel">
 
 
@@ -236,82 +175,11 @@
                             <div class="flex-grow-1" wire:click="selectOption({{ json_encode($result) }})">
                                 {{ $result['name'] }}
                             </div>
-                            {{--}}
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-primary"
-                                    wire:click="addToRapidAccess({{ $result['id'] }})"
-                                    title="Agregar a accesos rápidos">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            {{--}}
                         </div>
                     @endforeach
                 </div>
             @endif
         </div>
-        <!-- Service details form (shown when service is selected) -->
-        {{--}}
-        @if($selectedServiceId)
-            <div class="row mt-3">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="quantity">{{ __('Cantidad') }}</label>
-                        <input type="number"
-                               wire:model="customQuantity"
-                               class="form-control"
-                               id="quantity"
-                               step="0.01"
-                               min="0.01">
-                        @error('customQuantity')
-                            <span class="text-danger small">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="custom_price">{{ __('Precio Unitario') }}</label>
-                        <input type="number"
-                               wire:model="customPrice"
-                               class="form-control"
-                               id="custom_price"
-                               step="0.01"
-                               min="0">
-                        @error('customPrice')
-                            <span class="text-danger small">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>{{ __('Total Estimado') }}</label>
-                        <div class="form-control-plaintext font-weight-bold text-success">
-                            ${{ number_format(($customPrice ?? 0) * ($customQuantity ?? 1), 2) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="service_notes">{{ __('Notas del Servicio') }} (opcional)</label>
-                <textarea wire:model="serviceNotes"
-                          class="form-control"
-                          rows="2"
-                          id="service_notes"
-                          placeholder="Notas adicionales sobre el servicio..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <button wire:click="addServiceToEncounter"
-                        class="btn btn-primary">
-                    <i class="fa fa-plus"></i> {{ __('Agregar Servicio a la consulta') }}
-                </button>
-                <button wire:click="resetForm"
-                        class="btn btn-secondary ml-2">
-                    {{ __('Cancelar') }}
-                </button>
-            </div>
-        @endif
-        {{--}}
     </div>
     <style>
         .cursor-pointer {
@@ -323,13 +191,39 @@
     </style>
     <script>
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastr', (event) => {
+            {{--}}
+            Livewire.on('showToastrService', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
                     timeOut: 5000,
                 });
+            });
+            {{--}}
+
+            // Fix scroll freeze after offcanvas closes
+            Livewire.on('service-selected', () => {
+                // Close all offcanvas
+                alert('aqui');
+                const offcanvasElements = document.querySelectorAll('.offcanvas.show');
+                offcanvasElements.forEach(element => {
+                    const bsOffcanvas = bootstrap.Offcanvas.getInstance(element);
+                    if (bsOffcanvas) {
+                        bsOffcanvas.hide();
+                    }
+                });
+
+                // Force remove modal-open class and restore scroll
+                setTimeout(() => {
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+
+                    // Remove any backdrop that might be left
+                    const backdrops = document.querySelectorAll('.offcanvas-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                }, 100);
             });
         });
     </script>

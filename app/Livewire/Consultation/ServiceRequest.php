@@ -67,7 +67,7 @@ class ServiceRequest extends Component
 
     public function selectOption($option)
     {
-        $this->saved = false;
+
         $this->selectedOption = $option;
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
@@ -75,7 +75,7 @@ class ServiceRequest extends Component
         $service_request = $this->encounter->serviceRequests()->whereCode($cpt->code)->first();
 
         if (! $service_request) {
-
+            $this->saved = false;
             $this->encounter->serviceRequests()->create([
                 'fhir_id' => 'servicerequest-'.Str::uuid(),
                 'patient_id' => $this->encounter->patient_id,
@@ -92,11 +92,19 @@ class ServiceRequest extends Component
                 'authored_on' => now(),
                 'last_updated' => now(),
             ]);
+
+            $this->query = '';
+            sleep(1);
+            $this->saved = true;
+
+        }else{
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: '¡Servicio ('.$cpt->type.') ya esta agregado a la  consulta.!'
+            );
         }
 
-        $this->query = '';
-        sleep(1);
-        $this->saved = true;
+
 
         $this->dispatch('option-selected');
         $this->loadSelectedLists();
@@ -172,19 +180,19 @@ class ServiceRequest extends Component
 
                 $this->loadRapidAccess();
 
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrConsultation',
                     type: 'success',
                     message: 'Agregado a accesos rápidos'
                 );
 
             } else {
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrConsultation',
                     type: 'error',
                     message: 'Ya está en accesos rápidos'
                 );
             }
         } catch (\Exception $e) {
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrConsultation',
                 type: 'error',
                 message: 'Error al agregar a accesos rápidos'
             );

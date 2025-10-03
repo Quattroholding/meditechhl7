@@ -99,6 +99,11 @@ class MedicationRequests extends Component
             $this->query = '';
             sleep(1);
             $this->saved = true;
+        } else {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: '¡Medicamento ya esta agregado a la  consulta.!'
+            );
         }
 
         $this->getMedicationRequestsProperty();
@@ -119,6 +124,19 @@ class MedicationRequests extends Component
 
     public function updateField($id, $value, $field)
     {
+        // Limpiar y validar valores numéricos
+        if (in_array($field, ['quantity', 'frequency', 'duration'])) {
+            // Remover caracteres no numéricos excepto punto decimal
+            $value = preg_replace('/[^0-9.]/', '', $value);
+
+            // Si está vacío o solo tiene punto, establecer null
+            if ($value === '' || $value === '.') {
+                $value = null;
+            } else {
+                // Convertir a número
+                $value = is_numeric($value) ? (float) $value : null;
+            }
+        }
 
         if ($field == 'quantity') {
             $this->quantitys[$id] = $value;
@@ -197,10 +215,10 @@ class MedicationRequests extends Component
         foreach ($selectedMedications as $medication) {
             // Verificar si el medicamento ya existe en la receta actual
             $existingMedication = $this->encounter->medicationRequests()
-                ->when(!empty($medication['medication_id']),function ($query) use ($medication) {
+                ->when(! empty($medication['medication_id']), function ($query) use ($medication) {
                     return $query->where('medication_id', $medication['medication_id']);
                 })
-                ->when(!empty($medication['medication']),function ($query) use ($medication) {
+                ->when(! empty($medication['medication']), function ($query) use ($medication) {
                     return $query->where('medication', $medication['medication']);
                 })
                 ->first();

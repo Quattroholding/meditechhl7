@@ -42,6 +42,7 @@
     </div>
     @endif
     <script>
+        {{--}}
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastr', (event) => {
                 toastr[event.type](event.message, '', {
@@ -52,5 +53,6 @@
                 });
             });
         });
+        {{--}}
     </script>
 </div>

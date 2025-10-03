@@ -48,7 +48,7 @@ class ModalAddNotes extends Component
         $this->note = '';
         $this->showModal = false;
 
-        $this->dispatch('showToastr',
+        $this->dispatch('showToastrModalAddNote',
             type: 'success',
             message: '¡Guardado exitosamente!'
         );
