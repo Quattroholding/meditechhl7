@@ -43,17 +43,6 @@
             </ul>
         </div>
 
-        <script>
-            document.addEventListener('livewire:load', () => {
-                let el = document.getElementById('sortable-list');
-                new Sortable(el, {
-                    animation: 150,
-                    onEnd: function () {
-                        let orderedIds = [...el.children].map(li => li.getAttribute('data-id'));
-                        Livewire.emit('updateOrder', orderedIds);
-                    }
-                });
-            });
-        </script>
+
     </div>
 </div>

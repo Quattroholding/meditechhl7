@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
+use App\Models\Country;
 use App\Models\Patient;
 use App\Models\PatientRelationship;
+use App\Models\State;
 use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\Request;
@@ -184,14 +186,21 @@ class PatientController extends Controller
 
         // Load all patients for dependency selection (excluding current patient)
         $availablePatients = Patient::where('id', '!=', $id)
-            ->whereHas('clients', function ($query) use($client_id){
+            ->whereHas('clients', function ($query) use ($client_id) {
                 $query->where('clients.id', $client_id);
             })
             ->select('id', 'name', 'identifier')
             ->orderBy('name')
             ->get();
 
-        return view('patients.edit', compact('data', 'relationships', 'currentRelationship', 'availablePatients'));
+        // Load countries and states
+        $countries = Country::all();
+        $states = [];
+        if ($data->country_id) {
+            $states = State::where('country_id', $data->country_id)->get();
+        }
+
+        return view('patients.edit', compact('data', 'relationships', 'currentRelationship', 'availablePatients', 'countries', 'states'));
     }
 
     public function update(Request $request, $id)
@@ -218,6 +227,8 @@ class PatientController extends Controller
         $model->identifier_type = $request->identifier_type;
         $model->phone = $request->full_phone;
         $model->birth_date = substr($request->birth_date, 6, 4).'-'.substr($request->birth_date, 3, 2).'-'.substr($request->birth_date, 0, 2);
+        $model->country_id = $request->country_id;
+        $model->state_id = $request->state_id;
 
         $user = User::findOrFail($model->user_id);
         $user->first_name = $request->given_name;

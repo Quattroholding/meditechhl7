@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('livewire_component_fields')->nullable();
             $table->string('category', 50)->nullable();
             $table->integer('medical_speciality_id')->nullable();
+            $table->boolean('obligatory')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

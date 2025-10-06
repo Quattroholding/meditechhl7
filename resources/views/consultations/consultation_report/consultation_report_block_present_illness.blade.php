@@ -44,15 +44,19 @@ if (isset($consultation_list[$data['consultation']->timing])) {
 $items = [];
 //$data['consultation']->text='present_illness';
 
+$location = trans('present_illness.'.$data->presentIllnesses->location);
+$severity =  trans('present_illness.'. $data->presentIllnesses->severity);
+$duration =  trans('present_illness.'. $data->presentIllnesses->duration);
+$timing =  trans('present_illness.'. $data->presentIllnesses->timing);
 
-$items[] = ['label' => trans('consultation.location'), 'value' => $data->presentIllnesses->location];
-$items[] = ['label' => trans('consultation.severity'), 'value' => $data->presentIllnesses->severity];
-$items[] = ['label' => trans('consultation.duration'), 'value' => $data->presentIllnesses->duration];
-$items[] = ['label' => trans('consultation.timing'), 'value' => $data->presentIllnesses->timing];
+
+$items[] = ['label' => trans('consultation.location'), 'value' => $location];
+$items[] = ['label' => trans('consultation.severity'), 'value' => $severity];
+$items[] = ['label' => trans('consultation.duration'), 'value' =>$duration];
+$items[] = ['label' => trans('consultation.timing'), 'value' =>$timing];
 $items[] = ['label' => trans('consultation.modifying_factors'), 'value' => $data->presentIllnesses->aggravating_factors];
 $items[] = ['label' => trans('consultation.symptoms'), 'value' => $data->presentIllnesses->associated_symptoms];
 $items[] = ['label' => trans('consultation.description'), 'value' => $data->presentIllnesses->description];
-
 
 $any_value = false;
 

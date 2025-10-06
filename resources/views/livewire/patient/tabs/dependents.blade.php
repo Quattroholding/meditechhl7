@@ -47,7 +47,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-primary">{{ $relationship->relationship_display }}</span>
+                                <span class="badge bg-primary">{{ __('patient.'.strtolower($relationship->relationship_display)) }}</span>
                             </td>
                             <td>
                                 @if($relationship->is_emergency_contact)

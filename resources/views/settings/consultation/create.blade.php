@@ -28,7 +28,7 @@
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#urologia" data-bs-toggle="tab" aria-expanded="true" class="nav-link" aria-selected="true" role="tab">
-                                        Urologia
+                                        Urología
                                     </a>
                                 </li>
                             </ul>
@@ -39,6 +39,29 @@
                                 <div class="tab-pane" id="urologia" role="tabpanel">
                                     <livewire:item-transfer category="Urologia" wire:key="urologia"/>
                                 </div>
+                                <script>
+                                    document.addEventListener('livewire:load', () => {
+                                        let el = document.getElementById('sortable-list');
+                                        new Sortable(el, {
+                                            animation: 150,
+                                            onEnd: function () {
+                                                let orderedIds = [...el.children].map(li => li.getAttribute('data-id'));
+                                                Livewire.emit('updateOrder', orderedIds);
+                                            }
+                                        });
+
+                                    });
+                                    document.addEventListener('livewire:initialized', () => {
+                                        Livewire.on('showToastrItemTransfer', (event) => {
+                                            toastr[event.type](event.message, '', {
+                                                closeButton: true,
+                                                progressBar: true,
+                                                positionClass: 'toast-top-right',
+                                                timeOut: 5000,
+                                            });
+                                        });
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>

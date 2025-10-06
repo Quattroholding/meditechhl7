@@ -127,7 +127,7 @@
 
         .field-value {
             border-bottom: 1px solid #000;
-            min-width: 100px;
+            min-width: 2000px;
             display: inline-block;
             padding-bottom: 1px;
         }
@@ -333,7 +333,7 @@
                 <div class="patient-line">
                     <div class="patient-field name">
                         <span class="field-label">Nombre</span>
-                        <span class="field-value">{{ $prescription->patient_name }}</span>
+                        <span class="field-value_name">{{ $prescription->patient_name }}</span>
                     </div>
                     <div class="patient-field age">
                         <span class="field-label">Edad </span>

@@ -14,7 +14,8 @@ class EncounterSecctionSeeder extends Seeder
     {
         EncounterSection::create([
             'name' => 'Chief Complaint',
-            'name_esp' => 'Queja Principal',
+            'name_esp' => 'Motivo de Consulta',
+            'obligatory' => true,
             'table_list' => null,
             'table_list_filter' => null,
             'livewire_component_name' => 'consultation.reason',
@@ -42,8 +43,9 @@ class EncounterSecctionSeeder extends Seeder
         ]);
 
         EncounterSection::create([
-            'name' => 'Enfermedad Actual',
-            'name_esp' => 'Present Illness',
+            'name' => 'Present Illness',
+            'name_esp' => 'Enfermedad Actual',
+            'obligatory' => true,
             'table_list' => 'PresentIllnesType',
             'table_list_filter' => '',
             'livewire_component_name' => 'consultation.present-illness',
@@ -80,6 +82,7 @@ class EncounterSecctionSeeder extends Seeder
         EncounterSection::create([
             'name' => 'Conditions',
             'name_esp' => 'Diagnosticos',
+            'obligatory' => true,
             'table_list' => '',
             'table_list_filter' => '',
             'livewire_component_name' => 'consultation.diagnostics',
@@ -91,6 +94,7 @@ class EncounterSecctionSeeder extends Seeder
         EncounterSection::create([
             'name' => 'Laboratories',
             'name_esp' => 'Laboratorios',
+            'obligatory' => true,
             'table_list' => '',
             'table_list_filter' => '',
             'livewire_component_name' => 'consultation.service-request',
@@ -102,6 +106,7 @@ class EncounterSecctionSeeder extends Seeder
         EncounterSection::create([
             'name' => 'Images',
             'name_esp' => 'Imagenes',
+            'obligatory' => true,
             'table_list' => '',
             'table_list_filter' => '',
             'livewire_component_name' => 'consultation.service-request',

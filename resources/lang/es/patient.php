@@ -53,4 +53,11 @@ return [
     'medical_history' => 'Historial Médico',
     'medical_directory' => 'Directorio Médico',
     'request_appointment' => 'Solicitar Cita',
+    'spouse' => 'Cónyuge',
+    'child' => 'Hijo/a',
+    'parent' => 'Padre/Madre',
+    'sibling' => 'Hermano/a',
+    'dompart' => 'Pareja',
+    'grandchild' => 'Nieto/a',
+    'grandprn' => 'Abuelo/a',
 ];

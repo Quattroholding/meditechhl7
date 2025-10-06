@@ -56,18 +56,35 @@ class ItemTransfer extends Component
             'user_id' => auth()->user()->id,
             'encounter_section_id' => $itemId,
         ]);
+
+        $this->dispatch('showToastrItemTransfer',
+            type: 'success',
+            message: 'Seccion agregada con exito.'
+        );
     }
 
     public function moveToAvailable($itemId)
     {
         $item = collect($this->selectedItems)->firstWhere('id', $itemId);
-        if ($item) {
-            $this->selectedItems = array_values(array_filter($this->selectedItems, fn ($i) => $i['id'] !== $itemId));
-            $this->availableItems[] = $item;
-        }
 
-        $field = EncounterTemplate::whereRaw('(client_id = '.$this->client_id.' or user_id = '.auth()->user()->id.')')->whereEncounterSectionId($itemId)->first();
-        $field->delete();
+        if ($item) {
+
+            if($item['obligatory']){
+                $this->dispatch('showToastrItemTransfer',
+                    type: 'error',
+                    message: 'Esta sección es obligatoria no se puede eliminar.'
+                );
+            }else{
+                $this->selectedItems = array_values(array_filter($this->selectedItems, fn ($i) => $i['id'] !== $itemId));
+                $this->availableItems[] = $item;
+                $field = EncounterTemplate::whereRaw('(client_id = '.$this->client_id.' or user_id = '.auth()->user()->id.')')->whereEncounterSectionId($itemId)->first();
+                $field->delete();
+                $this->dispatch('showToastrItemTransfer',
+                    type: 'success',
+                    message: 'Seccion eliminada con exito.'
+                );
+            }
+        }
     }
 
     public function updateOrder($orderedIds)

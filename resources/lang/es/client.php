@@ -32,4 +32,5 @@ return [
     'room.floor' => 'Piso',
     'room.active' => 'Activo',
     'room.acciones' => 'Acciones',
+    'locations' => 'Sedes',
 ];

@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" wire:click="closeModal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" wire:click="closeModal">Guardar</button>
             </div>
         </div>
     </div>

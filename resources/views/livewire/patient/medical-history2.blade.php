@@ -535,6 +535,7 @@
                         <span class="nav-count">{{ $overviewData['active_conditions'] ?? 0 }}</span>
                     </div>
                 </li>
+                {{--}}
                 <li class="nav-item">
                     <div wire:click="changeSection('physical-exams')"
                          class="nav-link {{ $activeSection === 'physical-exams' ? 'active' : '' }}">
@@ -542,6 +543,7 @@
                         <span class="nav-text">Exámenes Físicos</span>
                     </div>
                 </li>
+                {{--}}
                 <li class="nav-item">
                     <div wire:click="changeSection('vital-signs')"
                          class="nav-link {{ $activeSection === 'vital-signs' ? 'active' : '' }}">
@@ -577,7 +579,7 @@
                     <div wire:click="changeSection('medical-histories')"
                          class="nav-link {{ $activeSection === 'medical-histories' ? 'active' : '' }}">
                         <span class="nav-icon">📚</span>
-                        <span class="nav-text">Historial Previo</span>
+                        <span class="nav-text">Antecedentes Médicos</span>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -592,7 +594,7 @@
                 <li class="nav-item">
                     <div wire:click="changeSection('personal-notes')"
                          class="nav-link {{ $activeSection === 'personal-notes' ? 'active' : '' }}">
-                        <span class="nav-icon"><i class="fa fa-sticky-note"></i> </span>
+                        <span class="nav-icon"><i class="fa fa-lock"></i> </span>
                         <span class="nav-text">Notas Privadas</span>
                         <span class="nav-count">{{ $overviewData['total_personal_notes'] ?? 0 }}</span>
                     </div>
@@ -731,15 +733,6 @@
                                         </p>
                                     @endif
                                 </div>
-                                <button wire:click="toggleGroupVitalSignsByEncounter"
-                                        class="btn btn-sm"
-                                        style="background: {{ $groupVitalSignsByEncounter ? '#dc2626' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
-                                    @if($groupVitalSignsByEncounter)
-                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
-                                    @else
-                                        ❤️ Vista Individual
-                                    @endif
-                                </button>
                             </div>
                             @if($groupVitalSignsByEncounter)
                                 @include('patients.medicalHistory.vital-signs-grouped')

@@ -28,177 +28,213 @@
     </div>
 
     @if($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : count($sectionData) > 0))
-        <div class="conditions-grid" style="display: grid; gap: 20px;">
-            @foreach((isset($sectionData['data']) ? $sectionData['data'] : $sectionData) as $condition)
-
-                <div class="condition-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease;">
-                    <div class="condition-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
-                        <div>
-                            <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
-                                🩺 {{ $condition->code }}
-                            </h3>
-                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                <span class="badge badge-{{ $condition->clinical_status === 'active' ? 'active' : ($condition->clinical_status === 'resolved' ? 'resolved' : 'inactive') }}">
-                                    @switch($condition->clinical_status)
-                                        @case('active')
-                                            🟢 Activa
-                                            @break
-                                        @case('resolved')
-                                            ✅ Resuelta
-                                            @break
-                                        @case('inactive')
-                                            ⚫ Inactiva
-                                            @break
-                                        @case('remission')
-                                            🔵 En Remisión
-                                            @break
-                                        @default
-                                            {{ ucfirst($condition->clinical_status) }}
-                                    @endswitch
-                                </span>
-                                @if($condition->severity)
-                                    <span class="badge" style="background:
-                                        @if($condition->severity === 'severe') #fee2e2; color: #dc2626;
-                                        @elseif($condition->severity === 'moderate') #fef3c7; color: #92400e;
-                                        @else #f0fdf4; color: #166534; @endif">
-                                        @switch($condition->severity)
-                                            @case('severe')
-                                                🔴 Severa
+        <!-- Tabla de Condiciones -->
+        <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div class="table-responsive">
+                <table class="table table-hover" style="margin-bottom: 0;">
+                    <thead style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white;">
+                        <tr>
+                            <th style="padding: 15px; font-weight: 600; border: none;">Código</th>
+                            <th style="padding: 15px; font-weight: 600; border: none;">Descripción</th>
+                            <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Estado</th>
+                            <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Severidad</th>
+                            <th style="padding: 15px; font-weight: 600; border: none;">Categoría</th>
+                            <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Fecha Dx</th>
+                            <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach((isset($sectionData['data']) ? $sectionData['data'] : $sectionData) as $condition)
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 15px; vertical-align: middle;">
+                                    <div style="font-family: monospace; font-weight: 600; color: #3b82f6; font-size: 14px;">
+                                        {{ $condition->code }}
+                                    </div>
+                                    @if($condition->chronic)
+                                        <span class="badge" style="background: #e0f2fe; color: #0277bd; font-size: 10px; margin-top: 4px;">
+                                            ♻️ Crónica
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle; max-width: 300px;">
+                                    <div style="font-weight: 500; color: #1e293b; margin-bottom: 4px;">
+                                        {{ $condition->onset_info }}
+                                    </div>
+                                    @if($condition->symptoms)
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                            <strong>Síntomas:</strong> {{ Str::limit($condition->symptoms, 60) }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle; text-align: center;">
+                                    <span class="badge badge-{{ $condition->clinical_status === 'active' ? 'active' : ($condition->clinical_status === 'resolved' ? 'resolved' : 'inactive') }}" style="padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                        @switch($condition->clinical_status)
+                                            @case('active')
+                                                🟢 Activa
                                                 @break
-                                            @case('moderate')
-                                                🟡 Moderada
+                                            @case('resolved')
+                                                ✅ Resuelta
                                                 @break
-                                            @case('mild')
-                                                🟢 Leve
+                                            @case('inactive')
+                                                ⚫ Inactiva
+                                                @break
+                                            @case('remission')
+                                                🔵 Remisión
                                                 @break
                                             @default
-                                                {{ ucfirst($condition->severity) }}
+                                                {{ ucfirst($condition->clinical_status) }}
                                         @endswitch
                                     </span>
-                                @endif
-                                @if($condition->chronic)
-                                    <span class="badge" style="background: #e0f2fe; color: #0277bd;">
-                                        ♻️ Crónica
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div style="text-align: right; font-size: 12px; color: #64748b;">
-                            <div><strong>Inicio:</strong> {{ $condition->onset_date ? Carbon\Carbon::parse($condition->onset_date)->format('d/m/Y') : 'No especificado' }}</div>
-                            @if($condition->resolution_date)
-                                <div><strong>Resolución:</strong> {{ Carbon\Carbon::parse($condition->resolution_date)->format('d/m/Y') }}</div>
-                            @endif
-                            @if($condition->diagnosis_date)
-                                <div><strong>Diagnóstico:</strong> {{ Carbon\Carbon::parse($condition->diagnosis_date)->format('d/m/Y') }}</div>
-                            @endif
-                        </div>
-                    </div>
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle; text-align: center;">
+                                    @if($condition->severity)
+                                        <span class="badge" style="padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+                                            @if($condition->severity === 'severe') background: #fee2e2; color: #dc2626;
+                                            @elseif($condition->severity === 'moderate') background: #fef3c7; color: #92400e;
+                                            @else background: #f0fdf4; color: #166534; @endif">
+                                            @switch($condition->severity)
+                                                @case('severe')
+                                                    🔴 Severa
+                                                    @break
+                                                @case('moderate')
+                                                    🟡 Moderada
+                                                    @break
+                                                @case('mild')
+                                                    🟢 Leve
+                                                    @break
+                                                @default
+                                                    {{ ucfirst($condition->severity) }}
+                                            @endswitch
+                                        </span>
+                                    @else
+                                        <span style="color: #94a3b8; font-size: 12px;">-</span>
+                                    @endif
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle;">
+                                    <div style="font-size: 13px; color: #475569;">
+                                        {{ $condition->category ?? '-' }}
+                                    </div>
+                                    @if($condition->body_system)
+                                        <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+                                            {{ $condition->body_system }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle; text-align: center;">
+                                    <div style="font-size: 13px; color: #475569; font-weight: 500;">
+                                        {{ $condition->onset_date ? Carbon\Carbon::parse($condition->onset_date)->format('d/m/Y') : '-' }}
+                                    </div>
+                                    @if($condition->resolution_date)
+                                        <div style="font-size: 11px; color: #059669; margin-top: 2px;">
+                                            ✓ {{ Carbon\Carbon::parse($condition->resolution_date)->format('d/m/Y') }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td style="padding: 15px; vertical-align: middle; text-align: center;">
+                                    <button type="button" class="btn btn-sm" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; padding: 6px 12px; border-radius: 6px;"
+                                            data-bs-toggle="modal" data-bs-target="#conditionModal{{ $condition->id }}"
+                                            title="Ver detalles">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
 
-                    <!-- Descripción de la Condición -->
-                    @if($condition->description)
-                        <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                            <div style="font-size: 12px; color: #64748b; margin-bottom: 5px; font-weight: 600;">📝 DESCRIPCIÓN</div>
-                            <div style="color: #374151; line-height: 1.6;">{{ $condition->onset_info }}</div>
-                        </div>
-                    @endif
+                            <!-- Modal de detalles -->
+                            <div class="modal fade" id="conditionModal{{ $condition->id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white;">
+                                            <h5 class="modal-title">🩺 Detalles de la Condición</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <strong style="color: #64748b; font-size: 12px;">CÓDIGO ICD-10:</strong>
+                                                    <div style="font-family: monospace; font-size: 16px; color: #3b82f6; font-weight: 600;">{{ $condition->code }}</div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <strong style="color: #64748b; font-size: 12px;">CATEGORÍA:</strong>
+                                                    <div style="font-size: 14px; color: #1e293b;">{{ $condition->category ?? 'No especificado' }}</div>
+                                                </div>
+                                            </div>
 
-                    <!-- Información Clínica -->
-                    <div class="clinical-info" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                        @if($condition->icd_10_code)
-                            <div>
-                                <div style="font-size: 12px; color: #3b82f6; font-weight: 600; margin-bottom: 5px;">🏷️ Código ICD-10</div>
-                                <div style="background: #dbeafe; padding: 10px; border-radius: 8px; font-size: 13px; color: #1e40af; font-family: monospace;">
-                                    {{ $condition->code }}
+                                            @if($condition->description || $condition->onset_info)
+                                                <div class="mb-3">
+                                                    <strong style="color: #64748b; font-size: 12px;">DESCRIPCIÓN:</strong>
+                                                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 5px;">
+                                                        {{ $condition->onset_info ?? $condition->description }}
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($condition->symptoms)
+                                                <div class="mb-3">
+                                                    <strong style="color: #dc2626; font-size: 12px;">SÍNTOMAS:</strong>
+                                                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px; margin-top: 5px; border-left: 4px solid #dc2626;">
+                                                        {{ $condition->symptoms }}
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($condition->current_treatment)
+                                                <div class="mb-3">
+                                                    <strong style="color: #059669; font-size: 12px;">TRATAMIENTO ACTUAL:</strong>
+                                                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; margin-top: 5px; border-left: 4px solid #059669;">
+                                                        {{ $condition->current_treatment }}
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($condition->prognosis)
+                                                <div class="mb-3">
+                                                    <strong style="color: #7c3aed; font-size: 12px;">PRONÓSTICO:</strong>
+                                                    <div style="background: #faf5ff; padding: 12px; border-radius: 8px; margin-top: 5px; border-left: 4px solid #7c3aed;">
+                                                        {{ $condition->prognosis }}
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($condition->notes)
+                                                <div class="mb-3">
+                                                    <strong style="color: #f59e0b; font-size: 12px;">NOTAS MÉDICAS:</strong>
+                                                    <div style="background: #fffbeb; padding: 12px; border-radius: 8px; margin-top: 5px; border-left: 4px solid #f59e0b; font-style: italic;">
+                                                        {{ $condition->notes }}
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            <div class="row mt-3">
+                                                <div class="col-md-4">
+                                                    <strong style="color: #64748b; font-size: 12px;">FECHA INICIO:</strong>
+                                                    <div>{{ $condition->onset_date ? Carbon\Carbon::parse($condition->onset_date)->format('d/m/Y') : 'No especificado' }}</div>
+                                                </div>
+                                                @if($condition->resolution_date)
+                                                    <div class="col-md-4">
+                                                        <strong style="color: #64748b; font-size: 12px;">FECHA RESOLUCIÓN:</strong>
+                                                        <div>{{ Carbon\Carbon::parse($condition->resolution_date)->format('d/m/Y') }}</div>
+                                                    </div>
+                                                @endif
+                                                @if($condition->diagnosis_date)
+                                                    <div class="col-md-4">
+                                                        <strong style="color: #64748b; font-size: 12px;">FECHA DIAGNÓSTICO:</strong>
+                                                        <div>{{ Carbon\Carbon::parse($condition->diagnosis_date)->format('d/m/Y') }}</div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        @endif
-
-                        @if($condition->category)
-                            <div>
-                                <div style="font-size: 12px; color: #059669; font-weight: 600; margin-bottom: 5px;">📂 Categoría</div>
-                                <div style="background: #d1fae5; padding: 10px; border-radius: 8px; font-size: 13px; color: #065f46;">
-                                    {{ $condition->category }}
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($condition->body_system)
-                            <div>
-                                <div style="font-size: 12px; color: #7c3aed; font-weight: 600; margin-bottom: 5px;">🫀 Sistema Corporal</div>
-                                <div style="background: #ede9fe; padding: 10px; border-radius: 8px; font-size: 13px; color: #5b21b6;">
-                                    {{ $condition->body_system }}
-                                </div>
-                            </div>
-                        @endif
-
-                        @if($condition->stage)
-                            <div>
-                                <div style="font-size: 12px; color: #ea580c; font-weight: 600; margin-bottom: 5px;">📊 Estadio</div>
-                                <div style="background: #fed7aa; padding: 10px; border-radius: 8px; font-size: 13px; color: #9a3412;">
-                                    {{ $condition->stage }}
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Síntomas Principales -->
-                    @if($condition->symptoms)
-                        <div style="margin-bottom: 15px;">
-                            <div style="font-size: 12px; color: #dc2626; font-weight: 600; margin-bottom: 8px;">🤒 SÍNTOMAS PRINCIPALES</div>
-                            <div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #dc2626;">
-                                {{ $condition->symptoms }}
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Tratamiento Actual -->
-                    @if($condition->current_treatment)
-                        <div style="margin-bottom: 15px;">
-                            <div style="font-size: 12px; color: #059669; font-weight: 600; margin-bottom: 8px;">💊 TRATAMIENTO ACTUAL</div>
-                            <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 4px solid #059669;">
-                                {{ $condition->current_treatment }}
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Pronóstico -->
-                    @if($condition->prognosis)
-                        <div style="margin-bottom: 15px;">
-                            <div style="font-size: 12px; color: #7c3aed; font-weight: 600; margin-bottom: 8px;">🔮 PRONÓSTICO</div>
-                            <div style="background: #faf5ff; padding: 12px; border-radius: 8px; border-left: 4px solid #7c3aed;">
-                                {{ $condition->prognosis }}
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Notas del Médico -->
-                    @if($condition->notes)
-                        <div style="margin-bottom: 15px;">
-                            <div style="font-size: 12px; color: #f59e0b; font-weight: 600; margin-bottom: 8px;">📋 NOTAS MÉDICAS</div>
-                            <div style="background: #fffbeb; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b; font-style: italic;">
-                                {{ $condition->notes }}
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Footer con Metadatos -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b;">
-                        <div>
-                            @if($condition->encounter)
-                                <span>📅 Consulta: {{ Carbon\Carbon::parse($condition->encounter->encounter_date)->format('d/m/Y') }}</span>
-                            @endif
-                        </div>
-                        <div>
-                            @if($condition->updated_at)
-                                <span>✏️ Actualizado: {{ Carbon\Carbon::parse($condition->updated_at)->diffForHumans() }}</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-            @endforeach
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
+
         <!-- Pagination Controls -->
         @if(isset($sectionData['last_page']) && $sectionData['last_page'] > 1)
             <div style="margin-top: 30px; display: flex; justify-content: center;">

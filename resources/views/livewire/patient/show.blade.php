@@ -18,7 +18,7 @@
                     <button class="nav-link {{ $activeTab === 'dependents' ? 'active' : '' }}"
                             wire:click="switchTab('dependents')"
                             type="button" role="tab">
-                        <i class="feather-users me-2"></i>Dependientes
+                        <i class="feather-users me-2"></i>Relaciones Familiares
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">

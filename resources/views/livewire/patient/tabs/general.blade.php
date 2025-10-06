@@ -93,6 +93,14 @@
                         <label class="info-label">Dirección</label>
                         <p class="info-value">{{ $patient->address ?: 'No especificada' }}</p>
                     </div>
+                    <div class="info-item mb-3">
+                        <label class="info-label">País</label>
+                        <p class="info-value">{{ $patient->countryRelation->name ?: 'No especificada' }}</p>
+                    </div>
+                    <div class="info-item mb-3">
+                        <label class="info-label">Provincia/Estado</label>
+                        <p class="info-value">{{ $patient->stateRelation->name ?: 'No especificada' }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,6 +148,7 @@
         </div>
 
         <!-- Communication Preferences -->
+        {{--}}
         @if($patient->communication)
         <div class="row mt-4">
             <div class="col-12">
@@ -169,6 +178,7 @@
             </div>
         </div>
         @endif
+        {{--}}
     </div>
     <style>
         .info-label {

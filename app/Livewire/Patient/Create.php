@@ -4,9 +4,11 @@ namespace App\Livewire\Patient;
 
 use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
+use App\Models\Country;
 use App\Models\Patient;
 use App\Models\PatientClient;
 use App\Models\PatientRelationship;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -62,6 +64,15 @@ class Create extends Component
 
     public $primary_patients = [];
 
+    // Country and State fields
+    public $country_id;
+
+    public $state_id;
+
+    public $countries = [];
+
+    public $states = [];
+
     protected $rules = [
         'id_number' => 'required',
         'id_type' => 'required',
@@ -108,6 +119,11 @@ class Create extends Component
         'relationship_type.required_if' => 'Debe seleccionar el tipo de relación',
     ];
 
+    public function mount()
+    {
+        $this->countries = Country::all()->toArray();
+    }
+
     public function render()
     {
         $this->client_id = 1;
@@ -119,6 +135,17 @@ class Create extends Component
         $this->loadPrimaryPatients();
 
         return view('livewire.patient.create');
+    }
+
+    public function updatedCountryId()
+    {
+        if ($this->country_id) {
+            $this->states = State::where('country_id', $this->country_id)->get()->toArray();
+            $this->state_id = null;
+        } else {
+            $this->states = [];
+            $this->state_id = null;
+        }
     }
 
     public function loadPrimaryPatients()
@@ -228,6 +255,8 @@ class Create extends Component
         $patient->address = $this->physical_address;
         $patient->marital_status = $this->marital_status;
         $patient->blood_type = $this->blood_type;
+        $patient->country_id = $this->country_id;
+        $patient->state_id = $this->state_id;
         // IDENTIFIER ES ID
         $patient->identifier_type = $this->id_type;
         $patient->identifier = strtoupper($this->id_number);
@@ -293,6 +322,9 @@ class Create extends Component
         $this->copy_insurance = false;
         $this->is_emergency_contact = false;
         $this->primary_patients = [];
+        $this->country_id = null;
+        $this->state_id = null;
+        $this->states = [];
     }
 
     private function getIdPattern()

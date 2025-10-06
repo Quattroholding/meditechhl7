@@ -108,6 +108,9 @@ class MedicalHistory2 extends Component
     // Filtros de búsqueda por sección
     public $conditionsSearchTerm = '';
 
+    // Filtro de tiempo para gráficas de signos vitales (máximo 5 años)
+    public $vitalSignsChartPeriod = 'last_5_years';
+
     protected $paginationTheme = 'bootstrap';
 
     protected $queryString = [
@@ -1047,6 +1050,91 @@ class MedicalHistory2 extends Component
         }
 
         return collect();
+    }
+
+    // ===========================================
+    // MÉTODOS PARA GRÁFICAS DE SIGNOS VITALES
+    // ===========================================
+
+    public function getVitalSignsChartData()
+    {
+        $query = VitalSign::where('patient_id', $this->patientId)
+            ->with(['encounter'])
+            ->orderBy('effective_date', 'asc');
+
+        // Si es doctor, filtrar solo signos vitales de sus encounters
+        if (auth()->user()->hasRole('doctor')) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $query->whereHas('encounter', function ($q) use ($practitionerId) {
+                $q->where('practitioner_id', $practitionerId);
+            });
+        }
+
+        // Limitar a máximo 5 años de historial
+        $query->where('effective_date', '>=', Carbon::now()->subYears(5));
+
+        $vitalSigns = $query->get();
+
+        // Organizar datos por fecha y tipo de signo vital
+        $bloodPressureData = [];
+        $heartRateData = [];
+        $respiratoryRateData = [];
+
+        foreach ($vitalSigns as $vital) {
+            $date = Carbon::parse($vital->effective_date)->format('Y-m-d');
+
+            switch ($vital->code) {
+                case '8480-6': // Presión sistólica
+                    if (! isset($bloodPressureData[$date])) {
+                        $bloodPressureData[$date] = ['systolic' => null, 'diastolic' => null];
+                    }
+                    $bloodPressureData[$date]['systolic'] = (float) $vital->value;
+                    break;
+                case '8462-4': // Presión diastólica
+                    if (! isset($bloodPressureData[$date])) {
+                        $bloodPressureData[$date] = ['systolic' => null, 'diastolic' => null];
+                    }
+                    $bloodPressureData[$date]['diastolic'] = (float) $vital->value;
+                    break;
+                case '8867-4': // Frecuencia cardíaca
+                    $heartRateData[$date] = (float) $vital->value;
+                    break;
+                case '9279-1': // Frecuencia respiratoria
+                    $respiratoryRateData[$date] = (float) $vital->value;
+                    break;
+            }
+        }
+
+        // Filtrar datos nulos para blood pressure
+        $filteredBloodPressureData = [];
+        foreach ($bloodPressureData as $date => $values) {
+            if ($values['systolic'] !== null && $values['diastolic'] !== null) {
+                $filteredBloodPressureData[$date] = $values;
+            }
+        }
+
+        // Preparar datos para ApexCharts
+        return [
+            'bloodPressure' => [
+                'dates' => array_values(array_keys($filteredBloodPressureData)),
+                'systolic' => array_values(array_column($filteredBloodPressureData, 'systolic')),
+                'diastolic' => array_values(array_column($filteredBloodPressureData, 'diastolic')),
+            ],
+            'heartRate' => [
+                'dates' => array_values(array_keys($heartRateData)),
+                'values' => array_values($heartRateData),
+            ],
+            'respiratoryRate' => [
+                'dates' => array_values(array_keys($respiratoryRateData)),
+                'values' => array_values($respiratoryRateData),
+            ],
+        ];
+    }
+
+    public function updatedVitalSignsChartPeriod()
+    {
+        // Este método se llamará automáticamente cuando cambie el período
+        // No necesita hacer nada, la vista se re-renderizará automáticamente
     }
 
     // ===========================================

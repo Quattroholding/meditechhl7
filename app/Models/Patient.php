@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
@@ -20,6 +21,7 @@ class Patient extends BaseModel
         'family_name', 'gender', 'birth_date', 'deceased', 'deceased_date',
         'address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',
+        'country_id', 'state_id',
     ];
 
     protected $casts = [
@@ -201,6 +203,20 @@ class Patient extends BaseModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function countryRelation(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country_id')->withDefault([
+            'name' => '',
+        ]);
+    }
+
+    public function stateRelation(): BelongsTo
+    {
+        return $this->belongsTo(State::class, 'state_id')->withDefault([
+            'name' => '',
+        ]);
     }
 
     public function getBirthDateAttribute($attr)
@@ -412,7 +428,7 @@ class Patient extends BaseModel
 
     public function getGenderAttribute($attr): string
     {
-        if(strtolower($attr)=='female'){
+        if (strtolower($attr) == 'female') {
             return 'Femenino';
         }
 

@@ -46,8 +46,8 @@
                 @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
-                            <i class="fa fa-hospital"></i></span>
-                            <span> {{ __('client.titles') }} </span> <span class="menu-arrow"></span></a>
+                            <i class="fa fa-location"></i></span>
+                            <span> {{ __('client.locations') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         @can('clients.view')
                         <li><a class="{{ Request::is('clients') ? 'active' : '' }}" href="{{ route('client.index') }}">{{ __('generic.list') }} {{ __('client.titles') }}  </a></li>
@@ -60,9 +60,6 @@
                         @endcan
                         @can('rooms.view')
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('generic.list') }} {{ __('client.rooms') }}</a></li>
-                        @endcan
-                        @can('users.create')
-                        <li><a class="{{ Request::is('user/create') ? 'active' : '' }}"   href="{{ route('user.create',array('role_id'=>5)) }}">{{ __('generic.create') }} {{ __('user.asistent') }}</a></li>
                         @endcan
                     </ul>
                 </li>
@@ -151,9 +148,11 @@
                         @can('medicines.view')
                         <li><a class="{{ Request::is('medicines') ? 'active' : '' }}" href="{{route('medicine.index')}}">{{ __('generic.list') }} {{__('Medicamentos')}}</a></li>
                         @endcan
+                        {{--}}
                         @can('medicines.create')
                         <li><a class="{{ Request::is('medicines/create') ? 'active' : '' }}" href="{{route('medicine.create')}}">{{ __('generic.create') }} {{ __('Medicamento') }}</a></li>
                         @endcan
+                        {{--}}
                     </ul>
                 </li>
                 @endcanany
@@ -292,7 +291,7 @@
                     </ul>
                 </li>
                 @endrole
-                
+
                 @canany(['manage-roles', 'manage-permissions'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">

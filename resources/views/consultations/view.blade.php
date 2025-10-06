@@ -169,15 +169,15 @@
                                                                {{$v[0]}}
                                                             @endforeach
                                                         @else
-                                                            {{$encounter->presentIllnesses->location}}
+                                                            {{__('present_illness.'.$encounter->presentIllnesses->location)}}
                                                         @endif
                                                     </dd>
                                                     <dt>{{ __('encounter.severity') }}</dt>
-                                                    <dd>{{$encounter->presentIllnesses->severity}}</dd>
+                                                    <dd>{{__('present_illness.'.$encounter->presentIllnesses->severity)}}</dd>
                                                     <dt>{{ __('encounter.duration') }}</dt>
-                                                    <dd>{{$encounter->presentIllnesses->duration}}</dd>
+                                                    <dd>{{__('present_illness.'.$encounter->presentIllnesses->duration)}}</dd>
                                                     <dt>{{ __('encounter.timing') }}</dt>
-                                                    <dd>{{$encounter->presentIllnesses->timing}}</dd>
+                                                    <dd>{{__('present_illness.'.$encounter->presentIllnesses->timing) }}</dd>
                                                     <dt>{{ __('encounter.aggravating_factors') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->aggravating_factors}}</dd>
                                                     <dt>{{ __('encounter.alleviating_factors') }}</dt>
@@ -322,13 +322,35 @@
                                                                 <td>{{ $service->cpt->description_es }}</td>
                                                                 <td>{{$service->service_type}}</td>
                                                                 <td>
-                                                                    <span class="badge bg-{{ $service->status == 'active' ? 'success' : 'secondary' }}">
-                                                                        {{ ucfirst($service->status) }}
-                                                                    </span>
+                                                                    @php
+                                                                        $statusEnum = \App\Enums\ServiceRequestStatus::fromString($service->status);
+                                                                    @endphp
+                                                                    @if($statusEnum)
+                                                                        <span class="badge {{ $statusEnum->badgeClass() }}">
+                                                                            {{ $statusEnum->label() }}
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-secondary">
+                                                                            {{ ucfirst($service->status) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </td>
 
                                                                 <td>{{ $service->authored_on ? $service->authored_on->format('Y-m-d H:i') : 'N/A' }}</td>
-                                                                <td>{{ ucfirst($service->priority) }}</td>
+                                                                <td>
+                                                                    @php
+                                                                        $priorityEnum = \App\Enums\ServiceRequestPriority::fromString($service->priority);
+                                                                    @endphp
+                                                                    @if($priorityEnum)
+                                                                        <span class="badge {{ $priorityEnum->badgeClass() }}">
+                                                                            {{ $priorityEnum->label() }}
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-secondary">
+                                                                            {{ ucfirst($service->priority) }}
+                                                                        </span>
+                                                                    @endif
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

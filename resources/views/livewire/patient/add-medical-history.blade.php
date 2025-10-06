@@ -42,9 +42,9 @@
     </div>
     @endif
     <script>
-        {{--}}
+
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastr', (event) => {
+            Livewire.on('showToastrMedicalHistory', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,
@@ -53,6 +53,6 @@
                 });
             });
         });
-        {{--}}
+
     </script>
 </div>

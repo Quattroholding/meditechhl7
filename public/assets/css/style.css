@@ -9840,6 +9840,11 @@ textarea.form-control {
     background-color: rgb(255 218 218 / 49%) !important;
     color: #FF0000 !important;
 }
+.bg-orange {
+    background-color: #ff9800 !important;
+    color: #fff !important;
+}
+
 .bg-purple-light {
     background-color: rgba(197, 128, 255, 0.12) !important;
     color: #c580ff !important;

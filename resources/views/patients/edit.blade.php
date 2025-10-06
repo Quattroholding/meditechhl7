@@ -103,6 +103,38 @@
                                     </div>{{--}}
                                 </div>
                                 <div class="row">
+                                    <!-- COUNTRY -->
+                                    <div class=" col-12 col-md-6 col-xl-6">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="country_id" value="País"/>
+                                            <select name="country_id" id="country_id" class="form-control">
+                                                <option value="">Seleccione un país...</option>
+                                                @foreach($countries as $country)
+                                                    <option value="{{ $country->id }}" {{ $data->country_id == $country->id ? 'selected' : '' }}>
+                                                        {{ $country->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error :messages="$errors->get('country_id')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <!-- STATE -->
+                                    <div class=" col-12 col-md-6 col-xl-6">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="state_id" value="Provincia/Estado"/>
+                                            <select name="state_id" id="state_id" class="form-control">
+                                                <option value="">Seleccione una provincia...</option>
+                                                @foreach($states as $state)
+                                                    <option value="{{ $state->id }}" {{ $data->state_id == $state->id ? 'selected' : '' }}>
+                                                        {{ $state->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <x-input-error :messages="$errors->get('state_id')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <!-- PHONE -->
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
@@ -131,7 +163,7 @@
 
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="form-group local-top-form">
-                                            <label class="local-top">Avatar <span class="login-danger">*</span></label>
+                                            <label class="local-top">Foto de perfil <span class="login-danger">*</span></label>
                                             <div class="settings-btn upload-files-avator">
                                                 <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" class="hide-input">
                                                 <label for="file" class="upload">{{__('generic.Choose File')}}</label>
@@ -161,7 +193,7 @@
                                                 @if($currentRelationship)
                                                     <div class="alert alert-info">
                                                         <strong>Relación Actual:</strong>
-                                                        {{ $currentRelationship->relationship_display }} de {{ $currentRelationship->relatedPatient->name ?? 'Paciente eliminado' }}
+                                                        {{ __('patient.'.strtolower($currentRelationship->relationship_display)) }} de {{ $currentRelationship->relatedPatient->name ?? 'Paciente eliminado' }}
                                                         @if($currentRelationship->is_emergency_contact)
                                                             <span class="badge bg-warning ms-2">Contacto de Emergencia</span>
                                                         @endif
@@ -250,7 +282,8 @@
                                                                 @foreach($relationships as $rel)
                                                                 <tr>
                                                                     <td>{{ $rel->relatedPatient->name ?? 'Paciente eliminado' }}</td>
-                                                                    <td>{{ $rel->relationship_display }}</td>
+                                                                    <td>{{ __('patient.'.strtolower($rel->relationship_display))}}
+                                                                    </td>
                                                                     <td>
                                                                         @if($rel->is_emergency_contact)
                                                                             <span class="badge bg-success">Sí</span>
@@ -295,6 +328,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             const isDependentCheckbox = document.getElementById('is_dependent');
             const dependencyFields = document.getElementById('dependency_fields');
+            const countrySelect = document.getElementById('country_id');
+            const stateSelect = document.getElementById('state_id');
+
+            // Store all states data
+            const allStates = @json($countries->mapWithKeys(function($country) use ($states) {
+                return [$country->id => \App\Models\State::where('country_id', $country->id)->get()];
+            }));
 
             if (isDependentCheckbox) {
                 isDependentCheckbox.addEventListener('change', function() {
@@ -306,6 +346,26 @@
                         document.getElementById('primary_patient_id').value = '';
                         document.getElementById('relationship_type').value = '';
                         document.getElementById('is_emergency_contact').checked = false;
+                    }
+                });
+            }
+
+            // Handle country change to filter states
+            if (countrySelect && stateSelect) {
+                countrySelect.addEventListener('change', function() {
+                    const countryId = this.value;
+                    stateSelect.innerHTML = '<option value="">Seleccione una provincia...</option>';
+
+                    if (countryId && allStates[countryId]) {
+                        allStates[countryId].forEach(function(state) {
+                            const option = document.createElement('option');
+                            option.value = state.id;
+                            option.textContent = state.name;
+                            stateSelect.appendChild(option);
+                        });
+                        stateSelect.disabled = false;
+                    } else {
+                        stateSelect.disabled = true;
                     }
                 });
             }

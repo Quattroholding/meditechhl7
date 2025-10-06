@@ -95,6 +95,34 @@
                 </div>
             </div>
             <div class="row">
+                <!-- COUNTRY -->
+                <div class=" col-12 col-md-6 col-xl-6">
+                    <div class="input-block local-forms">
+                        <x-input-label for="country_id" value="País"/>
+                        <select wire:model.live="country_id" id="country_id" class="form-control">
+                            <option value="">Seleccione un país...</option>
+                            @foreach($countries as $country)
+                                <option value="{{ $country['id'] }}">{{ $country['name'] }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('country_id')" class="mt-2" />
+                    </div>
+                </div>
+                <!-- STATE -->
+                <div class=" col-12 col-md-6 col-xl-6">
+                    <div class="input-block local-forms">
+                        <x-input-label for="state_id" value="Provincia/Estado"/>
+                        <select wire:model="state_id" id="state_id" class="form-control" @if(empty($states)) disabled @endif>
+                            <option value="">Seleccione una provincia...</option>
+                            @foreach($states as $state)
+                                <option value="{{ $state['id'] }}">{{ $state['name'] }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('state_id')" class="mt-2" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <!-- PHONE -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
@@ -116,7 +144,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">¿Es este paciente dependiente de otro?</h5>
+                            <h5 class="card-title">Relaciones Familiares</h5>
                         </div>
                         <div class="card-body">
                             <div class="form-check">

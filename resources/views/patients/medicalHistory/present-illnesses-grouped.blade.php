@@ -69,7 +69,7 @@
                                                     @elseif($illness->severity === 'moderate') #fef3c7; color: #92400e;
                                                     @else #f0fdf4; color: #166534; @endif
                                                     padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                                                    {{ ucfirst($illness->severity) }}
+                                                    {{ __('present_illness.'.$illness->severity)}}
                                                 </span>
                                             @endif
                                             @if($illness->status)
@@ -121,19 +121,19 @@
                                     @if($illness->duration)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
                                             <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏳ Duración</div>
-                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ $illness->duration }}</div>
+                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{  __('present_illness.'.$illness->duration) }}</div>
                                         </div>
                                     @endif
                                     @if($illness->location)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
                                             <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">📍 Localización</div>
-                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ $illness->location }}</div>
+                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->location)}}</div>
                                         </div>
                                     @endif
                                     @if($illness->quality)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
                                             <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">🔍 Calidad</div>
-                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ $illness->quality }}</div>
+                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->quality)  }}</div>
                                         </div>
                                     @endif
                                     @if($illness->radiation)
@@ -145,7 +145,7 @@
                                     @if($illness->timing)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
                                             <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏰ Cronología</div>
-                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ $illness->timing }}</div>
+                                            <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->timing) }}</div>
                                         </div>
                                     @endif
                                 </div>
