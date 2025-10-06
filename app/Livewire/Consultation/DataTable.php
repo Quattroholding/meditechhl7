@@ -6,6 +6,7 @@ use App\Models\Encounter;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Http\Request;
 
 class DataTable extends Component
 {
@@ -68,11 +69,12 @@ class DataTable extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function render(Request $request)
     {
         $data = Encounter::selectRaw('encounters.*')
             ->join('patients', 'patients.id', '=', 'encounters.patient_id')
             ->join('practitioners', 'practitioners.id', '=', 'encounters.practitioner_id')
+            ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->orWhere('encounters.status', 'like', '%'.$this->search.'%');
@@ -83,15 +85,16 @@ class DataTable extends Component
                     $q->orWhere('practitioners.name', 'like', '%'.$this->search.'%');
                 });
             })
-            ->when(! empty($this->status), function ($q) {
-                $q->where('statuses', $this->status);
+            ->when(! empty($request->status), function ($q) use($request){
+                $q->where('encounters.status', $request->status);
             })
-            ->when(! empty($this->patient_id), function ($q) {
-                $q->where('patient_id', $this->patient_id);
+            ->when(! empty($request->patient_id), function ($q) use($request){
+                $q->where('encounters.patient_id', $request->patient_id);
             })
-            ->when(! empty($this->practitioner_id), function ($q) {
-                $q->where('practitioner_id', $this->practitioner_id);
+            ->when(! empty($this->practitioner_id), function ($q) use($request){
+                $q->where('encounters.practitioner_id', $request->practitioner_id);
             })
+            ->whereNull('appointments.deleted_at')
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
 

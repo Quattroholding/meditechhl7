@@ -150,7 +150,12 @@ class ServiceRequest extends Component
     public function delete($id)
     {
         $this->encounter->serviceRequests()->whereId($id)->delete();
-        $this->loadRapidAccess();
+        $this->loadSelectedLists();
+
+        $this->dispatch('showToastrConsultation',
+            type: 'success',
+            message: 'Eliminado con exito.'
+        );
     }
 
     public function clearSearch()

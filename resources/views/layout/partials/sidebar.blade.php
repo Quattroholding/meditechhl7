@@ -129,11 +129,11 @@
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side"> <i class="fa fa-tasks"></i></span>
-                        <span>  Solicitudes de <br/>Servicio </span>
+                        <span>  Repositorios de <br/>Estudios </span>
                         <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
-                        <li><a class="{{ Request::is('service_requests') ? 'active' : '' }}" href="{{ route('service_request.index') }}">Lista de Solicitudes</a></li>
+                        <li><a class="{{ Request::is('service_requests') ? 'active' : '' }}" href="{{ route('service_request.index') }}">Lista de Estudios</a></li>
                     </ul>
                 </li>
                 @endcan

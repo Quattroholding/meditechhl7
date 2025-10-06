@@ -2,7 +2,6 @@
 
 namespace App\Livewire\ServiceRequest;
 
-use App\Models\ServiceRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -39,34 +38,47 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = ServiceRequest::query()
-            ->with(['patient', 'practitioner', 'encounter', 'cpt'])
-            ->withCount('results')
+        // Agrupar ServiceRequests por Encounter
+        $encountersQuery = \App\Models\Encounter::query()
+            ->with([
+                'patient',
+                'practitioner',
+                'diagnoses.condition',
+                'serviceRequests' => function ($query) {
+                    $query->with(['cpt', 'results'])
+                        ->withCount('results');
+                },
+            ])
+            ->whereHas('serviceRequests')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
-                    $q->orWhere('id', 'like', '%'.$this->search.'%')
-                        ->orWhere('code', 'like', '%'.$this->search.'%')
-                        ->orWhere('code_display', 'like', '%'.$this->search.'%')
-                        ->orWhere('service_type', 'like', '%'.$this->search.'%')
-                        ->orWhere('status', 'like', '%'.$this->search.'%')
-                        ->orWhere('intent', 'like', '%'.$this->search.'%')
-                        ->orWhere('priority', 'like', '%'.$this->search.'%')
-                        ->orWhere('service_type', 'like', '%'.$this->search.'%')
-                        ->orWhereHas('patient', function ($q) {
-                            $q->where('name', 'like', '%'.$this->search.'%');
-                        })
+                    $q->orWhereHas('patient', function ($q) {
+                        $q->where('name', 'like', '%'.$this->search.'%');
+                    })
                         ->orWhereHas('practitioner', function ($q) {
                             $q->where('name', 'like', '%'.$this->search.'%');
-                        });
+                        })
+                        ->orWhereRaw("DATE_FORMAT(encounters.start, '%d/%m/%Y') LIKE ?", ['%'.$this->search.'%']);
+                        /*
+                        ->orWhereHas('diagnoses.condition', function ($q) {
+                            $q->where('onset_info', 'like', '%'.$this->search.'%');
+                        })
+                        ->orWhereHas('serviceRequests', function ($q) {
+                            $q->where('code', 'like', '%'.$this->search.'%')
+                                ->orWhere('service_type', 'like', '%'.$this->search.'%')
+                                ->orWhereHas('cpt', function ($cptQuery) {
+                                    $cptQuery->where('description_es', 'like', '%'.$this->search.'%')
+                                        ->orWhere('description', 'like', '%'.$this->search.'%');
+                                });
+                        });*/
                 });
             })
             ->when(auth()->user()->hasRole('doctor'), function (Builder $query) {
-                $query->whereHas('practitioner', function ($q) {
-                    $q->where('user_id',auth()->id());
-                });
+                $query->where('practitioner_id', auth()->user()->practitioner->id);
             })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->pagination);
+            ->orderBy('start', 'desc');
+
+        $data = $encountersQuery->paginate($this->pagination);
 
         return view('livewire.service-request.data-table', ['data' => $data]);
     }

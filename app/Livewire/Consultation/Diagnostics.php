@@ -5,6 +5,7 @@ namespace App\Livewire\Consultation;
 use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\EncounterDiagnosis;
+use App\Models\Icd10Code;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -79,6 +80,11 @@ class Diagnostics extends Component
         $this->query = $option['name']; // Asigna el nombre seleccionado al input
         $this->results = []; // Limpia los resultados
         $condition = Condition::wherePatientId($this->encounter->patient_id)->whereCode($option)->first();
+        $onset_info ='';
+        $diagnostic = Icd10Code::whereCode($option['code'])->first();
+        if($diagnostic){
+            $onset_info = $diagnostic->description_es;
+        }
         if (! $condition) {
             $condition = Condition::create([
                 'fhir_id' => 'condition-'.Str::uuid(),
@@ -89,6 +95,7 @@ class Diagnostics extends Component
                 'verification_status' => 'confirmed',
                 'code' => $option['code'],
                 'severity' => 'severe',
+                'onset_info'=>$onset_info,
                 'onset_date' => now()->format('Y-m-d H:i'),
                 'recorded_date' => now()->format('Y-m-d H:i'),
             ]);

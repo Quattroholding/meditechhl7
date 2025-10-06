@@ -3,7 +3,7 @@
 return [
     // Títulos y etiquetas principales
     'title' => 'Solicitud de Servicio',
-    'titles' => 'Solicitudes de Servicio',
+    'titles' => 'Solicitudes de Servicios',
     'description_modal_title' => 'Descripción Completa',
 
     // Campos de la tabla
@@ -101,4 +101,9 @@ return [
     'yes' => 'Sí',
     'no' => 'No',
     'not_available' => 'N/A',
+    'laboratory'=>'Laboratorio',
+    'image'=>'Imagen',
+    'images'=>'Imagen',
+    'procedure'=>'Procedimiento',
+    'procedures'=>'Procedimiento',
 ];
