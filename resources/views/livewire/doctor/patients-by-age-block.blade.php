@@ -6,8 +6,8 @@
                 <div class="skeleton-chart"></div>
             </div>
         @else
-            <h5 class="text-base">{{__('Pacientes por género')}}</h5>
-            <div id="radial-patients-active"></div>
+            <h5 class="text-base">Pacientes por Rango de Edad</h5>
+            <div id="radial-patients-age-block"></div>
         @endif
     </div>
 
@@ -42,23 +42,23 @@
         document.addEventListener('livewire:initialized', () => {
             let chartInstance = null;
 
-            Livewire.on('loadGraph', (data) => {
+            Livewire.on('loadAgeBlockGraph', (data) => {
                 // Accede a las propiedades del objeto
-                const malePercentageCount = data[0].maleCount ;
-                const femalePercentageCount  = data[0].femaleCount ;
-                const unknownPercentageCount  = data[0].unknownCount ;
-                const malePercentage = data[0].male;
-                const femalePercentage = data[0].female;
-                const unknownPercentage = data[0].unknown;
-
-                //console.log('🔄 Loading ApexCharts for patients-by-gender...', data);
+                const age0to20Count = data[0].age0to20Count;
+                const age20to40Count = data[0].age20to40Count;
+                const age40to60Count = data[0].age40to60Count;
+                const age60PlusCount = data[0].age60PlusCount;
+                const age0to20Percentage = data[0].age0to20;
+                const age20to40Percentage = data[0].age20to40;
+                const age40to60Percentage = data[0].age40to60;
+                const age60PlusPercentage = data[0].age60Plus;
 
                 // Esperar a que el DOM esté actualizado y el elemento sea visible
                 setTimeout(() => {
-                    var divElement = document.querySelector("#radial-patients-active");
+                    var divElement = document.querySelector("#radial-patients-age-block");
 
                     if (!divElement) {
-                        console.error('❌ Element #radial-patients-active not found');
+                        console.error('❌ Element #radial-patients-age-block not found');
                         return;
                     }
 
@@ -68,11 +68,8 @@
                         return;
                     }
 
-                    //console.log('✅ Element found and ApexCharts available', divElement);
-
                     // Destruir el gráfico existente si existe
                     if (chartInstance) {
-                        //console.log('🔄 Destroying existing chart');
                         chartInstance.destroy();
                         chartInstance = null;
                     }
@@ -99,16 +96,18 @@
                             enabled: false
                         },
                         series: [
-                            parseFloat(malePercentage) || 0 ,
-                            parseFloat(femalePercentage) || 0,
-                            //parseFloat(unknownPercentage) || 0
+                            parseFloat(age0to20Percentage) || 0,
+                            parseFloat(age20to40Percentage) || 0,
+                            parseFloat(age40to60Percentage) || 0,
+                            parseFloat(age60PlusPercentage) || 0
                         ],
                         labels: [
-                            'Male (' + (malePercentageCount || 0) + ')',
-                            'Female (' + (femalePercentageCount || 0) + ')',
-                           // 'Unknown (' + (unknownPercentageCount || 0) + ')'
+                            '0-20 años (' + (age0to20Count || 0) + ')',
+                            '20-40 años (' + (age20to40Count || 0) + ')',
+                            '40-60 años (' + (age40to60Count || 0) + ')',
+                            '60+ años (' + (age60PlusCount || 0) + ')'
                         ],
-                        colors: ['#4F8EF7', '#FF6B9D', '#FFC107'],
+                        colors: ['#36A2EB', '#4BC0C0', '#FFCE56', '#FF6384'],
                         responsive: [{
                             breakpoint: 480,
                             options: {
@@ -125,19 +124,17 @@
                         }
                     };
 
-                    //console.log('📊 Creating chart with data:', donutChart);
-
                     try {
                         chartInstance = new ApexCharts(divElement, donutChart);
                         chartInstance.render().then(() => {
-                            console.log('✅ ApexCharts rendered successfully for patients-by-gender');
+                            console.log('✅ ApexCharts rendered successfully for patients-by-age-block');
                         }).catch(error => {
                             console.error('❌ Error rendering chart:', error);
                         });
                     } catch (error) {
                         console.error('❌ Error creating ApexCharts:', error);
                     }
-                }, 200); // Increased delay to ensure DOM is fully updated
+                }, 200);
             });
         });
     </script>

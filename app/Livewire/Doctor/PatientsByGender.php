@@ -28,10 +28,10 @@ class PatientsByGender extends Component
         // Inicializar variables para evitar errores
         $this->femalePatientsCount = 0;
         $this->malePatientsCount = 0;
-        $this->unknownGenderCount = 0;
+        //$this->unknownGenderCount = 0;
         $this->femalePatientsPercentage = 0;
         $this->malePatientsPercentage = 0;
-        $this->unknownGenderPercentage = 0;
+        //$this->unknownGenderPercentage = 0;
 
         \Log::info('PatientsByGender component mounted successfully');
     }
@@ -47,10 +47,10 @@ class PatientsByGender extends Component
             $this->dispatch('loadGraph', [
                 'maleCount' => $this->malePatientsCount,
                 'femaleCount' => $this->femalePatientsCount,
-                'unknownCount' => $this->unknownGenderCount,
+                //'unknownCount' => $this->unknownGenderCount,
                 'male' => $this->malePatientsPercentage,
                 'female' => $this->femalePatientsPercentage,
-                'unknown' => $this->unknownGenderPercentage,
+                //'unknown' => $this->unknownGenderPercentage,
             ]);
 
             \Log::info('PatientsByGender loadData completed successfully');
@@ -92,7 +92,7 @@ class PatientsByGender extends Component
             ->count();
         $this->femalePatientsPercentage = ($this->femalePatientsCount > 0) ? number_format((($this->femalePatientsCount / $allpatients) * 100), 1) : 0;
         $this->malePatientsPercentage = ($this->malePatientsCount > 0) ? number_format((($this->malePatientsCount / $allpatients) * 100), 1) : 0;
-        $this->unknownGenderPercentage = ($this->unknownGenderCount > 0) ? number_format((($this->unknownGenderCount / $allpatients) * 100), 1) : 0;
+        //$this->unknownGenderPercentage = ($this->unknownGenderCount > 0) ? number_format((($this->unknownGenderCount / $allpatients) * 100), 1) : 0;
 
     }
 }

@@ -139,6 +139,62 @@
                     </div>
                 </div>
             </div>
+            <!-- File Upload Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="input-block local-forms">
+                        <x-input-label for="archivos" value="Archivos del Paciente"/>
+                        <input
+                            type="file"
+                            wire:model="archivos"
+                            multiple
+                            class="form-control @error('archivos.*') is-invalid @enderror"
+                            id="archivos"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        >
+                        <small class="text-muted">Puede seleccionar múltiples archivos (máx. 10MB por archivo). Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small>
+                        @error('archivos.*')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+
+                        <!-- Indicador de carga -->
+                        <div wire:loading wire:target="archivos" class="mt-2">
+                            <span class="text-primary">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando archivos...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista previa de archivos seleccionados -->
+            @if($archivos)
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Archivos seleccionados ({{ count($archivos) }})</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    @foreach($archivos as $index => $archivo)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fas fa-file me-2"></i>
+                                                {{ $archivo->getClientOriginalName() }}
+                                            </span>
+                                            <span class="badge bg-secondary">
+                                                {{ number_format($archivo->getSize() / 1024, 2) }} KB
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Dependent Patient Section -->
             <div class="row mb-3">
                 <div class="col-12">

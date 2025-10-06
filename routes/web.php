@@ -383,7 +383,7 @@ Route::group(['prefix' => 'medicines', 'middleware' => ['auth', 'verified', 'fir
 
     Route::get('/create', function () {
         return view('medicine.create');
-    })->middleware('permission:medicines.create')->name('medicine.create');
+    })->middleware('permission:medicines.create.false')->name('medicine.create');
 
     Route::get('/{id}/edit', function ($id) {
         return view('medicine.edit', ['medicine_id' => $id]);

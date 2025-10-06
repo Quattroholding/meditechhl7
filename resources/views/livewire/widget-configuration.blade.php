@@ -295,7 +295,10 @@
         document.addEventListener('livewire:init', () => {
             Livewire.on('reload-dashboard', () => {
                 console.log('🔄 Reloading dashboard...');
-                window.location.reload();
+                // Remove show_salute parameter from URL if present
+                const url = new URL(window.location.href);
+                url.searchParams.delete('show_salute');
+                window.location.href = url.toString();
             });
         });
     </script>

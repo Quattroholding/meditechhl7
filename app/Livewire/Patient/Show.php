@@ -17,6 +17,8 @@ class Show extends Component
 
     public $isLoading = false;
 
+    protected $listeners = ['fileDeleted' => 'refreshFiles'];
+
     public function mount($patient_id)
     {
         $this->patient_id = $patient_id;
@@ -57,6 +59,12 @@ class Show extends Component
             $this->loadedTabs[] = $tab;
         }
         $this->isLoading = false;
+    }
+
+    public function refreshFiles()
+    {
+        // Refresh the files tab
+        $this->loadPatientData();
     }
 
     public function render()

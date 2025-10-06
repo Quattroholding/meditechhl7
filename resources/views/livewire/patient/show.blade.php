@@ -42,6 +42,13 @@
                         <i class="feather-calendar me-2"></i>Citas
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ $activeTab === 'files' ? 'active' : '' }}"
+                            wire:click="switchTab('files')"
+                            type="button" role="tab">
+                        <i class="feather-file-text me-2"></i>Archivos
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -100,8 +107,33 @@
                         @endif
                     </div>
                 @endif
+
+                <!-- Files Tab -->
+                @if($activeTab === 'files')
+                    <div class="tab-pane fade show active">
+                        @if(in_array('files', $loadedTabs))
+                            <livewire:patient.tabs.files :patient_id="$patient_id" :key="'files-'.$patient_id" />
+                        @else
+                            @include('livewire.patient.partials.skeleton-table')
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>
     @endif
+    <script>
+
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrPatientShow', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+
+    </script>
 </div>

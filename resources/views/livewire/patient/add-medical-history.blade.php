@@ -1,11 +1,11 @@
 <div>
-    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{__('Agregar historial')}}</button>
+    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{__('Antecedente Médico')}}</button>
     @if($showModal)
     <!-- Modal -->
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
             <div class="modal-content" wire:click.stop style="max-width: 400px;">
                 <div class="modal-header">
-                    <h2 class="modal-title" id="myLargeModalLabel" style="color: #000;">{{__('Agregar Historia Medica')}} : {{ $patient->name }}</h2>
+                    <h2 class="modal-title" id="myLargeModalLabel" style="color: #000;">{{__('Agregar Antecedente Médico')}} : {{ $patient->name }}</h2>
                     <button wire:click="$set('showModal', false)" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="input-block  local-forms">

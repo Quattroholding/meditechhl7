@@ -4,6 +4,7 @@ namespace App\Livewire\Doctor;
 
 use App\Models\Condition;
 use App\Models\EncounterDiagnosis;
+use App\Models\Icd10Code;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -61,11 +62,19 @@ class TopActiveConditions extends Component
             ->get()
             ->map(function ($item) {
                 // Obtener la descripción de la condición
+                $icde10 = Icd10Code::where('code', $item->code)->first();
                 $condition = Condition::where('code', $item->code)->first();
+                $condition_description='';
+                if($icde10){
+                    $condition_description = $icde10->description_es;
+                }elseif($condition){
+                    $condition_description=$condition->onset_info;
+                }
+
 
                 return [
                     'code' => $item->code,
-                    'description' => $condition->icd10Code ? $condition->icd10Code->description_es : $condition->onset_info,
+                    'description' =>$condition_description,
                     'category' => $item->category,
                     'count' => $item->count,
                     'encounter_count' => $item->encounter_count,

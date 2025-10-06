@@ -10,13 +10,17 @@ use App\Models\PatientClient;
 use App\Models\PatientRelationship;
 use App\Models\State;
 use App\Models\User;
+use App\Services\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Create extends Component
 {
+    use WithFileUploads;
+
     public $client_id;
 
     public $patient_id;
@@ -73,6 +77,9 @@ class Create extends Component
 
     public $states = [];
 
+    // File upload fields
+    public $archivos = [];
+
     protected $rules = [
         'id_number' => 'required',
         'id_type' => 'required',
@@ -104,6 +111,7 @@ class Create extends Component
             'phone' => 'required',
             'primary_patient_id' => 'required_if:is_dependent,true',
             'relationship_type' => 'required_if:is_dependent,true',
+            'archivos.*' => 'nullable|file|max:1024', // 1MB max por archivo
         ];
     }
 
@@ -277,6 +285,17 @@ class Create extends Component
                 }
             }
 
+            // Guardar archivos si existen
+            if (count($this->archivos) > 0) {
+                $fileService = new FileService;
+                $data = [
+                    'folder' => 'patients',
+                    'record_id' => $patient->id,
+                    'type' => 'document',
+                ];
+                $fileService->guardarArchivos($this->archivos, $data);
+            }
+
             $this->resetForm();
             $client = Client::find($this->client_id);
             session()->flash('message.success', 'Paciente registrado exitosamente.');
@@ -325,6 +344,7 @@ class Create extends Component
         $this->country_id = null;
         $this->state_id = null;
         $this->states = [];
+        $this->archivos = [];
     }
 
     private function getIdPattern()

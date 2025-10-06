@@ -13,6 +13,8 @@ class WidgetConfiguration extends Component
 
     public $showModal = false;
 
+    public $hasChanges = false;
+
     public function mount($dashboardType = 'doctor')
     {
         $this->dashboardType = $dashboardType;
@@ -56,6 +58,7 @@ class WidgetConfiguration extends Component
         })->toArray();
 
         $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['description'], $widget['width']);
+        $this->hasChanges = true;
     }
 
     public function changeWidgetWidth($widgetKey, $width)
@@ -73,6 +76,7 @@ class WidgetConfiguration extends Component
         })->toArray();
 
         $this->savePreference($widgetKey, $widget['is_visible'], $widget['order_position'], $widget['description'], $widget['width']);
+        $this->hasChanges = true;
     }
 
     public function updateOrder($orderedWidgets)
@@ -96,6 +100,8 @@ class WidgetConfiguration extends Component
             $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
             $this->savePreference($widget['key'], $widget['is_visible'], $widget['order_position'], $widget['description'], $existingWidget['width'] ?? 'col-lg-6');
         }
+
+        $this->hasChanges = true;
     }
 
     private function savePreference($widgetKey, $isVisible, $orderPosition, $description, $width = 'col-lg-6')
@@ -124,8 +130,10 @@ class WidgetConfiguration extends Component
     {
         $this->showModal = false;
 
-        // Dispatch event to reload the dashboard
-        $this->dispatch('reload-dashboard');
+        // Dispatch event to reload the dashboard only if there were changes
+        if ($this->hasChanges) {
+            $this->dispatch('reload-dashboard');
+        }
     }
 
     public function render()

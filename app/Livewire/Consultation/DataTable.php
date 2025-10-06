@@ -83,6 +83,9 @@ class DataTable extends Component
                     $q->orWhere('practitioners.name', 'like', '%'.$this->search.'%');
                 });
             })
+            ->when(! empty($this->status), function ($q) {
+                $q->where('statuses', $this->status);
+            })
             ->when(! empty($this->patient_id), function ($q) {
                 $q->where('patient_id', $this->patient_id);
             })
