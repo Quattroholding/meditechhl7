@@ -5,7 +5,7 @@ if(!isset($show_create)) $show_create=true;
 <div class="page-table-header mb-2">
     <div class="row align-items-center">
         <div class="col">
-            <div class="doctor-table-blk">
+            <div class="">
                 <h3>{{ $title }}</h3>
                 <div class="">
                     <div class="row">
