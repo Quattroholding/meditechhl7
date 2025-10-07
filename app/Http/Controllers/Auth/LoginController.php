@@ -19,6 +19,17 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        // Validar Turnstile solo en producción
+        if (config('app.env') === 'production') {
+            $turnstileResponse = $request->input('cf-turnstile-response');
+
+            if (! $turnstileResponse || ! $this->validateTurnstile($turnstileResponse)) {
+                return back()->withErrors([
+                    'cf-turnstile-response' => 'Por favor, completa la verificación de seguridad.',
+                ])->onlyInput('email');
+            }
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
@@ -47,5 +58,24 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ])->onlyInput('email');
+    }
+
+    /**
+     * Validate Turnstile token with Cloudflare API
+     */
+    private function validateTurnstile(string $token): bool
+    {
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => config('services.turnstile.secret_key'),
+            'response' => $token,
+        ]);
+
+        if ($response->successful()) {
+            $result = $response->json();
+
+            return $result['success'] ?? false;
+        }
+
+        return false;
     }
 }

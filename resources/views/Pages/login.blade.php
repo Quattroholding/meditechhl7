@@ -1,4 +1,8 @@
 <x-guest-layout>
+    @if(config('app.env') === 'production')
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
+
     <div class="container-fluid px-0">
         <div class="row">
             <!-- Login logo -->
@@ -18,7 +22,7 @@
                             <div class="login-right-wrap">
                                 <div class="account-logo">
                                     <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
-                                    @if(env('APP_ENV')=='local')
+                                    @if(config('app.env') === 'local')
                                     <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
                                     <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
@@ -55,6 +59,14 @@
                                         </div>
                                         <a href="{{ url('forgot-password') }}" class="text-base">{{__('¿Se te olvidó la contraseña?')}}</a>
                                     </div>
+
+                                    @if(config('app.env') === 'production')
+                                    <div class="form-group">
+                                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.public_key') }}"></div>
+                                        <x-input-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
+                                    </div>
+                                    @endif
+
                                     <div class="form-group login-btn">
                                         <button class="btn btn-primary btn-block" type="submit">{{__('Ingresar')}}</button>
                                     </div>

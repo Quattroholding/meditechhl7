@@ -41,4 +41,9 @@ return [
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
     ],
 
+    'turnstile' => [
+        'public_key' => env('TURNSTILE_PUBLIC_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    ],
+
 ];
