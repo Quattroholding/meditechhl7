@@ -9,7 +9,9 @@ use App\Models\Encounter;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
 use App\Models\Patient;
+use App\Models\PatientPractitionerAuthorization;
 use App\Models\PresentIllnesType;
+use App\Models\Scopes\EncouterScope;
 use App\Models\ServiceCatalog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -285,7 +287,15 @@ class ConsultationController extends Controller
     {
 
         $appointment = Appointment::find($appointment_id);
-        $data = Encounter::whereAppointmentId($appointment_id)->first();
+        $auth = false;
+        if(auth()->user()->hasRole('doctor') && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
+        ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()){
+            $auth = true;
+        }
+        $data = Encounter::when($auth, function ($query) {
+            $query->withoutGlobalScope(EncouterScope::class);
+        })
+            ->whereAppointmentId($appointment_id)->first();
         $data['consultation-list'] = PresentIllnesType::get();
         $consultation_disabilities = [];
         $lang = 'esp';

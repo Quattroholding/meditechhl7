@@ -8,8 +8,10 @@ use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\Note;
 use App\Models\Patient;
+use App\Models\PatientPractitionerAuthorization;
 use App\Models\PhysicalExam;
 use App\Models\PresentIllness;
+use App\Models\Scopes\EncouterScope;
 use App\Models\ServiceRequest;
 use App\Models\VitalSign;
 use Carbon\Carbon;
@@ -108,6 +110,8 @@ class MedicalHistory2 extends Component
     // Filtros de búsqueda por sección
     public $conditionsSearchTerm = '';
 
+    public $completeAutorization = false;
+
     // Filtro de tiempo para gráficas de signos vitales (máximo 5 años)
     public $vitalSignsChartPeriod = 'last_5_years';
 
@@ -124,6 +128,10 @@ class MedicalHistory2 extends Component
     {
         $this->patientId = $patientId;
         $this->patient = Patient::findOrFail($patientId);
+        if (auth()->user()->hasRole('doctor')) {
+            $this->completeAutorization = PatientPractitionerAuthorization::wherePatientId($this->patientId)
+                ->wherePractitionerId(auth()->user()->practitioner->id)->first();
+        }
         $this->loadOverviewData();
     }
 
@@ -205,11 +213,13 @@ class MedicalHistory2 extends Component
 
         // Resumen general del paciente
         // Aplicar filtros según rol
-        $isDoctor = auth()->user()->hasRole('doctor');
+        $isDoctor = auth()->user()->hasRole('doctor') && ! $this->completeAutorization;
         $practitionerId = $isDoctor ? auth()->user()->practitioner->id : null;
 
         // Total encounters
-        $encountersQuery = Encounter::where('patient_id', $this->patientId);
+        $encountersQuery = Encounter::where('patient_id', $this->patientId)->when($this->completeAutorization,function ($q){
+            $q->withoutGlobalScope(EncouterScope::class);
+        });
         if ($isDoctor) {
             $encountersQuery->where('practitioner_id', $practitionerId);
         }
@@ -290,7 +300,10 @@ class MedicalHistory2 extends Component
 
     private function loadEncounters()
     {
-        $query = Encounter::where('patient_id', $this->patientId)
+
+        $query = Encounter::when($this->completeAutorization,function ($q){
+            $q->withoutGlobalScope(EncouterScope::class);
+        })->where('patient_id', $this->patientId)
             ->with(['practitioner', 'medicalSpeciality', 'diagnoses.condition.icd10Code'])
             ->orderBy('start', 'desc');
 
@@ -310,6 +323,7 @@ class MedicalHistory2 extends Component
             'from' => $this->totalEncountersCount > 0 ? $offset + 1 : 0,
             'to' => min($offset + $this->encountersPerPage, $this->totalEncountersCount),
         ];
+
     }
 
     private function loadVitalSigns()
@@ -319,7 +333,7 @@ class MedicalHistory2 extends Component
             ->orderBy('effective_date', 'desc');
 
         // Si es doctor, filtrar solo signos vitales de sus encounters
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $query->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);
@@ -327,6 +341,8 @@ class MedicalHistory2 extends Component
         }
 
         $vitalSigns = $this->applyFilters($query, 'effective_date')->get();
+
+
 
         if ($this->groupVitalSignsByEncounter) {
             // Agrupar por encounter
@@ -521,11 +537,18 @@ class MedicalHistory2 extends Component
     private function loadPresentIllnesses()
     {
         $query = PresentIllness::where('patient_id', $this->patientId)
-            ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner'])
+            ->with([
+                'encounter' => function ($query) {
+                    $query->withoutGlobalScopes();
+                },
+                'encounter.practitioner',
+                'encounter.medicalSpeciality',
+                'practitioner',
+            ])
             ->orderBy('created_at', 'desc');
 
         // Si es doctor, filtrar solo present illnesses de sus encounters
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $query->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);
@@ -575,11 +598,18 @@ class MedicalHistory2 extends Component
     {
         // Cargar medicamentos
         $medicationsQuery = MedicationRequest::where('patient_id', $this->patientId)
-            ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner'])
+            ->with([
+                'encounter' => function ($query) {
+                    $query->withoutGlobalScopes();
+                },
+                'encounter.practitioner',
+                'encounter.medicalSpeciality',
+                'practitioner',
+            ])
             ->orderBy('created_at', 'desc');
 
         // Si es doctor, filtrar solo medicamentos de sus encounters
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $medicationsQuery->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);
@@ -588,13 +618,14 @@ class MedicalHistory2 extends Component
 
         $medications = $this->applyFilters($medicationsQuery, 'created_at')->get();
 
+
         // Cargar servicios
         $servicesQuery = ServiceRequest::where('patient_id', $this->patientId)
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'cpt'])
             ->orderBy('created_at', 'desc');
 
         // Si es doctor, filtrar solo servicios de sus encounters
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $servicesQuery->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);
@@ -1063,7 +1094,7 @@ class MedicalHistory2 extends Component
             ->orderBy('effective_date', 'asc');
 
         // Si es doctor, filtrar solo signos vitales de sus encounters
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user()->hasRole('doctor') && !$this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $query->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);

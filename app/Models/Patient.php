@@ -177,6 +177,11 @@ class Patient extends BaseModel
         return $this->hasOne(Account::class, 'patient_id')->whereStatus('active');
     }
 
+    public function practitionerAuthorizations(): HasMany
+    {
+        return $this->hasMany(PatientPractitionerAuthorization::class);
+    }
+
     // Accesor para FHIR
     public function getFhirResourceAttribute()
     {

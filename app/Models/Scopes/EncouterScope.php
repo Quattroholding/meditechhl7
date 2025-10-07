@@ -20,6 +20,16 @@ class EncouterScope implements Scope
                     $q2->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
                 });
             });
+            /*$builder->where(function ($query) use ($practitionerId) {
+                // Encounters donde el doctor es el practitioner
+                $query->where('encounters.practitioner_id', $practitionerId)
+                    // O encounters de pacientes que han autorizado al doctor
+                    ->orWhereHas('patient', function ($q) use ($practitionerId) {
+                        $q->whereHas('practitionerAuthorizations', function ($q2) use ($practitionerId) {
+                            $q2->where('practitioner_id', $practitionerId);
+                        });
+                    });
+            });*/
         } elseif (auth()->user() && auth()->user()->hasRole('paciente')) { // el asistente ve todas las citas de los doctores asociados a cu cliente
             $builder->where('encounters.patient_id', auth()->user()->patient->id);
         } elseif (auth()->user() && auth()->user()->hasRole('asistente') || auth()->user() && auth()->user()->hasRole('admin client')) { // el asistente ve todas las citas de los doctores asociados a cu cliente

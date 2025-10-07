@@ -70,9 +70,11 @@
                                     </td>
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
+                                                @if(auth()->user()->can('view',$dato))
                                                 <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">
                                                     <i  class="fa-solid fa-eye m-r-5 text-white"></i>
                                                 </a>
+                                                @endif
                                                 @if(auth()->user()->can('edit',$dato))
                                                 <a href="{{ route('consultation.show',$dato->appointment_id) }}" class="btn btn-primary btn-sm" title="{{__('generic.edit')}}">
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>

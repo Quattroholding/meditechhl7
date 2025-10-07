@@ -506,6 +506,12 @@
 
     <livewire:patient.patient-head patient_id="{{$patient->id}}"/>
 
+    <!-- Autorización de Acceso (solo para médicos con encounters adicionales) -->
+    @if(auth()->user()->hasRole('doctor'))
+        <div class="container-fluid mb-3">
+            <livewire:patient.request-authorization :patient="$patient"/>
+        </div>
+    @endif
 
     <!-- Contenido Principal -->
     <div class="main-content">
