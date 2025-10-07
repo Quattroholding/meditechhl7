@@ -95,7 +95,7 @@ class Diagnostics extends Component
                 'verification_status' => 'confirmed',
                 'code' => $option['code'],
                 'severity' => 'severe',
-                'onset_info'=>$onset_info,
+                'onset_info'=>strtoupper($onset_info),
                 'onset_date' => now()->format('Y-m-d H:i'),
                 'recorded_date' => now()->format('Y-m-d H:i'),
             ]);
