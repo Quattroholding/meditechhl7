@@ -33,6 +33,7 @@ class DashboardController extends Controller
             'new-patients' => 'doctor.new-patients',
             'old-patients' => 'doctor.old-patients',
             'active-patients' => 'doctor.active-patients',
+            'monthly-appointments' => 'doctor.monthly-appointments',
             'consultas-en-progreso' => 'doctor.consultas-en-progreso',
             'patients-by-gender' => 'doctor.patients-by-gender',
             'patients-by-age-block' => 'doctor.patients-by-age-block',
