@@ -4,15 +4,23 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',array('show_create'=>false))
-                        @slot('title')
-
-                        @endslot
-                        @slot('li_1')
-
+                    @component('components.table-header',array('show_create'=>false,'title'=>''))
+                        @slot('filters')
+                            <div class="row" style="margin-top: 16px;">
+                                <div class="col-md-4">
+                                    <div class="input-block local-forms" data-select2-id="5">
+                                        <label>{{__('Estatus')}}</label>
+                                        <select wire:model.live="statusFilter" class="form-select" style="max-width: 250px;">
+                                            <option value="">{{__('Todos los estados')}}</option>
+                                            <option value="in-progress">{{__('En progreso')}}</option>
+                                            <option value="finished">{{__('Finalizado')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         @endslot
                     @endcomponent
-                    <!-- /Table Header -->
+
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>

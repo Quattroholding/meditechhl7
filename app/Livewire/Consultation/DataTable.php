@@ -4,9 +4,9 @@ namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Http\Request;
 
 class DataTable extends Component
 {
@@ -21,6 +21,8 @@ class DataTable extends Component
     public $actions = [];
 
     public $search; // Búsqueda
+
+    public $statusFilter = ''; // Filtro de status
 
     public $sortField = 'id'; // Ordenación por defecto
 
@@ -69,6 +71,11 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
+
     public function render(Request $request)
     {
         $data = Encounter::selectRaw('encounters.*')
@@ -85,13 +92,16 @@ class DataTable extends Component
                     $q->orWhere('practitioners.name', 'like', '%'.$this->search.'%');
                 });
             })
-            ->when(! empty($request->status), function ($q) use($request){
+            ->when(! empty($this->statusFilter), function ($q) {
+                $q->where('encounters.status', $this->statusFilter);
+            })
+            ->when(! empty($request->status), function ($q) use ($request) {
                 $q->where('encounters.status', $request->status);
             })
-            ->when(! empty($request->patient_id), function ($q) use($request){
+            ->when(! empty($request->patient_id), function ($q) use ($request) {
                 $q->where('encounters.patient_id', $request->patient_id);
             })
-            ->when(! empty($this->practitioner_id), function ($q) use($request){
+            ->when(! empty($this->practitioner_id), function ($q) use ($request) {
                 $q->where('encounters.practitioner_id', $request->practitioner_id);
             })
             ->whereNull('appointments.deleted_at')
