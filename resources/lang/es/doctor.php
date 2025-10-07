@@ -50,6 +50,7 @@ return [
     'qualification_period' => 'Tiempo de estudio',
     'qualification_start' => 'Inicio',
     'qualification_end' => 'Fin',
-    'registry' => 'Número de  licencia o registro',
+    'registry' => 'Número de registro',
+    'licence_code' => 'Código de licencia',
     'signature-manager' => 'Subir firma y sello digital',
 ];

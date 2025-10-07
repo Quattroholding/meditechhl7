@@ -56,8 +56,8 @@ class MedicalDocumentController extends Controller
                 'date' => Carbon::parse($encounter->end),
                 'prescriptionNumber' => 'RX-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
-                'doctorProfile'=>RecepyDoctorProfile::whereUserId($encounter->practitioner->user_id)->first(),
-                'pdfService'=> new PrescriptionPdfService(),
+                'doctorProfile' => RecepyDoctorProfile::whereUserId($encounter->practitioner->user_id)->first(),
+                'pdfService' => new PrescriptionPdfService,
             ];
 
             // Generar PDF
@@ -120,6 +120,9 @@ class MedicalDocumentController extends Controller
                 'orderNumber' => 'OM-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
                 'client' => $client,
+                'doctorProfile' => RecepyDoctorProfile::whereUserId($encounter->practitioner->user_id)->first(),
+                'pdfService' => new PrescriptionPdfService,
+                'serviceType' => $request->input('service_type'),
             ];
 
             // Generar PDF
@@ -244,6 +247,10 @@ class MedicalDocumentController extends Controller
                 'date' => Carbon::now(),
                 'orderNumber' => 'OM-CUSTOM-'.date('Ymd_His'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
+                'client' => $client,
+                'doctorProfile' => RecepyDoctorProfile::whereUserId($services->first()->practitioner->user_id)->first(),
+                'pdfService' => new PrescriptionPdfService,
+                'serviceType' => $request->input('service_type'),
             ];
 
             // Generar PDF
@@ -332,6 +339,10 @@ class MedicalDocumentController extends Controller
                 'date' => Carbon::now(),
                 'orderNumber' => 'OM-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->getClientThemeCSS($client),
+                'client' => $client,
+                'doctorProfile' => RecepyDoctorProfile::whereUserId($encounter->practitioner->user_id)->first(),
+                'pdfService' => new PrescriptionPdfService,
+                'serviceType' => null,
             ];
 
             return view('documents.medical-order', $data);

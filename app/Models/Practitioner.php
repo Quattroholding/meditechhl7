@@ -14,7 +14,7 @@ class Practitioner extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
-        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'identifier_type',
+        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry','licence_code', 'identifier_type',
         'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
     ];
 

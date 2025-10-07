@@ -105,6 +105,53 @@
             </div>
         </div>
 
+        <!-- Emergency Contact -->
+        @if($patient->contact_name || $patient->contact_email || $patient->contact_phone)
+        <div class="row mt-4">
+            <div class="col-12">
+                <h5 class="mb-3">
+                    <i class="feather-alert-circle me-2 text-danger"></i>Contacto de Emergencia
+                </h5>
+                <div class="info-group">
+                    <div class="row">
+                        @if($patient->contact_name)
+                        <div class="col-md-4">
+                            <div class="info-item mb-3">
+                                <label class="info-label">Nombre del Contacto</label>
+                                <p class="info-value">{{ $patient->contact_name }}</p>
+                            </div>
+                        </div>
+                        @endif
+                        @if($patient->contact_email)
+                        <div class="col-md-4">
+                            <div class="info-item mb-3">
+                                <label class="info-label">Email del Contacto</label>
+                                <p class="info-value">
+                                    <a href="mailto:{{ $patient->contact_email }}" class="text-decoration-none">
+                                        {{ $patient->contact_email }}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        @endif
+                        @if($patient->contact_phone)
+                        <div class="col-md-4">
+                            <div class="info-item mb-3">
+                                <label class="info-label">Teléfono del Contacto</label>
+                                <p class="info-value">
+                                    <a href="tel:{{ $patient->contact_phone }}" class="text-decoration-none">
+                                        {{ $patient->contact_phone }}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Medical Information -->
         <div class="row mt-4">
             <div class="col-12">

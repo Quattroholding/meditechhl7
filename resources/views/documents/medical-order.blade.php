@@ -3,141 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orden Médica</title>
-
-    <!-- CSS del tema del cliente -->
-    {!! $clientThemeCSS !!}
-
+    <title>Orden Médica - {{ $orderNumber }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+        * {
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            background: #{{ $doctorProfile->recepy_background_color ?? 'ffffff' }};
+            margin: 0;
+            padding: 15mm;
+            height: 150vh;
         }
 
-        .clinic-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
+        .order-container {
+            border: 2px solid #000;
+            height: calc(100vh - 30mm);
+            position: relative;
+            padding: 10px;
+            page-break-after: always;
+            box-sizing: border-box;
         }
 
-        .document-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #27ae60;
-            margin-top: 10px;
+        .order-container:last-child {
+            page-break-after: avoid;
         }
 
-        .order-number {
-            font-size: 10px;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-
-        .section {
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #2c3e50;
-            border-bottom: 1px solid #bdc3c7;
-            padding-bottom: 3px;
-            margin-bottom: 10px;
-        }
-
-        .doctor-info, .patient-info {
+        .header-section {
             display: table;
             width: 100%;
             margin-bottom: 15px;
         }
 
-        .left-column, .right-column {
+        .order-number {
             display: table-cell;
-            width: 50%;
+            width: 35%;
             vertical-align: top;
-            padding-right: 10px;
+            font-weight: bold;
+            font-size: 12px;
         }
 
-        .info-row {
+        .logo-section {
+            display: table-cell;
+            width: 50%;
+            text-align: center;
+            vertical-align: top;
+            border: 0px solid #000;
+            padding: 10px;
+            position: relative;
+        }
+
+        .logo-box {
+            border: 0px solid #000;
+            padding: 20px;
+            margin-bottom: 5px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-logo {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .facility-info {
+            display: table-cell;
+            width: 35%;
+            vertical-align: top;
+            padding-left: 15px;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .patient-info-section {
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .patient-info-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 5px;
         }
 
-        .label {
+        .patient-info-table td {
+            padding: 2px 5px;
+            vertical-align: bottom;
+        }
+
+        .patient-info-table td.label {
             font-weight: bold;
-            color: #34495e;
+            white-space: nowrap;
         }
 
-        .diagnosis-section {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-left: 4px solid #e74c3c;
-            margin-bottom: 20px;
+        .patient-info-table td.value {
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
         }
 
-        .diagnosis-item {
-            margin-bottom: 8px;
-            padding: 5px;
-            background-color: white;
-            border-radius: 3px;
+        .rx-section {
+            border: 2px solid #000;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 360px;
         }
 
-        .diagnosis-title {
+        .rx-header {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
+            padding: 0 5px;
             font-weight: bold;
-            color: #c0392b;
+            font-size: 14px;
         }
 
-        .service-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        .rx-content {
+            padding: 20px 15px 15px 15px;
         }
 
-        .service-table th {
-            background-color: #27ae60;
-            color: white;
-            padding: 10px;
-            text-align: left;
+        .service-item {
+            margin-bottom: 15px;
             font-size: 11px;
-        }
-
-        .service-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ecf0f1;
-            vertical-align: top;
-        }
-
-        .service-table tr:nth-child(even) {
-            background-color: #f8f9fa;
         }
 
         .service-name {
             font-weight: bold;
-            color: #2c3e50;
-            font-size: 13px;
+            margin-bottom: 3px;
         }
 
-        .service-code {
-            color: #7f8c8d;
-            font-size: 10px;
-            margin-top: 3px;
+        .service-details {
+            margin-left: 10px;
+            margin-bottom: 5px;
         }
 
-        .service-instructions {
-            color: #555;
+        .dx-section {
+            border: 2px solid #000;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 130px;
+        }
+
+        .dx-header {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
+            padding: 0 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .dx-content {
+            padding: 20px 15px 15px 15px;
             font-size: 11px;
-            margin-top: 3px;
+        }
+
+        .seal-section {
+            position: initial;
+            bottom: 100px;
+            right: 10px;
+            text-align: right;
+            z-index: 10;
+        }
+
+        .signature-section {
+            position: initial;
+            bottom: 40px;
+            right: 10px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 300px;
+            margin-bottom: 5px;
+            margin-top: 30px;
+            margin-left: 350px;
+        }
+
+        .signature-text {
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 330px;
+        }
+
+        .doctor-signature {
+            max-width: 200px;
+            max-height: 60px;
+            margin-bottom: 5px;
+        }
+
+        .doctor-seal {
+            max-width: 200px;
+            max-height: 60px;
+            margin-left: 10px;
+            vertical-align: top;
         }
 
         .priority-badge {
@@ -169,313 +239,178 @@
             color: white;
         }
 
-        .footer {
-            margin-top: 30px;
-            border-top: 1px solid #bdc3c7;
-            padding-top: 20px;
-        }
-
-        .signature-section {
-            display: table;
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        .signature-left, .signature-right {
-            display: table-cell;
-            width: 50%;
-            text-align: center;
-            vertical-align: bottom;
-            height: 80px;
-        }
-
-        .signature-line {
-            border-bottom: 1px solid #2c3e50;
-            margin-bottom: 5px;
-            height: 40px;
-        }
-
-        .signature-label {
-            font-size: 10px;
-            color: #7f8c8d;
-        }
-
-        .date-issued {
-            text-align: right;
-            color: #7f8c8d;
-            font-size: 10px;
-            margin-top: 10px;
-        }
-
-        .order-notes {
-            background-color: #d5f4e6;
-            border: 1px solid #27ae60;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-        .validity {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 10px;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .urgent-notice {
-            background-color: #ffe6e6;
-            border: 2px solid #e74c3c;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #c0392b;
-            font-weight: bold;
-        }
-
-        .signature-image, .seal-image {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .signature-image img, .seal-image img {
-            max-height: 60px;
-            max-width: 200px;
-            object-fit: contain;
+        @page {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <!-- Urgent Notice -->
-    @if($serviceRequests->where('priority', 'stat')->count() > 0 || $serviceRequests->where('priority', 'urgent')->count() > 0)
-    <div class="urgent-notice">
-        ⚠️ ORDEN MÉDICA URGENTE - REQUIERE ATENCIÓN PRIORITARIA ⚠️
-    </div>
-    @endif
-
-    <!-- Header -->
-    <div class="header">
-        <div class="clinic-name">
-            {{ $client->name ?? 'Centro Médico' }}
-        </div>
-        <div>{{ $client->address ?? '' }}</div>
-        <div>Tel: {{ $client->whatsapp ?? '' }}</div>
-        <div class="document-title">ORDEN MÉDICA</div>
-        <div class="order-number">No. {{ $orderNumber }}</div>
-    </div>
-
-    <!-- Doctor Information -->
-    <div class="section">
-        <div class="section-title">Información del Médico</div>
-        <div class="doctor-info">
-            <div class="left-column">
-                <div class="info-row">
-                    <span class="label">Médico:</span>{{ $practitioner->name }}
-                </div>
-                <div class="info-row">
-                    <span class="label">Especialidad:</span> {{ $encounter->appointment->medicalSpeciality->name ?? 'Medicina General' }}
-                </div>
-            </div>
-            <div class="right-column">
-                <div class="info-row">
-                    <span class="label">Registro Médico:</span> {{ $practitioner->registry ?? 'N/A' }}
-                </div>
-                <div class="info-row">
-                    <span class="label">Fecha:</span> {{ $date->format('d/m/Y') }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Patient Information -->
-    <div class="section">
-        <div class="section-title">Información del Paciente</div>
-        <div class="patient-info">
-            <div class="left-column">
-                <div class="info-row">
-                    <span class="label">Paciente:</span> {{ $patient->name }}
-                </div>
-                <div class="info-row">
-                    <span class="label">Edad:</span> {{ $patient->birth_date ? \Carbon\Carbon::parse($patient->birth_date)->age . ' años' : 'N/A' }}
-                </div>
-            </div>
-            <div class="right-column">
-                <div class="info-row">
-                    <span class="label">Identificación:</span> {{ $patient->identifier }}
-                </div>
-                <div class="info-row">
-                    <span class="label">Teléfono:</span> {{ $patient->phone }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Diagnoses -->
-    @if($diagnoses->count() > 0)
-    <div class="diagnosis-section">
-        <div class="section-title">Diagnósticos / Indicaciones Clínicas</div>
-        @foreach($diagnoses as $diagnosis)
-        <div class="diagnosis-item">
-            {{--}}
-            <div class="diagnosis-title">{{ $diagnosis->use ?? 'Diagnóstico' }}:</div>
-            {{--}}
-            @if($diagnosis->condition->icd10Code)
-            <div>{{ $diagnosis->condition->icd10Code->description_es ?? 'Diagnóstico no especificado' }}</div>
-            @if($diagnosis->condition->icd10_code)
-                <div style="font-size: 10px; color: #7f8c8d;">CIE-10: {{ $diagnosis->condition->icd10_code }}</div>
-            @endif
-            @if($diagnosis->note)
-                <div style="font-size: 10px; color: #7f8c8d; margin-top: 3px;">{{ $diagnosis->note }}</div>
-            @endif
-            @else
-                {{$diagnosis->condition->onset_info}}
-            @endif
-        </div>
-        @endforeach
-    </div>
-    @endif
-
-    <!-- Service Requests -->
-    <div class="section">
-        <div class="section-title">Servicios y Estudios Solicitados</div>
-        <table class="service-table">
-            <thead>
-                <tr>
-                    <th style="width: 35%;">Servicio/Estudio</th>
-                    <th style="width: 15%;">Código CPT</th>
-                    <th style="width: 20%;">Indicaciones</th>
-                    <th style="width: 10%;">Cantidad</th>
-                    <th style="width: 10%;">Prioridad</th>
-                    <th style="width: 10%;">Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($serviceRequests as $service)
-                <tr>
-                    <td>
-                        <div class="service-name">
-                            {{ $service->code_display ?? $service->cpt->description ?? 'Servicio no especificado' }}
-                        </div>
-                        @if($service->service_type)
-                            <div class="service-code">
-                                Tipo: {{ ucfirst($service->service_type) }}
-                            </div>
-                        @endif
-                        @if($service->body_site && is_array($service->body_site))
-                            <div class="service-code">
-                                Sitio: {{ $service->body_site['display'] ?? $service->body_site['code'] ?? 'N/A' }}
-                            </div>
-                        @endif
-                    </td>
-                    <td style="text-align: center;">
-                        <strong>{{ $service->code }}</strong>
-                        @if($service->cpt)
-                            <div class="service-code">{{ $service->cpt->type ?? '' }}</div>
-                        @endif
-                    </td>
-                    <td>
-                        @if($service->note)
-                            <div class="service-instructions">{{ $service->note }}</div>
-                        @endif
-                        @if($service->patient_instruction)
-                            <div class="service-instructions">
-                                <strong>Paciente:</strong> {{ $service->patient_instruction }}
-                            </div>
-                        @endif
-                        @if($service->reason_code)
-                            <div class="service-code">
-                                Razón: {{ $service->reason_code }}
-                            </div>
-                        @endif
-                    </td>
-                    <td style="text-align: center;">
-                        {{ $service->quantity ?? '1' }}
-                        @if($service->quantity_unit)
-                            <div class="service-code">{{ $service->quantity_unit }}</div>
-                        @endif
-                    </td>
-                    <td style="text-align: center;">
-                        <span class="priority-badge priority-{{ $service->priority ?? 'routine' }}">
-                            {{ ucfirst($service->priority ?? 'Rutina') }}
-                        </span>
-                    </td>
-                    <td style="text-align: center; font-size: 10px;">
-                        @if($service->occurrence_start)
-                            {{ \Carbon\Carbon::parse($service->occurrence_start)->format('d/m/Y') }}
-                        @else
-                            {{ $date->format('d/m/Y') }}
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Special Instructions -->
-    @if($serviceRequests->where('patient_instruction', '!=', null)->count() > 0 || $serviceRequests->where('note', '!=', null)->count() > 0)
-    <div class="order-notes">
-        <div style="font-weight: bold; margin-bottom: 5px;">Instrucciones Especiales:</div>
-        @foreach($serviceRequests as $service)
-            @if($service->patient_instruction)
-                <div style="margin-bottom: 3px;">• <strong>{{ $service->code_display ?? 'Servicio' }}:</strong> {{ $service->patient_instruction }}</div>
-            @endif
-            @if($service->note && $service->note != $service->patient_instruction)
-                <div style="margin-bottom: 3px;">• <strong>Notas clínicas:</strong> {{ $service->note }}</div>
-            @endif
-        @endforeach
-    </div>
-    @endif
-
-    <!-- Priority Services Notice -->
     @php
-        $urgentServices = $serviceRequests->whereIn('priority', ['urgent', 'asap', 'stat']);
+        // Inicializar variables opcionales
+        $doctorProfile = $doctorProfile ?? null;
+        $pdfService = $pdfService ?? null;
+        $serviceType = $serviceType ?? null;
+
+        // Preparar URLs de firmas y sellos para uso en todo el documento
+        $signatureDataUri = '';
+        $sealDataUri = '';
+
+        if($doctorProfile) {
+            if($doctorProfile->signature) {
+                if($pdfService && $pdfService->isPrivateImage($doctorProfile->signature)) {
+                    $signatureDataUri = $pdfService->getPrivateImageDataUri($doctorProfile->signature);
+                } elseif(file_exists(public_path('storage/' . $doctorProfile->signature))) {
+                    $signatureDataUri = 'data:image/' . pathinfo($doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->signature)));
+                }
+            }
+            if($doctorProfile->seal) {
+                if($pdfService && $pdfService->isPrivateImage($doctorProfile->seal)) {
+                    $sealDataUri = $pdfService->getPrivateImageDataUri($doctorProfile->seal);
+                } elseif(file_exists(public_path('storage/' . $doctorProfile->seal))) {
+                    $sealDataUri = 'data:image/' . pathinfo($doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->seal)));
+                }
+            }
+        }
+
+        // Filtrar servicios por tipo si se proporciona
+        $filteredServices = $serviceType
+            ? $serviceRequests->where('service_type', $serviceType)
+            : $serviceRequests;
+
+        // Dividir servicios en páginas de 4
+        $allServices = $filteredServices->toArray();
+        $servicesPerPage = 4;
+        $totalPages = ceil(count($allServices) / $servicesPerPage);
+        $servicePages = array_chunk($allServices, $servicesPerPage);
+
+        // Obtener nombre del tipo de servicio para el título usando el Enum
+        $serviceTypeTitle = \App\Enums\ServiceType::labelFromValue($serviceType);
     @endphp
-    @if($urgentServices->count() > 0)
-    <div class="urgent-notice" style="margin-top: 15px;">
-        ATENCIÓN: Esta orden contiene {{ $urgentServices->count() }} servicio(s) de prioridad alta que requiere(n) atención inmediata
-    </div>
-    @endif
 
-    <!-- Footer -->
-    <div class="footer">
-        <div class="signature-section">
-            <div class="signature-left">
-                @if($practitioner->getSignaturePath())
-                    <div class="signature-image">
-                        <img src="{{ $practitioner->getSignaturePath() }}"
-                             alt="Firma del médico"
-                             style="max-height: 60px; max-width: 200px;">
+    @foreach($servicePages as $pageIndex => $pageServices)
+        <div class="order-container">
+            <!-- Header Section -->
+            <div class="header-section">
+                <div class="order-number">
+                    No.{{ $orderNumber ?? '0001' }}
+                </div>
+
+                <div class="logo-section">
+                    @if($doctorProfile && file_exists(public_path('storage/' . $doctorProfile->logo)))
+                    <div class="logo-box">
+                        <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
                     </div>
-                @else
-                    <div class="signature-line"></div>
-                @endif
-                <div class="signature-label">Firma del Médico</div>
-                <div class="signature-label">{{ $practitioner->name }}</div>
-                <div class="signature-label">Reg. {{ $practitioner->license_number ?? 'N/A' }}</div>
-            </div>
-            <div class="signature-right">
-                @if($practitioner->getSealPath())
-                    <div class="seal-image">
-                        <img src="{{ $practitioner->getSealPath() }}"
-                             alt="Sello del médico"
-                             style="max-height: 80px; max-width: 120px;">
-                    </div>
-                @else
-                    <div class="signature-line"></div>
-                @endif
-                <div class="signature-label">Sello del Médico</div>
-            </div>
-        </div>
+                    @endif
+                    <strong>{{ $practitioner->name }}</strong>
+                </div>
 
-        <div class="date-issued">
-            Emitida el: {{ $date->format('d/m/Y \a \l\a\s H:i') }}
-        </div>
+                <div class="facility-info">
+                    @if($doctorProfile)
+                        {{ $doctorProfile->facility ?? '' }}
+                        {{ $doctorProfile->address ?? '' }}
+                        Tel: {{ $doctorProfile->phone ?? '' }}
+                    @elseif($encounter->appointment->client)
+                        {{ $encounter->appointment->client->name ?? '' }}
+                        {{ $encounter->appointment->client->address ?? '' }}<br>
+                        Tel: {{ $encounter->appointment->client->whatsapp ?? '' }}
+                    @endif
+                </div>
+            </div>
 
-        <div class="validity">
-            Esta orden médica es válida por 60 días a partir de la fecha de emisión
+            <!-- Patient Information -->
+            <div class="patient-info-section">
+                <!-- Primera línea: Nombre y Edad -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 5%;">Nombre</td>
+                        <td class="value" style="width: 75%;">{{ $patient->name }}</td>
+                        <td class="label" style="width: 5%;">Edad</td>
+                        <td class="value" style="width: 15%;">{{ $patient->age }}</td>
+                    </tr>
+                </table>
+
+                <!-- Segunda línea: Identificación, No. SS y Fecha -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 8%;">Cédula</td>
+                        <td class="value" style="width: 25%;">@if($patient->identifier_type<>'SS'){{ $patient->identifier ?? '' }}@endif</td>
+                        <td class="label" style="width: 5%;">No. SS</td>
+                        <td class="value" style="width: 29%;">@if($patient->identifier_type=='SS'){{ $patient->identifier ?? '' }}@endif</td>
+                        <td class="label" style="width: 5%;">Fecha</td>
+                        <td class="value" style="width: 28%;">{{ \Carbon\Carbon::parse($encounter->created_at)->format('d/m/Y') }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Rx Section (Servicios Médicos) - Max 4 per page -->
+            <div class="rx-section">
+                <div class="rx-header">{{ $serviceTypeTitle }}</div>
+                <div class="rx-content">
+                    @foreach($pageServices as $index => $service)
+                        @php $service = (object) $service; @endphp
+                        <div class="service-item">
+                            <div class="service-details">
+                                {{ ($pageIndex * $servicesPerPage) + $index + 1 }}. {{ $service->code }} | {{ $service->cpt['description_es'] ?? 'Servicio no especificado' }}
+                            </div>
+                            @if($service->body_site && is_array($service->body_site))
+                                <div class="service-details">
+                                    <strong>Sitio Anatómico:</strong> {{ $service->body_site['display'] ?? $service->body_site['code'] ?? 'N/A' }}
+                                </div>
+                            @endif
+                            @if($service->patient_instruction)
+                                <div class="service-details">
+                                    <strong>Instrucciones para el paciente:</strong> {{ $service->patient_instruction }}
+                                </div>
+                            @endif
+                            @if($service->note)
+                                <div class="service-details">
+                                    <strong>Notas:</strong> {{ $service->note }}
+                                </div>
+                            @endif
+                            @if($service->reason_code)
+                                <div class="service-details">
+                                    <strong>Razón:</strong> {{ $service->reason_code }}
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Dx Section (Diagnósticos) - Appears on every page -->
+            <div class="dx-section">
+                <div class="dx-header">Dx</div>
+                <div class="dx-content">
+                    @foreach($diagnoses as $d)
+                        @if($d->condition->icd10Code)
+                            {{ strtoupper($d->condition->icd10Code->description_es) }}
+                        @else
+                            {{ strtoupper($d->condition->onset_info) }}
+                        @endif
+                        <br><br>
+                        @if($d->note)
+                            <strong>Notas adicionales:</strong><br>
+                            {{ $d->note }}
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="seal-section">
+                @if($signatureDataUri)
+                    <img src="{{ $signatureDataUri }}" alt="Firma" class="doctor-signature">
+                    @if($sealDataUri)
+                        <img src="{{ $sealDataUri }}" alt="Sello" class="doctor-seal">
+                    @endif
+                @endif
+            </div>
+
+            <!-- Signature Section - Appears on every page -->
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <div class="signature-text">Firma y Sello del Médico</div>
+            </div>
         </div>
-    </div>
+    @endforeach
 </body>
 </html>

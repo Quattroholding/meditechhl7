@@ -124,12 +124,7 @@
                                                             class="block  w-full" multiple aria-label="multiple select example" :selected="[old('medical_speciality')]"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
                                         </div>
-                                        <!-- REGISTRY -->
-                                        <div class="input-block local-forms">
-                                            <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
-                                            <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" :value="old('registry')" maxlength="60"/>
-                                            <x-input-error :messages="$errors->get('registry')" class="mt-2" />
-                                        </div>
+
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- CLIENTS -->
@@ -170,6 +165,24 @@
 
                                     </div>
                                     {{--}}
+                                <dic class="row">
+                                    <div class="col-6 col-md-6 col-xl-6">
+                                        <!-- REGISTRY -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
+                                            <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" :value="old('registry')" maxlength="60"/>
+                                            <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-xl-6">
+                                        <!-- LICENCE CODE -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="licence_code" value="{{__('doctor.licence_code')}}" required="true"/>
+                                            <x-text-input id="licence_code" class="block mt-1 w-full" type="licence_code" name="licence_code" :value="old('licence_code')" maxlength="60"/>
+                                            <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </dic>
 
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">

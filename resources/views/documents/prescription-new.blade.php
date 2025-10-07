@@ -88,65 +88,25 @@
             font-size: 12px;
         }
 
-        .patient-line {
-            display: table;
+        .patient-info-table {
             width: 100%;
-            margin-bottom: 10px;
+            border-collapse: collapse;
+            margin-bottom: 5px;
         }
 
-        .patient-field {
-            display: table-cell;
-            padding-right: 20px;
-            vertical-align: top;
+        .patient-info-table td {
+            padding: 2px 5px;
+            vertical-align: bottom;
         }
 
-        .patient-field.name {
-            width: 75%;
-        }
-
-        .patient-field.age {
-            width: 25%;
-        }
-
-        .patient-field.bottom-row {
-            width: 33.33%;
-        }
-
-        .patient-field.age {
-            padding-right: 0;
-        }
-
-        .patient-field.bottom-row:last-child {
-            padding-right: 0;
-        }
-
-        .field-label {
+        .patient-info-table td.label {
             font-weight: bold;
-            margin-right: 5px;
+            white-space: nowrap;
         }
 
-        .field-value {
-            border-bottom: 1px solid #000;
-            min-width: 100px;
-            display: inline-block;
-            padding-bottom: 1px;
-        }
-
-        .patient-field.name {
-            display: flex;
-            align-items: baseline;
-        }
-
-        .patient-field.name .field-label {
-            margin-right: 5px;
-            flex-shrink: 0;
-        }
-
-        .patient-field.name .field-value {
-            flex: 1;
+        .patient-info-table td.value {
             border-bottom: 1px solid #000;
             padding-bottom: 1px;
-            margin-right: 10px;
         }
 
         .rx-section {
@@ -307,13 +267,11 @@
                 </div>
 
                 <div class="logo-section">
+                    @if($doctorProfile && file_exists(public_path('storage/' . $doctorProfile->logo)))
                     <div class="logo-box">
-                        @if($doctorProfile && file_exists(public_path('storage/' . $doctorProfile->logo)))
-                            <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
-                        @else
-                            LOGO CLINICA
-                        @endif
+                       <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="doctor-logo">
                     </div>
+                    @endif
                     <strong>{{ $practitioner->name }}</strong>
                 </div>
 
@@ -333,35 +291,27 @@
 
             <!-- Patient Information -->
             <div class="patient-info-section">
-                <div class="patient-line">
-                    <div class="patient-field name">
-                        <span class="field-label">Nombre</span>
-                        <span class="field-value">{{ $patient->name }}</span>
-                    </div>
-                    <div class="patient-field age">
-                        <span class="field-label">Edad </span>
-                        <span class="field-value">
-                            {{ $patient->age }}
-                        </span>
-                    </div>
-                </div>
+                <!-- Primera línea: Nombre y Edad -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 5%;">Nombre</td>
+                        <td class="value" style="width: 75%;">{{ $patient->name }}</td>
+                        <td class="label" style="width: 5%;">Edad</td>
+                        <td class="value" style="width: 15%;">{{ $patient->age }}</td>
+                    </tr>
+                </table>
 
-                <div class="patient-line">
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">{{$patient->identifier_type}}</span>
-                        <span class="field-value">{{ $patient->identifier ?? '' }}</span>
-                    </div>
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">No. SS</span>
-                        <span class="field-value"></span>
-                    </div>
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">Fecha</span>
-                        <span class="field-value">
-                            {{ \Carbon\Carbon::parse($encounter->created_at)->format('d/m/Y') }}
-                        </span>
-                    </div>
-                </div>
+                <!-- Segunda línea: Identificación, No. SS y Fecha -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 8%;">Cédula</td>
+                        <td class="value" style="width: 25%;">@if($patient->identifier_type<>'SS'){{ $patient->identifier ?? '' }}@endif</td>
+                        <td class="label" style="width: 5%;">No. SS</td>
+                        <td class="value" style="width: 29%;">@if($patient->identifier_type=='SS'){{ $patient->identifier ?? '' }}@endif</td>
+                        <td class="label" style="width: 5%;">Fecha</td>
+                        <td class="value" style="width: 28%;">{{ \Carbon\Carbon::parse($encounter->created_at)->format('d/m/Y') }}</td>
+                    </tr>
+                </table>
             </div>
 
             <!-- Rx Section (Medicamentos) - Max 5 per page -->
@@ -404,13 +354,15 @@
                 <div class="dx-content">
                     @foreach($diagnoses as $d)
                         @if($d->condition->icd10Code)
-                            {{ $d->condition->icd10Code->description_es}}
+                            {{ strtoupper($d->condition->icd10Code->description_es)}}
                         @else
-                            {{ $d->condition->onset_info}}
+                            {{ strtoupper($d->condition->onset_info)}}
                         @endif
                         <br><br>
+                        @if($d->note)
                         <strong>Notas adicionales:</strong><br>
                         {{ $d->note }}
+                        @endif
                     @endforeach
                 </div>
             </div>

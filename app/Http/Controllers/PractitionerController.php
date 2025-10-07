@@ -56,6 +56,7 @@ class PractitionerController extends Controller
             'identifier_type' => 'required',
             'id_number' => 'required',
             'registry' => 'required',
+            'licence_code' => 'required',
             'email' => 'required|unique:practitioners',
             'gender' => 'required',
             'birth_date' => 'required',
@@ -99,6 +100,7 @@ class PractitionerController extends Controller
                 $practitioner->identifier_type = $request->identifier_type;
                 $practitioner->identifier = $request->id_number;
                 $practitioner->registry = $request->registry;
+                $practitioner->licence_code = $request->licence_code;
                 $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                 $fecha->setTime(0, 0, 0);
                 $practitioner->birth_date = $fecha->format('Y-m-d H:i:s');
@@ -156,6 +158,7 @@ class PractitionerController extends Controller
                 'email' => 'required',
                 'phone' => 'required',
                 'registry' => 'required',
+                'licence_code' => 'required',
                 'address' => 'required',
                 // 'full_phone' => 'required',
                 // 'image' => 'required',
@@ -193,6 +196,7 @@ class PractitionerController extends Controller
                 $practitioner->family_name = $request->last_name;
                 $practitioner->identifier_type = $request->id_type;
                 $practitioner->registry = $request->registry;
+                $practitioner->licence_code = $request->licence_code;
                 $practitioner->identifier = $request->id_number;
                 $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                 $fecha->setTime(0, 0, 0);

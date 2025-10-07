@@ -45,6 +45,12 @@ class Create extends Component
 
     public $phone;
 
+    public $contact_name;
+
+    public $contact_email;
+
+    public $contact_phone;
+
     public $blood_type;
 
     public $password;
@@ -109,6 +115,9 @@ class Create extends Component
             'marital_status' => 'required',
             'email' => 'required|unique:'.Patient::class,
             'phone' => 'required',
+            'contact_name' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_phone' => 'nullable|string|max:255',
             'primary_patient_id' => 'required_if:is_dependent,true',
             'relationship_type' => 'required_if:is_dependent,true',
             'archivos.*' => 'nullable|file|max:1024', // 1MB max por archivo
@@ -254,6 +263,9 @@ class Create extends Component
         $patient->email = $model->email;
         $patient->phone = $this->phone;
         $patient->whatsapp_phone = $this->phone;
+        $patient->contact_name = $this->contact_name;
+        $patient->contact_email = $this->contact_email;
+        $patient->contact_phone = $this->contact_phone;
         $patient->name = $this->first_name.' '.$this->last_name;
         $patient->user_id = $model->id;
         $patient->gender = $this->gender;
@@ -333,6 +345,9 @@ class Create extends Component
         $this->birthdate = '';
         $this->physical_address = '';
         $this->phone = '';
+        $this->contact_name = '';
+        $this->contact_email = '';
+        $this->contact_phone = '';
         $this->blood_type = '';
         $this->marital_status = '';
         $this->is_dependent = false;

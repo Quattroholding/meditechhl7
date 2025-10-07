@@ -320,7 +320,7 @@
                                                             <tr>
                                                                 <td>{{ $service->code }}</td>
                                                                 <td>{{ $service->cpt->description_es }}</td>
-                                                                <td>{{$service->service_type}}</td>
+                                                                <td>{{ \App\Enums\ServiceType::labelFromValue( $service->service_type) }}</td>
                                                                 <td>
                                                                     @php
                                                                         $statusEnum = \App\Enums\ServiceRequestStatus::fromString($service->status);
@@ -336,7 +336,7 @@
                                                                     @endif
                                                                 </td>
 
-                                                                <td>{{ $service->authored_on ? $service->authored_on->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                                <td>{{ $service->authored_on ? $service->authored_on->format('Y-m-d') : 'N/A' }}</td>
                                                                 <td>
                                                                     @php
                                                                         $priorityEnum = \App\Enums\ServiceRequestPriority::fromString($service->priority);
@@ -411,8 +411,19 @@
                                     <a href="{{route('prescription.download',$encounter->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf"></i> {{__('Descargar receta')}} </a>
                                 @endif
                                 @if($encounter->serviceRequests->count() > 0)
-                                    <a href="{{route('medical-order.download',$encounter->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf"></i> {{__('Descargar orden')}} </a>
-                               @endif
+                                    @php
+                                        // Agrupar service requests por tipo
+                                        $servicesByType = $encounter->serviceRequests->groupBy('service_type');
+                                    @endphp
+
+                                    @foreach($servicesByType as $serviceType => $services)
+                                        <a href="{{route('medical-order.download',$encounter->id)}}?service_type={{$serviceType}}"
+                                           target="_blank"
+                                           class="btn btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Descargar Orden {{ \App\Enums\ServiceType::pluralLabelFromValue($serviceType) }}
+                                        </a>
+                                    @endforeach
+                                @endif
                                 <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-primary" target="_blank">
                                     <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
                                 </a>

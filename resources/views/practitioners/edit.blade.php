@@ -115,33 +115,33 @@
                                 </div>{{--}}
                             </div>
                             <div class="row">
-                            <div class="col-6 col-md-6 col-xl-6">
-                                <!-- REGISTRY -->
-                                <div class="input-block local-forms">
-                                    <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
-                                    <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" value="{{$data->registry}}" maxlength="60"/>
-                                    <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- REGISTRY -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
+                                        <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" value="{{$data->registry}}" maxlength="60"/>
+                                        <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                    </div>
                                 </div>
-                                {{--}}
-                                <!-- SPECIALTY -->
-                                <div class="input-block  local-forms">
-                                    <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" required/>
-                                    <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block w-full" :selected="$specialties"  multiple aria-label="multiple select example" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- LICENCE CODE -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="licence_code" value="{{__('doctor.licence_code')}}" required="true"/>
+                                        <x-text-input id="licence_code" class="block mt-1 w-full" type="licence_code" name="licence_code" value="{{$data->licence_code}}" maxlength="60"/>
+                                        <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
+                                    </div>
                                 </div>
-                                {{--}}
-                            </div>
-                            <div class="col-6 col-md-6 col-xl-6">
-                                    <!-- CLIENTS -->
-                                <div class="input-block  local-forms">
-                                    <x-input-label for="client" :value="__('user.client')" required/>
-                                    <x-select-input name="clients[]" :options="$clients" class="block w-full"  :selected="$practitioner_clients" multiple aria-label="multiple select example" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
-                                </div>
-                            </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-12 col-xl-12">
+                                <div class="col-6 col-md-6 col-xl-6">
+                                    <!-- CLIENTS -->
+                                    <div class="input-block  local-forms">
+                                        <x-input-label for="client" :value="__('user.client')" required/>
+                                        <x-select-input name="clients[]" :options="$clients" class="block w-full"  :selected="$practitioner_clients" multiple aria-label="multiple select example" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('last_name')" /><p>&nbsp;</p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-xl-6">
                                     <div class="form-group local-top-form">
                                         <x-input-label for="image" class="local-top" :value="__('Avatar')"/>
                                         <div class="settings-btn upload-files-avator">
@@ -154,7 +154,7 @@
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
                                     <button type="submit" class="btn btn-primary submit-form me-2">     {{ __('button.update') }} </button>
-                                    <a class="btn btn-primary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
+                                    <a class="btn btn-secondary cancel-form" href="{{ route('practitioner.index') }}">  {{ __('button.cancel') }}</a>
                                 </div>
                             </div>
                             </form>

@@ -219,6 +219,9 @@ class PatientController extends Controller
             'email' => 'required',
             'phone' => 'required',
             'blood_type' => 'required',
+            'contact_name' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_phone' => 'nullable|string|max:255',
         ]);
 
         $model = Patient::findOrFail($id);

@@ -26,14 +26,14 @@
                         @endif
                         <div class="row">
                             <!-- ID NUMBER -->
-                            <div class="col-6 col-md-6 col-xl-6">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block  local-forms">
                                     <x-input-label for="id_type" :value="__('doctor.id_type')" required="true"/>
                                     <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="[$data->identifier_type]" class="block mt-1 w-full"/>
                                     <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                 </div>
                             </div>
-                            <div class="col-6 col-md-6 col-xl-6">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <div class=" input-block  local-forms ">
                                     <x-input-label for="id_number" :value="__('doctor.full_id_number')" required="true"/>
                                     <x-text-input id="id_number" class="block mt-1 w-full" type="text" name="id_number" :value="$data->identifier" autofocus/>
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 col-md-6 col-xl-4">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <!-- First Name -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="first_name" :value="__('doctor.first_name')" required="true"/>
@@ -50,7 +50,7 @@
                                     <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-xl-4">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <!-- Last Name -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="last_name" :value="__('doctor.last_name')" required="true"/>
@@ -58,12 +58,22 @@
                                     <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-xl-4">
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <!-- Registry -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="registry" :value="__('doctor.registry')" required="true"/>
                                     <x-text-input id="registry" class="block mt-1 w-full" type="text" name="registry" :value="$data->registry" />
                                     <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <!-- Registry -->
+                                <div class="input-block local-forms">
+                                    <x-input-label for="licence_code" :value="__('doctor.licence_code')" required="true"/>
+                                    <x-text-input id="licence_code" class="block mt-1 w-full" type="text" name="licence_code" :value="$data->licence_code" />
+                                    <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
@@ -89,7 +99,7 @@
 
                         </div>
                         <div class="row">
-                            <div class="col-6 col-md-6 col-xl-6">
+                            <div class="col-12 col-md-6 col-xl-6">
                                 <!-- EMAIL -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="email" value="{{__('doctor.email').'/usuario'}}" required="true"/>
@@ -98,7 +108,7 @@
                                 </div>
                             </div>
                             <!-- PHONE -->
-                            <div class=" col-6 col-md-6 col-xl-6">
+                            <div class=" col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
                                     <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" id ="phone" value="{{$data->phone}}">

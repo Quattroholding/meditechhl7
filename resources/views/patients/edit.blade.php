@@ -151,6 +151,40 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Emergency Contact Section -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="mt-3 mb-2">Contacto de Emergencia (Opcional)</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- CONTACT NAME -->
+                                    <div class="col-12 col-md-4 col-xl-4">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="contact_name" value="Nombre del Contacto"/>
+                                            <x-text-input id="contact_name" class="block mt-1 w-full" type="text" name="contact_name" :value="$data->contact_name"/>
+                                            <x-input-error :messages="$errors->get('contact_name')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <!-- CONTACT EMAIL -->
+                                    <div class="col-12 col-md-4 col-xl-4">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="contact_email" value="Email del Contacto"/>
+                                            <x-text-input id="contact_email" class="block mt-1 w-full" type="email" name="contact_email" :value="$data->contact_email"/>
+                                            <x-input-error :messages="$errors->get('contact_email')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <!-- CONTACT PHONE -->
+                                    <div class="col-12 col-md-4 col-xl-4">
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="contact_phone" value="Teléfono del Contacto"/>
+                                            <x-text-input id="contact_phone" class="block mt-1 w-full" type="tel" name="contact_phone" :value="$data->contact_phone"/>
+                                            <x-input-error :messages="$errors->get('contact_phone')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <!-- BLOOD TYPE -->
