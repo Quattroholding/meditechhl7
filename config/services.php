@@ -39,6 +39,8 @@ return [
         'sid' => env('TWILIO_SID'),
         'token' => env('TWILIO_TOKEN'),
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
+        'testing_mode' => env('TWILIO_TESTING_MODE', false),
+        'testing_patient_whatsapp' => env('TWILIO_TESTING_PATIENT_WHATSAPP'),
     ],
 
     'turnstile' => [

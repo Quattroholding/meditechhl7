@@ -73,6 +73,7 @@ class AppointmentFactory extends Factory
                         'proposed',
                         'pending',
                         'booked',
+                        'confirm',
                         'arrived',
                         'fulfilled',
                         'cancelled',

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('practitioner_id')->constrained('practitioners')->onDelete('cascade');
             $table->string('identifier')->unique()->comment('Identificador único de la cita');
-            $table->enum('status', ['proposed', 'pending', 'booked', 'arrived', 'fulfilled', 'cancelled', 'noshow', 'entered-in-error', 'checked-in', 'waitlist']);
+            $table->enum('status', ['proposed', 'pending', 'booked', 'confirm', 'arrived', 'fulfilled', 'cancelled', 'noshow', 'entered-in-error', 'checked-in', 'waitlist']);
             $table->string('service_type')->comment('Tipo de servicio o especialidad');
             $table->text('description')->nullable();
             $table->dateTime('start');
