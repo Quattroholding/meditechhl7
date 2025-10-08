@@ -49,17 +49,6 @@ class Patient extends BaseModel
         return $this->email;
     }
 
-    public function routeNotificationForWhatsApp($notification = null)
-    {
-        // Si estamos en modo testing, usar número de WhatsApp específico
-        if (config('app.env') === 'local' || config('services.twilio.testing_mode')) {
-            return config('services.twilio.testing_patient_whatsapp');
-        }
-
-        // Devolver whatsapp_phone si existe, sino usar phone
-        return $this->whatsapp_phone ?: $this->phone;
-    }
-
     public function getCompleteHistory(): array
     {
         return [

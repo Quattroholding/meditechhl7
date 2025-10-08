@@ -14,7 +14,7 @@ class TestWhatsAppNotification extends Command
      *
      * @var string
      */
-    protected $signature = 'whatsapp:test {phone} {--patient-id=}';
+    protected $signature = 'whatsapp:test {--phone} {--patient-id=}';
 
     /**
      * The console command description.
@@ -28,7 +28,7 @@ class TestWhatsAppNotification extends Command
      */
     public function handle()
     {
-        $phone = $this->argument('phone');
+        $phone = $this->option('phone');
         $patientId = $this->option('patient-id');
 
         try {
@@ -50,7 +50,7 @@ class TestWhatsAppNotification extends Command
             }
 
             // Update patient's WhatsApp phone
-            $patient->update(['whatsapp_phone' => $phone]);
+            $patient->update(['whatsapp_phone' => $patient->phone]);
             $this->info("Updated patient {$patient->name} WhatsApp phone to: {$phone}");
 
             // Find an appointment for testing
