@@ -48,6 +48,8 @@ class WhatsAppChannel
                 ]);
 
                 return;
+            }else{
+                Log::info('The phone used for whatsapp notification', ['phone' => $phoneNumber]);
             }
 
             // Prepare message parameters

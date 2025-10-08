@@ -31,6 +31,8 @@ class TestWhatsAppNotification extends Command
         $phone = $this->option('phone');
         $patientId = $this->option('patient-id');
 
+
+
         try {
             // Find or create a test patient
             if ($patientId) {
@@ -48,9 +50,9 @@ class TestWhatsAppNotification extends Command
                     return 1;
                 }
             }
-
-            // Update patient's WhatsApp phone
-            $patient->update(['whatsapp_phone' => $patient->phone]);
+            if(empty($phone)) $phone = $patient->phone;
+                // Update patient's WhatsApp phone
+            $patient->update(['whatsapp_phone' => $phone]);
             $this->info("Updated patient {$patient->name} WhatsApp phone to: {$phone}");
 
             // Find an appointment for testing
