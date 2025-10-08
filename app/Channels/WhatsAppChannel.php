@@ -41,6 +41,8 @@ class WhatsAppChannel
             // Get the WhatsApp phone number from the notifiable model
             $phoneNumber = $this->getPhoneNumber($notifiable);
 
+            Log::info('WhatsApp number: ' . $phoneNumber);
+
             if (! $phoneNumber) {
                 Log::warning('WhatsApp notification skipped: No phone number for user', [
                     'user_id' => $notifiable->id ?? null,
@@ -48,8 +50,6 @@ class WhatsAppChannel
                 ]);
 
                 return;
-            }else{
-                Log::info('The phone used for whatsapp notification', ['phone' => $phoneNumber]);
             }
 
             // Prepare message parameters
@@ -97,6 +97,10 @@ class WhatsAppChannel
      */
     protected function getPhoneNumber($notifiable): ?string
     {
+        Log::info('Parametros del servidor ',[
+            'app.env'=>config('app.env'),
+            'testing_mode'=>config('services.twilio.testing_mode'),
+        ]);
         // If in testing mode, use specific testing phone
         if (config('app.env') === 'local' || config('services.twilio.testing_mode')) {
             $testingPhone = config('services.twilio.testing_patient_whatsapp');
