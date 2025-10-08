@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -108,7 +109,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
-        $hoursUntil = now()->diffInHours($appointmentDate);
+        $hoursUntil = Carbon::parse($appointmentDate)->diffForHumans();
 
         $message = "🏥 *Recordatorio de Cita Médica*\n\n";
         $message .= "Hola {$notifiable->name},\n\n";
