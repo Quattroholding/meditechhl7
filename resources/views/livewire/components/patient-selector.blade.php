@@ -61,7 +61,7 @@
                             <div>
                                 <div class="fw-bold text-dark">{{ $patient->name }}</div>
                                 <div class="text-muted small">
-                                    {{ $patient->identifier_type }}: {{ $patient->identifier }}
+                                    {{ $patient->identifier_type }}: {{ preg_replace('/-(SPOUSE|CHILD|SELF)$/', '', $patient->identifier) }}
                                 </div>
                                 @if($patient->phone)
                                     <div class="text-muted small">
