@@ -646,6 +646,8 @@ class AppointmentController extends Controller
                 ]);
                 $appointment->addPatientToPractitionerClient();
                 $appointment->notifyPatientAboutConfirmation();
+                // Schedule reminder notification 2 hours before appointment
+                $appointment->notifyPatientAboutAppointment();
             }
 
             // Load relationships

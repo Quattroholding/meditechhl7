@@ -16,6 +16,7 @@
         "livewire/livewire": "^3.6",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.15",
+        "twilio/sdk": "^8.8",
         "yajra/laravel-oci8": "12.x.x"
     },
     "require-dev": {

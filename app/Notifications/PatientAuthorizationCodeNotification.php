@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Notifications;
+
+use App\Models\AuthorizationCode;
+use App\Models\Practitioner;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+
+class PatientAuthorizationCodeNotification extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    public $tries = 3;
+
+    public $backoff = [60, 300, 600];
+
+    public function __construct(
+        public AuthorizationCode $authorizationCode,
+        public Practitioner $practitioner
+    ) {
+        $this->onQueue('emails');
+    }
+
+    public function via($notifiable)
+    {
+        return ['mail', 'database'];
+    }
+
+    public function toMail($notifiable)
+    {
+        $clinicName = config('app.name');
+        $expiresAt = $this->authorizationCode->expires_at;
+
+        return (new MailMessage)
+            ->subject('Código de Autorización de Acceso a Historial Clínico - '.$clinicName)
+            ->greeting('¡Hola '.$notifiable->name.'!')
+            ->line('El Dr. **'.$this->practitioner->name.'** ha solicitado acceso a su historial clínico completo.')
+            ->line('Para autorizar este acceso, proporcione el siguiente código de 4 dígitos al médico:')
+            ->line('## **'.$this->authorizationCode->code.'**')
+            ->line('⚠️ **Este código expira el '.$expiresAt->format('d/m/Y').' a las '.$expiresAt->format('H:i').'** (válido por 1 hora)')
+            ->line('Una vez que el médico ingrese este código correctamente, tendrá acceso permanente a su historial clínico.')
+            ->line('Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.')
+            ->salutation('Atentamente, Equipo de '.$clinicName);
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            'type' => 'authorization_code',
+            'authorization_code_id' => $this->authorizationCode->id,
+            'practitioner_name' => $this->practitioner->name,
+            'practitioner_id' => $this->practitioner->id,
+            'code' => $this->authorizationCode->code,
+            'expires_at' => $this->authorizationCode->expires_at->format('Y-m-d H:i:s'),
+            'message' => 'El Dr. '.$this->practitioner->name.' solicita acceso a su historial clínico. Código: '.$this->authorizationCode->code,
+            'sent_at' => now()->toDateTimeString(),
+        ];
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        \Log::error('Falló el envío de código de autorización', [
+            'authorization_code_id' => $this->authorizationCode->id,
+            'patient_id' => $this->authorizationCode->patient_id,
+            'practitioner_id' => $this->authorizationCode->practitioner_id,
+            'error' => $exception->getMessage(),
+        ]);
+    }
+}

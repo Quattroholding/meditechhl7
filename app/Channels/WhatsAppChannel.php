@@ -50,27 +50,42 @@ class WhatsAppChannel
                 return;
             }
 
-            $this->client->messages->create(
-                "whatsapp:$phoneNumber", // To
-                [
-                    'from' => config('services.twilio.whatsapp_from'),
-                    'body' => $message['body'] ?? $message,
-                    'mediaUrl' => $message['media_url'] ?? null,
-                ]
-            );
+            // Prepare message parameters
+            $params = [
+                'from' => config('services.twilio.whatsapp_from'),
+                'body' => is_array($message) ? ($message['body'] ?? '') : $message,
+            ];
 
-            Log::info('WhatsApp notification sent successfully', [
-                'user_id' => $notifiable->id ?? null,
-                'phone' => $phoneNumber,
-                'notification' => get_class($notification),
-            ]);
+            // Only add mediaUrl if it exists
+            if (is_array($message) && ! empty($message['media_url'])) {
+                $params['mediaUrl'] = [$message['media_url']];
+            }
+
+            $result = $this->client->messages->create("whatsapp:$phoneNumber", $params);
+
+            try {
+                Log::info('WhatsApp notification sent successfully', [
+                    'user_id' => $notifiable->id ?? null,
+                    'phone' => $phoneNumber,
+                    'notification' => get_class($notification),
+                    'message_sid' => $result->sid,
+                ]);
+            } catch (\Exception $logException) {
+                // Ignore log errors
+            }
 
         } catch (\Exception $e) {
-            Log::error('WhatsApp notification failed', [
-                'user_id' => $notifiable->id ?? null,
-                'error' => $e->getMessage(),
-                'notification' => get_class($notification),
-            ]);
+            try {
+                Log::error('WhatsApp notification failed', [
+                    'user_id' => $notifiable->id ?? null,
+                    'error' => $e->getMessage(),
+                    'notification' => get_class($notification),
+                ]);
+            } catch (\Exception $logException) {
+                // Ignore log errors
+            }
+
+            throw $e; // Re-throw the original exception
         }
     }
 

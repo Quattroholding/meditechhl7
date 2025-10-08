@@ -61,11 +61,31 @@ class TestWhatsAppNotification extends Command
                 return 1;
             }
 
-            // Send test notification
+            // Send test notification synchronously (not queued)
             $this->info('Sending WhatsApp test notification...');
-            $patient->notify(new AppointmentReminderNotification($appointment));
+            $this->newLine();
 
-            $this->info('✅ WhatsApp notification sent successfully!');
+            // Create notification but don't queue it
+            $notification = new AppointmentReminderNotification($appointment);
+
+            // Get channels
+            $channels = $notification->via($patient);
+            $this->line('Channels: '.implode(', ', array_map(function ($channel) {
+                return is_string($channel) ? class_basename($channel) : $channel;
+            }, $channels)));
+            $this->newLine();
+
+            // Send via WhatsApp channel directly
+            if (in_array(\App\Channels\WhatsAppChannel::class, $channels)) {
+                $whatsappChannel = app(\App\Channels\WhatsAppChannel::class);
+                $whatsappChannel->send($patient, $notification);
+
+                $this->info('✅ WhatsApp notification sent successfully!');
+            } else {
+                $this->warn('⚠️  WhatsApp channel not in notification channels');
+            }
+
+            $this->newLine();
             $this->info("Patient: {$patient->name}");
             $this->info("Phone: {$phone}");
             $this->info("Appointment: {$appointment->start->format('d/m/Y H:i')} with Dr. {$appointment->practitioner->name}");
