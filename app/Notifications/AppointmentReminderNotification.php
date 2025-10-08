@@ -110,7 +110,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
         $hoursUntil = Carbon::parse($appointmentDate)->diffForHumans();
-        $hoursUntil = ceil($hoursUntil);
+
 
         $message = "🏥 *Recordatorio de Cita Médica*\n\n";
         $message .= "Hola {$notifiable->name},\n\n";
