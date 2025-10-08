@@ -133,7 +133,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
             $message .= "🔬 *Especialidad:* {$this->appointment->medicalSpeciality->name}\n";
         }
 
-        $message .= "\n⏰ *Su cita es en {$hoursUntil} horas*\n\n";
+        $message .= "\n⏰ *Su cita es en 2 horas*\n\n";
 
         if ($this->appointment->patient_instruction) {
             $message .= "📋 *Instrucciones:*\n{$this->appointment->patient_instruction}\n\n";
