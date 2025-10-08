@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
+use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -21,6 +22,9 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
+
+// Twilio Webhook - Public route (Twilio will call this)
+Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {

@@ -509,3 +509,9 @@ Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
 
     return 'Appointment not found';
 })->middleware('auth')->name('test.broadcast');
+
+// Appointment WhatsApp Actions (Public routes with token validation)
+Route::prefix('appointment-action')->name('appointment.action.')->group(function () {
+    Route::get('/{appointmentId}/confirm/{token}', [App\Http\Controllers\AppointmentActionController::class, 'confirm'])->name('confirm');
+    Route::get('/{appointmentId}/cancel/{token}', [App\Http\Controllers\AppointmentActionController::class, 'cancel'])->name('cancel');
+});

@@ -111,10 +111,10 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $clinicName = $this->appointment->client->name ?? config('app.name');
         $hoursUntil = Carbon::parse($appointmentDate)->diffForHumans();
 
-
         $message = "🏥 *Recordatorio de Cita Médica*\n\n";
         $message .= "Hola {$notifiable->name},\n\n";
         $message .= "Le recordamos su cita médica:\n\n";
+        $message .= "📋 *Cita #{$this->appointment->id}*\n";
         $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
         $message .= "📅 *Fecha:* {$appointmentDate->format('d/m/Y')}\n";
         $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
@@ -139,7 +139,16 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
             $message .= "📋 *Instrucciones:*\n{$this->appointment->patient_instruction}\n\n";
         }
 
-        $message .= "Por favor llegue 15 minutos antes de su cita.\n";
+        $message .= "Por favor llegue 15 minutos antes de su cita.\n\n";
+
+        // Add interactive action instructions
+        $message .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $message .= "*ACCIONES RÁPIDAS:*\n\n";
+        $message .= "Para confirmar o cancelar su cita, responda a este mensaje:\n\n";
+        $message .= "✅ Para confirmar: CONFIRMAR {$this->appointment->id}\n";
+        $message .= "❌ Para cancelar: CANCELAR {$this->appointment->id}\n";
+        $message .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+
         $message .= "Si necesita reprogramar, contáctenos con anticipación.\n\n";
         $message .= '¡Esperamos verle pronto! 😊';
 

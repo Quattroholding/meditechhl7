@@ -31,6 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\CheckActiveUserMiddleware::class,
         ]);
+
+        // Exclude Twilio webhook from CSRF verification
+        $middleware->validateCsrfTokens(except: [
+            'api/webhooks/twilio/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
