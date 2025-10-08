@@ -95,8 +95,8 @@ class WhatsAppChannel
     protected function getPhoneNumber($notifiable): ?string
     {
         // If in testing mode, use specific testing phone
-        if (config('app.env') === 'local' || config('mail.testing_mode')) {
-            $testingPhone = config('mail.testing_whatsapp_phone');
+        if (config('app.env') === 'local' || config('services.twilio.testing_mode')){
+            $testingPhone = config('services.twilio.testing_patient_whatsapp');
             if ($testingPhone) {
                 return $testingPhone;
             }
