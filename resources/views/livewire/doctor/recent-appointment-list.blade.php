@@ -87,9 +87,10 @@
 
         <div class="card-body" >
             @if($isLoading)
+
                 <div class="loading-skeleton">
                     <div class="skeleton-list">
-                        @for($i = 0; $i < 5; $i++)
+                        @for($i = 0; $i < 1; $i++)
                             <div class="skeleton-appointment-item mb-3">
                                 <div class="skeleton-time"></div>
                                 <div class="skeleton-patient-info">

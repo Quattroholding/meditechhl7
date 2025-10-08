@@ -56,11 +56,13 @@ class ConsultasEnProgreso extends Component
         $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $lastYear = Carbon::now()->subMonthNoOverflow()->year;
 
-        $lastMonthConsultas = Encounter::where('practitioner_id', $practitionerId)
-            ->where('status', 'in-progress')
-            ->whereMonth('created_at', $lastMonth)
-            ->whereYear('created_at', $lastYear)
-            ->whereNull('deleted_at')
+        $lastMonthConsultas = Encounter::where('encounters.practitioner_id', $practitionerId)
+            ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
+            ->where('encounters.status', 'in-progress')
+            ->whereMonth('encounters.created_at', $lastMonth)
+            ->whereYear('encounters.created_at', $lastYear)
+            ->whereNull('encounters.deleted_at')
+            ->whereNull('appointments.deleted_at')
             ->count();
 
         // Calcular porcentaje de cambio

@@ -18,7 +18,7 @@
             <div class="good-morning-blk">
                 <div class="row" style= "background-image: url('{{ URL::asset('/assets/img/banner1.png') }}');
                         background-size: cover;
-                        background-repeat: no-repeat; 
+                        background-repeat: no-repeat;
                         background-position: center; "
                         >
                     <div class="col-md-6">
@@ -38,10 +38,10 @@
                 </div>
             </div>
             <div class="dashboard-initrr">
-                <div class="row">
+                <div class="row grid2">
                     @foreach($visibleWidgets as $widget)
                         @if(isset($widgetComponents[$widget['key']]))
-                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
+                            <div class="grid-item2 grid-item-- {{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
                                 @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
                             </div>
                         @endif
@@ -52,11 +52,23 @@
         @component('components.notification-box')
         @endcomponent
     </div>
-
+    <style>
+        .grid-item{margin: 5px;}
+        .grid-item--col-lg-3 {width:24% }
+        .grid-item--col-lg-4 {width:31.33% }
+        .grid-item--col-lg-6 {width:48% }
+        .grid-item--col-lg-12 {width:99% }
+    </style>
     @push('scripts')
+        <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sistema de carga progresiva ultra-simplificado
+
+            $('.grid').masonry({
+                // options
+                itemSelector: '.grid-item',
+            });
 
             function loadAllWidgets() {
                // console.log('🚀 Starting ultra-simple async widget loading...');
@@ -110,12 +122,6 @@
                     setTimeout(() => {
                         //console.log(`⏰ Loading component ${index + 1}/${componentsWithOrder.length} (order: ${item.order}, wireId: ${item.wireId})`);
 
-                        // Debug específico para patients-by-gender
-                        if (item.wireId && item.wireId.includes('patients-by-gender')) {
-                            console.log(`🔍 DEBUGGING patients-by-gender component:`, item.component);
-                            console.log(`🔍 Component methods:`, Object.getOwnPropertyNames(item.component));
-                            console.log(`🔍 Component prototype:`, Object.getOwnPropertyNames(Object.getPrototypeOf(item.component)));
-                        }
 
                         // Verificar que el método loadData existe antes de llamarlo
                         if (typeof item.component.call !== 'function') {
