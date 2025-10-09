@@ -49,6 +49,7 @@ class PractitionerController extends Controller
                         });
                 });
             })
+            ->whereNotNull('user_id')
             ->paginate($perPage);
 
         // Calcular fechas de la próxima semana (lunes a domingo)
