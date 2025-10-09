@@ -23,6 +23,8 @@ class RecepyPrescriptionController extends Controller
             return false;
         }
 
+        if(auth()->user()->hasRole('admin')) return true;
+
         return RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
             ->where('user_id', auth()->id())
             ->where('is_active', true)

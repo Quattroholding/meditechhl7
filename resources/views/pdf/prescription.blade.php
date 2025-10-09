@@ -16,7 +16,7 @@
             font-size: 12px;
             line-height: 1.4;
             color: #000;
-            background: #{{ $prescription->doctorProfile->recepy_background_color ?? 'ffffff' }};
+            background: #{{ $doctorProfile->recepy_background_color ?? 'ffffff' }};
             margin: 0;
             padding: 15mm;
             height: 150vh;
@@ -88,79 +88,39 @@
             font-size: 12px;
         }
 
-        .patient-line {
-            display: table;
+        .patient-info-table {
             width: 100%;
-            margin-bottom: 10px;
+            border-collapse: collapse;
+            margin-bottom: 5px;
         }
 
-        .patient-field {
-            display: table-cell;
-            padding-right: 20px;
-            vertical-align: top;
+        .patient-info-table td {
+            padding: 2px 5px;
+            vertical-align: bottom;
         }
 
-        .patient-field.name {
-            width: 75%;
-        }
-
-        .patient-field.age {
-            width: 25%;
-        }
-
-        .patient-field.bottom-row {
-            width: 33.33%;
-        }
-
-        .patient-field.age {
-            padding-right: 0;
-        }
-
-        .patient-field.bottom-row:last-child {
-            padding-right: 0;
-        }
-
-        .field-label {
+        .patient-info-table td.label {
             font-weight: bold;
-            margin-right: 5px;
+            white-space: nowrap;
         }
 
-        .field-value {
-            border-bottom: 1px solid #000;
-            min-width: 2000px;
-            display: inline-block;
-            padding-bottom: 1px;
-        }
-
-        .patient-field.name {
-            display: flex;
-            align-items: baseline;
-        }
-
-        .patient-field.name .field-label {
-            margin-right: 5px;
-            flex-shrink: 0;
-        }
-
-        .patient-field.name .field-value {
-            flex: 1;
+        .patient-info-table td.value {
             border-bottom: 1px solid #000;
             padding-bottom: 1px;
-            margin-right: 10px;
         }
 
         .rx-section {
             border: 2px solid #000;
             margin-bottom: 15px;
             position: relative;
-            min-height: 460px;
+            min-height: 360px;
         }
 
         .rx-header {
             position: absolute;
             top: -8px;
             left: 10px;
-            background: {{ '#' . ($prescription->doctorProfile->recepy_background_color ?? 'ffffff') }};
+            background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
             padding: 0 5px;
             font-weight: bold;
             font-size: 14px;
@@ -196,7 +156,7 @@
             position: absolute;
             top: -8px;
             left: 10px;
-            background: {{ '#' . ($prescription->doctorProfile->recepy_background_color ?? 'ffffff') }};
+            background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
             padding: 0 5px;
             font-weight: bold;
             font-size: 14px;
@@ -330,37 +290,31 @@
 
             <!-- Patient Information -->
             <div class="patient-info-section">
-                <div class="patient-line">
-                    <div class="patient-field name">
-                        <span class="field-label">Nombre</span>
-                        <span class="field-value_name">{{ $prescription->patient_name }}</span>
-                    </div>
-                    <div class="patient-field age">
-                        <span class="field-label">Edad </span>
-                        <span class="field-value">
+                <!-- Primera línea: Nombre y Edad -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 5%;">Nombre</td>
+                        <td class="value" style="width: 75%;">{{ $prescription->patient_name }}</td>
+                        <td class="label" style="width: 5%;">Edad</td>
+                        <td class="value" style="width: 15%;">
                             @if($prescription->patient_age)
                                 {{ $prescription->patient_age }}
                             @endif
-                        </span>
-                    </div>
-                </div>
+                        </td>
+                    </tr>
+                </table>
 
-                <div class="patient-line">
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">Cédula</span>
-                        <span class="field-value">{{ $prescription->patient_document ?? '' }}</span>
-                    </div>
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">No. SS</span>
-                        <span class="field-value"></span>
-                    </div>
-                    <div class="patient-field bottom-row">
-                        <span class="field-label">Fecha</span>
-                        <span class="field-value">
-                            {{ \Carbon\Carbon::parse($prescription->prescription_date)->format('d/m/Y') }}
-                        </span>
-                    </div>
-                </div>
+                <!-- Segunda línea: Identificación, No. SS y Fecha -->
+                <table class="patient-info-table">
+                    <tr>
+                        <td class="label" style="width: 8%;">Cédula</td>
+                        <td class="value" style="width: 25%;">{{ $prescription->patient_document ?? '' }}</td>
+                        <td class="label" style="width: 5%;">No. SS</td>
+                        <td class="value" style="width: 29%;"></td>
+                        <td class="label" style="width: 5%;">Fecha</td>
+                        <td class="value" style="width: 28%;">{{ \Carbon\Carbon::parse($prescription->prescription_date)->format('d/m/Y') }}</td>
+                    </tr>
+                </table>
             </div>
 
             <!-- Rx Section (Medicamentos) - Max 5 per page -->
