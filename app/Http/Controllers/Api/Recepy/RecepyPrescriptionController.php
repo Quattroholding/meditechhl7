@@ -679,6 +679,36 @@ class RecepyPrescriptionController extends Controller
     }
 
     /**
+     * Download prescription PDF for web users (authenticated via session)
+     */
+    public function downloadPdfWeb($id, Request $request, PrescriptionPdfService $pdfService)
+    {
+        $prescription = RecepyPrescription::find($id);
+
+        if (! $prescription) {
+            abort(404, 'Receta no encontrada');
+        }
+
+        // Verificar que la prescripción pertenece al usuario autenticado
+        if (! $this->prescriptionBelongsToUser($prescription)) {
+            abort(403, 'No tiene permiso para acceder a esta receta');
+        }
+
+        try {
+            if ($request->has('view')) {
+                return view('pdf.prescription', [
+                    'prescription' => $prescription,
+                    'pdfService' => $pdfService,
+                ]);
+            }
+
+            return $pdfService->unstreamPdf($prescription);
+        } catch (\Exception $e) {
+            abort(500, 'Error al generar PDF: '.$e->getMessage());
+        }
+    }
+
+    /**
      * Serve private PDF files for authenticated users only
      */
     public function servePdf(Request $request, $filename)

@@ -470,6 +470,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
         ->name('recepy.prescription.pdf');
 
+    // Web Prescription PDF Download (authenticated via session)
+    Route::get('/prescriptions/{id}/download', [RecepyPrescriptionController::class, 'downloadPdfWeb'])
+        ->name('prescription.web.download');
+
 });
 
 // Public Prescription PDF Download with Token Authentication
