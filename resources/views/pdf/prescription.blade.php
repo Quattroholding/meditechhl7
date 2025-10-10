@@ -325,22 +325,12 @@
                         @php $medication = (object) $medication; @endphp
                         <div class="medication-item">
                             <div class="medication-name">
-                                {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{ $medication->medication_name }}
-                                @if($medication->presentation || $medication->concentration)
-                                    - {{ $medication->presentation }} {{ $medication->concentration }}
-                                @endif
+                               {{$medication->medication_name.'     '.$medication->dosage.'    #'.$medication->quantity.' '.$medication->presentation}}
                             </div>
                             <div class="medication-details">
-                                <strong>Dosis:</strong> {{ $medication->dosage }} |
-                                <strong>Frecuencia:</strong> {{ $medication->frequency }}
-                                @if($medication->duration)
-                                    | <strong>Duración:</strong> {{ $medication->duration }}
-                                @endif
-                                @if($medication->quantity)
-                                    | <strong>Cantidad:</strong> {{ $medication->quantity }} unidades
-                                @endif
+                                <strong>Sg:</strong> {{ $medication->frequency.' por '.$medication->duration }}
                             </div>
-                            @if($medication->instructions)
+                            @if($medication->instructions && $medication->instructions<>'Según indicación médica')
                                 <div class="medication-details">
                                     <strong>Instrucciones:</strong> {{ $medication->instructions }}
                                 </div>
