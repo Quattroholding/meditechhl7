@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StorePatientRequest;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
 use App\Models\Patient;
 use App\Models\User;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -30,6 +32,7 @@ class PatientController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('identifier', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('whatsapp_phone', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%");
             });
         }
@@ -134,6 +137,47 @@ class PatientController extends Controller
                 'next' => $patients->nextPageUrl(),
             ],
         ]);
+    }
+
+    /**
+     * Store a new patient (for API v1)
+     */
+    public function store(StorePatientRequest $request): JsonResponse
+    {
+        try {
+            // Generate FHIR ID
+            $fhirId = 'patient-' . Str::uuid();
+
+            // Create patient record
+            $patient = Patient::create([
+                'fhir_id' => $fhirId,
+                'name' => $request->name,
+                'identifier' => $request->identifier,
+                'phone' => $request->phone,
+                'whatsapp_phone' => $request->phone,
+                'active' => true,
+            ]);
+
+            return response()->json([
+                'message' => 'Paciente creado exitosamente.',
+                'data' => [
+                    'id' => $patient->id,
+                    'fhir_id' => $patient->fhir_id,
+                    'name' => $patient->name,
+                    'identifier' => $patient->identifier,
+                    'phone' => $patient->phone,
+                    'whatsapp_phone' => $patient->whatsapp_phone,
+                    'active' => $patient->active,
+                    'created_at' => $patient->created_at,
+                    'updated_at' => $patient->updated_at,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear el paciente.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

@@ -325,7 +325,7 @@
                         @php $medication = (object) $medication; @endphp
                         <div class="medication-item">
                             <div class="medication-name">
-                               {{$medication->medication_name.'     '.$medication->dosage.'    #'.$medication->quantity.' '.$medication->presentation}}
+                                {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{$medication->medication_name.'     '.$medication->dosage.'    #'.$medication->quantity.' '.$medication->presentation}}
                             </div>
                             <div class="medication-details">
                                 <strong>Sg:</strong> {{ $medication->frequency.' por '.$medication->duration }}

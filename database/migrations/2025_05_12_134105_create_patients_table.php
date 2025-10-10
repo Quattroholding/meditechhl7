@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('given_name');
             $table->string('family_name');
-            $table->enum('gender', ['male', 'female', 'other', 'unknown'])->default('unknown');
+            $table->enum('gender', ['male', 'female', 'other', 'unknown'])->nullable()->default('unknown');
             $table->date('birth_date')->nullable();
             $table->boolean('deceased')->default(false)->nullable();
             $table->dateTime('deceased_date')->nullable();

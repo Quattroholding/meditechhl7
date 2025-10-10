@@ -126,6 +126,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
 
     // Patients
     Route::get('/patients', [PatientController::class, 'index']);
+    Route::post('/patients', [PatientController::class, 'store']);
     Route::get('/patients/{patientId}/medical-history', [PatientController::class, 'getMedicalHistory']);
 
     // Appointments with v1-specific methods
