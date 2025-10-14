@@ -13,7 +13,7 @@ class MedicalSpecialityController extends Controller
         $specialities = MedicalSpeciality::when($request->search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%");
         })
-            ->orderBy('name')
+            ->orderBy('id')
             ->get()
             ->map(function ($speciality) {
                 return [
@@ -27,8 +27,8 @@ class MedicalSpecialityController extends Controller
             });
 
         return response()->json([
-            'specialities' => $specialities,
             'total' => $specialities->count(),
+            'specialities' => $specialities,
         ]);
     }
 }
