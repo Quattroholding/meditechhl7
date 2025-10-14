@@ -215,7 +215,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                {{--}}
                                 <!-- Patient Relationships Section -->
                                 <div class="row">
                                     <div class="col-12">
@@ -343,7 +343,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                {{--}}
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">
                                         <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
