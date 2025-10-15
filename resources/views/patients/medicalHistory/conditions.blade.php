@@ -58,7 +58,8 @@
                                 </td>
                                 <td style="padding: 15px; vertical-align: middle; max-width: 300px;">
                                     <div style="font-weight: 500; color: #1e293b; margin-bottom: 4px;">
-                                        {{ $condition->onset_info }}
+
+                                        {{ $condition->onset_info ?? strtoupper($condition->icd10Code->description_es) }}
                                     </div>
                                     @if($condition->symptoms)
                                         <div style="font-size: 12px; color: #64748b; margin-top: 4px;">

@@ -1,6 +1,7 @@
-<div class="vital-signs-content">
+<div class="vital-signs-content" id="vital-signs-wrapper-{{ uniqid() }}">
     @php
         $chartData = $this->getVitalSignsChartData();
+        $chartId = uniqid('chart_');
     @endphp
 
     <!-- Filter Toggle -->
@@ -28,7 +29,7 @@
                 <span style="font-size: 20px;">💓</span>
                 Evolución de la Presión Arterial
             </h4>
-            <div id="bloodPressureChart"></div>
+            <div id="bloodPressureChart_{{ $chartId }}"></div>
         </div>
         @endif
 
@@ -39,7 +40,7 @@
                 <span style="font-size: 20px;">❤️</span>
                 Evolución de la Frecuencia Cardíaca
             </h4>
-            <div id="heartRateChart"></div>
+            <div id="heartRateChart_{{ $chartId }}"></div>
         </div>
         @endif
 
@@ -50,297 +51,10 @@
                 <span style="font-size: 20px;">🫁</span>
                 Evolución de la Frecuencia Respiratoria
             </h4>
-            <div id="respiratoryRateChart"></div>
+            <div id="respiratoryRateChart_{{ $chartId }}"></div>
         </div>
         @endif
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                renderVitalSignsCharts();
-            });
-
-            // Re-render charts when Livewire updates
-            Livewire.hook('morph.updated', ({ el, component }) => {
-                renderVitalSignsCharts();
-            });
-
-            function renderVitalSignsCharts() {
-                const chartData = @json($chartData);
-
-                // Blood Pressure Chart
-                if (chartData.bloodPressure && chartData.bloodPressure.dates.length > 0) {
-                    const bloodPressureOptions = {
-                        series: [{
-                            name: 'Sistólica',
-                            data: chartData.bloodPressure.systolic,
-                            color: '#dc2626'
-                        }, {
-                            name: 'Diastólica',
-                            data: chartData.bloodPressure.diastolic,
-                            color: '#f59e0b'
-                        }],
-                        chart: {
-                            height: 350,
-                            type: 'line',
-                            toolbar: {
-                                show: true,
-                                tools: {
-                                    download: true,
-                                    zoom: true,
-                                    zoomin: true,
-                                    zoomout: true,
-                                    pan: true,
-                                    reset: true
-                                }
-                            },
-                            zoom: {
-                                enabled: true
-                            }
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 3
-                        },
-                        title: {
-                            text: undefined
-                        },
-                        grid: {
-                            borderColor: '#f1f5f9',
-                            row: {
-                                colors: ['#f8fafc', 'transparent'],
-                                opacity: 0.5
-                            },
-                        },
-                        markers: {
-                            size: 5,
-                            hover: {
-                                size: 7
-                            }
-                        },
-                        xaxis: {
-                            categories: chartData.bloodPressure.dates,
-                            title: {
-                                text: 'Fecha'
-                            },
-                            labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                                }
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: 'Presión (mmHg)'
-                            },
-                            min: 40,
-                            max: 200
-                        },
-                        legend: {
-                            position: 'top',
-                            horizontalAlign: 'right'
-                        },
-                        tooltip: {
-                            x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
-                                }
-                            },
-                            y: {
-                                formatter: function(value) {
-                                    return value + ' mmHg';
-                                }
-                            }
-                        }
-                    };
-
-                    // Clear and render
-                    document.getElementById('bloodPressureChart').innerHTML = '';
-                    const bloodPressureChart = new ApexCharts(document.querySelector("#bloodPressureChart"), bloodPressureOptions);
-                    bloodPressureChart.render();
-                }
-
-                // Heart Rate Chart
-                if (chartData.heartRate && chartData.heartRate.dates.length > 0) {
-                    const heartRateOptions = {
-                        series: [{
-                            name: 'Frecuencia Cardíaca',
-                            data: chartData.heartRate.values,
-                            color: '#dc2626'
-                        }],
-                        chart: {
-                            height: 350,
-                            type: 'line',
-                            toolbar: {
-                                show: true,
-                                tools: {
-                                    download: true,
-                                    zoom: true,
-                                    zoomin: true,
-                                    zoomout: true,
-                                    pan: true,
-                                    reset: true
-                                }
-                            },
-                            zoom: {
-                                enabled: true
-                            }
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 3
-                        },
-                        title: {
-                            text: undefined
-                        },
-                        grid: {
-                            borderColor: '#f1f5f9',
-                            row: {
-                                colors: ['#fef2f2', 'transparent'],
-                                opacity: 0.5
-                            },
-                        },
-                        markers: {
-                            size: 5,
-                            hover: {
-                                size: 7
-                            }
-                        },
-                        xaxis: {
-                            categories: chartData.heartRate.dates,
-                            title: {
-                                text: 'Fecha'
-                            },
-                            labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                                }
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: 'Frecuencia (bpm)'
-                            },
-                            min: 40,
-                            max: 160
-                        },
-                        tooltip: {
-                            x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
-                                }
-                            },
-                            y: {
-                                formatter: function(value) {
-                                    return value + ' bpm';
-                                }
-                            }
-                        }
-                    };
-
-                    document.getElementById('heartRateChart').innerHTML = '';
-                    const heartRateChart = new ApexCharts(document.querySelector("#heartRateChart"), heartRateOptions);
-                    heartRateChart.render();
-                }
-
-                // Respiratory Rate Chart
-                if (chartData.respiratoryRate && chartData.respiratoryRate.dates.length > 0) {
-                    const respiratoryRateOptions = {
-                        series: [{
-                            name: 'Frecuencia Respiratoria',
-                            data: chartData.respiratoryRate.values,
-                            color: '#3b82f6'
-                        }],
-                        chart: {
-                            height: 350,
-                            type: 'line',
-                            toolbar: {
-                                show: true,
-                                tools: {
-                                    download: true,
-                                    zoom: true,
-                                    zoomin: true,
-                                    zoomout: true,
-                                    pan: true,
-                                    reset: true
-                                }
-                            },
-                            zoom: {
-                                enabled: true
-                            }
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 3
-                        },
-                        title: {
-                            text: undefined
-                        },
-                        grid: {
-                            borderColor: '#f1f5f9',
-                            row: {
-                                colors: ['#eff6ff', 'transparent'],
-                                opacity: 0.5
-                            },
-                        },
-                        markers: {
-                            size: 5,
-                            hover: {
-                                size: 7
-                            }
-                        },
-                        xaxis: {
-                            categories: chartData.respiratoryRate.dates,
-                            title: {
-                                text: 'Fecha'
-                            },
-                            labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                                }
-                            }
-                        },
-                        yaxis: {
-                            title: {
-                                text: 'Frecuencia (rpm)'
-                            },
-                            min: 8,
-                            max: 40
-                        },
-                        tooltip: {
-                            x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
-                                }
-                            },
-                            y: {
-                                formatter: function(value) {
-                                    return value + ' rpm';
-                                }
-                            }
-                        }
-                    };
-
-                    document.getElementById('respiratoryRateChart').innerHTML = '';
-                    const respiratoryRateChart = new ApexCharts(document.querySelector("#respiratoryRateChart"), respiratoryRateOptions);
-                    respiratoryRateChart.render();
-                }
-            }
-        </script>
 
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
@@ -350,3 +64,131 @@
         </div>
     @endif
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartId = '{{ $chartId }}';
+    const chartData = @json($chartData);
+    let attemptCount = 0;
+    const maxAttempts = 50; // 5 seconds max
+
+    function tryRenderCharts() {
+        attemptCount++;
+
+        if (typeof ApexCharts === 'undefined') {
+            if (attemptCount < maxAttempts) {
+                setTimeout(tryRenderCharts, 100);
+            }
+            return;
+        }
+
+        // Check if at least one element exists
+        const bpEl = document.getElementById('bloodPressureChart_' + chartId);
+        const hrEl = document.getElementById('heartRateChart_' + chartId);
+        const rrEl = document.getElementById('respiratoryRateChart_' + chartId);
+
+        if (!bpEl && !hrEl && !rrEl) {
+            if (attemptCount < maxAttempts) {
+                setTimeout(tryRenderCharts, 100);
+            }
+            return;
+        }
+
+        // Blood Pressure Chart
+        if (chartData.bloodPressure && chartData.bloodPressure.dates && chartData.bloodPressure.dates.length > 0 && bpEl) {
+            if (!bpEl.hasAttribute('data-chart-rendered')) {
+                bpEl.setAttribute('data-chart-rendered', 'true');
+                new ApexCharts(bpEl, {
+                    series: [
+                        { name: 'Sistólica', data: chartData.bloodPressure.systolic, color: '#dc2626' },
+                        { name: 'Diastólica', data: chartData.bloodPressure.diastolic, color: '#f59e0b' }
+                    ],
+                    chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    grid: { borderColor: '#f1f5f9', row: { colors: ['#f8fafc', 'transparent'], opacity: 0.5 } },
+                    markers: { size: 5, hover: { size: 7 } },
+                    xaxis: {
+                        categories: chartData.bloodPressure.dates,
+                        title: { text: 'Fecha' },
+                        labels: {
+                            formatter: function(value) {
+                                return new Date(value).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                            }
+                        }
+                    },
+                    yaxis: { title: { text: 'Presión (mmHg)' }, min: 40, max: 200 },
+                    legend: { position: 'top', horizontalAlign: 'right' },
+                    tooltip: {
+                        x: { formatter: function(value) { return new Date(value).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }); } },
+                        y: { formatter: function(value) { return value + ' mmHg'; } }
+                    }
+                }).render();
+            }
+        }
+
+        // Heart Rate Chart
+        if (chartData.heartRate && chartData.heartRate.dates && chartData.heartRate.dates.length > 0 && hrEl) {
+            if (!hrEl.hasAttribute('data-chart-rendered')) {
+                hrEl.setAttribute('data-chart-rendered', 'true');
+                new ApexCharts(hrEl, {
+                    series: [{ name: 'Frecuencia Cardíaca', data: chartData.heartRate.values, color: '#dc2626' }],
+                    chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    grid: { borderColor: '#f1f5f9', row: { colors: ['#fef2f2', 'transparent'], opacity: 0.5 } },
+                    markers: { size: 5, hover: { size: 7 } },
+                    xaxis: {
+                        categories: chartData.heartRate.dates,
+                        title: { text: 'Fecha' },
+                        labels: {
+                            formatter: function(value) {
+                                return new Date(value).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                            }
+                        }
+                    },
+                    yaxis: { title: { text: 'Frecuencia (bpm)' }, min: 40, max: 160 },
+                    tooltip: {
+                        x: { formatter: function(value) { return new Date(value).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }); } },
+                        y: { formatter: function(value) { return value + ' bpm'; } }
+                    }
+                }).render();
+            }
+        }
+
+        // Respiratory Rate Chart
+        if (chartData.respiratoryRate && chartData.respiratoryRate.dates && chartData.respiratoryRate.dates.length > 0 && rrEl) {
+            if (!rrEl.hasAttribute('data-chart-rendered')) {
+                rrEl.setAttribute('data-chart-rendered', 'true');
+                new ApexCharts(rrEl, {
+                    series: [{ name: 'Frecuencia Respiratoria', data: chartData.respiratoryRate.values, color: '#3b82f6' }],
+                    chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    grid: { borderColor: '#f1f5f9', row: { colors: ['#eff6ff', 'transparent'], opacity: 0.5 } },
+                    markers: { size: 5, hover: { size: 7 } },
+                    xaxis: {
+                        categories: chartData.respiratoryRate.dates,
+                        title: { text: 'Fecha' },
+                        labels: {
+                            formatter: function(value) {
+                                return new Date(value).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                            }
+                        }
+                    },
+                    yaxis: { title: { text: 'Frecuencia (rpm)' }, min: 8, max: 40 },
+                    tooltip: {
+                        x: { formatter: function(value) { return new Date(value).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }); } },
+                        y: { formatter: function(value) { return value + ' rpm'; } }
+                    }
+                }).render();
+            }
+        }
+    }
+
+    // Start trying to render
+    tryRenderCharts();
+});
+</script>
+@endpush

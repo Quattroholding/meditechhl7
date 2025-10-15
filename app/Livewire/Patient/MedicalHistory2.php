@@ -342,8 +342,6 @@ class MedicalHistory2 extends Component
 
         $vitalSigns = $this->applyFilters($query, 'effective_date')->get();
 
-
-
         if ($this->groupVitalSignsByEncounter) {
             // Agrupar por encounter
             $groupedVitals = $vitalSigns->groupBy('encounter_id');
@@ -1041,11 +1039,13 @@ class MedicalHistory2 extends Component
             ->take(2)
             ->get()
             ->map(function ($item) {
+                $description =  $item->onset_info;
+                if($item->icd10Code) $description = $item->icd10Code->description_es;
                 return [
                     'type' => 'condition',
                     'icon' => '🩺',
                     'title' => 'Nueva condición',
-                    'description' => $item->condition_name,
+                    'description' => $item->code.' | '.$description,
                     'date' => $item->onset_date,
                     'severity' => $item->severity,
                 ];

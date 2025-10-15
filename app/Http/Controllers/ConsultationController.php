@@ -288,7 +288,7 @@ class ConsultationController extends Controller
 
         $appointment = Appointment::find($appointment_id);
         $auth = false;
-        if(auth()->user()->hasRole('doctor') && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
+        if(auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
         ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()){
             $auth = true;
         }
