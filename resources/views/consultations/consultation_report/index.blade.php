@@ -50,11 +50,12 @@
                     <b style="color: {{$color_texto}};">
 
                         <?php
+                        $fecha = Carbon\Carbon::parse($data->start);
+                        if($data->appointment)
+                            $fecha = Carbon\Carbon::parse($data->appointment->end);
 
-                        $fecha = Carbon\Carbon::parse($data->appointment->end);
                         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
                         $daysOfWeekEs = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
                         $monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                         $monthsOfYearEs = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
