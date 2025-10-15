@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="facebook-domain-verification" content="v6w57zlpwwn256rbqabs1ws6702zpk" />
     <title>Soluciones MEDITEC - Innovación tecnológica al servicio de la salud</title>
     <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('landing/style.css?time='.time()) }}">
