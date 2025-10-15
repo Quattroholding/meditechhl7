@@ -103,7 +103,7 @@
                     Mostrando <strong>{{ count($sectionData) }}</strong> {{ count($sectionData) == 1 ? 'nota' : 'notas' }}
                 </div>
                 <div style="color: #64748b; font-size: 12px;">
-                    💡 Notas privadas solo visibles para el equipo médico
+                    💡 Notas privadas solo visibles para usted
                 </div>
             </div>
         </div>
