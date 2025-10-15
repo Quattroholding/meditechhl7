@@ -68,11 +68,6 @@
                                                         <i  class="fa fa-file-text-o m-r-5"></i>
                                                     </a>
                                                 @endcan
-                                                @can('patients.add_note')
-                                                <a wire:click="openModalNote({{ $patient->id }})" class="btn btn-warning btn-sm" title="Add Note">
-                                                    <i  class="fa-solid fa-sticky-note m-r-5"></i>
-                                                </a>
-                                                @endcan
                                                 @if(auth()->user()->can('profile',$patient))
                                                 <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">
                                                     <i  class="fa-solid fa-cog m-r-5"></i>

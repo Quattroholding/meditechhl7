@@ -3,7 +3,7 @@
     <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
         <div class="modal-content" wire:click.stop>
             <div class="modal-header">
-                <h2 class="modal-title">Agregar nota</h2>
+                <h2 class="modal-title">Agregar nota {{$type}}</h2>
                 <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;color: #0c0c0c;">&times;</button>
             </div>
             <form wire:submit="saveNote">

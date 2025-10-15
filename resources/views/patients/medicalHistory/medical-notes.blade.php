@@ -4,7 +4,6 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Cita</th>
                     <th>Doctor</th>
                     <th>Descripción</th>
                     <th>Fecha de Creación</th>
@@ -14,17 +13,14 @@
                 @foreach($sectionData as $note)
                     <tr>
                         <td>
-                            <h6>{{$note->encounter_id ?? 'No posee'}}</h6>
-                        </td>
-                        <td>
                            <h6>{{$note->practitioner->name}}</h6>
                         </td>
-    
+
                         <td>
                            <h6>{{$note->description}}</h6>
                         </td>
                         <td>
-                           <h6>{{$note->created_at->format('l, F j, Y')}}</h6>
+                           <h6>{{$note->created_at->format('d-m-Y H:i')}}</h6>
                         </td>
                     </tr>
                 @endforeach

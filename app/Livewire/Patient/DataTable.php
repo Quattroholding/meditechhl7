@@ -48,6 +48,7 @@ class DataTable extends Component
 
     public function openModal($patientId)
     {
+
         $this->selectedPatient = Patient::find($patientId);
         $this->note = $this->selectedPatient->note ?? '';
         $this->showModal = true;
@@ -55,6 +56,7 @@ class DataTable extends Component
 
     public function saveNote()
     {
+        dd('save note data table');
         $this->validate(['note' => 'required|string|max:1000']);
         if (auth()->user()->hasRole('doctor')) {
             $this->selectedPatient->notes()->create([

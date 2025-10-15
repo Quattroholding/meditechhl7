@@ -32,7 +32,13 @@
                 </div>
             </div>
             <div class="data-actions">
-                <button wire:click="openModalNote({{ $data->id }})" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
+                @if(auth()->user()->hasRole('doctor') && Illuminate\Support\Facades\Route::currentRouteName()=='consultation.show')
+                <button wire:click="openModalNote({{ $data->id }},'medical')" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
+                @endif
+                @if( Illuminate\Support\Facades\Route::currentRouteName()<>'consultation.show')
+                <button wire:click="openModalNote({{ $data->id }},'private')" class="btn-head btn-head-light"> <i class="fa fa-unlock"></i>  {{__('patient.add_note_private')}}</button>
+
+                @endif
                 <livewire:modal-add-notes wire:click="openModalNote({{$data->id}})"/>
                 <livewire:patient.add-medical-history :patient_id="$data->id"/>
                 {{--}}

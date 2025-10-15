@@ -15,6 +15,7 @@ use App\Models\Scopes\EncouterScope;
 use App\Models\ServiceRequest;
 use App\Models\VitalSign;
 use Carbon\Carbon;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -1182,5 +1183,40 @@ class MedicalHistory2 extends Component
     {
         // Lógica para exportar en formato FHIR
         $this->dispatch('export-fhir', patientId: $this->patientId);
+    }
+
+    // ===========================================
+    // LISTENERS DE EVENTOS
+    // ===========================================
+
+    #[On('noteAdded')]
+    public function handleNoteAdded($type, $patientId)
+    {
+        // Verificar que el evento sea para este paciente
+        if ($patientId != $this->patientId) {
+            return;
+        }
+
+        // Recargar las notas correspondientes según el tipo
+        if ($type === 'personal') {
+            $this->loadPersonalNotes();
+
+            // Si estamos en la sección de notas personales, forzar actualización
+            if ($this->activeSection === 'personal-notes') {
+                $this->dispatch('$refresh');
+            }
+        } elseif ($type === 'medical') {
+            $this->loadMedicalNotes();
+
+            // Si estamos en la sección de notas médicas, forzar actualización
+            if ($this->activeSection === 'medical-notes') {
+                $this->dispatch('$refresh');
+            }
+        }
+
+        // También actualizar el overview si está cargado
+        if (in_array('overview', $this->sectionsLoaded)) {
+            $this->loadOverviewData();
+        }
     }
 }

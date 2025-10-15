@@ -41,13 +41,13 @@ class PatientHead extends Component
         $this->data->user->save();
     }
 
-    public function openModalNote($patientId)
+    public function openModalNote($patientId,$type='private')
     {
         $practitioner_id = null;
         if (auth()->user()->hasRole('doctor')) {
             $practitioner_id = auth()->user()->practitioner->id;
         }
 
-        $this->dispatch('openModal', $patientId, $practitioner_id);
+        $this->dispatch('openModal', $patientId, $practitioner_id,$type);
     }
 }

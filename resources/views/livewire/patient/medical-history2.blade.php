@@ -644,6 +644,7 @@
                                 @break
                             @case('medical-notes')
                                 📒 Notas Médicas
+                                @break
                             @case('personal-notes')
                                  Notas Privadas
                             @break
