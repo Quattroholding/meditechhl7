@@ -35,6 +35,8 @@ class DashboardController extends Controller
             'active-patients' => 'doctor.active-patients',
             'monthly-appointments' => 'doctor.monthly-appointments',
             'consultas-en-progreso' => 'doctor.consultas-en-progreso',
+            'appointment-lead-time' => 'doctor.appointment-lead-time',
+            'consultation-duration-time' => 'doctor.consultation-duration-time',
             'yearly-appointments-chart' => 'doctor.yearly-appointments-chart',
             'patients-by-gender' => 'doctor.patients-by-gender',
             'patients-by-age-block' => 'doctor.patients-by-age-block',
