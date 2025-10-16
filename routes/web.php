@@ -27,6 +27,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
 
 // Incluir el archivo de rutas de autenticación
 require __DIR__.'/auth.php';
@@ -519,4 +520,11 @@ Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
 Route::prefix('appointment-action')->name('appointment.action.')->group(function () {
     Route::get('/{appointmentId}/confirm/{token}', [App\Http\Controllers\AppointmentActionController::class, 'confirm'])->name('confirm');
     Route::get('/{appointmentId}/cancel/{token}', [App\Http\Controllers\AppointmentActionController::class, 'cancel'])->name('cancel');
+});
+
+Route::middleware(['auth', 'first.login'])->prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportController::class, 'index'])->name('index');
+    Route::get('/{report}', [ReportController::class, 'show'])->name('show');
+    Route::post('/{report}/excel', [ReportController::class, 'excel'])->name('excel');
+    Route::post('/{report}/pdf', [ReportController::class, 'pdf'])->name('pdf');
 });

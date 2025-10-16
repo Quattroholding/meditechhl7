@@ -256,6 +256,12 @@
                         </ul>
                     </li>
                 @endcanany
+                <li class="submenu">
+                    <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('reports.index') }}">Ver Reportes</a></li>
+                    </ul>
+                </li>
                 @if(auth()->user()->can('practitioners.profile') && auth()->user()->practitioner)
                 <li>
                     <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">
@@ -273,6 +279,7 @@
                     </li>
                 @endcan
                 @can('users.profile')
+
                     <li>
                         <a class="{{ Request::is('profile') ? 'active' : '' }}"  href="{{ route('profile.edit') }}">
                             <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;
