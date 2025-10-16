@@ -57,6 +57,25 @@
                                 <x-textarea-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')"/>
                                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
                             </div>
+                            <!-- COUNTRY -->
+                            <div class="input-block  local-forms">
+                                <x-input-label for="country_id" value="País"/>
+                                <select name="country_id" id="country_id" class="form-control">
+                                    <option value="">Seleccione un país...</option>
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->id }}" {{ old('country_id') == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('country_id')" class="mt-2" />
+                            </div>
+                            <!-- STATE -->
+                            <div class="input-block  local-forms">
+                                <x-input-label for="state_id" value="Provincia/Estado"/>
+                                <select name="state_id" id="state_id" class="form-control" disabled>
+                                    <option value="">Seleccione una provincia...</option>
+                                </select>
+                                <x-input-error :messages="$errors->get('state_id')" class="mt-2" />
+                            </div>
 
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
@@ -71,4 +90,63 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countrySelect = document.getElementById('country_id');
+            const stateSelect = document.getElementById('state_id');
+
+            countrySelect.addEventListener('change', function() {
+                const countryId = this.value;
+
+                // Limpiar y deshabilitar el select de estados
+                stateSelect.innerHTML = '<option value="">Seleccione una provincia...</option>';
+                stateSelect.disabled = true;
+
+                if (countryId) {
+                    // Realizar petición AJAX para obtener los estados
+                    fetch(`/api/states/${countryId}`)
+                        .then(response => response.json())
+                        .then(states => {
+                            if (states.length > 0) {
+                                states.forEach(state => {
+                                    const option = document.createElement('option');
+                                    option.value = state.id;
+                                    option.textContent = state.name;
+                                    stateSelect.appendChild(option);
+                                });
+                                stateSelect.disabled = false;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al cargar los estados:', error);
+                        });
+                }
+            });
+
+            // Si hay un valor old para country_id, cargar los estados
+            @if(old('country_id'))
+                const oldCountryId = '{{ old('country_id') }}';
+                const oldStateId = '{{ old('state_id') }}';
+
+                if (oldCountryId) {
+                    fetch(`/api/states/${oldCountryId}`)
+                        .then(response => response.json())
+                        .then(states => {
+                            if (states.length > 0) {
+                                states.forEach(state => {
+                                    const option = document.createElement('option');
+                                    option.value = state.id;
+                                    option.textContent = state.name;
+                                    option.selected = state.id == oldStateId;
+                                    stateSelect.appendChild(option);
+                                });
+                                stateSelect.disabled = false;
+                            }
+                        });
+                }
+            @endif
+        });
+    </script>
+    @endpush
 </x-app-layout>

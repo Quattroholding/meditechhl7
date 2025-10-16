@@ -16,7 +16,9 @@ class BranchController extends Controller
 
     public function create()
     {
-        return view('clients.branchs.create');
+        $countries = \App\Models\Country::all();
+
+        return view('clients.branchs.create', compact('countries'));
     }
 
     public function store(Request $request)
@@ -29,6 +31,8 @@ class BranchController extends Controller
             'full_phone' => 'required',
             'address' => 'required',
             'type' => 'required',
+            'country_id' => 'nullable|exists:countries,id',
+            'state_id' => 'nullable|exists:states,id',
         ]);
 
         $model = new Branch;
@@ -37,6 +41,8 @@ class BranchController extends Controller
         $model->phone = $request->full_phone;
         $model->address = $request->address;
         $model->type = $request->type;
+        $model->country_id = $request->country_id;
+        $model->state_id = $request->state_id;
         $model->active = 1;
 
         if ($model->save()) {
@@ -50,10 +56,11 @@ class BranchController extends Controller
 
     public function edit($id)
     {
-
         $data = Branch::findOrFail($id);
+        $countries = \App\Models\Country::all();
+        $states = $data->country_id ? \App\Models\State::where('country_id', $data->country_id)->get() : collect();
 
-        return view('clients.branchs.edit', compact('data'));
+        return view('clients.branchs.edit', compact('data', 'countries', 'states'));
     }
 
     public function update(Request $request, $id)
@@ -63,9 +70,10 @@ class BranchController extends Controller
             'client_id' => 'required',
             'name' => 'required',
             'phone' => 'required',
-            'full_phone' => 'required',
             'address' => 'required',
             'type' => 'required',
+            'country_id' => 'nullable|exists:countries,id',
+            'state_id' => 'nullable|exists:states,id',
         ]);
 
         $model = Branch::findOrFail($id);

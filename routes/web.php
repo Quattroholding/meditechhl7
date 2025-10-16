@@ -407,6 +407,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/users', [ApiController::class, 'users'])->name('api.users');
     // Route::get('/practitioners', [ApiController::class, 'practitioners'])->name('api.practitioners');
     Route::get('/services_catalog', [ApiController::class, 'servicesCatalog'])->name('api.servicesCatalog');
+    Route::get('/states/{country_id}', [ApiController::class, 'statesByCountry'])->name('api.states');
 
     // Doctor notifications API
     Route::get('/doctor-notifications/{doctor_id}', function ($doctor_id) {

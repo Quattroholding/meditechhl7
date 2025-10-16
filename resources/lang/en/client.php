@@ -15,4 +15,6 @@ return [
     'branch' => 'Branch',
     'room' => 'Room',
     'profile_name' => 'Profile Name',
+    'branch.country_name' => 'Country',
+    'branch.state_name' => 'State/Province',
 ];

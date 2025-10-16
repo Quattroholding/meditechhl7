@@ -10,7 +10,7 @@ class Branch extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['client_id', 'name', 'phone', 'address', 'type', 'active'];
+    protected $fillable = ['client_id', 'name', 'phone', 'address', 'type', 'active', 'country_id', 'state_id'];
 
     // ESTE ES EL FILTRO GLOBAL POR TIPO DE ROL DE USUARIO
     /**
@@ -33,11 +33,31 @@ class Branch extends BaseModel
 
     public function workingHours()
     {
-        return $this->hasMany(UserWorkingHour::class,'branch_id');
+        return $this->hasMany(UserWorkingHour::class, 'branch_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
     }
 
     public function getClientNameAttribute()
     {
         return $this->client->name;
+    }
+
+    public function getCountryNameAttribute()
+    {
+        return $this->country ? $this->country->name : '-';
+    }
+
+    public function getStateNameAttribute()
+    {
+        return $this->state ? $this->state->name : '-';
     }
 }

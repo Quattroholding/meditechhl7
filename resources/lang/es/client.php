@@ -25,6 +25,8 @@ return [
     'branch.active' => 'Activo',
     'branch.acciones' => 'Acciones',
     'branch.client_name' => 'Cliente',
+    'branch.country_name' => 'País',
+    'branch.state_name' => 'Provincia/Estado',
     'room.id' => 'Id',
     'room.branch_name' => 'Sucursal',
     'room.name' => 'Nombre',

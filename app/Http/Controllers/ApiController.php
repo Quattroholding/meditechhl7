@@ -9,6 +9,7 @@ use App\Models\Medicine;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\ServiceCatalog;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -193,5 +194,14 @@ class ApiController extends Controller
 
         return response()->json($data);
 
+    }
+
+    public function statesByCountry($country_id)
+    {
+        $states = State::where('country_id', $country_id)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($states);
     }
 }
