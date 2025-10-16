@@ -2,8 +2,13 @@
 <div class="header-section">
     <!-- Column 1: Logo (25%) -->
     <div class="logo-section">
-        @if($doctorProfile && file_exists(public_path('storage/' . $doctorProfile->logo)))
-            <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
+        @if($doctorProfile && $doctorProfile->logo)
+            @php
+                $logoPath = public_path('storage/' . $doctorProfile->logo);
+            @endphp
+            @if(file_exists($logoPath) && is_file($logoPath))
+                <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($logoPath)) }}" alt="Logo" class="facility-logo">
+            @endif
         @endif
     </div>
 
