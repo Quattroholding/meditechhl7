@@ -369,6 +369,8 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
+
+
         // Validate Bearer token from request
         $token = $request->bearerToken();
 
@@ -398,23 +400,42 @@ class RecepyPrescriptionController extends Controller
             ], 401);
         }
 
-        // Verificar que la prescripción pertenece al usuario del token
-        $belongsToUser = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
-            ->where('user_id', $user->id)
-            ->where('is_active', true)
-            ->exists();
+        $doctorProfile = $prescription->doctorProfile;
+        if($request->has('doctor_profile_id')) {
+            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id) ->where('user_id', $user->id)
+                ->where('is_active', true)
+                ->exists();
+        } else{
+            $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
+                ->where('user_id', $user->id)
+                ->where('is_active', true)
+                ->exists();
+        }
 
-        if (! $belongsToUser) {
+
+        if (!$doctorProfile) {
             return response()->json([
                 'success' => false,
-                'message' => 'No tiene permiso para acceder a esta receta',
+                'message' => 'Perfil del usuario no encontrado',
             ], 403);
+        }
+
+        $prescription = RecepyPrescription::where('id',$id)->whereHas('doctorProfile',function ($q) use($user){
+            $q->where('user_id', $user->id);
+        })->exists();
+
+        if (! $prescription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tiene permiso para ver esta receta.',
+            ], 404);
         }
 
         try {
 
             if ($request->has('view')) {
                 return view('pdf.prescription', [
+                    'doctorProfile' => $doctorProfile,
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);
@@ -696,9 +717,30 @@ class RecepyPrescriptionController extends Controller
             abort(403, 'No tiene permiso para acceder a esta receta');
         }
 
+        $doctorProfile = $prescription->doctorProfile;
+        if($request->has('doctor_profile_id')) {
+            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id) ->where('user_id', auth()->user()->id)
+                ->where('is_active', true)
+                ->exists();
+        } else{
+            $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
+                ->where('user_id',  auth()->user()->id)
+                ->where('is_active', true)
+                ->exists();
+        }
+
+
+        if (!$doctorProfile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Perfil del usuario no encontrado',
+            ], 403);
+        }
+
         try {
             if ($request->has('view')) {
                 return view('pdf.prescription', [
+                    'doctorProfile' =>$doctorProfile,
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);

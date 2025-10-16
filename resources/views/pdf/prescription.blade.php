@@ -5,7 +5,7 @@
     $medicationPages = array_chunk($allMedications, $medicationsPerPage);
 
     // Preparar datos para el componente
-    $doctorProfile = $prescription->doctorProfile;
+
     $practitioner = (object)[
         'name' => $prescription->doctorProfile->user->first_name . ' ' . $prescription->doctorProfile->user->last_name
     ];
