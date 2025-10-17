@@ -706,6 +706,7 @@ class RecepyPrescriptionController extends Controller
      */
     public function downloadPdfWeb($id, Request $request, PrescriptionPdfService $pdfService)
     {
+
         $prescription = RecepyPrescription::find($id);
 
         if (! $prescription) {
@@ -728,7 +729,6 @@ class RecepyPrescriptionController extends Controller
                 ->where('is_active', true)
                 ->exists();
         }
-
 
         if (!$doctorProfile) {
             return response()->json([

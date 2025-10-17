@@ -14,9 +14,9 @@
     <table class="patient-info-table">
         <tr>
             <td class="label" style="width: 5%;">No. de ID :</td>
-            <td class="value" style="width: 22%;">{{ $patient->identifier ?? '' }}</td>
+            <td class="value" style="width: 28%;">{{ $patient->identifier ?? '' }}</td>
             <td class="label" style="width: 5%;">Fecha :</td>
-            <td class="value" style="width: 28%;">{{ \Carbon\Carbon::parse($encounter->created_at)->format('d/m/Y') }}</td>
+            <td class="value" style="width: 22%;">{{ \Carbon\Carbon::parse($encounter->created_at)->format('d/m/Y') }}</td>
         </tr>
     </table>
 </div>

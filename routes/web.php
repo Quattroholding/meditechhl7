@@ -436,6 +436,9 @@ Route::group(['prefix' => 'api'], function () {
 // Medical Documents Routes (PDF Generation)
 Route::middleware(['auth', 'first.login'])->group(function () {
 
+    // Web Prescription PDF Download (authenticated via session)
+    Route::get('/prescriptions/{id}/download', [RecepyPrescriptionController::class, 'downloadPdfWeb'])->name('prescription.web.download');
+
     // Prescription Routes
     Route::get('/prescription/{encounter}/download', [MedicalDocumentController::class, 'generatePrescription'])
         ->name('prescription.download');
@@ -472,9 +475,7 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
         ->name('recepy.prescription.pdf');
 
-    // Web Prescription PDF Download (authenticated via session)
-    Route::get('/prescriptions/{id}/download', [RecepyPrescriptionController::class, 'downloadPdfWeb'])
-        ->name('prescription.web.download');
+
 
 });
 
