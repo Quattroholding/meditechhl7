@@ -240,28 +240,28 @@
     $sealDataUri = '';
 
     if(!empty($pdfService)) {
-        if($prescription->doctorProfile->signature) {
-            if($pdfService->isPrivateImage($prescription->doctorProfile->signature)) {
+        if($doctorProfile->signature) {
+            if($pdfService->isPrivateImage($doctorProfile->signature)) {
 
-                $signatureDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->signature);
-            } elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->signature))) {
-                $signatureDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature)));
+                $signatureDataUri = $pdfService->getPrivateImageDataUri($doctorProfile->signature);
+            } elseif(file_exists(public_path('storage/' . $doctorProfile->signature))) {
+                $signatureDataUri = 'data:image/' . pathinfo($doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->signature)));
             }
         }
-        if($prescription->doctorProfile->seal) {
-            if($pdfService->isPrivateImage($prescription->doctorProfile->seal)) {
-                $sealDataUri = $pdfService->getPrivateImageDataUri($prescription->doctorProfile->seal);
-            } elseif(file_exists(public_path('storage/' . $prescription->doctorProfile->seal))) {
-                $sealDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal)));
+        if($doctorProfile->seal) {
+            if($pdfService->isPrivateImage($doctorProfile->seal)) {
+                $sealDataUri = $pdfService->getPrivateImageDataUri($doctorProfile->seal);
+            } elseif(file_exists(public_path('storage/' . $doctorProfile->seal))) {
+                $sealDataUri = 'data:image/' . pathinfo($doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->seal)));
             }
         }
     } else {
         // Fallback if pdfService is not available
-        if($prescription->doctorProfile->signature && file_exists(public_path('storage/' . $prescription->doctorProfile->signature))) {
-            $signatureDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->signature)));
+        if($doctorProfile->signature && file_exists(public_path('storage/' . $doctorProfile->signature))) {
+            $signatureDataUri = 'data:image/' . pathinfo($doctorProfile->signature, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->signature)));
         }
-        if($prescription->doctorProfile->seal && file_exists(public_path('storage/' . $prescription->doctorProfile->seal))) {
-            $sealDataUri = 'data:image/' . pathinfo($prescription->doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->seal)));
+        if($doctorProfile->seal && file_exists(public_path('storage/' . $doctorProfile->seal))) {
+            $sealDataUri = 'data:image/' . pathinfo($doctorProfile->seal, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->seal)));
         }
     }
 
@@ -279,8 +279,11 @@
         <div class="header-section">
             <!-- Column 1: Logo (25%) -->
             <div class="logo-section">
-                @if(file_exists(public_path('storage/' . $prescription->doctorProfile->logo)))
-                    <img src="data:image/{{ pathinfo($prescription->doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $prescription->doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
+                @php
+                    $logoPath = public_path('storage/' . $doctorProfile->logo);
+                @endphp
+                @if(file_exists($logoPath) && is_file($logoPath))
+                    <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
                 @else
                     LOGO CLINICA
                 @endif
@@ -288,20 +291,20 @@
 
             <!-- Column 2: Practitioner Info (50%) -->
             <div class="practitioner-info">
-                <strong>{{ $prescription->doctorProfile->user->full_name }}</strong><br>
-                <strong style="font-size: 18px">{{ $prescription->doctorProfile->speciality ?? '' }}</strong>
+                <strong>{{ $doctorProfile->user->full_name }}</strong><br>
+                <strong style="font-size: 18px">{{ $doctorProfile->speciality ?? '' }}</strong>
             </div>
 
             <!-- Column 3: Facility Info (25%) -->
             <div class="facility-info">
-                @if($prescription->doctorProfile->facility)
-                    {{ $prescription->doctorProfile->facility }}<br>
+                @if($doctorProfile->facility)
+                    {{ $doctorProfile->facility }}<br>
                 @endif
-                @if($prescription->doctorProfile->address)
-                    {{ $prescription->doctorProfile->address }}<br>
+                @if($doctorProfile->address)
+                    {{ $doctorProfile->address }}<br>
                 @endif
-                @if($prescription->doctorProfile->phone)
-                    Tel: {{ $prescription->doctorProfile->phone }}
+                @if($doctorProfile->phone)
+                    Tel: {{ $doctorProfile->phone }}
                 @endif
             </div>
         </div>
