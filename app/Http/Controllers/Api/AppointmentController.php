@@ -616,7 +616,14 @@ class AppointmentController extends Controller
             }
 
             $practitioner = Practitioner::find($request->practitioner_id);
-            $client_id = $practitioner->user->default_client_id;
+            $client_id =1;
+            if(!empty($request->get('consulting_room_id'))){
+                $rooms = ConsultingRoom::find($request->consulting_room_id);
+                $client_id = $rooms->branch->client_id;
+            }elseif($practitioner->user){
+                $client_id = $practitioner->user->default_client_id;
+            }
+
 
             // Create appointment
             $appointment = Appointment::create([
