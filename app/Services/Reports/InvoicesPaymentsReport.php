@@ -2,7 +2,9 @@
 
 namespace App\Services\Reports;
 
+use App\Models\Branch;
 use App\Models\Invoice;
+use App\Models\Patient;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -168,6 +170,7 @@ class InvoicesPaymentsReport extends BaseReport
                 'label' => 'Paciente',
                 'model' => 'Patient',
                 'required' => false,
+                'options' => Patient::pluck('name', 'id')->toArray()
             ];
 
             $filters['branch_id'] = [
@@ -175,6 +178,7 @@ class InvoicesPaymentsReport extends BaseReport
                 'label' => 'Sede',
                 'model' => 'Branch',
                 'required' => false,
+                'options' => Branch::pluck('name', 'id')->toArray()
             ];
         }
 

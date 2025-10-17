@@ -179,7 +179,7 @@ class AppointmentsReport extends BaseReport
             ->limit(100)
             ->get()
             ->mapWithKeys(function ($patient) {
-                return [$patient->id => $patient->profile_name.' - '.$patient->identifier_value];
+                return [$patient->id => $patient->name.' - '.$patient->identifier_type.':'.$patient->identifier];
             })
             ->toArray();
     }
@@ -192,7 +192,7 @@ class AppointmentsReport extends BaseReport
         return Practitioner::orderBy('name')
             ->get()
             ->mapWithKeys(function ($practitioner) {
-                return [$practitioner->id => $practitioner->profile_name];
+                return [$practitioner->id => $practitioner->name];
             })
             ->toArray();
     }
