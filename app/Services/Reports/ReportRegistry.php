@@ -6,6 +6,7 @@ class ReportRegistry
 {
     protected static array $reports = [
         'appointments' => AppointmentsReport::class,
+        'invoices-payments' => InvoicesPaymentsReport::class,
         // Agregar más reportes aquí en el futuro
     ];
 

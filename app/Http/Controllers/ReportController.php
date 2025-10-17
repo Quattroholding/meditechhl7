@@ -38,7 +38,10 @@ class ReportController extends Controller
         }
 
         $filters = $request->all();
-        $exportClass = 'App\\Exports\\'.ucfirst($reportName).'Export';
+
+        // Convertir nombre del reporte a nombre de clase (ej: invoices-payments -> InvoicesPayments)
+        $className = str_replace('-', '', ucwords($reportName, '-'));
+        $exportClass = "App\\Exports\\{$className}Export";
 
         return Excel::download(
             new $exportClass($filters),

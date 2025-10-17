@@ -4,6 +4,7 @@ namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class YearlyAppointmentsChart extends Component
@@ -26,10 +27,7 @@ class YearlyAppointmentsChart extends Component
         $this->isLoading = false;
 
         // Emitir evento para renderizar el chart
-        $this->dispatch('loadYearlyAppointmentsChart', [
-            'categories' => $this->chartData['categories'] ?? [],
-            'data' => $this->chartData['data'] ?? [],
-        ]);
+        $this->dispatch('loadYearlyAppointmentsChart', $this->chartData);
     }
 
     public function render()
@@ -43,33 +41,62 @@ class YearlyAppointmentsChart extends Component
         $currentMonth = Carbon::now()->month;
         $practitionerId = auth()->user()->practitioner->id;
 
-        // Inicializar array con todos los meses del año hasta el mes actual
-        $monthlyData = [];
+        // Inicializar categorías (meses hasta el mes actual)
         $categories = [];
-
         for ($month = 1; $month <= $currentMonth; $month++) {
             $monthName = Carbon::create($currentYear, $month, 1)->format('M');
             $categories[] = $monthName;
-            $monthlyData[$month] = 0;
         }
 
-        // Obtener citas del practitioner para el año actual hasta el mes actual
-        $appointments = Appointment::selectRaw('MONTH(start) as month, COUNT(*) as count')
-            ->where('practitioner_id', $practitionerId)
-            ->whereYear('start', $currentYear)
-            ->whereMonth('start', '<=', $currentMonth)
-            ->groupBy('month')
+        // Obtener todas las sedes con citas del practitioner en el año actual
+        $branches = DB::table('appointments')
+            ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
+            ->join('branches', 'consulting_rooms.branch_id', '=', 'branches.id')
+            ->where('appointments.practitioner_id', $practitionerId)
+            ->whereYear('appointments.start', $currentYear)
+            ->whereMonth('appointments.start', '<=', $currentMonth)
+            ->whereNull('appointments.deleted_at')
+            ->select('branches.id', 'branches.name')
+            ->groupBy('branches.id', 'branches.name')
+            ->orderBy('branches.name')
             ->get();
 
-        // Llenar los datos reales
-        foreach ($appointments as $appointment) {
-            $monthlyData[$appointment->month] = $appointment->count;
+        $series = [];
+
+        foreach ($branches as $branch) {
+            // Obtener citas por mes para esta sede
+            $monthlyData = Appointment::query()
+                ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
+                ->where('consulting_rooms.branch_id', $branch->id)
+                ->where('appointments.practitioner_id', $practitionerId)
+                ->whereYear('appointments.start', $currentYear)
+                ->whereMonth('appointments.start', '<=', $currentMonth)
+                ->whereNull('appointments.deleted_at')
+                ->select(
+                    DB::raw('MONTH(appointments.start) as month'),
+                    DB::raw('COUNT(*) as total')
+                )
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get()
+                ->keyBy('month');
+
+            $data = [];
+            for ($month = 1; $month <= $currentMonth; $month++) {
+                $data[] = $monthlyData->has($month)
+                    ? (int) $monthlyData->get($month)->total
+                    : 0;
+            }
+
+            $series[] = [
+                'name' => $branch->name,
+                'data' => $data,
+            ];
         }
 
-        // Convertir a formato para el chart
         $this->chartData = [
             'categories' => $categories,
-            'data' => array_values($monthlyData),
+            'series' => $series,
         ];
     }
 }

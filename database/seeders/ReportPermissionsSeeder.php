@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -14,26 +13,33 @@ class ReportPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear permisos para reporte de citas
-        Permission::firstOrCreate(['name' => 'reports.appointments.view']);
-        Permission::firstOrCreate(['name' => 'reports.appointments.excel']);
-        Permission::firstOrCreate(['name' => 'reports.appointments.pdf']);
+        // Definir reportes y sus roles permitidos
+        $reports = [
+            'appointments' => ['admin', 'doctor', 'asistente'],
+            'invoices-payments' => ['admin', 'doctor', 'asistente'],
+        ];
 
-        // Asignar a roles
-        $roles = ['admin', 'doctor', 'asistente'];
+        foreach ($reports as $reportName => $roles) {
+            // Crear permisos para el reporte
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.view"]);
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.excel"]);
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.pdf"]);
 
-        foreach ($roles as $roleName) {
-            $role = Role::where('name', $roleName)->first();
-            if ($role) {
-                $role->givePermissionTo([
-                    'reports.appointments.view',
-                    'reports.appointments.excel',
-                    'reports.appointments.pdf',
-                ]);
+            // Asignar a roles correspondientes
+            foreach ($roles as $roleName) {
+                $role = Role::where('name', $roleName)->first();
+                if ($role) {
+                    $role->givePermissionTo([
+                        "reports.{$reportName}.view",
+                        "reports.{$reportName}.excel",
+                        "reports.{$reportName}.pdf",
+                    ]);
+                }
             }
+
+            echo "✅ Permisos creados para reporte: {$reportName}\n";
         }
 
-        echo "✅ Permisos de reportes creados y asignados\n";
+        echo "\n✅ Todos los permisos de reportes creados y asignados correctamente\n";
     }
-
 }
