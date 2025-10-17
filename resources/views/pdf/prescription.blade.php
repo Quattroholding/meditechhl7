@@ -285,7 +285,7 @@
                 @if(file_exists($logoPath) && is_file($logoPath))
                     <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
                 @else
-                    LOGO CLINICA
+                   {{$logoPath}}
                 @endif
             </div>
 
