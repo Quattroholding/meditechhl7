@@ -421,7 +421,7 @@ class RecepyPrescriptionController extends Controller
 
         $prescription = RecepyPrescription::where('id',$id)->whereHas('doctorProfile',function ($q) use($user){
             $q->where('user_id', $user->id);
-        })->exists();
+        })->first();
 
         if (! $prescription) {
             return response()->json([
