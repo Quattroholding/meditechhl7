@@ -280,10 +280,10 @@
             <!-- Column 1: Logo (25%) -->
             <div class="logo-section">
                 @php
-                    $logoPath = public_path('storage/' . $doctorProfile->logo);
+                    $logoPath = public_path('storage/app/public/' . $doctorProfile->logo);
                 @endphp
                 @if(file_exists($logoPath) && is_file($logoPath))
-                    <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/' . $doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
+                    <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents(public_path('storage/app/public/' . $doctorProfile->logo))) }}" alt="Logo" class="facility-logo">
                 @else
                     LOGO CLINICA
                 @endif
