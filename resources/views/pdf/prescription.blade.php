@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta Médica - {{ $prescription->prescription_number }}</title>
+
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -15,16 +17,16 @@
             font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 12px;
             line-height: 1.4;
-            color: #000;
+            color: {{$colors['fontColor']}};
             background: #{{ $doctorProfile->recepy_background_color ?? 'ffffff' }};
             margin: 0;
             padding: 5mm;
-            height: 170vh;
+            height: 150vh;
         }
 
         .prescription-container {
-            border: 2px solid #000;
-            border-radius: 15px;
+            border: 3px solid {{$colors['outBorderColor']}};
+            border-radius: 20px;
             height: calc(110vh - 30mm);
             position: relative;
             padding: 10px;
@@ -97,20 +99,21 @@
         }
 
         .patient-info-table td.value {
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid  {{$colors['linesColor']}};
             padding-bottom: 1px;
         }
 
         .rx-section {
-            border: 2px solid #000;
-            margin-bottom: 15px;
+            border: 2px solid {{$colors['innerBorderColor']}};
+            margin-bottom: 20px;
             position: relative;
-            min-height: 450px;
-            border-radius: 10px;
+            min-height: 440px;
+            border-radius: 20px;
         }
 
         .rx-header {
             position: absolute;
+            color:{{$colors['innerBorderColor']}};
             top: 5px;
             left: 10px;
             background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
@@ -140,15 +143,16 @@
         }
 
         .dx-section {
-            border: 2px solid #000;
+            border: 2px solid {{$colors['innerBorderColor']}};
             margin-bottom: 15px;
             position: relative;
             min-height: 260px;
-            border-radius: 10px;
+            border-radius: 20px;
         }
 
         .dx-header {
             position: absolute;
+            color:{{$colors['innerBorderColor']}};
             top: 5px;
             left: 10px;
             background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
@@ -197,7 +201,7 @@
         }
 
         .signature-line {
-            border-top: 1px solid #000;
+            border-top: 2px solid {{$colors['linesColor']}};
             width: 350px;
             margin-bottom: 5px;
             margin-top: 20px;
@@ -368,7 +372,7 @@
         <div class="footer-section">
             <!-- Document Number - Bottom Left in Red -->
             <div class="document-number-footer">
-                {{ $documentNumber ?? '0001' }}
+                {{ $prescription->prescription_number ?? '0001' }}
             </div>
 
             <div class="seal-section">

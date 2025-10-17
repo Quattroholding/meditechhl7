@@ -66,7 +66,7 @@ class PrescriptionPdfService
         return $pdf->download($filename);
     }
 
-    public function unstreamPdf(RecepyPrescription $prescription): \Symfony\Component\HttpFoundation\Response
+    public function unstreamPdf(RecepyPrescription $prescription,$doctorProfile): \Symfony\Component\HttpFoundation\Response
     {
         // Load prescription with all relationships
         $prescription->load([
@@ -77,6 +77,8 @@ class PrescriptionPdfService
         // Generate PDF
         $pdf = Pdf::loadView('pdf.prescription', [
             'prescription' => $prescription,
+            'doctorProfile' => $doctorProfile,
+            'colors'=>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
             'pdfService' => $this,
         ]);
 
@@ -409,5 +411,44 @@ class PrescriptionPdfService
             $patientName,
             $prescription->prescription_date->format('Y-m-d')
         );
+    }
+
+    private function getProfileThemeColors($themeColor)
+    {
+        switch ($themeColor){
+            case "F8F9FA":  //SoftGray
+                $outBorderColor = "#57bd69";
+                $innerBorderColor ="#244185";
+                $linesColor = "#244185";
+                $fontColor="#244185";
+                break;
+            case "E3F2FD"://Light Blue
+                $outBorderColor = "#57bd69";
+                $innerBorderColor ="#244185";
+                $linesColor = "#244185";
+                $fontColor="#244185";
+                break;
+            case "E8F5E9"://Mint Fresh
+                $outBorderColor = "#57bd69";
+                $innerBorderColor ="#244185";
+                $linesColor = "#244185";
+                $fontColor="#244185";
+                break;
+            case "FFF3E0"://Warm Cream
+                $outBorderColor = "#57bd69";
+                $innerBorderColor ="#244185";
+                $linesColor = "#244185";
+                $fontColor="#244185";
+                break;
+            default :
+                $outBorderColor = "#000";
+                $innerBorderColor ="#000";
+                $linesColor = "#000";
+                $fontColor="#000";
+        }
+
+
+
+        return ['outBorderColor'=>$outBorderColor,'innerBorderColor'=>$innerBorderColor,'linesColor'=>$linesColor,'fontColor'=>$fontColor];
     }
 }

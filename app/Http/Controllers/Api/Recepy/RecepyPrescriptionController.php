@@ -436,12 +436,13 @@ class RecepyPrescriptionController extends Controller
             if ($request->has('view')) {
                 return view('pdf.prescription', [
                     'doctorProfile' => $doctorProfile,
+                    'colors' =>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);
             }
 
-            return $pdfService->unstreamPdf($prescription);
+            return $pdfService->unstreamPdf($prescription,$doctorProfile);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -722,12 +723,12 @@ class RecepyPrescriptionController extends Controller
         if($request->has('doctor_profile_id')) {
             $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id) ->where('user_id', auth()->user()->id)
                 ->where('is_active', true)
-                ->exists();
+                ->first();
         } else{
             $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
                 ->where('user_id',  auth()->user()->id)
                 ->where('is_active', true)
-                ->exists();
+                ->first();
         }
 
         if (!$doctorProfile) {
@@ -739,14 +740,16 @@ class RecepyPrescriptionController extends Controller
 
         try {
             if ($request->has('view')) {
+
                 return view('pdf.prescription', [
                     'doctorProfile' =>$doctorProfile,
+                    'colors' =>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);
             }
 
-            return $pdfService->unstreamPdf($prescription);
+            return $pdfService->unstreamPdf($prescription,$doctorProfile);
         } catch (\Exception $e) {
             abort(500, 'Error al generar PDF: '.$e->getMessage());
         }
@@ -797,4 +800,6 @@ class RecepyPrescriptionController extends Controller
             ->header('Content-Disposition', 'inline; filename="'.$filename.'"')
             ->header('Cache-Control', 'private, max-age=3600');
     }
+
+
 }
