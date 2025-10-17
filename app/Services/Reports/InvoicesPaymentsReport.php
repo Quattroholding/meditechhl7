@@ -173,6 +173,13 @@ class InvoicesPaymentsReport extends BaseReport
                 'options' => Patient::pluck('name', 'id')->toArray()
             ];
 
+            $filters['patient_id'] = [
+                'type' => 'datalist',
+                'label' => 'Paciente',
+                'model' => 'Patient',
+                'required' => false,
+                'options' => Patient::pluck('name', 'id')->toArray(),
+            ];
             $filters['branch_id'] = [
                 'type' => 'select',
                 'label' => 'Sede',

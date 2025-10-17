@@ -42,6 +42,13 @@
                                                     <option value="{{ $value }}">{{ $label }}</option>
                                                 @endforeach
                                             </select>
+                                        @elseif($filter['type'] === 'datalist')
+                                            <input name="{{$key}}" type="text" list="myOptions{{$key}}" placeholder="Buscar..."    class="form-control">
+                                            <datalist id="myOptions{{$key}}">
+                                                @foreach($filter['options'] as $value => $label)
+                                                    <option value="{{ $value }}">{{ $label }}</option>
+                                                @endforeach
+                                            </datalist>
                                         @endif
                                     </div>
                                 @endforeach
