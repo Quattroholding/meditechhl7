@@ -369,8 +369,6 @@ class RecepyPrescriptionController extends Controller
             ], 404);
         }
 
-
-
         // Validate Bearer token from request
         $token = $request->bearerToken();
 
@@ -402,14 +400,15 @@ class RecepyPrescriptionController extends Controller
 
         $doctorProfile = $prescription->doctorProfile;
         if($request->has('doctor_profile_id')) {
-            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id) ->where('user_id', $user->id)
+            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id)
+                ->where('user_id', $user->id)
                 ->where('is_active', true)
-                ->exists();
+                ->first();
         } else{
             $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
                 ->where('user_id', $user->id)
                 ->where('is_active', true)
-                ->exists();
+                ->first();
         }
 
 
@@ -443,6 +442,7 @@ class RecepyPrescriptionController extends Controller
             }
 
             return $pdfService->unstreamPdf($prescription,$doctorProfile);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
