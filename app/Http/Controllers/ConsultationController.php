@@ -158,6 +158,9 @@ class ConsultationController extends Controller
                     throw new \Exception("Practitioner {$appointment->practitioner_id} not found");
                 }
 
+                // Get branch_id from appointment's consulting_room
+                $branchId = $appointment->consultingRoom?->branch_id;
+
                 // Create invoice for this encounter
                 try {
                     $invoice = Invoice::create([
@@ -181,6 +184,7 @@ class ConsultationController extends Controller
                         'recipient_patient_id' => $encounter->patient_id,
                         'performer_practitioner_id' => $encounter->practitioner_id,
                         'client_id' => $clientId,
+                        'branch_id' => $branchId,
                         'issuer_organization_id' => $clientId,
                         'created_by' => auth()->id(),
                         // Let the model generate invoice_number automatically
@@ -288,8 +292,8 @@ class ConsultationController extends Controller
 
         $appointment = Appointment::find($appointment_id);
         $auth = false;
-        if(auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
-        ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()){
+        if (auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
+            ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()) {
             $auth = true;
         }
         $data = Encounter::when($auth, function ($query) {

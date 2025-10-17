@@ -50,6 +50,9 @@ class UserWidgetPreference extends Model
 
                 'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 14, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6'],
                 'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 15, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6'],
+
+                'branch-billing-chart' => ['name' => 'Branch Billing Chart', 'order' => 16, 'description' => 'Facturación por Sede', 'width' => 'col-lg-12'],
+                'billing-collection-rate' => ['name' => 'Billing Collection Rate', 'order' => 17, 'description' => 'Tasa de Facturación vs Cobros', 'width' => 'col-lg-12'],
             ],
             'assistant' => [
                 'new-patients' => ['name' => 'New Patients', 'order' => 1, 'description' => 'Pacientes Nuevos', 'width' => 'col-lg-4'],

@@ -44,6 +44,8 @@ class DashboardController extends Controller
             'top-prescribed-medications' => 'doctor.top-prescribed-medications',
             'consultation-effectiveness' => 'doctor.consultation-effectiveness',
             'activity-heatmap' => 'doctor.activity-heatmap',
+            'branch-billing-chart' => 'dashboard.admin.branch-billing-chart',
+            'billing-collection-rate' => 'dashboard.admin.billing-collection-rate',
         ];
 
         return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));

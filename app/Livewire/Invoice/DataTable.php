@@ -131,7 +131,6 @@ class DataTable extends Component
     public function paymentSaved()
     {
 
-        dd('aqui');
         $invoices = $this->invoices;
     }
 }

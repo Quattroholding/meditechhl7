@@ -63,10 +63,10 @@
                                     </td>
                                     <td data-column="patient" data-priority="4" data-label="{{ __('invoice.bill_to') }}">
                                         <span class="cell-content">
-                                            @if($invoice->patient) 
+                                            @if($invoice->patient)
                                                 {!!  $invoice->patient->profile_name !!}
                                             @else
-                                                <span class="text-muted">N/A</span> 
+                                                <span class="text-muted">N/A</span>
                                             @endif
                                         </span>
                                     </td>
@@ -93,11 +93,11 @@
                                                     <i class="far fa-eye me-2"></i>
                                                 </a>
                                                 @if($invoice->balance > 0)
-                                                    <a href="javascript:;" wire:click="openPaymentModal({{ $invoice->id }})" class="btn btn-info btn-sm" title="{{ __('Registrar Pago') }}">
+                                                    <a href="javascript:;" wire:click="openPaymentModal({{ $invoice->id }})" class="btn btn-primary btn-sm" title="{{ __('Registrar Pago') }}">
                                                         <i class="fas fa-credit-card me-2"></i>
                                                     </a>
                                                 @endif
-                                                <a href="{{ route('invoice.download', $invoice->id) }}" target="_blank" class="btn btn-danger btn-sm" title="{{ __('invoice.download_pdf') }}">
+                                                <a href="{{ route('invoice.download', $invoice->id) }}" target="_blank" class="btn btn-secondary btn-sm" title="{{ __('invoice.download_pdf') }}">
                                                     <i class="fas fa-download me-2"></i>
                                                 </a>
                                         </div>

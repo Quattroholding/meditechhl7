@@ -56,6 +56,7 @@ class Invoice extends BaseModel
         'reference_number',
         'terms_and_conditions',
         'client_id',
+        'branch_id',
         'created_by',
         'updated_by',
         // Insurance fields
@@ -161,6 +162,11 @@ class Invoice extends BaseModel
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function account(): BelongsTo

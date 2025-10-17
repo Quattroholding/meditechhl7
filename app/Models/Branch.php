@@ -31,6 +31,11 @@ class Branch extends BaseModel
         return $this->hasMany(ConsultingRoom::class);
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function workingHours()
     {
         return $this->hasMany(UserWorkingHour::class, 'branch_id');

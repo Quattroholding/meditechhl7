@@ -120,7 +120,7 @@
                                             </td>
                                             <td data-column="payment_method" data-priority="4" data-label="{{ __('Método de Pago') }}">
                                                 <span class="cell-content">
-                                                    <span class="badge badge-info">{{ $payment->payment_method_label }}</span>
+                                                    <span class="badge bg-info">{{ $payment->payment_method_label }}</span>
                                                     @if($payment->transaction_id)
                                                         <br><small class="text-muted">ID: {{ $payment->transaction_id }}</small>
                                                     @endif
