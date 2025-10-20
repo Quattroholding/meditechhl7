@@ -43,12 +43,14 @@
                                                 @endforeach
                                             </select>
                                         @elseif($filter['type'] === 'datalist')
-                                            <input name="{{$key}}" type="text" list="myOptions{{$key}}" placeholder="Buscar..."    class="form-control">
-                                            <datalist id="myOptions{{$key}}">
-                                                @foreach($filter['options'] as $value => $label)
-                                                    <option value="{{ $value }}">{{ $label }}</option>
-                                                @endforeach
-                                            </datalist>
+                                                <select 
+                                                name="{{$key}}" 
+                                                id="select2_{{$key}}"
+                                                class="form-control select2-ajax-autocomplete" 
+                                                data-url="{{ route('patients.search') }}"
+                                                data-placeholder="Escribe para buscar paciente..."
+                                            ><option value=""></option>
+                                                </select>
                                         @endif
                                     </div>
                                 @endforeach
@@ -134,6 +136,57 @@
                         btn.innerHTML = originalHtml;
                     });
             }
+            //LISTA DESPLEGABLE DE PACIENTES
+            $('.select2-ajax-autocomplete').select2({
+            width: '100%',
+            allowClear: true,
+            placeholder: 'Escribe para buscar paciente...',
+            minimumInputLength: 2, // Buscar después de 2 caracteres
+            
+            ajax: {
+                url: function() {
+                    return $(this).data('url');
+                },
+                dataType: 'json',
+                delay: 300, // Esperar 300ms después de que el usuario deje de escribir
+                data: function(params, page) {
+                    return {
+                        search: params.term, // término de búsqueda
+                        api_token: 'mdt_nqxh34LlQySEeztELNAaH0qQRgdXcY4DiJQdESeia8dnmg1SgHZzh1AB69Rq'
+                    };
+                },
+                processResults: function(data) {
+                    
+                    return {
+                        results: data.results.map(function(item) {
+                            console.log(item);
+                            return {
+                                id: item.id,
+                                text: item.name
+                            };
+                        }),
+
+                    };
+                },
+                cache: true
+            },
+            
+            language: {
+                inputTooShort: function() {
+                    return "Escribe al menos 2 caracteres";
+                },
+                searching: function() {
+                    return "Buscando pacientes...";
+                },
+                noResults: function() {
+                    return "No se encontraron pacientes";
+                },
+                errorLoading: function() {
+                    return "Error al cargar los resultados";
+                }
+            }
+        });
+
         </script>
     @endpush
 </x-app-layout>

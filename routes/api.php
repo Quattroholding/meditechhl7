@@ -128,6 +128,8 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/patients', [PatientController::class, 'index']);
     Route::post('/patients', [PatientController::class, 'store']);
     Route::get('/patients/{patientId}/medical-history', [PatientController::class, 'getMedicalHistory']);
+    Route::get('/patients/search', [PatientController::class, 'search'])->name('patients.search');
+
 
     // Appointments with v1-specific methods
     Route::get('/appointments', [AppointmentController::class, 'indexV1']);
