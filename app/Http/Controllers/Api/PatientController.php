@@ -1256,4 +1256,39 @@ class PatientController extends Controller
             default => collect($items)->toArray(),
         };
     }
+    //ENDPOINT DE BÚSQUEDA DE PACIENTES
+    public function search(Request $request)
+    {
+        $search = $request->get('search');
+        
+        $patients = Patient::where(function($query) use ($search) {
+            // Buscar en nombre
+            $query->where('given_name', 'LIKE', "%{$search}%")
+                  // Buscar en apellido
+                  ->orWhere('family_name', 'LIKE', "%{$search}%")
+                  // Buscar en nombre completo concatenado
+                  ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
+                  // Si tienes campo de identificación
+                  ->orWhere('identifier', 'LIKE', "%{$search}%");
+        })
+        ->select('id', 'given_name', 'family_name', 'identifier')
+        ->limit(10)
+        ->get();
+        
+        $results = $patients->map(function($patient) {
+            return [
+                'id' => $patient->id,
+                'name' => $patient->given_name.' '.$patient->family_name,
+                'identifier' => $patient->identifier
+            ];
+        });
+        
+    return response()->json([
+        'results' => $results,
+        'total' => Patient::where('given_name', 'LIKE', "%{$search}%")
+            ->orWhere('family_name', 'LIKE', "%{$search}%")
+            ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
+            ->count()
+    ]);
+    }
 }
