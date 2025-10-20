@@ -162,4 +162,12 @@ class ApiToken extends Model
             }
         );
     }
+
+    /**
+     * Get localhost API token
+     */
+    public static function local(): ?self
+    {
+        return static::where('name', 'localhost')->first();
+    }
 }
