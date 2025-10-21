@@ -151,7 +151,7 @@ class AppointmentsReport extends BaseReport
         // Filtros adicionales solo para admin y asistente (no para doctor)
         if ($user->hasRole('admin') || $user->hasRole('asistente')) {
             $filters['patient_id'] = [
-                'type' => 'select',
+                'type' => 'datalist',
                 'label' => 'Paciente',
                 'options' => $this->getPatientOptions(),
                 'required' => false,

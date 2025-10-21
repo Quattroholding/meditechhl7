@@ -44,13 +44,15 @@
 
             Livewire.on('loadAgeBlockGraph', (data) => {
                 // Accede a las propiedades del objeto
-                const age0to20Count = data[0].age0to20Count;
-                const age20to40Count = data[0].age20to40Count;
-                const age40to60Count = data[0].age40to60Count;
+                const age0to12Count = data[0].age0to12Count;
+                const age13to17Count = data[0].age13to17Count;
+                const age18to25Count = data[0].age18to25Count;
+                const age26to59Count = data[0].age26to59Count;
                 const age60PlusCount = data[0].age60PlusCount;
-                const age0to20Percentage = data[0].age0to20;
-                const age20to40Percentage = data[0].age20to40;
-                const age40to60Percentage = data[0].age40to60;
+                const age0to12Percentage = data[0].age0to12;
+                const age13to17Percentage = data[0].age13to17;
+                const age18to25Percentage = data[0].age18to25;
+                const age26to59Percentage = data[0].age26to59;
                 const age60PlusPercentage = data[0].age60Plus;
 
                 // Esperar a que el DOM esté actualizado y el elemento sea visible
@@ -96,18 +98,20 @@
                             enabled: false
                         },
                         series: [
-                            parseFloat(age0to20Percentage) || 0,
-                            parseFloat(age20to40Percentage) || 0,
-                            parseFloat(age40to60Percentage) || 0,
+                            parseFloat(age0to12Percentage) || 0,
+                            parseFloat(age13to17Percentage) || 0,
+                            parseFloat(age18to25Percentage) || 0,
+                            parseFloat(age26to59Percentage) || 0,
                             parseFloat(age60PlusPercentage) || 0
                         ],
                         labels: [
-                            '0-20 años (' + (age0to20Count || 0) + ')',
-                            '20-40 años (' + (age20to40Count || 0) + ')',
-                            '40-60 años (' + (age40to60Count || 0) + ')',
+                            '0-12 años (' + (age0to12Count || 0) + ')',
+                            '13-17 años (' + (age13to17Count || 0) + ')',
+                            '18-25 años (' + (age18to25Count || 0) + ')',
+                            '26-59 años (' + (age26to59Count || 0) + ')',
                             '60+ años (' + (age60PlusCount || 0) + ')'
                         ],
-                        colors: ['#36A2EB', '#4BC0C0', '#FFCE56', '#FF6384'],
+                        colors: ['#36A2EB', '#4BC0C0', '#FFCE56', '#FF6384', '#36EB42'],
                         responsive: [{
                             breakpoint: 480,
                             options: {

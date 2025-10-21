@@ -8,19 +8,23 @@ use Livewire\Component;
 
 class PatientsByAgeBlock extends Component
 {
-    public $age0to20Count;
+    public $age0to12Count;
 
-    public $age20to40Count;
+    public $age13to17Count;
 
-    public $age40to60Count;
+    public $age18to25Count;
+
+    public $age26to59Count;
 
     public $age60PlusCount;
 
-    public $age0to20Percentage;
+    public $age0to12Percentage;
 
-    public $age20to40Percentage;
+    public $age13to17Percentage;
 
-    public $age40to60Percentage;
+    public $age18to25Percentage;
+
+    public $age26to59Percentage;
 
     public $age60PlusPercentage;
 
@@ -31,13 +35,15 @@ class PatientsByAgeBlock extends Component
     public function mount()
     {
         // Inicializar variables para evitar errores
-        $this->age0to20Count = 0;
-        $this->age20to40Count = 0;
-        $this->age40to60Count = 0;
+        $this->age0to12Count = 0;
+        $this->age13to17Count = 0;
+        $this->age18to25Count = 0;
+        $this->age26to59Count = 0;
         $this->age60PlusCount = 0;
-        $this->age0to20Percentage = 0;
-        $this->age20to40Percentage = 0;
-        $this->age40to60Percentage = 0;
+        $this->age0to12Percentage = 0;
+        $this->age13to17Percentage = 0;
+        $this->age18to25Percentage = 0;
+        $this->age26to59Percentage = 0;
         $this->age60PlusPercentage = 0;
 
         \Log::info('PatientsByAgeBlock component mounted successfully');
@@ -52,13 +58,15 @@ class PatientsByAgeBlock extends Component
 
             // Pasar los datos al JavaScript
             $this->dispatch('loadAgeBlockGraph', [
-                'age0to20Count' => $this->age0to20Count,
-                'age20to40Count' => $this->age20to40Count,
-                'age40to60Count' => $this->age40to60Count,
+                'age0to12Count' => $this->age0to12Count,
+                'age13to17Count' => $this->age13to17Count,
+                'age18to25Count' => $this->age18to25Count,
+                'age25to59Count' => $this->age26to59Count,
                 'age60PlusCount' => $this->age60PlusCount,
-                'age0to20' => $this->age0to20Percentage,
-                'age20to40' => $this->age20to40Percentage,
-                'age40to60' => $this->age40to60Percentage,
+                'age0to12' => $this->age0to12Percentage,
+                'age13to17' => $this->age13to17Percentage,
+                'age18to25' => $this->age18to25Percentage,
+                'age26to59' => $this->age26to59Percentage,
                 'age60Plus' => $this->age60PlusPercentage,
             ]);
 
@@ -79,32 +87,45 @@ class PatientsByAgeBlock extends Component
         $userclient = auth()->user()->clients->pluck('id')->toArray();
         $today = Carbon::today();
 
-        // 0-20 años
-        $date20YearsAgo = $today->copy()->subYears(20);
-        $this->age0to20Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
+        // 0-12 años
+        $date12YearsAgo = $today->copy()->subYears(12);
+        $this->age0to12Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
             ->whereNull('patient_clients.deleted_at')
             ->whereNotNull('patients.birth_date')
-            ->where('patients.birth_date', '>=', $date20YearsAgo)
+            ->where('patients.birth_date', '>=', $date12YearsAgo)
             ->whereIn('patient_clients.client_id', $userclient)
             ->count();
 
-        // 20-40 años
-        $date40YearsAgo = $today->copy()->subYears(40);
-        $this->age20to40Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
+        // 13-17 años
+        $date13YearsAgo = $today->copy()->subYears(17);
+        $date17YearsAgo = $today->copy()->subYears(17);
+        $this->age13to17Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
             ->whereNull('patient_clients.deleted_at')
             ->whereNotNull('patients.birth_date')
-            ->where('patients.birth_date', '<', $date20YearsAgo)
-            ->where('patients.birth_date', '>=', $date40YearsAgo)
+            ->where('patients.birth_date', '<', $date13YearsAgo)
+            ->where('patients.birth_date', '>=', $date17YearsAgo)
             ->whereIn('patient_clients.client_id', $userclient)
             ->count();
 
-        // 40-60 años
-        $date60YearsAgo = $today->copy()->subYears(60);
-        $this->age40to60Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
+        // 18-25 años
+        $date18YearsAgo = $today->copy()->subYears(18);
+        $date25YearsAgo = $today->copy()->subYears(25);
+        $this->age18to25Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
             ->whereNull('patient_clients.deleted_at')
             ->whereNotNull('patients.birth_date')
-            ->where('patients.birth_date', '<', $date40YearsAgo)
-            ->where('patients.birth_date', '>=', $date60YearsAgo)
+            ->where('patients.birth_date', '<', $date18YearsAgo)
+            ->where('patients.birth_date', '>=', $date25YearsAgo)
+            ->whereIn('patient_clients.client_id', $userclient)
+            ->count();
+
+        // 26-59 años
+        $date26YearsAgo = $today->copy()->subYears(26);
+        $date59YearsAgo = $today->copy()->subYears(59);
+        $this->age26to59Count = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
+            ->whereNull('patient_clients.deleted_at')
+            ->whereNotNull('patients.birth_date')
+            ->where('patients.birth_date', '<', $date26YearsAgo)
+            ->where('patients.birth_date', '>=', $date59YearsAgo)
             ->whereIn('patient_clients.client_id', $userclient)
             ->count();
 
@@ -123,14 +144,16 @@ class PatientsByAgeBlock extends Component
 
         // Calcular porcentajes
         if ($allpatients > 0) {
-            $this->age0to20Percentage = number_format((($this->age0to20Count / $allpatients) * 100), 1);
-            $this->age20to40Percentage = number_format((($this->age20to40Count / $allpatients) * 100), 1);
-            $this->age40to60Percentage = number_format((($this->age40to60Count / $allpatients) * 100), 1);
+            $this->age0to12Percentage = number_format((($this->age0to12Count / $allpatients) * 100), 1);
+            $this->age13to17Percentage = number_format((($this->age13to17Count / $allpatients) * 100), 1);
+            $this->age18to25Percentage = number_format((($this->age18to25Count / $allpatients) * 100), 1);
+            $this->age26to59Percentage = number_format((($this->age26to59Count / $allpatients) * 100), 1);
             $this->age60PlusPercentage = number_format((($this->age60PlusCount / $allpatients) * 100), 1);
         } else {
-            $this->age0to20Percentage = 0;
-            $this->age20to40Percentage = 0;
-            $this->age40to60Percentage = 0;
+            $this->age0to12Percentage = 0;
+            $this->age13to17Percentage = 0;
+            $this->age18to25Percentage = 0;
+            $this->age26to59Percentage = 0;
             $this->age60PlusPercentage = 0;
         }
     }
