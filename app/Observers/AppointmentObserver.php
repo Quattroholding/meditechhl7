@@ -28,12 +28,13 @@ class AppointmentObserver
      */
     public function updated(Appointment $appointment): void
     {
-        $user_id = 1;
         if(auth()->id()) {
             $user_id = auth()->id();
         } else {
             $user_id = $appointment->patient->user_id;
         }
+
+        $user_id = $user_id ?? 1;
 
         if ($appointment->isDirty('status')) {
             AppointmentStatus::create([
