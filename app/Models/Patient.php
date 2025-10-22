@@ -17,7 +17,7 @@ class Patient extends BaseModel
     use HasFactory,Notifiable;
 
     protected $fillable = [
-        'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name',
+        'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name','user_id',
         'family_name', 'gender', 'birth_date', 'deceased', 'deceased_date',
         'address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',

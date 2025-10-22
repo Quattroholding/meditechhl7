@@ -148,6 +148,8 @@ class PatientController extends Controller
     public function store(StorePatientRequest $request): JsonResponse
     {
         try {
+
+
             // Generate FHIR ID
             $fhirId = 'patient-' . Str::uuid();
             $firstName='';
@@ -178,6 +180,7 @@ class PatientController extends Controller
                 'email' =>$email,
                 'user_id'=>$model->id,
                 'identifier' => $request->identifier,
+                'identifier_type'=>'CC',
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
                 'active' => true,
