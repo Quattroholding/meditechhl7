@@ -61,7 +61,7 @@ class PatientsByAgeBlock extends Component
                 'age0to12Count' => $this->age0to12Count,
                 'age13to17Count' => $this->age13to17Count,
                 'age18to25Count' => $this->age18to25Count,
-                'age25to59Count' => $this->age26to59Count,
+                'age26to59Count' => $this->age26to59Count,
                 'age60PlusCount' => $this->age60PlusCount,
                 'age0to12' => $this->age0to12Percentage,
                 'age13to17' => $this->age13to17Percentage,
@@ -130,6 +130,7 @@ class PatientsByAgeBlock extends Component
             ->count();
 
         // 60+ años
+        $date60YearsAgo = $today->copy()->subYears(60);
         $this->age60PlusCount = PatientClient::join('patients', 'patient_clients.patient_id', 'patients.id')
             ->whereNull('patient_clients.deleted_at')
             ->whereNotNull('patients.birth_date')
