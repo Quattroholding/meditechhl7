@@ -28,7 +28,7 @@ class AppointmentPolicy
 
     public function arrived(User $user, Appointment $appointment): bool
     {
-        return $appointment->status == 'booked' && ! $user->hasRole('paciente') && ! $user->hasRole('admin client');
+        return in_array($appointment->status,['booked','confirm']) && ! $user->hasRole('paciente') && ! $user->hasRole('admin client');
     }
 
     public function checked_in(User $user, Appointment $appointment): bool

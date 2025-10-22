@@ -24,6 +24,7 @@ return [
     'status.proposed' => 'Propuesto',
     'status.pending' => 'Pendiente',
     'status.booked' => 'Reservado',
+    'status.confirm' => 'Confirmada',
     'status.arrived' => 'Llegado',
     'status.fulfilled' => 'Cumplido',
     'status.cancelled' => 'Cancelado',

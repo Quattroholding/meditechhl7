@@ -89,6 +89,7 @@ centered::before, .centered::after {
 .appointment-status-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
 .appointment-status-pending { background:linear-gradient(45deg, #FFA500, #FFA500); color: white; }
 .appointment-status-booked { background: linear-gradient(45deg, #28a745, #28a745); color: white; }
+.confirm { background: linear-gradient(45deg, #28a745, #6aa728); color: white; }
 .appointment-status-arrived { background: linear-gradient(45deg, #007bff, #007bff); color: white; }
 .appointment-status-checked-in { background:linear-gradient(45deg, #ffc107, #ffc107); color: white; }
 .appointment-status-fulfilled { background: linear-gradient(45deg, #6c757d, #6c757d); color: white; }

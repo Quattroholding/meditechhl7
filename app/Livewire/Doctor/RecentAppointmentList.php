@@ -70,7 +70,7 @@ class RecentAppointmentList extends Component
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
 
-                if ($current_status == 'proposed' && $newStatus == 'booked') {
+                if ($current_status == 'proposed' && in_array($newStatus,['booked','confirm'])) {
                     $appointment->notifyPatientAboutConfirmation();
                 }
 
