@@ -110,6 +110,7 @@ class Appointment extends BaseModel
             'proposed' => 'dedede',
             'pending' => 'FFA500',
             'booked' => '4CAF50',
+            'confirm' => '55ce63',
             'arrived' => '00BCD4',
             'fulfilled' => '2196F3',
             'cancelled' => 'F44336',
