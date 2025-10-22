@@ -80,21 +80,22 @@ centered::before, .centered::after {
 .appointment-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
 .appointment-pending { background:linear-gradient(45deg, #FFA500, #20c997); color: white; }
 .appointment-booked { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+.appointment-confirm { background: linear-gradient(45deg, #28a745, #6aa728); color: white; }
 .appointment-arrived { background: linear-gradient(45deg, #007bff, #6610f2); color: white; }
 .appointment-checked-in { background:linear-gradient(45deg, #ffc107, #fd7e14); color: white; }
 .appointment-fulfilled { background: linear-gradient(45deg, #6c757d, #495057); color: white; }
 .appointment-cancelled { background: linear-gradient(45deg, #dc3545, #e83e8c); color: white; }
 .appointment-noshow { background: linear-gradient(45deg, #6f42c1, #e83e8c); color: white; }
 
-.appointment-status-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black; }
-.appointment-status-pending { background:linear-gradient(45deg, #FFA500, #FFA500); color: white; }
-.appointment-status-booked { background: linear-gradient(45deg, #28a745, #28a745); color: white; }
-.confirm { background: linear-gradient(45deg, #28a745, #6aa728); color: white; }
-.appointment-status-arrived { background: linear-gradient(45deg, #007bff, #007bff); color: white; }
-.appointment-status-checked-in { background:linear-gradient(45deg, #ffc107, #ffc107); color: white; }
-.appointment-status-fulfilled { background: linear-gradient(45deg, #6c757d, #6c757d); color: white; }
-.appointment-status-cancelled { background: linear-gradient(45deg, #dc3545, #dc3545); color: white; }
-.appointment-status-noshow { background: linear-gradient(45deg, #6f42c1, #6f42c1); color: white; }
+.appointment-status-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-pending { background:linear-gradient(45deg, #FFA500, #FFA500); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-booked { background: linear-gradient(45deg, #28a745, #28a745); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-confirm { background: linear-gradient(45deg, #28a745, #6aa728); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-arrived { background: linear-gradient(45deg, #007bff, #007bff); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-checked-in { background:linear-gradient(45deg, #ffc107, #ffc107); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-fulfilled { background: linear-gradient(45deg, #6c757d, #6c757d); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-cancelled { background: linear-gradient(45deg, #dc3545, #dc3545); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+.appointment-status-noshow { background: linear-gradient(45deg, #6f42c1, #6f42c1); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
 
 
 

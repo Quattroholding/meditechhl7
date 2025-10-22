@@ -2,7 +2,7 @@
     @if(in_array($appointment->status,['proposed','booked','confirm','arrived','fulfilled','pending','checked-in']) && auth()->user()->can('changeStatus',$appointment))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop{{$appointment->id}}"
-                    type="button" class="badge  dropdown-toggle appointment-status-{{$status}}"
+                    type="button" class="dropdown-toggle appointment-status-{{$status}}"
                     data-bs-toggle="dropdown" aria-expanded="false">
                 {{ __('appointment.status.'.$status) }}
             </button>
