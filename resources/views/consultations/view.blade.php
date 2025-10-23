@@ -116,6 +116,10 @@
                                                         <label><strong>{{ __('encounter.end') }}:</strong></label>
                                                         <span>{{ $encounter->end ? $encounter->end->format('Y-m-d H:i:s') : 'N/A' }}</span>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.general_note') }}:</strong></label>
+                                                        <span>{{ $encounter->general_note ?? 'N/A' }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,6 +214,7 @@
                                                         </thead>
                                                         <tbody>
                                                         @foreach($encounter->diagnoses as $diag)
+                                                            @if($diag->condition)
                                                             <tr>
                                                                 <td>{{ $diag->condition->code }}</td>
                                                                 <td>{{ $diag->condition->onset_info ?? $diag->condition->icd10Code->description_es }}</td>
@@ -220,6 +225,7 @@
                                                                     </span>
                                                                 </td>
                                                             </tr>
+                                                            @endif
                                                         @endforeach
                                                         </tbody>
                                                     </table>

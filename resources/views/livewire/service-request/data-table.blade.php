@@ -62,6 +62,7 @@
                                             @php
                                                 $primaryDiagnosis = $encounter->diagnoses->firstWhere('rank', 1) ?? $encounter->diagnoses->first();
                                             @endphp
+                                            @if($primaryDiagnosis->condition)
                                             <span
                                                 class="text-primary cursor-pointer"
                                                 data-bs-toggle="tooltip"
@@ -69,6 +70,9 @@
                                             >
                                                 {{ \Str::limit($primaryDiagnosis->condition->code_display ?? $primaryDiagnosis->condition->onset_info, 40) }}
                                             </span>
+                                            @else
+                                                <span class="text-muted">Sin diagnóstico</span>
+                                            @endif
                                         @else
                                             <span class="text-muted">Sin diagnóstico</span>
                                         @endif
