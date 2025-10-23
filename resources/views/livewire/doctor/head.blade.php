@@ -56,7 +56,7 @@
             </div>
             <div class="data-actions">
                 <livewire:practitioner.add-qualification :practitioner_id="$data->id"/>
-                <livewire:practitioner.manage-insurances practitioner_id="{{$data->id}}" />
+
             </div>
         </div>
     </div>

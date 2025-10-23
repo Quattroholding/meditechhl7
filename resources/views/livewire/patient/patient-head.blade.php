@@ -35,12 +35,13 @@
                 @if(auth()->user()->hasRole('doctor') && Illuminate\Support\Facades\Route::currentRouteName()=='consultation.show')
                 <button wire:click="openModalNote({{ $data->id }},'medical')" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
                 @endif
-                @if( Illuminate\Support\Facades\Route::currentRouteName()<>'consultation.show')
+                @if( Illuminate\Support\Facades\Route::currentRouteName()<>'consultation.show' && auth()->user()->hasRole('doctor'))
                 <button wire:click="openModalNote({{ $data->id }},'private')" class="btn-head btn-head-light"> <i class="fa fa-unlock"></i>  {{__('patient.add_note_private')}}</button>
 
                 @endif
-                <livewire:modal-add-notes wire:click="openModalNote({{$data->id}})"/>
+
                 <livewire:patient.add-medical-history :patient_id="$data->id"/>
+                <livewire:patient.add-insurance :patient_id="$data->id"/>
                 {{--}}
                 <button wire:click="exportToPDF" class="btn btn-light">
                     📄 Exportar PDF
