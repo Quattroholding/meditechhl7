@@ -36,6 +36,7 @@ class MedicalSpecialityController extends Controller
                     'description' => $speciality->description ?? '',
                     'is_surgical' => $speciality->is_surgical ?? false,
                     'practitioners_count' => $activePractitionersCount,
+                    'appointments_count'=>$speciality->appointments->count(),
                 ];
             });
 
