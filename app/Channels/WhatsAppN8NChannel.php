@@ -35,12 +35,18 @@ class WhatsAppN8NChannel
             // Extract message body if it's an array
             $messageBody = is_array($message) ? ($message['body'] ?? '') : $message;
 
+            $webHoorUrl = config('services.n8n.webhook_test_url');
+
+            if(env('APP_ENV') === 'production') {
+                $webHoorUrl = config('services.n8n.webhook_url');
+            }
+
             // Make POST request to N8N webhook
             $response = Http::timeout(30)
                 ->withHeaders([
                     'Token' => config('services.n8n.token'),
                 ])
-                ->post(config('services.n8n.webhook_url'), [
+                ->post($webHoorUrl, [
                     'output' => $messageBody,
                     'userPhone' => $phoneNumber,
                 ]);

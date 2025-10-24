@@ -45,6 +45,7 @@ return [
 
     'n8n' => [
         'webhook_url' => env('N8N_WEBHOOK_URL', 'https://n8n.meditecpty.com/webhook/1e35ec4b-2813-4d1b-a37d-919c8b6a66d1'),
+        'webhook_test_url' => env('N8N_WEBHOOK_TEST_URL', 'https://n8n.meditecpty.com/webhook-test/1e35ec4b-2813-4d1b-a37d-919c8b6a66d1'),
         'token' => env('N8N_TOKEN'),
         'testing_mode' => env('N8N_TESTING_MODE', false),
         'testing_phone' => env('N8N_TESTING_PHONE'),

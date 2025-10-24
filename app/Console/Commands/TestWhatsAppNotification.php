@@ -78,13 +78,13 @@ class TestWhatsAppNotification extends Command
             $this->newLine();
 
             // Send via WhatsApp channel directly
-            if (in_array(\App\Channels\WhatsAppChannel::class, $channels)) {
-                $whatsappChannel = app(\App\Channels\WhatsAppChannel::class);
+            if (in_array(\App\Channels\WhatsAppN8NChannel::class, $channels)) {
+                $whatsappChannel = app(\App\Channels\WhatsAppN8NChannel::class);
                 $whatsappChannel->send($patient, $notification);
 
                 $this->info('✅ WhatsApp notification sent successfully!');
             } else {
-                $this->warn('⚠️  WhatsApp channel not in notification channels');
+                $this->warn('⚠️  WhatsApp N8N channel not in notification channels');
             }
 
             $this->newLine();
