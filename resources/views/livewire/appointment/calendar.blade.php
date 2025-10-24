@@ -11,11 +11,11 @@
                     {{__('Mensual')}}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
-                    {{--}}
+
                 <button wire:click="changeView('weekly')" class="btn {{ $currentView === 'weekly' ? 'btn-primary active' : 'btn-secondary' }}">
-                    Semanal
+                    {{__('Semanal')}}
                 </button>
-                {{--}}
+
                 <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }} btn-fonts">
                     {{__('Hoy')}}
                 </button>
