@@ -9,8 +9,6 @@ use Livewire\Component;
 
 class PhysicalExam extends Component
 {
-    public $reason;
-
     public $encounter_id;
 
     public $encounter;
@@ -19,9 +17,12 @@ class PhysicalExam extends Component
 
     public $values = [];
 
-    public $saving = false;
-
     public $saved = [];
+
+    // Nuevas propiedades para sugerencias
+    public $activeInputCode = null;
+    public $suggestedAnswered = '';
+
 
     public function mount()
     {
@@ -44,9 +45,44 @@ class PhysicalExam extends Component
         }
     }
 
+    public function toggleInfo($code)
+    {
+        $this->activeInputCode = $code;
+        $item = ClinicalObservationType::whereCode($code)->first();
+        $this->suggestedAnswered = $item->default_answer_es;
+            
+    }
+
     public function updatedValues($value, $code)
     {
         $this->saved[$code] = false;
+        $this->toggleInfo($code);
+    }
+
+ 
+    public function usarSugerencia($code)
+    {
+        
+        // Usar la primera sugerencia disponible (generalmente default_answer)
+        $item = ClinicalObservationType::whereCode($code)->first();
+        
+        if ($item && !empty($item->default_answer)) {
+            $this->values[$code] = $item->default_answer_es;
+            $this->cerrarSugerencias();
+            $this->save($code);
+        }
+    }
+
+    public function seleccionarSugerencia($texto, $code)
+    {
+        $this->values[$code] = $texto;
+        $this->cerrarSugerencias();
+        $this->save($code);
+    }
+
+    public function cerrarSugerencias()
+    {
+        $this->activeInputCode = null;
     }
 
     public function save($code)
