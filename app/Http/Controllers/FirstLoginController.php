@@ -27,6 +27,8 @@ class FirstLoginController extends Controller
         $route = route('profile.edit', $user->id);
         if ($user->practitioner) {
             $route = route('practitioner.profile', $user->practitioner->id);
+        }else if($user->patient){
+            $route = route('patient.profile', $user->patient->id);
         }
         if (! is_null($user->first_login_at)) {
             return redirect($route);

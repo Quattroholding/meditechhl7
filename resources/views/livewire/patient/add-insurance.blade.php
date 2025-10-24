@@ -1,12 +1,12 @@
 <div>
-    {{--}}
+
     <!-- Botón puede ser usado como acción o componente independiente -->
     @if(!isset($hideButton) || !$hideButton)
-        <button wire:click="openModal()" class="btn btn-primary float-right">
+        <button wire:click="openModal()" class="btn-head btn-head-light">
             🛡️ {{__('Gestionar Seguros')}}
         </button>
     @endif
-    {{--}}
+
 
     @if($showInsuranceModal)
     <!-- Modal -->

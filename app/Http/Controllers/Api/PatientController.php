@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StorePatientRequest;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
+use App\Mail\PatientWelcomeMail;
+use App\Models\Client;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
@@ -12,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -145,18 +148,52 @@ class PatientController extends Controller
     public function store(StorePatientRequest $request): JsonResponse
     {
         try {
+
+
             // Generate FHIR ID
             $fhirId = 'patient-' . Str::uuid();
+            $firstName='';
+            $lastName='';
+            $password = Str::password(8);
+            $full_name = explode(" ",$request->name);
+            $email = strtolower($request->email);
+            if(isset($full_name[0])) $firstName = ucfirst($full_name[0]);
+            if(isset($full_name[1])) $lastName = ucfirst($full_name[1]);
+            $model = new User;
+
+            $model->first_name = $firstName ?? $request->name;
+            $model->last_name = $lastName ?? 'Apellido';
+            $model->email = $email;
+            $model->password =$password;
+            $model->whatsapp_phone = $request->phone;
+            $model->save();
+
+            // Asignar rol de paciente
+            $model->assignRole('paciente');
 
             // Create patient record
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
                 'name' => $request->name,
+                'given_name'=>$firstName,
+                'family_name'=>$lastName,
+                'email' =>$email,
+                'user_id'=>$model->id,
                 'identifier' => $request->identifier,
+                'identifier_type'=>'CC',
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
                 'active' => true,
             ]);
+
+            if ($patient->save()) {
+                $client = Client::first();
+                $registrationData = [
+                    'username' => $email,
+                    'password' => $password,
+                ];
+                Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+            }
 
             return response()->json([
                 'message' => 'Paciente creado exitosamente.',
@@ -1260,7 +1297,7 @@ class PatientController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('search');
-        
+
         $patients = Patient::where(function($query) use ($search) {
             // Buscar en nombre
             $query->where('given_name', 'LIKE', "%{$search}%")
@@ -1274,7 +1311,7 @@ class PatientController extends Controller
         ->select('id', 'given_name', 'family_name', 'identifier')
         ->limit(10)
         ->get();
-        
+
         $results = $patients->map(function($patient) {
             return [
                 'id' => $patient->id,
@@ -1282,7 +1319,7 @@ class PatientController extends Controller
                 'identifier' => $patient->identifier
             ];
         });
-        
+
     return response()->json([
         'results' => $results,
         'total' => Patient::where('given_name', 'LIKE', "%{$search}%")

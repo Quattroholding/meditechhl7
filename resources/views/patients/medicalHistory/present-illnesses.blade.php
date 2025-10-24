@@ -2,6 +2,7 @@
     @if($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : count($sectionData) > 0))
         <div class="illnesses-grid" style="display: grid; gap: 25px;">
             @foreach((isset($sectionData['data']) ? $sectionData['data'] : $sectionData) as $illness)
+                @isset($illness->encounter)
                 <div class="illness-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease;">
                     <div class="illness-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                         <div>
@@ -182,6 +183,7 @@
                         </div>
                     </div>
                 </div>
+                @endisset
             @endforeach
         </div>
 

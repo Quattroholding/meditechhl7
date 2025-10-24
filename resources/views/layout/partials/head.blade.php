@@ -51,7 +51,7 @@
  <!-- Main CSS -->
  <link rel="stylesheet" type="text/css" href="{{ url('assets/css/style.css?time='.time().time()) }}">
 
- <link rel="stylesheet" type="text/css" href="{{ url('styles/default.css?time='.time()) }}">
+
 
 <!-- Dashboard Animations CSS -->
 @if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
@@ -63,3 +63,4 @@
 <meta name="doctor-id" content="{{ auth()->user()->practitioner->id }}">
 @endif
 
+ <link rel="stylesheet" type="text/css" href="{{ url('styles/default.css?time='.time()) }}">

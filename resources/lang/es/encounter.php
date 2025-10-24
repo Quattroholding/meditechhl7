@@ -7,6 +7,7 @@ return [
     'patient' => 'Paciente',
     'start' => 'Inicio',
     'end' => 'Fin',
+    'general_note' => 'Nota General',
     'time' => 'Horario',
     'class' => 'Clase',
     'type' => 'Tipo',

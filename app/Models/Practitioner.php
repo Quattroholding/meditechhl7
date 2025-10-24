@@ -155,4 +155,11 @@ class Practitioner extends BaseModel
     {
         return $query->where('active', true);
     }
+
+    public function scopeUserActive($query)
+    {
+        return $query->whereHas('user', function ($query) {
+            $query->where('users.active', true);
+        });
+    }
 }

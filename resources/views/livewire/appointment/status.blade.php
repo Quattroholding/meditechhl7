@@ -1,12 +1,13 @@
 <div style="display: inline-block" wire:poll.10s>
-    @if(in_array($appointment->status,['proposed','booked','arrived','fulfilled','pending','checked-in']) && auth()->user()->can('changeStatus',$appointment))
+    @if(in_array($appointment->status,['proposed','booked','confirm','arrived','fulfilled','pending','checked-in']) && auth()->user()->can('changeStatus',$appointment))
         <div class="btn-group" role="group">
-            <button id="btngroupverticaldrop1"
-                    type="button" class="badge  dropdown-toggle appointment-status-{{$status}}"
+            <button id="btngroupverticaldrop{{$appointment->id}}"
+                    type="button" class="dropdown-toggle appointment-status-{{$status}}"
                     data-bs-toggle="dropdown" aria-expanded="false">
                 {{ __('appointment.status.'.$status) }}
             </button>
-            <div class="dropdown-menu" aria-labelledby="btngroupverticaldrop1" style="">
+
+            <div class="dropdown-menu" aria-labelledby="btngroupverticaldrop{{$appointment->id}}" style="">
                 @if(auth()->user()->can('booked',$appointment))
                     <a class="dropdown-item" wire:click="changeStatus('booked')" >✅ {{__('Confirmar')}}</a>
                 @endif

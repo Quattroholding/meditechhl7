@@ -124,7 +124,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
 
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('permission:dashboard.admin')->name('admin.dashboard');
     Route::get('/admin-kpis', function () {
-        return view('dashboard.admin-kpis');
+        return view('Dashboard.admin-kpis');
     })->name('admin.dashboard.kpis')->middleware('role:admin');
     Route::get('/doctor', [DashboardController::class, 'doctor'])->middleware('permission:dashboard.doctor')->name('doctor.dashboard');
     Route::get('/patient', [DashboardController::class, 'patient'])->middleware('permission:dashboard.patient')->name('patient.dashboard');

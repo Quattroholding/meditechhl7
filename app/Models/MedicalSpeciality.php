@@ -24,4 +24,9 @@ class MedicalSpeciality extends Model
     {
         return $this->belongsToMany(Practitioner::class, 'practitioner_qualifications');
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class,'medical_speciality_id');
+    }
 }
