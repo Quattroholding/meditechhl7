@@ -43,6 +43,13 @@ return [
         'testing_patient_whatsapp' => env('TWILIO_TESTING_PATIENT_WHATSAPP'),
     ],
 
+    'n8n' => [
+        'webhook_url' => env('N8N_WEBHOOK_URL', 'https://n8n.meditecpty.com/webhook/1e35ec4b-2813-4d1b-a37d-919c8b6a66d1'),
+        'token' => env('N8N_TOKEN'),
+        'testing_mode' => env('N8N_TESTING_MODE', false),
+        'testing_phone' => env('N8N_TESTING_PHONE'),
+    ],
+
     'turnstile' => [
         'public_key' => env('TURNSTILE_PUBLIC_KEY'),
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
