@@ -32,9 +32,11 @@
                                 <th data-column="created_at" data-priority="5">
                                     <x-table-sort-button title="{{__('user.created_at')}}" columnName="created_at" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
+                                @canany(['user.edit','users.activate','users.delete'])
                                 <th data-column="acciones" data-priority="1" class="text-end">
                                     <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
                                 </th>
+                                @endcanany
                             </tr>
                             </thead>
                             <tbody>
@@ -64,6 +66,7 @@
                                     <td data-column="created_at" data-priority="5" data-label="{{__('user.created_at')}}">
                                         <span class="cell-content">{{ \Carbon\Carbon::parse($user->created_at)->format('d-m-Y') }}</span>
                                     </td>
+                                    @canany(['user.edit','users.activate','users.delete'])
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             @can('users.edit')
@@ -76,58 +79,14 @@
                                                     <livewire:user.active-users user_id="{{$user->id}}" wire:key="{{$user->id}}"/>
                                                 @endif
                                             @endcan
-                                           {{--}} @can('users.activate')
-                                                @if($user->active == false)
-                                                 <button type="button"
-                                                    class="btn btn-warning btn-sm"
-                                                    title="{{ __('Reactivar Usuario') }}"
-                                                    wire:click.prevent="activateUser({{ $user->id }})"
-                                                    wire:loading.attr="disabled"
-                                                    wire:target="activateUser({{ $user->id }})">
-
-                                                    <i class="fa fa-check-circle m-r-5"
-                                                    wire:loading.remove
-                                                    wire:target="activateUser({{ $user->id }})"></i>
-
-                                                    <i class="fa fa-spinner fa-spin m-r-5"
-                                                    wire:loading
-                                                    wire:target="activateUser({{ $user->id }})"></i>
-
-                                                <span wire:loading.remove wire:target="activateUser({{ $user->id }})">
-                                                    {{ __('Activar') }}
-                                                </span>
-                                                <span wire:loading wire:target="activateUser({{ $user->id }})">
-                                                    {{ __('Activando...') }}
-                                                </span>
-                                            </button>
-                                                @endif
-                                            @endcan{{--}}
                                             @can('users.delete')
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('user.destroy', $user->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>
                                             @endcan
                                         </div>
-                                        {{--}}<div class="dropdown dropdown-action">
-                                            <a href="javascript:;" class="action-icon dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                @can('users.edit')
-                                                    <a class="dropdown-item" href="{{ route('user.edit', $user->id) }}">
-                                                        <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                        {{__('generic.edit')}}
-                                                    </a>
-                                                @endcan
-                                                @can('users.delete')
-                                                    <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_user">
-                                                        <i class="fa fa-trash-alt m-r-5"></i>
-                                                        {{__('generic.delete')}}
-                                                    </a>
-                                                @endcan
-                                            </div>
-                                        </div>{{--}}
                                     </td>
+                                    @endcanany
                                 </tr>
                                 <!-- Hidden row for expanded details -->
                                 <tr class="row-details d-none" data-parent-row="{{ $user->id }}">
