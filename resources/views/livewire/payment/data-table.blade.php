@@ -139,20 +139,20 @@
                                                     <span class="badge
                                                         @switch($payment->status)
                                                             @case('completed')
-                                                                badge-success
+                                                                bg-success
                                                                 @break
                                                             @case('pending')
-                                                                badge-warning
+                                                                bg-warning
                                                                 @break
                                                             @case('failed')
                                                             @case('cancelled')
-                                                                badge-danger
+                                                                bg-danger
                                                                 @break
                                                             @case('refunded')
-                                                                badge-info
+                                                                bg-info
                                                                 @break
                                                             @default
-                                                                badge-secondary
+                                                                bg-secondary
                                                         @endswitch
                                                     ">
                                                         {{ $payment->status_label }}

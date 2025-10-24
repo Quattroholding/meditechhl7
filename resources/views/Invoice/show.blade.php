@@ -68,7 +68,7 @@
                                         <span>{{ $organization->name }}</span>
 
                                         <ul class="list-unstyled invoice-clinic mt-2">
-                                            @if($invoice->encounter->appointment->consultingRoom->branch->address)
+                                            @if($invoice->encounter && $invoice->encounter->appointment->consultingRoom->branch->address)
                                                 <li>{{ $invoice->encounter->appointment->consultingRoom->branch->address }}</li>
                                             @endif
                                             @if($organization->whatsapp)
