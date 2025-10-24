@@ -6,10 +6,31 @@
                 wire:model.live="values.{{$vs->code}}"
                 wire:keyup.debounce.300ms="save('{{$vs->code}}')"
                 wire:change="save('{{$vs->code}}')"
+                wire:click="toggleInfo('{{ $vs->code }}')"
                 :value="$values[$vs->code]"
                 placelholder="Ej : Normal"
                 class="mt-1 block w-full bottom-0" rows="2">{{$values[$vs->code]}}</x-textarea-input>
-
+                
+                     @if($activeInputCode === $vs->code && $suggestedAnswered)
+                        <div class="flex items-center text-blue-600 mt-2">
+                            <div 
+                            wire:click="usarSugerencia('{{$vs->code}}')"
+                            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                                    width: 130px;
+                                    text-align: center;
+                                    padding: 2px;
+                                    background-color: #005dba;
+                                    color: #FFFFFF;
+                                    cursor: pointer;
+                                    margin-top: 15px;
+                                    margin-bottom: 5px;
+                                    margin-right:10px;
+                                    transition: 0.2s all;">
+                            Usar Sugerencia
+                        </div>
+                            <span class="text-sm font-medium">{{$suggestedAnswered}}</span>
+                        </div>
+                    @endif
             <!-- Indicadores de estado -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
@@ -30,6 +51,8 @@
                             <span class="text-sm font-medium">Guardado</span>
                         </div>
                     @endif
+
+
                 </div>
                 @if (session()->has('error'))
                     <div class="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
