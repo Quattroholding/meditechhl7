@@ -160,29 +160,12 @@
                                                 </span>
                                             </td>
                                             <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
-                                                <div class="dropdown dropdown-action">
-                                                    <a href="javascript:;" class="action-icon dropdown-toggle"
-                                                       data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fas fa-ellipsis-v"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        @if($payment->invoice)
-                                                            <a class="dropdown-item" href="{{ route('invoice.show', $payment->invoice->id) }}">
-                                                                <i class="far fa-eye me-2"></i>{{ __('Ver Factura') }}
-                                                            </a>
-                                                        @endif
-                                                        @if($payment->patient)
-                                                            <a class="dropdown-item" href="{{ route('patient.profile', $payment->patient->id) }}">
-                                                                <i class="fas fa-user me-2"></i>{{ __('Ver Paciente') }}
-                                                            </a>
-                                                        @endif
-                                                        @if($payment->status === 'completed' && \Carbon\Carbon::parse($payment->created_at)->diffInHours() < 24)
-                                                            <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item text-warning" href="javascript:;" onclick="confirm('¿Está seguro de reembolsar este pago?')">
-                                                                <i class="fas fa-undo me-2"></i>{{ __('Reembolsar') }}
-                                                            </a>
-                                                        @endif
-                                                    </div>
+                                                <div class="btn-group btn-group-sm">
+                                                    @if($payment->invoice)
+                                                        <a  href="{{ route('invoice.show', $payment->invoice->id) }}" target="_blank" class="btn btn-info btn-sm" title="{{__('generic.show')}}">
+                                                            <i  class="fa-solid fa-eye m-r-5  text-white"></i>
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
