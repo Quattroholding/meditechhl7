@@ -291,6 +291,7 @@ class TestSurveyWhatsApp extends Command
                 'id' => $encounter->id,
                 'date' => $encounter->start->format('Y-m-d H:i:s'),
             ],
+
             'api_endpoints' => [
                 'next_question' => url("/api/surveys/{$surveyResponse->token}/next-question"),
                 'save_response' => url('/api/surveys/save-response'),
