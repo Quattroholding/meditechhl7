@@ -46,8 +46,9 @@ class DashboardController extends Controller
             'activity-heatmap' => 'doctor.activity-heatmap',
             'branch-billing-chart' => 'dashboard.admin.branch-billing-chart',
             'billing-collection-rate' => 'dashboard.admin.billing-collection-rate',
+            'diagnostics-by-specialties' => 'doctor.diagnostics-by-specialties'
         ];
-
+        //dd($visibleWidgets);
         return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));
     }
 

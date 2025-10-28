@@ -83,7 +83,7 @@ class WidgetConfiguration extends Component
     {
         // Update the widgets array with new order
         $this->widgets = collect($orderedWidgets)->map(function ($widget, $index) {
-            $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
+        $existingWidget = collect($this->widgets)->firstWhere('key', $widget['key']);
 
             return [
                 'key' => $widget['key'],
