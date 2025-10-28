@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
+use App\Http\Controllers\Api\SurveyController;
 use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,13 @@ Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // Twilio Webhook - Public route (Twilio will call this)
 Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
+
+// Survey endpoints - Public routes (WhatsApp integration using survey response token)
+Route::prefix('surveys')->group(function () {
+    Route::get('/{surveyResponseId}/next-question', [SurveyController::class, 'getNextQuestion']);
+    Route::post('/save-response', [SurveyController::class, 'saveQuestionResponse']);
+    Route::get('/{surveyResponseId}/progress', [SurveyController::class, 'getSurveyProgress']);
+});
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -129,7 +137,6 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::post('/patients', [PatientController::class, 'store']);
     Route::get('/patients/{patientId}/medical-history', [PatientController::class, 'getMedicalHistory']);
     Route::get('/patients/search', [PatientController::class, 'search'])->name('patients.search');
-
 
     // Appointments with v1-specific methods
     Route::get('/appointments', [AppointmentController::class, 'indexV1']);

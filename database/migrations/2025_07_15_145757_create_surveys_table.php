@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status')->default('draft');
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->string('trigger_point')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
