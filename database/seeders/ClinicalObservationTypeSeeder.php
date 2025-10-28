@@ -184,6 +184,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Facies patológicas',
                     'Posturas anormales',
                 ],
+                'default_answer' => 'The patient is alert, cooperative and oriented and in no acute distress.',
+                'default_answer_es' => 'El paciente está alerta, cooperativo y orientado y no sufre una angustia aguda.'
             ],
             // HEENT (Cabeza, Ojos, Oídos, Nariz y Garganta)
             [
@@ -203,6 +205,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Nariz' => ['Desviación septal', 'Epistaxis', 'Pólipos'],
                     'Garganta' => ['Faringitis', 'Amigdalitis', 'Masas'],
                 ],
+                'default_answer' => 'Head is normocephalic.  No evidence of trauma.  Ears:  No acute purulent discharge.  Eyes:  PER: 4mm, conjunctivae with no scleral jaundice.  Nose:  Normal mucosa and septum. EOMI, no hyperemia exudates or hemorrhages',
+                'default_answer_es' => 'La cabeza es normocefálica. Sin evidencia de trauma. Oídos: Sin secreción purulenta aguda. Ojos: PER: 4 mm, conjuntiva sin ictericia escleral. Trufa: Mucosa y septo normales. EOMI, sin hiperemia exudados ni hemorragias'
             ],
             // Examen de Ojos (Detallado)
             [
@@ -239,6 +243,9 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Roncos',
                     'Disminución del murmullo vesicular',
                 ],
+                'default_answer' => 'No weight loss, fever, chills, weakness or fatigue.',
+                'default_answer_es' => 'Sin dificultad para respirar. Sin cianosis, tos ni esputo.'
+            
             ],
             // CARDIOVASCULAR
             [
@@ -257,6 +264,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Edemas',
                     'Pulsos disminuidos',
                 ],
+                'default_answer' => 'Regular rate and rhythm, no murmurs to auscultation, instant capillary filling, radial and femoral pulses are intact.',
+                'default_answer_es' => 'Frecuencia y ritmo regulares, sin soplos a la auscultación, llenado capilar instantáneo, pulsos radiales y femorales intactos.'
             ],
             // Examen de Pecho/Senos
             [
@@ -273,6 +282,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Mamas' => ['Nódulos', 'Secreción', 'Retracción'],
                     'Pared torácica' => ['Deformidades', 'Tumefacciones'],
                 ],
+                'default_answer' => 'Symmetrical bilaterally to expiration and inspiration movement.',
+                'default_answer_es' => 'Simétrico bilateralmente al movimiento de inspiración y espiración.'
             ],
             // GASTROINTESTINAL
             [
@@ -291,6 +302,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Hepatomegalia',
                     'Esplenomegalia',
                 ],
+                'default_answer' => 'Soft, nontender, nondistended, nonpalpable masses with good bowel sounds heard.  Inguinal area is normal.',
+                'default_answer_es' => 'Se escuchan masas blandas, no dolorosas, no distendidas y no palpables con buenos ruidos intestinales. El área inguinal es normal.'
             ],
             // Examen Linfático
             [
@@ -316,6 +329,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                         'Blandas/Duras',
                     ],
                 ],
+                'default_answer' => 'No palpable lymph nodes.',
+                'default_answer_es' => 'No hay ganglios linfáticos palpables.'
             ],
             // NEUROLOGICO
             [
@@ -334,6 +349,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Déficit sensitivo',
                     'Alteración de pares craneales',
                 ],
+                'default_answer' => 'The patient is oriented to person, place and time.',
+                'default_answer_es' => 'El paciente está orientado a la persona, el lugar y el tiempo.'
             ],
             // MUSCOESQUELETICO
             [
@@ -352,6 +369,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Deformidades',
                     'Hipersensibilidad',
                 ],
+                'default_answer' => 'Symmetrical extremities, mobile, without edema, symmetrical, regular and of good amplitude; muscle tone and trophism preserved, muscle strength 5/5. Active and passive motility preserved.',
+                'default_answer_es' => 'Extremidades simétricas, móviles, sin edema, simétricas, regulares y de buena amplitud; tono muscular y trofismo conservados, fuerza muscular 5/5. Motilidad activa y pasiva conservada.'
             ],
             // DERMATOLOGICO
             [
@@ -370,6 +389,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Cambios en la pigmentación',
                     'Alteraciones en uñas',
                 ],
+                'default_answer' => 'Normal skin temperature. No edema, or superficial varicosities.',
+                'default_answer_es' => 'Lesión circular en la cabeza, sin descamativo, sin prurito, enrojecida con bordes definidos.'
             ],
             // Examen Psiquiátrico
             [
@@ -389,6 +410,8 @@ class ClinicalObservationTypeSeeder extends Seeder
                     'Pensamiento' => ['Delirios', 'Ideas obsesivas'],
                     'Percepción' => ['Alucinaciones', 'Ilusiones'],
                 ],
+                'default_answer' => 'Oriented 3X, denies suicidal or homicidal ideations. Insomina and anxiety.',
+                'default_answer_es' => 'Orientado 3X, niega ideas suicidas u homicidas. Insomnio y ansiedad.'
             ],
         ];
 
