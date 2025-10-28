@@ -36,7 +36,15 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = ['mail', 'database'];
+
+        // Add WhatsApp channel if user has WhatsApp phone number
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            // Use N8N channel instead of Twilio
+            $channels[] = \App\Channels\WhatsAppN8NChannel::class;
+        }
+
+        return $channels;
     }
 
     /**
@@ -78,6 +86,31 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
             'survey_url' => route('survey.public', $this->surveyResponse->token),
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
+    {
+        $surveyUrl = route('survey.public', $this->surveyResponse->token);
+        $practitionerName = $this->encounter->practitioner->full_name ?? 'su médico';
+        $encounterDate = $this->encounter->start->format('d/m/Y');
+        $clinicName = $this->encounter->appointment->client->name ?? config('app.name');
+
+        $message = "📋 *Encuesta de Satisfacción*\n\n";
+        $message .= "Hola {$notifiable->name},\n\n";
+        $message .= "Gracias por su visita con *{$practitionerName}* el {$encounterDate}.\n\n";
+        $message .= "Nos gustaría conocer su opinión sobre la atención recibida en *{$clinicName}*.\n\n";
+        $message .= "Su experiencia es muy importante para nosotros y nos ayuda a mejorar continuamente nuestros servicios.\n\n";
+        $message .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $message .= "👉 *Por favor complete nuestra encuesta aquí:*\n\n";
+        $message .= "{$surveyUrl}\n\n";
+        $message .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+        $message .= "⏱️ Solo tomará unos minutos de su tiempo.\n\n";
+        $message .= '¡Gracias por ayudarnos a mejorar! 😊';
+
+        return $message;
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace App\Observers;
 
-use App\Jobs\SendSurveyEmailJob;
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
+use App\Notifications\SendPatientSatisfactionSurvey;
 use Illuminate\Support\Facades\Log;
 
 class EncounterObserver
@@ -25,6 +25,7 @@ class EncounterObserver
     {
         try {
             $activeSurvey = Survey::where('status', 'active')
+                ->where('trigger_point', 'after_encounter')
                 ->where('is_active', true)
                 ->with('questions')
                 ->first();
@@ -67,16 +68,23 @@ class EncounterObserver
             $surveyResponse = SurveyResponse::create([
                 'survey_id' => $activeSurvey->id,
                 'patient_id' => $patient->id,
+                'encounter_id' => $encounter->id,
+                'practitioner_id' => $encounter->practitioner_id,
+                'client_id' => $encounter->appointment->client_id,
+                'medical_speciality_id' => $encounter->appointment->medical_speciality_id,
                 'status' => 'pending',
             ]);
 
-            SendSurveyEmailJob::dispatch($surveyResponse, $encounter);
+            // Send survey notification via email, WhatsApp, and database
+            $patient->notify(new SendPatientSatisfactionSurvey($surveyResponse, $encounter, $activeSurvey));
 
             Log::info('Encuesta de satisfacción enviada', [
                 'encounter_id' => $encounter->id,
                 'patient_id' => $patient->id,
                 'survey_id' => $activeSurvey->id,
                 'survey_response_id' => $surveyResponse->id,
+                'has_email' => (bool) $patient->email,
+                'has_phone' => (bool) $patient->phone,
             ]);
 
         } catch (\Exception $e) {

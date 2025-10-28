@@ -14,7 +14,7 @@ class Practitioner extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
-        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry','licence_code', 'identifier_type',
+        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'licence_code', 'identifier_type',
         'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
     ];
 
@@ -94,6 +94,11 @@ class Practitioner extends BaseModel
             ->withTimestamps();
     }
 
+    public function surveyResponses(): HasMany
+    {
+        return $this->hasMany(SurveyResponse::class);
+    }
+
     public function avatar()
     {
         return $this->files()->whereType('avatar')->latest()->first();
@@ -161,5 +166,169 @@ class Practitioner extends BaseModel
         return $query->whereHas('user', function ($query) {
             $query->where('users.active', true);
         });
+    }
+
+    /**
+     * Get completed survey responses for this practitioner
+     */
+    public function completedSurveyResponses()
+    {
+        return $this->surveyResponses()
+            ->where('status', 'completed')
+            ->whereNotNull('submitted_at');
+    }
+
+    /**
+     * Calculate the average rating for practitioner-specific questions
+     * Questions 5, 6, 7, and 11 from the Patient Satisfaction Survey
+     */
+    public function calculatePractitionerRating(): float
+    {
+        $completedResponses = $this->completedSurveyResponses()->get();
+
+        if ($completedResponses->isEmpty()) {
+            return 0.0;
+        }
+
+        // Get the IDs of the practitioner-related questions
+        // These are questions with order 5, 6, 7, and 11
+        $practitionerQuestionOrders = [5, 6, 7, 11];
+
+        $totalRating = 0;
+        $totalQuestions = 0;
+
+        foreach ($completedResponses as $surveyResponse) {
+            // Get all question responses for this survey response
+            $questionResponses = $surveyResponse->questionResponses()
+                ->whereHas('question', function ($query) use ($practitionerQuestionOrders) {
+                    $query->whereIn('order', $practitionerQuestionOrders)
+                        ->where('question_type', 'rating');
+                })
+                ->with('question')
+                ->get();
+
+            foreach ($questionResponses as $questionResponse) {
+                // The answer_text contains the numeric rating (1-5)
+                $rating = (float) $questionResponse->answer_text;
+                if ($rating > 0) {
+                    $totalRating += $rating;
+                    $totalQuestions++;
+                }
+            }
+        }
+
+        if ($totalQuestions === 0) {
+            return 0.0;
+        }
+
+        return round($totalRating / $totalQuestions, 2);
+    }
+
+    /**
+     * Get the total number of completed patient surveys
+     */
+    public function getTotalPatientSurveysAttribute(): int
+    {
+        return $this->completedSurveyResponses()->count();
+    }
+
+    /**
+     * Get the practitioner rating (cached attribute)
+     */
+    public function getPractitionerRatingAttribute(): float
+    {
+        return $this->calculatePractitionerRating();
+    }
+
+    /**
+     * Scope to order practitioners by their rating (highest first)
+     */
+    public function scopeOrderByRating($query, $direction = 'desc')
+    {
+        return $query->withCount(['surveyResponses as practitioner_rating' => function ($query) {
+            $practitionerQuestionOrders = [5, 6, 7, 11];
+
+            $query->select(\DB::raw('AVG(CAST(survey_question_responses.answer_text AS DECIMAL(3,2)))'))
+                ->join('survey_question_responses', 'survey_responses.id', '=', 'survey_question_responses.survey_response_id')
+                ->join('survey_questions', 'survey_question_responses.survey_question_id', '=', 'survey_questions.id')
+                ->where('survey_responses.status', 'completed')
+                ->whereNotNull('survey_responses.submitted_at')
+                ->whereIn('survey_questions.order', $practitionerQuestionOrders)
+                ->where('survey_questions.question_type', 'rating');
+        }])->orderBy('practitioner_rating', $direction);
+    }
+
+    /**
+     * Scope to filter practitioners with minimum rating
+     */
+    public function scopeWithMinimumRating($query, float $minRating)
+    {
+        return $query->whereHas('surveyResponses', function ($query) use ($minRating) {
+            $practitionerQuestionOrders = [5, 6, 7, 11];
+
+            $query->select('practitioner_id')
+                ->join('survey_question_responses', 'survey_responses.id', '=', 'survey_question_responses.survey_response_id')
+                ->join('survey_questions', 'survey_question_responses.survey_question_id', '=', 'survey_questions.id')
+                ->where('survey_responses.status', 'completed')
+                ->whereNotNull('survey_responses.submitted_at')
+                ->whereIn('survey_questions.order', $practitionerQuestionOrders)
+                ->where('survey_questions.question_type', 'rating')
+                ->groupBy('practitioner_id')
+                ->havingRaw('AVG(CAST(survey_question_responses.answer_text AS DECIMAL(3,2))) >= ?', [$minRating]);
+        });
+    }
+
+    /**
+     * Get detailed rating breakdown for practitioner
+     * Returns array with average rating for each practitioner-related question
+     */
+    public function getRatingBreakdown(): array
+    {
+        $completedResponses = $this->completedSurveyResponses()->get();
+
+        if ($completedResponses->isEmpty()) {
+            return [
+                'overall_rating' => 0.0,
+                'medical_attention' => 0.0,  // Question 5
+                'communication' => 0.0,       // Question 6
+                'empathy' => 0.0,            // Question 7
+                'recommendation' => 0.0,      // Question 11
+                'total_surveys' => 0,
+            ];
+        }
+
+        $ratings = [
+            5 => [],  // Medical attention
+            6 => [],  // Communication
+            7 => [],  // Empathy
+            11 => [], // Recommendation
+        ];
+
+        foreach ($completedResponses as $surveyResponse) {
+            $questionResponses = $surveyResponse->questionResponses()
+                ->whereHas('question', function ($query) {
+                    $query->whereIn('order', [5, 6, 7, 11])
+                        ->where('question_type', 'rating');
+                })
+                ->with('question')
+                ->get();
+
+            foreach ($questionResponses as $questionResponse) {
+                $order = $questionResponse->question->order;
+                $rating = (float) $questionResponse->answer_text;
+                if ($rating > 0 && isset($ratings[$order])) {
+                    $ratings[$order][] = $rating;
+                }
+            }
+        }
+
+        return [
+            'overall_rating' => $this->calculatePractitionerRating(),
+            'medical_attention' => count($ratings[5]) > 0 ? round(array_sum($ratings[5]) / count($ratings[5]), 2) : 0.0,
+            'communication' => count($ratings[6]) > 0 ? round(array_sum($ratings[6]) / count($ratings[6]), 2) : 0.0,
+            'empathy' => count($ratings[7]) > 0 ? round(array_sum($ratings[7]) / count($ratings[7]), 2) : 0.0,
+            'recommendation' => count($ratings[11]) > 0 ? round(array_sum($ratings[11]) / count($ratings[11]), 2) : 0.0,
+            'total_surveys' => $completedResponses->count(),
+        ];
     }
 }

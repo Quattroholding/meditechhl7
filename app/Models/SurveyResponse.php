@@ -11,6 +11,10 @@ class SurveyResponse extends BaseModel
     protected $fillable = [
         'survey_id',
         'patient_id',
+        'encounter_id',
+        'practitioner_id',
+        'client_id',
+        'medical_speciality_id',
         'token',
         'submitted_at',
         'responses',
