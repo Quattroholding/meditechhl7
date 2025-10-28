@@ -43,31 +43,7 @@ class DiagnosticsBySpecialties extends Component
             ->groupBy('conditions.onset_info', 'medical_specialties.name', 'specialties_total.total_specialty')
             ->limit(5)
             ->get();
-                                ->selectRaw('
-                                    conditions.onset_info,
-                                    medical_specialties.name as specialty,
-                                    COUNT(encounter_diagnoses.id) as total,
-                                    (COUNT(encounter_diagnoses.id) * 100.0 / specialties_total.total_specialty) as percentage
-                                ')
-                                ->join('conditions', 'encounter_diagnoses.condition_id', '=', 'conditions.id')
-                                ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
-                                ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
-                                ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
-                                ->joinSub(
-                                    DB::table('encounter_diagnoses')
-                                        ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
-                                        ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
-                                        ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
-                                        ->selectRaw('medical_specialties.id, COUNT(*) as total_specialty')
-                                        ->groupBy('medical_specialties.id'),
-                                    'specialties_total',
-                                    'medical_specialties.id',
-                                    '=',
-                                    'specialties_total.id'
-                                )
-                                ->groupBy('conditions.onset_info', 'medical_specialties.name', 'specialties_total.total_specialty')
-                                ->limit(5)
-                                ->get();
+
 
     }
 
