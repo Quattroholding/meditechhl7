@@ -1,6 +1,6 @@
 <div class="card top-departments">
     <div class="card-header">
-        <h4 class="card-title mb-0" style="color: #fff;">{{__('Diagnósticos por Especialidades')}}</h4>
+        <h4 class="card-title mb-0" style="color: #fff;">{{__('Diagnósticos por Grupo Etario')}}</h4>
     </div>
     <div class="card-body">
         @foreach($results as $speciality)
@@ -11,9 +11,9 @@
                             <span class="condition-name">
                                 {{ ucfirst(strtolower($speciality->onset_info)) }}
                             </span>
-                            <small class="text-muted">
+                            {{--}}<small class="text-muted">
                                 ({{ $speciality->specialty }})
-                            </small>
+                            </small>{{--}}
                         </div>
                         <div class="condition-stats-text">
                             <span class="condition-count">
@@ -34,11 +34,15 @@
                     </div>
                       <!-- Detalles adicionales -->
                     <div class="row text-center">
-                        <div class="col-6">
+                        <div class="col-4">
+                            <small class="text-muted d-block">{{__('Especialidad')}}</small>
+                            <span class="fw-bold">{{ $speciality->specialty }}</span>
+                        </div>
+                        <div class="col-4">
                             <small class="text-muted d-block">{{__('Total')}}</small>
                             <span class="fw-bold">{{ $speciality->total }}</span>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <small class="text-muted d-block">{{__('Grupo Etario')}}</small>
                             <span class="fw-bold">{{ $speciality->age_group }}</span>
                         </div>
