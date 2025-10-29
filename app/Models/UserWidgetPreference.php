@@ -53,7 +53,7 @@ class UserWidgetPreference extends Model
 
                 'branch-billing-chart' => ['name' => 'Branch Billing Chart', 'order' => 16, 'description' => 'Facturación por Sede', 'width' => 'col-lg-12'],
                 'billing-collection-rate' => ['name' => 'Billing Collection Rate', 'order' => 17, 'description' => 'Tasa de Facturación vs Cobros', 'width' => 'col-lg-12'],
-                'diagnostics-by-specialties' => ['name' => 'Diagnostics by Specialties', 'order' => 18, 'description' => 'Diagnósticos más frecuentes por especialidad', 'width' => 'col-lg-12'],
+                //'diagnostics-by-specialties' => ['name' => 'Diagnostics by Specialties', 'order' => 18, 'description' => 'Diagnósticos más frecuentes por especialidad', 'width' => 'col-lg-12'],
                 'diagnostics-by-age-groups' => ['name' => 'Diagnostics by Age Groups', 'order' => 19, 'description' => 'Diagnósticos más frecuentes por  grupo etario', 'width' => 'col-lg-12'],
             ],
             'assistant' => [
