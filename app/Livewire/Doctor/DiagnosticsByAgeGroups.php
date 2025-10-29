@@ -40,6 +40,7 @@ class DiagnosticsByAgeGroups extends Component
         ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
         ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
         ->groupBy('conditions.onset_info', 'medical_specialties.name', 'age_group')
+        ->limit(5)
         ->orderByDesc('total')
         ->get();
 
