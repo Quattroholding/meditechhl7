@@ -38,6 +38,7 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
@@ -52,6 +53,7 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
@@ -189,6 +191,75 @@
                     <img src="{{ asset('landing/images/Icono-5.png') }}" alt="Multidispositivo" class="key-feature-icon">
                     <h3>Multidispositivo</h3>
                     <p>Accede desde donde estés <br/> No requiere instalaciones complejas, solo conexión a internet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Medical Prescription App Section -->
+    <section class="prescription-app-section" id="prescription-app-section">
+        <div class="container">
+            <div class="section-header">
+                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="App de Recetas" class="logo-color">
+                <h2>Herramientas adicionales para médicos</h2>
+            </div>
+
+            <div class="app-content">
+                <div class="app-description">
+                    <h3>App de Recetas Médicas - ¡Completamente Gratuita!</h3>
+                    <p class="app-intro">
+                        Como parte de nuestro compromiso con los profesionales de la salud,
+                        ofrecemos una aplicación móvil gratuita para la creación y gestión de recetas médicas.
+                    </p>
+
+                    <div class="app-features">
+                        <div class="app-feature-item">
+                            <span class="feature-icon">📱</span>
+                            <div>
+                                <h4>Múltiples Perfiles</h4>
+                                <p>Crea y gestiona diferentes perfiles médicos para distintas especialidades o consultorios</p>
+                            </div>
+                        </div>
+
+                        <div class="app-feature-item">
+                            <span class="feature-icon">📋</span>
+                            <div>
+                                <h4>Creación Rápida de Recetas</h4>
+                                <p>Genera recetas médicas profesionales de forma rápida y sencilla desde tu smartphone</p>
+                            </div>
+                        </div>
+
+                        <div class="app-feature-item">
+                            <span class="feature-icon">💬</span>
+                            <div>
+                                <h4>Compartir por WhatsApp</h4>
+                                <p>Envía las recetas directamente a tus pacientes por WhatsApp de manera segura</p>
+                            </div>
+                        </div>
+
+                        <div class="app-feature-item">
+                            <span class="feature-icon">🆓</span>
+                            <div>
+                                <h4>100% Gratuita</h4>
+                                <p>Sin costo alguno, sin publicidad, sin limitaciones. Una herramienta profesional a tu disposición</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="app-visual">
+                    <div class="app-mockup">
+                        <img src="{{ asset('landing/images/Icono-5.png') }}" alt="App de Recetas" class="mockup-image">
+                    </div>
+                    <div class="app-download">
+                        <a href="{{ asset('storage/app-recepy.apk') }}" class="download-button" download>
+                            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Descargar" class="download-icon">
+                            Descargar APK para Android
+                        </a>
+                        <p class="download-note">Compatible con Android 5.0 o superior</p>
+                    </div>
                 </div>
             </div>
         </div>

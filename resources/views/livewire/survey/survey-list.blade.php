@@ -34,12 +34,12 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge badge-{{ $survey->status == 'active' ? 'success' : ($survey->status == 'draft' ? 'warning' : 'secondary') }}">
+                            <span class="badge bg-{{ $survey->status == 'active' ? 'success' : ($survey->status == 'draft' ? 'warning' : 'secondary') }}">
                                 {{ ucfirst($survey->status) }}
                             </span>
                         </td>
                         <td>
-                            <span class="badge badge-{{ $survey->is_active ? 'success' : 'danger' }}">
+                            <span class="badge bg-{{ $survey->is_active ? 'success' : 'danger' }}">
                                 {{ $survey->is_active ? 'Sí' : 'No' }}
                             </span>
                         </td>
