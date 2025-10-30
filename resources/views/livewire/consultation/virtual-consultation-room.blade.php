@@ -195,7 +195,7 @@ document.addEventListener('alpine:init', () => {
         modalWidth: 640,
         modalHeight: 480,
         modalTop: 20,
-        modalRight: 20,
+        modalLeft: 20,
         minWidth: 400,
         minHeight: 300,
 
@@ -225,7 +225,7 @@ document.addEventListener('alpine:init', () => {
                     this.modalWidth = state.width || 640;
                     this.modalHeight = state.height || 480;
                     this.modalTop = state.top || 20;
-                    this.modalRight = state.left || 20;
+                    this.modalLeft = state.left || 20;
                 } catch (e) {
                     console.error('Error loading modal state:', e);
                 }
