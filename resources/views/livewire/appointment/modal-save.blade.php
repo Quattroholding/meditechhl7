@@ -62,6 +62,14 @@
                         <x-input-error :messages="$errors->get('duration')"/>
                     </div>
                     <div class="input-block local-forms">
+                        <x-input-label for="consulting_room_id" :value="__('appointment.type')" required/>
+                        <select wire:model="consultation_type" class="form-control-full" required>
+                            <option value="presencial">Presencial</option>
+                            <option value="virtual">Virtual</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('consultation_type')"/>
+                    </div>
+                    <div class="input-block local-forms">
                         <x-input-label for="consulting_room_id" :value="__('appointment.consulting_room')" required/>
                         <x-select-input  wire:model="consulting_room_id" name="consulting_room_id" :options="$consultorios"  class="block w-full"/>
                         <x-input-error :messages="$errors->get('consulting_room_id')"/>

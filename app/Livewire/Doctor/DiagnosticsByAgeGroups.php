@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Livewire\Doctor;
 
 use App\Models\EncounterDiagnosis;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class DiagnosticsByAgeGroups extends Component
 {
     public $diagnostics;
+
     public $results; // Propiedad pública para almacenar los resultados procesados
 
     public function mount()
@@ -20,9 +21,9 @@ class DiagnosticsByAgeGroups extends Component
         $this->diagnostics = EncounterDiagnosis::with([
             'condition',
             'encounter.appointment.medicalSpecialty',
-            'encounter.patient'
+            'encounter.patient',
         ])
-        ->selectRaw('
+            ->selectRaw('
             conditions.onset_info,
             medical_specialties.name as specialty,
             CASE
@@ -34,14 +35,15 @@ class DiagnosticsByAgeGroups extends Component
             END as age_group,
             COUNT(encounter_diagnoses.id) as total
         ')
-        ->join('conditions', 'encounter_diagnoses.condition_id', '=', 'conditions.id')
-        ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
-        ->join('patients', 'encounters.patient_id', '=', 'patients.id')
-        ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
-        ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
-        ->groupBy('conditions.onset_info', 'medical_specialties.name', 'age_group')
-        ->orderByDesc('total')
-        ->get();
+            ->join('conditions', 'encounter_diagnoses.condition_id', '=', 'conditions.id')
+            ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
+            ->join('patients', 'encounters.patient_id', '=', 'patients.id')
+            ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
+            ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
+            ->groupBy('conditions.onset_info', 'medical_specialties.name', 'age_group')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get();
 
         $grouped = $this->diagnostics->groupBy(['specialty', 'age_group']);
         $this->results = []; // Inicializa la propiedad

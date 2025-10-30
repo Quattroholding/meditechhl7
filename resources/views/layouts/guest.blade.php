@@ -14,6 +14,7 @@
         @include('layout.partials.head')
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="main-wrapper login-body">
@@ -21,5 +22,9 @@
                 {{ $slot }}
             </div>
         </div>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        @livewireScripts
     </body>
 </html>

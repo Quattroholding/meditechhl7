@@ -58,4 +58,11 @@ return [
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
     ],
 
+    'jitsi' => [
+        'domain' => env('JITSI_DOMAIN', 'meet.jit.si'),
+        'app_id' => env('JITSI_APP_ID'),
+        'app_secret' => env('JITSI_APP_SECRET'),
+        'key_id' => env('JITSI_KEY_ID'),
+    ],
+
 ];
