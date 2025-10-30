@@ -27,12 +27,23 @@
                     @endforeach
                 </x-accordion>
             </div>
+
             <div class="my-5">&nbsp;</div>
             <div class="my-5">&nbsp;</div>
+
         </div>
+
     </div>
     @include('consultations.partials.side_menu',array('appointment_id'=>$appointment->id,'patient_id'=>$patient->id,'encounter_id'=>$encounter_id))
     @include('consultations.partials.patient_info',array('id'=>$patient->id))
+    @if($appointment->isVirtual())
+        <div class="my-3"></div>
+        @livewire('consultation.virtual-consultation-room', [
+        'appointment' => $appointment,
+        'displayMode' => 'sidebar'
+        ])
+
+    @endif
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastrConsultation', (event) => {

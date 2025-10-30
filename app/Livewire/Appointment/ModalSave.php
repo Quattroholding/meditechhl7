@@ -32,6 +32,8 @@ class ModalSave extends Component
 
     public $appointment_time = '';
 
+    public $consultation_type = 'presencial';
+
     public $service_type;
 
     public $duration = 30;
@@ -243,12 +245,12 @@ class ModalSave extends Component
                 'consulting_room_id' => $this->consulting_room_id,
                 'service_type' => $this->service_type,
                 'status' => $this->status,
+                'consultation_type' => $this->consultation_type,
                 'description' => $this->description,
                 'original_requested_datetime' => $original_requested_datetime,
                 'practitioner_suggested_datetime' => $practitioner_suggested_datetime,
                 'comment' => $this->notes,
             ];
-
 
             if ($this->appointment) {
                 // Actualizar cita existente

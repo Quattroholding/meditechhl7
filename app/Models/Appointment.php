@@ -23,6 +23,8 @@ class Appointment extends BaseModel
         'fhir_id', 'patient_id', 'practitioner_id', 'client_id', 'identifier', 'status',
         'service_type', 'description', 'start', 'end', 'minutes_duration', 'medical_speciality_id', 'consulting_room_id',
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
+        'consultation_type', 'virtual_room_id', 'virtual_room_url',
+        'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata',
     ];
 
     protected $casts = [
@@ -31,6 +33,9 @@ class Appointment extends BaseModel
         'original_requested_datetime' => 'datetime',
         'practitioner_suggested_datetime' => 'datetime',
         'minutes_duration' => 'integer',
+        'virtual_session_started_at' => 'datetime',
+        'virtual_session_ended_at' => 'datetime',
+        'virtual_session_metadata' => 'array',
     ];
 
     protected $appends = [
@@ -330,5 +335,38 @@ class Appointment extends BaseModel
         ]);
 
         return true;
+    }
+
+    // Virtual consultation methods
+    public function isVirtual(): bool
+    {
+        return $this->consultation_type === 'virtual';
+    }
+
+    public function hasActiveVirtualSession(): bool
+    {
+        return $this->virtual_session_started_at !== null
+            && $this->virtual_session_ended_at === null;
+    }
+
+    public function getVirtualSessionDuration(): ?int
+    {
+        if (! $this->virtual_session_started_at) {
+            return null;
+        }
+
+        $endTime = $this->virtual_session_ended_at ?? now();
+
+        return $this->virtual_session_started_at->diffInMinutes($endTime);
+    }
+
+    public function scopeVirtual($query)
+    {
+        return $query->where('consultation_type', 'virtual');
+    }
+
+    public function scopePresencial($query)
+    {
+        return $query->where('consultation_type', 'presencial');
     }
 }

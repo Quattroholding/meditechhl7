@@ -23,6 +23,8 @@
     @endforeach
     <div class="my-3"></div>
     <livewire:consultation.finishedButton encounter_id="{{$encounter_id}}"/>
+
+
 </div>
 
 <script>

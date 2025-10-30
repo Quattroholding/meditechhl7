@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Livewire\Doctor;
 
 use App\Models\EncounterDiagnosis;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class DiagnosticsByAgeGroups extends Component
 {
     public $diagnostics;
+
     public $results; // Propiedad pública para almacenar los resultados procesados
 
     public function mount()
@@ -20,9 +21,9 @@ class DiagnosticsByAgeGroups extends Component
         $this->diagnostics = EncounterDiagnosis::with([
             'condition',
             'encounter.appointment.medicalSpecialty',
-            'encounter.patient'
+            'encounter.patient',
         ])
-        ->selectRaw('
+            ->selectRaw('
             conditions.onset_info,
             medical_specialties.name as specialty,
             CASE
@@ -43,6 +44,7 @@ class DiagnosticsByAgeGroups extends Component
         ->limit(5)
         ->orderByDesc('total')
         ->get();
+
 
         $grouped = $this->diagnostics->groupBy(['specialty', 'age_group']);
         $this->results = []; // Inicializa la propiedad

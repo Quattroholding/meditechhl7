@@ -20,6 +20,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\SettingController;
@@ -27,7 +28,6 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ReportController;
 
 // Incluir el archivo de rutas de autenticación
 require __DIR__.'/auth.php';
@@ -475,8 +475,6 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
         ->name('recepy.prescription.pdf');
 
-
-
 });
 
 // Public Prescription PDF Download with Token Authentication
@@ -522,6 +520,24 @@ Route::prefix('appointment-action')->name('appointment.action.')->group(function
     Route::get('/{appointmentId}/confirm/{token}', [App\Http\Controllers\AppointmentActionController::class, 'confirm'])->name('confirm');
     Route::get('/{appointmentId}/cancel/{token}', [App\Http\Controllers\AppointmentActionController::class, 'cancel'])->name('cancel');
 });
+
+// Virtual Consultation Room - Public Patient Access (with token)
+Route::get('/join-consultation/{appointment}/{token}', function (\App\Models\Appointment $appointment, string $token) {
+    // Verify appointment is virtual
+    if (! $appointment->isVirtual()) {
+        abort(404, 'Esta cita no es una teleconsulta');
+    }
+
+    // Generate expected token
+    $expectedToken = hash_hmac('sha256', $appointment->id.$appointment->patient_id, config('app.key'));
+
+    // Verify token
+    if (! hash_equals($expectedToken, $token)) {
+        abort(403, 'Enlace inválido o expirado');
+    }
+
+    return view('virtual-consultation.patient-join', compact('appointment'));
+})->name('virtual-consultation.join');
 
 Route::middleware(['auth', 'first.login'])->prefix('reports')->name('reports.')->group(function () {
     Route::get('/', [ReportController::class, 'index'])->name('index');
