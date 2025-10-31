@@ -3,7 +3,7 @@
         <h4 class="card-title mb-0" style="color: #fff;">{{__('Diagnósticos por Grupo Etario')}}</h4>
     </div>
     <div class="card-body">
-        @foreach($results as $speciality)
+       @foreach($diagnostics as $speciality)
             <div class="activity-top">
                 <div class="condition-item mb-3" style="width: 100%;">
                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -11,7 +11,7 @@
                             <span class="condition-name">
                                 {{ ucfirst(strtolower($speciality->onset_info)) }}
                             </span>
-                            {{--}}<small class="text-muted">
+                        {{--}}<small class="text-muted">
                                 ({{ $speciality->specialty }})
                             </small>{{--}}
                         </div>
