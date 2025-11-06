@@ -16,12 +16,20 @@
                             <span>{{$data->birth_date}}</span>
                         </li>
                         <li>
-                            <h4>{{__('doctor.email')}}</h4>
-                            <span>{{$data->email}}</span>
+                            <h4>{{__('doctor.registry')}}</h4>
+                            <span>{{$data->registry}}</span>
                         </li>
                         <li>
-                            <h4>{{__('doctor.phone')}}</h4>
-                            <span>{{$data->phone}}</span>
+                            <h4>{{__('doctor.licence_code')}}</h4>
+                            <span>{{$data->licence_code}}</span>
+                        </li>
+                        <li>
+                            <h4>{{__('doctor.last_login')}}</h4>
+                            <span>
+                                @if($data->user && $data->user->lastSession)
+                                    {{date('d-m-Y H:i',$data->user->lastSession->last_activity)}}
+                                @endif
+                            </span>
                         </li>
                     </ul>
                 </div>

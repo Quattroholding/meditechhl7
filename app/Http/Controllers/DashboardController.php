@@ -47,7 +47,7 @@ class DashboardController extends Controller
             'branch-billing-chart' => 'dashboard.admin.branch-billing-chart',
             'billing-collection-rate' => 'dashboard.admin.billing-collection-rate',
             //'diagnostics-by-specialties' => 'doctor.diagnostics-by-specialties',
-            'diagnostics-by-age-groups' => 'doctor.diagnostics-by-age-groups'
+            //'diagnostics-by-age-groups' => 'doctor.diagnostics-by-age-groups'
         ];
         //dd($visibleWidgets);
         return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));

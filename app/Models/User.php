@@ -143,6 +143,16 @@ class User extends Authenticatable
         return $this->hasMany(UserProcedure::class);
     }
 
+    public function sessions()
+    {
+        return $this->hasMany(Session::class);
+    }
+
+    public function lastSession()
+    {
+        return $this->hasOne(Session::class)->orderBy('last_activity', 'desc');
+    }
+
     public function getProfileNameAttribute()
     {
 
