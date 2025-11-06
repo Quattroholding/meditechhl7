@@ -162,7 +162,7 @@ class User extends Authenticatable
             $path = url('storage/'.$this->profile_picture);
         }
 
-        if ($this->hasRole('doctor')) {
+        if ($this->hasRole('doctor') && $this->practitioner) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
              $prefix='Dra ';*/
