@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Client;
 
-use App\Models\Appointment;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class AppointmentsByBranch extends Component
+class InvoicesByBranch extends Component
 {
-    public $appointments;
+    public $invoices;
 
     public function mount(){
         $this->loadData();
@@ -16,22 +16,20 @@ class AppointmentsByBranch extends Component
 
 
     public function loadData(){
-        $this->appointments = Appointment::select(            
+        $this->invoices = Invoice::select(            
             'branches.id',
             'branches.name',
             'branches.address',
             'branches.type', 
-            DB::raw('COUNT(appointments.id) as total_appointments'))
-            ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
-            ->join('branches', 'consulting_rooms.branch_id', '=', 'branches.id')
+            DB::raw('SUM(invoices.total_amount) as total_invoices'))
+            ->join('branches', 'invoices.branch_id', '=', 'branches.id')
             ->groupBy('branches.id', 'branches.name', 'branches.address', 'branches.type') // agregar todos los campos no agregados del SELECT
-            ->orderBy('total_appointments', 'DESC')
+            ->orderBy('total_invoices', 'DESC')
             ->limit(5)
             ->get();
     }
-
     public function render()
     {
-        return view('livewire.client.appointments-by-branch');
+        return view('livewire.client.invoices-by-branch');
     }
 }
