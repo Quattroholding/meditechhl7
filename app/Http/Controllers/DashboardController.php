@@ -19,7 +19,7 @@ class DashboardController extends Controller
     {
         $dashboard = [];
 
-        return view('Dashboard.index', compact('dashboard'));
+        return view('livewire.client.dashboard', compact('dashboard'));
     }
 
     public function doctor(Request $request)

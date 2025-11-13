@@ -85,6 +85,14 @@
                 {{--}}
                 @livewire('admin-dashboard-patinets')
                 {{--}}
+                <div class="col-xl-12 col-xs-12">
+                    {{--}}COMPONENTE QUE MUESTRA LA CANTIDAD DE APPOINTMENST SEGÚN LAS SEDES EXISTENTES POR CLIENTE {{--}}
+                    @livewire('client.appointments-by-branch')
+                </div>
+                <div class="col-xl-12 col-xs-12">
+                    {{--}}COMPONENTE QUE MUESTRA LA CANTIDAD DE INGRESOS SEGÚN LAS SEDES EXISTENTES POR CLIENTE {{--}}
+                    @livewire('client.invoices-by-branch')
+                </div>
             </div>
             @component('components.notification-box')
             @endcomponent
