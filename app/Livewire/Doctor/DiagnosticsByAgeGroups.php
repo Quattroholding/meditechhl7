@@ -19,6 +19,8 @@ class DiagnosticsByAgeGroups extends Component
 
     public function loadData()
     {    
+        $doctorSpecialtyId = auth()->user()->practitioner->specialties->pluck('id')->toArray();
+        //dd($doctorSpecialtyId);
         $this->diagnostics = DB::table(function($query) {
         $query->from('encounter_diagnoses')
             ->selectRaw('
@@ -50,7 +52,7 @@ class DiagnosticsByAgeGroups extends Component
         (COUNT(base_data.ed_id) * 100.0 / specialties_total.total_specialty) as percentage
     ')
     ->joinSub(
-        DB::table(function($query) {
+        DB::table(function($query) use ($doctorSpecialtyId) {
             $query->from('encounter_diagnoses')
                 ->selectRaw('
                     medical_specialties.id as specialty_id,
@@ -65,7 +67,8 @@ class DiagnosticsByAgeGroups extends Component
                 ->join('encounters', 'encounter_diagnoses.encounter_id', '=', 'encounters.id')
                 ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
                 ->join('patients', 'encounters.patient_id', '=', 'patients.id')
-                ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id');
+                ->join('medical_specialties', 'appointments.medical_speciality_id', '=', 'medical_specialties.id')
+                ->whereIn('medical_specialties.id', $doctorSpecialtyId);
         }, 'totals_base')
         ->selectRaw('
             totals_base.specialty_id,
