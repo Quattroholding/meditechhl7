@@ -1,4 +1,4 @@
-<div class="card patient-structure h-100">
+<div class="card patient-structure h-96">
     <div class="card-body">
         @if($loading)
             <div class="loading-skeleton">
