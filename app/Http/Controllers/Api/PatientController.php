@@ -159,14 +159,18 @@ class PatientController extends Controller
             $email = strtolower($request->email);
             if(isset($full_name[0])) $firstName = ucfirst($full_name[0]);
             if(isset($full_name[1])) $lastName = ucfirst($full_name[1]);
-            $model = new User;
 
-            $model->first_name = $firstName ?? $request->name;
-            $model->last_name = $lastName ?? 'Apellido';
-            $model->email = $email;
-            $model->password =$password;
-            $model->whatsapp_phone = $request->phone;
-            $model->save();
+            if(User::whereEmail($email)->exists()){
+                $model = User::whereEmail($email)->first();
+            }else{
+                $model = new User;
+                $model->first_name = $firstName ?? $request->name;
+                $model->last_name = $lastName ?? 'Apellido';
+                $model->email = $email;
+                $model->password =$password;
+                $model->whatsapp_phone = $request->phone;
+                $model->save();
+            }
 
             // Asignar rol de paciente
             $model->assignRole('paciente');
