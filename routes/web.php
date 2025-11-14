@@ -49,6 +49,15 @@ Route::get('/register', function () {
     return view('Pages.register');
 })->name('patient.register');
 
+// Public Legal Pages
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy.policy');
+
+Route::get('/terms-of-service', function () {
+    return view('terms-of-service');
+})->name('terms.service');
+
 Route::get('/login', function () {
 
     if (auth()->check()) {

@@ -4,14 +4,14 @@
     <div class="bg-white rounded-lg h-full overflow-auto relative z-10">
         <div class="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-900">Términos de Servicio y Políticas de Privacidad</h2>
-            <button x-on:click="$dispatch('close-modal', '{{ $name }}')" 
+            <button x-on:click="$dispatch('close-modal', '{{ $name }}')"
                     class="text-gray-400 hover:text-gray-600 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
-        
+
         <div class="p-6 overflow-y-auto max-h-[calc(100vh-200px)]">
             <!-- Tabs -->
             <div x-data="{ activeTab: 'terms' }" class="w-full">
@@ -32,18 +32,18 @@
                 <!-- Terms of Service Tab -->
                 <div x-show="activeTab === 'terms'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                     <div class="prose max-w-none">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Términos de Servicio de Meditech2</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Términos de Servicio de {{env('app_name')}}</h3>
                         <p class="text-sm text-gray-500 mb-6">Última actualización: {{ date('d/m/Y') }}</p>
-                        
+
                         <div class="space-y-4 text-gray-700">
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">1. Aceptación de los Términos</h4>
-                                <p>Al acceder y utilizar Meditech2, usted acepta estar sujeto a estos Términos de Servicio y a todas las leyes y regulaciones aplicables. Si no está de acuerdo con alguno de estos términos, no debe utilizar este servicio.</p>
+                                <p>Al acceder y utilizar {{env('app_name')}}, usted acepta estar sujeto a estos Términos de Servicio y a todas las leyes y regulaciones aplicables. Si no está de acuerdo con alguno de estos términos, no debe utilizar este servicio.</p>
                             </section>
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">2. Descripción del Servicio</h4>
-                                <p>Meditech2 es una plataforma integral de gestión sanitaria que proporciona herramientas para la administración de consultas médicas, gestión de pacientes, programación de citas, historiales médicos electrónicos y documentación clínica, cumpliendo con los estándares FHIR para interoperabilidad sanitaria.</p>
+                                <p>{{env('app_name')}} es una plataforma integral de gestión sanitaria que proporciona herramientas para la administración de consultas médicas, gestión de pacientes, programación de citas, historiales médicos electrónicos y documentación clínica, cumpliendo con los estándares FHIR para interoperabilidad sanitaria.</p>
                             </section>
 
                             <section>
@@ -114,7 +114,7 @@
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">10. Contacto</h4>
-                                <p>Para preguntas sobre estos términos, contáctenos a través de los canales oficiales de soporte técnico de Meditech2.</p>
+                                <p>Para preguntas sobre estos términos, contáctenos a través de los canales oficiales de soporte técnico de {{env('app_name')}}.</p>
                             </section>
                         </div>
                     </div>
@@ -123,13 +123,13 @@
                 <!-- Privacy Policy Tab -->
                 <div x-show="activeTab === 'privacy'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                     <div class="prose max-w-none">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Política de Privacidad de Meditech2</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Política de Privacidad de {{env('app_name')}}</h3>
                         <p class="text-sm text-gray-500 mb-6">Última actualización: {{ date('d/m/Y') }}</p>
-                        
+
                         <div class="space-y-4 text-gray-700">
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">1. Introducción</h4>
-                                <p>Esta Política de Privacidad describe cómo Meditech2 recopila, utiliza, almacena y protege la información personal y médica en nuestra plataforma de gestión sanitaria. Cumplimos con todas las regulaciones de privacidad médica aplicables.</p>
+                                <p>Esta Política de Privacidad describe cómo {{env('app_name')}} recopila, utiliza, almacena y protege la información personal y médica en nuestra plataforma de gestión sanitaria. Cumplimos con todas las regulaciones de privacidad médica aplicables.</p>
                             </section>
 
                             <section>
@@ -233,20 +233,20 @@
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">12. Contacto</h4>
-                                <p>Para preguntas sobre privacidad, contacte a nuestro Oficial de Protección de Datos a través de los canales oficiales de Meditech2.</p>
+                                <p>Para preguntas sobre privacidad, contacte a nuestro Oficial de Protección de Datos a través de los canales oficiales de {{env('app_name')}}.</p>
                             </section>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Footer with accept button -->
         <div class="flex justify-end items-center p-6 border-t border-gray-200 bg-gray-50">
             <button x-on:click="
                 document.querySelector('input[name=\'terms_and_privacy\']').checked = true;
                 $dispatch('close-modal', '{{ $name }}')
-            " 
+            "
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
                 He leído y acepto
             </button>
