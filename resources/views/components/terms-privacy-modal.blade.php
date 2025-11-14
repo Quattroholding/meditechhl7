@@ -32,18 +32,18 @@
                 <!-- Terms of Service Tab -->
                 <div x-show="activeTab === 'terms'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                     <div class="prose max-w-none">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Términos de Servicio de {{env('app_name')}}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Términos de Servicio de {{ config('app.name') }}</h3>
                         <p class="text-sm text-gray-500 mb-6">Última actualización: {{ date('d/m/Y') }}</p>
 
                         <div class="space-y-4 text-gray-700">
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">1. Aceptación de los Términos</h4>
-                                <p>Al acceder y utilizar {{env('app_name')}}, usted acepta estar sujeto a estos Términos de Servicio y a todas las leyes y regulaciones aplicables. Si no está de acuerdo con alguno de estos términos, no debe utilizar este servicio.</p>
+                                <p>Al acceder y utilizar {{ config('app.name') }}, usted acepta estar sujeto a estos Términos de Servicio y a todas las leyes y regulaciones aplicables. Si no está de acuerdo con alguno de estos términos, no debe utilizar este servicio.</p>
                             </section>
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">2. Descripción del Servicio</h4>
-                                <p>{{env('app_name')}} es una plataforma integral de gestión sanitaria que proporciona herramientas para la administración de consultas médicas, gestión de pacientes, programación de citas, historiales médicos electrónicos y documentación clínica, cumpliendo con los estándares FHIR para interoperabilidad sanitaria.</p>
+                                <p>{{ config('app.name') }} es una plataforma integral de gestión sanitaria que proporciona herramientas para la administración de consultas médicas, gestión de pacientes, programación de citas, historiales médicos electrónicos y documentación clínica, cumpliendo con los estándares FHIR para interoperabilidad sanitaria.</p>
                             </section>
 
                             <section>
@@ -114,7 +114,7 @@
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">10. Contacto</h4>
-                                <p>Para preguntas sobre estos términos, contáctenos a través de los canales oficiales de soporte técnico de {{env('app_name')}}.</p>
+                                <p>Para preguntas sobre estos términos, contáctenos a través de los canales oficiales de soporte técnico de {{ config('app.name') }}.</p>
                             </section>
                         </div>
                     </div>
@@ -123,13 +123,13 @@
                 <!-- Privacy Policy Tab -->
                 <div x-show="activeTab === 'privacy'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                     <div class="prose max-w-none">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Política de Privacidad de {{env('app_name')}}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Política de Privacidad de {{ config('app.name') }}</h3>
                         <p class="text-sm text-gray-500 mb-6">Última actualización: {{ date('d/m/Y') }}</p>
 
                         <div class="space-y-4 text-gray-700">
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">1. Introducción</h4>
-                                <p>Esta Política de Privacidad describe cómo {{env('app_name')}} recopila, utiliza, almacena y protege la información personal y médica en nuestra plataforma de gestión sanitaria. Cumplimos con todas las regulaciones de privacidad médica aplicables.</p>
+                                <p>Esta Política de Privacidad describe cómo {{ config('app.name') }} recopila, utiliza, almacena y protege la información personal y médica en nuestra plataforma de gestión sanitaria. Cumplimos con todas las regulaciones de privacidad médica aplicables.</p>
                             </section>
 
                             <section>
@@ -233,7 +233,7 @@
 
                             <section>
                                 <h4 class="font-semibold text-gray-900 mb-2">12. Contacto</h4>
-                                <p>Para preguntas sobre privacidad, contacte a nuestro Oficial de Protección de Datos a través de los canales oficiales de {{env('app_name')}}.</p>
+                                <p>Para preguntas sobre privacidad, contacte a nuestro Oficial de Protección de Datos a través de los canales oficiales de {{ config('app.name') }}.</p>
                             </section>
                         </div>
                     </div>
