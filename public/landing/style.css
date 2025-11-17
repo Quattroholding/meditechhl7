@@ -1196,7 +1196,7 @@ body.loaded .hero {
 }
 
 .app-features {
-    display: flex;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin-bottom: 2.5rem;
@@ -1301,6 +1301,10 @@ body.loaded .hero {
         gap: 2rem;
     }
 
+    .app-features {
+        grid-template-columns: 1fr;
+    }
+
     .app-description h3 {
         font-size: 1.5rem;
     }
@@ -1313,18 +1317,24 @@ body.loaded .hero {
         font-size: 1.1rem;
     }
 
-    .app-visual {
-        order: -1;
+    /* Ocultar el mockup en móvil */
+    .app-mockup {
+        display: none;
     }
 
-    .mockup-image {
-        max-width: 250px;
+    .app-visual {
+        flex-direction: column;
     }
 }
 
 @media (max-width: 480px) {
     .prescription-app-section {
         padding: 2rem 0;
+    }
+
+    .app-features {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .app-description h3 {
@@ -1354,7 +1364,7 @@ body.loaded .hero {
         padding: 0.8rem 1.5rem;
     }
 
-    .mockup-image {
-        max-width: 200px;
+    .app-download {
+        padding: 1.5rem;
     }
 }
