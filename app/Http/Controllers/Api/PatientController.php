@@ -175,6 +175,11 @@ class PatientController extends Controller
             // Asignar rol de paciente
             $model->assignRole('paciente');
 
+            $identification_type = 'CC';
+            if($request->has('identification_type')){
+                $identification_type = $request->get('identification_type');
+            }
+
             // Create patient record
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
@@ -184,7 +189,7 @@ class PatientController extends Controller
                 'email' =>$email,
                 'user_id'=>$model->id,
                 'identifier' => $request->identifier,
-                'identifier_type'=>'CC',
+                'identifier_type'=>$identification_type,
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
                 'active' => true,

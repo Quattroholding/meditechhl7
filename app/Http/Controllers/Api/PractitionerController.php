@@ -19,7 +19,7 @@ class PractitionerController extends Controller
         $perPage = $request->input('per_page', 10); // Default 10 items per page
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
-        $practitioners = Practitioner::with(['specialties', 'user.clients','insuranceCompanies'])
+        $practitioners = Practitioner::with(['specialties', 'user.clients', 'insuranceCompanies'])
             ->when($request->id, function ($query) use ($request) {
                 return $query->whereId($request->id);
             })
@@ -456,6 +456,172 @@ class PractitionerController extends Controller
             'lunch_start' => '12:00',
             'lunch_end' => '13:00',
         ];
+    }
+
+    /**
+     * Get next available slots for a practitioner
+     * Returns the next 5 available time slots starting from now + 2 hours
+     */
+    public function nextAvailableSlots(Request $request, $practitionerId): JsonResponse
+    {
+        try {
+            $practitioner = Practitioner::with('user')->find($practitionerId);
+            if (! $practitioner) {
+                return response()->json(['message' => 'Médico no encontrado'], 404);
+            }
+
+            // Validate request parameters
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'duration' => 'nullable|integer|min:15|max:480',
+                'max_slots' => 'nullable|integer|min:1|max:20',
+                'max_days' => 'nullable|integer|min:1|max:30',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Parámetros de validación incorrectos',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $duration = (int) $request->get('duration', 30); // Default 30 minutes
+            $maxSlots = (int) $request->get('max_slots', 5); // Default 5 slots
+            $maxDays = (int) $request->get('max_days', 14); // Search up to 14 days ahead
+
+            // Start searching from now + 2 hours
+            $searchStartTime = now()->addHours(2);
+
+            // Round to next multiple of 5 minutes
+            $searchStartTime = $this->roundToNextFiveMinutes($searchStartTime);
+
+            $searchStartDate = $searchStartTime->copy()->startOfDay();
+
+            $availableSlots = [];
+            $daysChecked = 0;
+
+            // Search until we find enough slots or reach max days
+            while (count($availableSlots) < $maxSlots && $daysChecked < $maxDays) {
+                $currentDate = $searchStartDate->copy()->addDays($daysChecked);
+                $dayOfWeek = $currentDate->dayOfWeek;
+
+                // Get working hours for this day
+                $workingHours = $this->getPractitionerWorkingHours($practitioner, $dayOfWeek);
+
+                if ($workingHours) {
+                    $startTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['start']);
+                    $endTime = Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['end']);
+                    $lunchStart = $workingHours['lunch_start'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_start']) : null;
+                    $lunchEnd = $workingHours['lunch_end'] ? Carbon::parse($currentDate->format('Y-m-d').' '.$workingHours['lunch_end']) : null;
+
+                    // If it's today, adjust start time to be at least searchStartTime
+                    if ($currentDate->isToday()) {
+                        if ($searchStartTime->gt($startTime)) {
+                            $startTime = $searchStartTime->copy();
+                        }
+                    }
+
+                    // Round start time to next multiple of 5 minutes
+                    $startTime = $this->roundToNextFiveMinutes($startTime);
+
+                    // Get existing appointments for this day
+                    $existingAppointments = Appointment::where('practitioner_id', $practitioner->id)
+                        ->whereDate('start', $currentDate->format('Y-m-d'))
+                        ->whereNotIn('status', ['cancelled', 'noshow', 'entered-in-error'])
+                        ->get(['start', 'end']);
+
+                    // Generate time slots for this day
+                    $currentSlot = $startTime->copy();
+
+                    while ($currentSlot->copy()->addMinutes($duration)->lte($endTime) && count($availableSlots) < $maxSlots) {
+                        $slotEnd = $currentSlot->copy()->addMinutes($duration);
+
+                        // Check if slot is during lunch break
+                        $isDuringLunch = false;
+                        if ($lunchStart && $lunchEnd) {
+                            $isDuringLunch = ($currentSlot->lt($lunchEnd) && $slotEnd->gt($lunchStart));
+                        }
+
+                        // Check if slot conflicts with existing appointments
+                        $hasConflict = false;
+                        foreach ($existingAppointments as $appointment) {
+                            $appointmentStart = Carbon::parse($appointment->start);
+                            $appointmentEnd = Carbon::parse($appointment->end);
+
+                            if (($currentSlot->lt($appointmentEnd) && $slotEnd->gt($appointmentStart))) {
+                                $hasConflict = true;
+                                break;
+                            }
+                        }
+
+                        // Check if slot is in the future
+                        $isInFuture = $currentSlot->gt(now());
+
+                        // If slot is available, add it to results
+                        if (! $hasConflict && ! $isDuringLunch && $isInFuture) {
+                            $availableSlots[] = [
+                                'date' => $currentSlot->format('Y-m-d'),
+                                'start_time' => $currentSlot->format('H:i'),
+                                'end_time' => $slotEnd->format('H:i'),
+                                'datetime' => $currentSlot->format('Y-m-d H:i:s'),
+                                'day_name' => $this->getDayNameInSpanish($currentSlot->dayOfWeek),
+                                'day_of_week' => $currentSlot->dayOfWeek,
+                                'is_today' => $currentSlot->isToday(),
+                                'is_tomorrow' => $currentSlot->isTomorrow(),
+                                'human_readable' => $currentSlot->format('l, F j, Y \a\t g:i A'),
+                                'human_readable_es' => $this->getDayNameInSpanish($currentSlot->dayOfWeek).', '.$currentSlot->format('j \d\e F Y \a \l\a\s H:i'),
+                            ];
+                        }
+
+                        $currentSlot->addMinutes($duration);
+                    }
+                }
+
+                $daysChecked++;
+            }
+
+            return response()->json([
+                'practitioner' => [
+                    'id' => $practitioner->id,
+                    'name' => $practitioner->name,
+                    'email' => $practitioner->email,
+                    'phone' => $practitioner->phone,
+                ],
+                'search_params' => [
+                    'duration_minutes' => $duration,
+                    'max_slots_requested' => $maxSlots,
+                    'search_start_time' => $searchStartTime->format('Y-m-d H:i:s'),
+                    'days_searched' => $daysChecked,
+                ],
+                'available_slots' => $availableSlots,
+                'total_slots_found' => count($availableSlots),
+                'has_availability' => count($availableSlots) > 0,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener los slots disponibles',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Round time to the next multiple of 5 minutes
+     * Example: 10:07 -> 10:10, 10:43 -> 10:45, 10:00 -> 10:00
+     */
+    private function roundToNextFiveMinutes(Carbon $time): Carbon
+    {
+        $minutes = $time->minute;
+        $remainder = $minutes % 5;
+
+        if ($remainder === 0) {
+            // Already on a 5-minute mark
+            return $time;
+        }
+
+        // Round up to next 5-minute mark
+        $minutesToAdd = 5 - $remainder;
+
+        return $time->copy()->addMinutes($minutesToAdd)->second(0);
     }
 
     /**

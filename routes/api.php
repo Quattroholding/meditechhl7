@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Support resources
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
+    Route::get('/practitioners/{practitioner}/next-available-slots', [PractitionerController::class, 'nextAvailableSlots']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
@@ -129,6 +130,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     // All endpoints with full access
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
+    Route::get('/practitioners/{practitioner}/next-available-slots', [PractitionerController::class, 'nextAvailableSlots']);
     Route::get('/practitioners/{practitioner}/consulting-rooms', [PractitionerController::class, 'consultingRooms']);
     Route::get('/practitioners/{practitioner}/service-catalog', [PractitionerController::class, 'serviceCatalog']);
 

@@ -311,10 +311,10 @@
                     <span><i class="fa fa-user-injured"></i></span>
                     <div class="contact-info">
                         <p class="contact-email">
-                            <img src="{{ asset('landing/images/Icono-6.png') }}" alt="Logo Blanco" class="footer-icon"> info@meditecpty.com
+                            <img src="{{ asset('landing/images/Icono-6.png') }}" alt="Logo Blanco" class="footer-icon"> business@meditecpty.com
                         </p>
                         <p class="contact-phone">
-                            <img src="{{ asset('landing/images/Icono-7.png') }}" alt="Logo Blanco" class="ft-icon"> +507 124-4567
+                            <img src="{{ asset('landing/images/Icono-7.png') }}" alt="Logo Blanco" class="ft-icon"> +507 8316100
                         </p>
                     </div>
                 </div>
