@@ -484,12 +484,16 @@ class PractitionerController extends Controller
                 ], 422);
             }
 
-            $duration = $request->get('duration', 30); // Default 30 minutes
-            $maxSlots = $request->get('max_slots', 5); // Default 5 slots
-            $maxDays = $request->get('max_days', 14); // Search up to 14 days ahead
+            $duration = (int) $request->get('duration', 30); // Default 30 minutes
+            $maxSlots = (int) $request->get('max_slots', 5); // Default 5 slots
+            $maxDays = (int) $request->get('max_days', 14); // Search up to 14 days ahead
 
             // Start searching from now + 2 hours
             $searchStartTime = now()->addHours(2);
+
+            // Round to next multiple of 5 minutes
+            $searchStartTime = $this->roundToNextFiveMinutes($searchStartTime);
+
             $searchStartDate = $searchStartTime->copy()->startOfDay();
 
             $availableSlots = [];
@@ -515,6 +519,9 @@ class PractitionerController extends Controller
                             $startTime = $searchStartTime->copy();
                         }
                     }
+
+                    // Round start time to next multiple of 5 minutes
+                    $startTime = $this->roundToNextFiveMinutes($startTime);
 
                     // Get existing appointments for this day
                     $existingAppointments = Appointment::where('practitioner_id', $practitioner->id)
@@ -595,6 +602,26 @@ class PractitionerController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Round time to the next multiple of 5 minutes
+     * Example: 10:07 -> 10:10, 10:43 -> 10:45, 10:00 -> 10:00
+     */
+    private function roundToNextFiveMinutes(Carbon $time): Carbon
+    {
+        $minutes = $time->minute;
+        $remainder = $minutes % 5;
+
+        if ($remainder === 0) {
+            // Already on a 5-minute mark
+            return $time;
+        }
+
+        // Round up to next 5-minute mark
+        $minutesToAdd = 5 - $remainder;
+
+        return $time->copy()->addMinutes($minutesToAdd)->second(0);
     }
 
     /**
