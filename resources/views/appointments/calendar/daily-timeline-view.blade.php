@@ -699,7 +699,10 @@
 
                     <div class="appointment-header">
                         <div class="appointment-patient">
-                            {!!  \App\Models\Patient::find($appointment['patient']['id'])->profile_name!!}
+                            @php
+                                $patient = \App\Models\Patient::find($appointment['patient']['id']);
+                            @endphp
+                            {!! $patient ? $patient->profile_name : ($appointment['patient']['name'] ?? 'Paciente no encontrado') !!}
 
                         </div>
                         <div class="appointment-status-badge" style="background:
