@@ -231,20 +231,47 @@ class PatientController extends Controller
                     try {
                         $base64String = $request->id_document;
 
+                        // Limpiar el string base64 (remover espacios, saltos de línea, etc.)
+                        $base64String = trim($base64String);
+                        $base64String = str_replace([' ', "\n", "\r", "\t"], '', $base64String);
+
                         // Detectar tipo de imagen y remover prefijo si existe
                         if (preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
                             $imageType = strtolower($matches[1]);
                             $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+                        } elseif (preg_match('/^data:application\/(\w+);base64,/', $base64String, $matches)) {
+                            // Soporte para PDFs
+                            $imageType = strtolower($matches[1]);
+                            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
                         } else {
-                            // Si no tiene prefijo, asumir JPG
+                            // Si no tiene prefijo, intentar detectar por contenido
                             $base64Data = $base64String;
-                            $imageType = 'jpg';
+
+                            // Decodificar para detectar el tipo
+                            $testData = base64_decode($base64Data, true);
+                            if ($testData !== false) {
+                                // Detectar tipo por magic bytes
+                                if (substr($testData, 0, 4) === "\xFF\xD8\xFF\xE0" || substr($testData, 0, 4) === "\xFF\xD8\xFF\xE1") {
+                                    $imageType = 'jpg';
+                                } elseif (substr($testData, 0, 8) === "\x89PNG\r\n\x1a\n") {
+                                    $imageType = 'png';
+                                } elseif (substr($testData, 0, 4) === '%PDF') {
+                                    $imageType = 'pdf';
+                                } else {
+                                    $imageType = 'jpg'; // Default
+                                }
+                            } else {
+                                $imageType = 'jpg';
+                            }
                         }
 
-                        // Decodificar base64
-                        $imageData = base64_decode($base64Data);
+                        // Limpiar nuevamente el base64Data
+                        $base64Data = str_replace([' ', "\n", "\r", "\t"], '', $base64Data);
 
-                        if ($imageData !== false) {
+                        // Decodificar base64 con validación estricta
+                        $imageData = base64_decode($base64Data, true);
+
+                        if ($imageData !== false && strlen($imageData) > 0) {
                             // Crear carpeta si no existe
                             $folderPath = storage_path('app/public/patients');
                             if (! file_exists($folderPath)) {
@@ -257,6 +284,9 @@ class PatientController extends Controller
 
                             // Guardar archivo
                             file_put_contents($filePath, $imageData);
+
+                            // Verificar que el archivo se guardó correctamente
+                            $fileSize = filesize($filePath);
 
                             // Registrar en la tabla de archivos manualmente
                             $user_id = $patient->user_id ?? null;
@@ -276,6 +306,17 @@ class PatientController extends Controller
                             \Log::info('Documento base64 procesado exitosamente', [
                                 'patient_id' => $patient->id,
                                 'file_name' => $fileName,
+                                'file_size' => $fileSize,
+                                'image_type' => $imageType,
+                                'base64_length' => strlen($base64Data),
+                                'decoded_length' => strlen($imageData),
+                                'first_bytes' => bin2hex(substr($imageData, 0, 4)),
+                            ]);
+                        } else {
+                            \Log::error('Error: base64_decode falló o datos vacíos', [
+                                'patient_id' => $patient->id,
+                                'base64_length' => strlen($base64Data),
+                                'first_chars' => substr($base64Data, 0, 20),
                             ]);
                         }
                     } catch (\Exception $e) {
