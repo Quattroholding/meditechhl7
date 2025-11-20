@@ -7,6 +7,7 @@ use App\Http\Requests\Api\StorePatientRequest;
 use App\Http\Resources\Api\PatientMedicalHistoryResource;
 use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
+use App\Models\File;
 use App\Models\Patient;
 use App\Models\User;
 use App\Services\FileService;
@@ -156,9 +157,10 @@ class PatientController extends Controller
             $lastName = '';
             $password = Str::password(8);
             $full_name = explode(' ', $request->name);
-            $email = strtolower(str_replace(' ', '.',  $request->name)) . '@example.com';
-            if($request->has('email'))
+            $email = strtolower(str_replace(' ', '.', $request->name)).'@example.com';
+            if ($request->has('email')) {
                 $email = strtolower($request->email);
+            }
             if (isset($full_name[0])) {
                 $firstName = ucfirst($full_name[0]);
             }
@@ -204,15 +206,25 @@ class PatientController extends Controller
             if ($patient->save()) {
                 // Handle ID document upload if provided
                 $documentUploaded = false;
-                if ($request->hasFile('id_document')) {
-                    $fileService = new FileService;
-                    $data = [
-                        'folder' => 'patients',
-                        'record_id' => $patient->id,
-                        'type' => 'document',
-                    ];
-                    $files = $fileService->guardarArchivos([$request->file('id_document')], $data);
-                    $documentUploaded = count($files) > 0;
+
+                // CASO 1: Archivo subido directamente
+                if ($request->hasFile('id_document') && $request->file('id_document')->isValid()) {
+                    try {
+                        $fileService = new FileService;
+                        $data = [
+                            'folder' => 'patients',
+                            'record_id' => $patient->id,
+                            'type' => 'document',
+                        ];
+                        $file = $request->file('id_document');
+                        $files = $fileService->guardarArchivos([$file], $data);
+                        $documentUploaded = count($files) > 0;
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Error uploading patient ID document', [
+                            'patient_id' => $patient->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
                 }
                 // CASO 2: Base64 string (desde WhatsApp/OCR)
                 elseif ($request->has('id_document') && is_string($request->id_document)) {
@@ -235,31 +247,31 @@ class PatientController extends Controller
                         if ($imageData !== false) {
                             // Crear carpeta si no existe
                             $folderPath = storage_path('app/public/patients');
-                            if (!file_exists($folderPath)) {
+                            if (! file_exists($folderPath)) {
                                 mkdir($folderPath, 0755, true);
                             }
 
                             // Generar nombre único
-                            $fileName = 'patient_' . $patient->id . '_document_' . time() . '.' . $imageType;
-                            $filePath = $folderPath . '/' . $fileName;
+                            $fileName = 'patient_'.$patient->id.'_document_'.time().'.'.$imageType;
+                            $filePath = $folderPath.'/'.$fileName;
 
                             // Guardar archivo
                             file_put_contents($filePath, $imageData);
 
-                            // Usar FileService para registrarlo en la BD
-                            $fileService = new FileService;
-                            $data = [
-                                'folder' => 'patients',
-                                'record_id' => $patient->id,
-                                'type' => 'document',
-                                'file_path' => 'patients/' . $fileName,
-                                'file_name' => $fileName,
-                            ];
+                            // Registrar en la tabla de archivos manualmente
+                            $user_id = $patient->user_id ?? null;
 
-                            $files = $fileService->guardarArchivos([$request->file('id_document')], $data);
-                            // Registrar en la tabla de archivos si FileService lo maneja
-                            // O simplemente marcar como subido
-                            $documentUploaded = count($files) > 0;
+                            File::create([
+                                'user_id' => $user_id,
+                                'table_name' => 'patients',
+                                'record_id' => $patient->id,
+                                'name' => $fileName,
+                                'path' => 'patients/'.$fileName,
+                                'extention' => $imageType,
+                                'type' => 'document',
+                            ]);
+
+                            $documentUploaded = true;
 
                             \Log::info('Documento base64 procesado exitosamente', [
                                 'patient_id' => $patient->id,
@@ -280,9 +292,9 @@ class PatientController extends Controller
                     'username' => $email,
                     'password' => $password,
                 ];
-                if($request->has('email')){
+                if ($request->has('email')) {
                     Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
-                }else{
+                } else {
                     Mail::to('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 }
 
