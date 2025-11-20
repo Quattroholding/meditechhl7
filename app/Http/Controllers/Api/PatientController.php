@@ -204,7 +204,7 @@ class PatientController extends Controller
             if ($patient->save()) {
                 // Handle ID document upload if provided
                 $documentUploaded = false;
-                /*if ($request->hasFile('id_document')) {
+                if ($request->hasFile('id_document')) {
                     $fileService = new FileService;
                     $data = [
                         'folder' => 'patients',
@@ -215,7 +215,7 @@ class PatientController extends Controller
                     $documentUploaded = count($files) > 0;
                 }
                 // CASO 2: Base64 string (desde WhatsApp/OCR)
-                else*/if ($request->has('id_document') && is_string($request->id_document)) {
+                elseif ($request->has('id_document') && is_string($request->id_document)) {
                     try {
                         $base64String = $request->id_document;
 
