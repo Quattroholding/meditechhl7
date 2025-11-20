@@ -82,8 +82,12 @@
                         @livewire('dashboard.top-specialties')
                     </div>
                     <div class="col-xl-8 col-xs-12">
-                        {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENST SEGÚN EL ROL DEL USUARIO {{--}}
+                        {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENTS SEGÚN EL ROL DEL USUARIO {{--}}
                         @livewire('admin-dashboard-appointments')
+                    </div>
+                    <div class="col-xl-12 col-xs-12">
+                        {{--}}COMPONENTE QUE MUESTRA LA CANTIDAD DE CITAS SEGÚN SU ESPECIALIDAD -- LOS PRIMEROS 5{{--}}
+                        @livewire('admin.appointments-by-specialties')
                     </div>
                     {{--}}
                     @livewire('admin-dashboard-patinets')
