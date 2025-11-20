@@ -153,19 +153,16 @@ class PatientController extends Controller
 
             // Generate FHIR ID
             $fhirId = 'patient-'.Str::uuid();
-            $firstName = '';
-            $lastName = '';
             $password = Str::password(8);
-            $full_name = explode(' ', $request->name);
-            $email = strtolower(str_replace(' ', '.', $request->name)).'@example.com';
+
+            // Parse name intelligently
+            $parsedName = $this->parseFullName($request->name);
+            $firstName = $parsedName['first_name'];
+            $lastName = $parsedName['last_name'];
+
+            $email = strtolower(str_replace(' ', '.', $firstName.$lastName)).'@example.com';
             if ($request->has('email')) {
                 $email = strtolower($request->email);
-            }
-            if (isset($full_name[0])) {
-                $firstName = ucfirst($full_name[0]);
-            }
-            if (isset($full_name[1])) {
-                $lastName = ucfirst($full_name[1]);
             }
 
             if (User::whereEmail($email)->exists()) {
@@ -230,6 +227,15 @@ class PatientController extends Controller
                 elseif ($request->has('id_document') && is_string($request->id_document)) {
                     try {
                         $base64String = $request->id_document;
+
+                        // Validar que no sea [object Object] o similar
+                        if (strpos($base64String, '[object') !== false || strpos($base64String, 'Object]') !== false) {
+                            \Illuminate\Support\Facades\Log::error('Error: Se recibió [object Object] en lugar de base64', [
+                                'patient_id' => $patient->id,
+                                'received_value' => $base64String,
+                            ]);
+                            throw new \Exception('El valor de id_document no es válido. Se recibió un objeto en lugar de una cadena base64. Por favor, envíe la imagen como base64 string.');
+                        }
 
                         // Limpiar el string base64 (remover espacios, saltos de línea, etc.)
                         $base64String = trim($base64String);
@@ -1440,6 +1446,73 @@ class PatientController extends Controller
 
             default => collect($items)->toArray(),
         };
+    }
+
+    /**
+     * Parse full name intelligently into first name and last name
+     *
+     * Handles 3 cases:
+     * - 2 words: "Rafael Gasperi" → first: "Rafael", last: "Gasperi"
+     * - 3 words: "Rafael Gasperi Martinez" → first: "Rafael", last: "Gasperi Martinez"
+     * - 4+ words: "Rafael Roberto Gasperi Martinez" → first: "Rafael Roberto", last: "Gasperi Martinez"
+     */
+    private function parseFullName(string $fullName): array
+    {
+        // Limpiar espacios extras
+        $fullName = trim(preg_replace('/\s+/', ' ', $fullName));
+
+        // Dividir el nombre en partes
+        $nameParts = explode(' ', $fullName);
+        $partCount = count($nameParts);
+
+        $firstName = '';
+        $lastName = '';
+
+        switch ($partCount) {
+            case 0:
+                // Nombre vacío
+                $firstName = '';
+                $lastName = '';
+                break;
+
+            case 1:
+                // Solo un nombre: "Rafael"
+                $firstName = ucwords(strtolower($nameParts[0]));
+                $lastName = '';
+                break;
+
+            case 2:
+                // Dos palabras: "Rafael Gasperi"
+                // Nombre: Rafael, Apellido: Gasperi
+                $firstName = ucwords(strtolower($nameParts[0]));
+                $lastName = ucwords(strtolower($nameParts[1]));
+                break;
+
+            case 3:
+                // Tres palabras: "Rafael Gasperi Martinez"
+                // Nombre: Rafael, Apellidos: Gasperi Martinez
+                $firstName = ucwords(strtolower($nameParts[0]));
+                $lastName = ucwords(strtolower($nameParts[1].' '.$nameParts[2]));
+                break;
+
+            default:
+                // 4 o más palabras: "Rafael Roberto Gasperi Martinez"
+                // Primeras mitad: Nombres, Segunda mitad: Apellidos
+                $middlePoint = (int) ceil($partCount / 2);
+
+                $firstNameParts = array_slice($nameParts, 0, $middlePoint);
+                $lastNameParts = array_slice($nameParts, $middlePoint);
+
+                $firstName = ucwords(strtolower(implode(' ', $firstNameParts)));
+                $lastName = ucwords(strtolower(implode(' ', $lastNameParts)));
+                break;
+        }
+
+        return [
+            'first_name' => $firstName ?: 'Sin Nombre',
+            'last_name' => $lastName ?: 'Sin Apellido',
+            'full_name' => $fullName,
+        ];
     }
 
     // ENDPOINT DE BÚSQUEDA DE PACIENTES
