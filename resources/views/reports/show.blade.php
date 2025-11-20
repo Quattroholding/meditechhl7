@@ -95,6 +95,7 @@
 
     @push('scripts')
         <script>
+            const api_tokenl = '{{\App\Models\ApiToken::local()->token}}';
             function exportReport(format) {
                 const form = document.getElementById('reportForm');
                 const formData = new FormData(form);
@@ -152,7 +153,7 @@
                 data: function(params, page) {
                     return {
                         search: params.term, // término de búsqueda
-                        api_token: 'mdt_nqxh34LlQySEeztELNAaH0qQRgdXcY4DiJQdESeia8dnmg1SgHZzh1AB69Rq'
+                        api_token: api_tokenl
                     };
                 },
                 processResults: function(data) {
