@@ -28,7 +28,7 @@ class StorePatientRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255', 'unique:patients,email', 'unique:users,email'],
             'identifier' => ['required', 'string', 'max:50', 'unique:patients,identifier'],
             'phone' => ['required', 'string', 'max:20'],
-            'id_document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'], // 2MB max
+            'id_document' => 'nullable|string', // ← Cambio aquí: acepta string (base64)
         ];
     }
 

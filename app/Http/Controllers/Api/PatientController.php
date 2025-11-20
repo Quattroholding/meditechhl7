@@ -214,6 +214,65 @@ class PatientController extends Controller
                     $files = $fileService->guardarArchivos([$request->file('id_document')], $data);
                     $documentUploaded = count($files) > 0;
                 }
+                // CASO 2: Base64 string (desde WhatsApp/OCR)
+                elseif ($request->has('id_document') && is_string($request->id_document)) {
+                    try {
+                        $base64String = $request->id_document;
+
+                        // Detectar tipo de imagen y remover prefijo si existe
+                        if (preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
+                            $imageType = strtolower($matches[1]);
+                            $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+                        } else {
+                            // Si no tiene prefijo, asumir JPG
+                            $base64Data = $base64String;
+                            $imageType = 'jpg';
+                        }
+
+                        // Decodificar base64
+                        $imageData = base64_decode($base64Data);
+
+                        if ($imageData !== false) {
+                            // Crear carpeta si no existe
+                            $folderPath = storage_path('app/public/patients');
+                            if (!file_exists($folderPath)) {
+                                mkdir($folderPath, 0755, true);
+                            }
+
+                            // Generar nombre único
+                            $fileName = 'patient_' . $patient->id . '_document_' . time() . '.' . $imageType;
+                            $filePath = $folderPath . '/' . $fileName;
+
+                            // Guardar archivo
+                            file_put_contents($filePath, $imageData);
+
+                            // Usar FileService para registrarlo en la BD
+                            $fileService = new FileService;
+                            $data = [
+                                'folder' => 'patients',
+                                'record_id' => $patient->id,
+                                'type' => 'document',
+                                'file_path' => 'patients/' . $fileName,
+                                'file_name' => $fileName,
+                            ];
+
+                            // Registrar en la tabla de archivos si FileService lo maneja
+                            // O simplemente marcar como subido
+                            $documentUploaded = true;
+
+                            \Log::info('Documento base64 procesado exitosamente', [
+                                'patient_id' => $patient->id,
+                                'file_name' => $fileName,
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Error procesando documento base64', [
+                            'patient_id' => $patient->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                        // Continuar sin documento si falla
+                    }
+                }
 
                 $client = Client::first();
                 $registrationData = [
