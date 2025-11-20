@@ -185,6 +185,7 @@ class PatientController extends Controller
                 $identification_type = $request->get('identification_type');
             }
 
+
             // Create patient record
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
