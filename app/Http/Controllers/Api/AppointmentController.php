@@ -181,6 +181,7 @@ class AppointmentController extends Controller
                 'original_requested_datetime' => $startTime,
                 'created_at' => now(),
                 'updated_at' => now(),
+                'source_creation'=>'whatsapp'
             ]);
 
             $app = Appointment::find($appointmentId);

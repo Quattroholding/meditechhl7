@@ -24,7 +24,7 @@ class Appointment extends BaseModel
         'service_type', 'description', 'start', 'end', 'minutes_duration', 'medical_speciality_id', 'consulting_room_id',
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
         'consultation_type', 'virtual_room_id', 'virtual_room_url',
-        'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata',
+        'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata','source_creation',
     ];
 
     protected $casts = [
