@@ -25,18 +25,19 @@ class PatientController extends Controller
     /**
      * Display a listing of patients
      */
-    public function index(Request $request): JsonResponse {
+    public function index(Request $request): JsonResponse
+    {
         $query = Patient::with(['primaryInsurance', 'secondaryInsurance']);
 
         // Add search functionality
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('identifier', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('whatsapp_phone', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('identifier', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('whatsapp_phone', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -59,12 +60,12 @@ class PatientController extends Controller
         // Filter by age range
         if ($request->has('age_from') || $request->has('age_to')) {
             if ($request->has('age_from')) {
-                $ageFrom = (int)$request->age_from;
+                $ageFrom = (int) $request->age_from;
                 $dateFrom = now()->subYears($ageFrom + 1)->format('Y-m-d');
                 $query->where('birth_date', '<=', $dateFrom);
             }
             if ($request->has('age_to')) {
-                $ageTo = (int)$request->age_to;
+                $ageTo = (int) $request->age_to;
                 $dateTo = now()->subYears($ageTo)->format('Y-m-d');
                 $query->where('birth_date', '>=', $dateTo);
             }
@@ -80,14 +81,14 @@ class PatientController extends Controller
         }
 
         // Pagination
-        $perPage = min(max((int)$request->get('per_page', 15), 1), 100);
+        $perPage = min(max((int) $request->get('per_page', 15), 1), 100);
         $patients = $query->paginate($perPage);
 
         return response()->json([
             'data' => $patients->map(function ($patient) {
                 $profile_picture_path = '';
                 if ($patient->avatar()) {
-                    $profile_picture_path = url('storage/' . $patient->avatar()->path);
+                    $profile_picture_path = url('storage/'.$patient->avatar()->path);
                 }
 
                 return [
@@ -149,25 +150,30 @@ class PatientController extends Controller
     {
         try {
 
-
             // Generate FHIR ID
-            $fhirId = 'patient-' . Str::uuid();
-            $firstName='';
-            $lastName='';
+            $fhirId = 'patient-'.Str::uuid();
+            $firstName = '';
+            $lastName = '';
             $password = Str::password(8);
-            $full_name = explode(" ",$request->name);
-            $email = strtolower($request->email);
-            if(isset($full_name[0])) $firstName = ucfirst($full_name[0]);
-            if(isset($full_name[1])) $lastName = ucfirst($full_name[1]);
+            $full_name = explode(' ', $request->name);
+            $email = strtolower(str_replace(' ', '.', $full_name)) . '@example.com';
+            if($request->has('email'))
+                $email = strtolower($request->email);
+            if (isset($full_name[0])) {
+                $firstName = ucfirst($full_name[0]);
+            }
+            if (isset($full_name[1])) {
+                $lastName = ucfirst($full_name[1]);
+            }
 
-            if(User::whereEmail($email)->exists()){
+            if (User::whereEmail($email)->exists()) {
                 $model = User::whereEmail($email)->first();
-            }else{
+            } else {
                 $model = new User;
                 $model->first_name = $firstName ?? $request->name;
                 $model->last_name = $lastName ?? 'Apellido';
                 $model->email = $email;
-                $model->password =$password;
+                $model->password = $password;
                 $model->whatsapp_phone = $request->phone;
                 $model->save();
             }
@@ -176,7 +182,7 @@ class PatientController extends Controller
             $model->assignRole('paciente');
 
             $identification_type = 'CC';
-            if($request->has('identification_type')){
+            if ($request->has('identification_type')) {
                 $identification_type = $request->get('identification_type');
             }
 
@@ -184,24 +190,42 @@ class PatientController extends Controller
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
                 'name' => $request->name,
-                'given_name'=>$firstName,
-                'family_name'=>$lastName,
-                'email' =>$email,
-                'user_id'=>$model->id,
+                'given_name' => $firstName,
+                'family_name' => $lastName,
+                'email' => $email,
+                'user_id' => $model->id,
                 'identifier' => $request->identifier,
-                'identifier_type'=>$identification_type,
+                'identifier_type' => $identification_type,
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
                 'active' => true,
             ]);
 
             if ($patient->save()) {
+                // Handle ID document upload if provided
+                $documentUploaded = false;
+                if ($request->hasFile('id_document')) {
+                    $fileService = new FileService;
+                    $data = [
+                        'folder' => 'patients',
+                        'record_id' => $patient->id,
+                        'type' => 'document',
+                    ];
+                    $files = $fileService->guardarArchivos([$request->file('id_document')], $data);
+                    $documentUploaded = count($files) > 0;
+                }
+
                 $client = Client::first();
                 $registrationData = [
                     'username' => $email,
                     'password' => $password,
                 ];
-                Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                if($request->has('email')){
+                    Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                }else{
+                    Mail::to('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                }
+
             }
 
             return response()->json([
@@ -214,6 +238,7 @@ class PatientController extends Controller
                     'phone' => $patient->phone,
                     'whatsapp_phone' => $patient->whatsapp_phone,
                     'active' => $patient->active,
+                    'id_document_uploaded' => $documentUploaded ?? false,
                     'created_at' => $patient->created_at,
                     'updated_at' => $patient->updated_at,
                 ],
@@ -229,7 +254,8 @@ class PatientController extends Controller
     /**
      * Get a patient's medical history by patient ID (for API v1)
      */
-    public function getMedicalHistory(Request $request, int $patientId): JsonResponse {
+    public function getMedicalHistory(Request $request, int $patientId): JsonResponse
+    {
         // Find the patient
         $patient = Patient::with([
             'medicalHistories',
@@ -247,7 +273,7 @@ class PatientController extends Controller
             'allergies',
         ])->find($patientId);
 
-        if (!$patient) {
+        if (! $patient) {
             return response()->json([
                 'message' => 'Paciente no encontrado.',
             ], 404);
@@ -256,7 +282,7 @@ class PatientController extends Controller
         // Get profile picture
         $profile_picture_path = '';
         if ($patient->avatar()) {
-            $profile_picture_path = url('storage/' . $patient->avatar()->path);
+            $profile_picture_path = url('storage/'.$patient->avatar()->path);
         }
 
         return response()->json([
@@ -412,7 +438,7 @@ class PatientController extends Controller
                         'valid_to' => $medication->valid_to,
                         'substitution_allowed' => $medication->substitution_allowed,
                         'note' => $medication->note,
-                        'medication'=>$medication->medication,
+                        'medication' => $medication->medication,
                         'medicine' => $medication->medicine ? [
                             'id' => $medication->medicine->id,
                             'name' => $medication->medicine->full_name,
@@ -1302,39 +1328,40 @@ class PatientController extends Controller
             default => collect($items)->toArray(),
         };
     }
-    //ENDPOINT DE BÚSQUEDA DE PACIENTES
+
+    // ENDPOINT DE BÚSQUEDA DE PACIENTES
     public function search(Request $request)
     {
         $search = $request->get('search');
 
-        $patients = Patient::where(function($query) use ($search) {
+        $patients = Patient::where(function ($query) use ($search) {
             // Buscar en nombre
             $query->where('given_name', 'LIKE', "%{$search}%")
                   // Buscar en apellido
-                  ->orWhere('family_name', 'LIKE', "%{$search}%")
+                ->orWhere('family_name', 'LIKE', "%{$search}%")
                   // Buscar en nombre completo concatenado
-                  ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
+                ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
                   // Si tienes campo de identificación
-                  ->orWhere('identifier', 'LIKE', "%{$search}%");
+                ->orWhere('identifier', 'LIKE', "%{$search}%");
         })
-        ->select('id', 'given_name', 'family_name', 'identifier')
-        ->limit(10)
-        ->get();
+            ->select('id', 'given_name', 'family_name', 'identifier')
+            ->limit(10)
+            ->get();
 
-        $results = $patients->map(function($patient) {
+        $results = $patients->map(function ($patient) {
             return [
                 'id' => $patient->id,
                 'name' => $patient->given_name.' '.$patient->family_name,
-                'identifier' => $patient->identifier
+                'identifier' => $patient->identifier,
             ];
         });
 
-    return response()->json([
-        'results' => $results,
-        'total' => Patient::where('given_name', 'LIKE', "%{$search}%")
-            ->orWhere('family_name', 'LIKE', "%{$search}%")
-            ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
-            ->count()
-    ]);
+        return response()->json([
+            'results' => $results,
+            'total' => Patient::where('given_name', 'LIKE', "%{$search}%")
+                ->orWhere('family_name', 'LIKE', "%{$search}%")
+                ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
+                ->count(),
+        ]);
     }
 }
