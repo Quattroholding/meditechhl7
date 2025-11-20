@@ -156,7 +156,7 @@ class PatientController extends Controller
             $lastName = '';
             $password = Str::password(8);
             $full_name = explode(' ', $request->name);
-            $email = strtolower(str_replace(' ', '.', $full_name)) . '@example.com';
+            $email = strtolower(str_replace(' ', '.',  $request->name)) . '@example.com';
             if($request->has('email'))
                 $email = strtolower($request->email);
             if (isset($full_name[0])) {
