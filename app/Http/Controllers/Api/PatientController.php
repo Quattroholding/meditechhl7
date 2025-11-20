@@ -256,9 +256,10 @@ class PatientController extends Controller
                                 'file_name' => $fileName,
                             ];
 
+                            $files = $fileService->guardarArchivos([$request->file('id_document')], $data);
                             // Registrar en la tabla de archivos si FileService lo maneja
                             // O simplemente marcar como subido
-                            $documentUploaded = true;
+                            $documentUploaded = count($files) > 0;
 
                             \Log::info('Documento base64 procesado exitosamente', [
                                 'patient_id' => $patient->id,
