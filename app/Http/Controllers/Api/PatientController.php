@@ -161,7 +161,7 @@ class PatientController extends Controller
             $lastName = $parsedName['last_name'];
 
             $email = strtolower(str_replace(' ', '.', $firstName.$lastName)).'@example.com';
-            if ($request->has('email')) {
+            if ($request->has('email') && !empty($request->get('email'))) {
                 $email = strtolower($request->email);
             }
 
@@ -188,7 +188,7 @@ class PatientController extends Controller
             // Create patient record
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
-                'name' => $request->name,
+                'name' =>$firstName.' '.$lastName,
                 'given_name' => $firstName,
                 'family_name' => $lastName,
                 'email' => $email,
