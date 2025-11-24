@@ -29,6 +29,22 @@ class ConsultingRoomResource extends JsonResource
                     'address' => $this->branch->address,
                     'type' => $this->branch->type,
                     'client_id' => $this->branch->client_id,
+                    'country_id' => $this->branch->country_id,
+                    'state_id' => $this->branch->state_id,
+                    'country' => $this->whenLoaded('branch.country', function () {
+                        return [
+                            'id' => $this->branch->country->id,
+                            'name' => $this->branch->country->name,
+                            'code' => $this->branch->country->code ?? null,
+                        ];
+                    }),
+                    'state' => $this->whenLoaded('branch.state', function () {
+                        return [
+                            'id' => $this->branch->state->id,
+                            'name' => $this->branch->state->name,
+                            'code' => $this->branch->state->code ?? null,
+                        ];
+                    }),
                 ];
             }),
             'branch_name' => $this->branch_name,
