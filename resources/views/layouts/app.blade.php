@@ -6,8 +6,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
+    @if (config('app.env') === 'production')
     <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @else
+        <link rel="icon" href="{{secure_url('images/favicon.ico')}}" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
