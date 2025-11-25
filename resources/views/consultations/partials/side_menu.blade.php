@@ -28,15 +28,31 @@
 </div>
 
 <script>
-    let menu_visibility = true;
+    // Detectar si es un dispositivo móvil
+    function isMobileDevice() {
+        return window.innerWidth <= 768;
+    }
+
+    // Inicializar el estado del menú según el dispositivo
+    let menu_visibility = !isMobileDevice();
+
+    // Aplicar estado inicial al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!menu_visibility) {
+            $('.menu-right').addClass('menu-right-off');
+            $('.menu-text').html('ABRIR MENÚ');
+        }
+    });
 
     function change_menu_visibility() {
         if (menu_visibility) {
             menu_visibility = false;
             $('.menu-right').addClass('menu-right-off');
+            $('.menu-text').html('ABRIR MENÚ');
         } else {
             menu_visibility = true;
             $('.menu-right').removeClass('menu-right-off');
+            $('.menu-text').html('CERRAR MENÚ');
         }
     }
 
@@ -55,7 +71,18 @@
         }
     }
 
-    // Ejemplo de uso:
-    // Puedes llamar a esta función con el ID del elemento al que quieres desplazar
-    // scrollToMarker('mi-marcador');
+    // Ajustar el menú cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        if (isMobileDevice() && menu_visibility) {
+            // Si cambió a móvil y el menú está abierto, cerrarlo
+            menu_visibility = false;
+            $('.menu-right').addClass('menu-right-off');
+            $('.menu-text').html('ABRIR MENÚ');
+        } else if (!isMobileDevice() && !menu_visibility) {
+            // Si cambió a escritorio y el menú está cerrado, abrirlo
+            menu_visibility = true;
+            $('.menu-right').removeClass('menu-right-off');
+            $('.menu-text').html('CERRAR MENÚ');
+        }
+    });
 </script>
