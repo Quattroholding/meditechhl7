@@ -18,7 +18,7 @@ class ConsultingRoomController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = ConsultingRoom::with(['branch.client']);
+        $query = ConsultingRoom::with(['branch.client', 'branch.country', 'branch.state']);
 
         // Filter by branch_id
         if ($request->has('branch_id')) {
@@ -29,6 +29,20 @@ class ConsultingRoomController extends Controller
         if ($request->has('client_id')) {
             $query->whereHas('branch', function ($q) use ($request) {
                 $q->where('client_id', $request->client_id);
+            });
+        }
+
+        // Filter by country_id through branch relationship
+        if ($request->has('country_id')) {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('country_id', $request->country_id);
+            });
+        }
+
+        // Filter by state_id through branch relationship
+        if ($request->has('state_id')) {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('state_id', $request->state_id);
             });
         }
 
