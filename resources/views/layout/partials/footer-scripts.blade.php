@@ -79,7 +79,7 @@
 <script src="{{ asset('assets/js/responsive-table.js') }}"></script>
 
 <!-- Appointment Broadcast Listener -->
-@if(auth()->user()->hasRole('doctor'))
+@if(auth()->user() && auth()->user()->hasRole('doctor'))
     <script>
         window.isDoctorRole = true;
         // Force load Echo if not available

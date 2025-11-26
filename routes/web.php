@@ -122,6 +122,8 @@ Route::get('/dash', function () {
 })->name('dash')->middleware(['auth', 'verified', 'first.login']);
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+Route::get('/login/concurrent-session', [LoginController::class, 'showConcurrentSession'])->name('login.concurrent-session');
+Route::post('/login/cancel', [LoginController::class, 'cancelLogin'])->name('login.cancel');
 
 // First Login Routes
 Route::middleware('auth')->group(function () {

@@ -37,7 +37,7 @@
 @if(Route::is(['error-404','error-500']))
 <div class="main-wrapper error-wrapper">
     @endif
-    @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
+    @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']) && auth()->user())
         @include('layout.partials.header')
         @include('layout.partials.sidebar')
     @endif
