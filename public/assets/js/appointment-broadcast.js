@@ -157,6 +157,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if Echo is available
     if (typeof window.Echo !== 'undefined') {
         console.log('Echo is available, setting up broadcast listener...');
+        console.log('Echo connector type:', window.Echo.connector?.constructor?.name);
+        console.log('Echo options:', {
+            broadcaster: window.Echo.connector?.options?.broadcaster,
+            key: window.Echo.connector?.options?.key,
+            wsHost: window.Echo.connector?.options?.wsHost,
+            wsPort: window.Echo.connector?.options?.wsPort,
+            wssPort: window.Echo.connector?.options?.wssPort,
+        });
 
         // Get current doctor ID from meta or data attribute
         const doctorId = document.querySelector('meta[name="doctor-id"]')?.getAttribute('content') ||
