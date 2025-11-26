@@ -64,8 +64,17 @@ class Status extends Component
 
         if ($newStatus == 'checked-in') {
 
+            \Log::info('Broadcasting AppointmentCheckedIn event', [
+                'appointment_id' => $this->appointment->id,
+                'practitioner_id' => $this->appointment->practitioner_id,
+                'channel' => 'doctor.'.$this->appointment->practitioner_id,
+                'patient_name' => $this->appointment->patient->name ?? 'Unknown',
+            ]);
+
             // Disparar evento de broadcast para notificar al doctor
             broadcast(new AppointmentCheckedIn($this->appointment));
+
+            \Log::info('AppointmentCheckedIn event broadcasted successfully');
 
             $this->dispatch('showToastr'.$this->appointment_id, [
                 'type' => 'success',

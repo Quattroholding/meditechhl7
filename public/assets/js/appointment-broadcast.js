@@ -170,12 +170,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Listen to private channel for this doctor
             window.Echo.private(`doctor.${doctorId}`)
                 .listen('.appointment.checked.in', (data) => {
-                    console.log('Appointment checked in event received:', data);
+                    console.log('✅ Appointment checked in event received:', data);
                     showAppointmentPopup(data.appointment);
                 })
+                .subscribed(() => {
+                    console.log(`✅ Successfully subscribed to private-doctor.${doctorId}`);
+                    console.log('Waiting for appointment check-in events...');
+                })
                 .error((error) => {
-                    console.error('Echo channel error:', error);
+                    console.error('❌ Echo channel subscription error:', error);
+                })
+                .listenForWhisper('typing', (e) => {
+                    console.log('Whisper received:', e);
                 });
+
+            console.log('Channel subscription initiated for:', `private-doctor.${doctorId}`);
         } else {
             console.warn('Doctor ID not found. Cannot subscribe to broadcast channel.');
         }
