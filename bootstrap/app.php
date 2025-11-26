@@ -13,9 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Force HTTPS in production
-        if (config('app.env') === 'production') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
-        }
 
         // Enable Sanctum's stateful API authentication
         $middleware->statefulApi();
