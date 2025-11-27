@@ -24,7 +24,7 @@ class PractitionerResource extends JsonResource
             'phone' => $this->phone,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date,
-            'qualification' => $this->qualification,
+            //'qualification' => $this->qualification,
             'license_number' => $this->license_number,
             'specialties' => $this->specialties ? $this->specialties->map(function ($specialty) {
                 return [
