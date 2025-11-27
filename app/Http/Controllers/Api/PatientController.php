@@ -169,7 +169,7 @@ class PatientController extends Controller
                 $normalizedLast = $this->normalizeForEmail($lastName);
 
                 // Create base email from normalized names
-                $baseEmail = strtolower($normalizedFirst.'.'.$normalizedLast);
+                $baseEmail = strtolower(substr($normalizedFirst,0,1).'.'.$normalizedLast);
 
                 // Ensure uniqueness by adding a random suffix if email exists
                 $email = $baseEmail.'@example.com';
@@ -222,7 +222,7 @@ class PatientController extends Controller
                 'birth_date'=>$request->birth_date,
                 'gender'=>$gender,
                 'active' => true,
-                'creation_source'=>'whatsapp'
+                'creation_source'=>'whatsapp',
             ]);
 
             if ($patient->save()) {
