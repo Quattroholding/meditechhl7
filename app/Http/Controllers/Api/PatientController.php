@@ -160,9 +160,24 @@ class PatientController extends Controller
             $firstName = $parsedName['first_name'];
             $lastName = $parsedName['last_name'];
 
-            $email = strtolower(str_replace(' ', '.', $firstName.$lastName)).'@example.com';
-            if ($request->has('email') && !empty($request->get('email'))) {
+            // Generate a valid email if not provided
+            if ($request->has('email') && ! empty($request->get('email'))) {
                 $email = strtolower($request->email);
+            } else {
+                // Normalize names by removing accents and special characters
+                $normalizedFirst = $this->normalizeForEmail($firstName);
+                $normalizedLast = $this->normalizeForEmail($lastName);
+
+                // Create base email from normalized names
+                $baseEmail = strtolower($normalizedFirst.'.'.$normalizedLast);
+
+                // Ensure uniqueness by adding a random suffix if email exists
+                $email = $baseEmail.'@example.com';
+                $counter = 1;
+                while (User::whereEmail($email)->exists()) {
+                    $email = $baseEmail.$counter.'@example.com';
+                    $counter++;
+                }
             }
 
             if (User::whereEmail($email)->exists()) {
@@ -185,11 +200,17 @@ class PatientController extends Controller
                 $identification_type = $request->get('identification_type');
             }
 
+            $gender = 'unknown';
+            if($request->has('gender') && !empty($request->gender)){
+                $gender = 'male';
+                if($request->gender == 'M'){ $gender = 'male'; }
+                if($request->gender == 'F'){ $gender = 'female'; }
+            }
 
             // Create patient record
             $patient = Patient::create([
                 'fhir_id' => $fhirId,
-                'name' =>$firstName.' '.$lastName,
+                'name' => $firstName.' '.$lastName,
                 'given_name' => $firstName,
                 'family_name' => $lastName,
                 'email' => $email,
@@ -198,7 +219,10 @@ class PatientController extends Controller
                 'identifier_type' => $identification_type,
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
+                'birth_date'=>$request->birth_date,
+                'gender'=>$gender,
                 'active' => true,
+                'creation_source'=>'whatsapp'
             ]);
 
             if ($patient->save()) {
@@ -1550,5 +1574,26 @@ class PatientController extends Controller
                 ->orWhereRaw("CONCAT(given_name, ' ', family_name) LIKE ?", ["%{$search}%"])
                 ->count(),
         ]);
+    }
+
+    /**
+     * Normalize a string for use in email addresses
+     * Removes accents, special characters, and spaces
+     */
+    private function normalizeForEmail(string $text): string
+    {
+        // Remove accents and convert to ASCII
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+
+        // Remove any non-alphanumeric characters except dots and hyphens
+        $text = preg_replace('/[^a-zA-Z0-9\.\-]/', '', $text);
+
+        // Remove multiple consecutive dots or hyphens
+        $text = preg_replace('/[.\-]+/', '.', $text);
+
+        // Remove leading/trailing dots or hyphens
+        $text = trim($text, '.-');
+
+        return $text ?: 'user';
     }
 }
