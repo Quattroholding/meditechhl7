@@ -34,66 +34,57 @@
                     </div>{{--}}
                 </div>
             </div>
-            <div class="dashboard-initr">
-                <div class="row">
+            <x-dashboard>
+                {{-- Fila 1: Counters (4 tiles de 3 columnas cada uno) --}}
+                <x-dashboard-tile position="a1:c1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="appointments" wire:key="counter_appointments"/>
+                </x-dashboard-tile>
+                
+                <x-dashboard-tile position="d1:f1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="patients" wire:key="counter_patients"/>
+                </x-dashboard-tile>
+                
+                <x-dashboard-tile position="g1:i1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="encounters" wire:key="counter_encounters"/>
+                </x-dashboard-tile>
+                
+                <x-dashboard-tile position="j1:l1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
-                </div>
-                {{--}}
-                <div class="row">
-                    <div class="col-12 col-md-12 col-lg-6 col-xl-9">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chart-title patient-visit">
-                                    <h4>Patient Visit by Gender</h4>
-                                    <div>
-                                        <ul class="nav chat-user-total">
-                                            <li><i class="fa fa-circle current-users" aria-hidden="true"></i>Male 75%</li>
-                                            <li><i class="fa fa-circle old-users" aria-hidden="true"></i> Female 25%</li>
-                                        </ul>
-                                    </div>
-                                    <div class="form-group mb-0">
-                                        @livewire('select-dashboard')
-                                    </div>
-                                </div>
-                                <div id="patient-chart"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-6 col-xl-3 d-flex">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chart-title">
-                                    <h4>Patient by Department</h4>
-                                </div>
-                                <div id="donut-chart-dash" class="chart-user-icon">
-                                    <img src="{{ URL::asset('/assets/img/icons/user-icon.svg') }}" alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{--}}
-                <div class="row">
-                    <div class="col-xl-4 col-md-12  col-xs-12">
-                        {{--}}COMPONENTE DE TOP 5 DE ESPECIALIDADES {{--}}
-                        @livewire('dashboard.top-specialties')
-                    </div>
-                    <div class="col-xl-8 col-xs-12">
-                        {{--}}COMPONENTE QUE MUESTRA LOS APPOINTMENTS SEGÚN EL ROL DEL USUARIO {{--}}
-                        @livewire('admin-dashboard-appointments')
-                    </div>
-                    <div class="col-xl-12 col-xs-12">
-                        {{--}}COMPONENTE QUE MUESTRA LA CANTIDAD DE CITAS SEGÚN SU ESPECIALIDAD -- LOS PRIMEROS 5{{--}}
-                        @livewire('admin.appointments-by-specialties')
-                    </div>
-                    {{--}}
-                    @livewire('admin-dashboard-patinets')
-                    {{--}}
-                </div>
-            </div>
+                </x-dashboard-tile>
+                
+              
+                <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="60">
+                    <livewire:dashboard.tiles.realtime-stats wire:key="tile_realtime_stats" />
+                </x-dashboard-tile>
+                
+             
+                <x-dashboard-tile position="g2:l2" :refresh-interval-in-seconds="120">
+                    <livewire:dashboard.tiles.appointments-by-status wire:key="tile_appointments_status" />
+                </x-dashboard-tile>
+
+                <x-dashboard-tile position="a3:f3" :refresh-interval-in-seconds="300">
+                    @livewire('dashboard.top-specialties')
+                </x-dashboard-tile>
+                
+                <x-dashboard-tile position="g3:l4" :refresh-interval-in-seconds="300">
+                    <livewire:dashboard.tiles.revenue-chart wire:key="tile_revenue_chart" />
+                </x-dashboard-tile>
+                
+                {{-- Fila 4: Appointments by Source (Pie Chart) --}}
+                <x-dashboard-tile position="a4:f4" :refresh-interval-in-seconds="300">
+                    <livewire:dashboard.tiles.appointments-by-source wire:key="tile_appointments_source" />
+                </x-dashboard-tile>
+                
+                {{-- Fila 5: Appointments Table + Appointments by Specialties --}}
+                <x-dashboard-tile position="a5:f5" :refresh-interval-in-seconds="120">
+                    @livewire('admin-dashboard-appointments')
+                </x-dashboard-tile>
+                
+          
+                <x-dashboard-tile position="g5:l5" :refresh-interval-in-seconds="300">
+                    @livewire('admin.appointments-by-specialties')
+                </x-dashboard-tile>
+            </x-dashboard>
 
             @component('components.notification-box')
             @endcomponent
