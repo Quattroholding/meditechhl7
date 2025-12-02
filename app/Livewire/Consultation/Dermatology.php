@@ -10,6 +10,7 @@ use App\Models\Patient;
 use App\Models\SkinLesion;
 use App\Models\SnomedBodySite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -176,11 +177,11 @@ class Dermatology extends Component
             }
 
             $encounter = Encounter::create([
-                'fhir_id' => 'encounter-'.fake()->uuid(),
+                'fhir_id' => 'encounter-'.Str::uuid(),
                 'patient_id' => $this->patient->id,
                 'practitioner_id' => $practitionerId,
                 'appointment_id' => null,
-                'identifier' => 'DERM-'.fake()->unique()->numerify('#######'),
+                'identifier' => 'DERM-'.str_pad(mt_rand(1, 9999999), 7, '0', STR_PAD_LEFT),
                 'class' => 'AMB',
                 'status' => 'in-progress',
                 'start' => now(),
