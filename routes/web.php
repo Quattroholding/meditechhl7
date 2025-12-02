@@ -10,6 +10,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DermatologyController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\InsuranceController;
@@ -166,6 +167,15 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
     Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:consultations.view')->name('consultation.download_resumen');
 
     Route::post('/{appointment_id}', [ConsultationController::class, 'finished'])->middleware('permission:consultations.create')->name('consultation.finished');
+
+});
+
+// Dermatology routes - Independent patient tracking
+Route::group(['prefix' => 'dermatology'], function () {
+
+    Route::get('/', [DermatologyController::class, 'index'])->name('dermatology.index');
+
+    Route::get('/patient/{patient}', [DermatologyController::class, 'show'])->name('dermatology.show');
 
 });
 

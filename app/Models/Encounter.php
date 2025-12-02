@@ -92,6 +92,11 @@ class Encounter extends BaseModel
         return $this->hasMany(ServiceRequest::class);
     }
 
+    public function skinLesions(): HasMany
+    {
+        return $this->hasMany(SkinLesion::class);
+    }
+
     public function medicalSpeciality(): BelongsTo
     {
         return $this->belongsTo(MedicalSpeciality::class)->withDefault(['name' => 'N/A']);

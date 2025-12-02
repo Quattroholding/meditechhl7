@@ -252,5 +252,62 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [['name' => 'general_note', 'type' => 'textarea', 'table_list_id' => null]],
         ]);
 
+        EncounterSection::create([
+            'name' => 'Dermatology - Skin Lesion Tracking',
+            'name_esp' => 'Dermatología - Seguimiento de Lesiones Cutáneas',
+            'table_list' => '',
+            'table_list_filter' => '',
+            'livewire_component_name' => 'consultation.dermatology',
+            'category' => 'Dermatologia',
+            'medical_speciality_id' => 38,
+            'livewire_component_fields' => [
+                [
+                    'name' => 'body_view',
+                    'type' => 'select',
+                    'label' => 'Body View',
+                    'label_esp' => 'Vista Corporal',
+                    'options' => ['anterior', 'posterior', 'left_lateral', 'right_lateral'],
+                ],
+                [
+                    'name' => 'lesion_type',
+                    'type' => 'select',
+                    'label' => 'Lesion Type',
+                    'label_esp' => 'Tipo de Lesión',
+                    'options' => ['nevus', 'melanoma', 'basal_cell_carcinoma', 'squamous_cell_carcinoma', 'actinic_keratosis', 'seborrheic_keratosis', 'other'],
+                ],
+                [
+                    'name' => 'risk_level',
+                    'type' => 'select',
+                    'label' => 'Risk Level',
+                    'label_esp' => 'Nivel de Riesgo',
+                    'options' => ['low', 'moderate', 'high', 'suspicious'],
+                ],
+                [
+                    'name' => 'location_display',
+                    'type' => 'text',
+                    'label' => 'Body Location',
+                    'label_esp' => 'Ubicación en el Cuerpo',
+                ],
+                [
+                    'name' => 'size_length_mm',
+                    'type' => 'number',
+                    'label' => 'Length (mm)',
+                    'label_esp' => 'Longitud (mm)',
+                ],
+                [
+                    'name' => 'size_width_mm',
+                    'type' => 'number',
+                    'label' => 'Width (mm)',
+                    'label_esp' => 'Ancho (mm)',
+                ],
+                [
+                    'name' => 'clinical_notes',
+                    'type' => 'textarea',
+                    'label' => 'Clinical Notes',
+                    'label_esp' => 'Notas Clínicas',
+                ],
+            ],
+        ]);
+
     }
 }

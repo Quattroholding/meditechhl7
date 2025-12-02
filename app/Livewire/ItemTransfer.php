@@ -18,28 +18,84 @@ class ItemTransfer extends Component
 
     public function mount()
     {
-        // Por ejemplo, llenar con datos de una base
-        $disponibles = EncounterSection::pluck('id');
+        // Get user's practitioner and their specialties
+        $user = auth()->user();
+        $isAdmin = $user->hasRole('admin');
+        $practitioner = $user->practitioner;
+        $practitionerSpecialties = [];
+
+        if ($practitioner) {
+            $practitionerSpecialties = $practitioner->qualifications()
+                ->pluck('medical_speciality_id')
+                ->toArray();
+        }
+
+        // Get all sections filtered by specialty or admin
+        $sectionsQuery = EncounterSection::query();
+
+        // Apply category filter if provided
+        if ($this->category) {
+            $sectionsQuery->whereCategory($this->category);
+        }
+
+        if (! $isAdmin && $practitioner) {
+            // Filter sections: show only those without specialty requirement OR matching practitioner's specialties
+            $sectionsQuery->where(function ($query) use ($practitionerSpecialties) {
+                $query->whereNull('medical_speciality_id')
+                    ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
+            });
+        }
+
+        $disponibles = $sectionsQuery->pluck('id');
         $selecionados = [];
 
-        if (auth()->user()->clients()->first()) {
-            $this->client_id = auth()->user()->clients()->first()->id;
-            $selecionados = EncounterTemplate::whereClientId($this->client_id)->whereType('client')->pluck('encounter_section_id');
+        if ($user->clients()->first()) {
+            $this->client_id = $user->clients()->first()->id;
+            $selecionados = EncounterTemplate::whereClientId($this->client_id)
+                ->whereType('client')
+                ->pluck('encounter_section_id');
         }
 
         if (count($selecionados) == 0) {
-            $this->availableItems = EncounterSection::whereCategory($this->category)->get()->toArray();
+            $this->availableItems = $sectionsQuery->get()->toArray();
             $this->selectedItems = [];
         } else {
-
             $diff = $disponibles->diff($selecionados);
-            $diff2 = $selecionados->diff($disponibles);
 
-            $this->availableItems = EncounterSection::whereCategory($this->category)->whereIn('id', $diff)->get()->toArray();
-            $this->selectedItems = EncounterSection::whereCategory($this->category)->whereIn('id', $selecionados)->get()->toArray();
+            $availableQuery = EncounterSection::query()
+                ->whereIn('id', $diff);
+
+            if ($this->category) {
+                $availableQuery->whereCategory($this->category);
+            }
+
+            $this->availableItems = $availableQuery
+                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+                    $query->where(function ($q) use ($practitionerSpecialties) {
+                        $q->whereNull('medical_speciality_id')
+                            ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
+                    });
+                })
+                ->get()
+                ->toArray();
+
+            $selectedQuery = EncounterSection::query()
+                ->whereIn('id', $selecionados);
+
+            if ($this->category) {
+                $selectedQuery->whereCategory($this->category);
+            }
+
+            $this->selectedItems = $selectedQuery
+                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+                    $query->where(function ($q) use ($practitionerSpecialties) {
+                        $q->whereNull('medical_speciality_id')
+                            ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
+                    });
+                })
+                ->get()
+                ->toArray();
         }
-
-        // dd($this->availableItems);
     }
 
     public function moveToSelected($itemId)
@@ -69,12 +125,12 @@ class ItemTransfer extends Component
 
         if ($item) {
 
-            if($item['obligatory']){
+            if ($item['obligatory']) {
                 $this->dispatch('showToastrItemTransfer',
                     type: 'error',
                     message: 'Esta sección es obligatoria no se puede eliminar.'
                 );
-            }else{
+            } else {
                 $this->selectedItems = array_values(array_filter($this->selectedItems, fn ($i) => $i['id'] !== $itemId));
                 $this->availableItems[] = $item;
                 $field = EncounterTemplate::whereRaw('(client_id = '.$this->client_id.' or user_id = '.auth()->user()->id.')')->whereEncounterSectionId($itemId)->first();

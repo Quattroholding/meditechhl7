@@ -10,18 +10,39 @@
             <ul class="list-group" id="basic-list-group">
                 @foreach($availableItems as $item)
                     <li class="list-group-item">
-                        <div class="text-end" style="display: inline-block"
-                             data-bs-toggle="tooltip"
-                             data-bs-html="true"
-                             data-bs-original-title="<ul> @foreach($item['livewire_component_fields'] as $field) <li>{{$field['name']}}</li> @endforeach </ul>">{{ $item['name_esp'] }}</div>
-                        <button wire:click="moveToSelected({{ $item['id'] }})" type="button"  title="hacer click para mover a la derecha">
-                            <i class="fa fa-arrow-right" class="text-end"></i>
-                        </button>
-
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>{{ $item['name_esp'] }}</strong>
+                                @if($item['category'])
+                                    <span class="badge bg-info ms-2">{{ $item['category'] }}</span>
+                                @endif
+                                @if($item['medical_speciality_id'])
+                                    <span class="badge bg-warning ms-2">
+                                        <i class="fas fa-user-md"></i> Especialidad
+                                    </span>
+                                @endif
+                            </div>
+                            <button wire:click="moveToSelected({{ $item['id'] }})"
+                                    type="button"
+                                    class="btn btn-sm btn-primary"
+                                    title="Agregar a seleccionados">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        @if(isset($item['livewire_component_fields']) && count($item['livewire_component_fields']) > 0)
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle"></i>
+                                Campos:
+                                @foreach($item['livewire_component_fields'] as $index => $field)
+                                    {{ $field['name'] }}@if(!$loop->last), @endif
+                                @endforeach
+                            </small>
+                        @endif
                     </li>
                 @endforeach
             </ul>
         </div>
+
         <div class="col-xl-2  text-center d-none d-lg-block"><i class="fa fa-arrow-right fa-4x" ></i><br/><i class="fa fa-arrow-left fa-4x" ></i> </div>
         <div class="col-xl-2  text-center d-block d-md-none"><i class="fa fa-arrow-down fa-4x" style="margin:0.1em;"></i><i class="fa fa-arrow-up fa-4x" style="margin:0.1em;"></i> </div>
         <!-- Tabla de seleccionados -->
@@ -30,14 +51,34 @@
             <ul  class="list-group" id="basic-list-group">
                 @foreach($selectedItems as $item)
                     <li class="list-group-item draggable ">
-                        <div class="text-left" style="display: inline-block"
-                             data-bs-toggle="tooltip"
-                             data-bs-html="true"
-                             data-bs-original-title="<ul> @foreach($item['livewire_component_fields'] as $field) <li>{{$field['name']}}</li> @endforeach </ul>">{{ $item['name_esp'] }}</div>
-                        <button  wire:click="moveToAvailable({{ $item['id'] }})" type="button" title="hacer click para mover a la izquierda">
-                            <i class="fa fa-arrow-left"></i>
-
-                        </button>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>{{ $item['name_esp'] }}</strong>
+                                @if($item['category'])
+                                    <span class="badge bg-info ms-2">{{ $item['category'] }}</span>
+                                @endif
+                                @if($item['medical_speciality_id'])
+                                    <span class="badge bg-warning ms-2">
+                                        <i class="fas fa-user-md"></i> Especialidad
+                                    </span>
+                                @endif
+                            </div>
+                            <button wire:click="moveToAvailable({{ $item['id'] }})"
+                                    type="button"
+                                    class="btn btn-sm btn-danger"
+                                    title="Remover de seleccionados">
+                                <i class="fa fa-arrow-left"></i>
+                            </button>
+                        </div>
+                        @if(isset($item['livewire_component_fields']) && count($item['livewire_component_fields']) > 0)
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle"></i>
+                                Campos:
+                                @foreach($item['livewire_component_fields'] as $index => $field)
+                                    {{ $field['name'] }}@if(!$loop->last), @endif
+                                @endforeach
+                            </small>
+                        @endif
                     </li>
                 @endforeach
             </ul>

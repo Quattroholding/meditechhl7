@@ -265,7 +265,7 @@ class Patient extends BaseModel
     {
         $path = url('assets/img/profiles/avatar-02.jpg');
         $route = '';
-        if (auth()->user()->can('patients.profile')) {
+        if (auth()->user() && auth()->user()->can('patients.profile')) {
             $route = route('patient.profile', $this->id);
         }
 
@@ -274,7 +274,7 @@ class Patient extends BaseModel
             $path = url('storage/'.$this->avatar()->path);
         }
 
-        if (auth()->user()->hasRole('doctor')) {
+        if (auth()->user() &&  auth()->user()->hasRole('doctor')) {
             $title = 'Ver historial medico';
             $route = route('patient.medical_history', $this->id);
         }
