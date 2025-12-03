@@ -7,6 +7,7 @@ use App\Models\Encounter;
 use App\Models\EncounterSection;
 use App\Models\EncounterTemplate;
 use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -27,10 +28,14 @@ class Create extends Component
     public function mount()
     {
         $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
+        $user = User::find(Auth::getUser()->id);
+        //dd($user->practitioner->specialties->pluck('id')->contains(42));
 
         if ($encounter_sections_user->count() > 0) {
             $this->encounter_sections = EncounterSection::whereIn('id', $encounter_sections_user->pluck('encounter_section_id'))->get();
-        } else {
+        } elseif ($user->practitioner->specialties->pluck('id')->contains(42)) {
+            $this->encounter_sections = EncounterSection::whereNull('deleted_at')->get();
+        }else{
             $this->encounter_sections = EncounterSection::whereNull('category')->get();
         }
 

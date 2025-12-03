@@ -1,0 +1,265 @@
+/* IPSS Section Styles */
+.ipss-header {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ipss-header h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.ipss-score-container {
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.ipss-score-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ipss-score-label {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.ipss-score-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    color: white;
+    font-weight: 600;
+}
+
+.ipss-score-badge.mild {
+    background-color: #22c55e;
+}
+
+.ipss-score-badge.moderate {
+    background-color: #eab308;
+}
+
+.ipss-score-badge.severe {
+    background-color: #ef4444;
+}
+
+.ipss-score-bar-wrapper {
+    flex: 1;
+}
+
+.ipss-score-bar-bg {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    height: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.ipss-score-bar-fill {
+    height: 2rem;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+.ipss-score-bar-fill.mild {
+    background-color: #22c55e;
+}
+
+.ipss-score-bar-fill.moderate {
+    background-color: #eab308;
+}
+
+.ipss-score-bar-fill.severe {
+    background-color: #ef4444;
+}
+
+.ipss-score-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #374151;
+}
+
+/* Question Container */
+.ipss-question-container {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ipss-question-title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.ipss-question-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Options Grid */
+.ipss-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .ipss-options-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .ipss-options-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+.ipss-option-button {
+    padding: 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.ipss-option-button:hover {
+    border-color: #3b82f6;
+}
+
+.ipss-option-button.selected {
+    background-color: #22c55e;
+    color: white;
+    border-color: #22c55e;
+    font-weight: 600;
+}
+
+.ipss-option-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.ipss-option-subtext {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    opacity: 0.75;
+}
+
+/* Quality of Life Section */
+.ipss-qol-section {
+    padding: 1.5rem;
+    background-color: #f9fafb;
+}
+
+.ipss-qol-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .ipss-qol-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .ipss-qol-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+.ipss-qol-button {
+    padding: 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.ipss-qol-button:hover {
+    border-color: #3b82f6;
+}
+
+.ipss-qol-button.selected {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    font-weight: 600;
+}
+
+.ipss-qol-saving {
+    margin-top: 1rem;
+}
+
+/* Score Legend */
+.ipss-legend-container {
+    padding: 1.5rem;
+    background-color: white;
+}
+
+.ipss-legend-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.ipss-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.ipss-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ipss-legend-color {
+    width: 4rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.ipss-legend-color.mild {
+    background-color: #22c55e;
+}
+
+.ipss-legend-color.moderate {
+    background-color: #eab308;
+}
+
+.ipss-legend-color.severe {
+    background-color: #ef4444;
+}
+
+/* Utility Classes */
+.ipss-hidden {
+    display: none;
+}
+
+.ipss-mb-4 {
+    margin-bottom: 1rem;
+}
+
+.ipss-mt-4 {
+    margin-top: 1rem;
+}
