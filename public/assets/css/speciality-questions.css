@@ -143,9 +143,9 @@
 }
 
 .ipss-option-button.selected {
-    background-color: #22c55e;
+    background-color: #005dba;
     color: white;
-    border-color: #22c55e;
+    border-color:#005dba;
     font-weight: 600;
 }
 
