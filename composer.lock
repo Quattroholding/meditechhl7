@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "34610507ef970e28da0e42990924b6d1",
+    "content-hash": "dc2d93b354ebc1faa399de9554722203",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5829,6 +5829,82 @@
             "time": "2025-07-11T13:20:48+00:00"
         },
         {
+            "name": "spatie/laravel-dashboard",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-dashboard.git",
+                "reference": "69d1def1f24134556670f90e20b475f00f177fcc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-dashboard/zipball/69d1def1f24134556670f90e20b475f00f177fcc",
+                "reference": "69d1def1f24134556670f90e20b475f00f177fcc",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/view": "^10.0|^11.0|^12.0",
+                "livewire/livewire": "^3.0",
+                "php": "^8.3",
+                "spatie/sun": "^1.1.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^10.5|^11.5.3",
+                "spatie/phpunit-snapshot-assertions": "^4.2|^5.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Dashboard": "Spatie\\Dashboard\\Facades\\Dashboard"
+                    },
+                    "providers": [
+                        "Spatie\\Dashboard\\DashboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Dashboard\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A dashboard for Laravel",
+            "homepage": "https://github.com/spatie/laravel-dashboard",
+            "keywords": [
+                "laravel-dashboard",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-dashboard/issues",
+                "source": "https://github.com/spatie/laravel-dashboard/tree/3.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-21T13:39:46+00:00"
+        },
+        {
             "name": "spatie/laravel-permission",
             "version": "6.23.0",
             "source": {
@@ -5910,6 +5986,69 @@
                 }
             ],
             "time": "2025-11-03T20:16:13+00:00"
+        },
+        {
+            "name": "spatie/sun",
+            "version": "1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/sun.git",
+                "reference": "f9c8a4e72b06dd5c513b794ccff5eead18e2f57d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/sun/zipball/f9c8a4e72b06dd5c513b794ccff5eead18e2f57d",
+                "reference": "f9c8a4e72b06dd5c513b794ccff5eead18e2f57d",
+                "shasum": ""
+            },
+            "require": {
+                "nesbot/carbon": "^3.8.3",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "pestphp/pest": "^3.7.1",
+                "spatie/test-time": "^1.3.3|^2.0",
+                "symfony/var-dumper": "^4.3|^5.4.48|^6.0|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Sun\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Get information on the position of the sun",
+            "homepage": "https://github.com/spatie/sun",
+            "keywords": [
+                "spatie",
+                "sun"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/sun/issues",
+                "source": "https://github.com/spatie/sun/tree/1.1.5"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-24T15:25:03+00:00"
         },
         {
             "name": "spiral/core",
@@ -12467,12 +12606,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

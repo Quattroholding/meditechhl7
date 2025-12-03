@@ -1,4 +1,4 @@
-<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+<div class="">
     <div class="dash-widget">
         <div class="dash-boxs comman-flex-center">
             <img src="{{ $icon }}" alt="">

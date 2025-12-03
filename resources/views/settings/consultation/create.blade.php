@@ -17,29 +17,18 @@
                         <div class="card-body">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>  {{ __('Configurar secciones de consulta') }}</h4>
+                                    <h4>{{ __('Configurar secciones de consulta') }}</h4>
+                                    <p class="text-muted">
+                                        <i class="fas fa-info-circle"></i>
+                                        Se muestran solo las secciones generales y aquellas específicas de tus especialidades médicas.
+                                    </p>
                                 </div>
                             </div>
-                            <ul class="nav nav-pills navtab-bg nav-justified" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <a href="#generales" data-bs-toggle="tab" aria-expanded="false" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
-                                        Generales
-                                    </a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="#urologia" data-bs-toggle="tab" aria-expanded="true" class="nav-link" aria-selected="true" role="tab">
-                                        Urología
-                                    </a>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane  show active" id="generales" role="tabpanel">
-                                    <livewire:item-transfer wire:key="generales"/>
-                                </div>
-                                <div class="tab-pane" id="urologia" role="tabpanel">
-                                    <livewire:item-transfer category="Urologia" wire:key="urologia"/>
-                                </div>
-                                <script>
+
+                            {{-- Single item-transfer component without category filter --}}
+                            <livewire:item-transfer wire:key="all-sections"/>
+
+                            <script>
                                     document.addEventListener('livewire:load', () => {
                                         let el = document.getElementById('sortable-list');
                                         new Sortable(el, {

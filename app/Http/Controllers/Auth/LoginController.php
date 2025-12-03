@@ -20,8 +20,8 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        // Validar Turnstile solo en producción
-        if (config('app.env') === 'production') {
+        // Validar Turnstile solo en producción (excepto cuando viene de force_login)
+        if (config('app.env') === 'production' && ! $request->has('force_login')) {
             $turnstileResponse = $request->input('cf-turnstile-response');
 
             if (! $turnstileResponse || ! $this->validateTurnstile($turnstileResponse)) {
@@ -59,6 +59,9 @@ class LoginController extends Controller
                 foreach ($pendingData as $key => $value) {
                     session()->put($key, $value);
                 }
+
+                // Guardar la sesión explícitamente para asegurar que persiste
+                session()->save();
 
                 // Redirigir a página de confirmación
                 return redirect()->route('login.concurrent-session');
@@ -149,8 +152,20 @@ class LoginController extends Controller
      */
     public function showConcurrentSession(Request $request)
     {
+        \Log::info('showConcurrentSession called', [
+            'session_id' => session()->getId(),
+            'has_pending_user_id' => session()->has('pending_login_user_id'),
+            'has_pending_email' => session()->has('pending_login_email'),
+            'has_pending_password' => session()->has('pending_login_password'),
+            'sessions_count' => session('sessions_count'),
+            'all_session_keys' => array_keys(session()->all()),
+        ]);
+
         if (! session()->has('pending_login_user_id')) {
-            return redirect()->route('login');
+            \Log::warning('No pending_login_user_id in session, redirecting to login');
+
+            return redirect()->route('login')
+                ->with('error', 'La sesión expiró. Por favor, inicia sesión nuevamente.');
         }
 
         $sessionsCount = session('sessions_count', 1);
