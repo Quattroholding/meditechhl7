@@ -20,7 +20,7 @@ class EncounterQuestionsSeeder extends Seeder
             "1" => "Menos de 1 de cada 5 veces", 
             "2" => "Menos de la mitad de las veces", 
             "3" => "Cerca de la mitad de las veces", 
-            "4" => "Más de la mitad de las time", 
+            "4" => "Más de la mitad de las veces", 
             "5" => "Casi siempre"];
         $options_eng = [
             "0" => "Not at all", 

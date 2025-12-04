@@ -14,7 +14,7 @@
                             <x-accordion-item data-id="{{$section->id}}" title="{{$section->name_esp}}" :isOpen="false" >
                                 <template x-if="loaded">
                                     <div x-transition:enter="transition ease-out duration-300">
-                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=>$section->name_esp])
+                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=>$section->name_esp, 'medical_specialty_id'=>auth()->user()->practitioner?->specialties->pluck('id')])
                                     </div>
                                 </template>
                                 <template x-if="!loaded">

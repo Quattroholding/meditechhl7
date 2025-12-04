@@ -22,6 +22,8 @@
     <!-- Responsive Table CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/responsive-table.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('assets/css/speciality-questions.css') }}">
+
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/652b8e06e9.js" crossorigin="anonymous"></script>
     @yield('scripts')
