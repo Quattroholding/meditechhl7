@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -71,4 +71,4 @@
         @component('components.notification-box')
         @endcomponent
     </div>
-</x-guest-layout>
+</x-app-layout>

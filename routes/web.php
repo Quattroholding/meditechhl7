@@ -171,7 +171,7 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 });
 
 // Dermatology routes - Independent patient tracking
-Route::group(['prefix' => 'dermatology'], function () {
+Route::group(['prefix' => 'dermatology', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [DermatologyController::class, 'index'])->name('dermatology.index');
 
