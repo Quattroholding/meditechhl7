@@ -172,6 +172,12 @@
     gap: 0.75rem;
 }
 
+@media (min-width: 300px){
+        .ipss-qol-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
 @media (min-width: 768px) {
     .ipss-qol-grid {
         grid-template-columns: repeat(4, 1fr);

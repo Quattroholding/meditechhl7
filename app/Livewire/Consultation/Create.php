@@ -29,11 +29,11 @@ class Create extends Component
     {
         $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
         $user = User::find(Auth::getUser()->id);
-        //dd($user->practitioner->specialties->pluck('id')->contains(42));
+        $specialities = $user->practitioner?->specialties->pluck('id')->contains(42);
 
         if ($encounter_sections_user->count() > 0) {
             $this->encounter_sections = EncounterSection::whereIn('id', $encounter_sections_user->pluck('encounter_section_id'))->get();
-        } elseif ($user->practitioner->specialties->pluck('id')->contains(42)) {
+        } elseif ($specialities && auth()->user()->hasRole('practitioner')) {
             $this->encounter_sections = EncounterSection::whereNull('deleted_at')->get();
         }else{
             $this->encounter_sections = EncounterSection::whereNull('category')->get();
