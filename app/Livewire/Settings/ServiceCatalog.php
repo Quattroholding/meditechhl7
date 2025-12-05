@@ -85,6 +85,9 @@ class ServiceCatalog extends Component
         'cpt_requires_auth' => 'boolean',
         'cpt_covered_insurance' => 'boolean',
         'cpt_patient_copay' => 'nullable|numeric|min:0',
+        'custom_name' => 'required|string|max:500',
+        'custom_service_type' => 'required|string',
+        'custom_price' => 'required|numeric|min:0'
     ];
 
     protected $messages = [
@@ -96,6 +99,8 @@ class ServiceCatalog extends Component
         'custom_service_type.required' => 'El tipo de servicio es obligatorio.',
         'custom_price.required' => 'El precio es obligatorio.',
         'custom_price.numeric' => 'El precio debe ser un número.',
+        'custom_name.required' => 'El nombre del servicio es obligatorio.',
+        'custom_name.max' => 'El nombre no puede exceder los 500 caracteres.'
     ];
 
     public function mount()

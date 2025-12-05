@@ -102,11 +102,33 @@
                     <form wire:submit="saveCustomService">
                         @csrf
                         <!-- Service Name -->
-                        <div class="col-12">
+                        {{--}}<div class="col-12">
                             <div class="input-block local-forms">
                                 <x-input-label for="custom_name" :value="__('Nombre del Servicio')" required="true"/>
                                 <x-text-input wire:model="custom_name" class="block mt-1 w-full" type="text" name="custom_name"/>
                                 @error('custom_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                        </div>{{--}}
+                        <div class="col-12">
+                            <div class="input-block local-forms">
+                                <x-input-label for="custom_name" :value="__('Nombre del Servicio')" required="true"/>
+                                <x-text-input 
+                                    wire:model.live="custom_name" 
+                                    class="block mt-1 w-full" 
+                                    type="text" 
+                                    name="custom_name"
+                                    maxlength="500"
+                                />
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    @error('custom_name') 
+                                        <span class="text-red-500 text-sm">{{ $message }}</span> 
+                                    @else
+                                        <span></span>
+                                    @enderror
+                                    <small class="{{ strlen($custom_name ?? '') > 500 ? 'text-danger' : (strlen($custom_name ?? '') > 450 ? 'text-warning' : 'text-muted') }}">
+                                        {{ strlen($custom_name ?? '') }}/500 caracteres
+                                    </small>
+                                </div>
                             </div>
                         </div>
 
