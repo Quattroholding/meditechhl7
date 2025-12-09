@@ -15,14 +15,14 @@ class PackageSeeder extends Seeder
         Package::create([
             'name' => 'Básico',
             'description' => 'Paquete básico para clínicas pequeñas y o consultorios con funcionalidades esenciales',
-            'max_users' => 3,
+            'max_users' => 1,
             'is_active' => true,
         ]);
 
         Package::create([
             'name' => 'Estándar',
             'description' => 'Paquete estándar para clínicas medianas con funcionalidades completas',
-            'max_users' => 15,
+            'max_users' => 4,
             'is_active' => true,
         ]);
 

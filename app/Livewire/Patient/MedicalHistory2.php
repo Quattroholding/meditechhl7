@@ -162,7 +162,7 @@ class MedicalHistory2 extends Component
         if (auth()->user()->hasRole('doctor')) {
             $totalNotes = ClinicalImpression::where('patient_id', $this->patientId)->wherePractitionerId(auth()->user()->practitioner->id)->count();
         }
-        if (auth()->user()->hasRole('asistente')) {
+        if (auth()->user()->hasRole('recepcionista')) {
             $totalNotes = ClinicalImpression::where('patient_id', $this->patientId)->count();
         }
 

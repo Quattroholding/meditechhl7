@@ -27,7 +27,7 @@
                                     <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
                                     <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
-                                    <a href="{{route('autologin',['role'=>'asistente'])}}" class="btn btn-primary">Asistente</a>
+                                    <a href="{{route('autologin',['role'=>'recepcionista'])}}" class="btn btn-primary">Recepcionista</a>
                                     @endif
                                 </div>
                                 @include('partials.message')

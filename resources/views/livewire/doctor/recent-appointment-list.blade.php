@@ -131,7 +131,7 @@
                                            @can('patients.medical_history') data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight" @endcan>
                                             {{ $appointment->patient->name }}
                                         </a>
-                                        @if(auth()->user()->hasRole('asistente'))
+                                        @if(auth()->user()->hasRole('recepcionista'))
                                             ({{$appointment->practitioner->name}})
                                         @endif
                                         <div class="float-end">

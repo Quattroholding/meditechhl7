@@ -210,7 +210,7 @@ class User extends Authenticatable
     public function getCurrentClientTotUsersCreated()
     {
 
-        return $this->getCurrentClient()->users()->role('asistente')->count() +
+        return $this->getCurrentClient()->users()->role('recepcionista')->count() +
             $this->getCurrentClient()->users()->role('admin client')->count() + $this->getCurrentClient()->users()->role('doctor')->count();
     }
 }

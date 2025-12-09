@@ -67,8 +67,8 @@ class UserObserver
             $dashboardTypes[] = 'doctor';
         }
 
-        if (in_array('asistente', $userRoles)) {
-            $dashboardTypes[] = 'assistant';
+        if (in_array('recepcionista', $userRoles)) {
+            $dashboardTypes[] = 'recepcionist';
         }
 
         if (in_array('paciente', $userRoles)) {

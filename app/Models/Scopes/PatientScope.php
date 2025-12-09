@@ -13,7 +13,7 @@ class PatientScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('asistente'))) {
+        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('recepcionista'))) {
             $builder->whereHas('clients', function ($q) {
                 $q->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
             });

@@ -122,6 +122,14 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'dashboard.patient', 'description' => 'Acceso al dashboard de paciente', 'module' => 'dashboards'],
             ['name' => 'dashboard.client', 'description' => 'Acceso al dashboard de cliente', 'module' => 'dashboards'],
             ['name' => 'dashboard.assistence', 'description' => 'Acceso al dashboard de asistencia', 'module' => 'dashboards'],
+
+            // Dashboard access
+            ['name' => 'reports.appointments.view', 'description' => 'Ver reportes de citas', 'module' => 'reportes'],
+            ['name' => 'reports.appointments.excel', 'description' => 'Descargar reportes de citas en excel', 'module' => 'reportes'],
+            ['name' => 'reports.appointments.pdf', 'description' => 'Descargar reportes de citas en pdf', 'module' => 'reportes'],
+            ['name' => 'reports.invoices-payments.view', 'description' => 'Ver reportes de facturas', 'module' => 'reportes'],
+            ['name' => 'reports.invoices-payments.excel', 'description' => 'Descargar reportes de facturas en excel', 'module' => 'reportes'],
+            ['name' => 'reports.invoices-payments.pdf', 'description' => 'Descargar reportes de facturas en pdf', 'module' => 'reportes'],
         ];
 
         foreach ($permissions as $permissionData) {
@@ -131,11 +139,11 @@ class RolePermissionSeeder extends Seeder
                 $permission->module = $permissionData['module'];
                 $permission->save();
             } else {
-                Permission::firstOrCreate(
-                    ['name' => $permissionData['name']],
-                    ['description' => $permissionData['description']],
-                    ['module' => $permissionData['module']]
-                );
+                $permission = new Permission();
+                $permission->name = $permissionData['name'];
+                $permission->description = $permissionData['description'];
+                $permission->module = $permissionData['module'];
+                $permission->save();
             }
 
         }
@@ -143,23 +151,6 @@ class RolePermissionSeeder extends Seeder
         // Create roles and assign permissions
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all());
-
-        $patientRole = Role::firstOrCreate(['name' => 'paciente']);
-        $patientRole->givePermissionTo([
-            'dashboard.patient',
-            'appointments.view',
-            'appointments.create',
-            'appointments.edit',
-            'appointments.delete',
-            'appointments.calendar',
-            'consultations.view',
-            'invoices.view',
-            'practitioners.directory',
-            'patients.medical_history',
-            'patients.profile',
-            'patients.edit',
-            'patients.update',
-        ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
         $doctorRole->givePermissionTo([
@@ -213,6 +204,52 @@ class RolePermissionSeeder extends Seeder
             'practitioners.update',
         ]);
 
+
+        $assistantRole = Role::firstOrCreate(['name' => 'recepcionista']);
+        $assistantRole->givePermissionTo([
+            'dashboard.assistence',
+            'patients.view',
+            'patients.create',
+            'patients.edit',
+            'patients.add_note',
+            'patients.insurance',
+            'appointments.view',
+            'appointments.create',
+            'appointments.edit',
+            'appointments.delete',
+            'appointments.calendar',
+            'consultations.view',
+            'practitioners.view',
+            'practitioners.directory',
+            'invoices.view',
+            'payments.view',
+            'payments.create',
+            'payments.edit',
+            'payments.delete',
+            'service_request.view',
+            'service_request.upload_result',
+            'users.profile',
+            'users.change_client',
+        ]);
+
+        $patientRole = Role::firstOrCreate(['name' => 'paciente']);
+        $patientRole->givePermissionTo([
+            'dashboard.patient',
+            'appointments.view',
+            'appointments.create',
+            'appointments.edit',
+            'appointments.delete',
+            'appointments.calendar',
+            'consultations.view',
+            'invoices.view',
+            'practitioners.directory',
+            'patients.medical_history',
+            'patients.profile',
+            'patients.edit',
+            'patients.update',
+        ]);
+
+
         $adminClientRole = Role::firstOrCreate(['name' => 'admin client']);
         $adminClientRole->givePermissionTo([
             'dashboard.client',
@@ -242,31 +279,56 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
         ]);
 
-        $assistantRole = Role::firstOrCreate(['name' => 'asistente']);
-        $assistantRole->givePermissionTo([
-            'dashboard.assistence',
-            'patients.view',
-            'patients.create',
-            'patients.edit',
-            'patients.add_note',
-            'patients.insurance',
+        $doctorRole = Role::firstOrCreate(['name' => 'asistente_medico']);
+        $doctorRole->givePermissionTo([
+            'dashboard.doctor',
+            'users.view',
+            'users.create',
+            'users.change_client',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
-            'appointments.delete',
             'appointments.calendar',
+            'patients.view',
+            'patients.create',
+            'patients.edit',
+            'patients.update',
+            'patients.medical_history',
+            'patients.add_note',
+            'patients.insurance',
             'consultations.view',
-            'practitioners.view',
-            'practitioners.directory',
+            'consultations.create',
+            'consultations.edit',
             'invoices.view',
+            'invoices.create',
+            'invoices.edit',
+            'invoices.delete',
             'payments.view',
             'payments.create',
             'payments.edit',
             'payments.delete',
+            'settings.create_user_procedures',
+            'settings.create_consultation_template',
+            'settings.create_rapid_access',
+            'settings.create_working_hour_user',
+            'settings.signature_and_seal',
             'service_request.view',
             'service_request.upload_result',
-            'users.profile',
-            'users.change_client',
+            'branches.view',
+            'branches.create',
+            'branches.edit',
+            'branches.delete',
+            'rooms.view',
+            'rooms.create',
+            'rooms.edit',
+            'rooms.delete',
+            'medicines.view',
+            'medicines.create',
+            'practitioners.profile',
+            'practitioners.directory',
+            'practitioners.add_assistant',
+            'practitioners.edit',
+            'practitioners.update',
         ]);
     }
 }

@@ -10,7 +10,7 @@ class AppointmentPolicy
 {
     public function viewConsultation(User $user, Appointment $appointment): bool
     {
-        if ($user->hasRole('paciente') or $user->hasRole('admin client') or $user->hasRole('asistente')) {
+        if ($user->hasRole('paciente') or $user->hasRole('admin client') or $user->hasRole('recepcionista')) {
             return false;
         }
 
@@ -33,12 +33,12 @@ class AppointmentPolicy
 
     public function checked_in(User $user, Appointment $appointment): bool
     {
-        return $appointment->status == 'arrived' && ($appointment->practitioner->user_id == $user->id or $user->hasRole('asistente'));
+        return $appointment->status == 'arrived' && ($appointment->practitioner->user_id == $user->id or $user->hasRole('recepcionista'));
     }
 
     public function fulfilled(User $user, Appointment $appointment): bool
     {
-        return $appointment->status == 'checked-in' && ! $user->hasRole('paciente') && ! $user->hasRole('admin client') && ! $user->hasRole('asistente');
+        return $appointment->status == 'checked-in' && ! $user->hasRole('paciente') && ! $user->hasRole('admin client') && ! $user->hasRole('recepcionista');
     }
 
     public function cancelled(User $user, Appointment $appointment): bool

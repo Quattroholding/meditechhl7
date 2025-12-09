@@ -241,7 +241,7 @@
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
                     case 5:
-                    /*-----FORMULARIO PARA ROLE ASISTENTE-----*/
+                    /*-----FORMULARIO PARA ROLE recepcionista-----*/
                     case 1:
                         $("#whatsapp").show();
                     /*-----FORMULARIO PARA ROLE ADMIN-----*/

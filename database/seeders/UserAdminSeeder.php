@@ -30,7 +30,7 @@ class UserAdminSeeder extends Seeder
             'ruc' => fake()->randomNumber(7),
             'dv' => fake()->numberBetween(10, 99),
             'long_name' => 'Soluciones Meditech',
-            'email' => 'ragasperi@smartcarebilling.com',
+            'email' => 'rgasperi@smartcarebilling.com',
             'whatsapp' => '0800-555-555',
             'logo' => fake()->imageUrl(),
         ]);

@@ -107,7 +107,7 @@ class UserController extends Controller
 
         $data = User::find($id);
 
-        if (auth()->user()->hasRole('asistente') && $id != auth()->user()->id) {
+        if (auth()->user()->hasRole('recepcionista') && $id != auth()->user()->id) {
             abort(403, 'No tienes permisos para acceder a esta página.');
         }
 

@@ -13,7 +13,7 @@ class ChargeItemScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') || auth()->user()->hasRole('asistente'))) {
+        if (auth()->user() && (auth()->user()->hasRole('doctor') || auth()->user()->hasRole('recepcionista'))) {
             // Filter by client_id based on user's associated clients
             $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
         } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {

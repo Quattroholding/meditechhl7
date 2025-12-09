@@ -16,7 +16,7 @@ class InvoicesPaymentsReport extends BaseReport
 
     protected string $description = 'Lista completa de facturas y pagos realizados con filtros personalizables';
 
-    protected array $roles = ['admin', 'doctor', 'asistente'];
+    protected array $roles = ['admin', 'doctor', 'recepcionista'];
 
     /**
      * Obtener los datos del reporte aplicando filtros
@@ -78,12 +78,12 @@ class InvoicesPaymentsReport extends BaseReport
             $query->whereDate('date', '<=', $filters['date_to']);
         }
 
-        // Filtro por paciente (solo admin/asistente)
+        // Filtro por paciente (solo admin/recepcionista)
         if (! empty($filters['patient_id']) && ! auth()->user()->hasRole('doctor')) {
             $query->where('patient_id', $filters['patient_id']);
         }
 
-        // Filtro por sede (solo admin/asistente)
+        // Filtro por sede (solo admin/recepcionista)
         if (! empty($filters['branch_id']) && ! auth()->user()->hasRole('doctor')) {
             $query->where('branch_id', $filters['branch_id']);
         }
@@ -163,8 +163,8 @@ class InvoicesPaymentsReport extends BaseReport
             ],
         ];
 
-        // Filtros adicionales para admin y asistente
-        if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('asistente')) {
+        // Filtros adicionales para admin y recepcionista
+        if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('recepcionista')) {
             $filters['patient_id'] = [
                 'type' => 'select',
                 'label' => 'Paciente',

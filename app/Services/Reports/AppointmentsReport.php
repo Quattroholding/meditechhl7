@@ -16,7 +16,7 @@ class AppointmentsReport extends BaseReport
 
     protected string $description = 'Reporte completo de citas médicas con filtros personalizables';
 
-    protected array $roles = ['admin', 'doctor', 'asistente'];
+    protected array $roles = ['admin', 'doctor', 'recepcionista'];
 
     /**
      * Obtener los datos del reporte aplicando filtros
@@ -81,12 +81,12 @@ class AppointmentsReport extends BaseReport
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
-        // Filtro por paciente (solo para admin y asistente)
+        // Filtro por paciente (solo para admin y recepcionista)
         if (! empty($filters['patient_id']) && ! auth()->user()->hasRole('doctor')) {
             $query->where('patient_id', $filters['patient_id']);
         }
 
-        // Filtro por practitioner (solo para admin y asistente, doctor ya está pre-filtrado)
+        // Filtro por practitioner (solo para admin y recepcionista, doctor ya está pre-filtrado)
         if (! empty($filters['practitioner_id']) && ! auth()->user()->hasRole('doctor')) {
             $query->where('practitioner_id', $filters['practitioner_id']);
         }
@@ -148,8 +148,8 @@ class AppointmentsReport extends BaseReport
             ],
         ];
 
-        // Filtros adicionales solo para admin y asistente (no para doctor)
-        if ($user->hasRole('admin') || $user->hasRole('asistente')) {
+        // Filtros adicionales solo para admin y recepcionista (no para doctor)
+        if ($user->hasRole('admin') || $user->hasRole('recepcionista')) {
             $filters['patient_id'] = [
                 'type' => 'datalist',
                 'label' => 'Paciente',

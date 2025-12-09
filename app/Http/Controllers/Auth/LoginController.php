@@ -90,7 +90,7 @@ class LoginController extends Controller
             if ($user->hasRole('paciente')) {
                 $route = route('patient.dashboard');
             }
-            if ($user->hasRole('asistente')) {
+            if ($user->hasRole('recepcionista')) {
                 $route = route('assistence.dashboard');
             }
 

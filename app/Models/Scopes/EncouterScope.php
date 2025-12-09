@@ -30,9 +30,9 @@ class EncouterScope implements Scope
                         });
                     });
             });*/
-        } elseif (auth()->user() && auth()->user()->hasRole('paciente')) { // el asistente ve todas las citas de los doctores asociados a cu cliente
+        } elseif (auth()->user() && auth()->user()->hasRole('recepcionista')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
             $builder->where('encounters.patient_id', auth()->user()->patient->id);
-        } elseif (auth()->user() && auth()->user()->hasRole('asistente') || auth()->user() && auth()->user()->hasRole('admin client')) { // el asistente ve todas las citas de los doctores asociados a cu cliente
+        } elseif (auth()->user() && auth()->user()->hasRole('recepcionista') || auth()->user() && auth()->user()->hasRole('admin client')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
             $builder->whereHas('appointment', function ($q) {
                 $q->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
             });

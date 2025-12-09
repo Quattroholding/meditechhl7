@@ -18,7 +18,7 @@ class PaymentScope implements Scope
             $builder->whereHas('invoice', function ($q) {
                 $q->wherePerformerPractitionerId(auth()->user()->practitioner->id);
             });
-        } elseif (auth()->user() && (auth()->user()->hasRole('admin_client') or auth()->user()->hasRole('asistente'))) {
+        } elseif (auth()->user() && (auth()->user()->hasRole('admin_client') or auth()->user()->hasRole('recepcionista'))) {
             // Filter by patient - through the patient relationship
             $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
         } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {
