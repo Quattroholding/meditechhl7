@@ -5,7 +5,6 @@ namespace App\Livewire\Consultation;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\Medicine;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -21,6 +20,8 @@ class MedicationRequests extends Component
 
     public $selectedLists = [];
 
+    public $rapidAccess = [];
+
     public $dosage_texts = [];
 
     public $quantitys = [];
@@ -35,6 +36,8 @@ class MedicationRequests extends Component
 
     public $saved = false;
 
+    public $section_id = 11;
+
     protected $listeners = ['copyMedicationsToCurrentRecipe'];
 
     public function mount()
@@ -42,7 +45,7 @@ class MedicationRequests extends Component
         $this->encounter = Encounter::find($this->encounter_id);
 
         $this->getMedicationRequestsProperty();
-
+        $this->loadRapidAccess();
     }
 
     public function getMedicationRequestsProperty()
@@ -66,12 +69,12 @@ class MedicationRequests extends Component
             return;
         }
 
-        $response = Http::get(url('api/medicines'), [
-            'dropdown' => true,
-            'q' => $this->query,
-        ]);
-
-        $this->results = $response->json() ?? [];
+        // Query medicines directly instead of using API to maintain authentication context
+        $this->results = Medicine::selectRaw("id,concat(home_name,' de ',mgs,' ',mgs_type,' en ',type) as name")
+            ->whereRaw("(ndc_code LIKE '%".$this->query."%' or home_name LIKE '%".$this->query."%' or generic_name LIKE '%".$this->query."%')")
+            ->take(10)
+            ->get()
+            ->toArray();
     }
 
     public function selectOption($option)
@@ -107,6 +110,9 @@ class MedicationRequests extends Component
         }
 
         $this->getMedicationRequestsProperty();
+
+        // Disparar evento para limpiar el scroll bloqueado
+        $this->dispatch('option-selected');
 
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
@@ -267,6 +273,67 @@ class MedicationRequests extends Component
 
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
+    }
+
+    private function loadRapidAccess()
+    {
+        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
+            ->whereType('CLIENT')
+            ->whereEncounterSectionId($this->section_id)
+            ->with('medicine')
+            ->get()
+            ->take(10);
+
+        if ($this->rapidAccess->count() == 0) {
+            $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
+                ->whereEncounterSectionId($this->section_id)
+                ->with('medicine')
+                ->get()
+                ->take(10);
+        }
+    }
+
+    public function clearSearch()
+    {
+        $this->query = '';
+        $this->results = [];
+    }
+
+    public function addToRapidAccess($medicineId)
+    {
+        try {
+            $existing = \App\Models\RapidAccess::whereUserId(auth()->id())
+                ->whereType('CLIENT')
+                ->whereEncounterSectionId($this->section_id)
+                ->where('medicine_id', $medicineId)
+                ->first();
+
+            if (! $existing) {
+                \App\Models\RapidAccess::create([
+                    'user_id' => auth()->id(),
+                    'type' => 'CLIENT',
+                    'encounter_section_id' => $this->section_id,
+                    'medicine_id' => $medicineId,
+                ]);
+
+                $this->loadRapidAccess();
+
+                $this->dispatch('showToastrConsultation',
+                    type: 'success',
+                    message: 'Agregado a accesos rápidos'
+                );
+            } else {
+                $this->dispatch('showToastrConsultation',
+                    type: 'error',
+                    message: 'Ya está en accesos rápidos'
+                );
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'Error al agregar a accesos rápidos'
+            );
+        }
     }
 
     public function render()

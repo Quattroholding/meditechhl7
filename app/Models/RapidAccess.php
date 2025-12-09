@@ -6,7 +6,7 @@ class RapidAccess extends BaseModel
 {
     protected $table = 'rapid_access';
 
-    protected $fillable = ['type', 'client_id', 'user_id', 'cpt_id', 'active', 'encounter_section_id'];
+    protected $fillable = ['type', 'client_id', 'user_id', 'cpt_id', 'medicine_id', 'active', 'encounter_section_id'];
 
     public function consultationField()
     {
@@ -16,5 +16,10 @@ class RapidAccess extends BaseModel
     public function cpt()
     {
         return $this->belongsTo(CptCode::class);
+    }
+
+    public function medicine()
+    {
+        return $this->belongsTo(Medicine::class);
     }
 }

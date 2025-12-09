@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\MedicineScope;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Medicine extends BaseModel
 {
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new MedicineScope);
+    }
+
     protected $table = 'medicines';
 
     protected $fillable = [

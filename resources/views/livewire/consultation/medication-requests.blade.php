@@ -1,4 +1,14 @@
-<div>
+<div x-data="{}"
+     x-init="
+        $wire.on('option-selected', (data) => {
+           document.body.removeAttribute('style');
+           document.body.classList.remove('modal-open');
+           const backdrop = document.querySelector('.offcanvas-backdrop');
+           if (backdrop) {
+               backdrop.remove();
+           }
+        });
+     ">
     @if(count($selectedLists)>0)
         <table style="width:100%;" border="1"
                class="medicine-table">
@@ -110,16 +120,83 @@
         <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
     </div>
     <p>&nbsp;</p>
+    @php $id =\Illuminate\Support\Str::uuid();@endphp
     <div class="selector-field selector-field-on">
-        @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-        <div style="width:100%;padding:20px;">
-            <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento." >
-        </div>
+        <table style="width:100%">
+            <tbody>
+            <tr>
+                <td>
+                    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
+                </td>
+            </tr>
+            <tr>
+                <td style="width:80%;padding:20px;">
+                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento por nombre, código NDC o nombre genérico" >
+                </td>
+                <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
+                    <div class="general-btn-small"
+                            type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight{{$id}}"
+                            aria-controls="offcanvasRight">
+                        <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
+                        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel" >
+            <div class="offcanvas-body  quick-items-content">
+                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
+                    <img src="/images/close-floating.png" alt="">
+                </div>
+                <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
+                @if(count($rapidAccess) > 0)
+                    @foreach($rapidAccess as $i)
+                        <div class="sel-list-item mb-2"
+                             style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
+
+                            {{-- Contenido principal clickeable --}}
+                            <div wire:click="selectOption({{ json_encode(['id'=>$i->medicine_id,'name'=>'']) }})">
+                                <div class="sel-list-item-code fw-bold">{{$i->medicine->home_name}}</div>
+                                <div class="sel-list-item-content">{{$i->medicine->full_name}}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center text-muted py-4">
+                        <p>No hay accesos rápidos configurados</p>
+                    </div>
+                @endif
+                {{-- Botones de control del panel --}}
+                <div class="mt-4 d-flex gap-2 border-top pt-3">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            wire:click="clearSearch">
+                        <i class="fas fa-eraser"></i> Limpiar búsqueda
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-sm btn-secondary"
+                            data-bs-dismiss="offcanvas">
+                        <i class="fas fa-times"></i> Cerrar Panel
+                    </button>
+                </div>
+            </div>
+        </div> <!-- end offcanvas-body-->
+
+        {{-- RESULTADOS DE BÚSQUEDA --}}
         @if(!empty($results))
             <div class="selector-items" style="z-index: 1000">
                 @foreach($results as $result)
-                    <div  class="sel-list-item"  wire:click="selectOption({{ json_encode($result) }})">
-                        {{ $result['name'] }}
+                    <div class="sel-list-item row" wire:click="selectOption({{ json_encode($result) }})">
+                        <div class="col-md-9">{{ $result['name'] }}</div>
+                        <div class="col-md-3 text-end">
+                            <button type="button" class="btn btn-sm btn-outline-primary" wire:click.stop="addToRapidAccess({{ $result['id'] }})" title="Agregar a accesos rápidos">
+                                <i class="fas fa-star"></i>
+                            </button>
+                        </div>
                     </div>
                 @endforeach
             </div>

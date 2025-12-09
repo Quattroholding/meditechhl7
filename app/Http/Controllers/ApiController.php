@@ -137,6 +137,18 @@ class ApiController extends Controller
         }
 
         $query = Medicine::selectRaw($select)
+            ->where(function ($q) {
+                // Always show FDA medicines (public)
+                $q->where('source', 'FDA');
+
+                // If user is authenticated, also show their custom medicines
+                if (auth()->check()) {
+                    $q->orWhere(function ($q2) {
+                        $q2->where('source', 'CUSTOM')
+                            ->where('user_id', auth()->id());
+                    });
+                }
+            })
             ->when($request->has('q'), function ($q) use ($request) {
                 $q->whereRaw("(ndc_code LIKE '%".$request->q."%' or home_name LIKE '%".$request->q."%' or generic_name LIKE '%".$request->q."%')");
             });

@@ -47,14 +47,58 @@ class ItemTransfer extends Component
         }
 
         $disponibles = $sectionsQuery->pluck('id');
-        $selecionados = [];
+
+        // Get obligatory sections
+        $obligatorySections = EncounterSection::query()
+            ->where('obligatory', 1)
+            ->when($this->category, function ($query) {
+                $query->whereCategory($this->category);
+            })
+            ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+                $query->where(function ($q) use ($practitionerSpecialties) {
+                    $q->whereNull('medical_speciality_id')
+                        ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
+                });
+            })
+            ->pluck('id');
+
+        $selecionados = collect();
 
         if ($user->clients()->first()) {
             $this->client_id = $user->clients()->first()->id;
             $selecionados = EncounterTemplate::whereClientId($this->client_id)
+                ->whereUserId($user->id)
                 ->whereType('client')
                 ->pluck('encounter_section_id');
+
+            // First time setup: If user has no configuration, add all general sections
+            if ($selecionados->isEmpty()) {
+                $generalSections = EncounterSection::query()
+                    ->whereNull('medical_speciality_id')
+                    ->when($this->category, function ($query) {
+                        $query->whereCategory($this->category);
+                    })
+                    ->get();
+
+                foreach ($generalSections as $section) {
+                    EncounterTemplate::create([
+                        'type' => 'client',
+                        'client_id' => $this->client_id,
+                        'user_id' => $user->id,
+                        'encounter_section_id' => $section->id,
+                    ]);
+                }
+
+                // Reload selected sections after initial setup
+                $selecionados = EncounterTemplate::whereClientId($this->client_id)
+                    ->whereUserId($user->id)
+                    ->whereType('client')
+                    ->pluck('encounter_section_id');
+            }
         }
+
+        // Merge obligatory sections with user selected sections
+        $selecionados = $selecionados->merge($obligatorySections)->unique();
 
         if (count($selecionados) == 0) {
             $this->availableItems = $sectionsQuery->get()->toArray();
@@ -133,7 +177,10 @@ class ItemTransfer extends Component
             } else {
                 $this->selectedItems = array_values(array_filter($this->selectedItems, fn ($i) => $i['id'] !== $itemId));
                 $this->availableItems[] = $item;
-                $field = EncounterTemplate::whereRaw('(client_id = '.$this->client_id.' or user_id = '.auth()->user()->id.')')->whereEncounterSectionId($itemId)->first();
+                $field = EncounterTemplate::whereClientId($this->client_id)
+                    ->whereUserId(auth()->user()->id)
+                    ->whereEncounterSectionId($itemId)
+                    ->first();
                 $field->delete();
                 $this->dispatch('showToastrItemTransfer',
                     type: 'success',
