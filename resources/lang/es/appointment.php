@@ -35,6 +35,6 @@ return [
     'duration' => 'Duración (minutos)',
     'speciality' => 'Especialidad',
     'consulting_room' => 'Consultorio',
-    'reason' => 'Motivo de consulta',
+    'reason' => 'Nota Adicional',
     'service_type' => 'Tipo de Servicio',
 ];
