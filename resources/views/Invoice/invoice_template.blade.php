@@ -152,7 +152,7 @@
     <div class="header">
         <div class="company-info">
             <div class="company-name">{{ $organization->name ?? 'Centro Médico' }}</div>
-            @if($invoice->encounter->appointment->consultingRoom->branch->address)
+            @if($invoice->encounter && $invoice->encounter->appointment->consultingRoom->branch->address)
                 <div>{{ $invoice->encounter->appointment->consultingRoom->branch->address }}</div>
             @endif
             @if($organization->whatsapp ?? false)

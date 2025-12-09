@@ -164,9 +164,7 @@
     <div class="my-3">&nbsp;</div>
     <!-- Modal -->
     <livewire:appointment.modal-save wire:model="showModal"
-                                     :title="$modalTitle"
-                                     :appointment_date="$appointment_date"
-                                     :appointment_time="$appointment_time"/>
+                                     :title="$modalTitle"/>
 
     @include('patients.modals.create',['name'=>'create_patient'])
 

@@ -88,6 +88,6 @@ class RecentAppointmentList extends Component
 
     public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal', 'Nueva Cita');
+        $this->dispatch('openAppointmentModal', $modalTitle,$date,$time);
     }
 }

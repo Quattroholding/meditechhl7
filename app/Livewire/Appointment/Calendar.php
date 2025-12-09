@@ -234,15 +234,7 @@ class Calendar extends Component
 
     public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->showModal = true;
-        $this->modalTitle = $modalTitle;
-
-        if ($date) {
-            $this->appointment_date = $date;
-        }
-        if ($time) {
-            $this->appointment_time = $time;
-        }
+        $this->dispatch('openAppointmentModal', $modalTitle,$date,$time);
     }
 
     public function editAppointment($appointmentId)
@@ -263,11 +255,11 @@ class Calendar extends Component
                 $appointment->status = $newStatus;
                 $appointment->save();
 
-                //$appointment->update(['status' => $newStatus]);
+                // $appointment->update(['status' => $newStatus]);
 
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
-                //$this->loadStats();
+                // $this->loadStats();
 
                 if ($current_status == 'proposed' && $newStatus == 'booked') {
                     $appointment->notifyPatientAboutConfirmation();
@@ -281,7 +273,7 @@ class Calendar extends Component
                 }
             }
         } catch (\Exception $e) {
-            session()->flash('message.error', 'Error al actualizar el estado :' . $e->getMessage());
+            session()->flash('message.error', 'Error al actualizar el estado :'.$e->getMessage());
         }
     }
 

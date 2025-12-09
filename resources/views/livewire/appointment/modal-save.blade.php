@@ -24,15 +24,19 @@
                     @else
                         <input type="hidden" wire:model="patient_id" value="{{$patient_id}}">
                     @endif
+                    @if((!auth()->user()->hasRole('doctor')) or (auth()->user()->hasRole('doctor') && auth()->user()->practitioner->qualifications->count()>1))
                     <div class="input-block local-forms">
                         <x-input-label for="medical_speciality_id" :value="__('appointment.speciality')" required/>
                         <x-select-input wire:model="medical_speciality_id" wire:change="loadDoctors()" id="medical_speciality_id" name="medical_speciality_id" :options="$especialidades"  class="block w-full"/>
                         <x-input-error :messages="$errors->get('medical_speciality_id')"/>
                     </div>
+                    @else
+                        <input type="hidden" wire:model="medical_speciality_id" value="{{ auth()->user()->practitioner->qualifications->first->code}}" id="doctor_id" name="doctor_id">
+                    @endif
                     @if(!auth()->user()->hasRole('doctor'))
                         <div class="input-block local-forms">
                             <x-input-label for="doctor_id" :value="__('doctor.title')" required/>
-                            <x-select-input wire:change="loadConsultorios()" wire:model="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full"/>
+                            <x-select-input wire:model.live="doctor_id" id="doctor_id" name="doctor_id" :options="$practitioners"  class="block w-full"/>
                             <x-input-error :messages="$errors->get('doctor_id')"/>
                         </div>
                     @else
@@ -41,7 +45,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
                             <x-input-label for="Fecha" :value="__('appointment.date')" required/>
-                            <input wire:model="appointment_date" type="date" class="form-control-full">
+                            <input wire:model.live="appointment_date" type="date" class="form-control-full">
                             <x-input-error :messages="$errors->get('appointment_date')"/>
                         </div>
                         <div class="input-block local-forms">
@@ -50,6 +54,25 @@
                             <x-input-error :messages="$errors->get('appointment_time')"/>
                         </div>
                     </div>
+                    @if($doctor_id && $appointment_date)
+                        @php
+                            $workingHour = $this->getWorkingHourForDate($appointment_date);
+                        @endphp
+                        @if($workingHour)
+                            <div class="alert alert-info" style="margin-top: 10px;">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Horario laboral:</strong>
+                                El doctor trabaja de {{ substr($workingHour->start_time, 0, 5) }} a {{ substr($workingHour->end_time, 0, 5) }}
+                                en {{ $workingHour->consultingRoom->full_name_branch ?? 'N/A' }}
+                            </div>
+                        @elseif($this->isDoctorWorkingOnDate($appointment_date) === false)
+                            <div class="alert alert-warning" style="margin-top: 10px;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Atención:</strong>
+                                El doctor no tiene horario configurado para este día de la semana.
+                            </div>
+                        @endif
+                    @endif
                     <div  class="input-block local-forms">
                         <x-input-label class="form-label" required>{{__('appointment.duration')}}</x-input-label>
                         <select wire:model="duration" class="form-control-full" required>

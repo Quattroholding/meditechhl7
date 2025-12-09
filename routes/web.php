@@ -179,12 +179,6 @@ Route::group(['prefix' => 'dermatology', 'middleware' => ['auth', 'verified', 'f
 
 });
 
-// Invoice routes
-Route::group(['prefix' => 'invoice', 'middleware' => ['auth', 'verified', 'first.login', 'permission:invoices.view']], function () {
-
-    Route::get('/{invoice_id}/download', [ConsultationController::class, 'downloadInvoice'])->name('invoice.download');
-
-});
 
 Route::group(['prefix' => 'accounts', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 

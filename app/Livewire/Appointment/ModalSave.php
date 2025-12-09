@@ -7,6 +7,7 @@ use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\UserClient;
+use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Modelable;
@@ -16,7 +17,7 @@ use Livewire\Component;
 class ModalSave extends Component
 {
     #[Modelable]
-    public $showModal;
+    public $showModal = false;
 
     public $appointment;
 
@@ -89,7 +90,6 @@ class ModalSave extends Component
     {
         $this->loadDoctors();
         $this->loadEspecialidades();
-        $this->loadConsultorios();
 
         if (auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
@@ -98,7 +98,6 @@ class ModalSave extends Component
         if (auth()->user()->hasRole('doctor')) {
             $this->doctor_id = auth()->user()->practitioner->id;
         }
-
     }
 
     public function loadData() {}
@@ -121,45 +120,119 @@ class ModalSave extends Component
     }
 
     #[On('openAppointmentModal')]
-    public function openModal($title)
+    public function openModal($title='',$date, $time)
     {
-        $this->resetForm();
+        $this->resetForm($date, $time);
         $this->showModal = true;
         $this->title = $title;
+        $this->buttonSaveTitle = 'Guardar Cita';
+
+        // Cargar consultorios si ya hay doctor y fecha
+        if ($this->doctor_id && $this->appointment_date) {
+            \Log::info('openModal: Cargando consultorios', [
+                'doctor_id' => $this->doctor_id,
+                'appointment_date' => $this->appointment_date,
+            ]);
+            $this->loadConsultorios();
+        }
     }
 
-    public function resetForm()
+    public function resetForm($date=null, $time='')
     {
+        $this->consulting_room_id = '';
+        $this->medical_speciality_id = '';
+        $this->service_type = '';
+        $this->description = '';
+        $this->appointment_date = $date ?? Carbon::now()->format('Y-m-d');
+        $this->appointment_time = $time ?? '';
+        $this->duration = 30;
+        $this->status = 'booked';
+
         $this->appointment = null;
         if (! auth()->user()->hasRole('paciente')) {
             $this->patient_id = '';
         }
         if (! auth()->user()->hasRole('doctor')) {
             $this->doctor_id = '';
+            \Log::info('resetForm: Usuario NO es doctor, limpiando doctor_id');
+        } else {
+            // Si es doctor, mantener su ID
+            if (auth()->user()->practitioner) {
+                $this->doctor_id = auth()->user()->practitioner->id;
+                $this->medical_speciality_id = auth()->user()->practitioner->qualifications()->first()->code;
+            }
         }
-
-        $this->description = '';
-        $this->appointment_date = Carbon::now()->format('Y-m-d');
-        $this->appointment_time = '';
-        $this->duration = 30;
-        $this->status = 'booked';
 
         if (auth()->user()->hasRole('paciente')) {
             $this->status = 'proposed';
         }
 
-        $this->consulting_room_id = '';
-        $this->medical_speciality_id = '';
-        $this->service_type = '';
     }
 
     public function loadDoctors()
     {
-        $this->practitioners = Practitioner::when($this->medical_speciality_id, function ($q) {
-            $q->whereHas('qualifications', function ($q) {
-                $q->where('medical_speciality_id', $this->medical_speciality_id);
-            });
-        })->get()->pluck('name', 'id')->toArray();
+        if (!auth()->user()->practitioner) {
+            $this->practitioners = Practitioner::when($this->medical_speciality_id, function ($q) {
+                $q->whereHas('qualifications', function ($q) {
+                    $q->where('medical_speciality_id', $this->medical_speciality_id);
+                });
+            })->get()->pluck('name', 'id')->toArray();
+        }
+
+    }
+
+    /**
+     * Listener para cuando cambia la fecha de la cita
+     */
+    public function updatedAppointmentDate($value)
+    {
+        \Log::info('updatedAppointmentDate called', [
+            'date' => $value,
+            'doctor_id' => $this->doctor_id,
+        ]);
+
+        $this->loadConsultorios();
+        $this->consulting_room_id = '';
+
+        \Log::info('Consultorios after update', [
+            'consultorios' => $this->consultorios,
+        ]);
+    }
+
+    /**
+     * Listener para cuando cambia el doctor
+     */
+    public function updatedDoctorId($value)
+    {
+        \Log::info('updatedDoctorId called', [
+            'doctor_id' => $value,
+            'appointment_date' => $this->appointment_date,
+        ]);
+
+        if ($value) {
+            $this->loadConsultorios();
+            $this->consulting_room_id = '';
+        }
+
+        \Log::info('Consultorios after update', [
+            'consultorios' => $this->consultorios,
+        ]);
+    }
+
+    /**
+     * Listener para cuando cambia la especialidad médica
+     */
+    public function updatedMedicalSpecialityId($value)
+    {
+        \Log::info('updatedMedicalSpecialityId called', ['speciality_id' => $value]);
+        if (!auth()->user()->practitioner) {
+            // Recargar la lista de doctores filtrados por especialidad
+            $this->loadDoctors();
+            // Limpiar doctor y consultorios seleccionados
+            $this->doctor_id = '';
+            $this->consulting_room_id = '';
+            $this->consultorios = [];
+        }
 
     }
 
@@ -185,12 +258,167 @@ class ModalSave extends Component
 
     public function loadConsultorios()
     {
-        $this->consultorios = ConsultingRoom::when($this->doctor_id, function ($q) {
-            $q->whereHas('branch', function ($q2) {
-                $practitioner = Practitioner::find($this->doctor_id);
+        \Log::info('loadConsultorios START', [
+            'doctor_id' => $this->doctor_id,
+            'appointment_date' => $this->appointment_date,
+        ]);
+
+        if (! $this->doctor_id) {
+            $this->consultorios = [];
+            \Log::info('loadConsultorios: No doctor_id, consultorios vacíos');
+
+            return;
+        }
+
+        $practitioner = Practitioner::find($this->doctor_id);
+        if (! $practitioner) {
+            $this->consultorios = [];
+            \Log::info('loadConsultorios: Practitioner no encontrado');
+
+            return;
+        }
+
+        \Log::info('Practitioner encontrado', [
+            'practitioner_id' => $practitioner->id,
+            'user_id' => $practitioner->user_id,
+        ]);
+
+        // Obtener el día de la semana de la fecha seleccionada
+        $dayOfWeek = null;
+        if ($this->appointment_date) {
+            $date = Carbon::parse($this->appointment_date);
+            $dayOfWeek = $this->getDayNameInSpanish($date);
+            \Log::info('Día de la semana calculado', ['dayOfWeek' => $dayOfWeek]);
+        }
+
+        // Verificar si el doctor tiene horarios configurados
+        $workingHours = $this->getDoctorWorkingHours();
+
+        \Log::info('Working hours obtenidos', [
+            'count' => $workingHours->count(),
+            'days' => $workingHours->pluck('day_of_week')->toArray(),
+        ]);
+
+        if ($workingHours->isEmpty()) {
+            // Si no tiene horarios configurados, mostrar todos los consultorios
+            $this->consultorios = ConsultingRoom::whereHas('branch', function ($q2) use ($practitioner) {
                 $q2->whereIn('client_id', $practitioner->user->clients->pluck('id'));
-            });
-        })->get()->pluck('full_name_branch', 'id')->toArray();
+            })->get()->pluck('full_name_branch', 'id')->toArray();
+
+            \Log::info('Sin horarios configurados, todos los consultorios', [
+                'count' => count($this->consultorios),
+            ]);
+        } else {
+            // Si tiene horarios configurados, filtrar por el día de la semana
+            if ($dayOfWeek) {
+                $workingHoursForDay = $workingHours->where('day_of_week', $dayOfWeek);
+
+                \Log::info('Filtrando por día', [
+                    'dayOfWeek' => $dayOfWeek,
+                    'count' => $workingHoursForDay->count(),
+                ]);
+
+                if ($workingHoursForDay->isEmpty()) {
+                    // El doctor no trabaja este día
+                    $this->consultorios = [];
+                    \Log::info('Doctor no trabaja este día, consultorios vacíos');
+                } else {
+                    // Obtener solo los consultorios donde trabaja ese día
+                    $consultingRoomIds = $workingHoursForDay->pluck('consulting_room_id')->unique();
+                    $this->consultorios = ConsultingRoom::whereIn('id', $consultingRoomIds)
+                        ->get()
+                        ->pluck('full_name_branch', 'id')
+                        ->toArray();
+
+                    \Log::info('Consultorios del día', [
+                        'room_ids' => $consultingRoomIds->toArray(),
+                        'consultorios' => $this->consultorios,
+                    ]);
+                }
+            } else {
+                // Si no hay fecha seleccionada, mostrar todos los consultorios configurados
+                $consultingRoomIds = $workingHours->pluck('consulting_room_id')->unique();
+                $this->consultorios = ConsultingRoom::whereIn('id', $consultingRoomIds)
+                    ->get()
+                    ->pluck('full_name_branch', 'id')
+                    ->toArray();
+
+                \Log::info('Sin fecha, todos los consultorios configurados', [
+                    'room_ids' => $consultingRoomIds->toArray(),
+                    'count' => count($this->consultorios),
+                ]);
+            }
+        }
+
+        \Log::info('loadConsultorios END', [
+            'consultorios_count' => count($this->consultorios),
+            'consultorios' => array_keys($this->consultorios),
+        ]);
+    }
+
+    /**
+     * Obtener los horarios laborales del doctor
+     */
+    private function getDoctorWorkingHours()
+    {
+        if (! $this->doctor_id) {
+            return collect();
+        }
+
+        $practitioner = Practitioner::find($this->doctor_id);
+        if (! $practitioner || ! $practitioner->user_id) {
+            return collect();
+        }
+
+        return UserWorkingHour::where('user_id', $practitioner->user_id)
+            ->with(['branch', 'consultingRoom'])
+            ->get();
+    }
+
+    /**
+     * Convertir fecha a nombre de día en español
+     */
+    private function getDayNameInSpanish($date)
+    {
+        $dayNames = [
+            0 => __('domingo'),
+            1 => __('lunes'),
+            2 => __('martes'),
+            3 => __('miercoles'),
+            4 => __('jueves'),
+            5 => __('viernes'),
+            6 => __('sabado'),
+        ];
+
+        return $dayNames[$date->dayOfWeek];
+    }
+
+    /**
+     * Obtener el horario laboral del doctor para una fecha específica
+     */
+    public function getWorkingHourForDate($date)
+    {
+        $dayOfWeek = $this->getDayNameInSpanish(Carbon::parse($date));
+        $workingHours = $this->getDoctorWorkingHours();
+
+        return $workingHours->where('day_of_week', $dayOfWeek)->first();
+    }
+
+    /**
+     * Verificar si el doctor trabaja en una fecha específica
+     */
+    public function isDoctorWorkingOnDate($date)
+    {
+        $workingHours = $this->getDoctorWorkingHours();
+
+        // Si no tiene horarios configurados, puede trabajar cualquier día
+        if ($workingHours->isEmpty()) {
+            return true;
+        }
+
+        $dayOfWeek = $this->getDayNameInSpanish(Carbon::parse($date));
+
+        return $workingHours->where('day_of_week', $dayOfWeek)->isNotEmpty();
     }
 
     public function saveAppointment()
@@ -315,6 +543,10 @@ class ModalSave extends Component
         session()->flash('message.success', 'Cita cancelada exitosamente , se le envio notificacion al paciente.');
         $this->closeModal();
         $this->dispatch('loadAppointments');
+        $this->dispatch('showToastr',
+            type: 'success',
+            message: 'Cita cancelada exitosamente , se le envio notificacion al paciente.',
+        );
     }
 
     #[On('editAppointmentModal')]
@@ -378,10 +610,19 @@ class ModalSave extends Component
             if ($appointment) {
                 $appointment->delete();
                 session()->flash('message.success', 'Cita eliminada exitosamente.');
+                $this->closeModal();
                 $this->dispatch('loadAppointments');
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: 'Cita eliminada exitosamente.',
+                );
             }
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al eliminar la cita.');
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al eliminar la cita. '.$e->getMessage(),
+            );
         }
     }
 
@@ -391,6 +632,45 @@ class ModalSave extends Component
         $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
         $endTime = $startTime->copy()->addMinutes($minutes);
 
+        // Verificar si el doctor tiene horarios configurados
+        $workingHours = $this->getDoctorWorkingHours();
+
+        if ($workingHours->isNotEmpty()) {
+            // Validar que el doctor trabaje ese día
+            if (! $this->isDoctorWorkingOnDate($this->appointment_date)) {
+                $this->addError('appointment_date', 'El doctor no trabaja este día de la semana según su configuración de horarios.');
+
+                return false;
+            }
+
+            // Validar que la hora esté dentro del horario laboral
+            $workingHour = $this->getWorkingHourForDate($this->appointment_date);
+
+            if ($workingHour) {
+                $workStart = Carbon::parse($this->appointment_date.' '.$workingHour->start_time);
+                $workEnd = Carbon::parse($this->appointment_date.' '.$workingHour->end_time);
+
+                if ($startTime->lt($workStart) || $endTime->gt($workEnd)) {
+                    $this->addError('appointment_time',
+                        "La cita debe estar dentro del horario laboral del doctor: {$workingHour->start_time} - {$workingHour->end_time}"
+                    );
+
+                    return false;
+                }
+
+                // Validar que el consultorio seleccionado sea el configurado para ese día
+                if ($this->consulting_room_id != $workingHour->consulting_room_id) {
+                    $roomName = $workingHour->consultingRoom->full_name_branch ?? 'N/A';
+                    $this->addError('consulting_room_id',
+                        "El doctor trabaja en '{$roomName}' este día. Por favor, seleccione el consultorio correcto."
+                    );
+
+                    return false;
+                }
+            }
+        }
+
+        // Verificar conflictos con otras citas
         $query = Appointment::where('practitioner_id', $this->doctor_id)
             ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")
             ->where('status', '!=', 'cancelled')
@@ -405,6 +685,12 @@ class ModalSave extends Component
             $query->where('id', '!=', $this->appointment->id);
         }
 
-        return $query->count() === 0;
+        if ($query->count() > 0) {
+            $this->addError('appointment_time', 'El doctor ya tiene una cita programada en ese horario.');
+
+            return false;
+        }
+
+        return true;
     }
 }

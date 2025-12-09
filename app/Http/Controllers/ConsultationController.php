@@ -290,37 +290,45 @@ class ConsultationController extends Controller
     public function downloadResumen(Request $request, $appointment_id)
     {
 
-        $appointment = Appointment::find($appointment_id);
-        $auth = false;
-        if (auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
-            ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()) {
-            $auth = true;
-        }
-        $data = Encounter::when($auth, function ($query) {
-            $query->withoutGlobalScope(EncouterScope::class);
-        })
-            ->whereAppointmentId($appointment_id)->first();
-        $data['consultation-list'] = PresentIllnesType::get();
-        $consultation_disabilities = [];
-        $lang = 'esp';
-        $home_visit = false;
-        $sello = $firma = '';
-        $mode = 'full';
-        foreach ($data->diagnoses()->get() as $d) {
-            if ($d->condition->icd10Code) {
-                array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->icd10Code->description_es.'</td>');
-            } else {
-                array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->onset_info.'</td>');
+        try{
+            $appointment = Appointment::find($appointment_id);
+            $auth = false;
+            if (auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
+                    ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()) {
+                $auth = true;
+            }
+            $data = Encounter::when($auth, function ($query) {
+                $query->withoutGlobalScope(EncouterScope::class);
+            })
+                ->whereAppointmentId($appointment_id)->first();
+            $data['consultation-list'] = PresentIllnesType::get();
+            $consultation_disabilities = [];
+            $lang = 'esp';
+            $home_visit = false;
+            $sello = $firma = '';
+            $mode = 'full';
+            foreach ($data->diagnoses()->get() as $d) {
+                if($d->condition){
+                    if ($d->condition->icd10Code) {
+                        array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->icd10Code->description_es.'</td>');
+                    } else {
+                        array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->onset_info.'</td>');
+                    }
+                }
+
             }
 
+            if ($request->has('html')) {
+                return view('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
+            }
+
+            $pdf = Pdf::loadView('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
+
+            return $pdf->stream('resumen.pdf');
+        }catch (\Exception $e){
+            session()->flash('message.error', 'Error al descargar el resumen: '.$e->getMessage());
+            return back();
         }
 
-        if ($request->has('html')) {
-            return view('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
-        }
-
-        $pdf = Pdf::loadView('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
-
-        return $pdf->stream('resumen.pdf');
     }
 }
