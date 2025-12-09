@@ -17,8 +17,9 @@
                 <div class="col-sm-12">
                     <div class="card card-table show-entire p-2">
                         <div class="card-body">
+                            <!-- Columna Cliente oculta solicitado por el Dr. Rafael 9/12/25 -->
                             <livewire:data-table model="{{$model}}"
-                                                 :columns="['id','client_name', 'name', 'phone','address','country_name','state_name','type','active','acciones']"
+                                                 :columns="['id',/*'client_name',*/ 'name', 'phone','address','country_name','state_name','type','active','acciones']"
                                                  :actions="['edit','delete']"
                                                  routename="client.branch"
                                                  wire:key="{{\Illuminate\Support\Str::random(5)}}"/>

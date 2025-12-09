@@ -31,7 +31,8 @@ class Lista extends Model
             'CC' => 'CC: Cédula de ciudadania',
             'CE' => 'CE: Cédula extranjera',
             'PT' => 'PT: Permiso temporal de permanencia',
-            'SS' => 'SS: Número seguro social',
+            //Opción de Seguro Social eliminado - solicitado por Dr. Rafael 9/12/25
+            //'SS' => 'SS: Número seguro social',
         ];
     }
 

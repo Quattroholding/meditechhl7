@@ -29,6 +29,7 @@ class Create extends Component
     {
         $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
         $user = User::find(Auth::getUser()->id);
+        //Para preguntas de especialidad de Urología(42)
         $specialities = $user->practitioner?->specialties->pluck('id')->contains(42);
 
         if ($encounter_sections_user->count() > 0) {

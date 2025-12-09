@@ -56,7 +56,7 @@
 
                             @if($consultation->chief_complaint)
                                 <div class="mb-2">
-                                    <strong class="text-primary">Motivo de consulta:</strong>
+                                    <strong class="text-primary">Nota Adicional:</strong>
                                     <p class="mb-1">{{ Str::limit($consultation->chief_complaint, 100) }}</p>
                                 </div>
                             @endif

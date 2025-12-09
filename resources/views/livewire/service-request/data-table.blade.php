@@ -197,7 +197,7 @@
                                     <td colspan="7" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <p>No se encontraron consultas con solicitudes de servicio</p>
+                                            <p>No se encontraron estudios registrados</p>
                                         </div>
                                     </td>
                                 </tr>
