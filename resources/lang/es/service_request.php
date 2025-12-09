@@ -2,8 +2,8 @@
 
 return [
     // Títulos y etiquetas principales
-    'title' => 'Solicitud de Servicio',
-    'titles' => 'Solicitudes de Servicios',
+    'title' => 'Lista de Estudios',
+    'titles' => 'Lista de Estudios',
     'description_modal_title' => 'Descripción Completa',
 
     // Campos de la tabla
