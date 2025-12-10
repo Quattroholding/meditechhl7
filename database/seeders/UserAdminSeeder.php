@@ -59,6 +59,5 @@ class UserAdminSeeder extends Seeder
             'client_id' => $client->id,
             'user_id' => $admin->id,
         ]);
-
     }
 }
