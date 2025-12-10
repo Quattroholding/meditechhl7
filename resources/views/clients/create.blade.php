@@ -61,7 +61,7 @@
                                     <!-- PACKAGE -->
                                     <div class="input-block  local-forms ">
                                         <x-input-label for="package_id" :value="__('Paquete')" required/>
-                                        <x-select-input name="package_id" :options="\App\Models\Package::whereIsActive(1)->pluck('name','id')->toArray()" :selected="[null]" class="block w-full"/>
+                                        <x-select-input required name="package_id" :options="\App\Models\Package::whereIsActive(1)->pluck('name','id')->toArray()" :selected="[null]" class="block w-full"/>
                                         <x-input-error :messages="$errors->get('package_id')" class="mt-2" />
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@
                                 <!-- IMAGE -->
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="form-group local-top-form">
-                                        <label class="local-top">Logo <span class="login-danger">*</span></label>
+                                        <label class="local-top">Logo</label>
                                         <div class="settings-btn upload-files-avator">
                                             <input type="file" accept="image/*" name="logo" id="file"
                                                    onchange="loadFile(event)" class="hide-input">

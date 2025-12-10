@@ -279,7 +279,7 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
         ]);
 
-        $doctorRole = Role::firstOrCreate(['name' => 'asistente_medico']);
+        $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
         $doctorRole->givePermissionTo([
             'dashboard.doctor',
             'users.view',

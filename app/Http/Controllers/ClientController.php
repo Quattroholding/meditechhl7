@@ -34,8 +34,7 @@ class ClientController extends Controller
             'email' => 'required',
             'dv' => 'required',
             'phone' => 'required',
-            'full_phone' => 'required',
-            'logo' => 'required',
+            'package_id' => 'required',
 
         ]);
         // VALIDAR SI EL CORREO YA EXISTE EN EL SISTEMA
@@ -54,6 +53,7 @@ class ClientController extends Controller
         $model->email = $request->email;
         $model->whatsapp = $request->full_phone;
         $model->active = 1;
+        $model->package_id = $request->package_id;
         // $model->logo = 'clients/logo_'.time();
 
         if ($model->save()) {
@@ -95,31 +95,34 @@ class ClientController extends Controller
             // SE BUSCA EL REGISTRO PARA ASIGNAR EL NOMBRE DEL LOGO
             $user_logo = Client::find($model->id);
             // SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
-            $service = new FileService;
-            $file = $request->file('logo');
-            $data['folder'] = 'clients';
-            $data['type'] = 'img';
-            $data['name'] = 'logo_'.time();
-            $data['record_id'] = $model->id;
-            $user_logo->logo = $service->uploadSingleFile($file, 'clients', $data['name']);
-            if ($user_logo->save()) {
-                $request->session()->flash('message.success', 'Usuario admin client registrado con éxito.');
-            } else {
-                $data = Client::find($model->id);
-                $data->delete();
-                $user = User::find($user->id);
-                $user->delete();
-                $userclient = UserClient::find($rel_clientuser->id);
-                $userclient->delete();
-                $request->session()->flash('message.error', 'Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+            if($request->file('logo')){
+                $service = new FileService;
+                $file = $request->file('logo');
+                $data['folder'] = 'clients';
+                $data['type'] = 'img';
+                $data['name'] = 'logo_'.time();
+                $data['record_id'] = $model->id;
+                $user_logo->logo = $service->uploadSingleFile($file, 'clients', $data['name']);
+                if ($user_logo->save()) {
+                    $request->session()->flash('message.success', 'Usuario admin client registrado con éxito.');
+                } else {
+                    $data = Client::find($model->id);
+                    $data->delete();
+                    $user = User::find($user->id);
+                    $user->delete();
+                    $userclient = UserClient::find($rel_clientuser->id);
+                    $userclient->delete();
+                    $request->session()->flash('message.error', 'Hubo un error y no se pudo crear el usuario administrador de la empresa.');
 
-                return redirect(route('client.create'));
-            }
-            if (! $user_logo->logo) {
-                session()->flash('message.error', 'Hubo un error al subir el logo.');
+                    return redirect(route('client.create'));
+                }
+                if (! $user_logo->logo) {
+                    session()->flash('message.error', 'Hubo un error al subir el logo.');
 
-                return redirect(route('client.create'));
+                    return redirect(route('client.create'));
+                }
             }
+
             $request->session()->flash('message.success', 'Cliente registrado con éxito.');
         } else {
             $data = Client::find($model->id);
