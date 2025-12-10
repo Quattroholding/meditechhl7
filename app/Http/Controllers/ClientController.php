@@ -155,8 +155,9 @@ class ClientController extends Controller
                 'email' => 'required',
                 'dv' => 'required',
                 'whatsapp' => 'required',
+                'package_id'=>'required',
                 // 'full_phone' => 'required',
-                'logo' => 'required',
+                //'logo' => 'required',
             ]);
 
             $model = Client::find($id);
