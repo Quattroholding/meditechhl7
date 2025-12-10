@@ -40,6 +40,7 @@ class EncounterSecctionSeeder extends Seeder
                 ['name' => 'Índice de Masa Corporal', 'type' => 'number', 'table_list_id' => 9],
                 ['name' => 'Glucemia Capilar', 'type' => 'number', 'table_list_id' => 10],
             ],
+            'available_for_medical_assistant'=>true,
         ]);
 
         EncounterSection::create([

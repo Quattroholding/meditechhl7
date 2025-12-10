@@ -35,6 +35,9 @@ class UserAdminSeeder extends Seeder
             'logo' => fake()->imageUrl(),
         ]);
 
+        $admin->default_client_id = $client->id;
+        $admin->save();
+
         $branch = Branch::create([
             'client_id' => $client->id,
             'name' => 'Cuartel Central',
