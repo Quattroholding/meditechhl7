@@ -256,12 +256,14 @@
                         </ul>
                     </li>
                 @endcanany
+                @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
                     <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('reports.index') }}">Ver Reportes</a></li>
                     </ul>
                 </li>
+                @endcanany
                 @if(auth()->user()->can('practitioners.profile') && auth()->user()->practitioner)
                 <li>
                     <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">

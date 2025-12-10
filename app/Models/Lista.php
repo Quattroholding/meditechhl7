@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Gender;
+use App\Enums\MaritalStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Lista extends Model
@@ -31,18 +33,14 @@ class Lista extends Model
             'CC' => 'CC: Cédula de ciudadania',
             'CE' => 'CE: Cédula extranjera',
             'PT' => 'PT: Permiso temporal de permanencia',
-            //Opción de Seguro Social eliminado - solicitado por Dr. Rafael 9/12/25
-            //'SS' => 'SS: Número seguro social',
+            // Opción de Seguro Social eliminado - solicitado por Dr. Rafael 9/12/25
+            // 'SS' => 'SS: Número seguro social',
         ];
     }
 
     public static function gender()
     {
-
-        return [
-            'male' => 'Masculino',
-            'female' => 'Femenino',
-        ];
+        return Gender::options();
     }
 
     public static function branchType()
@@ -97,9 +95,7 @@ class Lista extends Model
 
     public static function maritalStatus()
     {
-        return [
-            'Soltero/a' => 'Soltero/a', 'Casado/a' => 'Casado/a', 'Divorciado/a' => 'Divorciado/a', 'Viudo/a' => 'Viudo/a',
-        ];
+        return MaritalStatus::options();
     }
 
     public static function medicineTypes()

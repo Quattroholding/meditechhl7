@@ -15,8 +15,8 @@ class ReportPermissionsSeeder extends Seeder
     {
         // Definir reportes y sus roles permitidos
         $reports = [
-            'appointments' => ['admin', 'doctor', 'asistente'],
-            'invoices-payments' => ['admin', 'doctor', 'asistente'],
+            'appointments' => ['admin', 'doctor', 'recepcionista'],
+            'invoices-payments' => ['admin', 'doctor', 'recepcionista'],
         ];
 
         foreach ($reports as $reportName => $roles) {

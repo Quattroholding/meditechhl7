@@ -8,6 +8,7 @@ use App\Models\Practitioner;
 use App\Models\User;
 use App\Notifications\PractitionerCredentialsNotification;
 use App\Services\FileService;
+use App\Services\PractitionerService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class PractitionerController extends Controller
         return view('practitioners.edit', compact('data', 'practitioner_clients', 'specialties', 'clients'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, PractitionerService $practitionerService)
     {
 
         $validated = $request->validate([
@@ -71,58 +72,39 @@ class PractitionerController extends Controller
 
             DB::beginTransaction();
 
+            // Crear usuario
             $model = new User;
             $model->fill($request->all());
             $model->last_name = $request->last_name;
-            // ------------GENERAR PASSWORD TEMPORAL PARA ENVIAR CORREO A USUARIO
+            // Generar password temporal para enviar correo a usuario
             $temporaryPassword = Str::random(10);
             $model->password = Hash::make($temporaryPassword);
-            // ---------MANEJAR MULTIPLES CLIENTES - ARREGLAR
+            // Manejar múltiples clientes
             $model->default_client_id = $request->clients[0];
 
             if ($model->save()) {
+                // Sincronizar clientes
                 $sync = [];
                 $clients = $request->clients;
                 foreach ($clients as $client) {
-                    $sync[$client] = ['client_id' => $client, 'created_at' => now()->format('Y-m-d H:i:s'), 'updated_at' => now()->format('Y-m-d H:i:s'), 'user_id' => $model->id];
+                    $sync[$client] = [
+                        'client_id' => $client,
+                        'created_at' => now()->format('Y-m-d H:i:s'),
+                        'updated_at' => now()->format('Y-m-d H:i:s'),
+                        'user_id' => $model->id,
+                    ];
                 }
                 $model->clients()->sync($sync);
                 $model->assignRole('doctor');
-                $practitioner = new Practitioner;
-                $practitioner->fill($request->except('birth_date'));
-                $prefix = 'Dr. ';
-                if ($request->gender == 'female') {
-                    $prefix = 'Dra. ';
-                }
-                $practitioner->name = $prefix.$request->first_name.' '.$request->last_name;
-                $practitioner->given_name = $request->first_name;
-                $practitioner->family_name = $request->last_name;
-                $practitioner->identifier_type = $request->identifier_type;
-                $practitioner->identifier = $request->id_number;
-                $practitioner->registry = $request->registry;
-                $practitioner->licence_code = $request->licence_code;
-                $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
-                $fecha->setTime(0, 0, 0);
-                $practitioner->birth_date = $fecha->format('Y-m-d H:i:s');
-                // ASIGNACIÓN DE DATOS AL MODELO
-                $practitioner->fhir_id = 'practitioner-'.Str::uuid();
-                $practitioner->user_id = $model->id;
-                if ($practitioner->save()) {
-                    $specialties = $request->medical_speciality;
-                    $syn = [];
-                    $i = 0;
 
-                    foreach ($specialties as $speciality) {
-                        $default = false;
-                        if ($i == 0) {
-                            $default = true;
-                        }
-                        $medical_speciality_name = MedicalSpeciality::find($speciality);
-                        $syn[$speciality] = ['code' => $speciality, 'default' => $default, 'medical_speciality_id' => $speciality, 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'), 'practitioner_id' => $practitioner->id, 'display' => $medical_speciality_name->name];
-                        $i++;
-                    }
-                    $practitioner->specialties()->sync($syn);
-                }
+
+
+                // Crear practitioner usando el servicio centralizado
+                $practitioner = $practitionerService->createOrUpdatePractitioner(
+                    $model,
+                    $request->all(),
+                    $request->medical_speciality ?? []
+                );
             }
 
             // Enviar notificación con credenciales temporales

@@ -32,8 +32,11 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-        $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
-
+        if(auth()->user()->hasRole('asistente medico')){
+            $this->enabled = $this->validateGeneralNote();
+        }else{
+            $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
+        }
     }
 
     public function validateReason()
@@ -200,5 +203,20 @@ class FinishedButton extends Component
 
             return true;
         }
+    }
+
+    public function validateGeneralNote()
+    {
+
+        $return = true;
+
+        if (! empty($this->encounter->general_note)) {
+            unset($this->messages[1]);
+        } else {
+            $return = false;
+            $this->messages[1] = '- Nota General';
+        }
+
+        return $return;
     }
 }

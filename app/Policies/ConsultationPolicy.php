@@ -17,11 +17,11 @@ class ConsultationPolicy
 
     public function view(User $user, Encounter $encounter)
     {
-        return $user->hasRole('admin') or ($user->hasRole('doctor') and $user->practitioner->id == $encounter->practitioner_id);
+        return $user->hasRole('admin') or ($user->hasRole(['doctor','asistente medico']) and $user->practitioner->id == $encounter->practitioner_id);
     }
 
     public function edit(User $user, Encounter $encounter)
     {
-        return $user->hasRole('admin') or ($user->hasRole('doctor') and $user->practitioner->id == $encounter->practitioner_id);
+        return $user->hasRole('admin') or ($user->hasRole(['doctor','asistente medico']) and $user->practitioner->id == $encounter->practitioner_id);
     }
 }

@@ -27,6 +27,8 @@
                                         @if(request()->get('role_id')==2)
                                             {{ __('user.doctor') }}
                                         @elseif(request()->get('role_id')==3)
+                                            {{ __('user.recepcionist') }}
+                                        @elseif(request()->get('role_id')==6)
                                             {{ __('user.asistent') }}
                                         @else
                                             {{ __('user.title') }}
@@ -93,7 +95,7 @@
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="medical_speciality">
                                     <!-- SPECIALTY -->
                                     <div class="input-block  local-forms">
-                                        <x-input-label for="medical_speciality" :value="__('practitioner.speciality')" />
+                                        <x-input-label for="medical_speciality" :value="__('doctor.qualification')" />
                                         <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block  w-full"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" />
                                     </div>
@@ -102,7 +104,7 @@
                                     <!-- MARITAL STATUS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="marital_status" :value="__('patient.marital_status')" />
-                                        <x-select-input name="marital_status" :options="\App\Models\Lista::maritalStatus()" class="block  w-full"/>
+                                        <x-select-input name="marital_status" :options="App\Enums\MaritalStatus::options()" class="block  w-full"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('marital_status')" />
                                     </div>
                                 </div>
@@ -110,7 +112,7 @@
                                     <!-- CLIENTS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="gender" :value="__('user.gender')" />
-                                        <x-select-input name="gender" :options="['male'=> 'male', 'female'=>'female', 'other'=>'other', 'unknow'=>'unknow']" class="block  w-full"/>
+                                        <x-select-input name="gender" :options="App\Enums\Gender::options()" class="block  w-full"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('gender')" />
                                     </div>
                                 </div>
@@ -272,6 +274,7 @@
                         $("#password").show();
                         $("#confirm_password").show();
                         break;
+
                         /*-----FORMULARIO PARA ROLE PACIENTE-----*/
                     case 4:
                         //$("#client").show();
@@ -279,6 +282,23 @@
                         $("#id_number").show();
                         $('#maritalstatus').show();
                         //$("#medical_speciality").show();
+                        $("#gender").show();
+                        $("#birthdate_user").show();
+                        $("#physical_address").show();
+                        $("#whatsapp").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#confirm_password").show();
+                        break;
+                    /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
+                    case 6:
+                        $("#client_id").show();
+                        $("#id_type").show();
+                        $("#id_number").show();
+                        $("#medical_speciality").show();
                         $("#gender").show();
                         $("#birthdate_user").show();
                         $("#physical_address").show();

@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserFormRequest;
 use App\Models\Client;
+use App\Models\EncounterSection;
+use App\Models\EncounterTemplate;
 use App\Models\Practitioner;
 use App\Models\Rol;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Notifications\PractitionerCredentialsNotification;
 use App\Services\FileService;
+use App\Services\PractitionerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +40,7 @@ class UserController extends Controller
         return view('users.create', compact('clients', 'selected_clients'));
     }
 
-    public function store(UserFormRequest $request)
+    public function store(UserFormRequest $request, PractitionerService $practitionerService)
     {
 
         try {
@@ -63,11 +66,22 @@ class UserController extends Controller
                     $model->clients()->sync($request->get('clients'));
                 }
 
-                if ($rol->name == 'doctor') {
+                // Si es doctor o asistente médico, crear o asociar practitioner
+                if (in_array($rol->name, ['doctor', 'asistente medico'])) {
+                    // Buscar practitioner existente por email
                     $practitioner = Practitioner::whereEmail($request->email)->first();
+
                     if ($practitioner) {
+                        // Si existe, solo actualizar el user_id
                         $practitioner->user_id = $model->id;
                         $practitioner->save();
+                    } else {
+                        // Si no existe, crear uno nuevo usando el servicio
+                        $practitioner = $practitionerService->createOrUpdatePractitioner(
+                            $model,
+                            $request->all(),
+                            $request->medical_speciality ?? []
+                        );
                     }
                 }
 
@@ -82,6 +96,22 @@ class UserController extends Controller
                     $data['name'] = 'user_'.time();
                     $data['record_id'] = $model->id;
                     $user_profile->profile_picture = $service->uploadSingleFile($file, 'users', $data['name']);
+                }
+
+                //cargar plantilla de consulta
+                $encounter_sections = EncounterSection::whereNull('medical_speciality_id');
+
+                if($rol->name == 'asistente medico'){
+                    $encounter_sections->where('available_for_medical_assistant',true);
+                }
+
+                foreach ($encounter_sections->get() as $es){
+                    EncounterTemplate::firstOrCreate([
+                        'type'=>'client',
+                        'client_id'=>$model->default_client_id,
+                        'user_id'=>$model->id,
+                        'encounter_section_id'=>$es->id,
+                    ]);
                 }
 
                 $model->notify(new PractitionerCredentialsNotification($model, $temporaryPassword));

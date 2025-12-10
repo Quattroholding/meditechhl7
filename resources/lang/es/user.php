@@ -16,6 +16,7 @@ return [
     'confirm_password' => 'Confirmar contraseña',
     'doctor' => 'Doctor',
     'asistent' => 'Asistente',
+    'recepcionist' => 'Recepcionista',
     'rol' => 'Rol',
     'roles' => 'Roles',
     'profile_name' => 'Nombre',

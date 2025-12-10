@@ -135,6 +135,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Procedimentos', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/cpts/procedure'],
             ],
+            'available_for_medical_assistant'=>true,
         ]);
 
         EncounterSection::create([
@@ -250,6 +251,7 @@ class EncounterSecctionSeeder extends Seeder
             'table_list_filter' => null,
             'livewire_component_name' => 'consultation.general_note',
             'livewire_component_fields' => [['name' => 'general_note', 'type' => 'textarea', 'table_list_id' => null]],
+            'available_for_medical_assistant'=>true,
         ]);
 
         EncounterSection::create([

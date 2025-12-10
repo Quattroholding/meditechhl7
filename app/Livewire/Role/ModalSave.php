@@ -96,7 +96,9 @@ class ModalSave extends Component
                 $role = Role::create(['name' => $this->name]);
             }
 
-            $role->syncPermissions($this->selectedPermissions);
+            // Convert permission IDs to integers to ensure proper sync
+            $permissionIds = array_map('intval', array_filter($this->selectedPermissions));
+            $role->syncPermissions($permissionIds);
         });
 
         $this->dispatch('swal:alert', [
