@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-        @include('partials.message')
+        {{--}}@include('partials.message'){{--}}
         <div class="card card-table show-entire">
             <div class="card-body">
                 <!-- Table Header -->
