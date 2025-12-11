@@ -79,7 +79,7 @@
                                                     <livewire:user.active-users user_id="{{$user->id}}" wire:key="{{$user->id}}"/>
                                                 @endif
                                             @endcan
-                                            @can('users.delete')
+                                            @can('users.delete' && auth()->user()->id <> $user->id)
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('user.destroy', $user->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>

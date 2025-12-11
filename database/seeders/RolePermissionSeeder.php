@@ -255,6 +255,8 @@ class RolePermissionSeeder extends Seeder
             'dashboard.client',
             'users.view',
             'users.create',
+            'users.delete',
+            'users.activate',
             'practitioners.view',
             'practitioners.create',
             'practitioners.edit',

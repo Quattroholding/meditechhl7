@@ -53,7 +53,7 @@ class UserController extends Controller
             $model = new User;
             $model->fill($request->all());
             $temporaryPassword = $request->password;
-            $model->default_client_id = $request->clients[0] ?? 1;
+            $model->default_client_id = $request->clients[0] ?? auth()->user()->default_client_id;
 
             if ($model->save()) {
 
