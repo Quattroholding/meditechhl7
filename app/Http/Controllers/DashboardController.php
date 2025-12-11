@@ -74,14 +74,13 @@ class DashboardController extends Controller
     public function assistence(Request $request)
     {
         // Get visible widgets for this user
-        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'assistant');
+        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'recepcionist');
 
         $widgetComponents = [
             'recent-appointment-list' => 'doctor.recent-appointment-list',
-            'new-patients' => 'doctor.new-patients',
-            'old-patients' => 'doctor.old-patients',
-            'active-patients' => 'doctor.active-patients',
-            'patients-by-gender' => 'doctor.patients-by-gender',
+            'monthly-appointments' => 'doctor.monthly-appointments',
+            'consultas-en-progreso' => 'doctor.consultas-en-progreso',
+            'yearly-appointments-chart' => 'doctor.yearly-appointments-chart',
             'consultation-effectiveness' => 'doctor.consultation-effectiveness',
             'activity-heatmap' => 'doctor.activity-heatmap',
         ];

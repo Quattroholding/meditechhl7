@@ -39,7 +39,6 @@ class YearlyAppointmentsChart extends Component
     {
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->month;
-        $practitionerId = auth()->user()->practitioner->id;
 
         // Inicializar categorías (meses hasta el mes actual)
         $categories = [];
@@ -48,14 +47,13 @@ class YearlyAppointmentsChart extends Component
             $categories[] = $monthName;
         }
 
-        // Obtener todas las sedes con citas del practitioner en el año actual
-        $branches = DB::table('appointments')
+        // Obtener todas las sedes con citas del año actual
+        // El AppointmentScope ya filtra automáticamente por rol (doctor/recepcionista)
+        $branches = Appointment::query()
             ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
             ->join('branches', 'consulting_rooms.branch_id', '=', 'branches.id')
-            ->where('appointments.practitioner_id', $practitionerId)
             ->whereYear('appointments.start', $currentYear)
             ->whereMonth('appointments.start', '<=', $currentMonth)
-            ->whereNull('appointments.deleted_at')
             ->select('branches.id', 'branches.name')
             ->groupBy('branches.id', 'branches.name')
             ->orderBy('branches.name')
@@ -65,13 +63,12 @@ class YearlyAppointmentsChart extends Component
 
         foreach ($branches as $branch) {
             // Obtener citas por mes para esta sede
+            // El AppointmentScope se aplica automáticamente
             $monthlyData = Appointment::query()
                 ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
                 ->where('consulting_rooms.branch_id', $branch->id)
-                ->where('appointments.practitioner_id', $practitionerId)
                 ->whereYear('appointments.start', $currentYear)
                 ->whereMonth('appointments.start', '<=', $currentMonth)
-                ->whereNull('appointments.deleted_at')
                 ->select(
                     DB::raw('MONTH(appointments.start) as month'),
                     DB::raw('COUNT(*) as total')

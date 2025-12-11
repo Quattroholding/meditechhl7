@@ -13,7 +13,6 @@
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
-                    @include('partials.message')
                     <livewire:modal-add-notes wire:model="showModal"/>
 
                     <!-- Modal de seguros -->

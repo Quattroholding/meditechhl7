@@ -323,6 +323,9 @@ class Create extends Component
             // Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
             Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
 
+
+            return $this->redirect(route('patient.index'));
+
         } else {
             session()->flash('message.error', 'Hubo un error y no se pudo actualizar el paciente.');
             $this->dispatch('showToastr',

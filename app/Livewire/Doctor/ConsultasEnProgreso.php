@@ -42,28 +42,51 @@ class ConsultasEnProgreso extends Component
 
     public function getConsultasEnProgreso()
     {
-        $practitionerId = auth()->user()->practitioner->id;
+        $user = auth()->user();
+        $isPractitioner = $user->practitioner !== null;
+        $clientId = $user->default_client_id;
 
-        // Consultas en progreso (estado 'in-progress')
-        $this->consultasEnProgreso = Encounter::where('practitioner_id', $practitionerId)
-            ->where('status', 'in-progress')
-            ->whereNull('deleted_at')
-            ->count();
+        // Query base para consultas en progreso
+        $encountersQuery = Encounter::query()
+            ->where('status', 'in-progress');
+
+        // Filtrar según tipo de usuario
+        if ($isPractitioner) {
+            $encountersQuery->where('practitioner_id', $user->practitioner->id);
+        } else {
+            // Para recepcionistas, filtrar por practitioners del mismo cliente
+            $encountersQuery->whereHas('practitioner', function ($q) use ($clientId) {
+                $q->whereHas('user', function ($q2) use ($clientId) {
+                    $q2->where('default_client_id', $clientId);
+                });
+            });
+        }
+
+        $this->consultasEnProgreso = $encountersQuery->count();
 
         // Comparar con el mes anterior
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
         $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $lastYear = Carbon::now()->subMonthNoOverflow()->year;
 
-        $lastMonthConsultas = Encounter::where('encounters.practitioner_id', $practitionerId)
-            ->join('appointments', 'encounters.appointment_id', '=', 'appointments.id')
-            ->where('encounters.status', 'in-progress')
-            ->whereMonth('encounters.created_at', $lastMonth)
-            ->whereYear('encounters.created_at', $lastYear)
-            ->whereNull('encounters.deleted_at')
-            ->whereNull('appointments.deleted_at')
-            ->count();
+        // Query para consultas del mes anterior
+        $lastMonthQuery = Encounter::query()
+            ->where('status', 'in-progress')
+            ->whereMonth('created_at', $lastMonth)
+            ->whereYear('created_at', $lastYear);
+
+        // Aplicar mismo filtro según tipo de usuario
+        if ($isPractitioner) {
+            $lastMonthQuery->where('practitioner_id', $user->practitioner->id);
+        } else {
+            // Para recepcionistas, filtrar por practitioners del mismo cliente
+            $lastMonthQuery->whereHas('practitioner', function ($q) use ($clientId) {
+                $q->whereHas('user', function ($q2) use ($clientId) {
+                    $q2->where('default_client_id', $clientId);
+                });
+            });
+        }
+
+        $lastMonthConsultas = $lastMonthQuery->count();
 
         // Calcular porcentaje de cambio
         if ($lastMonthConsultas > 0) {
