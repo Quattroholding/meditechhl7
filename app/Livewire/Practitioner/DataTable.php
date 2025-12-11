@@ -66,7 +66,7 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = Practitioner::query()->selectRaw('id,name,birth_date,identifier,email,
+        $data = Practitioner::query()->selectRaw('id,name,birth_date,identifier,email, phone, 
         (SELECT display FROM practitioner_qualifications  pq WHERE pq.practitioner_id  = practitioners.id AND pq.default=1) as display')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
