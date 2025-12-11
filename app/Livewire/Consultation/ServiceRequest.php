@@ -65,14 +65,37 @@ class ServiceRequest extends Component
         $this->results = $response->json() ?? [];
     }
 
+    #[\Livewire\Attributes\On('selectOption')]
     public function selectOption($option)
     {
-
         $this->selectedOption = $option;
-        $this->query = $option['name']; // Asigna el nombre seleccionado al input
+
+        // Manejar diferentes formatos de entrada
+        if (is_array($option)) {
+            $cptId = $option['id'] ?? $option;
+            $this->query = $option['name'] ?? ''; // Asigna el nombre seleccionado al input
+        } else {
+            // Si es un número directo
+            $cptId = $option;
+            $this->query = '';
+        }
+
         $this->results = []; // Limpia los resultados
-        $cpt = CptCode::whereId($option)->first();
-        $service_request = $this->encounter->serviceRequests()->whereCode($cpt->code)->first();
+        $cpt = CptCode::find($cptId);
+
+        if (!$cpt) {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'Código CPT no encontrado'
+            );
+            return;
+        }
+
+        // Verificar si ya existe ANTES de crear
+        $service_request = $this->encounter->serviceRequests()
+            ->where('code', $cpt->code)
+            ->where('service_type', $this->type)
+            ->first();
 
         if (! $service_request) {
             $this->saved = false;
@@ -94,19 +117,81 @@ class ServiceRequest extends Component
             ]);
 
             $this->query = '';
-            sleep(1);
             $this->saved = true;
 
-        }else{
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: 'Servicio agregado exitosamente'
+            );
+
+        } else {
             $this->dispatch('showToastrConsultation',
                 type: 'error',
-                message: '¡Servicio ('.$cpt->type.') ya esta agregado a la  consulta.!'
+                message: '¡Servicio ('.$cpt->type.') ya está agregado a la consulta!'
             );
         }
 
+        $this->loadSelectedLists();
+    }
 
+    public function getListeners()
+    {
+        // Escuchar evento único para este encuentro y sección
+        return [
+            'rapid-access-item-selected-' . $this->encounter_id . '-' . $this->section_id => 'handleRapidAccessSelection',
+        ];
+    }
 
-        $this->dispatch('option-selected');
+    public function handleRapidAccessSelection($cptId)
+    {
+        // NO llamar a selectOption para evitar evento duplicado
+        // Procesar directamente aquí
+        $cpt = CptCode::find($cptId);
+
+        if (!$cpt) {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'Código CPT no encontrado'
+            );
+            return;
+        }
+
+        // Verificar si ya existe
+        $service_request = $this->encounter->serviceRequests()
+            ->where('code', $cpt->code)
+            ->where('service_type', $this->type)
+            ->first();
+
+        if (! $service_request) {
+            $this->encounter->serviceRequests()->create([
+                'fhir_id' => 'servicerequest-'.Str::uuid(),
+                'patient_id' => $this->encounter->patient_id,
+                'practitioner_id' => $this->encounter->practitioner_id,
+                'status' => 'draft',
+                'intent' => 'order',
+                'priority' => 'asap',
+                'do_not_perform' => 0,
+                'code' => $cpt->code,
+                'service_type' => $cpt->type,
+                'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
+                'quantity' => 1,
+                'occurrence_start' => now(),
+                'authored_on' => now(),
+                'last_updated' => now(),
+            ]);
+
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: 'Servicio agregado exitosamente'
+            );
+
+        } else {
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: '¡Servicio ya está agregado a la consulta!'
+            );
+        }
+
         $this->loadSelectedLists();
     }
 

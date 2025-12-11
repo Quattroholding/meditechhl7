@@ -1,16 +1,4 @@
-<div x-data="{
-    activeOffcanvas: null,
-    showMessage: false,
-    message: '',
-    messageType: 'success'
-}"
-     x-init="
-        // Escuchar eventos de Livewire
-        $wire.on('option-selected', (data) => {
-           document.body.removeAttribute('style');
-        });
-
-     ">
+<div>
     @if(count($selectedLists)>0)
         <div id="" class="multiple-field-values mb-3">
             <div class="multivalue-item-container">
@@ -52,7 +40,6 @@
             </div>
         </div>
     @endif
-    @php $id =\Illuminate\Support\Str::uuid();@endphp
     <div class="selector-field selector-field-on">
         <table style="width:100%">
             <tbody>
@@ -68,9 +55,9 @@
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
                     <div class="general-btn-small"
                             type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasRight{{$id}}"
-                            aria-controls="offcanvasRight">
+                            style="cursor: pointer;"
+                            data-offcanvas-target="offcanvasRight-{{$encounter_id}}-{{$section_id}}"
+                            onclick="openRapidAccessOffcanvas(this.getAttribute('data-offcanvas-target'))">
                         <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
                         <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
                     </div>
@@ -78,45 +65,12 @@
             </tr>
             </tbody>
         </table>
-        <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel" >
-            <div class="offcanvas-body  quick-items-content">
-                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
-                    <img src="/images/close-floating.png" alt="">
-                </div>
-                <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
-                @if(count($rapidAccess) > 0)
-                    @foreach($rapidAccess as $i)
-                        <div class="sel-list-item sel-code-{{$i->cpt->code}} mb-2"
-                             style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
-
-                            {{-- Contenido principal clickeable --}}
-                            <div wire:click="selectOption({{ json_encode(['id'=>$i->cpt_id,'name'=>'']) }})">
-                                <div class="sel-list-item-code fw-bold">{{$i->cpt->code}}</div>
-                                <div class="sel-list-item-content">{{$i->cpt->description_es}}</div>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="text-center text-muted py-4">
-                        <p>No hay accesos rápidos configurados</p>
-                    </div>
-                @endif
-                {{-- Botones de control del panel --}}
-                <div class="mt-4 d-flex gap-2 border-top pt-3">
-                    <button type="button"
-                            class="btn btn-sm btn-outline-secondary"
-                            wire:click="clearSearch">
-                        <i class="fas fa-eraser"></i> Limpiar búsqueda
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-sm btn-secondary"
-                            data-bs-dismiss="offcanvas">
-                        <i class="fas fa-times"></i> Cerrar Panel
-                    </button>
-                </div>
-            </div>
-        </div> <!-- end offcanvas-body-->
+        {{-- Componente independiente de accesos rápidos --}}
+        @livewire('consultation.rapid-access-offcanvas', [
+            'sectionId' => $section_id,
+            'offcanvasId' => 'offcanvasRight-'.$encounter_id.'-'.$section_id,
+            'encounterId' => $encounter_id
+        ], key('rapid-access-'.$encounter_id.'-'.$section_id))
 
         {{-- RESULTADOS DE BÚSQUEDA --}}
         @if(!empty($results))
@@ -137,19 +91,49 @@
     </div>
 
     <div style="height:200px;">&nbsp;</div>
-        {{--}}
-        <script>
-            document.addEventListener('livewire:initialized', () => {
-                alert('aqui')
-                Livewire.on('showToastr', (event) => {
-                    toastr[event.type](event.message, '', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 5000,
-                    });
-                });
-            });
-        </script>
-        {{--}}
+
+    <script>
+        // Función global para abrir offcanvas de acceso rápido
+        window.openRapidAccessOffcanvas = function(offcanvasId) {
+            // Intentar múltiples veces con retrasos incrementales
+            let attempts = 0;
+            const maxAttempts = 10;
+            const baseDelay = 100;
+
+            function tryOpen() {
+                attempts++;
+                const el = document.getElementById(offcanvasId);
+
+                if (el) {
+                    console.log('Elemento encontrado en intento', attempts);
+                    let instance = bootstrap.Offcanvas.getInstance(el);
+
+                    if (!instance) {
+                        console.log('Creando instancia de offcanvas...');
+                        try {
+                            instance = bootstrap.Offcanvas.getOrCreateInstance(el, {
+                                backdrop: true,
+                                keyboard: true
+                            });
+                        } catch (error) {
+                            console.error('Error al crear instancia:', error);
+                            return;
+                        }
+                    }
+
+                    if (instance) {
+                        instance.show();
+                        console.log('Offcanvas mostrado exitosamente');
+                    }
+                } else if (attempts < maxAttempts) {
+                    console.log('Elemento no encontrado, reintentando... (intento', attempts, ')');
+                    setTimeout(tryOpen, baseDelay * attempts);
+                } else {
+                    console.error('No se pudo encontrar el elemento después de', maxAttempts, 'intentos');
+                }
+            }
+
+            tryOpen();
+        };
+    </script>
 </div>
