@@ -237,6 +237,9 @@ class ServiceRequest extends Component
         $this->encounter->serviceRequests()->whereId($id)->delete();
         $this->loadSelectedLists();
 
+        // Notificar al componente de accesos rápidos para que actualice el indicador
+        $this->dispatch('rapid-access-list-updated-' . $this->encounter_id . '-' . $this->section_id);
+
         $this->dispatch('showToastrConsultation',
             type: 'success',
             message: 'Eliminado con exito.'

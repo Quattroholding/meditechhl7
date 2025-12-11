@@ -10,20 +10,29 @@
             </div>
             <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
 
-            @if(count($rapidAccess) > 0)
-                @foreach($rapidAccess as $item)
-                    <div class="sel-list-item mb-2"
-                         style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;"
-                         wire:click="selectItem({{$item->cpt_id}})">
-                        <div class="sel-list-item-code fw-bold">{{$item->cpt->code}}</div>
-                        <div class="sel-list-item-content">{{$item->cpt->description_es}}</div>
+            <div id="rapid-access-items-{{$encounterId}}-{{$section_id}}">
+                @if(count($rapidAccess) > 0)
+                    @foreach($rapidAccess as $item)
+                        <div class="sel-list-item mb-2 @if($item->is_selected) bg-primary text-white @endif"
+                             style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;"
+                             onclick="window.selectRapidAccessItem{{$encounterId}}{{$section_id}}({{$item->cpt_id}})"
+                             data-cpt-id="{{$item->cpt_id}}"
+                             data-cpt-code="{{$item->cpt->code}}">
+                            <div class="sel-list-item-code fw-bold">{{$item->cpt->code}}</div>
+                            <div class="sel-list-item-content">{{$item->cpt->description_es}}</div>
+                            @if($item->is_selected)
+                                <div class="mt-1 selected-indicator">
+                                    <small><i class="fas fa-check-circle" title=" Ya seleccionado"></i></small>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center text-muted py-4">
+                        <p>No hay accesos rápidos configurados</p>
                     </div>
-                @endforeach
-            @else
-                <div class="text-center text-muted py-4">
-                    <p>No hay accesos rápidos configurados</p>
-                </div>
-            @endif
+                @endif
+            </div>
 
             {{-- Botones de control del panel --}}
             <div class="mt-4 d-flex gap-2 border-top pt-3">
@@ -50,8 +59,32 @@
 </div>
 
 <script>
+    // Función global para seleccionar item
+    window.selectRapidAccessItem{{$encounterId}}{{$section_id}} = function(cptId) {
+        // Llamar a Livewire
+        @this.selectItem(cptId);
+
+        // Actualizar visualmente el item seleccionado de forma inmediata
+        setTimeout(() => {
+            const itemsContainer = document.getElementById('rapid-access-items-{{$encounterId}}-{{$section_id}}');
+            if (itemsContainer) {
+                const items = itemsContainer.querySelectorAll('[data-cpt-id="' + cptId + '"]');
+                items.forEach(item => {
+                    item.classList.add('bg-primary', 'text-white');
+                    // Agregar el indicador si no existe
+                    if (!item.querySelector('.selected-indicator')) {
+                        const indicator = document.createElement('div');
+                        indicator.className = 'mt-1 selected-indicator';
+                        indicator.innerHTML = '<small><i class="fas fa-check-circle" title=" Ya seleccionado"></i></small>';
+                        item.appendChild(indicator);
+                    }
+                });
+            }
+        }, 100);
+    };
+
     document.addEventListener('livewire:init', () => {
-        Livewire.on('rapid-access-item-selected-{{$encounterId}}-{{$section_id}}', () => {
+        Livewire.on('rapid-access-item-selected-{{$encounterId}}-{{$section_id}}', (event) => {
             // Mantener el offcanvas abierto después de seleccionar
             setTimeout(() => {
                 const el = document.getElementById('{{$offcanvasId}}');
@@ -74,6 +107,16 @@
                     }
                 }
             }, 150);
+        });
+
+        // Escuchar cuando se elimina un item para actualizar visualmente
+        Livewire.on('rapid-access-list-updated-{{$encounterId}}-{{$section_id}}', (event) => {
+            console.log('Lista de accesos rápidos actualizada, recargando visualmente...');
+            // Llamar al método de Livewire para obtener los datos actualizados
+            @this.call('loadRapidAccess').then(() => {
+                // Recargar el contenido del contenedor
+                location.reload(); // Temporal, idealmente usaríamos Alpine o fetch
+            });
         });
     });
 </script>
