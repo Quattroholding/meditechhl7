@@ -51,7 +51,7 @@ class ClientController extends Controller
         $model->long_name = $request->long_name;
         $model->name = $request->name;
         $model->email = $request->email;
-        $model->whatsapp = $request->full_phone;
+        $model->whatsapp = $request->phone;
         $model->active = 1;
         $model->package_id = $request->package_id;
         // $model->logo = 'clients/logo_'.time();

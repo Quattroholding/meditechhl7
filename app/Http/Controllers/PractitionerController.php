@@ -63,7 +63,7 @@ class PractitionerController extends Controller
             'birth_date' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'full_phone' => 'required',
+            //'full_phone' => 'required',
             // 'image' => 'required',
             'clients' => 'required',
         ]);
