@@ -42,7 +42,6 @@ class ModalAddNotes extends Component
 
     public function saveNote()
     {
-
         if($this->type=='private'){
             Note::create([
                 'user_id' => auth()->user()->id,
@@ -54,7 +53,7 @@ class ModalAddNotes extends Component
 
             // Dispatch event to reload personal notes
             $this->dispatch('noteAdded', type: 'personal', patientId: $this->patient_id);
-        }else{
+        }else if($this->type=='medical'){
             ClinicalImpression::create([
                 'patient_id' => $this->patient_id,
                 'practitioner_id' =>  $this->practitioner_id,

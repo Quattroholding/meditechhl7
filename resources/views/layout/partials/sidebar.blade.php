@@ -80,6 +80,7 @@
                     </ul>
                 </li>
                 @endcanany
+
                 @canany(['patients.view','patients.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">

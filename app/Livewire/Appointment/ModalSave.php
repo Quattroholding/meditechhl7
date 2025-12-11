@@ -509,6 +509,7 @@ class ModalSave extends Component
                     $app->notifyPractitionerAboutProposal();
                 } elseif ($this->status === 'booked') {
                     // Si la cita se crea directamente como confirmada, programar recordatorio
+                    $app->addPatientToPractitionerClient();
                     $app->notifyPatientAboutAppointment();
                 }
 

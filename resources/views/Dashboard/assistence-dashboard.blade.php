@@ -7,10 +7,10 @@
                     Dashboard
                 @endslot
                 @slot('li_1')
-                    Assistant Dashboard
+                    Dashboard Recepción
                 @endslot
                 @slot('actions')
-                    @livewire('widget-configuration', ['dashboardType' => 'assistant'])
+                    @livewire('widget-configuration', ['dashboardType' => 'recepcionist'])
                 @endslot
             @endcomponent
             <!-- /Page Header -->
@@ -18,7 +18,7 @@
             <div class="good-morning-blk">
                 <div class="row"  style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
                         background-size: cover;
-                        background-repeat: no-repeat; 
+                        background-repeat: no-repeat;
                         background-position: center; "
                         >
                     <div class="col-md-6">

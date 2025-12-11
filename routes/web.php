@@ -141,7 +141,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
     Route::get('/doctor', [DashboardController::class, 'doctor'])->middleware('permission:dashboard.doctor')->name('doctor.dashboard');
     Route::get('/patient', [DashboardController::class, 'patient'])->middleware('permission:dashboard.patient')->name('patient.dashboard');
     Route::get('/client', [DashboardController::class, 'admin_client'])->middleware('permission:dashboard.client')->name('client.dashboard');
-    Route::get('/assistence', [DashboardController::class, 'assistence'])->middleware('permission:dashboard.assistence')->name('assistence.dashboard');
+    Route::get('/recepcionist', [DashboardController::class, 'assistence'])->middleware('permission:dashboard.assistence')->name('assistence.dashboard');
 
 });
 

@@ -32,16 +32,16 @@
                 </div>
             </div>
             <div class="data-actions">
-                @if(auth()->user()->hasRole('doctor') && Illuminate\Support\Facades\Route::currentRouteName()=='consultation.show')
+                @if(auth()->user()->hasRole('doctor') && $typeNote=='medical')
                 <button wire:click="openModalNote({{ $data->id }},'medical')" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
-                @endif
-                @if( Illuminate\Support\Facades\Route::currentRouteName()<>'consultation.show' && auth()->user()->hasRole('doctor'))
+                @elseif(auth()->user()->hasRole('doctor') && $typeNote=='private')
                 <button wire:click="openModalNote({{ $data->id }},'private')" class="btn-head btn-head-light"> <i class="fa fa-unlock"></i>  {{__('patient.add_note_private')}}</button>
-
                 @endif
-
+                @if(auth()->user()->hasRole('doctor'))
                 <livewire:patient.add-medical-history :patient_id="$data->id"/>
+                @endif
                 <livewire:patient.add-insurance :patient_id="$data->id"/>
+                <livewire:modal-add-notes :patient_id="$data->id"/>
                 {{--}}
                 <button wire:click="exportToPDF" class="btn btn-light">
                     📄 Exportar PDF

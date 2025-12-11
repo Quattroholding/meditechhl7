@@ -4,6 +4,7 @@ namespace App\Livewire\Patient;
 
 use App\Models\Patient;
 use App\Services\FileService;
+use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,6 +17,8 @@ class PatientHead extends Component
 
     public $showModal;
 
+    public $typeNote='medical';
+
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
 
@@ -27,6 +30,9 @@ class PatientHead extends Component
     public function mount($patient_id)
     {
         $this->data = Patient::find($patient_id);
+
+        if(Route::currentRouteName()<>'consultation.show')
+            $this->typeNote='private';
     }
 
     public function updatedAvatar()
