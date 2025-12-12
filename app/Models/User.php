@@ -118,7 +118,7 @@ class User extends Authenticatable
 
     public function deactivate()
     {
-        $this->update(['active' => false]);
+        $this->update(['active' => false,'inactive_at' => now(),'inactivate_by' => auth()->id()]);
     }
 
     public function isActive()

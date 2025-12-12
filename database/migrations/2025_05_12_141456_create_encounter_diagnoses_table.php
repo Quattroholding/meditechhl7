@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('rank')->nullable()->comment('Orden de importancia del diagnóstico');
             $table->string('use')->nullable()->comment('Tipo de diagnóstico (principal, secundario, etc.)');
             $table->text('note')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index(['encounter_id', 'condition_id']);
