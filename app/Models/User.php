@@ -121,6 +121,7 @@ class User extends Authenticatable
         $this->update(['active' => false,'inactive_at' => now(),'inactivate_by' => auth()->id()]);
     }
 
+
     public function isActive()
     {
         return $this->active;
