@@ -320,8 +320,8 @@ class Create extends Component
                 'password' => $this->password,
             ];
 
-            // Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
-            Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+            Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            //Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
 
 
             return $this->redirect(route('patient.index'));
@@ -369,7 +369,7 @@ class Create extends Component
     {
         switch ($this->id_type) {
             case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
-                return '/^[0-9]+-[0-9]+$/';
+                return '/^[0-9]+-[0-9]+-[0-9]+$/';
             case 'CE': // Cédula Extranjera: Similar a CC
                 return '/^[A-Z]+-[0-9]+-[0-9]+$/';
             case 'PA': // Pasaporte: N1234567
