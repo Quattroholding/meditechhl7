@@ -39,6 +39,7 @@ Route::get('/', function () {
         ->limit(12)
         ->get();
 
+
     $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function ($query) {
         $query->where('active', true);
     })->get();
