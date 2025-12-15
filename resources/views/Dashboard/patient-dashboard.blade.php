@@ -1,4 +1,9 @@
 <?php $page = 'patient-dashboard'; ?>
+@section('css')
+    <!-- Dashboard Responsive CSS -->
+    <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-responsive.css?time='.time()) }}">
+@endsection
+
 <x-app-layout>
 
     <div class="page-wrapper">

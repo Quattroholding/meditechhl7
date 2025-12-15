@@ -54,9 +54,11 @@
 
 
 <!-- Dashboard Animations CSS -->
+{{-- Comentado para evitar conflictos con V2
 @if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
 <link rel="stylesheet" type="text/css" href="{{ url('assets/css/dashboard-animations.css?time='.time()) }}">
 @endif
+--}}
 
 <!-- Meta data for broadcasting -->
 @if(auth()->check() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner)

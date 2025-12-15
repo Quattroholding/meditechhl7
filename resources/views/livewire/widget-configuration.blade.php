@@ -7,20 +7,104 @@
     <!-- Configuration Modal -->
     @if($showModal)
     <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
-        <div class="modal-content" wire:click.stop>
+        <div class="modal-content" @click.stop>
             <div class="modal-header">
                 <h5 class="modal-title">Configurar Widgets del Dashboard</h5>
                 <button type="button" class="btn-close" wire:click="closeModal"></button>
             </div>
             <div class="modal-body">
+                @if (session()->has('message'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="feather-check-circle me-2"></i>
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                <!-- Grid Visual Guide -->
+                <div class="mb-4">
+                    <h6 class="mb-2">
+                        <i class="feather-grid me-2"></i>Guía de Grid Dashboard
+                    </h6>
+                    <p class="text-muted small mb-3">
+                        El dashboard está dividido en <strong>12 columnas (a-l)</strong> por filas.
+                        Las posiciones se definen como: <code>columnaInicio+fila:columnaFin+fila</code>
+                    </p>
+
+                    <!-- Visual Grid Reference -->
+                    <div class="grid-reference mb-3">
+                        <div class="grid-header">
+                            <div class="grid-label"></div>
+                            <div class="grid-col-label">a</div>
+                            <div class="grid-col-label">b</div>
+                            <div class="grid-col-label">c</div>
+                            <div class="grid-col-label">d</div>
+                            <div class="grid-col-label">e</div>
+                            <div class="grid-col-label">f</div>
+                            <div class="grid-col-label">g</div>
+                            <div class="grid-col-label">h</div>
+                            <div class="grid-col-label">i</div>
+                            <div class="grid-col-label">j</div>
+                            <div class="grid-col-label">k</div>
+                            <div class="grid-col-label">l</div>
+                        </div>
+                        <div class="grid-body">
+                            @for($row = 1; $row <= 4; $row++)
+                                <div class="grid-row">
+                                    <div class="grid-row-label">{{ $row }}</div>
+                                    @foreach(['a','b','c','d','e','f','g','h','i','j','k','l'] as $col)
+                                        <div class="grid-cell" data-col="{{ $col }}" data-row="{{ $row }}"></div>
+                                    @endforeach
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <!-- Quick Examples -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <div class="example-box">
+                                <strong>25% ancho (3 cols):</strong>
+                                <code>a1:c1</code>, <code>d1:f1</code>, <code>g1:i1</code>, <code>j1:l1</code>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-box">
+                                <strong>50% ancho (6 cols):</strong>
+                                <code>a1:f1</code>, <code>g1:l1</code>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-box">
+                                <strong>100% ancho (12 cols):</strong>
+                                <code>a1:l1</code>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-box">
+                                <strong>2 filas altura:</strong>
+                                <code>a1:f2</code> (fila 1 a 2)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
                 <div class="mb-3">
-                    <p class="text-muted">Selecciona los widgets que deseas ver en tu dashboard y arrastra para reordenar.</p>
+                    <h6>
+                        <i class="feather-settings me-2"></i>Configuración de Widgets
+                    </h6>
+                    <p class="text-muted small">Selecciona los widgets que deseas ver, arrastra para reordenar y configura su tamaño.</p>
                 </div>
                 <div id="widget-list" class="list-group">
                     @foreach($widgets as $index => $widget)
                     <div class="list-group-item"
                          data-widget-key="{{ $widget['key'] }}"
                          data-widget-description="{{ $widget['description'] }}"
+                         data-widget-position="{{ $widget['position'] ?? 'auto' }}"
+                         onmouseover="highlightWidgetPosition('{{ $widget['position'] ?? 'auto' }}')"
+                         onmouseout="highlightWidgetPosition(null)"
                          style="cursor: move; {{ !$widget['is_visible'] ? 'opacity: 0.6;' : '' }}">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="d-flex align-items-center">
@@ -77,12 +161,63 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Height Configuration -->
+                        <div class="mt-2 ps-4">
+                            <label class="form-label small text-muted">Alto del widget (filas):</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button"
+                                        class="btn btn-sm {{ ($widget['height'] ?? 1) === 1 ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="changeWidgetHeight('{{ $widget['key'] }}', 1)"
+                                        title="1 fila de alto">
+                                    1x
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{ ($widget['height'] ?? 1) === 2 ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="changeWidgetHeight('{{ $widget['key'] }}', 2)"
+                                        title="2 filas de alto">
+                                    2x
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{ ($widget['height'] ?? 1) === 3 ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="changeWidgetHeight('{{ $widget['key'] }}', 3)"
+                                        title="3 filas de alto">
+                                    3x
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{ ($widget['height'] ?? 1) === 4 ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="changeWidgetHeight('{{ $widget['key'] }}', 4)"
+                                        title="4 filas de alto">
+                                    4x
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Spatie Position Display -->
+                        <div class="mt-2 ps-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <small class="text-muted">
+                                    <i class="feather-grid me-1"></i>
+                                    Posición: <code class="position-badge">{{ $widget['position'] ?? 'auto' }}</code>
+                                </small>
+                                <small class="text-muted">
+                                    <i class="feather-info me-1"></i>
+                                    Pasa el mouse sobre el widget para ver su posición en el grid
+                                </small>
+                            </div>
+                        </div>
                     </div>
                     @endforeach
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" wire:click="closeModal">Guardar</button>
+                <button type="button"
+                        class="btn btn-outline-danger me-auto"
+                        onclick="confirmReset()"
+                        title="Restablecer configuración por defecto">
+                    <i class="feather-refresh-cw me-1"></i> Restablecer por defecto
+                </button>
+                <button type="button" class="btn btn-secondary" wire:click="closeModal">Guardar y Cerrar</button>
             </div>
         </div>
     </div>
@@ -92,6 +227,91 @@
     <script>
         console.log('🟢 Widget Configuration script loading...');
         console.log('🟢 Sortable available:', typeof Sortable !== 'undefined');
+
+        // Función para visualizar posición de widget en el grid
+        window.highlightWidgetPosition = function(position) {
+            console.log('🎨 Highlighting position:', position);
+
+            // Limpiar highlights anteriores
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+
+            if (!position || position === 'auto') {
+                console.log('⚠️ No position to highlight');
+                return;
+            }
+
+            try {
+                // Parsear posición: "a1:f2" -> start: a1, end: f2
+                const [start, end] = position.split(':');
+                const startCol = start.charAt(0);
+                const startRow = parseInt(start.slice(1));
+                const endCol = end.charAt(0);
+                const endRow = parseInt(end.slice(1));
+
+                console.log('📍 Position parsed:', { startCol, startRow, endCol, endRow });
+
+                // Highlight todas las celdas en el rango
+                document.querySelectorAll('.grid-cell').forEach(cell => {
+                    const cellCol = cell.getAttribute('data-col');
+                    const cellRow = parseInt(cell.getAttribute('data-row'));
+
+                    // Comparar columnas (a=1, b=2, etc.)
+                    const cellColNum = cellCol.charCodeAt(0) - 96;
+                    const startColNum = startCol.charCodeAt(0) - 96;
+                    const endColNum = endCol.charCodeAt(0) - 96;
+
+                    // Si la celda está dentro del rango
+                    if (cellRow >= startRow && cellRow <= endRow &&
+                        cellColNum >= startColNum && cellColNum <= endColNum) {
+                        cell.classList.add('selected');
+                    }
+                });
+
+                console.log('✅ Position highlighted');
+            } catch (error) {
+                console.error('❌ Error highlighting position:', error);
+            }
+        };
+
+        // Función para confirmar reset
+        window.confirmReset = function() {
+            console.log('🔄 confirmReset called');
+            if (confirm('¿Estás seguro de restablecer la configuración por defecto? Se perderán todos los cambios personalizados.')) {
+                console.log('✅ User confirmed reset');
+
+                // Buscar el componente Livewire
+                const modalContent = document.querySelector('.modal-content');
+                if (modalContent) {
+                    const livewireElement = modalContent.closest('[wire\\:id]');
+                    if (livewireElement) {
+                        const wireId = livewireElement.getAttribute('wire:id');
+                        console.log('📞 Found Livewire component:', wireId);
+
+                        const component = window.Livewire.find(wireId);
+                        if (component) {
+                            console.log('🎯 Calling resetToDefaults...');
+                            component.call('resetToDefaults')
+                                .then(() => {
+                                    console.log('✅ Reset completed successfully');
+                                })
+                                .catch(error => {
+                                    console.error('❌ Error resetting:', error);
+                                });
+                        } else {
+                            console.error('❌ Component not found');
+                        }
+                    } else {
+                        console.error('❌ Livewire element not found');
+                    }
+                } else {
+                    console.error('❌ Modal content not found');
+                }
+            } else {
+                console.log('❌ User cancelled reset');
+            }
+        };
 
         // Global function to initialize sortable (can be called from anywhere)
         window.initWidgetSortable = function() {
@@ -320,10 +540,113 @@
             background: white;
             border-radius: 8px;
             width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
+            max-width: 800px;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Grid Reference Styles */
+        .grid-reference {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            overflow-x: auto;
+        }
+
+        .grid-header {
+            display: grid;
+            grid-template-columns: 30px repeat(12, 1fr);
+            gap: 2px;
+            margin-bottom: 2px;
+        }
+
+        .grid-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 30px repeat(12, 1fr);
+            gap: 2px;
+        }
+
+        .grid-label,
+        .grid-row-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 11px;
+            color: #6c757d;
+            background: #e9ecef;
+            border-radius: 3px;
+        }
+
+        .grid-col-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 11px;
+            color: #495057;
+            background: #e9ecef;
+            border-radius: 3px;
+            padding: 4px;
+            min-width: 30px;
+        }
+
+        .grid-cell {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            min-height: 35px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .grid-cell:hover {
+            background: #e7f3ff;
+            border-color: #2196f3;
+            transform: scale(1.05);
+        }
+
+        .grid-cell.selected {
+            background: #2196f3;
+            border-color: #1976d2;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .example-box code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: #d63384;
+        }
+
+        .position-badge {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #2196f3;
+        }
+
+        .list-group-item:hover {
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
         }
 
         .modal-header {

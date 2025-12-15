@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('css')
+        <!-- Dashboard Animations V2 CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-animations-v2.css?time='.time()) }}">
+        <!-- Dashboard Responsive CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-responsive.css?time='.time()) }}">
+    @endsection
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -15,38 +21,22 @@
             @endcomponent
             <!-- /Page Header -->
 
-            <div class="good-morning-blk">
-                <div class="row"  style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
-                        background-size: cover;
-                        background-repeat: no-repeat;
-                        background-position: center; "
-                        >
-                    <div class="col-md-6">
-                        <div class="morning-user">
-                            <h2>
-                                <span class="typewriter-text text-white">{{__('generic.hello')}}, {{auth()->user()->full_name}}</span>
-                            </h2>
-                            <p>  <span class="typewriter-text text-white">{{__('generic.Have a nice day at work')}}</span></p>
+            @livewire('welcome-salute')
 
-                        </div>
-                    </div>
-                    {{--}}<div class="col-md-6 position-blk">
-                        <div class="morning-img">
-                            <img src="{{ URL::asset('/assets/img/morning-img-02.png') }}" alt="">
-                        </div>
-                    </div>{{--}}
-                </div>
-            </div>
-            <div class="dashboard-initrr">
-                <div class="row">
+            <div class="dashboard-init-v2">
+                <x-dashboard>
                     @foreach($visibleWidgets as $widget)
                         @if(isset($widgetComponents[$widget['key']]))
-                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
-                                @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
-                            </div>
+                            <x-dashboard-tile
+                                :position="$widget['position']"
+                                :refresh-interval-in-seconds="120">
+                                <div data-order="{{ $widget['order_position'] }}">
+                                    @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
+                                </div>
+                            </x-dashboard-tile>
                         @endif
                     @endforeach
-                </div>
+                </x-dashboard>
             </div>
         </div>
         @component('components.notification-box')
@@ -172,4 +162,5 @@
             });
         </script>
     @endpush
+    <script src="{{ URL::asset('/assets/js/dashboard-animations-v2-simple.js?time='.time()) }}"></script>
 </x-app-layout>

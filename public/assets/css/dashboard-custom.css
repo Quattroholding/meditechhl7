@@ -1,0 +1,126 @@
+/* Spatie Dashboard Custom Styles - Integration with Current Theme */
+
+/* Override Spatie Dashboard default styles */
+.bg-tile {
+    background: transparent !important;
+}
+
+.bg-canvas {
+    background: transparent !important;
+}
+
+.text-default {
+    color: #212529 !important;
+}
+
+/* Dashboard Grid Custom Styles */
+
+/* Custom grid container that stays within .content */
+.dashboard-grid-wrapper {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(200px, auto);
+    gap: 1rem;
+    width: 100%;
+}
+
+/* Tile positioning based on position attribute */
+.grid-tile[position="a1:c1"] {
+    grid-area: 1 / 1 / 2 / 4;
+}
+
+.grid-tile[position="d1:f1"] {
+    grid-area: 1 / 4 / 2 / 7;
+}
+
+.grid-tile[position="g1:i1"] {
+    grid-area: 1 / 7 / 2 / 10;
+}
+
+.grid-tile[position="j1:l1"] {
+    grid-area: 1 / 10 / 2 / 13;
+}
+
+.grid-tile[position="a2:l2"] {
+    grid-area: 2 / 1 / 3 / 13;
+}
+
+.grid-tile[position="a3:f3"] {
+    grid-area: 3 / 1 / 4 / 7;
+}
+
+.grid-tile[position="g3:l3"] {
+    grid-area: 3 / 7 / 4 / 13;
+}
+
+.grid-tile[position="a4:d4"] {
+    grid-area: 4 / 1 / 5 / 5;
+}
+
+.grid-tile[position="e4:l4"] {
+    grid-area: 4 / 5 / 5 / 13;
+}
+
+.grid-tile[position="a5:l5"] {
+    grid-area: 5 / 1 / 6 / 13;
+}
+
+/* Grid tile styling (for non-Spatie tiles) */
+.grid-tile {
+    background: transparent;
+    position: relative;
+    height: 100%;
+}
+
+/* CRITICAL: Override Bootstrap column classes inside grid tiles */
+.grid-tile>div[wire\:id]>div[class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Ensure cards inside tiles fill the space */
+.grid-tile .card {
+    height: 100%;
+    margin-bottom: 0;
+}
+
+/* Make sure livewire components inside tiles take full height */
+.grid-tile>div[wire\:id] {
+    height: 100%;
+    display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        grid-auto-rows: auto;
+        gap: 0.5rem;
+    }
+
+    .grid-tile,
+    .tile-wrapper {
+        grid-area: auto !important;
+        grid-column: 1 !important;
+    }
+}
+
+/* Fix for chart containers inside tiles */
+.grid-tile canvas,
+.tile-wrapper canvas {
+    max-width: 100%;
+}
+
+/* Ensure proper overflow handling */
+.grid-tile .card-body,
+.tile-wrapper .card-body {
+    overflow: auto;
+}

@@ -1,0 +1,381 @@
+/* ===================================
+   DASHBOARD ANIMATIONS V2 - SMOOTH & PROFESSIONAL
+   =================================== */
+
+/* Animación para el bloque good-morning - versión mejorada */
+.good-morning-blk-v2 {
+    display: none; /* Oculto por defecto, solo se muestra con animación */
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 1.5rem;
+    /* Cuando se oculta, colapsa el espacio */
+    max-height: 500px;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1), max-height 1.5s cubic-bezier(0.4, 0, 0.2, 1), margin 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.good-morning-blk-v2.show-animation {
+    display: block !important;
+    animation: smoothFadeInScale 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.good-morning-blk-v2.fade-out {
+    animation: smoothFadeOutScale 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    max-height: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Overlay gradient sutil sobre la imagen de fondo */
+.good-morning-blk-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(33, 150, 243, 0.15) 0%,
+        rgba(156, 39, 176, 0.10) 100%);
+    z-index: 1;
+    border-radius: 16px;
+    transition: opacity 0.6s ease;
+}
+
+.good-morning-blk-v2:hover::before {
+    opacity: 0.8;
+}
+
+/* Asegurar que el contenido esté sobre el overlay */
+.good-morning-blk-v2 .row {
+    position: relative;
+    z-index: 2;
+}
+
+/* Keyframes suaves para fade in/out con escala */
+@keyframes smoothFadeInScale {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.01);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes smoothFadeOutScale {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.96);
+    }
+}
+
+/* Animación de entrada suave para el texto (sin efecto typewriter) */
+.smooth-text-reveal {
+    opacity: 0;
+    display: inline-block;
+    transform: translateY(20px);
+}
+
+.smooth-text-reveal.animate-in {
+    animation: textRevealSmooth 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes textRevealSmooth {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* Efecto de brillo sutil en el texto */
+.smooth-text-reveal h2,
+.smooth-text-reveal p {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+}
+
+/* Animación de partículas flotantes de fondo (opcional) */
+.good-morning-blk-v2 .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.good-morning-blk-v2 .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: floatParticle 15s infinite ease-in-out;
+}
+
+@keyframes floatParticle {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(30px, -100px) scale(1.2);
+        opacity: 0.4;
+    }
+    90% {
+        opacity: 0.2;
+    }
+}
+
+/* Distribución de partículas */
+.good-morning-blk-v2 .particle:nth-child(1) {
+    left: 10%;
+    top: 20%;
+    animation-delay: 0s;
+    animation-duration: 12s;
+}
+
+.good-morning-blk-v2 .particle:nth-child(2) {
+    left: 30%;
+    top: 40%;
+    animation-delay: 2s;
+    animation-duration: 15s;
+}
+
+.good-morning-blk-v2 .particle:nth-child(3) {
+    left: 50%;
+    top: 30%;
+    animation-delay: 4s;
+    animation-duration: 18s;
+}
+
+.good-morning-blk-v2 .particle:nth-child(4) {
+    left: 70%;
+    top: 50%;
+    animation-delay: 1s;
+    animation-duration: 14s;
+}
+
+.good-morning-blk-v2 .particle:nth-child(5) {
+    left: 85%;
+    top: 25%;
+    animation-delay: 3s;
+    animation-duration: 16s;
+}
+
+/* Contenedor de texto con fondo semi-transparente */
+.morning-user-v2 {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.morning-user-v2:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Animación de entrada para el contenedor de texto */
+.morning-user-v2 h2 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 1.2;
+}
+
+.morning-user-v2 p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+/* Ocultar dashboard-init por defecto cuando good-morning existe */
+.dashboard-init-v2 {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(30px);
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+/* Clase adicional para asegurar que esté oculto durante la animación */
+.dashboard-init-v2.hide {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(40px) !important;
+    pointer-events: none;
+}
+
+.dashboard-init-v2.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto;
+}
+
+/* Animación en cascada para los widgets */
+.widget-cascade-enter {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+}
+
+.widget-cascade-enter.animate {
+    animation: widgetCascade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes widgetCascade {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    60% {
+        transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Delays escalonados para widgets */
+.widget-cascade-enter:nth-child(1) { animation-delay: 0.1s; }
+.widget-cascade-enter:nth-child(2) { animation-delay: 0.2s; }
+.widget-cascade-enter:nth-child(3) { animation-delay: 0.3s; }
+.widget-cascade-enter:nth-child(4) { animation-delay: 0.4s; }
+.widget-cascade-enter:nth-child(5) { animation-delay: 0.5s; }
+.widget-cascade-enter:nth-child(6) { animation-delay: 0.6s; }
+.widget-cascade-enter:nth-child(7) { animation-delay: 0.7s; }
+.widget-cascade-enter:nth-child(8) { animation-delay: 0.8s; }
+
+/* Efecto shimmer para loading state */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer-effect {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .good-morning-blk-v2 {
+        border-radius: 8px;
+    }
+
+    .morning-user-v2 {
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .morning-user-v2 h2 {
+        font-size: 2rem;
+    }
+
+    .morning-user-v2 p {
+        font-size: 1rem;
+    }
+
+    .good-morning-blk-v2::before {
+        border-radius: 8px;
+    }
+}
+
+/* Dark mode support con colores ajustados */
+@media (prefers-color-scheme: dark) {
+    .good-morning-blk-v2::before {
+        background: linear-gradient(135deg,
+            rgba(33, 150, 243, 0.25) 0%,
+            rgba(156, 39, 176, 0.20) 100%);
+    }
+
+    .morning-user-v2 {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .morning-user-v2:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .smooth-text-reveal h2,
+    .smooth-text-reveal p {
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Animación de pulso sutil para destacar */
+@keyframes subtlePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.pulse-animation {
+    animation: subtlePulse 3s ease-in-out infinite;
+}
+
+/* Mejora de accesibilidad - reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .good-morning-blk-v2,
+    .smooth-text-reveal,
+    .widget-cascade-enter,
+    .particle {
+        animation: none !important;
+        transition: opacity 0.3s ease !important;
+    }
+
+    .good-morning-blk-v2.show-animation {
+        opacity: 1;
+        transform: none;
+    }
+
+    .dashboard-init-v2.show {
+        transform: none !important;
+    }
+}

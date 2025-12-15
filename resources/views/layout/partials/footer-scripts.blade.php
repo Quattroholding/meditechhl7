@@ -92,8 +92,10 @@
 
 
 <!-- Dashboard Animations JS -->
+{{-- Comentado para evitar conflictos con V2
 @if (Request::is('dashboard*') || Route::is(['admin.dashboard', 'doctor.dashboard', 'patient.dashboard']))
 <script src="{{ URL::asset('/assets/js/dashboard-animations.js?time='.time()) }}"></script>
 @endif
+--}}
 
 

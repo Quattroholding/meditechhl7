@@ -18,7 +18,7 @@ return [
     'Have a nice day at work' => 'Que tengas un buen día en el trabajo. ',
     'download' => 'Descargar',
     'hi' => 'Hola :user_name <br/> Que tengas un buen día en el trabajo.',
-    'welcome' => 'Bienvenido(a)',
+    'welcome' => 'Espera un momento mientras cargamos tu dashboard.',
     'vs_last_month' => 'vs mes pasado',
     'logout' => 'Cerrar sesion',
     'select' => 'Seleccione',

@@ -1,0 +1,166 @@
+/* Dashboard Responsive Styles for Spatie Dashboard */
+
+/* Desktop: El grid de Spatie funciona normal con 12 columnas */
+/* No override needed */
+
+/* Tablet: Cambiar a 2 columnas */
+@media (max-width: 1024px) and (min-width: 768px) {
+    /* Asegurar que el contenedor tenga 100% de ancho */
+    .content {
+        padding: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .dashboard-init-v2 {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Override del grid container principal - usar flexbox con wrap */
+    .dashboard-init-v2 > div {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Cada tile con selector específico para sobrescribir inline styles */
+    .dashboard-init-v2 > div > div[style*="grid-area"] {
+        flex: 0 0 calc(50% - 5px) !important;
+        width: calc(50% - 5px) !important;
+        min-width: 0 !important;
+        max-width: calc(50% - 5px) !important;
+        min-height: 200px !important;
+        grid-area: unset !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+    }
+
+    /* Ajustar padding interno de tiles */
+    .dashboard-init-v2 > div > div > div {
+        padding: 12px !important;
+    }
+}
+
+/* Mobile: Cambiar a 1 columna, cada widget toma todo el ancho */
+@media (max-width: 767px) {
+    /* Override del grid container principal - forzar a 1 columna */
+    .dashboard-init-v2 > div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    /* Cada tile ocupa el 100% del ancho */
+    .dashboard-init-v2 > div > div {
+        width: 100% !important;
+        grid-area: unset !important;
+        min-height: 200px !important;
+        display: block !important;
+    }
+
+    /* Ajustar padding interno de tiles */
+    .dashboard-init-v2 > div > div > div {
+        padding: 12px !important;
+    }
+
+    /* Reducir padding del contenedor principal */
+    .content {
+        padding: 8px !important;
+    }
+
+    /* Ajustar tamaño de cards dentro de tiles */
+    .dashboard-init-v2 .card {
+        margin-bottom: 8px;
+    }
+
+    .dashboard-init-v2 .card-body {
+        padding: 10px !important;
+    }
+
+    /* Hacer que los page headers sean más compactos */
+    .page-header {
+        margin-bottom: 10px !important;
+        padding: 10px !important;
+    }
+
+    .page-header .row {
+        margin: 0 !important;
+    }
+
+    .page-header h4 {
+        font-size: 16px !important;
+    }
+
+    /* Botón de configurar dashboard más pequeño */
+    .page-header .btn {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* Small phones: Optimizaciones adicionales */
+@media (max-width: 480px) {
+    .dashboard-init-v2 [style*="grid"] {
+        gap: 6px !important;
+    }
+
+    .dashboard-init-v2 .bg-tile {
+        min-height: 180px !important;
+    }
+
+    .dashboard-init-v2 .card-header {
+        padding: 8px 10px !important;
+        font-size: 13px;
+    }
+
+    .dashboard-init-v2 .card-body {
+        padding: 8px !important;
+    }
+
+    .dashboard-init-v2 .card-title {
+        font-size: 13px !important;
+    }
+
+    .dashboard-init-v2 .btn {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+
+    /* Reducir tamaño de iconos */
+    .dashboard-init-v2 .fas,
+    .dashboard-init-v2 .feather {
+        font-size: 14px !important;
+    }
+
+    /* Reducir padding del page wrapper */
+    .page-wrapper {
+        padding: 0 !important;
+    }
+
+    .content {
+        padding: 6px !important;
+    }
+}
+
+/* Asegurar que las tablas sean scrolleables en móvil */
+@media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    table th,
+    table td {
+        padding: 6px !important;
+    }
+}

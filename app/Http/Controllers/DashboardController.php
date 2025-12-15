@@ -5,9 +5,51 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\UserWidgetPreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
+    /**
+     * Initialize default widgets for first-time users
+     */
+    protected function initializeDefaultWidgets($userId, $dashboardType)
+    {
+        // Check if user already has preferences
+        $hasPreferences = UserWidgetPreference::where('user_id', $userId)
+            ->where('dashboard_type', $dashboardType)
+            ->exists();
+
+
+        // If no preferences exist, create them from defaults
+        if (! $hasPreferences) {
+            $defaultWidgets = UserWidgetPreference::getDefaultWidgets($dashboardType);
+
+            foreach ($defaultWidgets as $key => $widget) {
+                UserWidgetPreference::create([
+                    'user_id' => $userId,
+                    'dashboard_type' => $dashboardType,
+                    'widget_name' => $key,
+                    'widget_description' => $widget['description'],
+                    'is_visible' => true,
+                    'order_position' => $widget['order'],
+                    'width' => $widget['width'],
+                    'position' => $widget['position'] ?? UserWidgetPreference::generateSpatiePosition(
+                        $widget['order'],
+                        $widget['width'],
+                        $widget['height'] ?? 1
+                    ),
+                    'height' => $widget['height'] ?? 1,
+                ]);
+            }
+
+            Log::info('Default widgets initialized', [
+                'user_id' => $userId,
+                'dashboard_type' => $dashboardType,
+                'widgets_count' => count($defaultWidgets),
+            ]);
+        }
+    }
+
     public function admin(Request $request)
     {
         $dashboard = [];
@@ -19,11 +61,27 @@ class DashboardController extends Controller
     {
         $dashboard = [];
 
+        // Si no tiene el parámetro show_salute y es la primera visita, redirigir con el parámetro
+        if (! $request->has('show_salute') && ! session()->has('dashboard_client_visited')) {
+            session()->put('dashboard_client_visited', true);
+
+            return redirect()->route('client.dashboard', ['show_salute' => 'true']);
+        }
+
         return view('livewire.client.dashboard', compact('dashboard'));
     }
 
     public function doctor(Request $request)
     {
+        // Si no tiene el parámetro show_salute y es la primera visita, redirigir con el parámetro
+        if (! $request->has('show_salute') && ! session()->has('dashboard_doctor_visited')) {
+            session()->put('dashboard_doctor_visited', true);
+
+            return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
+        }
+
+        // Initialize default widgets if user has no preferences
+        $this->initializeDefaultWidgets(auth()->id(), 'doctor');
 
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'doctor');
@@ -46,16 +104,20 @@ class DashboardController extends Controller
             'activity-heatmap' => 'doctor.activity-heatmap',
             'branch-billing-chart' => 'dashboard.admin.branch-billing-chart',
             'billing-collection-rate' => 'dashboard.admin.billing-collection-rate',
-            //'diagnostics-by-specialties' => 'doctor.diagnostics-by-specialties',
-            'diagnostics-by-age-groups' => 'doctor.diagnostics-by-age-groups'
+            // 'diagnostics-by-specialties' => 'doctor.diagnostics-by-specialties',
+            'diagnostics-by-age-groups' => 'doctor.diagnostics-by-age-groups',
         ];
-        //dd($visibleWidgets);
+
+        // dd($visibleWidgets);
         return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));
     }
 
     public function patient(Request $request)
     {
         $patient = Patient::find(auth()->user()->patient->id);
+
+        // Initialize default widgets if user has no preferences
+        $this->initializeDefaultWidgets(auth()->id(), 'patient');
 
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'patient');
@@ -73,6 +135,9 @@ class DashboardController extends Controller
 
     public function assistence(Request $request)
     {
+        // Initialize default widgets if user has no preferences
+        $this->initializeDefaultWidgets(auth()->id(), 'recepcionist');
+
         // Get visible widgets for this user
         $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'recepcionist');
 

@@ -1,7 +1,8 @@
 <div>
     @if($showModal)
-        <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
-            <div class="modal-content" wire:click.stop>
+        @teleport('body')
+        <div class="modal-overlay" wire:click="closeModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
                 <div class="modal-header">
                     <h2 class="modal-title">{{ $title }}</h2>
                     <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
@@ -123,6 +124,7 @@
                 </form>
             </div>
         </div>
+        @endteleport
     @endif
         <script>
             document.addEventListener('alpine:init', () => {

@@ -1,6 +1,8 @@
-<?php $page = 'index'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
+    @section('css')
+        <!-- Dashboard Animations V2 CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-animations-v2.css?time='.time()) }}">
+    @endsection
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -13,26 +15,10 @@
                 @endslot
             @endcomponent
             <!-- /Page Header -->
-            <div class="good-morning-blk">
-                <div class="row" style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
-                        background-size: cover;
-                        background-repeat: no-repeat;
-                        background-position: center; "
-                        >
-                    <div class="col-md-6">
-                        <div class="morning-user">
-                            <h2 class="text-white">{{__('generic.hi')}}, <span class="text-white">{{auth()->user()->full_name}}</span></h2>
-                            <p class="text-white">{{__('generic.welcome')}}</p>
-                        </div>
-                    </div>
-                    {{--}}<div class="col-md-6 position-blk">
-                        <div class="morning-img">
-                            <img src="{{ URL::asset('/assets/img/morning-img-01.png') }}" alt="">
-                        </div>
-                    </div>{{--}}
-                </div>
-            </div>
-            <x-dashboard>
+            @livewire('welcome-salute')
+
+            <div class="dashboard-init-v2">
+                <x-dashboard>
                 {{-- Fila 1: Counters (4 tiles de 3 columnas cada uno) --}}
                 <x-dashboard-tile position="a1:c1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="appointments" wire:key="counter_appointments"/>
@@ -78,9 +64,13 @@
                     @livewire('client.invoices-by-branch')
                 </x-dashboard-tile>
             </x-dashboard>
+            </div>
 
 
             @component('components.notification-box')
             @endcomponent
         </div>
-@endsection
+
+    </div>
+    <script src="{{ URL::asset('/assets/js/dashboard-animations-v2-simple.js?time='.time()) }}"></script>
+</x-app-layout>

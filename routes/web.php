@@ -91,9 +91,10 @@ Route::get('/autologin', function () {
     if (request()->get('role') == 'paciente') {
         $route = route('patient.dashboard');
     }
-    if (request()->get('role') == 'asistente') {
+    if (request()->get('role') == 'asistente' or request()->get('role') == 'recepcionista') {
         $route = route('assistence.dashboard');
     }
+
 
     $user = \App\Models\User::role(request()->get('role'))->whereActive(1)->inRandomOrder()->limit(1)->first();
 
@@ -117,6 +118,9 @@ Route::get('/dash', function () {
     }
     if (auth()->user()->hasRole('paciente')) {
         $route = route('patient.dashboard');
+    }
+    if (auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico')) {
+        $route = route('assistence.dashboard');
     }
 
     return redirect($route);

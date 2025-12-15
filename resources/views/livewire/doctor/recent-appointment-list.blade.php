@@ -85,12 +85,12 @@
             </div>
         </div>
 
-        <div class="card-body" >
+        <div class="card-body">
             @if($isLoading)
 
                 <div class="loading-skeleton">
                     <div class="skeleton-list">
-                        @for($i = 0; $i < 1; $i++)
+                        @for($i = 0; $i < 5; $i++)
                             <div class="skeleton-appointment-item mb-3">
                                 <div class="skeleton-time"></div>
                                 <div class="skeleton-patient-info">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             @elseif ($appointments->isEmpty())
-            <p class="px-2">{{__('Sin citas programadas para hoy')}}</p>
+            <p class="px-2">{{__('Sin citas programadas para hoy')}}</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
             @else
             <ul class="teaching-card">
                 <ul class="steps-history">
