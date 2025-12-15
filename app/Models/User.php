@@ -30,6 +30,7 @@ class User extends Authenticatable
         'profile_picture',
         'whatsapp_phone',
         'active',
+        'created_by',
     ];
 
     /**
