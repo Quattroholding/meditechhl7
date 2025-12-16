@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 class ActiveUsers extends Component
@@ -13,6 +14,7 @@ class ActiveUsers extends Component
 
     public function activateUser($userId)
     {
+        if(Gate::allows('create', auth()->user())){
         try {
             $user = User::findOrFail($userId);
 
@@ -28,6 +30,12 @@ class ActiveUsers extends Component
             $this->dispatch('showToastr'.$this->user_id, [
                 'type' => 'error',
                 'message' => 'Error al activar el usuario',
+            ]);
+        }}else{
+                $this->visibility = '';
+                $this->dispatch('showToastr'.$this->user_id, [
+                'type' => 'error',
+                'message' => 'Error al activar el usuario, superó el limite de usuarios de su plan',
             ]);
         }
     }
