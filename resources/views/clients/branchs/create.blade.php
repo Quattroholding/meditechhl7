@@ -23,16 +23,20 @@
 
                             <form method="POST" action="{{ route('client.branch.store') }}" enctype="multipart/form-data" id="form">
                             @csrf
+                            @if(auth()->user()->clients()->count()==1)
+                                    <input name="client_id" value="{{auth()->user()->default_client_id}}" type="hidden">
+                            @else
                             <!-- Client -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="client_id" :value="__('client.title')" required/>
                                 @if(!auth()->user() && auth()->user()->hasRole('doctor'))
-                                    <x-select-input name="client_id" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="[null]" class="block w-full" autofocus/>
+                                    <x-select-input name="client_id" :options="\App\Models\Client::pluck('name','id')->toArray()" :selected="[auth()->user()->default_client_id]" class="block w-full" autofocus/>
                                 @else
-                                    <x-select-input name="client_id" :options="auth()->user()->clients()->pluck('name','clients.id')->toArray()" :selected="[null]" class="block w-full" autofocus/>
+                                    <x-select-input name="client_id" :options="auth()->user()->clients()->pluck('name','clients.id')->toArray()" :selected="[auth()->user()->default_client_id]" class="block w-full" autofocus/>
                                 @endif
                                 <x-input-error :messages="$errors->get('client_id')" class="mt-2" />
                             </div>
+                            @endif
                             <!-- TYPE -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="type" :value="__('Tipo')" required/>

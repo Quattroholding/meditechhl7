@@ -109,7 +109,7 @@ class AddInsurance extends Component
     public function loadInsuranceCompanies()
     {
         $this->insuranceCompanies = InsuranceCompany::active()
-            ->whereClientId(auth()->user()->getCurrentClient()->id)
+            // ->whereClientId(auth()->user()->getCurrentClient()->id)
             ->orderBy('name')
             ->get();
     }

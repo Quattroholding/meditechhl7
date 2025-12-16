@@ -1,11 +1,10 @@
-<?php $page = 'patient-dashboard'; ?>
-@section('css')
-    <!-- Dashboard Responsive CSS -->
-    <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-responsive.css?time='.time()) }}">
-@endsection
-
 <x-app-layout>
-
+    @section('css')
+        <!-- Dashboard Animations V2 CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-animations-v2.css?time='.time()) }}">
+        <!-- Dashboard Responsive CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-responsive.css?time='.time()) }}">
+    @endsection
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -22,41 +21,24 @@
             @endcomponent
             <!-- /Page Header -->
 
-            <div class="good-morning-blk">
-                <div class="row" 
-                style= "background-image: url('{{ URL::asset('/assets/img/banner2.png') }}');
-                        background-size: cover;
-                        background-repeat: no-repeat; 
-                        background-position: center; "
-                        >
-                    <div class="col-md-6">
-                        <div class="morning-user">
-                            <h2><span class="typewriter-text text-white">{{__('generic.hello')}} , {{auth()->user()->patient->name}}</span></h2>
-                            <p><span class="typewriter-text text-white">{{__('generic.welcome')}}</span></p>
-                        </div>
-                    </div>
-                    {{--}}<div class="col-md-6 position-blk">
-                        <div class="morning-img">
-                            <img src="{{ URL::asset('/assets/img/morning-img-21.png') }}" alt="">
-                        </div>
-                    </div>{{--}}
-                </div>
-            </div>
-            @include('partials.message')
-            <div class="dashboard-initrr">
-                <div class="row">
+            <!-- Welcome Block V2 - Componente Livewire Reutilizable -->
+            @livewire('welcome-salute')
+
+
+            <div class="dashboard-init-v2">
+                <x-dashboard>
                     @foreach($visibleWidgets as $widget)
                         @if(isset($widgetComponents[$widget['key']]))
-                            <div class="{{ $widget['width'] ?? 'col-lg-6' }}" data-order="{{ $widget['order_position'] }}">
-                                @if($widget['key'] === 'upcoming-appointments' || $widget['key'] === 'recent-consultations' || $widget['key'] === 'outstanding-invoices')
-                                    @livewire($widgetComponents[$widget['key']], ['limit' => 3, 'order' => $widget['order_position']])
-                                @else
+                            <x-dashboard-tile
+                                :position="$widget['position']"
+                                :refresh-interval-in-seconds="120">
+                                <div data-order="{{ $widget['order_position'] }}">
                                     @livewire($widgetComponents[$widget['key']], ['order' => $widget['order_position']])
-                                @endif
-                            </div>
+                                </div>
+                            </x-dashboard-tile>
                         @endif
                     @endforeach
-                </div>
+                </x-dashboard>
             </div>
         </div>
         @component('components.notification-box')
@@ -64,6 +46,7 @@
     </div>
 
     @push('scripts')
+    <script src="{{ URL::asset('/assets/js/dashboard-animations-v2-simple.js?time='.time()) }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sistema de carga progresiva para patient dashboard

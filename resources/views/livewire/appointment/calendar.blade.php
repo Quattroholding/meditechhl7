@@ -34,9 +34,11 @@
                 <button wire:click="openModal" class="btn btn-primary btn-fonts">
                    <i class="fa fa-calendar"></i> Nueva Cita
                 </button>
+                @if(!auth()->user()->hasRole('paciente'))
                 <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary btn-fonts">
                     <i class="fa fa-user-injured"></i> Registrar Paciente
                 </button>
+                @endif
             </div>
         </div>
         <!-- Estadísticas -->

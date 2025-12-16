@@ -360,6 +360,57 @@
     animation: subtlePulse 3s ease-in-out infinite;
 }
 
+/* Loading Dashboard Spinner */
+.loading-dashboard {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.loading-dashboard.animate-in {
+    animation: fadeInSpinner 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards;
+}
+
+@keyframes fadeInSpinner {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner personalizado con mejor contraste */
+.loading-dashboard .spinner-border {
+    border-width: 3px;
+    border-right-color: transparent !important;
+    animation: spinner-rotate 0.75s linear infinite;
+}
+
+@keyframes spinner-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pulso suave en el texto de carga */
+.loading-dashboard span {
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
 /* Mejora de accesibilidad - reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
     .good-morning-blk-v2,
@@ -377,5 +428,10 @@
 
     .dashboard-init-v2.show {
         transform: none !important;
+    }
+
+    .loading-dashboard .spinner-border,
+    .loading-dashboard span {
+        animation: spinner-rotate 0.75s linear infinite !important;
     }
 }

@@ -87,6 +87,7 @@
     // Animar texto con reveal
     function animateText() {
         const textElements = document.querySelectorAll('.smooth-text-reveal');
+        const loadingSpinner = document.querySelector('.loading-dashboard');
         console.log('Animating text elements:', textElements.length);
 
         textElements.forEach((element, index) => {
@@ -94,6 +95,13 @@
                 element.classList.add('animate-in');
             }, 600 + (index * 300));
         });
+
+        // Animar el spinner después del texto
+        if (loadingSpinner) {
+            setTimeout(() => {
+                loadingSpinner.classList.add('animate-in');
+            }, 600 + (textElements.length * 300));
+        }
     }
 
     // Ocultar welcome block

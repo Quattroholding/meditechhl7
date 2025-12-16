@@ -2,6 +2,8 @@
     @section('css')
         <!-- Dashboard Animations V2 CSS -->
         <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-animations-v2.css?time='.time()) }}">
+        <!-- Dashboard Responsive CSS -->
+        <link rel="stylesheet" href="{{ URL::asset('/assets/css/dashboard-responsive.css?time='.time()) }}">
     @endsection
      <div class="page-wrapper">
         <div class="content">

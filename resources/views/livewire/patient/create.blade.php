@@ -185,7 +185,7 @@
                             id="archivos"
                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                         >
-                        <small class="text-muted">Puede seleccionar múltiples archivos (máx. 1MB por archivo). Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small>
+                        <small class="text-muted">Puede subir múltiples archivos (máx. 1MB por archivo). Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small>
                         @error('archivos.*')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

@@ -20,8 +20,6 @@ class Lista extends Model
             'AB-' => 'AB-',
             'O+' => '0+',
             'O-' => '0-',
-            'RH+' => 'RH+',
-            'RH-' => 'RH-',
         ];
     }
 
