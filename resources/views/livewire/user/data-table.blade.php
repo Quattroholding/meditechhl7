@@ -32,6 +32,9 @@
                                 <th data-column="created_at" data-priority="5">
                                     <x-table-sort-button title="{{__('user.created_at')}}" columnName="created_at" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
+                                <th data-column="active" data-priority="5">
+                                    <x-table-sort-button title="{{__('Estado')}}" columnName="active" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                </th>
                                 @canany(['user.edit','users.activate','users.delete'])
                                 <th data-column="acciones" data-priority="1" class="text-end">
                                     <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
@@ -65,6 +68,9 @@
                                     </td>
                                     <td data-column="created_at" data-priority="5" data-label="{{__('user.created_at')}}">
                                         <span class="cell-content">{{ \Carbon\Carbon::parse($user->created_at)->format('d-m-Y') }}</span>
+                                    </td>
+                                    <td data-column="active" data-priority="5" data-label="{{__('Estado')}}">
+                                        <span class="cell-content badge me-1 {{$user->active ? 'bg-success' : 'bg-danger'}}">{{  $user->active ? 'Activo' : 'Inactivo' }}</span>
                                     </td>
                                     @canany(['user.edit','users.activate','users.delete'])
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
