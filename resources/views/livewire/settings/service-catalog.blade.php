@@ -39,12 +39,18 @@
                                     @error('cpt_price') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                             </div>
-
                             <!-- Specialty -->
-                            <div class="col-12 col-md-6">
+                            {{--}}<div class="col-12 col-md-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="cpt_specialty" :value="__('Especialidad')"/>
                                     <x-text-input wire:model="cpt_specialty" class="block mt-1 w-full" type="text" name="cpt_specialty"/>
+                                </div>
+                            </div>{{--}}
+                            <!-- Copay -->
+                            <div class="col-12 col-md-6">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="cpt_patient_copay" :value="__('Copago Paciente')"/>
+                                    <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
                                 </div>
                             </div>
                         </div>
@@ -61,25 +67,15 @@
                                     </select>
                                 </div>
                             </div>
-
                             <!-- Duration -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="cpt_duration" :value="__('Duración (minutos)')"/>
                                     <x-text-input wire:model="cpt_duration" class="block mt-1 w-full" type="number" name="cpt_duration"/>
                                 </div>
-                            </div>
+                            </div>                       
                         </div>
 
-                        <div class="row">
-                            <!-- Copay -->
-                            <div class="col-12 col-md-6">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="cpt_patient_copay" :value="__('Copago Paciente')"/>
-                                    <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
