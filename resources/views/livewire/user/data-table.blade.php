@@ -72,7 +72,7 @@
                                     <td data-column="active" data-priority="5" data-label="{{__('Estado')}}">
                                         <span class="cell-content badge me-1 {{$user->active ? 'bg-success' : 'bg-danger'}}">{{  $user->active ? 'Activo' : 'Inactivo' }}</span>
                                     </td>
-                                    @canany(['user.edit','users.activate','users.delete'])
+                                    @canany(['users.edit','users.activate','users.delete'])
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             @can('users.edit')
@@ -85,11 +85,11 @@
                                                     <livewire:user.active-users user_id="{{$user->id}}" wire:key="{{$user->id}}"/>
                                                 @endif
                                             @endcan
-                                            @can('users.delete' && auth()->user()->id <> $user->id)
+                                            @if(auth()->user()->can('users.delete') && auth()->user()->id <> $user->id)
                                                 <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#delete_modal" data-route="{{route('user.destroy', $user->id)}}" class="btn btn-danger btn-sm" title="{{__('generic.delete')}}">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>
-                                            @endcan
+                                            @endif
                                         </div>
                                     </td>
                                     @endcanany
