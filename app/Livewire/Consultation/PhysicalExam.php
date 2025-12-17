@@ -17,12 +17,10 @@ class PhysicalExam extends Component
 
     public $values = [];
 
-    public $saved = [];
-
     // Nuevas propiedades para sugerencias
     public $activeInputCode = null;
-    public $suggestedAnswered = '';
 
+    public $suggestedAnswered = '';
 
     public function mount()
     {
@@ -33,7 +31,6 @@ class PhysicalExam extends Component
         foreach ($this->items as $i) {
             $result = $this->encounter->physicalExams()->whereCode($i->code)->first();
             $this->values[$i->code] = '';
-            $this->saved[$i->code] = false;
             if ($result) {
                 if (is_array($result->finding)) {
                     foreach ($result->finding as $key => $value) {
@@ -50,23 +47,21 @@ class PhysicalExam extends Component
         $this->activeInputCode = $code;
         $item = ClinicalObservationType::whereCode($code)->first();
         $this->suggestedAnswered = $item->default_answer_es;
-            
     }
 
     public function updatedValues($value, $code)
     {
-        $this->saved[$code] = false;
         $this->toggleInfo($code);
+        $this->save($code);
     }
 
- 
     public function usarSugerencia($code)
     {
-        
+
         // Usar la primera sugerencia disponible (generalmente default_answer)
         $item = ClinicalObservationType::whereCode($code)->first();
-        
-        if ($item && !empty($item->default_answer)) {
+
+        if ($item && ! empty($item->default_answer)) {
             $this->values[$code] = $item->default_answer_es;
             $this->cerrarSugerencias();
             $this->save($code);
@@ -87,10 +82,12 @@ class PhysicalExam extends Component
 
     public function save($code)
     {
-        $this->saved[$code] = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
+        $key = "physical_exam_{$code}";
+
         try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
             $vs = $this->encounter->physicalExams()->whereEncounterId($this->encounter_id)->whereCode($code)->first();
 
             if (! $vs) {
@@ -110,12 +107,11 @@ class PhysicalExam extends Component
                 $vs->finding = ['text' => $this->values[$code]];
                 $vs->save();
             }
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->saved[$code] = true;
+
+            $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key,$e->getMessage());
         }
     }
 

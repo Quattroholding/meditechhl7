@@ -34,8 +34,6 @@ class MedicationRequests extends Component
 
     public $routes = [];
 
-    public $saved = false;
-
     public $section_id = 11;
 
     protected $listeners = ['copyMedicationsToCurrentRecipe'];
@@ -79,43 +77,50 @@ class MedicationRequests extends Component
 
     public function selectOption($option)
     {
-        $this->saved = false;
-        $this->selectedOption = $option;
-        $this->query = $option['name']; // Asigna el nombre seleccionado al input
-        $this->results = []; // Limpia los resultados
-        $medicine_request = MedicationRequest::whereEncounterId($this->encounter->id)->whereMedicationId($option)->first();
-        $medicine = Medicine::whereId($option)->first();
-        if (! $medicine_request) {
-            $this->encounter->medicationRequests()->create([
-                'fhir_id' => 'medicationrequest-'.Str::uuid(),
-                'identifier' => 'RX-'.strtoupper(Str::random(7)),
-                'status' => 'active',
-                'intent' => 'order',
-                'medication_id' => $medicine->id,
-                'valid_from' => now(),
-                'valid_to' => now()->addDays(30),
-                'patient_id' => $this->encounter->patient_id,
-                'practitioner_id' => $this->encounter->practitioner_id,
-                'dosage_instruction',
-            ]);
+        $key = 'medication-search';
 
-            $this->query = '';
+        try {
+            // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
-            $this->saved = true;
-        } else {
-            $this->dispatch('showToastrConsultation',
-                type: 'error',
-                message: '¡Medicamento ya esta agregado a la  consulta.!'
-            );
+
+            $this->selectedOption = $option;
+            $this->query = $option['name']; // Asigna el nombre seleccionado al input
+            $this->results = []; // Limpia los resultados
+            $medicine_request = MedicationRequest::whereEncounterId($this->encounter->id)->whereMedicationId($option)->first();
+            $medicine = Medicine::whereId($option)->first();
+            if (! $medicine_request) {
+                $this->encounter->medicationRequests()->create([
+                    'fhir_id' => 'medicationrequest-'.Str::uuid(),
+                    'identifier' => 'RX-'.strtoupper(Str::random(7)),
+                    'status' => 'active',
+                    'intent' => 'order',
+                    'medication_id' => $medicine->id,
+                    'valid_from' => now(),
+                    'valid_to' => now()->addDays(30),
+                    'patient_id' => $this->encounter->patient_id,
+                    'practitioner_id' => $this->encounter->practitioner_id,
+                    'dosage_instruction',
+                ]);
+
+                $this->query = '';
+
+                $this->dispatch('saved-'.$key);
+
+            } else {
+                $this->dispatch('error-'.$key,  '¡Medicamento ('.$option['name'].') ya esta agregado a la  consulta.!');
+            }
+
+            $this->getMedicationRequestsProperty();
+
+            // Disparar evento para limpiar el scroll bloqueado
+            $this->dispatch('option-selected');
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$key,  'Error al guardar: '.$e->getMessage());
         }
-
-        $this->getMedicationRequestsProperty();
-
-        // Disparar evento para limpiar el scroll bloqueado
-        $this->dispatch('option-selected');
-
-        // Disparar evento para actualizar el estado del botón de finalizar
-        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function delete($id)
@@ -128,49 +133,100 @@ class MedicationRequests extends Component
         $this->dispatch('findFinishedButtonStatus');
     }
 
-    public function updateField($id, $value, $field)
-    {
-        // Limpiar y validar valores numéricos
-        if (in_array($field, ['quantity', 'frequency', 'duration'])) {
-            // Remover caracteres no numéricos excepto punto decimal
-            $value = preg_replace('/[^0-9.]/', '', $value);
-
-            // Si está vacío o solo tiene punto, establecer null
-            if ($value === '' || $value === '.') {
-                $value = null;
-            } else {
-                // Convertir a número
-                $value = is_numeric($value) ? (float) $value : null;
-            }
-        }
-
-        if ($field == 'quantity') {
-            $this->quantitys[$id] = $value;
-        }
-        if ($field == 'frequency') {
-            $this->frecuencies[$id] = $value;
-        }
-        if ($field == 'duration') {
-            $this->durations[$id] = $value;
-        }
-        if ($field == 'route') {
-            $this->routes[$id] = $value;
-        }
-
-        $dosage_instructions = $this->generateDosageInstruction($id);
-
-        $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
-        // $medicationRequest->$field = null;
-        $medicationRequest->$field = $value;
-        $medicationRequest->dosage_instruction = $dosage_instructions;
-        $medicationRequest->dosage_text = $dosage_instructions['text'];
-        $medicationRequest->save();
-
-        $this->dosage_texts[$id] = $dosage_instructions['text'];
-
-        // Disparar evento para actualizar el estado del botón de finalizar
-        $this->dispatch('findFinishedButtonStatus');
+    public function updatedQuantitys($value, $code){
+        $this->saveQuatity($code);
     }
+
+    public function saveQuatity($id)
+    {
+        try{
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['quantity' => $this->quantitys[$id]]);
+
+            $this->generateDosageInstruction($id);
+
+
+            $this->dispatch('saved-quantity-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
+    public function updatedFrecuencies($value, $code){
+        $this->saveFrecuency($code);
+    }
+
+    public function saveFrecuency($id)
+    {
+        try{
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['frequency' => $this->frecuencies[$id]]);
+
+            $this->generateDosageInstruction($id);
+
+
+            $this->dispatch('saved-frecuency-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
+    public function updatedDurations($value, $code){
+        $this->saveDuration($code);
+    }
+
+    public function saveDuration($id)
+    {
+        try{
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['duration' => $this->durations[$id]]);
+            $this->generateDosageInstruction($id);
+
+            $this->dispatch('saved-duration-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
+    public function updatedRoutes($value, $code){
+        $this->saveRoute($code);
+    }
+
+    public function saveRoute($id)
+    {
+        try{
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['route' => $this->routes[$id]]);
+
+            $this->generateDosageInstruction($id);
+
+
+            $this->dispatch('saved-route-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
 
     protected function generateDosageInstruction($id)
     {
@@ -178,35 +234,49 @@ class MedicationRequests extends Component
         $route = '';
         $duration = '';
         $quantity = '';
+        $key='dosage_text_'.$id;
 
-        if (isset($this->frecuencies[$id])) {
-            $frequency = $this->frecuencies[$id];
-        }
-        if (isset($this->routes[$id])) {
-            $route = $this->routes[$id];
-        }
-        if (isset($this->durations[$id])) {
-            $duration = $this->durations[$id];
-        }
-        if (isset($this->quantitys[$id])) {
-            $quantity = $this->quantitys[$id];
+        try {
+            if (isset($this->frecuencies[$id])) {
+                $frequency = $this->frecuencies[$id];
+            }
+            if (isset($this->routes[$id])) {
+                $route = $this->routes[$id];
+            }
+            if (isset($this->durations[$id])) {
+                $duration = $this->durations[$id];
+            }
+            if (isset($this->quantitys[$id])) {
+                $quantity = $this->quantitys[$id];
+            }
+
+            $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicine_type = '';
+            if ($requestMedicine->medicine) {
+                $medicine_type = $requestMedicine->medicine->type;
+            }
+
+            $dosage_instructions =[
+                'text' => $quantity.' '.$medicine_type.
+                    ' cada '.$frequency.' horas'.
+                    ' via '.$route.
+                    ' por '.$duration.' dias',
+                'route' => $route,
+                'frequency' => $frequency,
+                'duration' => $duration,
+            ];
+
+            $requestMedicine->dosage_instruction = $dosage_instructions;
+            $requestMedicine->dosage_text = $dosage_instructions['text'];
+            $this->dosage_texts[$id] = $dosage_instructions['text'];
+            $requestMedicine->save();
+
+            $this->dispatch('saved-dosage_text_'.$key);
+
+        }catch (\Exception $e) {
+            $this->dispatch('error-'.$key, 'Error al guardar :'.$e->getMessage());
         }
 
-        $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
-        $medicine_type = '';
-        if ($requestMedicine->medicine) {
-            $medicine_type = $requestMedicine->medicine->type;
-        }
-
-        return [
-            'text' => $quantity.' '.$medicine_type.
-                ' cada '.$frequency.' horas'.
-                ' via '.$route.
-                ' por '.$duration.' dias',
-            'route' => $route,
-            'frequency' => $frequency,
-            'duration' => $duration,
-        ];
     }
 
     public function medical_request_history()

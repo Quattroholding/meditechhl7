@@ -35,16 +35,6 @@ class PresentIllness extends Component
 
     public $items = [];
 
-    public $saving = false;
-
-    public $savedDescription = false;
-
-    public $savedAlleviatingFactors = false;
-
-    public $savedAggravatingFactors = false;
-
-    public $savedAssociatedSymptoms = false;
-
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
@@ -147,114 +137,109 @@ class PresentIllness extends Component
         $this->loadPressentIllness();
     }
 
-    public function updatedDescription()
-    {
-        $this->savedDescription = false;
-
-    }
-
     public function updatedAggravatingFactors()
     {
-        $this->savedAggravatingFactors = false;
+        $this->saveAggravatingFactors();
     }
 
     public function updatedAlleviatingFactors()
     {
-        $this->savedAlleviatingFactors = false;
+        $this->saveAlleviatingFactors();
     }
 
     public function updatedAssociatedSymptoms()
     {
-        $this->savedAssociatedSymptoms = false;
+        $this->saveAssociatedSymptoms();
     }
 
-    public function saveDescription()
+    public function updatedDescription()
     {
-
-        $this->savedDescription = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
-        try {
-            if (! $this->encounter->presentIllnesses) {
-                $this->create();
-            } else {
-                $this->present_illness->description = $this->description;
-                $this->present_illness->save();
-                // Simular tiempo de guardado
-                sleep(1);
-                $this->savedDescription = true;
-            }
-
-            $this->dispatch('findFinishedButtonStatus');
-
-        } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
-        }
+        $this->saveDescription();
     }
 
     public function saveAggravatingFactors()
     {
+        $key = 'aggravating_factors';
 
-        $this->savedAggravatingFactors = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
         try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
             if (! $this->encounter->presentIllnesses) {
                 $this->create();
             } else {
                 $this->present_illness->aggravating_factors = $this->aggravating_factors;
                 $this->present_illness->save();
-                // Simular tiempo de guardado
-                sleep(1);
-                $this->savedAggravatingFactors = true;
             }
 
+            $this->dispatch('saved-'.$key);
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key,$e->getMessage());
         }
     }
 
     public function saveAlleviatingFactors()
     {
+        $key = 'alleviating_factors';
 
-        $this->savedAlleviatingFactors = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
         try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
             if (! $this->encounter->presentIllnesses) {
                 $this->create();
             } else {
                 $this->present_illness->alleviating_factors = $this->alleviating_factors;
                 $this->present_illness->save();
-                // Simular tiempo de guardado
-                sleep(1);
-                $this->savedAlleviatingFactors = true;
             }
 
+            $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key,$e->getMessage());
         }
     }
 
     public function saveAssociatedSymptoms()
     {
-
-        $this->savedAssociatedSymptoms = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
+        $key = 'associated_symptoms';
         try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
             if (! $this->encounter->presentIllnesses) {
                 $this->create();
             } else {
                 $this->present_illness->associated_symptoms = $this->associated_symptoms;
                 $this->present_illness->save();
-                // Simular tiempo de guardado
-                sleep(1);
-                $this->savedAssociatedSymptoms = true;
             }
 
+            $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key,$e->getMessage());
+        }
+    }
+
+    public function saveDescription()
+    {
+        $key = 'description';
+
+        try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
+            if (! $this->encounter->presentIllnesses) {
+                $this->create();
+            } else {
+                $this->present_illness->description = $this->description;
+                $this->present_illness->save();
+            }
+
+            $this->dispatch('saved-'.$key);
+
+            $this->dispatch('findFinishedButtonStatus');
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$key,$e->getMessage());
         }
     }
 }

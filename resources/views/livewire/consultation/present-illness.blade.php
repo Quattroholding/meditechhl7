@@ -34,32 +34,48 @@
     <div class="p-3 text-gray-900" style="min-height: 100px;" id="marker-id-3.5">
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Agravantes')}}" />
-            <x-text-input class="block w-full" wire:model.live="aggravating_factors"
-                          wire:keyup.debounce.300ms="saveAggravatingFactors()"
-                          :value="$aggravating_factors" type="text"/>
-            @include('partials.input_saving',['function'=>'saveAggravatingFactors','saved'=>$savedAggravatingFactors])
+            <x-autosave-input
+                type="text"
+                :value="$aggravating_factors"
+                class="form-control mt-1 block w-full"
+                wire:model.live.debounce.500ms="aggravating_factors"
+                save-method="saveAggravatingFactors"
+                save-key="aggravating_factors"
+            />
         </div>
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Factores Atenuantes')}}" />
-            <x-text-input class="block w-full" wire:model.live="alleviating_factors"
-                          wire:keyup.debounce.300ms="saveAlleviatingFactors()"
-                          :value="$alleviating_factors" type="text"/>
-            @include('partials.input_saving',['function'=>'saveAlleviatingFactors','saved'=>$savedAlleviatingFactors])
+            <x-autosave-input
+                type="text"
+                :value="$alleviating_factors"
+                class="form-control mt-1 block w-full"
+                wire:model.live.debounce.500ms="alleviating_factors"
+                save-method="saveAlleviatingFactors"
+                save-key="alleviating_factors"
+            />
         </div>
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Sintomas Asociados')}}" />
-            <x-text-input class="block w-full" wire:model.live="associated_symptoms"
-                          wire:keyup.debounce.300ms="saveAssociatedSymptoms()"
-                          :value="$associated_symptoms" type="text"/>
-            @include('partials.input_saving',['function'=>'saveAssociatedSymptoms','saved'=>$savedAssociatedSymptoms])
+            <x-autosave-input
+                type="text"
+                :value="$associated_symptoms"
+                class="form-control mt-1 block w-full"
+                wire:model.live.debounce.500ms="associated_symptoms"
+                save-method="saveAssociatedSymptoms"
+                save-key="associated_symptoms"
+            />
         </div>
+
         <div class="input-block local-forms">
             <x-input-label  value="{{__('Descripcion')}}" />
-            <x-textarea-input
-                wire:model.live="description"
-                wire:keyup.debounce.300ms="saveDescription()"
-                class="mt-1 block w-full bottom-0" rows="2">{{$description}}</x-textarea-input>
-            @include('partials.input_saving',['function'=>'saveDescription','saved'=>$savedDescription])
+            <x-autosave-input
+                type="textarea"
+                :value="$description"
+                class="form-control mt-1 block w-full"
+                wire:model.live.debounce.500ms="description"
+                save-method="saveDescription"
+                save-key="description"
+            />
         </div>
     </div>
 </div>

@@ -22,32 +22,29 @@
                                     {{$s->cpt->full_name}}
                                 </td>
                             </tr>
-
                             </tbody>
                         </table>
                         <div class="my-3">
                             {{__('consultation.instruction')}}
-                            <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
-                                               wire:model="notes.{{$s->id}}"
-                                               class="block mt-1 w-full" type="text" name="notes"
-                                               placeholder="Escribir instrucciones (opcional)">{{$s->note}}
-                            </x-textarea-input>
+                            <x-autosave-input
+                                type="text"
+                                :value="$notes[$s->id]"
+                                wire:model.live.debounce.500ms="notes.{{$s->id}}"
+                                save-method="updateNote"
+                                save-key="{{ $s->id }}"
+                                class="form-control block w-full"
+                            />
                         </div>
-
                     </div>
-                    @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
                 @endforeach
             </div>
         </div>
     @endif
-    <div class="selector-field selector-field-on">
+        <div class="selector-field selector-field-on">
+        <x-autosave-action save-key="service-{{$type}}-search" />
+
         <table style="width:100%">
             <tbody>
-            <tr>
-                <td>
-                    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-                </td>
-            </tr>
             <tr>
                 <td style="width:80%;padding:20px;">
                     <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar por descripcion o codigo cpt" >
@@ -76,7 +73,10 @@
         @if(!empty($results))
             <div class="selector-items" style="z-index: 1000">
                 @foreach($results as $result)
-                    <div class="sel-list-item row" wire:click="selectOption({{ json_encode($result) }})">
+                    <div class="sel-list-item row"
+                        wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                        x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'service-{{$type}}-search' }))"
+                    >
                         <div class="col-md-1 "><strong>{{ $result['code'] }}</strong></div>
                         <div class="col-md-8">  {{ $result['description_es'] }}</div>
                         <div class="col-md-3 text-end">

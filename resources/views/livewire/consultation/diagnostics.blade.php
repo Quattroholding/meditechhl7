@@ -27,23 +27,28 @@
                         </table>
 
                         <div style="width:100%" class="">{{__('condition.severity')}}
-
-                        <x-select-input wire:model="severity.{{$s->id}}"
-                                        wire:change.debounce.300ms="updateSeverity({{$s->id}})"
-                                        name="severity"
-                                        :options="\App\Models\Lista::conditionSeverity()"
-                                        :selected="[$s->condition->severity]"
-                                        class="block mt-1 w-full"/>
-                            @include('partials.input_saving',['function'=>'updateSeverity','saved'=>$savedSeverity[$s->id],'function_param'=>$s->id])
+                            <x-autosave-input
+                                type="select"
+                                name="severity"
+                                class="form-control block mt-1 w-full"
+                                :options="\App\Models\Lista::conditionSeverity()"
+                                :selected="$s->condition->severity"
+                                wire:model.live="severity.{{ $s->id }}"
+                                save-method="updateSeverity"
+                                save-key="{{ $s->id }}"
+                            />
                         </div>
                         <div class="my-3"></div>
                         <div style="width:100%" class="">{{__('consultation.diagnostic_note')}}
-                         <x-textarea-input  wire:keyup.debounce.300ms="updateNote({{$s->id}})" rows="1"
-                                            wire:model="notes.{{$s->id}}"
-                                            class="block mt-1 w-full" type="text" name="notes"
-                                            placeholder="Escribir nota opcional">{{$s->note}}
-                         </x-textarea-input>
-                            @include('partials.input_saving',['function'=>'updateNote','saved'=>$savedNote[$s->id],'function_param'=>$s->id])
+                            <x-autosave-input
+                                type="textarea"
+                                :value="$s->condition->note"
+                                class="form-control mt-1 block w-full"
+                                rows="2"
+                                wire:model.live.debounce.500ms="notes.{{$s->id}}"
+                                save-method="updateNote"
+                                save-key="note_{{$s->id}}"
+                            />
                         </div>
                     </div>
 
@@ -51,8 +56,9 @@
             </div>
         </div>
     @endif
+
     <div class="selector-field selector-field-on">
-    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
+    <x-autosave-action save-key="diagnostic-search" />
     <div style="width:100%;padding:20px;">
         <input type="text"  wire:model.live="query"   class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px;">
     </div>
@@ -60,13 +66,19 @@
     @if(!empty($results))
         <div class="selector-items" style="z-index: 1000">
             @foreach($results as $result)
-                <div  class="sel-list-item row"  wire:click.debounce.300ms="selectOption({{ json_encode($result) }})">
-                    <div class="col-md-1"><strong>{{$result['code']}}</strong></div>
-                    <div class="col-md-11"> {{ $result['description_es'] }}</div>
+                <div
+                    class="sel-list-item row"
+                    wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                    x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'diagnostic-search' }))"
+                >
+                    <div class="col-md-1"><strong>{{ $result['code'] }}</strong></div>
+                    <div class="col-md-11">{{ $result['description_es'] }}</div>
                 </div>
             @endforeach
         </div>
+
     @endif
+
     </div>
 
     <div style="height:200px;">&nbsp;</div>

@@ -106,11 +106,6 @@ class Services extends Component
 
     public function selectOption($serviceData)
     {
-        /*$serviceCatalog = ServiceCatalog::findOrFail($serviceData['id']);
-        $this->saved=false;
-        $this->selectedServiceId = $serviceData['id'];
-        $this->query = $serviceData['name'];
-        $this->customPrice =$serviceCatalog->base_price;*/
         $this->selectedServiceId = $serviceData['id'];
         $this->addServiceToEncounter();
         $this->results = [];
@@ -120,23 +115,18 @@ class Services extends Component
     {
         $this->validate();
 
+        $key = 'catalog-search';
+
         if (! $this->selectedServiceId) {
-            //session()->flash('error', 'Debe seleccionar un servicio válido.');
-            $this->dispatch('showToastrConsultation',
-                type: 'error',
-                message: 'Debe seleccionar un servicio válido.'
-            );
+            $this->dispatch('error-'.$key,'Debe seleccionar un servicio válido.');
             return;
         }
 
         $service = ServiceCatalog::findOrFail($this->selectedServiceId);
 
         if (! $service) {
-            //session()->flash('error', 'Servicio no encontrado.');
-            $this->dispatch('showToastrConsultation',
-                type: 'error',
-                message:   'Servicio no encontrado.'
-            );
+
+            $this->dispatch('error-'.$key,'Servicio no encontrado.');
             return;
         }
 
@@ -168,25 +158,19 @@ class Services extends Component
                 $this->resetForm();
                 $this->loadSelectedServices();
 
+                $this->dispatch('saved-'.$key);
+
                 // Dispatch event to fix scroll freeze after offcanvas closes
                 $this->dispatch('service-selected');
             } else {
-                $this->dispatch('showToastrConsultation',
-                    type: 'error',
-                    message: '¡Servicio ya esta agregado a la  consulta.!'
-                );
-
+                $this->dispatch('error-'.$key,'¡Servicio ya esta agregado a la  consulta.!');
                 // Also dispatch event to close offcanvas even on error
                 $this->dispatch('service-selected');
             }
 
         } catch (\Exception $e) {
             DB::rollBack();
-            //session()->flash('error', 'Error al agregar el servicio: '.$e->getMessage());
-            $this->dispatch('showToastrConsultation',
-                type: 'error',
-                message:  'Error al agregar el servicio: '.$e->getMessage()
-            );
+            $this->dispatch('error-'.$key,'Error al agregar el servicio: '.$e->getMessage());
         }
     }
 

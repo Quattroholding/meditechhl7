@@ -12,6 +12,7 @@ use Livewire\Component;
 
 class Diagnostics extends Component
 {
+
     public $query = '';
 
     public $results = [];
@@ -22,19 +23,11 @@ class Diagnostics extends Component
 
     public $selectedLists = [];
 
-    public $saving = false;
-
-    public $saved = false;
-
-    public $savedNote = [];
-
     public $notes = [];
 
     public $clinical_status = [];
 
     public $severity = [];
-
-    public $savedSeverity = [];
 
     public function mount()
     {
@@ -47,8 +40,6 @@ class Diagnostics extends Component
         $this->selectedLists = $this->encounter->diagnoses()->get();
 
         foreach ($this->selectedLists as $key) {
-            $this->savedNote[$key->id] = false;
-            $this->savedSeverity[$key->id] = false;
             $this->notes[$key->id] = $key->note;
             $this->clinical_status[$key->id] = $key->condition->clinical_status;
             $this->severity[$key->id] = $key->condition->severity;
@@ -75,43 +66,65 @@ class Diagnostics extends Component
 
     public function selectOption($option)
     {
-        $this->saved = false;
-        $this->selectedOption = $option;
-        $this->query = $option['name']; // Asigna el nombre seleccionado al input
-        $this->results = []; // Limpia los resultados
-        $condition = Condition::wherePatientId($this->encounter->patient_id)->whereCode($option)->first();
-        $onset_info ='';
-        $diagnostic = Icd10Code::whereCode($option['code'])->first();
-        if($diagnostic){
-            $onset_info = $diagnostic->description_es;
-        }
-        if (! $condition) {
-            $condition = Condition::create([
-                'fhir_id' => 'condition-'.Str::uuid(),
-                'patient_id' => $this->encounter->patient_id,
-                'practitioner_id' => $this->encounter->practitioner_id,
-                'identifier' => 'DX-'.strtoupper(Str::random(7)),
-                'clinical_status' => 'active',
-                'verification_status' => 'confirmed',
-                'code' => $option['code'],
-                'severity' => 'severe',
-                'onset_info'=>strtoupper($onset_info),
-                'onset_date' => now()->format('Y-m-d H:i'),
-                'recorded_date' => now()->format('Y-m-d H:i'),
-            ]);
-        }
+        $key = 'diagnostic-search';
 
-        $ed = $this->encounter->diagnoses()->create([
-            'encounter_id' => $this->encounter->id,
-            'condition_id' => $condition->id,
-            'rank' => 1,
-            'use' => 'principal',
-        ]);
+        try {
+            sleep(1);
 
-        $this->query = '';
-        sleep(1);
-        $this->saved = true;
-        $this->loadSelectedLists();
+            // Verificar si ya existe ANTES de crear
+            $encounter_diagnosis = $this->encounter->diagnoses()->whereHas('condition',function ($q) use($option){
+                $q->where('conditions.code', $option['code']);
+            }) ->first();
+
+            if(!$encounter_diagnosis){
+                $this->selectedOption = $option;
+                $this->query = $option['name']; // Asigna el nombre seleccionado al input
+                $this->results = []; // Limpia los resultados
+                $condition = Condition::wherePatientId($this->encounter->patient_id)->whereCode($option)->first();
+                $onset_info = '';
+                $diagnostic = Icd10Code::whereCode($option['code'])->first();
+                if ($diagnostic) {
+                    $onset_info = $diagnostic->description_es;
+                }
+                if (! $condition) {
+                    $condition = Condition::create([
+                        'fhir_id' => 'condition-'.Str::uuid(),
+                        'patient_id' => $this->encounter->patient_id,
+                        'practitioner_id' => $this->encounter->practitioner_id,
+                        'identifier' => 'DX-'.strtoupper(Str::random(7)),
+                        'clinical_status' => 'active',
+                        'verification_status' => 'confirmed',
+                        'code' => $option['code'],
+                        'severity' => 'severe',
+                        'onset_info' => strtoupper($onset_info),
+                        'onset_date' => now()->format('Y-m-d H:i'),
+                        'recorded_date' => now()->format('Y-m-d H:i'),
+                    ]);
+                }
+
+                $ed = $this->encounter->diagnoses()->create([
+                    'encounter_id' => $this->encounter->id,
+                    'condition_id' => $condition->id,
+                    'rank' => 1,
+                    'use' => 'principal',
+                ]);
+
+                $this->dispatch('saved-'.$key);
+
+                $this->query = '';
+
+                $this->loadSelectedLists();
+
+            }else{
+                $this->dispatch(
+                    'error-'.$key,
+                    '¡Diagnostico ('. $option['name'].') ya está agregado a la consulta!'
+                );
+            }
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$key,'Error al giardar :'.$e->getMessage());
+        }
     }
 
     public function delete($diagnostic_id)
@@ -121,36 +134,74 @@ class Diagnostics extends Component
         $this->loadSelectedLists();
     }
 
+    public function updatedNotes($value, $key)
+    {
+        $this->updateNote($key);
+    }
+
     public function updateNote($id)
     {
-        $this->savedNote[$id] = false;
-        $encounterDiagnostic = EncounterDiagnosis::find($id);
+        $key = "note_{$id}";
 
-        $encounterDiagnostic->update(['note' => $this->notes[$id]]);
-        sleep(2);
-        $this->savedNote[$id] = true;
+        try {
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
 
+            $encounterDiagnostic = EncounterDiagnosis::find($id);
+            $encounterDiagnostic->update(['note' => $this->notes[$id]]);
+
+            $this->dispatch('saved-'.$key);
+
+        } catch (\Exception $e) {
+
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+        }
     }
 
     public function updateClinicalStatus($id)
     {
-        $this->savedNote[$id] = false;
-        $encounterDiagnostic = EncounterDiagnosis::find($id);
+        $key = "clinical_status_{$id}";
 
-        $encounterDiagnostic->update(['clinical_status' => $this->clinical_status[$id]]);
-        sleep(2);
-        $this->savedNote[$id] = true;
+        $this->startSaving($key);
 
+        try {
+            $encounterDiagnostic = EncounterDiagnosis::find($id);
+
+            $encounterDiagnostic->update(['clinical_status' => $this->clinical_status[$id]]);
+
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
+            $this->finishSaving($key);
+        } catch (\Exception $e) {
+            $this->resetSaveState($key);
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+        }
+    }
+
+    public function updatedSeverity($value, $key)
+    {
+        $this->updateSeverity($key);
     }
 
     public function updateSeverity($id)
     {
-        $this->savedSeverity[$id] = false;
-        $encounterDiagnostic = EncounterDiagnosis::find($id);
-        $encounterDiagnostic->condition->update(['severity' => $this->severity[$id]]);
-        sleep(2);
-        $this->savedSeverity[$id] = true;
+        $key = "severity_{$id}";
+        try {
 
+            sleep(1);
+
+            $encounterDiagnostic = EncounterDiagnosis::find($id);
+            $encounterDiagnostic->condition->update(['severity' => $this->severity[$id]]);
+
+            // Delay para que el usuario vea el spinner "Guardando..."
+
+            $this->dispatch('saved-'.$id);
+
+        } catch (\Exception $e) {
+
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+        }
     }
 
     public function render()

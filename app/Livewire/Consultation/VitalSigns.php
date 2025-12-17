@@ -9,6 +9,7 @@ use Livewire\Component;
 
 class VitalSigns extends Component
 {
+
     public $reason;
 
     public $encounter_id;
@@ -19,9 +20,6 @@ class VitalSigns extends Component
 
     public $values = [];
 
-    public $saving = false;
-
-    public $saved = [];
 
     public function mount()
     {
@@ -30,13 +28,13 @@ class VitalSigns extends Component
         $this->items = ClinicalObservationType::whereCategory('vital_sign')->get();
 
         foreach ($this->items as $i) {
-            $this->saved[$i->code] = false;
-            $result = $this->encounter->vitalSigns()->whereCode($i->code)->first();
-            $this->values[$i->code] = '';
-            if ($result) {
-                $this->values[$i->code] = $result->value;
-            }
+            $this->values[$i->code] = $this->encounter->vitalSigns()->whereCode($i->code)->first()?->value ?? '';
         }
+    }
+
+    public function updatedValues($value, $code)
+    {
+        $this->save($code);
     }
 
     public function render()
@@ -44,16 +42,9 @@ class VitalSigns extends Component
         return view('livewire.consultation.vital-signs');
     }
 
-    public function updatedValues($value, $code)
-    {
-        $this->saved[$code] = false;
-    }
-
     public function save($code)
     {
-        $this->saved[$code] = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
+        $key = "vital_sign_{$code}";
         try {
             $vs = $this->encounter->vitalSigns()->whereEncounterId($this->encounter_id)->whereCode($code)->first();
 
@@ -76,14 +67,16 @@ class VitalSigns extends Component
                     $vs->value = $this->values[$code];
                     $vs->save();
                 }
-                // Simular tiempo de guardado
-                sleep(1);
-                $this->saved[$code] = true;
+
                 $this->calculateIMC();
             }
 
+            // Actualizar el valor original después de guardar exitosamente
+           // $this->originalValues[$code] = $this->values[$code];
+            $this->dispatch('saved-'.$code);
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$code,$e->getMessage());
         }
     }
 

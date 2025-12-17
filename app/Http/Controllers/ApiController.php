@@ -8,6 +8,7 @@ use App\Models\MedicalSpeciality;
 use App\Models\Medicine;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use App\Models\Scopes\PractitionerScope;
 use App\Models\ServiceCatalog;
 use App\Models\State;
 use App\Models\User;
@@ -172,6 +173,9 @@ class ApiController extends Controller
         }
 
         $query = Practitioner::selectRaw($select)
+            ->when($request->has('referral'),function ($q) use ($request) {
+                $q->withoutGlobalScope(PractitionerScope::class);
+            })
             ->when($request->has('q'), function ($q) use ($request) {
                 $q->whereRaw("(id LIKE '%".$request->q."%' or name LIKE '%".$request->q."%')");
             })->when($request->has('speciality_id'), function ($q) use ($request) {

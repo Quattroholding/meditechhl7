@@ -17,45 +17,40 @@ class GeneralNote extends Component
 
     public $section_id;
 
-    public $saving = false;
-
-    public $saved = false;
-
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->general_note = $this->encounter->general_note;
 
     }
+
     public function render()
     {
         return view('livewire.consultation.general-note');
     }
 
+    public function updatedGeneralNote()
+    {
+        $this->save();
+    }
+
     public function save()
     {
-        $this->saved = false;
-        // Simular guardado en base de datos
-        // Aquí puedes guardar en tu modelo específico
+        $key = 'general_note';
+
         try {
-            // Ejemplo: YourModel::updateOrCreate(['id' => $this->modelId], ['content' => $this->content]);
+            // Delay para que el usuario vea el spinner "Guardando..."
+            sleep(1);
+
             $this->encounter->general_note = $this->general_note;
             $this->encounter->save();
-            // Simular tiempo de guardado
-            sleep(1);
-            $this->saved = true;
+
+            $this->dispatch('saved-'.$key);
 
             // Emitir evento al componente padre para calcular si el button finished se debe habilitar
             $this->dispatch('findFinishedButtonStatus');
-
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key,  $e->getMessage());
         }
-    }
-
-    public function updatedReason()
-    {
-        $this->saved = false;
-
     }
 }

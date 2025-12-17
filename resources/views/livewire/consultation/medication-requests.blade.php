@@ -8,6 +8,37 @@
                backdrop.remove();
            }
         });
+
+        $wire.on('showSaving', (event) => {
+            const medicationId = event.medicationId;
+            const savingEl = document.getElementById('saving-' + medicationId);
+            const savedEl = document.getElementById('saved-' + medicationId);
+
+            if (savingEl) savingEl.style.display = 'flex';
+            if (savedEl) savedEl.style.display = 'none';
+        });
+
+        $wire.on('showSaved', (event) => {
+            const medicationId = event.medicationId;
+            const savingEl = document.getElementById('saving-' + medicationId);
+            const savedEl = document.getElementById('saved-' + medicationId);
+
+            if (savingEl) savingEl.style.display = 'none';
+            if (savedEl) {
+                savedEl.style.display = 'flex';
+
+                // Ocultar después de 3 segundos
+                setTimeout(() => {
+                    savedEl.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        $wire.on('hideSaving', (event) => {
+            const medicationId = event.medicationId;
+            const savingEl = document.getElementById('saving-' + medicationId);
+            if (savingEl) savingEl.style.display = 'none';
+        });
      ">
     @if(count($selectedLists)>0)
         <table style="width:100%;" border="1"
@@ -28,66 +59,84 @@
                             <td >
                                 <div class="input-block local-forms">
                                     <x-input-label for="quantity" :value="__('Cantidad')" />
-                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'quantity')"
-                                                   wire:model="quantitys.{{$m->id}}"
-                                                   name="quantity" type="number"
-                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
-                                                   min="0" step="1"
-                                                   class="block mt-1 w-full" placeholder="Ejemplo : 2"/>
+                                    <x-autosave-input
+                                        type="number"
+                                        :value="$quantitys[$m->id]"
+                                        wire:model.live="quantitys.{{ $m->id }}"
+                                        save-method="saveValue"
+                                        save-key="quantity-{{ $m->id }}"
+                                        class="form-control block w-full"
+                                        onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                        min="0" step="1"
+                                        placeholder="Ejemplo : 2"
+                                    />
+
                                 </div>
                                 <div class="input-block local-forms">
                                     <x-input-label for="frecuency" :value="__('Frecuencia (Horas)')" />
-                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'frequency')"
-                                                   wire:model="frecuencies.{{$m->id}}"
-                                                   name="frequency" type="number"
-                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
-                                                   min="0" step="1"
-                                                   class="block mt-1 w-full" placeholder="Ejemplo : 12"/>
+                                    <x-autosave-input
+                                        type="number"
+                                        :value="$frecuencies[$m->id]"
+                                        onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                        min="0" step="1"
+                                        placeholder="Ejemplo : 2"
+                                        wire:model.live="frecuencies.{{ $m->id }}"
+                                        save-method="updateField"
+                                        save-key="frecuency-{{ $m->id }}"
+                                        class="form-control block w-full"
+                                    />
                                 </div>
 
                             </td>
                             <td>
                                 <div class="input-block local-forms">
                                     <x-input-label for="route" :value="__('Via')" />
-                                    @isset($routes[$m->id])
-                                        <x-select-input wire:change="updateField({{$m->id}},$event.target.value,'route')"
-                                                        wire:model="routes.{{$m->id}}"
-                                                        name="route" :options="\App\Models\Lista::medicationVias()" :selected="[$routes[$m->id]]"
-                                                        class="block mt-1 w-full"/>
-                                    @else
-                                        <x-select-input wire:change="updateField({{$m->id}},$event.target.value,'route')"
-                                                        wire:model="routes.{{$m->id}}"
-                                                        name="route" :options="\App\Models\Lista::medicationVias()" :selected="[]"
-                                                        class="block mt-1 w-full"/>
-                                    @endif
-
+                                    <x-autosave-input
+                                        type="select"
+                                        :value="$routes[$m->id]"
+                                        :options="\App\Models\Lista::medicationVias()"
+                                        :selected="$routes[$m->id]"
+                                        wire:model.live="routes.{{ $m->id }}"
+                                        save-method="updateField"
+                                        save-key="route-{{ $m->id }}"
+                                        class="form-control block w-full"
+                                    />
                                 </div>
 
                                 <div class="input-block local-forms">
                                     <x-input-label for="duration" :value="__('Duración (Días)')" />
-                                    <x-text-input  wire:keyup="updateField({{$m->id}},$event.target.value,'duration')"
-                                                   wire:model="durations.{{$m->id}}"
-                                                   name="duration" type="number"
-                                                   onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
-                                                   min="0" step="1"
-                                                   class="block mt-1 w-full" placeholder="Ejemplo : 5"/>
+                                    <x-autosave-input
+                                        type="number"
+                                        :value="$durations[$m->id]"
+                                        onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
+                                        min="0" step="1"
+                                        placeholder="Ejemplo : 5"
+                                        wire:model.live="durations.{{ $m->id }}"
+                                        save-method="updateField"
+                                        save-key="duration-{{ $m->id }}"
+                                        class="form-control block w-full"
+                                    />
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div class="input-block local-forms">
                                     <x-input-label for="dosage_text" :value="__('Indicciones')"/>
-                                    <textarea wire:keyup="updateField({{$m->id}},$event.target.value,'dosage_text')"
-                                              wire:model="dosage_texts.{{$m->id}}"
-                                              maxlength="500" class="char-lenght-count-control form-control field-medicine-plan textarea-full-bg"
-                                              placeholder="Ejemplo: Una tableta cada 8 horas vía oral por 5 días">
-                                        @isset($dosage_texts[$m->id])
-                                            {{$dosage_texts[$m->id]}}
-                                        @endisset
-                                    </textarea>
+                                    <x-autosave-input
+                                        type="textarea"
+                                        :value="$dosage_texts[$m->id]"
+                                        disabled="disabled"
+                                        class="form-control mt-1 block w-full"
+                                        rows="2"
+                                        wire:model.live="dosage_texts.{{$m->id}}"
+                                        laceholder="Ejemplo: Una tableta cada 8 horas vía oral por 5 días"
+                                        save-method="updateField"
+                                        save-key="dosage_text_{{ $m->id }}"
+                                    />
                                 </div>
                             </td>
+                            {{--}}
                             <td>
                                 <div class="input-block local-forms">
                                     <x-input-label for="refills" :value="__('Meses de Refill')" />
@@ -99,6 +148,7 @@
                                     </select>
                                 </div>
                             </td>
+                            {{--}}
                         </tr>
                         </tbody>
                     </table>
@@ -122,13 +172,10 @@
     <p>&nbsp;</p>
     @php $id =\Illuminate\Support\Str::uuid();@endphp
     <div class="selector-field selector-field-on">
+        <x-autosave-action save-key="medication-search" />
+
         <table style="width:100%">
             <tbody>
-            <tr>
-                <td>
-                    @include('partials.input_saving',['function'=>'selectOption','saved'=>$saved])
-                </td>
-            </tr>
             <tr>
                 <td style="width:80%;padding:20px;">
                     <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento por nombre, código NDC o nombre genérico" >
@@ -190,7 +237,11 @@
         @if(!empty($results))
             <div class="selector-items" style="z-index: 1000">
                 @foreach($results as $result)
-                    <div class="sel-list-item row" wire:click="selectOption({{ json_encode($result) }})">
+                        <div
+                            class="sel-list-item row"
+                            wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                            x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'medication-search' }))"
+                        >
                         <div class="col-md-9">{{ $result['name'] }}</div>
                         <div class="col-md-3 text-end">
                             <button type="button" class="btn btn-sm btn-outline-primary" wire:click.stop="addToRapidAccess({{ $result['id'] }})" title="Agregar a accesos rápidos">

@@ -81,13 +81,9 @@
     <div class="">
         @php $id =\Illuminate\Support\Str::uuid();@endphp
         <div class="selector-field selector-field-on">
+            <x-autosave-action save-key="catalog-search" />
             <table style="width:100%">
                 <tbody>
-                <tr>
-                    <td>
-                        @include('partials.input_saving',['function'=>'selectService','saved'=>$saved])
-                    </td>
-                </tr>
                 <tr>
                     <td style="width:80%;padding:20px;">
                         <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar servicio por nombre o codigo cpt" >
@@ -170,9 +166,12 @@
             @if(!empty($results))
                 <div class="selector-items" style="z-index: 1000">
                     @foreach($results as $result)
-                        <div class="sel-list-item d-flex justify-content-between align-items-center"
-                             style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee;">
-                            <div class="flex-grow-1" wire:click="selectOption({{ json_encode($result) }})">
+                        <div
+                            class="sel-list-item row"
+                            wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                            x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'diagnostic-search' }))"
+                        >
+
                                 {{ $result['name'] }}
                             </div>
                         </div>
