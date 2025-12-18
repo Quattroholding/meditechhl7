@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fhir_id')->unique()->comment('FHIR Patient resource ID');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->string('identifier')->unique()->comment('Identificador único del paciente');
+            $table->string('identifier')->nullable()->unique()->comment('Identificador único del paciente');
             $table->enum('identifier_type', ['DNI', 'Pasaporte', 'Seguro', 'Otro', 'PA', 'CE', 'CC', 'PT', 'SS'])->nullable();
             $table->string('name');
             $table->string('given_name');
