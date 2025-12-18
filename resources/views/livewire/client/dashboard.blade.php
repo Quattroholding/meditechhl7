@@ -15,7 +15,9 @@
                 @endslot
             @endcomponent
             <!-- /Page Header -->
-            @livewire('welcome-salute')
+            @if(request()->has('show_salute') && request()->get('show_salute') === 'true')
+                @livewire('welcome-salute')
+            @endif
 
             <div class="dashboard-init-v2">
                 <x-dashboard>
