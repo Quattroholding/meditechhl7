@@ -5,6 +5,7 @@ namespace App\Livewire\Patient;
 use App\Models\ClinicalImpression;
 use App\Models\Condition;
 use App\Models\Encounter;
+use App\Models\MedicalLeave;
 use App\Models\MedicationRequest;
 use App\Models\Note;
 use App\Models\Patient;
@@ -79,6 +80,8 @@ class MedicalHistory2 extends Component
 
     public $personalNotes = [];
 
+    public $medicalLeaves = [];
+
     // Configuración de paginación
     public $perPage = 10;
 
@@ -107,6 +110,10 @@ class MedicalHistory2 extends Component
     public $currentPresentIllnessPage = 1;
 
     public $totalPresentIllnessCount = 0;
+
+    public $currentMedicalLeavesPage = 1;
+
+    public $totalMedicalLeavesCount = 0;
 
     // Filtros de búsqueda por sección
     public $conditionsSearchTerm = '';
@@ -218,7 +225,7 @@ class MedicalHistory2 extends Component
         $practitionerId = $isDoctor ? auth()->user()->practitioner->id : null;
 
         // Total encounters
-        $encountersQuery = Encounter::where('patient_id', $this->patientId)->when($this->completeAutorization,function ($q){
+        $encountersQuery = Encounter::where('patient_id', $this->patientId)->when($this->completeAutorization, function ($q) {
             $q->withoutGlobalScope(EncouterScope::class);
         });
         if ($isDoctor) {
@@ -255,12 +262,20 @@ class MedicalHistory2 extends Component
         }
         $vitalSignsCount = $vitalSignsQuery->count();
 
+        // Medical leaves count
+        $medicalLeavesQuery = MedicalLeave::where('patient_id', $this->patientId);
+        if ($isDoctor) {
+            $medicalLeavesQuery->where('practitioner_id', $practitionerId);
+        }
+        $totalMedicalLeaves = $medicalLeavesQuery->count();
+
         $this->overviewData = [
             'total_encounters' => $totalEncounters,
             'active_conditions' => $activeConditions,
             'last_visit' => $lastVisit,
             'total_requests' => $totalRequests,
             'vital_signs_count' => $vitalSignsCount,
+            'total_medical_leaves' => $totalMedicalLeaves,
             'allergies' => $allergies,
             'medications' => $medications,
             'total_notes' => $totalNotes,
@@ -290,6 +305,7 @@ class MedicalHistory2 extends Component
             'medical-histories' => $this->loadMedicalHistories(),
             'medical-notes' => $this->loadMedicalNotes(),
             'personal-notes' => $this->loadPersonalNotes(),
+            'medical-leaves' => $this->loadMedicalLeaves(),
             default => null
         };
 
@@ -302,7 +318,7 @@ class MedicalHistory2 extends Component
     private function loadEncounters()
     {
 
-        $query = Encounter::when($this->completeAutorization,function ($q){
+        $query = Encounter::when($this->completeAutorization, function ($q) {
             $q->withoutGlobalScope(EncouterScope::class);
         })->where('patient_id', $this->patientId)
             ->with(['practitioner', 'medicalSpeciality', 'diagnoses.condition.icd10Code'])
@@ -617,7 +633,6 @@ class MedicalHistory2 extends Component
 
         $medications = $this->applyFilters($medicationsQuery, 'created_at')->get();
 
-
         // Cargar servicios
         $servicesQuery = ServiceRequest::where('patient_id', $this->patientId)
             ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'cpt'])
@@ -730,6 +745,36 @@ class MedicalHistory2 extends Component
         }
 
         $this->personalNotes = $this->applyFilters($query, 'created_at')->get();
+    }
+
+    private function loadMedicalLeaves()
+    {
+        $query = MedicalLeave::where('patient_id', $this->patientId)
+            ->with(['practitioner', 'condition'])
+            ->orderBy('issue_date', 'desc');
+
+        // Si es doctor, filtrar solo licencias médicas que él emitió
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
+            $practitionerId = auth()->user()->practitioner->id;
+            $query->where('practitioner_id', $practitionerId);
+        }
+
+        $allMedicalLeaves = $this->applyFilters($query, 'issue_date')->get();
+
+        // Implementar paginación
+        $this->totalMedicalLeavesCount = $allMedicalLeaves->count();
+        $offset = ($this->currentMedicalLeavesPage - 1) * $this->encountersPerPage;
+        $paginatedMedicalLeaves = $allMedicalLeaves->slice($offset, $this->encountersPerPage);
+
+        $this->medicalLeaves = [
+            'data' => $paginatedMedicalLeaves,
+            'total' => $this->totalMedicalLeavesCount,
+            'current_page' => $this->currentMedicalLeavesPage,
+            'per_page' => $this->encountersPerPage,
+            'last_page' => ceil($this->totalMedicalLeavesCount / $this->encountersPerPage),
+            'from' => $this->totalMedicalLeavesCount > 0 ? $offset + 1 : 0,
+            'to' => min($offset + $this->encountersPerPage, $this->totalMedicalLeavesCount),
+        ];
     }
 
     // ===========================================
@@ -998,6 +1043,32 @@ class MedicalHistory2 extends Component
         }
     }
 
+    public function nextMedicalLeavesPage()
+    {
+        $lastPage = ceil($this->totalMedicalLeavesCount / $this->encountersPerPage);
+        if ($this->currentMedicalLeavesPage < $lastPage) {
+            $this->currentMedicalLeavesPage++;
+            $this->reloadCurrentSection();
+        }
+    }
+
+    public function previousMedicalLeavesPage()
+    {
+        if ($this->currentMedicalLeavesPage > 1) {
+            $this->currentMedicalLeavesPage--;
+            $this->reloadCurrentSection();
+        }
+    }
+
+    public function gotoMedicalLeavesPage($page)
+    {
+        $lastPage = ceil($this->totalMedicalLeavesCount / $this->encountersPerPage);
+        if ($page >= 1 && $page <= $lastPage) {
+            $this->currentMedicalLeavesPage = $page;
+            $this->reloadCurrentSection();
+        }
+    }
+
     private function reloadCurrentSection()
     {
         if ($this->activeSection !== 'overview') {
@@ -1040,8 +1111,11 @@ class MedicalHistory2 extends Component
             ->take(2)
             ->get()
             ->map(function ($item) {
-                $description =  $item->onset_info;
-                if($item->icd10Code) $description = $item->icd10Code->description_es;
+                $description = $item->onset_info;
+                if ($item->icd10Code) {
+                    $description = $item->icd10Code->description_es;
+                }
+
                 return [
                     'type' => 'condition',
                     'icon' => '🩺',
@@ -1071,6 +1145,7 @@ class MedicalHistory2 extends Component
             'medical-histories' => $this->medicalHistories,
             'medical-notes' => $this->medicalNotes,
             'personal-notes' => $this->personalNotes,
+            'medical-leaves' => $this->medicalLeaves,
             default => null
         };
     }
@@ -1095,7 +1170,7 @@ class MedicalHistory2 extends Component
             ->orderBy('effective_date', 'asc');
 
         // Si es doctor, filtrar solo signos vitales de sus encounters
-        if (auth()->user()->hasRole('doctor') && !$this->completeAutorization) {
+        if (auth()->user()->hasRole('doctor') && ! $this->completeAutorization) {
             $practitionerId = auth()->user()->practitioner->id;
             $query->whereHas('encounter', function ($q) use ($practitionerId) {
                 $q->where('practitioner_id', $practitionerId);

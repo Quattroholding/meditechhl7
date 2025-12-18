@@ -596,6 +596,14 @@
                          <span class="nav-count">{{ $overviewData['total_notes'] ?? 0 }}</span>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <div wire:click="changeSection('medical-leaves')"
+                         class="nav-link {{ $activeSection === 'medical-leaves' ? 'active' : '' }}">
+                        <span class="nav-icon">📄</span>
+                        <span class="nav-text">Licencias Médicas</span>
+                        <span class="nav-count">{{ $overviewData['total_medical_leaves'] ?? 0 }}</span>
+                    </div>
+                </li>
                 @if(auth()->user()->hasRole('doctor'))
                 <li class="nav-item">
                     <div wire:click="changeSection('personal-notes')"
@@ -647,6 +655,9 @@
                                 @break
                             @case('personal-notes')
                                  Notas Privadas
+                            @break
+                            @case('medical-leaves')
+                                📄 Licencias Médicas
                             @break
                         @endswitch
                     </h2>
@@ -844,6 +855,22 @@
                             @if(auth()->user()->hasRole('doctor'))
                             @include('patients.medicalHistory.personal-notes')
                             @endif
+                            @break
+                        @case('medical-leaves')
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Licencias Médicas</h3>
+                                    @if(isset($sectionData['total']))
+                                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
+                                            {{ $sectionData['total'] }} licencias médicas emitidas
+                                        </p>
+                                    @endif
+                                </div>
+                                <span style="background: #10b981; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                    📄 {{ $encountersPerPage }} por página
+                                </span>
+                            </div>
+                            @include('patients.medicalHistory.medical-leaves')
                             @break
                     @endswitch
                 @endif

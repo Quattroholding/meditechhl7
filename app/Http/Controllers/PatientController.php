@@ -107,6 +107,7 @@ class PatientController extends Controller
         $model->last_name = $request->last_name;
         $model->email = $request->email;
         $model->password = $request->password;
+        $model->first_login_at = now();
 
         if ($model->save()) {
             $request->session()->flash('message.success', 'Se ha creado el usuario con éxito.');
@@ -139,7 +140,11 @@ class PatientController extends Controller
 
             // Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
             $client = Client::find(1);
-            Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData, 'patient'));
+            $email = $patient->email;
+            if(config('mail.testing_mode')) $email = config('mail.testing_patient_email');
+
+
+            Mail::to($email)->send(new PatientWelcomeMail($patient, $client, $registrationData, 'patient'));
 
             $credentials = ([
                 'email' => $model->email,

@@ -15,7 +15,7 @@ class VitalSign extends BaseModel
     protected $casts = [
         'effective_date' => 'datetime',
         'issued_date' => 'datetime',
-        'value' => 'decimal:2',
+        'value' => 'float',
     ];
 
     // Relaciones

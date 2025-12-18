@@ -479,6 +479,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::post('/medical-order/custom/download', [MedicalDocumentController::class, 'generateMedicalOrderByServices'])
         ->name('medical-order.custom.download');
 
+    // Medical Leave Routes
+    Route::get('/medical-leaves/{id}/download', [MedicalDocumentController::class, 'downloadMedicalLeavePdf'])
+        ->name('medical-leaves.download-pdf');
+
     // Private File Serving Routes
     Route::get('/practitioner/{practitioner_id}/signature', [FileController::class, 'serveSignature'])
         ->name('practitioner.signature');

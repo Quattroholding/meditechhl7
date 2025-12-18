@@ -13,6 +13,8 @@
     // itemOption
     'itemCode' => null,
     'itemDescription' => null,
+    'min_normal'=>null,
+    'max_normal'=>null,
 ])
 
 @php
@@ -25,7 +27,20 @@
         state: 'idle', // idle | saving | saved | error
         message: '',
         timeout: null,
+        value: @js($value),
+        min: @js($min_normal),
+        max: @js($max_normal),
+
+        outOfRange() {
+            if (this.value === null || this.value === '') return false;
+            const v = parseFloat(this.value);
+            if (isNaN(v)) return false;
+            if (this.min !== null && v < this.min) return true;
+            if (this.max !== null && v > this.max) return true;
+            return false;
+        }
     }"
+
 
     {{-- INICIO DEL GUARDADO --}}
     @if($type === 'select')
@@ -104,6 +119,7 @@
             {{ $attributes }}
             class="{{ $class }}"
             value="{{ $value }}"
+            :class="outOfRange()? 'bg-red-50 border-red-500 focus:border-red-500 focus:ring-red-500' : ''"
         />
     @endif
 

@@ -16,10 +16,18 @@ class FileController extends Controller
     public function serveSignature(Request $request, $practitioner_id)
     {
         try {
+            // Verificar que el usuario esté autenticado
+            if (! auth()->check()) {
+                abort(401, 'No autenticado');
+            }
+
             $practitioner = Practitioner::findOrFail($practitioner_id);
 
             // Verificar permisos - solo el propio médico o admin pueden ver la firma
-            if (auth()->user()->id !== $practitioner->user_id && ! auth()->user()->hasRole('admin')) {
+            $isOwnPractitioner = auth()->user()->id === $practitioner->user_id;
+            $isAdmin = auth()->user()->hasRole('admin');
+
+            if (! $isOwnPractitioner && ! $isAdmin) {
                 abort(403, 'No tienes permisos para acceder a este archivo');
             }
 
@@ -63,10 +71,18 @@ class FileController extends Controller
     public function serveSeal(Request $request, $practitioner_id)
     {
         try {
+            // Verificar que el usuario esté autenticado
+            if (! auth()->check()) {
+                abort(401, 'No autenticado');
+            }
+
             $practitioner = Practitioner::findOrFail($practitioner_id);
 
             // Verificar permisos - solo el propio médico o admin pueden ver el sello
-            if (auth()->user()->id !== $practitioner->user_id && ! auth()->user()->hasRole('admin')) {
+            $isOwnPractitioner = auth()->user()->id === $practitioner->user_id;
+            $isAdmin = auth()->user()->hasRole('admin');
+
+            if (! $isOwnPractitioner && ! $isAdmin) {
                 abort(403, 'No tienes permisos para acceder a este archivo');
             }
 

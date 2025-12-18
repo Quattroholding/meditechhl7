@@ -34,6 +34,10 @@
         </div>
 
     </div>
+
+    <!-- Botón Flotante de Licencia Médica -->
+    @livewire('consultation.medical-leave-button', ['encounter_id' => $encounter_id])
+
     @include('consultations.partials.side_menu',array('appointment_id'=>$appointment->id,'patient_id'=>$patient->id,'encounter_id'=>$encounter_id))
     @include('consultations.partials.patient_info',array('id'=>$patient->id))
     @if($appointment->isVirtual())

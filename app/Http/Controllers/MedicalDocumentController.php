@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\ClientTheme;
 use App\Models\Encounter;
+use App\Models\MedicalLeave;
 use App\Models\MedicationRequest;
 use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\ServiceRequest;
@@ -349,6 +350,46 @@ class MedicalDocumentController extends Controller
 
         } catch (\Exception $e) {
             abort(500, 'Error al mostrar la orden médica: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Descargar PDF de licencia médica
+     */
+    public function downloadMedicalLeavePdf(Request $request,$id)
+    {
+        try {
+            // Buscar la licencia médica con sus relaciones
+            $medicalLeave = MedicalLeave::with(['patient', 'practitioner', 'condition'])
+                ->findOrFail($id);
+
+            // Verificar permisos (usuario debe ser el médico que la emitió o tener permisos de admin)
+            $user = auth()->user();
+            if (! $user->hasRole('admin') &&
+                ! $user->hasRole('recepcionista') &&
+                (! $user->practitioner || $user->practitioner->id !== $medicalLeave->practitioner_id)) {
+                abort(403, 'No tiene permisos para descargar esta licencia médica.');
+            }
+
+            if($request->has('view')) return view('pdf.medical-leave',compact('medicalLeave'));
+
+            // Generar el PDF usando la vista
+            $pdf = Pdf::loadView('pdf.medical-leave', [
+                'medicalLeave' => $medicalLeave,
+            ]);
+
+            // Nombre del archivo
+            $filename = 'licencia-medica-'.$medicalLeave->identifier.'.pdf';
+
+            // Retornar el PDF como descarga
+            return $pdf->stream($filename);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al descargar licencia médica: '.$e->getMessage(), [
+                'id' => $id,
+                'exception' => $e,
+            ]);
+            abort(500, 'Error al generar el PDF de la licencia médica: '.$e->getMessage());
         }
     }
 

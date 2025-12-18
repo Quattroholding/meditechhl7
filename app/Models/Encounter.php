@@ -112,6 +112,11 @@ class Encounter extends BaseModel
         return $this->hasMany(ChargeItem::class);
     }
 
+    public function medicalLeaves(): HasMany
+    {
+        return $this->hasMany(MedicalLeave::class);
+    }
+
     /**
      * Scope a query to only include appointments fullfilled.
      */
