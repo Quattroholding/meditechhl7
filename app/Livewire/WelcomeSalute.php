@@ -26,6 +26,10 @@ class WelcomeSalute extends Component
         $this->backgroundImage = $backgroundImage ?? asset('/assets/img/banner2.png');
         $this->duration = $duration;
 
+        // Usar el helper request() para acceder al Request actual
+        $request = request();
+
+
         // Mostrar el saludo solo si es la primera visita y el parámetro show_salute=true está presente
         if ($request->has('show_salute') && !session()->has('dashboard_visited')) {
             $this->showSalute = true;
