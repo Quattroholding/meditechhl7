@@ -32,11 +32,26 @@
 @endif
 <!-- Script para eliminar el parámetro show_salute de la URL -->
 <script>
-    document.addEventListener('livewire:init', () => {
-        if (window.location.href.includes('show_salute=true')) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('show_salute');
-            window.history.replaceState({}, '', url);
-        }
-    });
+    // Esperar a que el DOM esté completamente cargado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initURLCleanup);
+    } else {
+        initURLCleanup();
+    }
+
+    function initURLCleanup() {
+        // Pequeño delay para asegurar que Livewire esté listo
+        setTimeout(() => {
+            if (window.location.href.includes('show_salute=true')) {
+                try {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('show_salute');
+                    window.history.replaceState({}, '', url);
+                    console.log('✅ URL cleaned successfully');
+                } catch (error) {
+                    console.error('❌ Error cleaning URL:', error);
+                }
+            }
+        }, 500);
+    }
 </script>

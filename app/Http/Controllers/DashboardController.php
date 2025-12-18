@@ -68,16 +68,14 @@ class DashboardController extends Controller
             return redirect()->route('client.dashboard', ['show_salute' => 'true']);
         }*/
 
-        // Si es la primera visita (sin importar el parámetro en la URL)
+        // Redirect
         if (!session()->has('dashboard_client_visited')) {
             session()->put('dashboard_client_visited', true);
-            // Redirigir con el parámetro show_salute solo si es la primera visita
-            return redirect()->route('client.dashboard', ['show_salute' => 'true']);
-        }
-
-        // Si ya visitó el dashboard, eliminar el parámetro show_salute de la URL si existe
-        if ($request->has('show_salute')) {
-            return redirect()->route('client.dashboard');
+            
+            // Solo redirigir si NO tiene el parámetro
+            if (!$request->has('show_salute')) {
+                return redirect()->route('client.dashboard', ['show_salute' => 'true']);
+            }
         }
 
         return view('livewire.client.dashboard', compact('dashboard'));
@@ -91,16 +89,16 @@ class DashboardController extends Controller
 
             return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
         }*/
-        // Si es la primera visita (sin importar el parámetro en la URL)
-        if (!session()->has('dashboard_doctor_visited')) {
+        // Lógica simplificada de primera visita
+        $isFirstVisit = !session()->has('dashboard_doctor_visited');
+        
+        if ($isFirstVisit) {
             session()->put('dashboard_doctor_visited', true);
-            // Redirigir con el parámetro show_salute solo si es la primera visita
-            return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
-        }
-
-        // Si ya visitó el dashboard, eliminar el parámetro show_salute de la URL si existe
-        if ($request->has('show_salute')) {
-            return redirect()->route('doctor.dashboard');
+            
+            // Solo redirigir si no tiene el parámetro
+            if (!$request->has('show_salute')) {
+                return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
+            }
         }
 
 

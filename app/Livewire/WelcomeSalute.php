@@ -30,12 +30,8 @@ class WelcomeSalute extends Component
         // Usar el helper request() para acceder al Request actual
         $request = request();
 
-
-        // Mostrar el saludo solo si es la primera visita y el parámetro show_salute=true está presente
-        if ($request->has('show_salute') && !session()->has('dashboard_visited')) {
-            $this->showSalute = true;
-            session()->put('dashboard_visited', true);
-        }
+        // Mostrar el saludo si el parámetro está presente
+        $this->showSalute = $request->has('show_salute') && $request->get('show_salute') === 'true';
     }
 
     public function render()
