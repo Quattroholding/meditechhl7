@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Http\Request;
 
 class WelcomeSalute extends Component
 {
@@ -11,6 +12,7 @@ class WelcomeSalute extends Component
     public $welcomeMessage;
     public $backgroundImage;
     public $duration;
+    public $showSalute = false;
 
     public function mount(
         $userName = null,
@@ -25,6 +27,11 @@ class WelcomeSalute extends Component
         $this->backgroundImage = $backgroundImage ?? asset('/assets/img/banner2.png');
         $this->duration = $duration;
 
+        // Usar el helper request() para acceder al Request actual
+        $request = request();
+
+        // Mostrar el saludo si el parámetro está presente
+        $this->showSalute = $request->has('show_salute') && $request->get('show_salute') === 'true';
     }
 
     public function render()

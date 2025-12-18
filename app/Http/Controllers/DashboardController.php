@@ -62,10 +62,20 @@ class DashboardController extends Controller
         $dashboard = [];
 
         // Si no tiene el parámetro show_salute y es la primera visita, redirigir con el parámetro
-        if (! $request->has('show_salute') && ! session()->has('dashboard_client_visited')) {
+       /* if (! $request->has('show_salute') && ! session()->has('dashboard_client_visited')) {
             session()->put('dashboard_client_visited', true);
 
             return redirect()->route('client.dashboard', ['show_salute' => 'true']);
+        }*/
+
+        // Redirect
+        if (!session()->has('dashboard_client_visited')) {
+            session()->put('dashboard_client_visited', true);
+            
+            // Solo redirigir si NO tiene el parámetro
+            if (!$request->has('show_salute')) {
+                return redirect()->route('client.dashboard', ['show_salute' => 'true']);
+            }
         }
 
         return view('livewire.client.dashboard', compact('dashboard'));
@@ -74,11 +84,23 @@ class DashboardController extends Controller
     public function doctor(Request $request)
     {
         // Si no tiene el parámetro show_salute y es la primera visita, redirigir con el parámetro
-        if (! $request->has('show_salute') && ! session()->has('dashboard_doctor_visited')) {
+        /*if (! $request->has('show_salute') && ! session()->has('dashboard_doctor_visited')) {
             session()->put('dashboard_doctor_visited', true);
 
             return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
+        }*/
+        // Lógica simplificada de primera visita
+        $isFirstVisit = !session()->has('dashboard_doctor_visited');
+        
+        if ($isFirstVisit) {
+            session()->put('dashboard_doctor_visited', true);
+            
+            // Solo redirigir si no tiene el parámetro
+            if (!$request->has('show_salute')) {
+                return redirect()->route('doctor.dashboard', ['show_salute' => 'true']);
+            }
         }
+
 
         // Initialize default widgets if user has no preferences
         $this->initializeDefaultWidgets(auth()->id(), 'doctor');
