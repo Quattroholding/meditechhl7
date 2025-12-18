@@ -1,3 +1,4 @@
+<div>
 @if($showSalute)
     <div class="good-morning-blk-v2" data-duration="{{ $duration }}">
         <div class="row"
@@ -30,6 +31,7 @@
         </div>
     </div>
 @endif
+</div>
 <!-- Script para eliminar el parámetro show_salute de la URL -->
 <script>
     // Esperar a que el DOM esté completamente cargado
