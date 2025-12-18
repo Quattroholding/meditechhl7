@@ -12,6 +12,7 @@ class WelcomeSalute extends Component
     public $welcomeMessage;
     public $backgroundImage;
     public $duration;
+    public $showSalute;
 
     public function mount(
         $userName = null,
