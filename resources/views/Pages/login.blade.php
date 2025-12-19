@@ -22,7 +22,7 @@
                             <div class="login-right-wrap">
                                 <div class="account-logo">
                                     <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
-                                    @if(config('app.env') === 'local' || in_array(request()->ip(), ['200.12.208.98', '200.75.229.130']))
+                                    @if(config('app.env') === 'local' || in_array(request()->ip(), ['200.12.208.98', '200.75.229.130', '200.8.97.119']))
                                     <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
                                     <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
                                     <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
