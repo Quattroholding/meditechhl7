@@ -177,6 +177,6 @@ class DashboardController extends Controller
     {
         $dashboard = [];
 
-        return view('Dashboard.index', compact('dashboard'));
+        return view('Dashboard.contabilidad-dashboard', compact('dashboard'));
     }
 }
