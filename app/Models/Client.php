@@ -8,7 +8,20 @@ class Client extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'group', 'ruc', 'dv', 'long_name', 'email', 'whatsapp', 'logo', 'package_id'];
+    protected $fillable = [
+        'name',
+        'group',
+        'ruc',
+        'dv',
+        'long_name',
+        'email',
+        'whatsapp',
+        'logo',
+        'package_id',
+        'subscription_billing_day',
+        'referred_by_client_id',
+        'referral_code_used',
+    ];
 
     public function patients()
     {
@@ -33,6 +46,42 @@ class Client extends BaseModel
     public function package()
     {
         return $this->belongsTo(Package::class)->withDefault(['name' => '']);
+    }
+
+    // Subscription relationships
+    public function subscription()
+    {
+        return $this->hasOne(ClientSubscription::class)->latest();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(ClientSubscription::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(ClientInvoice::class);
+    }
+
+    public function discounts()
+    {
+        return $this->hasMany(SubscriptionDiscount::class);
+    }
+
+    public function referralCode()
+    {
+        return $this->hasOne(ReferralCode::class);
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(Client::class, 'referred_by_client_id');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(ClientReferral::class, 'referrer_client_id');
     }
 
     public function getFullNameAttribute($attr)

@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DiscountSource;
+use App\Http\Requests\StoreClientRequest;
 use App\Models\Client;
-use App\Models\File;
+use App\Models\Package;
+use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\UserClient;
+use App\Notifications\PractitionerCredentialsNotification;
+use App\Services\DiscountService;
 use App\Services\FileService;
+use App\Services\PractitionerService;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
@@ -24,119 +33,137 @@ class ClientController extends Controller
         return view('clients.create');
     }
 
-    public function store(Request $request)
-    {
-        // dd($request->all(), $request->logo, $request->file('logo'));
-        $validated = $request->validate([
-            'name' => 'required',
-            'long_name' => 'required',
-            'ruc' => 'required',
-            'email' => 'required',
-            'dv' => 'required',
-            'phone' => 'required',
-            'package_id' => 'required',
+    public function store(
+        StoreClientRequest $request,
+        SubscriptionService $subscriptionService,
+        DiscountService $discountService,
+        FileService $fileService,
+        PractitionerService $practitionerService,
+    ) {
+        try {
+            return DB::transaction(function () use ($request, $subscriptionService, $discountService, $fileService, $practitionerService) {
+                // Crear el cliente
+                $client = new Client;
+                $client->dv = $request->dv;
+                $client->ruc = $request->ruc;
+                $client->long_name = $request->long_name;
+                $client->name = $request->name;
+                $client->email = $request->email;
+                $client->whatsapp = $request->phone;
+                $client->active = 1;
+                $client->package_id = $request->package_id;
+                $client->save();
 
-        ]);
-        // VALIDAR SI EL CORREO YA EXISTE EN EL SISTEMA
-        $email_validation = User::whereEmail($request->email)->first();
-        if (! empty($email_validation)) {
-            // El correo ya está registrado
-            session()->flash('message.error', 'Este correo ya se encuentra registrado, por favor inicie sesión');
+                // Obtener el paquete
+                $package = Package::findOrFail($request->package_id);
 
-            return redirect(route('client.create'));
-        }
-        $model = new Client;
-        $model->dv = $request->dv;
-        $model->ruc = $request->ruc;
-        $model->long_name = $request->long_name;
-        $model->name = $request->name;
-        $model->email = $request->email;
-        $model->whatsapp = $request->phone;
-        $model->active = 1;
-        $model->package_id = $request->package_id;
-        // $model->logo = 'clients/logo_'.time();
+                // Crear el usuario administrador del cliente
+                $user = new User;
+                $user->last_name = $request->last_name ?? $request->name;
+                $user->first_name = $request->first_name ?? 'Admin de';
+                $user->email = $request->email;
+                $user->password = $request->password;
+                $user->profile_picture = null;
+                $user->default_client_id = $client->id;
+                $user->assignRole('admin client');
+                $user->save();
 
-        if ($model->save()) {
-            // SE CREA UN USUARIO ADMIN-CLIENT
-            $user = new User;
-            $user->last_name = $request->name;
-            $user->first_name = 'Admin de';
-            $user->email = $request->email;
-            $user->password = $request->password;
-            $user->profile_picture = $model->logo;
-            $user->default_client_id = $model->id;
-            // Asignar rol de usuario administrador del cliente
-            $user->assignRole('admin client');
-            if ($user->save()) {
-                $request->session()->flash('message.success', 'Usuario admin client registrado con éxito.');
-            } else {
-                $data = Client::find($model->id);
-                $data->delete();
-                $request->session()->flash('message.error', 'Hubo un error y no se pudo crear el usuario administrador de la empresa.');
+                // Crear la relación usuario-cliente
+                $userClient = new UserClient;
+                $userClient->user_id = $user->id;
+                $userClient->client_id = $client->id;
+                $userClient->save();
 
-                return redirect(route('client.create'));
-            }
-            $rel_clientuser = new UserClient;
-            $rel_clientuser->user_id = $user->id;
-            $rel_clientuser->client_id = $model->id;
-            if ($rel_clientuser->save()) {
-                $request->session()->flash('message.success', 'Usuario admin client registrado con éxito.');
-            } else {
-                $data = Client::find($model->id);
-                $data->delete();
-                $user = User::find($user->id);
-                $user->delete();
-                $userclient = UserClient::find($rel_clientuser->id);
-                $userclient->delete();
-                $request->session()->flash('message.error', 'Hubo un error y no se pudo crear el usuario administrador de la empresa.');
-
-                return redirect(route('client.create'));
-            }
-            // SE BUSCA EL REGISTRO PARA ASIGNAR EL NOMBRE DEL LOGO
-            $user_logo = Client::find($model->id);
-            // SE GUARDA EL ARCHIVO DEL LOGO EN LA TABLA DE ARCHIVOS
-            if($request->file('logo')){
-                $service = new FileService;
-                $file = $request->file('logo');
-                $data['folder'] = 'clients';
-                $data['type'] = 'img';
-                $data['name'] = 'logo_'.time();
-                $data['record_id'] = $model->id;
-                $user_logo->logo = $service->uploadSingleFile($file, 'clients', $data['name']);
-                if ($user_logo->save()) {
-                    $request->session()->flash('message.success', 'Usuario admin client registrado con éxito.');
-                } else {
-                    $data = Client::find($model->id);
-                    $data->delete();
-                    $user = User::find($user->id);
-                    $user->delete();
-                    $userclient = UserClient::find($rel_clientuser->id);
-                    $userclient->delete();
-                    $request->session()->flash('message.error', 'Hubo un error y no se pudo crear el usuario administrador de la empresa.');
-
-                    return redirect(route('client.create'));
+                // Subir el logo si existe
+                if ($request->hasFile('logo')) {
+                    $filename = 'logo_'.time();
+                    $client->logo = $fileService->uploadSingleFile($request->file('logo'), 'clients', $filename);
+                    $user->profile_picture = $client->logo;
+                    $client->save();
+                    $user->save();
                 }
-                if (! $user_logo->logo) {
-                    session()->flash('message.error', 'Hubo un error al subir el logo.');
 
-                    return redirect(route('client.create'));
+                // Crear Practitioner si el paquete tiene max_doctors=1
+                if ($package->max_users === 1 && $request->filled('identifier')) {
+                    // Crear practitioner usando el servicio centralizado
+                    $practitioner = $practitionerService->createOrUpdatePractitioner(
+                        $user,
+                        $request->all(),
+                        $request->medical_speciality ?? []
+                    );
+
+                    $user->assignRole('doctor');
+                    $user->removeRole('admin client');
+                    Log::info('Practitioner creado para cliente con paquete max_users=1', [
+                        'client_id' => $client->id,
+                        'practitioner_id' => $practitioner->id,
+                        'user_id' => $user->id,
+                    ]);
+
+                    // Enviar notificación con credenciales temporales
+                    $user->notify(new PractitionerCredentialsNotification($user, $request->password));
                 }
-            }
 
-            $request->session()->flash('message.success', 'Cliente registrado con éxito.');
-        } else {
-            $data = Client::find($model->id);
-            $data->delete();
-            $user = User::find($user->id);
-            $user->delete();
-            $userclient = UserClient::find($rel_clientuser->id);
-            $userclient->delete();
-            $file = File::whereRecordId($model->id)->first();
-            $file->delete();
-            $request->session()->flash('message.error', 'Hubo un error y no se pudo actualizar.');
+                // Preparar opciones de suscripción
+                $subscriptionOptions = [
+                    'trial_days' => $request->trial_days ?? 0,
+                    'free_months' => $request->free_months ?? 0,
+                    'extra_doctors' => $request->extra_doctors ?? 0,
+                    'billing_day' => $request->billing_day,
+                    'referral_code' => $request->referral_code,
+                ];
+
+                // Crear la suscripción
+                $subscription = $subscriptionService->create($client, $package, $subscriptionOptions);
+
+                // Aplicar descuento personalizado si existe
+                if ($request->filled('custom_discount_type') && $request->filled('custom_discount_value')) {
+                    $discountService->create($client, [
+                        'subscription_id' => $subscription->id,
+                        'discount_type' => $request->custom_discount_type,
+                        'discount_value' => $request->custom_discount_value,
+                        'reason' => $request->custom_discount_reason ?? 'Descuento personalizado al crear cuenta',
+                        'source' => DiscountSource::PROMOTION->value,
+                        'applies_to_invoices' => $request->custom_discount_invoices ?? 1,
+                        'is_active' => true,
+                    ]);
+                }
+
+                $practitionerCreated = $package->max_doctors_included === 1 && $request->filled('practitioner_identifier');
+
+                Log::info('Cliente creado exitosamente', [
+                    'client_id' => $client->id,
+                    'subscription_id' => $subscription->id,
+                    'package_id' => $package->id,
+                    'has_trial' => $subscription->trial_ends_at !== null,
+                    'has_custom_discount' => $request->filled('custom_discount_type'),
+                    'practitioner_created' => $practitionerCreated,
+                ]);
+
+                $successMessage = 'Cliente registrado con éxito. ';
+
+                if ($practitionerCreated) {
+                    $successMessage .= 'Doctor creado correctamente. ';
+                }
+
+                $successMessage .= ($subscription->status->value === 'pending_activation'
+                    ? 'Se ha generado la primera factura que debe ser pagada para activar la suscripción.'
+                    : 'La suscripción ha sido configurada correctamente.');
+
+                session()->flash('message.success', $successMessage);
+
+                return redirect(route('client.index'));
+            });
+        } catch (\Exception $e) {
+            Log::error('Error al crear cliente', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('message.error', 'Hubo un error al crear el cliente: '.$e->getMessage());
+
+            return redirect(route('client.create'))->withInput();
         }
-
-        return redirect(route('client.index'));
     }
 
     public function edit($id)
@@ -158,9 +185,9 @@ class ClientController extends Controller
                 'email' => 'required',
                 'dv' => 'required',
                 'whatsapp' => 'required',
-                'package_id'=>'required',
+                'package_id' => 'required',
                 // 'full_phone' => 'required',
-                //'logo' => 'required',
+                // 'logo' => 'required',
             ]);
 
             $model = Client::find($id);

@@ -38,11 +38,16 @@ class AppointmentController extends Controller
 
     public function create()
     {
+        // Verify subscription status before allowing appointment creation
+        $this->authorize('create', Appointment::class);
+
         return view('appointments.create');
     }
 
     public function store(Request $request)
     {
+        // Verify subscription status before allowing appointment creation
+        $this->authorize('create', Appointment::class);
 
         $appointment = new Appointment;
         $fields = $request->except('_token');

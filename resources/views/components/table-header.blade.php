@@ -24,10 +24,11 @@ if(!isset($show_create)) $show_create=true;
                                 </a>
                             @endif
                             @if(isset($filters))
+                                <div class="staff-search-table">
                                 {{ $filters }}
+                                </div>
                             @endif
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -6933,7 +6933,7 @@ a.status-grey {
 
 .staff-search-table {
 	padding: 0px 15px;
-	margin-top: 30px;
+	margin-top: 16px;
 }
 .submit-list-form {
 	width: 100%;
@@ -11471,6 +11471,9 @@ button.swal2-cancel {
 	}
 }
 @media only screen and (min-width: 768px) {
+    .staff-search-table{
+        /*margin-top: 80px;*/
+    }
 	.modal-md {
 		width: 500px;
 	}
@@ -12267,6 +12270,9 @@ button.swal2-cancel {
 	}
 }
 @media only screen and (max-width: 575.98px) {
+    .staff-search-table {
+        margin-top: 90px;
+    }
 	.app-listing li {
 		width: 100%;
 	}

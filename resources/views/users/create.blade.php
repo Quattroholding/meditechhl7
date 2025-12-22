@@ -152,7 +152,7 @@
                                             <input type="hidden" name="clients[]" value="{{auth()->user()->getCurrentClient()->id}}" readonly class="form-control">
                                         @else
                                             @if(auth()->user()->hasRole('admin'))
-                                                <x-select-input name="clients[]" :options="\App\Models\Client::wherenotIn('id',[1])->pluck('name','id')->toArray()" class="block  w-full"/>
+                                                <x-select-input name="clients[]" :options="\App\Models\Client::pluck('name','id')->toArray()" class="block  w-full"/>
                                             @elseif(auth()->user()->hasRole('doctor') or auth()->user()->hasRole('admin client'))
                                                 <x-select-input name="clients[{{auth()->user()->getCurrentClient()->id}}]" :options="auth()->user()->clients()->pluck('clients.name','clients.id')->toArray()" multiple class="block  w-full"/>
                                             @else
@@ -221,11 +221,12 @@
 
             $("#rol").change(function() {
                 var type = this.value;
-                console.log(type);
                 changeByType(type);
             });
 
             function changeByType(type) {
+
+                console.log('Tipo :'+type);
 
                 $("#email").hide();
                 $("#first_name").hide();
@@ -243,61 +244,7 @@
                 $('#maritalstatus').hide();
                 $('#whatsapp').hide();
 
-                console.log("tipo :"+type);
-
                 switch(parseInt(type)) {
-                    /*-----FORMULARIO PARA ROLE ADMIN-CLIENT-----*/
-                    case 5:
-                    /*-----FORMULARIO PARA ROLE recepcionista-----*/
-                    case 1:
-                        $("#whatsapp").show();
-                    /*-----FORMULARIO PARA ROLE ADMIN-----*/
-                    case 3:
-                        //$("#client").show();
-                        $('#first_name').show();
-                        $("#last_name").show();
-                        $("#email").show();
-                        $("#image").show();
-                        $("#password").show();
-                        $("#client_id").show();
-                        $("#confirm_password").show();
-                        break;
-                    /*-----FORMULARIO PARA ROLE DOCTOR-----*/
-                    case 2:
-                        $("#client_id").show();
-                        $("#id_type").show();
-                        $("#id_number").show();
-                        $("#medical_speciality").show();
-                        $("#gender").show();
-                        $("#birthdate_user").show();
-                        $("#physical_address").show();
-                        $("#whatsapp").show();
-                        $('#first_name').show();
-                        $("#last_name").show();
-                        $("#email").show();
-                        $("#image").show();
-                        $("#password").show();
-                        $("#confirm_password").show();
-                        break;
-
-                        /*-----FORMULARIO PARA ROLE PACIENTE-----*/
-                    case 4:
-                        //$("#client").show();
-                        $("#id_type").show();
-                        $("#id_number").show();
-                        $('#maritalstatus').show();
-                        //$("#medical_speciality").show();
-                        $("#gender").show();
-                        $("#birthdate_user").show();
-                        $("#physical_address").show();
-                        $("#whatsapp").show();
-                        $('#first_name').show();
-                        $("#last_name").show();
-                        $("#email").show();
-                        $("#image").show();
-                        $("#password").show();
-                        $("#confirm_password").show();
-                        break;
                     /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
                     case 6:
                         $("#client_id").show();
@@ -316,6 +263,15 @@
                         $("#confirm_password").show();
                         break;
                     default:
+                        //$("#client").show();
+                        $('#first_name').show();
+                        $("#last_name").show();
+                        $("#email").show();
+                        $("#image").show();
+                        $("#password").show();
+                        $("#confirm_password").show();
+                        $("#client_id").show();
+                        break;
                 // code block
                 }
         }

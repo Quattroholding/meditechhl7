@@ -46,6 +46,7 @@
                         @endif
                         @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
                             @include('layout.partials.header')
+                            <x-subscription-alert />
                             @include('layout.partials.sidebar')
                         @endif
                       {{$slot}}

@@ -8,7 +8,6 @@ use App\Models\ConsultingRoom;
 use App\Models\User;
 use App\Models\UserClient;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class UserAdminSeeder extends Seeder
 {
@@ -28,13 +27,13 @@ class UserAdminSeeder extends Seeder
         $admin->assignRole('admin');
 
         $client = Client::create([
-            'name' => 'Meditec PTY',
-            'ruc' => Str::random(7),
-            'dv' => Str::random(2),
-            'long_name' => 'Soluciones Meditech',
-            'email' => 'rgasperi@smartcarebilling.com',
+            'name' => 'Soluciones Meditec',
+            'ruc' => '155685992-2-2019',
+            'dv' => '11',
+            'long_name' => 'Soluciones Meditec',
+            'email' => 'business@meditecpty.com',
             'whatsapp' => '0800-555-555',
-            //'logo' => fake()->imageUrl(),
+            // 'logo' => fake()->imageUrl(),
         ]);
 
         $admin->default_client_id = $client->id;
@@ -59,7 +58,6 @@ class UserAdminSeeder extends Seeder
             'client_id' => $client->id,
             'user_id' => $admin->id,
         ]);
-
 
     }
 }

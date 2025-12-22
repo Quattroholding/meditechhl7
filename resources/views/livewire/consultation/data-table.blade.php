@@ -6,15 +6,11 @@
                     <!-- Table Header -->
                     @component('components.table-header',array('show_create'=>false,'title'=>''))
                         @slot('filters')
-                            <div class="row" style="margin-top: 16px;">
+                            <div class="row">
                                 <div class="col-md-4">
-                                    <div class="input-block local-forms" data-select2-id="5">
+                                    <div class="input-block local-forms">
                                         <label>{{__('Estatus')}}</label>
-                                        <select wire:model.live="statusFilter" class="form-select" style="max-width: 250px;">
-                                            <option value="">{{__('Todos los estados')}}</option>
-                                            <option value="in-progress">{{__('En progreso')}}</option>
-                                            <option value="finished">{{__('Finalizado')}}</option>
-                                        </select>
+                                        <x-select-input  wire:model.live="methodFilter" name="metodo" :options="['in-progress'=>'En Progreso','finished'=>'Finalizado']" :selected="[]" class="form-select d-inline-block"/>
                                     </div>
                                 </div>
                             </div>

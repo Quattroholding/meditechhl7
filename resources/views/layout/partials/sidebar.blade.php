@@ -43,6 +43,14 @@
                         </a>
                     </li>
                 @endcan
+                @can('dashboard.accounting')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('dashboard/accounting') ? 'active' : '' }}"  href="{{ route('accounting.dashboard') }}"><span class="menu-side" >
+                            <i class="fa fa-chart-bar"></i></span>
+                            <span> Dashboard </span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['clients.view', 'clients.create', 'branches.view', 'branches.create'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side primary">
@@ -250,13 +258,37 @@
                     <li class="submenu">
                         <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-boxes-packing"></i></span>
-                            <span> Paquetes </span> <span class="menu-arrow"></span></a>
+                            <span> {{__('Paquetes')}} </span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
                                 <li><a class="{{ Request::is('packages') ? 'active' : '' }}"  href="{{ route('package.index') }}">{{ __('generic.list') }} {{ __('package.titles') }}</a></li>
                                 <li><a class="{{ Request::is('packages/create') ? 'active' : '' }}"  href="{{ route('package.create') }}">{{ __('generic.create') }} {{ __('package.title') }}</a></li>
                         </ul>
                     </li>
                 @endcanany
+                @canany(['suscriptions.show',
+                        'suscriptions.invoices.index',
+                        'suscriptions.payments.index',
+                        'suscriptions.payments.settings'])
+                    <li class="submenu">
+                        <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-dollar-sign"></i></span>
+                            <span> @if(auth()->user()->hasAnyRole(['admin','contabilidad'])) {{__('Suscripciones')}} @else {{__('Suscripción')}} @endif</span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            @can('suscriptions.show')
+                                <li><a class="{{ Request::is('suscriptions/') ? 'active' : '' }}"  href="{{ route('suscriptions.show') }}">{{ __('Ver Plan') }}</a></li>
+                            @endcan
+                            @can('suscriptions.invoices.index')
+                                <li><a class="{{ Request::is('suscriptions/invoices') ? 'active' : '' }}"  href="{{ route('suscriptions.invoices.index') }}">{{ __('Facturas') }}</a></li>
+                            @endcan
+                            @can('suscriptions.payments.index')
+                                <li><a class="{{ Request::is('suscriptions/payments') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.index') }}">{{ __('Pagos') }}</a></li>
+                            @endcan
+                            @can('suscriptions.payments.settings')
+                                <li><a class="{{ Request::is('suscriptions/payments/settings') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.settings') }}">{{ __('Metodos de pago') }}</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
                 @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
                     <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>
@@ -282,7 +314,6 @@
                     </li>
                 @endcan
                 @can('users.profile')
-
                     <li>
                         <a class="{{ Request::is('profile') ? 'active' : '' }}"  href="{{ route('profile.edit') }}">
                             <span class="menu-side"><i class="fa fa-cog"></i></span>&nbsp;

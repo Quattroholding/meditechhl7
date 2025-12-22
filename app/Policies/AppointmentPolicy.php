@@ -8,6 +8,15 @@ use Carbon\Carbon;
 
 class AppointmentPolicy
 {
+    /**
+     * Determine if user can create appointments based on subscription status
+     */
+    public function create(User $user): bool
+    {
+        // Check if user can schedule appointments based on subscription
+        return $user->canScheduleAppointments();
+    }
+
     public function viewConsultation(User $user, Appointment $appointment): bool
     {
         if ($user->hasRole('paciente') or $user->hasRole('admin client') or $user->hasRole('recepcionista')) {
@@ -28,7 +37,7 @@ class AppointmentPolicy
 
     public function arrived(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status,['booked','confirm']) && ! $user->hasRole('paciente') && ! $user->hasRole('admin client');
+        return in_array($appointment->status, ['booked', 'confirm']) && ! $user->hasRole('paciente') && ! $user->hasRole('admin client');
     }
 
     public function checked_in(User $user, Appointment $appointment): bool

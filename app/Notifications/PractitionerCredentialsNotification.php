@@ -34,7 +34,7 @@ class PractitionerCredentialsNotification extends Notification
         }
 
         return (new MailMessage)
-            ->subject('Bienvenido al Sistema Meditech - Credenciales de Acceso')
+            ->subject('Bienvenido a SAMI - Credenciales de Acceso')
             ->view('emails.practitioner-credentials', [
                 'user' => $this->user,
                 'temporaryPassword' => $this->temporaryPassword,

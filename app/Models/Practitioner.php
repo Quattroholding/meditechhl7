@@ -168,6 +168,13 @@ class Practitioner extends BaseModel
         });
     }
 
+    public function scopeActiveAgent($query)
+    {
+        return $query->whereHas('user', function ($query) {
+            $query->ActiveAgent();
+        });
+    }
+
     /**
      * Get completed survey responses for this practitioner
      */

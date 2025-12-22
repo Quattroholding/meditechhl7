@@ -110,8 +110,11 @@
                         <textarea wire:model="description" class="form-control-full" rows="3" placeholder="Describir el motivo de la consulta">{{$description}}</textarea>
                         <x-input-error :messages="$errors->get('description')"/>
                     </div>
+                    @if(!auth()->user()->canScheduleAppointments())
+                        <x-subscription-alert :showFirstCol="false"/>
+                    @endif
                     <div style="margin-top: 30px; display: flex; gap: 15px;">
-                        @if(auth()->user()->can('edit',$appointment) or !$appointment)
+                        @if(auth()->user()->can('edit',$appointment) or (!$appointment and auth()->user()->canScheduleAppointments()))
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
                                 {{ $buttonSaveTitle }}
                             </button>

@@ -49,6 +49,7 @@ class PractitionerController extends Controller
                         });
                 });
             })
+            ->activeAgent()
             ->userActive()
             ->inRandomOrder()
             ->paginate($perPage);

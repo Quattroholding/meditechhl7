@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('max_users');
             $table->boolean('is_active')->default(true);
+            $table->boolean('show_price')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

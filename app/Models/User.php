@@ -112,6 +112,18 @@ class User extends Authenticatable
         return $query->where('active', false);
     }
 
+    public function scopeActiveAgent($query)
+    {
+        return $query->whereHas('clients', function ($query) {
+            $query->whereHas('subscription', function ($query) {
+                $query->where('client_subscriptions.status', 'active');
+                $query->whereHas('package', function ($query) {
+                    $query->where('packages.agent_available', true);
+                });
+            });
+        });
+    }
+
     public function activate()
     {
         $this->update(['active' => true]);
@@ -119,9 +131,8 @@ class User extends Authenticatable
 
     public function deactivate()
     {
-        $this->update(['active' => false,'inactive_at' => now(),'inactivate_by' => auth()->id()]);
+        $this->update(['active' => false, 'inactive_at' => now(), 'inactivate_by' => auth()->id()]);
     }
-
 
     public function isActive()
     {
@@ -214,5 +225,173 @@ class User extends Authenticatable
 
         return $this->getCurrentClient()->users()->role('recepcionista')->count() +
             $this->getCurrentClient()->users()->role('admin client')->count() + $this->getCurrentClient()->users()->role('doctor')->count();
+    }
+
+    // === Subscription Status Methods ===
+
+    /**
+     * Get the current client's active subscription
+     */
+    public function getActiveSubscription()
+    {
+        $client = $this->getCurrentClient();
+
+        return $client?->subscription;
+    }
+
+    /**
+     * Check if user's client has an active subscription
+     */
+    public function hasActiveSubscription(): bool
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return false;
+        }
+
+        return in_array($subscription->status->value, ['active', 'trial']);
+    }
+
+    /**
+     * Check if subscription is suspended
+     */
+    public function hasSubscriptionSuspended(): bool
+    {
+        $subscription = $this->getActiveSubscription();
+
+        return $subscription && $subscription->status->value === 'suspended';
+    }
+
+    /**
+     * Check if subscription is expired
+     */
+    public function hasSubscriptionExpired(): bool
+    {
+        $subscription = $this->getActiveSubscription();
+
+        return $subscription && $subscription->status->value === 'expired';
+    }
+
+    /**
+     * Check if subscription is pending activation (awaiting first payment)
+     */
+    public function hasSubscriptionPendingActivation(): bool
+    {
+        $subscription = $this->getActiveSubscription();
+
+        return $subscription && $subscription->status->value === 'pending_activation';
+    }
+
+    /**
+     * Check if subscription is past due
+     */
+    public function hasSubscriptionPastDue(): bool
+    {
+        $subscription = $this->getActiveSubscription();
+
+        return $subscription && $subscription->status->value === 'past_due';
+    }
+
+    /**
+     * Check if user can schedule appointments based on subscription status
+     */
+    public function canScheduleAppointments(): bool
+    {
+        // If no subscription system for this client, allow (legacy clients)
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return true; // No subscription required
+        }
+
+        // Only allow if subscription is active or in trial
+        return in_array($subscription->status->value, ['active', 'trial']);
+    }
+
+    /**
+     * Get subscription status message for user
+     */
+    public function getSubscriptionStatusMessage(): ?string
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return null;
+        }
+
+        return match ($subscription->status->value) {
+            'active' => null, // No message needed for active subscriptions
+            'trial' => $subscription->trial_ends_at
+                ? 'Período de prueba activo hasta el '.$subscription->trial_ends_at->format('d/m/Y')
+                : 'Período de prueba activo',
+            'pending_activation' => 'Suscripción pendiente de activación. Debe realizar el pago de la factura pendiente.',
+            'suspended' => 'Su suscripción está suspendida por falta de pago. Regularice su situación para continuar usando el sistema.',
+            'past_due' => 'Tiene facturas vencidas. Por favor realice el pago para evitar la suspensión del servicio.',
+            'expired' => 'Su suscripción ha expirado. Contacte con soporte para reactivar el servicio.',
+            'cancelled' => 'Su suscripción ha sido cancelada.',
+            default => 'Estado de suscripción: '.$subscription->status->label(),
+        };
+    }
+
+    /**
+     * Get days remaining until subscription action needed
+     */
+    public function getDaysUntilSubscriptionAction(): ?int
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return null;
+        }
+
+        // If suspended, check days until expiration
+        if ($subscription->status->value === 'suspended') {
+            $expirationDays = config('subscriptions.expiration_after_suspension_days', 30);
+            $daysSinceSuspension = now()->diffInDays($subscription->updated_at);
+
+            return max(0, $expirationDays - $daysSinceSuspension);
+        }
+
+        // If past due, check days until suspension
+        if ($subscription->status->value === 'past_due') {
+            $invoice = $subscription->currentInvoice;
+            if ($invoice) {
+                $gracePeriodDays = config('subscriptions.grace_period_days', 7);
+                $daysPastDue = now()->diffInDays($invoice->due_date);
+
+                return max(0, $gracePeriodDays - $daysPastDue);
+            }
+        }
+
+        // If in trial, show days until trial ends
+        if ($subscription->status->value === 'trial' && $subscription->trial_ends_at) {
+            return now()->diffInDays($subscription->trial_ends_at, false);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get subscription alert type (success, warning, danger)
+     */
+    public function getSubscriptionAlertType(): ?string
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return null;
+        }
+
+        return match ($subscription->status->value) {
+            'active' => null,
+            'trial' => 'info',
+            'pending_activation' => 'warning',
+            'past_due' => 'warning',
+            'suspended' => 'danger',
+            'expired' => 'danger',
+            'cancelled' => 'danger',
+            default => 'info',
+        };
     }
 }

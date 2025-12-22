@@ -12,6 +12,18 @@ class BaseModel extends Model
 {
     use SoftDeletes;
 
+    /**
+     * Convert value to string, handling enums properly
+     */
+    protected static function valueToString($value): string
+    {
+        if ($value instanceof \BackedEnum) {
+            return $value->value;
+        }
+
+        return (string) $value;
+    }
+
     public static function boot()
     {
         parent::boot();
@@ -22,9 +34,11 @@ class BaseModel extends Model
 
             if (count($changes) > 0) {
                 foreach ($changes as $attr => $value) {
-                    if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION']) && !is_array($model->$attr) && !is_array($model->getOriginal($attr))) {
+                    if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION']) && ! is_array($model->$attr) && ! is_array($model->getOriginal($attr))) {
+                        $oldValue = self::valueToString($model->getOriginal($attr));
+                        $newValue = self::valueToString($model->$attr);
 
-                        $accion = "Se modifico la columna ($attr) : de [{$model->getOriginal($attr)}] a [{$model->$attr}]";
+                        $accion = "Se modifico la columna ($attr) : de [{$oldValue}] a [{$newValue}]";
                         $user_id = User::first()->id;
                         $user_name = 'Administrador Del Sistema';
                         if (Auth::check()) {
@@ -39,8 +53,8 @@ class BaseModel extends Model
                             'table_id' => $model->getKey(),
                             'action' => 'update',
                             'columna' => $attr,
-                            'old_value' => $model->getOriginal($attr),
-                            'new_value' => $model->$attr,
+                            'old_value' => $oldValue,
+                            'new_value' => $newValue,
                             'observation' => $accion,
                         ]);
                         if (($attr == 'status' or $attr == 'estatus') && ! empty($model->$attr)) {
@@ -49,8 +63,8 @@ class BaseModel extends Model
                                 'model_name' => class_basename(get_class($model)),
                                 'record_id' => $model->getKey(),
                                 'user_id' => $user_id,
-                                'new_status' => $model->$attr,
-                                'old_status' => $model->getOriginal($attr),
+                                'new_status' => $newValue,
+                                'old_status' => $oldValue,
                             ]);
                         }
                     }
@@ -82,12 +96,13 @@ class BaseModel extends Model
             ]);
 
             if (Schema::hasColumn($model->getTable(), 'status') && ! empty($model->status)) {
+                $statusValue = self::valueToString($model->status);
                 StatusHistoryLog::create([
                     'table_name' => $model->getTable(),
                     'model_name' => class_basename(get_class($model)),
                     'record_id' => $model->getKey(),
                     'user_id' => $user_id,
-                    'new_status' => $model->status,
+                    'new_status' => $statusValue,
                 ]);
             }
         });

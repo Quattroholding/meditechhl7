@@ -122,14 +122,34 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'dashboard.patient', 'description' => 'Acceso al dashboard de paciente', 'module' => 'dashboards'],
             ['name' => 'dashboard.client', 'description' => 'Acceso al dashboard de cliente', 'module' => 'dashboards'],
             ['name' => 'dashboard.assistence', 'description' => 'Acceso al dashboard de asistencia', 'module' => 'dashboards'],
+            ['name' => 'dashboard.accounting', 'description' => 'Acceso al dashboard de contabilidad', 'module' => 'dashboards'],
 
-            // Dashboard access
+            // Reporst access
             ['name' => 'reports.appointments.view', 'description' => 'Ver reportes de citas', 'module' => 'reportes'],
             ['name' => 'reports.appointments.excel', 'description' => 'Descargar reportes de citas en excel', 'module' => 'reportes'],
             ['name' => 'reports.appointments.pdf', 'description' => 'Descargar reportes de citas en pdf', 'module' => 'reportes'],
             ['name' => 'reports.invoices-payments.view', 'description' => 'Ver reportes de facturas', 'module' => 'reportes'],
             ['name' => 'reports.invoices-payments.excel', 'description' => 'Descargar reportes de facturas en excel', 'module' => 'reportes'],
             ['name' => 'reports.invoices-payments.pdf', 'description' => 'Descargar reportes de facturas en pdf', 'module' => 'reportes'],
+
+            // Suscription access
+            ['name' => 'suscriptions.show', 'description' => 'Ver plan de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.upgrade', 'description' => 'Actualizar plan de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.index', 'description' => 'Ver facturas de suscripciones', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.pending', 'description' => 'Ver facturas de suscripciones pendientes', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.download', 'description' => 'Descargar Factura de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.show', 'description' => 'Ver detalle de factura de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.edit', 'description' => 'Editar factura de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.destroy', 'description' => 'Cancelar factura de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.index', 'description' => 'Ver lista de pagos de suscripciones', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.show', 'description' => 'Ver detalle de pago de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.download', 'description' => 'Descargar Recibo de pago de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.store', 'description' => 'Pagar plan de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.edit', 'description' => 'Editar pago de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.settings', 'description' => 'Configurar metodo de pago de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.payments.verify', 'description' => 'Verificar pago de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.invoices.destroy', 'description' => 'Cancelar pago de suscripcion', 'module' => 'suscripciones'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -139,7 +159,7 @@ class RolePermissionSeeder extends Seeder
                 $permission->module = $permissionData['module'];
                 $permission->save();
             } else {
-                $permission = new Permission();
+                $permission = new Permission;
                 $permission->name = $permissionData['name'];
                 $permission->description = $permissionData['description'];
                 $permission->module = $permissionData['module'];
@@ -202,8 +222,18 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
             'practitioners.edit',
             'practitioners.update',
+            'suscriptions.show',
+            'suscriptions.upgrade',
+            'suscriptions.invoices.index',
+            'suscriptions.invoices.pending',
+            'suscriptions.invoices.download',
+            'suscriptions.invoices.show',
+            'suscriptions.payments.index',
+            'suscriptions.payments.show',
+            'suscriptions.payments.download',
+            'suscriptions.payments.store',
+            'suscriptions.payments.settings',
         ]);
-
 
         $assistantRole = Role::firstOrCreate(['name' => 'recepcionista']);
         $assistantRole->givePermissionTo([
@@ -249,7 +279,6 @@ class RolePermissionSeeder extends Seeder
             'patients.update',
         ]);
 
-
         $adminClientRole = Role::firstOrCreate(['name' => 'admin client']);
         $adminClientRole->givePermissionTo([
             'dashboard.client',
@@ -276,6 +305,17 @@ class RolePermissionSeeder extends Seeder
             'practitioners.directory',
             'users.profile',
             'practitioners.add_assistant',
+            'suscriptions.show',
+            'suscriptions.upgrade',
+            'suscriptions.invoices.index',
+            'suscriptions.invoices.pending',
+            'suscriptions.invoices.download',
+            'suscriptions.invoices.show',
+            'suscriptions.payments.index',
+            'suscriptions.payments.show',
+            'suscriptions.payments.download',
+            'suscriptions.payments.store',
+            'suscriptions.payments.settings',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
@@ -322,6 +362,24 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
             'practitioners.edit',
             'practitioners.update',
+        ]);
+
+        $doctorRole = Role::firstOrCreate(['name' => 'contabilidad']);
+        $doctorRole->givePermissionTo([
+            'dashboard.accounting',
+            'users.view',
+            'suscriptions.invoices.index',
+            'suscriptions.invoices.pending',
+            'suscriptions.invoices.download',
+            'suscriptions.invoices.show',
+            'suscriptions.invoices.edit',
+            'suscriptions.invoices.destroy',
+            'suscriptions.payments.index',
+            'suscriptions.payments.show',
+            'suscriptions.payments.download',
+            'suscriptions.payments.store',
+            'suscriptions.payments.settings',
+            'suscriptions.payments.verify',
         ]);
     }
 }
