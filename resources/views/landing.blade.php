@@ -292,6 +292,100 @@
         </div>
     </section>
 
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Paquetes" class="logo-color">
+                <h2>Nuestros Planes de Suscripción</h2><br/>
+
+            </div>
+            <p class="section-description">
+                Elige el plan perfecto para tus necesidades.
+                Todos incluyen soporte técnico y actualizaciones constantes.
+            </p>
+            <div class="pricing-grid">
+                @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
+                <div class="pricing-card {{ $loop->last ? 'pricing-card-enterprise' : '' }}">
+                    <div class="pricing-header">
+                        <h3>{{ $package->name }}</h3>
+                        @if($package->base_price > 0 and $package->id <>4)
+                            <div class="pricing-price">
+                                <span class="currency">$</span>
+                                <span class="amount">@isset($package->base_price){{ number_format($package->base_price, 0) }} @else XXX @endif</span>
+                                <span class="period">/mes</span>
+                            </div>
+                        @else
+                            <div class="pricing-price">
+                                <span class="amount">Contactar</span>
+                            </div>
+                        @endif
+                        @if($package->id <>4)
+                        <p class="pricing-subtitle">
+                            {{ $package->max_doctors_included }} {{ $package->max_doctors_included == 1 ? 'Usuario' : 'Usuarios' }}
+                        </p>
+                        @endif
+                    </div>
+
+                    <div class="pricing-features">
+                        <ul>
+                            @foreach($package->features() ?? [] as $feature)
+                            <li><i class="fas fa-check"></i> {{ $feature }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <div class="pricing-action">
+                        @if($loop->last)
+                            <button class="pricing-button pricing-button-enterprise" onclick="openEnterpriseModal()">
+                                Contactar Ventas
+                            </button>
+                        @else
+                            <a href="{{ route('public.register', ['package' => $package->id]) }}" class="pricing-button">
+                                Suscribirse Ahora
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Contacto Empresarial -->
+    <div id="enterpriseModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEnterpriseModal()">&times;</button>
+            <h3>Contactar Ventas - Plan Empresarial</h3>
+            <p>Completa el formulario y nos pondremos en contacto para una propuesta personalizada.</p>
+
+            <form id="enterpriseForm" action="{{ route('enterprise.lead.store') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono *</label>
+                    <input type="tel" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Empresa/Clínica *</label>
+                    <input type="text" name="company_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Cuéntanos sobre tus necesidades</label>
+                    <textarea name="message" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Enviar Solicitud</button>
+            </form>
+        </div>
+    </div>
+
     <section class="cta-section">
         <div class="container">
             <div class="register-section">
@@ -392,6 +486,46 @@
     document.addEventListener('DOMContentLoaded', function() {
         const heroBackground = new Image();
         heroBackground.src = "{{ asset('landing/images/LANDING-PORTADA.png') }}";
+    });
+
+    // Funciones para el modal empresarial
+    function openEnterpriseModal() {
+        document.getElementById('enterpriseModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEnterpriseModal() {
+        document.getElementById('enterpriseModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al hacer click fuera
+    document.getElementById('enterpriseModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeEnterpriseModal();
+    });
+
+    // Manejar submit del formulario
+    document.getElementById('enterpriseForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (response.ok) {
+                alert('¡Gracias! Nos pondremos en contacto contigo pronto.');
+                closeEnterpriseModal();
+                this.reset();
+            } else {
+                alert('Hubo un error. Por favor intenta nuevamente.');
+            }
+        } catch (error) {
+            alert('Error de conexión. Por favor intenta más tarde.');
+        }
     });
     </script>
 </body>

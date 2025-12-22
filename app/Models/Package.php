@@ -76,4 +76,24 @@ class Package extends BaseModel
     {
         return $this->max_doctors_included + $extraDoctors;
     }
+
+    public function features(): array
+    {
+        $array = [
+            'Administracion y Agendamitos de citas',
+            'Gestion de Pacientes',
+            'Historial Clinico Digital',
+            'Creacion de licencias medicas',
+            'Dashboard con kpis relevantes',
+            'Gestion de cobros de servicios',
+        ];
+
+        if($this->agent_available)
+            array_push($array, 'Agente automatizado de citas SAMI a traves de nuestro whatsapp. ');
+
+        if($this->id==4)
+            array_push($array, 'Agente automatizado de citas a traves de whatsapp personalizado.');
+
+        return $array;
+    }
 }

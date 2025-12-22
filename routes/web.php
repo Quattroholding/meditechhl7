@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DermatologyController;
+use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\InsuranceController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ServiceRequestController;
@@ -61,6 +63,28 @@ Route::get('/privacy-policy', function () {
 Route::get('/terms-of-service', function () {
     return view('terms-of-service');
 })->name('terms.service');
+
+// Registro Público de Clientes
+Route::get('/register/client', [PublicRegistrationController::class, 'showForm'])
+    ->name('public.register');
+Route::post('/register/client', [PublicRegistrationController::class, 'store'])
+    ->middleware('throttle:5,60')
+    ->name('public.register.store');
+Route::get('/register/success', [PublicRegistrationController::class, 'success'])
+    ->name('public.register.success');
+
+// Enterprise Leads (Público)
+Route::post('/enterprise-contact', [EnterpriseLeadController::class, 'store'])
+    ->middleware('throttle:3,60')
+    ->name('enterprise.lead.store');
+
+// Enterprise Leads (Admin - Protegido)
+Route::middleware(['auth', 'verified'])->prefix('admin/leads')->group(function () {
+    Route::get('/', [EnterpriseLeadController::class, 'index'])->name('leads.index');
+    Route::get('/{id}', [EnterpriseLeadController::class, 'show'])->name('leads.show');
+    Route::post('/{id}/update', [EnterpriseLeadController::class, 'update'])->name('leads.update');
+    Route::post('/{id}/convert', [EnterpriseLeadController::class, 'convertToClient'])->name('leads.convert');
+});
 
 Route::get('/login', function () {
 
