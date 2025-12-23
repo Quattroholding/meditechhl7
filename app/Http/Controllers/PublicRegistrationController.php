@@ -194,4 +194,20 @@ class PublicRegistrationController extends Controller
 
         return view('public.registration-success', compact('invoicePending'));
     }
+
+    private function validateTurnstile(string $token): bool
+    {
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => config('services.turnstile.secret_key'),
+            'response' => $token,
+        ]);
+
+        if ($response->successful()) {
+            $result = $response->json();
+
+            return $result['success'] ?? false;
+        }
+
+        return false;
+    }
 }
