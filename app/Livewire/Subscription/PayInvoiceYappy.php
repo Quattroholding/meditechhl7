@@ -37,14 +37,14 @@ class PayInvoiceYappy extends Component
 
             $config = [
                 'merchantId'  => config('services.yappy.merchant_id'),
-                'orderId'     => $this->invoice->id,
-                'domain'      =>  env('APP_URL'),
-                'paymentDate' => now()->timestamp,
-                'subtotal'    => number_format($this->invoice->subtotal, 2, '.', ''),
+                'orderId'     => 'INV-'.$this->invoice->id.'-'.time(),
+                'domain'      => parse_url(config('app.url'), PHP_URL_HOST),
+                'paymentDate' => time(),
+                'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
                 'taxes'       => number_format($this->invoice->taxes ?? 0, 2, '.', ''),
-                'discount'    => "0.00",
-                'total'       => number_format($this->invoice->total, 2, '.', ''),
-                'ipnUrl'      => route('suscriptions.payments.yappy_ipn'),
+                'discount'    => '0.00',
+                'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
+                'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
             ];
 
             \Log::info('Config Yappy',$config);
