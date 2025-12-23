@@ -1456,7 +1456,8 @@ body.loaded .hero {
 
 .pricing-subtitle {
     color: #666;
-    font-size: 14px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .pricing-card-enterprise .pricing-subtitle {
