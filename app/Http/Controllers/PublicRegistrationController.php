@@ -10,6 +10,7 @@ use App\Models\UserClient;
 use App\Notifications\PractitionerCredentialsNotification;
 use App\Services\FileService;
 use App\Services\PractitionerService;
+use App\Services\ReferralService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,8 @@ class PublicRegistrationController extends Controller
         PublicRegistrationRequest $request,
         SubscriptionService $subscriptionService,
         FileService $fileService,
-        PractitionerService $practitionerService
+        PractitionerService $practitionerService,
+        ReferralService $referralService
     ) {
         try {
 
@@ -49,15 +51,16 @@ class PublicRegistrationController extends Controller
                 }
             }
 
-            return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService) {
+            return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService) {
 
                 // 1. Crear el cliente con valores por defecto
                 $client = new Client;
                 $prefix = 'Dr';
-                if($request->gender == 'female')  $prefix = 'Dra';
-                $client->name =$prefix.' '.$request->first_name.' '.$request->last_name;
+                if ($request->gender == 'female') {
+                    $prefix = 'Dra';
+                }
+                $client->name = $prefix.' '.$request->first_name.' '.$request->last_name;
                 $client->long_name = $prefix.' '.$request->first_name.' '.$request->last_name;
-
 
                 $client->email = $request->email;
                 $client->whatsapp = $request->phone;
@@ -68,6 +71,14 @@ class PublicRegistrationController extends Controller
                 $client->dv = 0;
                 $client->active = 1;
                 $client->save();
+
+                // 1b. Generar código de referido para el nuevo cliente
+                $referralCode = $referralService->generateCode($client);
+
+                Log::info('Referral code generated for new client', [
+                    'client_id' => $client->id,
+                    'referral_code' => $referralCode->code,
+                ]);
 
                 // 2. Obtener paquete
                 $package = Package::findOrFail($request->package_id);
@@ -129,8 +140,22 @@ class PublicRegistrationController extends Controller
                     'billing_day' => now()->day,
                 ]);
 
+                // 7b. Aplicar código de referido si se proporcionó
+                if ($request->filled('referral_code')) {
+                    $referral = $referralService->applyReferralCode($client, $request->referral_code);
+
+                    if ($referral) {
+                        Log::info('Referral code applied during registration', [
+                            'client_id' => $client->id,
+                            'referral_code' => $request->referral_code,
+                            'referral_id' => $referral->id,
+                            'referrer_client_id' => $referral->referrer_client_id,
+                        ]);
+                    }
+                }
+
                 // Enviar notificación con credenciales temporales
-                $user->notify(new PractitionerCredentialsNotification($user,  $request->password));
+                $user->notify(new PractitionerCredentialsNotification($user, $request->password));
 
                 Log::info('Public client registration successful', [
                     'client_id' => $client->id,

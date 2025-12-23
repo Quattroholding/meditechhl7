@@ -75,6 +75,7 @@
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s;
+            background: #fff;
         }
 
         .form-field input:focus,
@@ -177,6 +178,96 @@
             display: none;
         }
 
+        /* SAMI Alert Styles */
+        .sami-alert {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #2196F3;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .sami-alert-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-sami 2s infinite;
+        }
+
+        .sami-alert-icon i {
+            font-size: 30px;
+            color: white;
+        }
+
+        @keyframes pulse-sami {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+            }
+        }
+
+        .sami-alert-content h4 {
+            color: #1976D2;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .sami-alert-content h4 i {
+            color: #FFC107;
+        }
+
+        .sami-alert-content p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .sami-alert-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .sami-alert-content ul li {
+            padding: 5px 0;
+            color: #1976D2;
+            font-weight: 500;
+        }
+
+        .sami-alert-content ul li i {
+            color: #4CAF50;
+            margin-right: 8px;
+        }
+
+        .sami-highlight {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #FFC107;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .sami-highlight i {
+            color: #FF9800;
+            margin-right: 5px;
+        }
+
         @media (max-width: 768px) {
             .register-card {
                 padding: 30px 20px;
@@ -184,6 +275,26 @@
 
             .form-row {
                 grid-template-columns: 1fr;
+            }
+
+            .sami-alert {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px 15px;
+            }
+
+            .sami-alert-icon {
+                margin: 0 auto;
+                width: 50px;
+                height: 50px;
+            }
+
+            .sami-alert-icon i {
+                font-size: 24px;
+            }
+
+            .sami-alert-content h4 {
+                font-size: 16px;
             }
         }
     </style>
@@ -217,8 +328,11 @@
                                 @foreach($packages as $pkg)
                                     <option value="{{ $pkg->id }}"
                                             {{ (old('package_id', $selectedPackage?->id) == $pkg->id) ? 'selected' : '' }}
-                                            data-max-users="{{ $pkg->max_users }}">
+                                            data-max-users="{{ $pkg->max_users }}"
+                                            data-agent-available="{{ $pkg->agent_available }}">
                                         {{ $pkg->name }} - ${{ number_format($pkg->base_price, 2) }}/mes
+                                        @if($pkg->id == 2) ⭐ RECOMENDADO @endif
+                                        @if($pkg->agent_available) 🤖 @endif
                                     </option>
                                 @endforeach
                             </select>
@@ -227,10 +341,31 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div id="sami-info" style="display: none;" class="sami-alert">
+                        <div class="sami-alert-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="sami-alert-content">
+                            <h4><i class="fas fa-star"></i> ¡Excelente elección!</h4>
+                            <p>
+                                Este plan incluye acceso a <strong>SAMI</strong>, nuestro agente de WhatsApp con IA que:
+                            </p>
+                            <ul>
+                                <li><i class="fas fa-check-circle"></i> Agenda citas automáticamente 24/7</li>
+                                <li><i class="fas fa-check-circle"></i> Incluye tu consultorio en nuestro <strong>Directorio Médico</strong></li>
+                                <li><i class="fas fa-check-circle"></i> Te conecta con nuevos pacientes constantemente</li>
+                            </ul>
+                            <p class="sami-highlight">
+                                <i class="fas fa-users"></i> <strong>Potencial ilimitado de pacientes:</strong>
+                                Los pacientes podrán encontrarte y agendar citas directamente a través de SAMI.
+                            </p>
+                        </div>
+                    </div>
                     <div class="form-row">
                             <div class="form-field">
                                 <label>Tipo de Documento <span class="required">*</span></label>
-                                <select name="identifier_type">
+                                <select name="identifier_type" class="form-control select">
                                     <option value="">Seleccione...</option>
                                     <option value="CC" {{ old('identifier_type') == 'CC' ? 'selected' : '' }}>Cédula (CC)</option>
                                     <option value="PA" {{ old('identifier_type') == 'PA' ? 'selected' : '' }}>Pasaporte (PA)</option>
@@ -277,7 +412,7 @@
                         </div>
                         <div class="form-field">
                             <label>Teléfono <span class="required">*</span></label>
-                            <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required>
+                            <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required style="width: 100%">
                             @error('phone')
                             <span class="error">{{ $message }}</span>
                             @enderror
@@ -322,7 +457,7 @@
                         @enderror
                     </div>
                 </div>
-                    <div class="form-row">
+                <div class="form-row">
 
                         <div class="form-field">
                             <label>Logo (Opcional)</label>
@@ -337,29 +472,18 @@
                             @enderror
                         </div>
                     </div>
-
-                    {{--}}
-                    <div class="form-field">
-                        <label>Tipo <span class="required">*</span></label>
-                        <select name="type" required id="tipo_cliente">
-                            <option value="">Seleccione un tipo</option>
-                            @foreach(\App\Enums\ClientType::cases() as $tc)
-                                <option value="{{$tc->label()}}"  {{ old('type') == $tc->label() ? 'selected' : '' }}>{{$tc->label()}}</option>
-                            @endforeach
-                        </select>
-                        @error('name')
-                        <span class="error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-field" style="display: none;" id="type_client_name">
-                        <label id="type_client_name_label">Nombre del lugar de consulta <span class="required">*</span></label>
-                        <input type="text" name="name" value="{{ old('name') }}" required placeholder="Ej: Clínica Santa María">
-                        @error('name')
+                <!-- Código de Referido -->
+                <div class="form-section">
+                    <h3><i class="fas fa-gift"></i> Código de Referido (Opcional)</h3>
+                    <div class="form-group">
+                        <label for="referral_code">¿Tienes un código de referido?</label>
+                        <input type="text" id="referral_code" name="referral_code" value="{{ old('referral_code', request('ref')) }}" placeholder="Ej: REF-ABC12345">
+                        <small class="form-help">Si alguien te refirió, ingresa su código aquí</small>
+                        @error('referral_code')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
-                {{--}}
 
                 @if(config('app.env') === 'production')
                     <div class="form-group">
@@ -419,6 +543,36 @@
         // Ejecutar al cargar si hay paquete seleccionado
         if (packageSelect.value) {
             togglePractitionerFields();
+        }
+
+        // Mostrar/ocultar información de SAMI según paquete
+        const samiInfo = document.getElementById('sami-info');
+
+        function toggleSamiInfo() {
+            const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+            const agentAvailable = selectedOption.getAttribute('data-agent-available');
+
+            if (agentAvailable === '1') {
+                samiInfo.style.display = 'flex';
+                // Animar entrada
+                setTimeout(() => {
+                    samiInfo.style.opacity = '1';
+                    samiInfo.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                samiInfo.style.opacity = '0';
+                samiInfo.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    samiInfo.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        packageSelect.addEventListener('change', toggleSamiInfo);
+
+        // Ejecutar al cargar si hay paquete seleccionado
+        if (packageSelect.value) {
+            toggleSamiInfo();
         }
 
         // Actualizar nombre de archivo seleccionado

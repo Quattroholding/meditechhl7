@@ -61,8 +61,34 @@ class PublicRegistrationRequest extends FormRequest
             ],
             'medical_speciality' => [
                 'required',
-                'exists:medical_specialties,id'
-            ]
+                'exists:medical_specialties,id',
+            ],
+
+            // Código de Referido (Opcional)
+            'referral_code' => [
+                'nullable',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) {
+                    if (! $value) {
+                        return;
+                    }
+
+                    $referralCode = \App\Models\ReferralCode::where('code', $value)->first();
+
+                    if (! $referralCode) {
+                        $fail('El código de referido no existe.');
+
+                        return;
+                    }
+
+                    if (! $referralCode->canBeUsed()) {
+                        $fail('El código de referido no está disponible o ha expirado.');
+
+                        return;
+                    }
+                },
+            ],
         ];
     }
 

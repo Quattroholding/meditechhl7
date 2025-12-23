@@ -86,6 +86,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin/leads')->group(function (
     Route::post('/{id}/convert', [EnterpriseLeadController::class, 'convertToClient'])->name('leads.convert');
 });
 
+// Referral Code PDF Download (Protegido)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/referral-code/{client}/pdf', [\App\Http\Controllers\ReferralCodeController::class, 'downloadPdf'])
+        ->name('referral.code.pdf');
+});
+
 Route::get('/login', function () {
 
     if (auth()->check()) {
@@ -247,6 +253,8 @@ Route::post('/store_public', [PatientController::class, 'store_public'])->name('
 Route::group(['prefix' => 'clients', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [ClientController::class, 'index'])->middleware('permission:clients.view')->name('client.index');
+
+    Route::get('/referral_code', [ClientController::class, 'getReferralCode'])->name('client.referral_code');
 
     Route::get('/create', [ClientController::class, 'create'])->middleware('permission:clients.create')->name('client.create');
 

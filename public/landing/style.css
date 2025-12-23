@@ -1615,3 +1615,191 @@ body.loaded .hero {
         padding: 30px 20px;
     }
 }
+
+/* SAMI Info Box */
+.sami-info-box {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+    border: 2px solid #2196F3;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 900px;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.1);
+}
+
+.sami-icon {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+.sami-icon i {
+    font-size: 40px;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+    }
+}
+
+.sami-text h4 {
+    color: #1976D2;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.sami-text h4 i {
+    color: #FFC107;
+}
+
+.sami-text p {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.sami-benefits {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.sami-benefits span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1976D2;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.sami-benefits i {
+    color: #4CAF50;
+}
+
+/* Recommended Badge */
+.recommended-badge {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
+    z-index: 10;
+    animation: shine 2s infinite;
+}
+
+.recommended-badge i {
+    margin-right: 5px;
+}
+
+@keyframes shine {
+    0%, 100% {
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(255, 193, 7, 0.8);
+    }
+}
+
+/* SAMI Badge */
+.sami-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.sami-badge i {
+    margin-right: 4px;
+}
+
+/* Recommended Pricing Card */
+.pricing-card-recommended {
+    transform: scale(1.05);
+    border: 3px solid #FFC107;
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.2);
+    z-index: 5;
+}
+
+.pricing-card-recommended:hover {
+    transform: scale(1.08);
+    box-shadow: 0 20px 50px rgba(255, 193, 7, 0.3);
+}
+
+.pricing-card-recommended::before {
+    background: linear-gradient(90deg, #FFC107, #FF9800);
+    height: 6px;
+}
+
+/* Responsive SAMI Info */
+@media (max-width: 768px) {
+    .sami-info-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
+    }
+
+    .sami-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .sami-icon i {
+        font-size: 30px;
+    }
+
+    .sami-benefits {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pricing-card-recommended {
+        transform: scale(1);
+    }
+
+    .pricing-card-recommended:hover {
+        transform: scale(1.02);
+    }
+
+    .recommended-badge {
+        font-size: 10px;
+        padding: 6px 15px;
+    }
+
+    .sami-badge {
+        font-size: 10px;
+        padding: 5px 10px;
+        top: 10px;
+        right: 10px;
+    }
+}

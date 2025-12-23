@@ -1,15 +1,15 @@
 @extends('emails.layouts.base', [
     'title' => 'Bienvenido al Sistema Meditech - Credenciales de Acceso',
     'headerIcon' => '👨‍⚕️',
-    'headerTitle' => 'Bienvenido a Meditech',
-    'headerSubtitle' => 'Sistema de Gestión Médica'
+    'headerTitle' => 'Bienvenido a SAMI',
+    'headerSubtitle' => 'Sistema Integral de Gestión Hospitalaria'
 ])
 
 @section('content')
     {{-- Mensaje de bienvenida --}}
     <x-email.message-box title="Estimado/a {{ $userPrefix }}{{ $user->first_name }} {{ $user->last_name }}">
         <p style="font-size: 16px; margin: 0;">
-            Le damos la bienvenida al sistema de gestión médica <strong>Meditech</strong>. Sus credenciales de acceso han sido creadas exitosamente.
+            Le damos la bienvenida al Sistema Integral de Gestión Hospitalaria <strong>SAMI</strong>. Sus credenciales de acceso han sido creadas exitosamente.
         </p>
     </x-email.message-box>
 
@@ -27,20 +27,23 @@
     <x-email.button href="{{ url('/login') }}" icon="🚀">
         Acceder al Sistema
     </x-email.button>
-
+    @if($first_time_login)
     {{-- Información importante --}}
     <x-email.message-box type="warning" title="⚠️ IMPORTANTE">
         <p style="margin: 0; color: #c53030;">
             Esta es una contraseña temporal que <strong>debe cambiar</strong> en su primer acceso al sistema por motivos de seguridad.
         </p>
     </x-email.message-box>
+    @endif
 
     {{-- Instrucciones de primer acceso --}}
     <x-email.message-box type="info" title="📋 Instrucciones de Primer Acceso">
         <ol style="margin: 10px 0; padding-left: 20px; color: #1565c0;">
             <li style="margin-bottom: 8px;">Ingrese al sistema con las credenciales proporcionadas</li>
+            @if($first_time_login)
             <li style="margin-bottom: 8px;">Será dirigido automáticamente a cambiar su contraseña</li>
             <li style="margin-bottom: 8px;">Cree una contraseña segura de su elección</li>
+            @endif
             <li style="margin-bottom: 8px;">Complete su perfil profesional</li>
         </ol>
     </x-email.message-box>
