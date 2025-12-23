@@ -52,6 +52,9 @@
                     <th data-column="status" data-priority="7">
                         Estado
                     </th>
+                    <th data-column="yappy_pay" data-priority="1" >
+                        Pagar con yappy
+                    </th>
                     <th data-column="acciones" data-priority="1" class="text-end">
                         Acciones
                     </th>
@@ -111,7 +114,15 @@
                                 </span>
                             </span>
                         </td>
-                        <td data-column="acciones" data-priority="1" data-label="Acciones" class="text-end">
+                        <td data-column="yappy_pay" data-priority="6" data-label="Pagar Con Yappy" class="text-end">
+                            @if($invoice->amount_due > 0)
+                                <livewire:subscription.pay-invoice-yappy
+                                    :invoice="$invoice"
+                                    :wire:key="'pay-invoice-'.$invoice->id"
+                                />
+                            @endif
+                        </td>
+                        <td data-column="acciones" data-priority="1" data-label="Acciones" >
                             <div class="btn-group btn-group-sm">
                                 @can('suscriptions.invoices.show')
                                     <a href="{{ route('suscriptions.invoices.show', $invoice->id) }}"

@@ -64,5 +64,9 @@ return [
         'app_secret' => env('JITSI_APP_SECRET'),
         'key_id' => env('JITSI_KEY_ID'),
     ],
+    'yappy' => [
+        'merchant_id' => env('YAPPY_MERCHANT_ID', 'meet.yappy.com'),
+        'base_url' => env('YAPPY_API_BASE', 'https://api.yappy.com'),
+    ]
 
 ];

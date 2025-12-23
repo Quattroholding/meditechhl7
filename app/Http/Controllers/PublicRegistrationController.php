@@ -155,7 +155,7 @@ class PublicRegistrationController extends Controller
                 }
 
                 // Enviar notificación con credenciales temporales
-                $user->notify(new PractitionerCredentialsNotification($user, $request->password));
+                $user->notify(new PractitionerCredentialsNotification($user, $request->password,false));
 
                 Log::info('Public client registration successful', [
                     'client_id' => $client->id,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\ClientInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SuscriptionPaymentController extends Controller
@@ -152,5 +153,20 @@ class SuscriptionPaymentController extends Controller
         return redirect()
             ->route('suscriptions.payments.index')
             ->with('success', 'Pago eliminado exitosamente.');
+    }
+
+    public function yappyIPN(Request $request){
+        // Yappy enviará: orderId, hash, status, domain
+        $orderId = $request->query('orderId');
+        $status  = $request->query('status');
+        $hash    = $request->query('hash');
+
+        // TODO: validar hash con tu clave secreta
+        Log::info("Yappy IPN: {$orderId} => {$status}");
+
+        // Actualizar modelo de factura según el estado
+        // E = Ejecuto, R = Rechazado, C = Cancelado, X = Expirado
+
+        return response()->json(['success' => true]);
     }
 }

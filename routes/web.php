@@ -634,6 +634,8 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
 
         Route::get('/', [SuscriptionPaymentController::class, 'index'])->middleware('permission:suscriptions.payments.index')->name('suscriptions.payments.index');
 
+        Route::get('/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
+
         Route::get('/settings', [SuscriptionPaymentController::class, 'settings'])->middleware('permission:suscriptions.payments.settings')->name('suscriptions.payments.settings');
 
         Route::get('/{id}/verify', [SuscriptionPaymentController::class, 'verify'])->middleware('permission:suscriptions.payments.verify')->name('suscriptions.payments.verify');

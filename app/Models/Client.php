@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Client extends BaseModel
 {
@@ -22,6 +23,17 @@ class Client extends BaseModel
         'referred_by_client_id',
         'referral_code_used',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($client) {
+            if (! $client->yappy_code) {
+                $client->yappy_code = strtoupper(Str::random(7));
+            }
+        });
+    }
 
     public function patients()
     {

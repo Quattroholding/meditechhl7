@@ -266,29 +266,28 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['suscriptions.show',
-                        'suscriptions.invoices.index',
-                        'suscriptions.payments.index',
-                        'suscriptions.payments.settings'])
-                    <li class="submenu">
-                        <a href="javascript:;"><span class="menu-side">
-                            <i class="fa fa-dollar-sign"></i></span>
-                            <span> @if(auth()->user()->hasAnyRole(['admin','contabilidad'])) {{__('Suscripciones')}} @else {{__('Suscripción')}} @endif</span> <span class="menu-arrow"></span></a>
-                        <ul style="display: none;">
-                            @can('suscriptions.show')
-                                <li><a class="{{ Request::is('suscriptions/') ? 'active' : '' }}"  href="{{ route('suscriptions.show') }}">{{ __('Ver Plan') }}</a></li>
-                            @endcan
-                            @can('suscriptions.invoices.index')
-                                <li><a class="{{ Request::is('suscriptions/invoices') ? 'active' : '' }}"  href="{{ route('suscriptions.invoices.index') }}">{{ __('Facturas') }}</a></li>
-                            @endcan
-                            @can('suscriptions.payments.index')
-                                <li><a class="{{ Request::is('suscriptions/payments') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.index') }}">{{ __('Pagos') }}</a></li>
-                            @endcan
-                            @can('suscriptions.payments.settings')
-                                <li><a class="{{ Request::is('suscriptions/payments/settings') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.settings') }}">{{ __('Metodos de pago') }}</a></li>
-                            @endcan
-                        </ul>
-                    </li>
+                @canany(['suscriptions.show', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                        <i class="fa fa-dollar-sign"></i></span>
+                        <span> @if(auth()->user()->hasAnyRole(['admin','contabilidad'])) {{__('Suscripciones')}} @else {{__('Suscripción')}} @endif</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('suscriptions.show')
+                            <li><a class="{{ Request::is('suscriptions') ? 'active' : '' }}"  href="{{ route('suscriptions.show') }}">{{ __('Ver Plan') }}</a></li>
+                        @endcan
+                        @can('suscriptions.invoices.index')
+                            <li><a class="{{ Request::is('suscriptions/invoices') ? 'active' : '' }}"  href="{{ route('suscriptions.invoices.index') }}">{{ __('Facturas') }}</a></li>
+                        @endcan
+                        @can('suscriptions.payments.index')
+                            <li><a class="{{ Request::is('suscriptions/payments') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.index') }}">{{ __('Pagos') }}</a></li>
+                        @endcan
+                        @can('suscriptions.payments.settings')
+                            <li><a class="{{ Request::is('suscriptions/payments/settings') ? 'active' : '' }}"  href="{{ route('suscriptions.payments.settings') }}">{{ __('Metodos de pago') }}</a></li>
+                        @endcan
+                    </ul>
+                </li>
                 @endcan
                 @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
