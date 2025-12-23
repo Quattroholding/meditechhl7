@@ -35,11 +35,7 @@ class PayInvoiceYappy extends Component
 
             $token = data_get($validate->json(), 'body.token');
 
-            // 2️⃣ Crear orden
-            $order = Http::withHeaders([
-                'Authorization' => $token,
-                'Content-Type'  => 'application/json',
-            ])->post(config('services.yappy.base_url') . '/payments/payment-wc', [
+            $config = [
                 'merchantId'  => config('services.yappy.merchant_id'),
                 'orderId'     => $this->invoice->id,
                 'domain'      =>  parse_url('meditecpty.com', PHP_URL_HOST),
@@ -49,7 +45,15 @@ class PayInvoiceYappy extends Component
                 'discount'    => "0.00",
                 'total'       => number_format($this->invoice->total, 2, '.', ''),
                 'ipnUrl'      => route('suscriptions.payments.yappy_ipn'),
-            ]);
+            ];
+
+            \Log::info('Config Yappy',$config);
+
+            // 2️⃣ Crear orden
+            $order = Http::withHeaders([
+                'Authorization' => $token,
+                'Content-Type'  => 'application/json',
+            ])->post(config('services.yappy.base_url') . '/payments/payment-wc',$config);
 
             if (!$order->successful()) {
 
