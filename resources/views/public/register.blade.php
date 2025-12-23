@@ -324,7 +324,7 @@
 
             <form method="POST" action="{{ route('public.register.store') }}" enctype="multipart/form-data" id="registrationForm">
                 @csrf
-                    <input name="force_login" value="true">
+                    <input name="force_login" value="true" type="hidden">
                     <div class="form-row">
                         <div class="form-field">
                             <label>Paquete <span class="required">*</span></label>
