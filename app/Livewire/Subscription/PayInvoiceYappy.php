@@ -45,6 +45,9 @@ class PayInvoiceYappy extends Component
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
+                // CAMPOS ADICIONALES REQUERIDOS
+                'reference'   => $this->invoice->id,
+                'description' => "Pago factura #{$this->invoice->id}",
             ];
 
             \Log::info('Config Yappy',$config);
