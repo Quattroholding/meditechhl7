@@ -489,13 +489,14 @@
                         @enderror
                     </div>
                 </div>
-
+                {{--}}
                 @if(config('app.env') === 'production')
                     <div class="form-group">
                         <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.public_key') }}"></div>
                         <x-input-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
                     </div>
                 @endif
+                {{--}}
                 <button type="submit" class="submit-button">
                     <i class="fas fa-user-plus"></i> Registrarse
                 </button>

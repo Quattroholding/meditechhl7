@@ -39,7 +39,7 @@ class PublicRegistrationController extends Controller
         ReferralService $referralService
     ) {
         try {
-
+            /*
             // Validar Turnstile solo en producción (excepto cuando viene de force_login)
             if (config('app.env') === 'production' && ! $request->has('force_login')) {
                 $turnstileResponse = $request->input('cf-turnstile-response');
@@ -50,6 +50,7 @@ class PublicRegistrationController extends Controller
                     ])->withInput($request->all());
                 }
             }
+            */
 
             return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService) {
 
