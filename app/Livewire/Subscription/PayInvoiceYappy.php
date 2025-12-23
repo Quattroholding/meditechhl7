@@ -38,7 +38,7 @@ class PayInvoiceYappy extends Component
             $config = [
                 'merchantId'  => config('services.yappy.merchant_id'),
                 'orderId'     => $this->invoice->id,
-                'domain'      =>  parse_url('meditecpty.com', PHP_URL_HOST),
+                'domain'      =>  env('APP_URL'),
                 'paymentDate' => now()->timestamp,
                 'subtotal'    => number_format($this->invoice->subtotal, 2, '.', ''),
                 'taxes'       => number_format($this->invoice->taxes ?? 0, 2, '.', ''),
