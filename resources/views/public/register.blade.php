@@ -303,7 +303,7 @@
     <div class="register-container">
         <div class="register-card">
             <div class="register-header">
-                <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Soluciones Meditec">
+                <img src="{{ asset('images/logo1.png') }}" alt="Soluciones Meditec">
                 <h1>Registro de Cliente</h1>
                 @if($selectedPackage)
                     <p>Plan seleccionado: <strong>{{ $selectedPackage->name }}</strong> - ${{ number_format($selectedPackage->base_price, 2) }}/mes</p>
@@ -514,35 +514,10 @@
 
         // Mostrar/ocultar campos de practitioner según paquete
         const packageSelect = document.getElementById('package_id');
-        const practitionerFields = document.getElementById('practitioner-fields');
-
-        function togglePractitionerFields() {
-            const selectedOption = packageSelect.options[packageSelect.selectedIndex];
-            const maxUsers = selectedOption.getAttribute('data-max-users');
-
-            if (maxUsers === '1') {
-                practitionerFields.style.display = 'block';
-                // Hacer campos requeridos
-                practitionerFields.querySelectorAll('select, input').forEach(field => {
-                    if (field.name !== 'identifier' && field.name !== 'identifier_type' && field.name !== 'gender') {
-                        return;
-                    }
-                    field.required = true;
-                });
-            } else {
-                practitionerFields.style.display = 'none';
-                // Remover required
-                practitionerFields.querySelectorAll('select, input').forEach(field => {
-                    field.required = false;
-                });
-            }
-        }
-
-        packageSelect.addEventListener('change', togglePractitionerFields);
 
         // Ejecutar al cargar si hay paquete seleccionado
         if (packageSelect.value) {
-            togglePractitionerFields();
+            //togglePractitionerFields();
         }
 
         // Mostrar/ocultar información de SAMI según paquete
@@ -578,9 +553,7 @@
         // Actualizar nombre de archivo seleccionado
         const logoInput = document.getElementById('logo');
         const logoLabel = document.querySelector('.file-input-label');
-        const tipo_cliente = document.getElementById('tipo_cliente');
-        const type_client_name = document.getElementById('type_client_name');
-        const type_client_name_label = document.getElementById('type_client_name_label');
+
 
         logoInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
@@ -588,17 +561,6 @@
             }
         });
 
-        tipo_cliente.addEventListener('change', function () {
-            console.log(this.value);
-
-            type_client_name.style.display = 'none';
-
-            if(this.value == 'Centro de Atencion Primario' || this.value == 'Clinica' || this.value == 'Hospital' || this.value == 'Otro'){
-                type_client_name.style.display = 'block';
-                type_client_name_label.innerHTML = 'Nombre del(a) '+this.value;
-            }
-
-        });
 
         // Validar formulario antes de enviar
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
