@@ -298,6 +298,10 @@
             }
         }
     </style>
+    @if(config('app.env') === 'production')
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    @endif
+
 </head>
 <body>
     <div class="register-container">
@@ -462,7 +466,7 @@
                         <div class="form-field">
                             <label>Logo (Opcional)</label>
                             <div class="file-input-wrapper">
-                                <input type="file" name="logo" id="logo" accept="image/*">
+                                <input type="file" name="logo" id="logo" accept="image">
                                 <label for="logo" class="file-input-label">
                                     <i class="fas fa-cloud-upload-alt"></i> Seleccionar imagen
                                 </label>
