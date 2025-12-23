@@ -221,4 +221,9 @@ class ClientController extends Controller
 
         return redirect(route('client.index'));
     }
+
+    public function getReferralCode()
+    {
+        return view('clients.referral-code');
+    }
 }

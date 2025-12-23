@@ -20,8 +20,8 @@ class ReferralService
     {
         $code = new ReferralCode;
         $code->client_id = $client->id;
-        $code->discount_type = $config['discount_type'] ?? config('subscriptions.default_referred_benefit.type', 'percentage_discount');
-        $code->discount_value = $config['discount_value'] ?? config('subscriptions.default_referred_benefit.value', 10);
+        $code->discount_type = $config['discount_type'] ?? config('subscriptions.default_referred_benefit.type', 'fixed_amount');
+        $code->discount_value = $config['discount_value'] ?? config('subscriptions.default_referred_benefit.value', 0);
         $code->max_uses = $config['max_uses'] ?? null;
         $code->valid_from = $config['valid_from'] ?? null;
         $code->valid_until = $config['valid_until'] ?? null;
@@ -68,8 +68,8 @@ class ReferralService
             $referral->status = ReferralStatus::PENDING;
 
             $rewardConfig = config('subscriptions.default_referrer_reward', []);
-            $referral->referrer_reward_type = $rewardConfig['type'] ?? 'percentage_discount';
-            $referral->referrer_reward_value = $rewardConfig['value'] ?? 10;
+            $referral->referrer_reward_type = $rewardConfig['type'] ?? 'credit';
+            $referral->referrer_reward_value = $rewardConfig['value'] ?? 5;
 
             $referral->save();
 

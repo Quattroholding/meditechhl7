@@ -115,6 +115,11 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Referral Code Section -->
+            <div class="col-sm-12 mt-4">
+                <x-referral-code-display :client="$data" />
+            </div>
         </div>
     </div>
 </x-app-layout>

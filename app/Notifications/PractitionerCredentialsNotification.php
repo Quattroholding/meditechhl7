@@ -15,10 +15,13 @@ class PractitionerCredentialsNotification extends Notification
 
     protected $temporaryPassword;
 
-    public function __construct(User $user, string $temporaryPassword)
+    protected $first_time_login;
+
+    public function __construct(User $user, string $temporaryPassword, $first_time_login = true)
     {
         $this->user = $user;
         $this->temporaryPassword = $temporaryPassword;
+        $this->first_time_login = $first_time_login;
     }
 
     public function via($notifiable)
@@ -39,6 +42,7 @@ class PractitionerCredentialsNotification extends Notification
                 'user' => $this->user,
                 'temporaryPassword' => $this->temporaryPassword,
                 'userPrefix' => $userPrefix,
+                'first_time_login' => $this->first_time_login,
             ]);
     }
 

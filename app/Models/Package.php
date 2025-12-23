@@ -88,11 +88,13 @@ class Package extends BaseModel
             'Gestion de cobros de servicios',
         ];
 
-        if($this->agent_available)
-            array_push($array, 'Agente automatizado de citas SAMI a traves de nuestro whatsapp. ');
+        if ($this->agent_available) {
+            array_push($array, 'Agente automatizado de citas SAMI. ');
+        }
 
-        if($this->id==4)
+        if ($this->id == 4) {
             array_push($array, 'Agente automatizado de citas a traves de whatsapp personalizado.');
+        }
 
         return $array;
     }

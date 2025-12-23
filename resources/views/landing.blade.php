@@ -38,6 +38,7 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#pricing-section">PRECIOS</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
@@ -53,6 +54,7 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#pricing-section">PRECIOS</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
@@ -196,6 +198,98 @@
         </div>
     </section>
 
+     <!-- Pricing Section -->
+     <section class="pricing-section" id="pricing-section">
+         <div class="container">
+             <div class="section-header text-center">
+                 <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Paquetes" class="logo-color">
+                 <h2>Nuestros Planes de Suscripción</h2><br/>
+
+             </div>
+             <p class="section-description">
+                 Elige el plan perfecto para tus necesidades.
+                 Todos incluyen soporte técnico y actualizaciones constantes.
+             </p>
+
+             <div class="sami-info-box">
+                 <div class="sami-icon">
+                     <i class="fas fa-robot"></i>
+                 </div>
+                 <div class="sami-text">
+                     <h4><i class="fas fa-star"></i> ¿Por qué recomendamos el Plan Estándar?</h4>
+                     <p>
+                         <strong>Incluye acceso a SAMI</strong>, nuestro agente de WhatsApp impulsado por IA que no solo facilita
+                         la creación de citas, sino que además <strong>te conecta con nuevos pacientes</strong> al incluir tu
+                         consultorio en nuestro <strong>Directorio Médico Inteligente</strong>.
+                     </p>
+                     <p class="sami-benefits">
+                         <span><i class="fas fa-check-circle"></i> Agenda citas 24/7 automáticamente</span>
+                         <span><i class="fas fa-check-circle"></i> Aparece en búsquedas de pacientes</span>
+                         <span><i class="fas fa-check-circle"></i> Consigue nuevos pacientes constantemente</span>
+                     </p>
+                 </div>
+             </div>
+
+             <div class="pricing-grid">
+                 @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
+                     <div class="pricing-card {{ $loop->last ? 'pricing-card-enterprise' : '' }} {{ $package->id == 2 ? 'pricing-card-recommended' : '' }}">
+                         {{--}}
+                         @if($package->id == 2)
+                             <div class="recommended-badge">
+                                 <i class="fas fa-star"></i> RECOMENDADO
+                             </div>
+                         @endif
+                         {{--}}
+                         @if($package->agent_available)
+                             <div class="sami-badge">
+                                 <i class="fas fa-robot"></i> INCLUYE SAMI
+                             </div>
+                         @endif
+                         <div class="pricing-header">
+                             <h3>{{ $package->name }}</h3>
+                             @if($package->base_price > 0 and $package->id <>4)
+                                 <div class="pricing-price">
+                                     <span class="currency">$</span>
+                                     <span class="amount">@isset($package->base_price){{ number_format($package->base_price, 0) }} @else XXX @endif</span>
+                                     <span class="period">/mes</span>
+                                 </div>
+                             @else
+                                 <div class="pricing-price">
+                                     <span class="amount">Contactar</span>
+                                 </div>
+                             @endif
+                             @if($package->id <>4)
+                                 <p class="pricing-subtitle">
+                                     {{ $package->max_doctors_included }} {{ $package->max_doctors_included == 1 ? 'Usuario' : 'Usuarios' }}
+                                 </p>
+                             @endif
+                         </div>
+
+                         <div class="pricing-features">
+                             <ul>
+                                 @foreach($package->features() ?? [] as $feature)
+                                     <li><i class="fas fa-check"></i> {{ $feature }}</li>
+                                 @endforeach
+                             </ul>
+                         </div>
+
+                         <div class="pricing-action">
+                             @if($loop->last)
+                                 <button class="pricing-button pricing-button-enterprise" onclick="openEnterpriseModal()">
+                                     Contactar Ventas
+                                 </button>
+                             @else
+                                 <a href="{{ route('public.register', ['package' => $package->id]) }}" class="pricing-button">
+                                     Suscribirse Ahora
+                                 </a>
+                             @endif
+                         </div>
+                     </div>
+                 @endforeach
+             </div>
+         </div>
+     </section>
+
     <!-- Medical Prescription App Section -->
     <section class="prescription-app-section" id="prescription-app-section">
         <div class="container">
@@ -288,66 +382,6 @@
                 <div class="benefit-item">
                     <span class="benefit-text">Conéctate desde cualquier lugar y dispositivo</span>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="pricing-section" id="pricing-section">
-        <div class="container">
-            <div class="section-header text-center">
-                <img src="{{ asset('landing/images/Icono-9.png') }}" alt="Paquetes" class="logo-color">
-                <h2>Nuestros Planes de Suscripción</h2><br/>
-
-            </div>
-            <p class="section-description">
-                Elige el plan perfecto para tus necesidades.
-                Todos incluyen soporte técnico y actualizaciones constantes.
-            </p>
-            <div class="pricing-grid">
-                @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
-                <div class="pricing-card {{ $loop->last ? 'pricing-card-enterprise' : '' }}">
-                    <div class="pricing-header">
-                        <h3>{{ $package->name }}</h3>
-                        @if($package->base_price > 0 and $package->id <>4)
-                            <div class="pricing-price">
-                                <span class="currency">$</span>
-                                <span class="amount">@isset($package->base_price){{ number_format($package->base_price, 0) }} @else XXX @endif</span>
-                                <span class="period">/mes</span>
-                            </div>
-                        @else
-                            <div class="pricing-price">
-                                <span class="amount">Contactar</span>
-                            </div>
-                        @endif
-                        @if($package->id <>4)
-                        <p class="pricing-subtitle">
-                            {{ $package->max_doctors_included }} {{ $package->max_doctors_included == 1 ? 'Usuario' : 'Usuarios' }}
-                        </p>
-                        @endif
-                    </div>
-
-                    <div class="pricing-features">
-                        <ul>
-                            @foreach($package->features() ?? [] as $feature)
-                            <li><i class="fas fa-check"></i> {{ $feature }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-
-                    <div class="pricing-action">
-                        @if($loop->last)
-                            <button class="pricing-button pricing-button-enterprise" onclick="openEnterpriseModal()">
-                                Contactar Ventas
-                            </button>
-                        @else
-                            <a href="{{ route('public.register', ['package' => $package->id]) }}" class="pricing-button">
-                                Suscribirse Ahora
-                            </a>
-                        @endif
-                    </div>
-                </div>
-                @endforeach
             </div>
         </div>
     </section>

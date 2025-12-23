@@ -19,8 +19,11 @@
                         <livewire:doctor.profile-details practitioner_id="{{$data->id}}"/>
                     </div>
                     <div class="row mt-4">
-                        <div class="col-12">
+                        <div class="col-7">
                             <livewire:doctor.signature-manager practitioner_id="{{$data->id}}"/>
+                        </div>
+                        <div class="col-5">
+                            <x-referral-code-display :client="$data->user->getCurrentClient()" />
                         </div>
                     </div>
                 </div>
