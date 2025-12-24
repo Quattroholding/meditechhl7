@@ -30,7 +30,7 @@ class MedicalLeaveMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Licencia Médica - '.$this->medicalLeave->identifier,
+            subject: 'Incapacidad Médica - '.$this->medicalLeave->identifier,
         );
     }
 

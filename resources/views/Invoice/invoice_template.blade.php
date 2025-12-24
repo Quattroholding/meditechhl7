@@ -247,7 +247,7 @@
             </div>
             @if($practitioner->registry ?? false)
                 <div class="info-row">
-                    <span class="label">Licencia Médica:</span>
+                    <span class="label">Incapacidad Médica:</span>
                     {{ $practitioner->registry }}
                 </div>
             @endif

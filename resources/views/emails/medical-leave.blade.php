@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Licencia Médica</title>
+    <title>Incapacidad Médica</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,14 +58,14 @@
 </head>
 <body>
     <div class="header">
-        <h1 style="margin: 0;">Licencia Médica</h1>
+        <h1 style="margin: 0;">Incapacidad Médica</h1>
         <p style="margin: 5px 0 0 0;">{{ $medicalLeave->clinic_name }}</p>
     </div>
 
     <div class="content">
         <p>Estimado/a <strong>{{ $patientName }}</strong>,</p>
 
-        <p>Se ha generado su licencia médica por incapacidad. Adjunto a este correo encontrará el documento oficial en formato PDF.</p>
+        <p>Se ha generado su incapacidad médica. Adjunto a este correo encontrará el documento oficial en formato PDF.</p>
 
         <div class="info-box">
             <p class="info-label">Número de Registro:</p>

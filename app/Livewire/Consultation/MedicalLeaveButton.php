@@ -76,7 +76,7 @@ class MedicalLeaveButton extends Component
         if (! $this->hasDiagnoses) {
             $this->dispatch('showToastrConsultation', [
                 'type' => 'warning',
-                'message' => 'Debe agregar al menos un diagnóstico antes de crear una licencia médica',
+                'message' => 'Debe agregar al menos un diagnóstico antes de crear una incapacidad médica',
             ]);
 
             return;
@@ -171,12 +171,12 @@ class MedicalLeaveButton extends Component
 
                 $this->dispatch('showToastrConsultation',
                     type: 'success',
-                    message: "Licencia médica #{$medicalLeave->identifier} creada exitosamente. Se enviará por email a {$email}"
+                    message: "Incapacidad médica #{$medicalLeave->identifier} creada exitosamente. Se enviará por email a {$email}"
                 );
             } else {
                 $this->dispatch('showToastrConsultation',
                     type: 'success',
-                    message: "Licencia médica #{$medicalLeave->identifier} creada exitosamente. El paciente no tiene email registrado."
+                    message: "Incapacidad médica #{$medicalLeave->identifier} creada exitosamente. El paciente no tiene email registrado."
                 );
             }
 
@@ -195,7 +195,7 @@ class MedicalLeaveButton extends Component
 
             $this->dispatch('showToastrConsultation',
                 type: 'error',
-                message: 'Error al crear la licencia médica: '.$e->getMessage()
+                message: 'Error al crear la incapacidad médica: '.$e->getMessage()
             );
 
         }
