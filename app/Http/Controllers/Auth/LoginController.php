@@ -94,6 +94,10 @@ class LoginController extends Controller
                 $route = route('assistence.dashboard');
             }
 
+            if ($user->hasRole('contabilidad')) {
+                $route = route('accounting.dashboard');
+            }
+
             return redirect()->intended($route.'?show_salute=true');
         }
 

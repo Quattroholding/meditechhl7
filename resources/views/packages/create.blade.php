@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body">1
                             <div class="col-12">
                                 <div class="form-heading">
                                     <h4>Crear Paquete</h4>
@@ -23,7 +23,7 @@
                             <form method="POST" action="{{ route('package.store') }}" id="form">
                              @csrf
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-6">
+                                <div class="col-12 col-md-6 col-xl-4">
                                     <!-- NAME -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="name" :value="__('Nombre')" required/>
@@ -31,15 +31,74 @@
                                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-6">
-                                    <!-- MAX USERS -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- SLUG -->
                                     <div class="input-block local-forms">
-                                        <x-input-label for="max_users" :value="__('Máximo de Usuarios')" required/>
-                                        <x-text-input id="max_users" class="block mt-1 w-full" type="number" name="max_users" :value="old('max_users')" min="1"/>
-                                        <x-input-error :messages="$errors->get('max_users')" class="mt-2" />
+                                        <x-input-label for="slug" :value="__('Slug')" />
+                                        <x-text-input id="slug" class="block mt-1 w-full" type="text" name="slug" :value="old('slug')" placeholder="Se genera automáticamente"/>
+                                        <x-input-error :messages="$errors->get('slug')" class="mt-2" />
+                                        <small class="text-muted">Deja vacío para generar automáticamente</small>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- MAX DOCTORS INCLUDED -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="max_doctors_included" :value="__('Doctores Incluidos')" required/>
+                                        <x-text-input id="max_doctors_included" class="block mt-1 w-full" type="number" name="max_doctors_included" :value="old('max_doctors_included', 1)" min="1"/>
+                                        <x-input-error :messages="$errors->get('max_doctors_included')" class="mt-2" />
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Pricing Section -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="mt-3 mb-3">Información de Precios</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- BASE PRICE -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="base_price" :value="__('Precio Base')" required/>
+                                        <x-text-input id="base_price" class="block mt-1 w-full" type="number" name="base_price" :value="old('base_price', 0)" min="0" step="0.01"/>
+                                        <x-input-error :messages="$errors->get('base_price')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- PRICE PER EXTRA DOCTOR -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="price_per_extra_doctor" :value="__('Precio por Doctor Adicional')" />
+                                        <x-text-input id="price_per_extra_doctor" class="block mt-1 w-full" type="number" name="price_per_extra_doctor" :value="old('price_per_extra_doctor', 0)" min="0" step="0.01"/>
+                                        <x-input-error :messages="$errors->get('price_per_extra_doctor')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <!-- BILLING PERIOD -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="billing_period" :value="__('Período de Facturación')" required/>
+                                        <select id="billing_period" name="billing_period" class="form-control">
+                                            <option value="monthly" {{ old('billing_period', 'monthly') == 'monthly' ? 'selected' : '' }}>Mensual</option>
+                                            <option value="quarterly" {{ old('billing_period') == 'quarterly' ? 'selected' : '' }}>Trimestral</option>
+                                            <option value="yearly" {{ old('billing_period') == 'yearly' ? 'selected' : '' }}>Anual</option>
+                                        </select>
+                                        <x-input-error :messages="$errors->get('billing_period')" class="mt-2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <!-- BILLING PERIOD DAYS -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="billing_period_days" :value="__('Días del Período')" />
+                                        <x-text-input id="billing_period_days" class="block mt-1 w-full" type="number" name="billing_period_days" :value="old('billing_period_days', 30)" min="1"/>
+                                        <x-input-error :messages="$errors->get('billing_period_days')" class="mt-2" />
+                                        <small class="text-muted">Se ajusta automáticamente según el período seleccionado</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description Section -->
                             <div class="row">
                                 <div class="col-12">
                                     <!-- DESCRIPTION -->
@@ -50,23 +109,60 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Features Section -->
                             <div class="row">
                                 <div class="col-12">
+                                    <h5 class="mt-3 mb-3">Características</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- FEATURES -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="features" :value="__('Características (una por línea)')" />
+                                        <textarea id="features" class="form-control" name="features" rows="6" placeholder="Administración y Agendamiento de citas&#10;Gestión de Pacientes&#10;Historial Clínico Digital">{{ old('features') }}</textarea>
+                                        <x-input-error :messages="$errors->get('features')" class="mt-2" />
+                                        <small class="text-muted">Escribe cada característica en una línea separada</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Settings Section -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="mt-3 mb-3">Configuración</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
                                     <!-- IS ACTIVE -->
                                     <div class="input-block local-forms">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active') ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="is_active">
-                                                Activo
+                                                Paquete Activo
                                             </label>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <!-- AGENT AVAILABLE -->
+                                    <div class="input-block local-forms">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="agent_available" name="agent_available" value="1" {{ old('agent_available') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="agent_available">
+                                                Agente SAMI Disponible
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Incluye el agente automatizado de citas</small>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
                                     <button type="submit" class="btn btn-primary submit-form me-2">Crear</button>
-                                    <a class="btn btn-primary cancel-form" href="{{ route('package.index') }}">Cancelar</a>
+                                    <a class="btn btn-secondary cancel-form" href="{{ route('package.index') }}">Cancelar</a>
                                 </div>
                             </div>
                             </form>
@@ -76,4 +172,46 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const billingPeriodSelect = document.getElementById('billing_period');
+            const billingPeriodDaysInput = document.getElementById('billing_period_days');
+            const nameInput = document.getElementById('name');
+            const slugInput = document.getElementById('slug');
+
+            // Update billing period days based on selected period
+            if (billingPeriodSelect && billingPeriodDaysInput) {
+                billingPeriodSelect.addEventListener('change', function() {
+                    const periodDays = {
+                        'monthly': 30,
+                        'quarterly': 90,
+                        'yearly': 365
+                    };
+                    billingPeriodDaysInput.value = periodDays[this.value] || 30;
+                });
+            }
+
+            // Auto-generate slug from name
+            if (nameInput && slugInput) {
+                nameInput.addEventListener('input', function() {
+                    if (!slugInput.dataset.manuallyEdited) {
+                        const slug = this.value
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/^-+|-+$/g, '');
+                        slugInput.value = slug;
+                    }
+                });
+
+                slugInput.addEventListener('input', function() {
+                    if (this.value !== '') {
+                        this.dataset.manuallyEdited = 'true';
+                    }
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

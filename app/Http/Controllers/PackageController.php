@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BillingPeriod;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PackageController extends Controller
 {
@@ -23,14 +25,43 @@ class PackageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:packages,slug',
             'description' => 'required|string',
-            'max_users' => 'required|integer|min:1',
+            'base_price' => 'required|numeric|min:0',
+            'max_doctors_included' => 'required|integer|min:1',
+            'price_per_extra_doctor' => 'nullable|numeric|min:0',
+            'billing_period' => 'required|in:monthly,quarterly,yearly',
+            'billing_period_days' => 'nullable|integer|min:1',
+            'features' => 'nullable|string',
             'is_active' => 'boolean',
+            'agent_available' => 'boolean',
         ]);
+
+        // Generate slug if not provided
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        // Set billing period days based on billing period if not provided
+        if (empty($validated['billing_period_days'])) {
+            $validated['billing_period_days'] = BillingPeriod::from($validated['billing_period'])->days();
+        }
+
+        // Convert features from textarea (line by line) to array
+        if (!empty($validated['features'])) {
+            $featuresArray = array_filter(
+                array_map('trim', explode("\n", $validated['features'])),
+                fn($feature) => !empty($feature)
+            );
+            $validated['features'] = $featuresArray;
+        } else {
+            $validated['features'] = [];
+        }
 
         $model = new Package;
         $model->fill($validated);
         $model->is_active = $request->has('is_active') ? 1 : 0;
+        $model->agent_available = $request->has('agent_available') ? 1 : 0;
 
         if ($model->save()) {
             $request->session()->flash('message.success', 'Paquete creado con éxito.');
@@ -51,16 +82,46 @@ class PackageController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $model = Package::findOrFail($id);
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:packages,slug,'.$id,
                 'description' => 'required|string',
-                'max_users' => 'required|integer|min:1',
+                'base_price' => 'required|numeric|min:0',
+                'max_doctors_included' => 'required|integer|min:1',
+                'price_per_extra_doctor' => 'nullable|numeric|min:0',
+                'billing_period' => 'required|in:monthly,quarterly,yearly',
+                'billing_period_days' => 'nullable|integer|min:1',
+                'features' => 'nullable|string',
                 'is_active' => 'boolean',
+                'agent_available' => 'boolean',
             ]);
 
-            $model = Package::find($id);
+            // Generate slug if not provided
+            if (empty($validated['slug'])) {
+                $validated['slug'] = Str::slug($validated['name']);
+            }
+
+            // Set billing period days based on billing period if not provided
+            if (empty($validated['billing_period_days'])) {
+                $validated['billing_period_days'] = BillingPeriod::from($validated['billing_period'])->days();
+            }
+
+            // Convert features from textarea (line by line) to array
+            if (!empty($validated['features'])) {
+                $featuresArray = array_filter(
+                    array_map('trim', explode("\n", $validated['features'])),
+                    fn($feature) => !empty($feature)
+                );
+                $validated['features'] = $featuresArray;
+            } else {
+                $validated['features'] = [];
+            }
+
             $model->fill($validated);
             $model->is_active = $request->has('is_active') ? 1 : 0;
+            $model->agent_available = $request->has('agent_available') ? 1 : 0;
 
             if ($model->save()) {
                 $request->session()->flash('message.success', 'Paquete actualizado con éxito.');
