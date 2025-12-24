@@ -29,6 +29,7 @@ class PackageController extends Controller
             'description' => 'required|string',
             'base_price' => 'required|numeric|min:0',
             'max_doctors_included' => 'required|integer|min:1',
+            'max_users' => 'required|integer|min:1',
             'price_per_extra_doctor' => 'nullable|numeric|min:0',
             'billing_period' => 'required|in:monthly,quarterly,yearly',
             'billing_period_days' => 'nullable|integer|min:1',
@@ -62,7 +63,6 @@ class PackageController extends Controller
         $model->fill($validated);
         $model->is_active = $request->has('is_active') ? 1 : 0;
         $model->agent_available = $request->has('agent_available') ? 1 : 0;
-        $model->max_users = $request->has('max_users') ? 1 : 0;
 
         if ($model->save()) {
             $request->session()->flash('message.success', 'Paquete creado con éxito.');
@@ -91,6 +91,7 @@ class PackageController extends Controller
                 'description' => 'required|string',
                 'base_price' => 'required|numeric|min:0',
                 'max_doctors_included' => 'required|integer|min:1',
+                'max_users' => 'required|integer|min:1',
                 'price_per_extra_doctor' => 'nullable|numeric|min:0',
                 'billing_period' => 'required|in:monthly,quarterly,yearly',
                 'billing_period_days' => 'nullable|integer|min:1',
