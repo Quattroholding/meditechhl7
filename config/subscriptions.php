@@ -129,4 +129,15 @@ return [
             'api_key' => env('YAPPY_API_KEY'),
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accounting Email
+    |--------------------------------------------------------------------------
+    |
+    | Email address to send copies of all invoice notifications
+    | Leave empty to disable accounting copy emails
+    |
+    */
+    'accounting_email' => env('ACCOUNTING_EMAIL', null),
 ];

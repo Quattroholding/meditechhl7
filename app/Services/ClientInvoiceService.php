@@ -10,6 +10,7 @@ use App\Models\ClientInvoice;
 use App\Models\ClientInvoiceItem;
 use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
+use App\Notifications\InvoiceGeneratedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -47,6 +48,23 @@ class ClientInvoiceService
                 'total' => $invoice->total,
             ]);
 
+            // Send notification to admin client or doctor
+            $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
+            if ($notifiableUser) {
+                $notifiableUser->notify(new InvoiceGeneratedNotification($invoice));
+
+                Log::info('Invoice notification sent', [
+                    'invoice_id' => $invoice->id,
+                    'user_id' => $notifiableUser->id,
+                    'user_email' => $notifiableUser->email,
+                ]);
+            } else {
+                Log::warning('No notifiable user found for invoice', [
+                    'invoice_id' => $invoice->id,
+                    'client_id' => $invoice->client_id,
+                ]);
+            }
+
             return $invoice->fresh();
         });
     }
@@ -68,6 +86,18 @@ class ClientInvoiceService
             $this->calculateItems($invoice, $subscription);
 
             $this->applyAvailableDiscounts($invoice);
+
+            // Send notification to admin client or doctor
+            $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
+            if ($notifiableUser) {
+                $notifiableUser->notify(new InvoiceGeneratedNotification($invoice));
+
+                Log::info('Invoice notification sent', [
+                    'invoice_id' => $invoice->id,
+                    'user_id' => $notifiableUser->id,
+                    'user_email' => $notifiableUser->email,
+                ]);
+            }
 
             return $invoice->fresh();
         });
