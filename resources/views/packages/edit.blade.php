@@ -23,7 +23,7 @@
                             <form method="POST" action="{{ route('package.update', $data->id) }}">
                             @csrf
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- NAME -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="name" :value="__('Nombre')" required/>
@@ -31,7 +31,7 @@
                                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- SLUG -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="slug" :value="__('Slug')" />
@@ -40,7 +40,18 @@
                                         <small class="text-muted">Deja vacío para generar automáticamente</small>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <!-- MAX DOCTORS INCLUDED -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="max_users" :value="__('Usuarios Incluidos')" required/>
+                                        <x-text-input id="max_users" class="block mt-1 w-full" type="number" name="max_users" :value="old('max_users',$data->max_users)" min="1"/>
+                                        <x-input-error :messages="$errors->get('max_users')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- MAX DOCTORS INCLUDED -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="max_doctors_included" :value="__('Doctores Incluidos')" required/>
@@ -49,7 +60,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- Pricing Section -->
                             <div class="row">
                                 <div class="col-12">
@@ -57,7 +67,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- BASE PRICE -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="base_price" :value="__('Precio Base')" required/>
@@ -65,7 +75,7 @@
                                         <x-input-error :messages="$errors->get('base_price')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- PRICE PER EXTRA DOCTOR -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="price_per_extra_doctor" :value="__('Precio por Doctor Adicional')" />
@@ -73,7 +83,10 @@
                                         <x-input-error :messages="$errors->get('price_per_extra_doctor')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- BILLING PERIOD -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="billing_period" :value="__('Período de Facturación')" required/>
@@ -85,8 +98,6 @@
                                         <x-input-error :messages="$errors->get('billing_period')" class="mt-2" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-12 col-md-6">
                                     <!-- BILLING PERIOD DAYS -->
                                     <div class="input-block local-forms">
