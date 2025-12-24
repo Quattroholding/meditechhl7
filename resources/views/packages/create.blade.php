@@ -23,7 +23,7 @@
                             <form method="POST" action="{{ route('package.store') }}" id="form">
                              @csrf
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- NAME -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="name" :value="__('Nombre')" required/>
@@ -31,7 +31,7 @@
                                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- SLUG -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="slug" :value="__('Slug')" />
@@ -40,7 +40,18 @@
                                         <small class="text-muted">Deja vacío para generar automáticamente</small>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <!-- MAX DOCTORS INCLUDED -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="max_users" :value="__('Usuarios Incluidos')" required/>
+                                        <x-text-input id="max_users" class="block mt-1 w-full" type="number" name="max_users" :value="old('max_users', 1)" min="1"/>
+                                        <x-input-error :messages="$errors->get('max_users')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- MAX DOCTORS INCLUDED -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="max_doctors_included" :value="__('Doctores Incluidos')" required/>
@@ -57,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- BASE PRICE -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="base_price" :value="__('Precio Base')" required/>
@@ -65,7 +76,7 @@
                                         <x-input-error :messages="$errors->get('base_price')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- PRICE PER EXTRA DOCTOR -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="price_per_extra_doctor" :value="__('Precio por Doctor Adicional')" />
@@ -73,7 +84,10 @@
                                         <x-input-error :messages="$errors->get('price_per_extra_doctor')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-xl-4">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
                                     <!-- BILLING PERIOD -->
                                     <div class="input-block local-forms">
                                         <x-input-label for="billing_period" :value="__('Período de Facturación')" required/>
@@ -85,8 +99,6 @@
                                         <x-input-error :messages="$errors->get('billing_period')" class="mt-2" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-12 col-md-6">
                                     <!-- BILLING PERIOD DAYS -->
                                     <div class="input-block local-forms">
@@ -135,30 +147,35 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <!-- IS ACTIVE -->
-                                    <div class="input-block local-forms">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_active">
-                                                Paquete Activo
-                                            </label>
+                                    <div class="col-12 col-md-6">
+                                        <!-- IS ACTIVE -->
+                                        <div class="input-block local-forms">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active') ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_active" style="margin-top:10px;margin-left:10px;">
+                                                    Paquete Activo
+                                                </label>
+                                            </div><br/>
+                                            <div class="input-block local-forms">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="agent_available" name="agent_available" value="1" {{ old('agent_available') ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="agent_available" style="margin-top:10px;margin-left:10px;">
+                                                        Agente SAMI Disponible
+                                                    </label>
+                                                </div>
+                                                <small class="text-muted">Incluye el agente automatizado de citas</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <!-- AGENT AVAILABLE -->
-                                    <div class="input-block local-forms">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="agent_available" name="agent_available" value="1" {{ old('agent_available') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="agent_available">
-                                                Agente SAMI Disponible
-                                            </label>
+                                    <div class="col-12 col-md-6">
+                                        <!-- AGENT AVAILABLE -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="appointments_limit" :value="__('Límite de citas')" />
+                                            <x-text-input id="appointments_limit" class="block mt-1 w-full" type="number" name="appointments_limit" :value="old('appointments_limit')"/>
+                                            <x-input-error :messages="$errors->get('billing_period_days')" class="mt-2" />
+                                            <small class="text-muted">Vacio significa citas infinitas</small>
                                         </div>
-                                        <small class="text-muted">Incluye el agente automatizado de citas</small>
                                     </div>
-                                </div>
-                            </div>
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
                                     <button type="submit" class="btn btn-primary submit-form me-2">Crear</button>

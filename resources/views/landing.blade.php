@@ -261,14 +261,14 @@
                              @endif
                              @if($package->id <>4)
                                  <p class="pricing-subtitle">
-                                     {{ $package->max_doctors_included }} {{ $package->max_doctors_included == 1 ? 'Usuario' : 'Usuarios' }}
+                                     {{ $package->max_users }} {{ $package->max_users == 1 ? 'Usuario' : 'Usuarios' }}
                                  </p>
                              @endif
                          </div>
 
                          <div class="pricing-features">
                              <ul>
-                                 @foreach($package->features() ?? [] as $feature)
+                                 @foreach($package->features ?? [] as $feature)
                                      <li><i class="fas fa-check"></i> {{ $feature }}</li>
                                  @endforeach
                              </ul>

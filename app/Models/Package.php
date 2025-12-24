@@ -14,12 +14,14 @@ class Package extends BaseModel
         'description',
         'base_price',
         'max_doctors_included',
+        'max_users',
         'price_per_extra_doctor',
         'features',
         'is_active',
         'billing_period',
         'billing_period_days',
         'agent_available',
+        'appointments_limit',
     ];
 
     protected function casts(): array
@@ -32,6 +34,7 @@ class Package extends BaseModel
             'billing_period' => BillingPeriod::class,
             'max_doctors_included' => 'integer',
             'billing_period_days' => 'integer',
+            'features' => 'array',
         ];
     }
 
@@ -77,25 +80,5 @@ class Package extends BaseModel
         return $this->max_doctors_included + $extraDoctors;
     }
 
-    public function features(): array
-    {
-        $array = [
-            'Administracion y Agendamitos de citas',
-            'Gestion de Pacientes',
-            'Historial Clinico Digital',
-            'Creacion de licencias medicas',
-            'Dashboard con kpis relevantes',
-            'Gestion de cobros de servicios',
-        ];
 
-        if ($this->agent_available) {
-            array_push($array, 'Agente automatizado de citas SAMI. ');
-        }
-
-        if ($this->id == 4) {
-            array_push($array, 'Agente automatizado de citas a traves de whatsapp personalizado.');
-        }
-
-        return $array;
-    }
 }

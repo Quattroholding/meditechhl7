@@ -41,6 +41,10 @@ return new class extends Migration
                 $table->boolean('agent_available')->default(false)->after('billing_period_days');
             }
 
+            if (! Schema::hasColumn('packages', 'appointments_limit')) {
+                $table->integer('appointments_limit')->nullable()->after('agent_available');
+            }
+
         });
 
         $packages = DB::table('packages')->get();
@@ -66,6 +70,7 @@ return new class extends Migration
                 'billing_period_days',
                 'deleted_at',
                 'agent_available',
+                'appointments_limit',
             ]);
 
             if (Schema::hasColumn('packages', 'max_doctors_included')) {
