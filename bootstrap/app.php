@@ -88,5 +88,14 @@ return Application::configure(basePath: dirname(__DIR__))
             ->description('Limpiar suscripciones expiradas y códigos de referral vencidos')
             ->emailOutputOnFailure('business@meditecpty.com')
             ->appendOutputTo(storage_path('logs/subscription-cleanup.log'));
+
+        // === Tareas de Citas (Appointments) ===
+
+        // Marcar como noshow las citas sin completar después de 7 días
+        $schedule->command('appointments:mark-noshow')
+            ->dailyAt('04:00')
+            ->description('Marcar como noshow las citas propuestas, reservadas, pendientes o confirmadas que no se completaron después de 7 días')
+            ->emailOutputOnFailure('business@meditecpty.com')
+            ->appendOutputTo(storage_path('logs/appointments-noshow.log'));
     })
     ->create();
