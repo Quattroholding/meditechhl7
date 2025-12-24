@@ -1,4 +1,19 @@
 <div class="">
+    <!-- Flash Messages -->
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Éxito!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>¡Error!</strong> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="">
         <!-- Table Header -->
         @component('components.table-header',array('show_create'=>false))
@@ -148,6 +163,14 @@
                                         <i class="fas fa-download"></i>
                                     </a>
                                 @endcan
+                                @if(auth()->user()->hasRole(['admin', 'contabilidad']))
+                                    <button type="button"
+                                            wire:click="$dispatch('confirm-resend', { invoiceId: {{ $invoice->id }}, invoiceNumber: '{{ $invoice->invoice_number }}' })"
+                                            class="btn btn-warning btn-sm"
+                                            title="Reenviar notificación de factura">
+                                        <i class="fas fa-envelope"></i>
+                                    </button>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -177,4 +200,78 @@
     </div>
     <!-- Payment Modal -->
     @livewire('subscription.payment-modal')
+
+    <!-- Confirmation Modal for Resending Notification -->
+    <div class="modal fade" id="resendNotificationModal" tabindex="-1" aria-labelledby="resendNotificationModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-white" id="resendNotificationModalLabel">
+                        <i class="fas fa-envelope me-2"></i>Reenviar Notificación de Factura
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Confirmación requerida</strong>
+                    </div>
+                    <p class="mb-0">¿Está seguro que desea reenviar la notificación de la factura <strong id="modal-invoice-number"></strong>?</p>
+                    <p class="text-muted small mt-2">Se enviará un correo electrónico al cliente con los detalles de la factura.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="confirmResendBtn">
+                        <i class="fas fa-envelope me-1"></i>Reenviar Notificación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            let currentInvoiceId = null;
+
+            // Escuchar el evento de confirmación
+            Livewire.on('confirm-resend', (event) => {
+                // En Livewire 3, el evento puede venir directamente o como array
+                const data = Array.isArray(event) ? event[0] : event;
+
+                currentInvoiceId = data.invoiceId;
+                document.getElementById('modal-invoice-number').textContent = data.invoiceNumber;
+
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('resendNotificationModal'));
+                modal.show();
+            });
+
+            // Manejar el clic en el botón de confirmación
+            document.getElementById('confirmResendBtn').addEventListener('click', function() {
+                if (currentInvoiceId) {
+                    // Mostrar loading en el botón
+                    const btn = this;
+                    const originalContent = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enviando...';
+
+                    // Llamar al método de Livewire
+                    @this.call('resendNotification', currentInvoiceId).then(() => {
+                        // Cerrar el modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('resendNotificationModal'));
+                        modal.hide();
+
+                        // Restaurar el botón
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                        currentInvoiceId = null;
+                    });
+                }
+            });
+        });
+    </script>
+    @endpush
 </div>

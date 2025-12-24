@@ -420,7 +420,7 @@
             </form>
         </div>
     </div>
-
+    {{--}}
     <section class="cta-section">
         <div class="container">
             <div class="register-section">
@@ -430,6 +430,7 @@
             </div>
         </div>
     </section>
+    {{--}}
 
     <!-- Footer -->
     <footer class="footer">

@@ -3,6 +3,7 @@
 namespace App\Livewire\Subscription;
 
 use App\Models\ClientInvoice;
+use App\Notifications\InvoiceGeneratedNotification;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -67,6 +68,49 @@ class InvoiceDataTable extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
+    }
+
+    public function resendNotification($invoiceId)
+    {
+        try {
+            // Verificar que el usuario tenga permisos de administrador
+            if (! auth()->user()->hasRole(['admin', 'contabilidad'])) {
+                session()->flash('error', 'No tienes permisos para realizar esta acción.');
+
+                return;
+            }
+
+            $invoice = ClientInvoice::with(['client', 'subscription.package'])->findOrFail($invoiceId);
+
+            // Obtener el usuario a notificar
+            $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
+
+            if (! $notifiableUser) {
+                session()->flash('error', 'No se encontró un usuario válido para enviar la notificación.');
+
+                return;
+            }
+
+            // Enviar la notificación
+            $notifiableUser->notify(new InvoiceGeneratedNotification($invoice));
+
+            \Log::info('Notificación de factura reenviada manualmente', [
+                'invoice_id' => $invoice->id,
+                'invoice_number' => $invoice->invoice_number,
+                'user_id' => auth()->id(),
+                'notifiable_user_id' => $notifiableUser->id,
+            ]);
+
+            session()->flash('success', 'Notificación enviada exitosamente a '.$notifiableUser->email);
+        } catch (\Exception $e) {
+            \Log::error('Error al reenviar notificación de factura', [
+                'invoice_id' => $invoiceId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'Error al enviar la notificación: '.$e->getMessage());
+        }
     }
 
     public function render()

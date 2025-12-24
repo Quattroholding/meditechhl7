@@ -51,9 +51,11 @@ Route::get('/', function () {
     return view('landing', compact('practitioners', 'specialties'));
 })->name('welcome');
 
+/*
 Route::get('/register', function () {
     return view('Pages.register');
 })->name('patient.register');
+*/
 
 // Public Legal Pages
 Route::get('/privacy-policy', function () {

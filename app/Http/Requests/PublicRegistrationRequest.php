@@ -89,6 +89,9 @@ class PublicRegistrationRequest extends FormRequest
                     }
                 },
             ],
+
+            // Términos y Condiciones
+            'terms_and_privacy' => ['required', 'accepted'],
         ];
     }
 
@@ -131,6 +134,8 @@ class PublicRegistrationRequest extends FormRequest
             'identifier.required' => 'El número de documento es obligatorio.',
             'identifier.unique' => 'Este número de documento ya está registrado.',
             'gender.required' => 'El género es obligatorio.',
+            'terms_and_privacy.required' => 'Debe aceptar los términos de servicio y políticas de privacidad.',
+            'terms_and_privacy.accepted' => 'Debe aceptar los términos de servicio y políticas de privacidad.',
         ];
     }
 
@@ -154,6 +159,7 @@ class PublicRegistrationRequest extends FormRequest
             'identifier_type' => 'tipo de documento',
             'identifier' => 'número de documento',
             'gender' => 'género',
+            'terms_and_privacy' => 'términos de servicio y políticas de privacidad',
         ];
     }
 }

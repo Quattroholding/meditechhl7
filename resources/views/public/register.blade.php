@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Soluciones Meditec</title>
+    <title>Registro - SAMI</title>
     <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
+
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    @include('layout.partials.head')
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+
     <link rel="stylesheet" href="{{ url('landing/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css">
     <style>
         .register-container {
             min-height: 100vh;
@@ -301,13 +310,12 @@
     @if(config('app.env') === 'production')
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     @endif
-
 </head>
 <body>
-    <div class="register-container">
+    <div class="register-container" x-data>
         <div class="register-card">
             <div class="register-header">
-                <img src="{{ asset('images/logo1.png') }}" alt="Soluciones Meditec">
+                <div style="text-align: center;"><img src="{{ asset('images/logo1.png') }}" alt="SAMI"></div>
                 <h1>Registro de Cliente</h1>
                 @if($selectedPackage)
                     <p>Plan seleccionado: <strong>{{ $selectedPackage->name }}</strong> - ${{ number_format($selectedPackage->base_price, 2) }}/mes</p>
@@ -346,7 +354,6 @@
                             @enderror
                         </div>
                     </div>
-
                     <div id="sami-info" style="display: none;" class="sami-alert">
                         <div class="sami-alert-icon">
                             <i class="fas fa-robot"></i>
@@ -368,28 +375,27 @@
                         </div>
                     </div>
                     <div class="form-row">
-                            <div class="form-field">
-                                <label>Tipo de Documento <span class="required">*</span></label>
-                                <select name="identifier_type" class="form-control select">
-                                    <option value="">Seleccione...</option>
-                                    <option value="CC" {{ old('identifier_type') == 'CC' ? 'selected' : '' }}>Cédula (CC)</option>
-                                    <option value="PA" {{ old('identifier_type') == 'PA' ? 'selected' : '' }}>Pasaporte (PA)</option>
-                                    <option value="CE" {{ old('identifier_type') == 'CE' ? 'selected' : '' }}>Cédula Extranjera (CE)</option>
-                                    <option value="PT" {{ old('identifier_type') == 'PT' ? 'selected' : '' }}>Permiso Temporal (PT)</option>
-                                </select>
-                                @error('identifier_type')
-                                <span class="error">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-field">
-                                <label>Número de Documento <span class="required">*</span></label>
-                                <input type="text" name="identifier" value="{{ old('identifier') }}">
-                                @error('identifier')
-                                <span class="error">{{ $message }}</span>
-                                @enderror
-                            </div>
+                        <div class="form-field">
+                            <label>Tipo de Documento <span class="required">*</span></label>
+                            <select name="identifier_type" class="form-control select">
+                                <option value="">Seleccione...</option>
+                                <option value="CC" {{ old('identifier_type') == 'CC' ? 'selected' : '' }}>Cédula (CC)</option>
+                                <option value="PA" {{ old('identifier_type') == 'PA' ? 'selected' : '' }}>Pasaporte (PA)</option>
+                                <option value="CE" {{ old('identifier_type') == 'CE' ? 'selected' : '' }}>Cédula Extranjera (CE)</option>
+                                <option value="PT" {{ old('identifier_type') == 'PT' ? 'selected' : '' }}>Permiso Temporal (PT)</option>
+                            </select>
+                            @error('identifier_type')
+                            <span class="error">{{ $message }}</span>
+                            @enderror
                         </div>
+                        <div class="form-field">
+                            <label>Número de Documento <span class="required">*</span></label>
+                            <input type="text" name="identifier" value="{{ old('identifier') }}">
+                            @error('identifier')
+                            <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                     <div class="form-row">
                         <div class="form-field">
                             <label>Nombres <span class="required">*</span></label>
@@ -398,7 +404,6 @@
                             <span class="error">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="form-field">
                             <label>Apellidos <span class="required">*</span></label>
                             <input type="text" name="last_name" value="{{ old('last_name') }}" required>
@@ -417,7 +422,8 @@
                         </div>
                         <div class="form-field">
                             <label>Teléfono <span class="required">*</span></label>
-                            <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required style="width: 100%">
+
+                            <input id="phone" class="block mt-1 w-full" type="phone" name="phone" value="{{old('phone')}}">
                             @error('phone')
                             <span class="error">{{ $message }}</span>
                             @enderror
@@ -431,39 +437,37 @@
                             <span class="error">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="form-field">
                             <label>Confirmar Contraseña <span class="required">*</span></label>
                             <input type="password" name="password_confirmation" required minlength="8">
                         </div>
                     </div>
                     <div class="form-row">
-                    <div class="form-field">
-                        <label>Género <span class="required">*</span></label>
-                        <select name="gender">
-                            <option value="">Seleccione...</option>
-                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Masculino</option>
-                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Femenino</option>
-                        </select>
-                        @error('gender')
-                        <span class="error">{{ $message }}</span>
-                        @enderror
+                        <div class="form-field">
+                            <label>Género <span class="required">*</span></label>
+                            <select name="gender">
+                                <option value="">Seleccione...</option>
+                                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Masculino</option>
+                                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Femenino</option>
+                            </select>
+                            @error('gender')
+                            <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-field">
+                            <label>Especialidad médica <span class="required">*</span></label>
+                            <select name="medical_speciality">
+                                <option value="">Seleccione...</option>
+                                @foreach(\App\Models\MedicalSpeciality::get() as $em)
+                                    <option value="{{$em->id}}" {{ old('medical_speciality') == $em->id ? 'selected' : '' }}>{{$em->name}}</option>
+                                @endforeach
+                            </select>
+                            @error('medical_speciality')
+                            <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
-                    <div class="form-field">
-                        <label>Especialidad médica <span class="required">*</span></label>
-                        <select name="medical_speciality">
-                            <option value="">Seleccione...</option>
-                            @foreach(\App\Models\MedicalSpeciality::get() as $em)
-                                <option value="{{$em->id}}" {{ old('medical_speciality') == $em->id ? 'selected' : '' }}>{{$em->name}}</option>
-                            @endforeach
-                        </select>
-                        @error('medical_speciality')
-                        <span class="error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="form-row">
-
+                    <div class="form-row">
                         <div class="form-field">
                             <label>Logo (Opcional)</label>
                             <div class="file-input-wrapper">
@@ -477,18 +481,30 @@
                             @enderror
                         </div>
                     </div>
-                <!-- Código de Referido -->
-                <div class="form-section">
-                    <h3><i class="fas fa-gift"></i> Código de Referido (Opcional)</h3>
-                    <div class="form-group">
-                        <label for="referral_code">¿Tienes un código de referido?</label>
-                        <input type="text" id="referral_code" name="referral_code" value="{{ old('referral_code', request('ref')) }}" placeholder="Ej: REF-ABC12345">
-                        <small class="form-help">Si alguien te refirió, ingresa su código aquí</small>
-                        @error('referral_code')
-                            <span class="error">{{ $message }}</span>
-                        @enderror
+                    <div class="form-row">
+                        <!-- Código de Referido -->
+                        <div class="form-field">
+                            <h3><i class="fas fa-gift"></i> Código de Referido (Opcional)</h3>
+                            <label for="referral_code">¿Tienes un código de referido?</label><br/>
+                            <input class="form-control" type="text" id="referral_code" name="referral_code" value="{{ old('referral_code', request('ref')) }}" placeholder="Ej: REF-ABC12345"><br/>
+                            <small class="form-help">Si alguien te refirió, ingresa su código aquí</small>
+                            @error('referral_code')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
-                </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <x-input-label name="remember-me"  id="remember-me" class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
+                                <a href="javascript:;" x-on:click="$dispatch('open-modal', 'terms-privacy')">&nbsp {{__('Terminos de Servicios')}} </a>&nbsp y <a
+                                    href="javascript:;" x-on:click="$dispatch('open-modal', 'terms-privacy')">&nbsp {{__('Politicas de Privacidad')}} </a>
+                                <input type="checkbox" name="terms_and_privacy">
+                                <span class="checkmark"></span>
+                            </x-input-label>
+                            <x-input-error :messages="$errors->get('terms_and_privacy')"/>
+
+                        </div>
+                    </div>
                 {{--}}
                 @if(config('app.env') === 'production')
                     <div class="form-group">
@@ -507,71 +523,76 @@
             </a>
         </div>
     </div>
+    <x-terms-privacy-modal />
+    @livewireScripts
 
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Inicializar intl-tel-input
-        const phoneInput = document.querySelector("#phone");
-        const iti = window.intlTelInput(phoneInput, {
-            initialCountry: "pa",
-            preferredCountries: ["pa", "us", "co", "mx"],
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar intl-tel-input
 
-        // Mostrar/ocultar campos de practitioner según paquete
-        const packageSelect = document.getElementById('package_id');
+            // Mostrar/ocultar campos de practitioner según paquete
+            const packageSelect = document.getElementById('package_id');
 
-        // Ejecutar al cargar si hay paquete seleccionado
-        if (packageSelect.value) {
-            //togglePractitionerFields();
-        }
-
-        // Mostrar/ocultar información de SAMI según paquete
-        const samiInfo = document.getElementById('sami-info');
-
-        function toggleSamiInfo() {
-            const selectedOption = packageSelect.options[packageSelect.selectedIndex];
-            const agentAvailable = selectedOption.getAttribute('data-agent-available');
-
-            if (agentAvailable === '1') {
-                samiInfo.style.display = 'flex';
-                // Animar entrada
-                setTimeout(() => {
-                    samiInfo.style.opacity = '1';
-                    samiInfo.style.transform = 'translateY(0)';
-                }, 10);
-            } else {
-                samiInfo.style.opacity = '0';
-                samiInfo.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    samiInfo.style.display = 'none';
-                }, 300);
+            // Ejecutar al cargar si hay paquete seleccionado
+            if (packageSelect.value) {
+                //togglePractitionerFields();
             }
-        }
 
-        packageSelect.addEventListener('change', toggleSamiInfo);
+            // Mostrar/ocultar información de SAMI según paquete
+            const samiInfo = document.getElementById('sami-info');
 
-        // Ejecutar al cargar si hay paquete seleccionado
-        if (packageSelect.value) {
-            toggleSamiInfo();
-        }
+            function toggleSamiInfo() {
+                const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+                const agentAvailable = selectedOption.getAttribute('data-agent-available');
 
-        // Actualizar nombre de archivo seleccionado
-        const logoInput = document.getElementById('logo');
-        const logoLabel = document.querySelector('.file-input-label');
-
-
-        logoInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                logoLabel.innerHTML = '<i class="fas fa-check"></i> ' + this.files[0].name;
+                if (agentAvailable === '1') {
+                    samiInfo.style.display = 'flex';
+                    // Animar entrada
+                    setTimeout(() => {
+                        samiInfo.style.opacity = '1';
+                        samiInfo.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    samiInfo.style.opacity = '0';
+                    samiInfo.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        samiInfo.style.display = 'none';
+                    }, 300);
+                }
             }
-        });
 
+            packageSelect.addEventListener('change', toggleSamiInfo);
 
-        // Validar formulario antes de enviar
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            // Actualizar el campo phone con el número completo internacional
-            phoneInput.value = iti.getNumber();
+            // Ejecutar al cargar si hay paquete seleccionado
+            if (packageSelect.value) {
+                toggleSamiInfo();
+            }
+
+            // Actualizar nombre de archivo seleccionado
+            const logoInput = document.getElementById('logo');
+            const logoLabel = document.querySelector('.file-input-label');
+
+            logoInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    logoLabel.innerHTML = '<i class="fas fa-check"></i> ' + this.files[0].name;
+                }
+            });
+
+            // Validar formulario antes de enviar
+            document.getElementById('registrationForm').addEventListener('submit', function(e) {
+                // Actualizar el campo phone con el número completo internacional
+                phoneInput.value = iti.getNumber();
+            });
+
+            // Escuchar evento del modal cuando se acepta
+            window.addEventListener('terms-accepted', function(e) {
+                const checkbox = document.querySelector('input[name="terms_and_privacy"]');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
         });
     </script>
 </body>

@@ -87,8 +87,15 @@
     <x-terms-privacy-modal />
 
     @vite(['resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
+        // Escuchar evento del modal cuando se acepta
+        window.addEventListener('terms-accepted', function(e) {
+            const checkbox = document.querySelector('input[name="terms_and_privacy"]');
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+
         var password = document.getElementById('password');
         var passwordConfirmation = document.getElementById('confirm-password');
         var passwordError = document.getElementById('passwordError');

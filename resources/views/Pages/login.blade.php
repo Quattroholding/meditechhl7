@@ -72,24 +72,6 @@
                                     </div>
                                 </form>
                                 <!-- /Form -->
-
-                                <div class="next-sign">
-                                    <p class="account-subtitle">{{__('¿Necesitas una cuenta?')}} <a href="{{ url('register') }}" class="text-base">{{__('Regístrate')}}</a></p>
-                                    <!-- Social Login -->
-                                    <div class="social-login">
-
-                                        {{--}}
-                                        <a href="javascript:;"><img src="{{ URL::asset('/assets/img/icons/login-icon-01.svg') }}" alt=""></a>
-                                        <a href="javascript:;"><img  src="{{ URL::asset('/assets/img/icons/login-icon-02.svg') }}" alt=""></a>
-                                        <a href="javascript:;"><img   src="{{ URL::asset('/assets/img/icons/login-icon-03.svg') }}" alt=""></a>
-                                        {{--}}
-
-
-                                    </div>
-                                    <!-- /Social Login -->
-                                    <br/>
-
-                                </div>
                             </div>
                         </div>
                     </div>

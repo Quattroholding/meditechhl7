@@ -49,32 +49,11 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
 
         $mailMessage = (new MailMessage)
             ->subject('Nueva Factura Generada - '.$this->invoice->invoice_number.' - '.$client->name)
-            ->greeting('¡Hola!')
-            ->line('Se ha generado una nueva factura para su suscripción de **'.$subscription->package->name.'**.')
-            ->line('**Número de Factura:** '.$this->invoice->invoice_number)
-            ->line('**Período:** '.$this->invoice->period_start->format('d/m/Y').' - '.$this->invoice->period_end->format('d/m/Y'))
-            ->line('**Total a pagar:** $'.number_format($this->invoice->total, 2))
-            ->line('**Fecha de vencimiento:** '.$this->invoice->due_date->format('d/m/Y'))
-            ->line('')
-            ->line('### Métodos de Pago Disponibles:')
-            ->line('')
-            ->line('**1. ACH - Transferencia Bancaria**')
-            ->line('- **Banco:** Banco General')
-            ->line('- **Cuenta:** 04-99-99-999999-9')
-            ->line('- **Tipo:** Cuenta Corriente')
-            ->line('- **Beneficiario:** Meditech S.A.')
-            ->line('')
-            ->line('**2. YAPPY**')
-            ->line('- **Número:** 6XXX-XXXX')
-            ->line('- **Nombre:** Meditech')
-            ->line('- **Código YAPPY:** '.$client->yappy_code)
-            ->line('- **IMPORTANTE:** En el mensaje de la transferencia YAPPY incluya su código ('.$client->yappy_code.') para identificar el pago.')
-            ->line('')
-            ->line('### Registro de Pago:')
-            ->line('Puede registrar su pago manualmente en la plataforma adjuntando la captura de pantalla de su transacción para una aprobación más rápida.')
-            ->line('Para registrar el pago, acceda a **Suscripciones > Facturas** y haga clic en el ícono azul con el símbolo de tarjeta de crédito.')
-            ->action('Ver Factura', route('suscriptions.invoices.show', $this->invoice->id))
-            ->line('¡Gracias por confiar en nosotros!')
+            ->view('emails.invoice-generated', [
+                'invoice' => $this->invoice,
+                'client' => $client,
+                'subscription' => $subscription,
+            ])
             ->attachData($pdfContent, $fileName, [
                 'mime' => 'application/pdf',
             ]);

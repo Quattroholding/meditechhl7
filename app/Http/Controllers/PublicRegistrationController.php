@@ -22,7 +22,7 @@ class PublicRegistrationController extends Controller
     {
         $packageId = $request->query('package');
         $packages = Package::where('is_active', true)
-            ->where('base_price', '>', 0) // Excluir empresarial
+            ->where('id', '<>', 4) // Excluir empresarial
             ->orderBy('base_price')
             ->get();
 
@@ -156,7 +156,7 @@ class PublicRegistrationController extends Controller
                 }
 
                 // Enviar notificación con credenciales temporales
-                $user->notify(new PractitionerCredentialsNotification($user, $request->password,false));
+                $user->notify(new PractitionerCredentialsNotification($user, $request->password, false));
 
                 Log::info('Public client registration successful', [
                     'client_id' => $client->id,

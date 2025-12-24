@@ -244,9 +244,10 @@
         <!-- Footer with accept button -->
         <div class="flex justify-end items-center p-6 border-t border-gray-200 bg-gray-50">
             <button x-on:click="
-                document.querySelector('input[name=\'terms_and_privacy\']').checked = true;
-                $dispatch('close-modal', '{{ $name }}')
+                window.dispatchEvent(new CustomEvent('terms-accepted'));
+                $dispatch('close-modal', '{{ $name }}');
             "
+                    type="button"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
                 He leído y acepto
             </button>
