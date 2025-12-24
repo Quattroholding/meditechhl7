@@ -151,22 +151,28 @@
                                     <div class="input-block local-forms">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $data->is_active) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_active">
+                                            <label class="form-check-label" for="is_active" style="margin-top:10px;margin-left:10px;">
                                                 Paquete Activo
                                             </label>
+                                        </div><br/>
+                                        <div class="input-block local-forms">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="agent_available" name="agent_available" value="1" {{ old('agent_available', $data->agent_available) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="agent_available" style="margin-top:10px;margin-left:10px;">
+                                                Agente SAMI Disponible
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Incluye el agente automatizado de citas</small>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <!-- AGENT AVAILABLE -->
                                     <div class="input-block local-forms">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="agent_available" name="agent_available" value="1" {{ old('agent_available', $data->agent_available) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="agent_available">
-                                                Agente SAMI Disponible
-                                            </label>
-                                        </div>
-                                        <small class="text-muted">Incluye el agente automatizado de citas</small>
+                                        <x-input-label for="appointments_limit" :value="__('Límite de citas')" />
+                                        <x-text-input id="appointments_limit" class="block mt-1 w-full" type="number" name="appointments_limit" :value="old('appointments_limit', $data->appointments_limit)"/>
+                                        <x-input-error :messages="$errors->get('billing_period_days')" class="mt-2" />
+                                        <small class="text-muted">Vacio significa citas infinitas</small>
                                     </div>
                                 </div>
                             </div>
