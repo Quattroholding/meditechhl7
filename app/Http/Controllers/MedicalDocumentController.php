@@ -389,7 +389,7 @@ class MedicalDocumentController extends Controller
                 'id' => $id,
                 'exception' => $e,
             ]);
-            abort(500, 'Error al generar el PDF de la licencia médica: '.$e->getMessage());
+            abort(500, 'Error al generar el PDF de la incapacidad médica: '.$e->getMessage());
         }
     }
 

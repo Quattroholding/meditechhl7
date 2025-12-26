@@ -6,7 +6,7 @@
         type="button"
         class="btn btn-primary"
         style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;"
-        title="Crear Licencia Médica"
+        title="Crear Incapacidad Médica"
     >
 
         <i class="fa fa-file-medical"></i>
@@ -24,7 +24,7 @@
                             <path d="M7.5 5.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L6 7l-.549.317a.5.5 0 1 0 .5.866l.549-.317V8.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L8 7l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V5.5zm-2 4.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
                             <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
                         </svg>
-                        Nueva Licencia Médica
+                        Nueva Incapacidad Médica
                     </h5>
                     <button type="button" class="close" wire:click="closeModal" aria-label="Close">
                         <span aria-hidden="true" style="color: white; font-size: 28px;">&times;</span>
@@ -157,7 +157,7 @@
                     <button type="button" class="btn btn-primary submit-form me-2" wire:click="save" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="save">
 
-                            Crear Licencia Médica
+                            Crear Incapacidad Médica
                         </span>
                         <span wire:loading wire:target="save">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
