@@ -70,14 +70,24 @@ class User extends Authenticatable
 
     public function getCurrentClient()
     {
-
-        if (session()->has('client')) {
-            return session()->get('client_'.auth()->user()->id);
-        } else {
-            session(['client_'.auth()->user()->id => Client::find($this->default_client_id)]);
-
-            return Client::find($this->default_client_id);
+        // Check if we're in a session context (web request with authenticated user)
+        if (auth()->check() && auth()->user()->id === $this->id && session()->has('client')) {
+            return session()->get('client_'.$this->id);
         }
+
+        // For API contexts or when session is not available, use default client
+        if ($this->default_client_id) {
+            $client = Client::find($this->default_client_id);
+
+            // Store in session only if we're the authenticated user
+            if (auth()->check() && auth()->user()->id === $this->id) {
+                session(['client_'.$this->id => $client]);
+            }
+
+            return $client;
+        }
+
+        return null;
     }
 
     public function getFullNameAttribute()
@@ -116,7 +126,7 @@ class User extends Authenticatable
     {
         return $query->whereHas('clients', function ($query) {
             $query->whereHas('subscription', function ($query) {
-                $query->whereIn('client_subscriptions.status', ['active','trial']);
+                $query->whereIn('client_subscriptions.status', ['active', 'trial']);
                 $query->whereHas('package', function ($query) {
                     $query->where('packages.agent_available', true);
                 });
