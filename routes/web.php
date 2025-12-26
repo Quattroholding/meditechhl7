@@ -617,6 +617,10 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
 
     Route::get('/', [SuscriptionController::class, 'show'])->middleware('permission:suscriptions.show')->name('suscriptions.show');
 
+    Route::get('/upgrade', [SuscriptionController::class, 'upgrade'])->middleware('permission:suscriptions.show')->name('suscriptions.upgrade');
+
+    Route::post('/upgrade', [SuscriptionController::class, 'processUpgrade'])->middleware('permission:suscriptions.show')->name('suscriptions.upgrade.process');
+
     Route::group(['prefix' => 'invoices', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
         Route::get('/', [SuscriptionInvoiceController::class, 'index'])->middleware('permission:suscriptions.invoices.index')->name('suscriptions.invoices.index');

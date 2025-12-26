@@ -305,8 +305,17 @@ class User extends Authenticatable
             return true; // No subscription required
         }
 
-        // Only allow if subscription is active or in trial
-        return in_array($subscription->status->value, ['active', 'trial']);
+        // Check if subscription is active or in trial
+        if (! in_array($subscription->status->value, ['active', 'trial'])) {
+            return false;
+        }
+
+        // Check if appointments limit has been reached
+        if ($this->hasReachedAppointmentsLimit()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -318,6 +327,15 @@ class User extends Authenticatable
 
         if (! $subscription) {
             return null;
+        }
+
+        // Check if appointments limit is reached first (higher priority)
+        if ($this->hasReachedAppointmentsLimit()) {
+            $limit = $this->getAppointmentsLimit();
+            $currentCount = $this->getAppointmentsCountInCurrentPeriod();
+            $periodEnd = $subscription->current_period_ends_at?->format('d/m/Y') ?? 'fin del período';
+
+            return "Ha alcanzado el límite de {$limit} citas para su plan actual ({$currentCount}/{$limit} citas agendadas este período). Para continuar agendando citas, considere actualizar su plan de suscripción a uno superior o espere hasta el {$periodEnd} cuando se renueve su límite mensual.";
         }
 
         return match ($subscription->status->value) {
@@ -383,6 +401,11 @@ class User extends Authenticatable
             return null;
         }
 
+        // Check if appointments limit is reached first
+        if ($this->hasReachedAppointmentsLimit()) {
+            return 'warning';
+        }
+
         return match ($subscription->status->value) {
             'active' => null,
             'trial' => 'info',
@@ -393,5 +416,79 @@ class User extends Authenticatable
             'cancelled' => 'danger',
             default => 'info',
         };
+    }
+
+    /**
+     * Get the count of appointments in the current subscription period
+     */
+    public function getAppointmentsCountInCurrentPeriod(): int
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        $client = $this->getCurrentClient();
+
+        if (! $client) {
+            return 0;
+        }
+
+        // Count appointments created in the current subscription period
+        return \App\Models\Appointment::where('client_id', $client->id)
+            ->whereBetween('created_at', [
+                $subscription->current_period_starts_at ?? now()->startOfMonth(),
+                $subscription->current_period_ends_at ?? now()->endOfMonth(),
+            ])
+            ->count();
+    }
+
+    /**
+     * Get the appointments limit from the current subscription package
+     */
+    public function getAppointmentsLimit(): ?int
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if (! $subscription) {
+            return null;
+        }
+
+        return $subscription->package->appointments_limit;
+    }
+
+    /**
+     * Check if the user has reached the appointments limit
+     */
+    public function hasReachedAppointmentsLimit(): bool
+    {
+        $limit = $this->getAppointmentsLimit();
+
+        // If limit is null, there's no limit (infinite)
+        if ($limit === null) {
+            return false;
+        }
+
+        $currentCount = $this->getAppointmentsCountInCurrentPeriod();
+
+        return $currentCount >= $limit;
+    }
+
+    /**
+     * Get remaining appointments in current period
+     */
+    public function getRemainingAppointments(): ?int
+    {
+        $limit = $this->getAppointmentsLimit();
+
+        // If limit is null, return null (infinite)
+        if ($limit === null) {
+            return null;
+        }
+
+        $currentCount = $this->getAppointmentsCountInCurrentPeriod();
+
+        return max(0, $limit - $currentCount);
     }
 }

@@ -25,7 +25,9 @@
                                 @endif
                                 <div>
                                     <strong>
-                                        @if($subscription && $subscription->status->value === 'suspended')
+                                        @if(auth()->user()->hasReachedAppointmentsLimit())
+                                            ¡Límite de Citas Alcanzado!
+                                        @elseif($subscription && $subscription->status->value === 'suspended')
                                             ¡Suscripción Suspendida!
                                         @elseif($subscription && $subscription->status->value === 'expired')
                                             ¡Suscripción Expirada!
@@ -55,7 +57,14 @@
                                         </span>
                                     @endif
 
-                                    @if($subscription && in_array($subscription->status->value, ['suspended', 'past_due', 'pending_activation']))
+                                    @if(auth()->user()->hasReachedAppointmentsLimit())
+                                        <div class="mt-2">
+                                            <small>
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                El agendamiento de citas está <strong>deshabilitado</strong> hasta que actualice su plan o se renueve su período de suscripción.
+                                            </small>
+                                        </div>
+                                    @elseif($subscription && in_array($subscription->status->value, ['suspended', 'past_due', 'pending_activation']))
                                         <div class="mt-2">
                                             <small>
                                                 <i class="fas fa-info-circle me-1"></i>
@@ -81,6 +90,11 @@
                                 @endif
                             @endcan
                             @can('suscriptions.show')
+                                @if(auth()->user()->hasReachedAppointmentsLimit())
+                                    <a href="{{ route('suscriptions.show') }}" class="btn btn-primary btn-sm me-2">
+                                        <i class="fas fa-arrow-up me-1"></i>Actualizar Plan
+                                    </a>
+                                @endif
                                 <a href="{{ route('suscriptions.show') }}" class="btn btn-light btn-sm">
                                     <i class="fas fa-cog me-1"></i>Mi Suscripción
                                 </a>

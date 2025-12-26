@@ -24,8 +24,21 @@
                                     <div class="col-md-6">
                                         <h5 class="text-primary">{{ $subscription->package->name }}</h5>
                                         <p class="text-muted">{{ $subscription->package->description }}</p>
-                                        <p class="text-muted">Usuarios : {{ $subscription->package->max_users }}</p>
-                                        <p class="text-muted">Agente de Whatsapp (SAMI) : {{ $subscription->package->agent_available ? 'SI' : 'NO' }}</p>
+                                        <p class="text-muted">Usuarios: {{ $subscription->package->max_users }}</p>
+                                        <p class="text-muted">Agente de Whatsapp (SAMI): {{ $subscription->package->agent_available ? 'SI' : 'NO' }}</p>
+                                        @if($subscription->package->appointments_limit)
+                                            <p class="text-muted">
+                                                Límite de Citas:
+                                                <strong>{{ auth()->user()->getAppointmentsCountInCurrentPeriod() }} / {{ $subscription->package->appointments_limit }}</strong>
+                                                @if(auth()->user()->hasReachedAppointmentsLimit())
+                                                    <span class="badge bg-danger ms-2">Límite Alcanzado</span>
+                                                @else
+                                                    <span class="badge bg-success ms-2">{{ auth()->user()->getRemainingAppointments() }} restantes</span>
+                                                @endif
+                                            </p>
+                                        @else
+                                            <p class="text-muted">Límite de Citas: <strong class="text-success">Ilimitado</strong></p>
+                                        @endif
                                     </div>
                                     <div class="col-md-6 text-end">
                                         <span class="badge bg-{{ $subscription->status->color() }} fs-5">
@@ -78,8 +91,8 @@
                                 @endif
 
                                 <div class="text-end">
-                                    @can('suscriptions.upgrade')
-                                        <a href="#" class="btn btn-primary">
+                                    @can('suscriptions.show')
+                                        <a href="{{ route('suscriptions.upgrade') }}" class="btn btn-primary">
                                             <i class="fas fa-arrow-up me-2"></i>Actualizar Plan
                                         </a>
                                     @endcan
