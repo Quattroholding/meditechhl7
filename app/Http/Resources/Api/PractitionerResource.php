@@ -67,6 +67,40 @@ class PractitionerResource extends JsonResource
             'profile_photo' => $this->avatar() ? config('app.url').'/storage/'.$this->avatar()->path : '',
             'active' => $this->active,
             'appointments_this_month' => $this->appointments_this_month ?? 0,
+            'subscription' => $this->when($this->user, function () {
+                $subscription = $this->user->getActiveSubscription();
+
+                if (! $subscription) {
+                    return null;
+                }
+
+                return [
+                    'id' => $subscription->id,
+                    'status' => $subscription->status->value,
+                    'status_label' => $subscription->status->label(),
+                    'package' => [
+                        'id' => $subscription->package->id,
+                        'name' => $subscription->package->name,
+                        'description' => $subscription->package->description,
+                        'base_price' => $subscription->package->base_price,
+                        'billing_period' => $subscription->package->billing_period->value,
+                        'appointments_limit' => $subscription->package->appointments_limit,
+                    ],
+                    'appointments_usage' => [
+                        'limit' => $subscription->package->appointments_limit,
+                        'used' => $this->user->getAppointmentsCountInCurrentPeriod(),
+                        'remaining' => $this->user->getRemainingAppointments(),
+                        'is_unlimited' => $subscription->package->appointments_limit === null,
+                        'has_reached_limit' => $this->user->hasReachedAppointmentsLimit(),
+                    ],
+                    'period' => [
+                        'starts_at' => $subscription->current_period_starts_at?->format('Y-m-d'),
+                        'ends_at' => $subscription->current_period_ends_at?->format('Y-m-d'),
+                        'next_billing_date' => $subscription->next_billing_date?->format('Y-m-d'),
+                    ],
+                    'can_schedule_appointments' => $this->user->canScheduleAppointments(),
+                ];
+            }),
             'next_week_schedule' => $this->when(isset($this->next_week_schedule), $this->next_week_schedule),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

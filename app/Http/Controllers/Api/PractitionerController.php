@@ -23,7 +23,15 @@ class PractitionerController extends Controller
         $currentMonthStart = now()->startOfMonth();
         $currentMonthEnd = now()->endOfMonth();
 
-        $practitioners = Practitioner::with(['specialties', 'user.clients', 'insuranceCompanies'])
+        $practitioners = Practitioner::with([
+            'specialties',
+            'user.clients.subscriptions' => function ($query) {
+                $query->whereIn('status', ['active', 'trial', 'past_due', 'suspended'])
+                    ->latest();
+            },
+            'user.clients.subscriptions.package',
+            'insuranceCompanies',
+        ])
             ->withCount(['appointments as appointments_this_month' => function ($query) use ($currentMonthStart, $currentMonthEnd) {
                 $query->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
             }])
