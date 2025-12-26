@@ -66,6 +66,10 @@ class PractitionerController extends Controller
             })
             ->activeAgent()
             ->userActive()
+            // Solo practitioners cuyo cliente tenga al menos un consulting room
+            ->whereHas('user.clients.branches.consultingRooms', function ($query) {
+                $query->where('active', true);
+            })
             ->orderBy('appointments_this_month', 'asc')
             ->paginate($perPage);
 

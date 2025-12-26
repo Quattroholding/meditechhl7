@@ -14,7 +14,7 @@ class MedicalSpecialityController extends Controller
             ->when($request->search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
             })
-            // Solo especialidades con al menos un practitioner con usuario activo Y suscripción activa
+            // Solo especialidades con al menos un practitioner con usuario activo Y suscripción activa Y consulting room
             ->whereHas('practitioners', function ($query) {
                 $query->where('practitioners.active', true)
                     ->whereHas('user', function ($userQuery) {
@@ -27,7 +27,11 @@ class MedicalSpecialityController extends Controller
                                             $q->whereNull('current_period_ends_at')
                                                 ->orWhere('current_period_ends_at', '>=', now());
                                         });
-                                });
+                                })
+                                // Verificar que el cliente tenga al menos un consulting room activo
+                                    ->whereHas('branches.consultingRooms', function ($roomQuery) {
+                                        $roomQuery->where('active', true);
+                                    });
                             });
                     });
             })
@@ -50,7 +54,7 @@ class MedicalSpecialityController extends Controller
 
         $specialities = $query->get()
             ->map(function ($speciality) use ($currentMonthStart, $currentMonthEnd) {
-                // Obtener practitioners activos con usuarios activos Y suscripción activa
+                // Obtener practitioners activos con usuarios activos Y suscripción activa Y consulting room
                 $availablePractitioners = $speciality->practitioners()
                     ->with([
                         'user.clients.subscriptions' => function ($query) {
@@ -73,7 +77,11 @@ class MedicalSpecialityController extends Controller
                                             $q->whereNull('current_period_ends_at')
                                                 ->orWhere('current_period_ends_at', '>=', now());
                                         });
-                                });
+                                })
+                                // Verificar que el cliente tenga al menos un consulting room activo
+                                    ->whereHas('branches.consultingRooms', function ($roomQuery) {
+                                        $roomQuery->where('active', true);
+                                    });
                             });
                     })
                     ->get(['practitioners.id', 'practitioners.name', 'practitioners.email', 'practitioners.phone', 'practitioners.user_id']);
