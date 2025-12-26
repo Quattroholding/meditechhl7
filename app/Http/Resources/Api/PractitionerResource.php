@@ -24,7 +24,7 @@ class PractitionerResource extends JsonResource
             'phone' => $this->phone,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date,
-            //'qualification' => $this->qualification,
+            // 'qualification' => $this->qualification,
             'license_number' => $this->license_number,
             'specialties' => $this->specialties ? $this->specialties->map(function ($specialty) {
                 return [
@@ -33,39 +33,40 @@ class PractitionerResource extends JsonResource
                     'description' => $specialty->description ?? null,
                 ];
             }) : [],
-            'clients' => $this->user && $this->user->clients ?  $this->user->clients->map(function ($client) {
-                    return [
-                        'id' => $client->id,
-                        'name' => $client->name,
-                        'long_name' => $client->long_name,
-                        'ruc' => $client->ruc,
-                        'dv' => $client->dv,
-                        'whatsapp' => $client->whatsapp,
-                        'logo' => $client->logo ?? null,
-                        ''
-                    ];
+            'clients' => $this->user && $this->user->clients ? $this->user->clients->map(function ($client) {
+                return [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'long_name' => $client->long_name,
+                    'ruc' => $client->ruc,
+                    'dv' => $client->dv,
+                    'whatsapp' => $client->whatsapp,
+                    'logo' => $client->logo ?? null,
+                    '',
+                ];
             }) : [],
             'insurances' => $this->insuranceCompanies ? $this->insuranceCompanies->map(function ($insurance) {
                 return [
                     'id' => $insurance->id,
                     'name' => $insurance->name,
-                    'accepts'=>$insurance->pivot->name ?? null,
-                    'custom_coverage_percentage'=>$insurance->pivot->custom_coverage_percentage ?? null,
-                    'custom_copay_amount'=>$insurance->pivot->custom_copay_amount ?? null,
-                    'notes'=>$insurance->pivot->notes ?? null
+                    'accepts' => $insurance->pivot->name ?? null,
+                    'custom_coverage_percentage' => $insurance->pivot->custom_coverage_percentage ?? null,
+                    'custom_copay_amount' => $insurance->pivot->custom_copay_amount ?? null,
+                    'notes' => $insurance->pivot->notes ?? null,
                 ];
             }) : [],
-            'working_hours' =>  $this->user->workingHours->map(function ($workingHour) {
+            'working_hours' => $this->user->workingHours->map(function ($workingHour) {
                 return [
                     'id' => $workingHour->id,
                     'day_of_week' => $workingHour->day_of_week,
                     'start_time' => $workingHour->start_time,
                     'end_time' => $workingHour->end_time,
-                    'branch'=> $workingHour->branch,
+                    'branch' => $workingHour->branch,
                 ];
             }),
-            'profile_photo' => $this->avatar() ?   config('app.url').'/storage/'.$this->avatar()->path : '',
+            'profile_photo' => $this->avatar() ? config('app.url').'/storage/'.$this->avatar()->path : '',
             'active' => $this->active,
+            'appointments_this_month' => $this->appointments_this_month ?? 0,
             'next_week_schedule' => $this->when(isset($this->next_week_schedule), $this->next_week_schedule),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -19,7 +19,14 @@ class PractitionerController extends Controller
         $perPage = $request->input('per_page', 10); // Default 10 items per page
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
+        // Get current month date range
+        $currentMonthStart = now()->startOfMonth();
+        $currentMonthEnd = now()->endOfMonth();
+
         $practitioners = Practitioner::with(['specialties', 'user.clients', 'insuranceCompanies'])
+            ->withCount(['appointments as appointments_this_month' => function ($query) use ($currentMonthStart, $currentMonthEnd) {
+                $query->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
+            }])
             ->when($request->id, function ($query) use ($request) {
                 return $query->whereId($request->id);
             })
@@ -51,7 +58,7 @@ class PractitionerController extends Controller
             })
             ->activeAgent()
             ->userActive()
-            ->inRandomOrder()
+            ->orderBy('appointments_this_month', 'asc')
             ->paginate($perPage);
 
         // Calcular fechas de la próxima semana (lunes a domingo)
@@ -96,6 +103,12 @@ class PractitionerController extends Controller
 
         return response()->json([
             'data' => PractitionerResource::collection($practitioners->items()),
+            'current_month_info' => [
+                'month_name' => $currentMonthStart->format('F Y'),
+                'month_name_es' => $currentMonthStart->locale('es')->translatedFormat('F Y'),
+                'start_date' => $currentMonthStart->format('Y-m-d'),
+                'end_date' => $currentMonthEnd->format('Y-m-d'),
+            ],
             'next_week_info' => [
                 'start_date' => $nextWeekStart->format('Y-m-d'),
                 'end_date' => $nextWeekEnd->format('Y-m-d'),

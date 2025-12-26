@@ -116,7 +116,7 @@ class User extends Authenticatable
     {
         return $query->whereHas('clients', function ($query) {
             $query->whereHas('subscription', function ($query) {
-                $query->where('client_subscriptions.status', 'active');
+                $query->whereIn('client_subscriptions.status', ['active','trial']);
                 $query->whereHas('package', function ($query) {
                     $query->where('packages.agent_available', true);
                 });
