@@ -52,6 +52,21 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
     public function toArray($notifiable)
     {
         return [
+            // Standard notification fields
+            'title' => 'Cita Médica Cancelada',
+            'message' => 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido cancelada.',
+            'steps' => array_filter([
+                '📅 Fecha cancelada: '.$this->appointment->start_datetime->format('d/m/Y H:i'),
+                $this->cancellationReason ? '📝 Motivo: '.$this->cancellationReason : null,
+            ]),
+            'action' => [
+                'text' => 'Reagendar Cita',
+                'url' => route('appointment.calendar'),
+            ],
+            'priority' => 'medium',
+            'icon' => 'fas fa-calendar-times',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'appointment_cancelled',
             'appointment_id' => $this->appointment->id,
             'practitioner_name' => $this->appointment->practitioner->name,
@@ -64,7 +79,6 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             'clinic_name' => $this->appointment->client->name ?? null,
             'branch_name' => $this->appointment->consultingRoom->branch->name ?? null,
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
-            'message' => 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido cancelada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }

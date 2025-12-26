@@ -59,6 +59,24 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
     public function toArray(object $notifiable): array
     {
         return [
+            // Standard notification fields
+            'title' => 'Nueva Solicitud de Cita',
+            'message' => 'Nueva solicitud de cita de '.$this->appointment->patient->name,
+            'steps' => array_filter([
+                '📅 Fecha solicitada: '.$this->appointment->original_requested_datetime->format('d/m/Y H:i'),
+                '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
+                $this->appointment->service_type ? '🩺 Tipo: '.$this->appointment->service_type : null,
+                $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
+                $this->appointment->comment ? '💬 Comentario: '.$this->appointment->comment : null,
+            ]),
+            'action' => [
+                'text' => 'Revisar Solicitud',
+                'url' => url('/appointments?status=proposed'),
+            ],
+            'priority' => 'high',
+            'icon' => 'fas fa-calendar-plus',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'appointment_proposed',
             'appointment_id' => $this->appointment->id,
             'patient_name' => $this->appointment->patient->name,
@@ -73,7 +91,6 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'description' => $this->appointment->description,
             'comment' => $this->appointment->comment,
-            'message' => 'Nueva solicitud de cita de '.$this->appointment->patient->name.' para el '.$this->appointment->original_requested_datetime->format('d/m/Y H:i'),
             'sent_at' => now()->toDateTimeString(),
         ];
     }

@@ -76,13 +76,31 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $practitionerName = $this->encounter->appointment->practitioner->name ?? 'su médico';
+
         return [
+            // Standard notification fields
+            'title' => 'Encuesta de Satisfacción',
+            'message' => 'Ayúdenos a mejorar completando nuestra encuesta de satisfacción sobre su consulta reciente.',
+            'steps' => [
+                '📅 Consulta del: '.$this->encounter->start->format('d/m/Y'),
+                '👨‍⚕️ Con: '.$practitionerName,
+                '⏱️ Solo tomará unos minutos',
+            ],
+            'action' => [
+                'text' => 'Completar Encuesta',
+                'url' => route('survey.public', $this->surveyResponse->token),
+            ],
+            'priority' => 'normal',
+            'icon' => 'fas fa-clipboard-list',
+
+            // Legacy/specific fields (for backwards compatibility)
             'survey_id' => $this->survey->id,
             'survey_title' => $this->survey->title,
             'survey_response_id' => $this->surveyResponse->id,
             'encounter_id' => $this->encounter->id,
             'encounter_date' => $this->encounter->start->format('Y-m-d'),
-            'practitioner_name' => $this->encounter->practitioner->full_name ?? null,
+            'practitioner_name' => $practitionerName,
             'survey_url' => route('survey.public', $this->surveyResponse->token),
             'sent_at' => now()->toDateTimeString(),
         ];

@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Notifications\PractitionerCredentialsNotification;
+use App\Notifications\PractitionerSetupRequiredNotification;
 use App\Services\FileService;
 use App\Services\PractitionerService;
 use App\Services\ReferralService;
@@ -126,6 +127,9 @@ class PublicRegistrationController extends Controller
                     $user->assignRole('doctor');
                     $user->removeRole('admin client');
                     $practitionerCreated = true;
+
+                    // Notificar al médico sobre la configuración requerida
+                    $user->notify(new PractitionerSetupRequiredNotification);
 
                     Log::info('Public registration: Practitioner created', [
                         'client_id' => $client->id,

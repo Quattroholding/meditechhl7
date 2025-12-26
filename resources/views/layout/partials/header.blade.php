@@ -15,101 +15,77 @@
     </div>
     {{--}}
     <ul class="nav user-menu float-end">
-        {{--}}
+
         <li class="nav-item dropdown d-none d-md-block">
-            <a href="javascript:;" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><img
-                    src="{{ URL::asset('/assets/img/icons/note-icon-01.svg') }}" alt=""><span
-                    class="pulse"></span> </a>
+            @php
+                $unreadNotifications = auth()->user()->unreadNotifications()->limit(10)->get();
+                $unreadCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+
+            <a href="javascript:;" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" style="padding-top: 20px">
+                <img src="{{ URL::asset('/assets/img/icons/note-icon-01.svg') }}" alt="">
+                @if($unreadCount > 0)
+                    <span class="pulse"></span>
+                    <span class="badge rounded-pill bg-danger" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                @endif
+            </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
-                    <span>Notifications</span>
+                    <span>Notificaciones</span>
+                    @if($unreadCount > 0)
+                        <a href="javascript:void(0);" class="text-primary" onclick="markAllAsRead()" style="float: right; font-size: 12px;">Marcar todas como leídas</a>
+                    @endif
                 </div>
                 <div class="drop-scroll">
-                    <ul class="notification-list">
-                        <li class="notification-message">
-                            <a href="{{ url('activities') }}">
-                                <div class="media">
-                                    <span class="avatar">
-                                        @if(!empty(auth()->user()->profile_picture))
-                                            <img src="{{url('storage/'.auth()->user()->profile_picture) }}" alt="{{auth()->user()->full_name}}" class="img-fluid">
-                                        @else
-                                            <img src="{{ URL::asset('/assets/img/user.jpg') }}" alt="{{auth()->user()->full_name}}"  class="img-fluid">
-                                        @endif
-                                    </span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">John Doe</span> added new task
-                                            <span class="noti-title">Patient appointment booking</span>
-                                        </p>
-                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+                    <ul class="notification-list" id="notification-list">
+                        @forelse($unreadNotifications as $notification)
+                            <li class="notification-message {{ $notification->read_at ? '' : 'unread' }}" data-notification-id="{{ $notification->id }}">
+                                <a href="javascript:void(0);" onclick="markAsRead('{{ $notification->id }}', '{{ $notification->data['action']['url'] ?? '#' }}')">
+                                    <div class="media">
+                                        <span class="avatar">
+                                            <i class="{{ $notification->data['icon'] ?? 'fas fa-bell' }}"></i>
+                                        </span>
+                                        <div class="media-body">
+                                            <p class="noti-details">
+                                                <span class="noti-title">{{ $notification->data['title'] ?? 'Notificación' }}</span><br>
+                                                <small>{{ $notification->data['message'] ?? '' }}</small>
+                                                @if(isset($notification->data['steps']))
+                                                    <ul style="font-size: 11px; margin-top: 5px; padding-left: 15px;">
+                                                        @foreach($notification->data['steps'] as $step)
+                                                            <li>{{ $step }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </p>
+                                            <p class="noti-time">
+                                                <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
+                                            </p>
+                                        </div>
                                     </div>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="notification-message">
+                                <div class="text-center py-3">
+                                    <p class="text-muted">No tienes notificaciones pendientes</p>
                                 </div>
-                            </a>
-                        </li>
-                        <li class="notification-message">
-                            <a href="{{ url('activities') }}">
-                                <div class="media">
-                                    <span class="avatar">V</span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> changed
-                                            the task name <span class="noti-title">Appointment booking with payment
-                                                gateway</span></p>
-                                        <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="notification-message">
-                            <a href="{{ url('activities') }}">
-                                <div class="media">
-                                    <span class="avatar">L</span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">Misty Tison</span> added <span
-                                                class="noti-title">Domenic Houston</span> and <span
-                                                class="noti-title">Claire Mapes</span> to project <span
-                                                class="noti-title">Doctor available module</span></p>
-                                        <p class="noti-time"><span class="notification-time">8 mins ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="notification-message">
-                            <a href="{{ url('activities') }}">
-                                <div class="media">
-                                    <span class="avatar">G</span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">Rolland Webber</span> completed
-                                            task <span class="noti-title">Patient and Doctor video conferencing</span>
-                                        </p>
-                                        <p class="noti-time"><span class="notification-time">12 mins ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="notification-message">
-                            <a href="{{ url('activities') }}">
-                                <div class="media">
-                                    <span class="avatar">V</span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span> added
-                                            new task <span class="noti-title">Private chat module</span></p>
-                                        <p class="noti-time"><span class="notification-time">2 days ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                    <a href="{{ url('activities') }}">View all Notifications</a>
+                    <a href="{{ route('notifications.index') }}">Ver todas las notificaciones</a>
                 </div>
             </div>
         </li>
+        {{--}}
         <li class="nav-item dropdown d-none d-md-block">
             <a href="javascript:void(0);" id="open_msg_box" class="hasnotifications nav-link"><img
                     src="{{ URL::asset('/assets/img/icons/note-icon-02.svg') }}" alt=""><span
                     class="pulse"></span> </a>
         </li>
         {{--}}
+
         <li class="nav-item dropdown has-arrow user-profile-list">
             <a href="javascript:;" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                 <div class="user-names">
@@ -166,5 +142,5 @@
             <a class="dropdown-item" href="{{ url('login') }}">Logout</a>
         </div>
     </div>
-    {{--}}
+   {{--}}
 </div>

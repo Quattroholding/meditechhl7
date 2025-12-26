@@ -54,13 +54,25 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
     public function toArray(object $notifiable): array
     {
         return [
+            // Standard notification fields
+            'title' => 'Código de Autorización de Acceso',
+            'message' => 'El Dr. '.$this->practitioner->name.' solicita acceso a su historial clínico.',
+            'steps' => [
+                '🔑 Su código de autorización: **'.$this->authorizationCode->code.'**',
+                '⏰ Válido hasta: '.$this->authorizationCode->expires_at->format('d/m/Y H:i'),
+                '✅ Proporcione este código al médico para autorizar el acceso',
+            ],
+            'action' => null,
+            'priority' => 'high',
+            'icon' => 'fas fa-key',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'authorization_code',
             'authorization_code_id' => $this->authorizationCode->id,
             'practitioner_name' => $this->practitioner->name,
             'practitioner_id' => $this->practitioner->id,
             'code' => $this->authorizationCode->code,
             'expires_at' => $this->authorizationCode->expires_at->format('Y-m-d H:i:s'),
-            'message' => 'El Dr. '.$this->practitioner->name.' solicita acceso a su historial clínico. Código: '.$this->authorizationCode->code,
             'sent_at' => now()->toDateTimeString(),
         ];
     }

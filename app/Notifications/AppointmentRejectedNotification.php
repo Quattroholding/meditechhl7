@@ -54,6 +54,21 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
     public function toArray($notifiable)
     {
         return [
+            // Standard notification fields
+            'title' => 'Solicitud de Cita No Disponible',
+            'message' => 'Su solicitud de cita con Dr. '.$this->appointment->practitioner->name.' no está disponible.',
+            'steps' => array_filter([
+                '📅 Fecha solicitada: '.$this->appointment->original_requested_datetime->format('d/m/Y H:i'),
+                $this->rejectionReason ? '📝 Motivo: '.$this->rejectionReason : null,
+            ]),
+            'action' => [
+                'text' => 'Buscar Horarios Disponibles',
+                'url' => route('appointment.calendar'),
+            ],
+            'priority' => 'medium',
+            'icon' => 'fas fa-calendar-xmark',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'appointment_rejected',
             'appointment_id' => $this->appointment->id,
             'practitioner_name' => $this->appointment->practitioner->name,
@@ -68,7 +83,6 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'service_type' => $this->appointment->service_type,
             'duration_minutes' => $this->appointment->minutes_duration,
-            'message' => 'Su solicitud de cita con Dr. '.$this->appointment->practitioner->name.' ha sido rechazada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }

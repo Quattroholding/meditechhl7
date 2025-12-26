@@ -81,6 +81,25 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         $hoursUntil = now()->diffInHours($appointmentDate);
 
         return [
+            // Standard notification fields
+            'title' => 'Recordatorio de Cita Médica',
+            'message' => "Su cita con Dr. {$this->appointment->practitioner->name} es en {$hoursUntil} horas",
+            'steps' => array_filter([
+                '📅 Fecha: '.$appointmentDate->format('d/m/Y'),
+                '🕐 Hora: '.$appointmentDate->format('H:i'),
+                '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
+                $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
+                $this->appointment->consultingRoom->name ? '🚪 Consultorio: '.$this->appointment->consultingRoom->name : null,
+                $this->appointment->patient_instruction ? '📋 Instrucciones: '.$this->appointment->patient_instruction : null,
+            ]),
+            'action' => [
+                'text' => 'Ver Cita',
+                'url' => route('appointment.calendar'),
+            ],
+            'priority' => 'high',
+            'icon' => 'fas fa-bell',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'appointment_reminder',
             'appointment_id' => $this->appointment->id,
             'practitioner_name' => $this->appointment->practitioner->name,
@@ -97,7 +116,6 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
             'comment' => $this->appointment->comment,
             'patient_instruction' => $this->appointment->patient_instruction,
             'hours_until_appointment' => $hoursUntil,
-            'message' => "Recordatorio: Su cita con Dr. {$this->appointment->practitioner->name} es en {$hoursUntil} horas",
             'sent_at' => now()->toDateTimeString(),
         ];
     }

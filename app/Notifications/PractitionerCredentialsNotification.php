@@ -48,10 +48,29 @@ class PractitionerCredentialsNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
+        $userPrefix = $this->user->hasRole('doctor') ? 'Dr(a). ' : '';
+
         return [
+            // Standard notification fields
+            'title' => $this->first_time_login ? 'Bienvenido a SAMI' : 'Credenciales de Acceso',
+            'message' => $this->first_time_login
+                ? 'Bienvenido '.$userPrefix.$this->user->full_name.'. Sus credenciales de acceso han sido enviadas a su correo electrónico.'
+                : 'Sus credenciales de acceso han sido actualizadas.',
+            'steps' => [
+                '📧 Email: '.$this->user->email,
+                '🔑 Contraseña temporal enviada por correo',
+                '⚠️ Deberá cambiar su contraseña en el primer inicio de sesión',
+            ],
+            'action' => [
+                'text' => 'Iniciar Sesión',
+                'url' => route('login'),
+            ],
+            'priority' => 'high',
+            'icon' => 'fas fa-user-md',
+
+            // Legacy/specific fields (for backwards compatibility)
             'user_id' => $this->user->id,
             'temporary_password' => $this->temporaryPassword,
-            'message' => 'New practitioner credentials sent',
         ];
     }
 }

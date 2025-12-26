@@ -75,6 +75,22 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            // Standard notification fields
+            'title' => 'Nueva Factura Generada',
+            'message' => 'Se ha generado la factura '.$this->invoice->invoice_number.' por un monto de $'.number_format($this->invoice->total, 2).'.',
+            'steps' => [
+                'Período: '.$this->invoice->period_start->format('d/m/Y').' - '.$this->invoice->period_end->format('d/m/Y'),
+                'Fecha de vencimiento: '.$this->invoice->due_date->format('d/m/Y'),
+                'Plan: '.($this->invoice->subscription->package->name ?? 'N/A'),
+            ],
+            'action' => [
+                'text' => 'Ver Factura',
+                'url' => route('suscriptions.invoices.show', $this->invoice->id),
+            ],
+            'priority' => 'high',
+            'icon' => 'fas fa-file-invoice-dollar',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'invoice_generated',
             'invoice_id' => $this->invoice->id,
             'invoice_number' => $this->invoice->invoice_number,
@@ -87,7 +103,6 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
             'period_start' => $this->invoice->period_start->format('Y-m-d'),
             'period_end' => $this->invoice->period_end->format('Y-m-d'),
             'status' => $this->invoice->status->value,
-            'message' => 'Se ha generado una nueva factura por $'.number_format($this->invoice->total, 2).'. Vence el '.$this->invoice->due_date->format('d/m/Y').'.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }

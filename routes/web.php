@@ -201,6 +201,12 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/user-profile', function () {
         return view('user-profile');
     })->name('user.profile');
+
+    // Notifications Routes
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
 });
 
 Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', 'first.login']], function () {

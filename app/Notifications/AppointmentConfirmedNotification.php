@@ -73,6 +73,26 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
         $wasDateChanged = $this->appointment->wasDateTimeChanged();
 
         return [
+            // Standard notification fields
+            'title' => $wasDateChanged ? 'Cita Reprogramada y Confirmada' : 'Cita Médica Confirmada',
+            'message' => $wasDateChanged
+                ? 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido reprogramada y confirmada.'
+                : 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido confirmada.',
+            'steps' => array_filter([
+                '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
+                '🕐 Hora: '.$this->appointment->start->format('H:i'),
+                '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
+                $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
+                $this->appointment->patient_instruction ? '📋 Instrucciones: '.$this->appointment->patient_instruction : null,
+            ]),
+            'action' => [
+                'text' => 'Ver Calendario',
+                'url' => route('appointment.calendar'),
+            ],
+            'priority' => 'high',
+            'icon' => 'fas fa-calendar-check',
+
+            // Legacy/specific fields (for backwards compatibility)
             'type' => 'appointment_confirmed',
             'appointment_id' => $this->appointment->id,
             'practitioner_name' => $this->appointment->practitioner->name,
@@ -89,9 +109,6 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'comment' => $this->appointment->comment,
             'patient_instruction' => $this->appointment->patient_instruction,
-            'message' => $wasDateChanged
-                ? 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido reprogramada y confirmada.'
-                : 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido confirmada.',
             'sent_at' => now()->toDateTimeString(),
         ];
     }
