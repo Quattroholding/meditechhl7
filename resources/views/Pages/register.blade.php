@@ -18,7 +18,7 @@
                         <div class="login-right">
                             <div class="login-right-wrap" x-data>
                                 <div class="account-logo">
-                                    <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
+                                    <img src="{{url('images/logoSAMI.jpg')}}" alt="" style="margin: 0 auto;" width="60%">
                                 </div>
                                 <!-- Form -->
                                 <form action="{{ route('patient.public.store') }}" method="POST" id="form">

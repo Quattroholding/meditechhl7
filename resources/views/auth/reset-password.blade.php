@@ -18,7 +18,7 @@
                         <div class="login-right">
                             <div class="login-right-wrap">
                                 <div class="account-logo">
-                                    <img src="{{url('images/logoFull.png')}}" alt="" style="margin: 0 auto;" width="60%">
+                                    <img src="{{url('images/logoSAMI.jpg')}}" alt="" style="margin: 0 auto;" width="60%">
                                 </div>
                                 @include('partials.message')
                                 <form method="POST" action="{{ route('password.store') }}">
