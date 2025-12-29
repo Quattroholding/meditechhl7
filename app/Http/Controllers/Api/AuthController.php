@@ -94,7 +94,8 @@ class AuthController extends Controller
                 'last_name' => $request->family_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'default_client_id' => $userType === 'practitioner' ? 1 : null, // client_id = 1 para practitioners
+                'default_client_id' => $userType === 'practitioner' ? 1 : null, // client_id = 1 para practitioners,
+                'register_source'=>'app',
             ]);
         } else {
             $user->first_name = $request->given_name;

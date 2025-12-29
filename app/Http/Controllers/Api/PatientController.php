@@ -189,6 +189,7 @@ class PatientController extends Controller
                 $model->email = $email;
                 $model->password = $password;
                 $model->whatsapp_phone = $request->phone;
+                $model->register_source ='whatsapp';
                 $model->save();
             }
 

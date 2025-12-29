@@ -31,6 +31,7 @@ class User extends Authenticatable
         'whatsapp_phone',
         'active',
         'created_by',
+        'register_source',
     ];
 
     /**

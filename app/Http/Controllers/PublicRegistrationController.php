@@ -85,6 +85,8 @@ class PublicRegistrationController extends Controller
                 // 2. Obtener paquete
                 $package = Package::findOrFail($request->package_id);
 
+                // 2.1 Validar que ese co
+
                 // 3. Crear usuario admin
                 $user = new User;
                 $user->first_name = $request->first_name;
