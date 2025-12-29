@@ -43,7 +43,7 @@
 
         .register-header img {
             max-width: 150px;
-            margin-bottom: 20px;
+            margin: 0 auto;
         }
 
         .register-header h1 {
@@ -315,7 +315,7 @@
     <div class="register-container" x-data>
         <div class="register-card">
             <div class="register-header">
-                <div style="text-align: center;"><img src="{{ asset('images/logo1.png') }}" alt="SAMI"></div>
+                <div><img src="{{ asset('images/logoSAMIV.jpg') }}" alt="SAMI"></div>
                 <h1>Registro de Cliente</h1>
                 @if($selectedPackage)
                     <p>Plan seleccionado: <strong>{{ $selectedPackage->name }}</strong> - ${{ number_format($selectedPackage->base_price, 2) }}/mes</p>
