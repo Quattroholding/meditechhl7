@@ -226,9 +226,4 @@
             </div>
         </div>
     @endif
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-
-        });
-    </script>
 </div>

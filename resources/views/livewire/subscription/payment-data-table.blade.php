@@ -151,15 +151,16 @@
                                 @endcan
                                 @can('suscriptions.payments.verify')
                                     @if($payment->status->value === 'pending')
-                                        <a href="{{ route('suscriptions.payments.verify', $payment->id) }}"
+                                        <button type="button"
                                            class="btn btn-success btn-sm"
-                                           onclick="return confirm('¿Está seguro de que desea aprobar este pago?')"
+                                           wire:click="verifyPayment({{ $payment->id }})"
+                                           wire:confirm="¿Está seguro de que desea aprobar este pago?"
                                            title="Aprobar pago">
                                             <i class="fas fa-check"></i>
-                                        </a>
+                                        </button>
                                         <button type="button"
                                            class="btn btn-danger btn-sm"
-                                           onclick="rejectPayment({{ $payment->id }})"
+                                           wire:click="openRejectModal({{ $payment->id }})"
                                            title="Rechazar pago">
                                             <i class="fas fa-times"></i>
                                         </button>
@@ -191,55 +192,69 @@
         </div>
         @include('partials.pagination',['data'=>$payments])
     </div>
+
+    <!-- Reject Payment Modal -->
+    @if($showRejectModal)
+        <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-times-circle me-2"></i>Rechazar Pago
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" wire:click="closeRejectModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Atención:</strong> Esta acción rechazará el pago permanentemente.
+                        </div>
+                        <div class="mb-3">
+                            <label for="rejectReason" class="form-label">
+                                Motivo del rechazo <span class="text-danger">*</span>
+                            </label>
+                            <textarea
+                                wire:model="rejectReason"
+                                id="rejectReason"
+                                class="form-control @error('rejectReason') is-invalid @enderror"
+                                rows="4"
+                                placeholder="Ingrese el motivo por el cual rechaza este pago (mínimo 10 caracteres)..."
+                            ></textarea>
+                            @error('rejectReason')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Caracteres: <span x-text="$wire.rejectReason.length">0</span> / 1000
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="closeRejectModal">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" wire:click="rejectPayment">
+                            <i class="fas fa-ban me-1"></i> Rechazar Pago
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <script>
+        // Listen for Livewire toastr events
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showRejectdPaymentToastr', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>
 
-@push('scripts')
-<script>
-function rejectPayment(paymentId) {
-    Swal.fire({
-        title: '¿Rechazar este pago?',
-        text: 'Por favor ingrese el motivo del rechazo:',
-        input: 'textarea',
-        inputPlaceholder: 'Motivo del rechazo...',
-        inputAttributes: {
-            'aria-label': 'Motivo del rechazo',
-            'rows': 3
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Rechazar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        inputValidator: (value) => {
-            if (!value) {
-                return 'Debe ingresar un motivo para rechazar el pago'
-            }
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Create a form and submit it
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '{{ url("suscriptions/payments") }}/' + paymentId + '/reject';
 
-            // Add CSRF token
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-
-            // Add reason
-            const reasonInput = document.createElement('input');
-            reasonInput.type = 'hidden';
-            reasonInput.name = 'reason';
-            reasonInput.value = result.value;
-            form.appendChild(reasonInput);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-}
-</script>
-@endpush

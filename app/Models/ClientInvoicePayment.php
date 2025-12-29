@@ -108,7 +108,7 @@ class ClientInvoicePayment extends Model
 
     public function markAsFailed(?string $reason = null, ?int $rejectedBy = null): bool
     {
-        $this->status = PaymentStatus::FAILED;
+        $this->status = PaymentStatus::REJECTED;
 
         if ($reason) {
             $this->notes = ($this->notes ? $this->notes."\n" : '').'Rechazado: '.$reason;
