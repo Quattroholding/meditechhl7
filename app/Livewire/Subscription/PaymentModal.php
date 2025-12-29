@@ -6,7 +6,10 @@ use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
+use App\Models\User;
+use App\Notifications\PaymentRegisteredNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -132,7 +135,9 @@ class PaymentModal extends Component
         }
 
         try {
-            DB::transaction(function () {
+            $payment = null;
+
+            DB::transaction(function () use (&$payment) {
                 // Handle file upload if present
                 $receiptFilePath = null;
                 if ($this->receipt_file) {
@@ -164,6 +169,11 @@ class PaymentModal extends Component
                 $this->invoice->updatePaymentStatus();
             });
 
+            // Send notification to accounting department
+            if ($payment) {
+                $this->notifyAccountingDepartment($payment);
+            }
+
             $this->dispatch('showToastrPayment', [
                 'type' => 'success',
                 'message' => '¡Pago registrado exitosamente!',
@@ -180,6 +190,48 @@ class PaymentModal extends Component
                 'message' => 'Error al registrar el pago: '.$e->getMessage(),
             ]);
             session()->flash('message.error', 'Error al registrar el pago: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Notify accounting department about new payment registration
+     */
+    protected function notifyAccountingDepartment(ClientInvoicePayment $payment): void
+    {
+        try {
+            // Load payment with necessary relationships
+            $payment->load(['invoice.client', 'invoice.subscription.package', 'processedBy']);
+
+            // Get all active users with 'contabilidad' role
+            $accountingUsers = User::whereHas('roles', function ($query) {
+                $query->where('name', 'contabilidad');
+            })
+                ->where('active', true)
+                ->get();
+
+            // Send notification to all accounting users
+            if ($accountingUsers->isNotEmpty()) {
+                Notification::send($accountingUsers, new PaymentRegisteredNotification($payment));
+
+                \Log::info('Notificación de pago registrado enviada al departamento de contabilidad', [
+                    'payment_id' => $payment->id,
+                    'invoice_id' => $payment->client_invoice_id,
+                    'amount' => $payment->amount,
+                    'accounting_users_count' => $accountingUsers->count(),
+                ]);
+            } else {
+                \Log::warning('No se encontraron usuarios de contabilidad para notificar sobre el pago', [
+                    'payment_id' => $payment->id,
+                    'invoice_id' => $payment->client_invoice_id,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log error but don't fail the payment registration
+            \Log::error('Error al enviar notificación de pago a contabilidad', [
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 

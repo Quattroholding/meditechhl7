@@ -228,19 +228,7 @@
     @endif
     <script>
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastrPayment', (data) => {
-                // Livewire 3 passes data as array, get first element
-                const event = Array.isArray(data) ? data[0] : data;
 
-                if (event && event.type && event.message) {
-                    toastr[event.type](event.message, '', {
-                        closeButton: true,
-                        progressBar: true,
-                        positionClass: 'toast-top-right',
-                        timeOut: 5000,
-                    });
-                }
-            });
         });
     </script>
 </div>

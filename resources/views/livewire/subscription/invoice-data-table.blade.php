@@ -67,9 +67,11 @@
                     <th data-column="status" data-priority="7">
                         Estado
                     </th>
+                    {{--}}
                     <th data-column="yappy_pay" data-priority="1" >
                         Pagar con yappy
                     </th>
+                    {{--}}
                     <th data-column="acciones" data-priority="1" class="text-end">
                         Acciones
                     </th>
@@ -129,6 +131,7 @@
                                 </span>
                             </span>
                         </td>
+                        {{--}}
                         <td data-column="yappy_pay" data-priority="6" data-label="Pagar Con Yappy" class="text-end">
                             @if($invoice->amount_due > 0)
                                 <livewire:subscription.pay-invoice-yappy
@@ -137,6 +140,7 @@
                                 />
                             @endif
                         </td>
+                        {{--}}
                         <td data-column="acciones" data-priority="1" data-label="Acciones" >
                             <div class="btn-group btn-group-sm">
                                 @can('suscriptions.invoices.show')
@@ -146,13 +150,17 @@
                                         <i class="far fa-eye"></i>
                                     </a>
                                 @endcan
-                                @can('suscriptions.payments.store')
-                                    @if($invoice->amount_due > 0)
-                                        <button type="button" title="{{__('Registrar Pago')}}"
-                                                onclick="Livewire.dispatch('openPaymentModal', { invoiceId: {{ $invoice->id }} })"
-                                                class="btn btn-primary btn-sm">
-                                            <i class="fas fa-credit-card me-2"></i>
-                                        </button>
+                                @can('createPayment', $invoice)
+                                    <button type="button" title="{{__('Registrar Pago')}}"
+                                            onclick="Livewire.dispatch('openPaymentModal', { invoiceId: {{ $invoice->id }} })"
+                                            class="btn btn-primary btn-sm">
+                                        <i class="fas fa-credit-card me-2"></i>
+                                    </button>
+                                @elsecan('suscriptions.payments.store')
+                                    @if($invoice->hasPendingPaymentForFullAmount())
+                                        <span class="badge bg-warning text-dark" title="Hay un pago pendiente de aprobación por el monto total de esta factura">
+                                            <i class="fas fa-clock me-1"></i>Pago en proceso
+                                        </span>
                                     @endif
                                 @endcan
                                 @can('suscriptions.invoices.download')
@@ -268,6 +276,20 @@
                         btn.disabled = false;
                         btn.innerHTML = originalContent;
                         currentInvoiceId = null;
+                    });
+                }
+            });
+
+            Livewire.on('showToastrPayment', (data) => {
+                // Livewire 3 passes data as array, get first element
+                const event = Array.isArray(data) ? data[0] : data;
+
+                if (event && event.type && event.message) {
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
                     });
                 }
             });

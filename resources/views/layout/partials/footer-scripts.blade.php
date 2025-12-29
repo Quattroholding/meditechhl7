@@ -70,6 +70,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Custom JS -->
 <script src="{{ URL::asset('/assets/js/app.js') }}"></script>
 

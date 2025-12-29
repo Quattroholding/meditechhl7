@@ -265,4 +265,16 @@ class ClientInvoice extends BaseModel
 
         return false;
     }
+
+    /**
+     * Check if there is a pending payment for the full amount of the invoice
+     * This prevents users from submitting duplicate payments while one is being processed
+     */
+    public function hasPendingPaymentForFullAmount(): bool
+    {
+        return $this->payments()
+            ->where('status', PaymentStatus::PENDING->value)
+            ->where('amount', '>=', $this->amount_due)
+            ->exists();
+    }
 }
