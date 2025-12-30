@@ -320,7 +320,7 @@ class Create extends Component
                 'password' => $this->password,
             ];
 
-            Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            Mail::to($model->email)->bcc('atenorio@smartcarebilling.com')->send(new PatientWelcomeMail($patient,$client,$registrationData));
             //Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
 
 

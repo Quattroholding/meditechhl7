@@ -115,7 +115,7 @@
                                                 <td>{{ $user->email }}</td>
                                                 <td>
                                                     @foreach($user->roles as $userRole)
-                                                        <span class="badge bg-info-light me-1">
+                                                        <span class="badge bg-warning me-1">
                                                             {{ $userRole->name }}
                                                         </span>
                                                     @endforeach
