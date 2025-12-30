@@ -88,7 +88,7 @@
                                 <div class="col-4 col-md-4 col-xl-4" style="display: none" id="id_number">
                                     <div class=" input-block  local-forms ">
                                         <x-input-label for="id_number" :value="__('doctor.full_id_number')" />
-                                        <x-text-input class="block mt-1 w-full" type="number" name="id_number" value="" autofocus/>
+                                        <x-text-input class="block mt-1 w-full" type="text" name="id_number" value="" autofocus/>
                                         <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                                     </div>
                                 </div>
@@ -246,11 +246,13 @@
 
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
+                    case 2: 
+                        $("#medical_speciality").show();
                     case 6:
                         $("#client_id").show();
                         $("#id_type").show();
                         $("#id_number").show();
-                        $("#medical_speciality").show();
+                       /* $("#medical_speciality").show();*/
                         $("#gender").show();
                         $("#birthdate_user").show();
                         $("#physical_address").show();

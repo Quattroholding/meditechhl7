@@ -69,7 +69,7 @@ class PractitionerService
 
         // Contacto
         $practitioner->email = $user->email;
-        $practitioner->phone = $data['full_phone'] ?? $data['phone'] ?? $user->phone ?? null;
+        $practitioner->phone = $data['full_phone'] ?? $data['phone'] ?? $data['whatsapp'] ?? $user->whatsapp_phone ?? null;
 
         // Dirección y género
         $practitioner->address = $data['address'] ?? null;
