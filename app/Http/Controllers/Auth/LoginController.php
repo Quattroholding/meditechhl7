@@ -93,6 +93,9 @@ class LoginController extends Controller
             if ($user->hasRole('recepcionista')) {
                 $route = route('assistence.dashboard');
             }
+            if ($user->hasRole('admin client')) {
+                $route = route('client.dashboard');
+            }
 
             if ($user->hasRole('contabilidad')) {
                 $route = route('accounting.dashboard');
