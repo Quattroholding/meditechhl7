@@ -49,6 +49,7 @@ class RolScope implements Scope
                 ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
                 ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
                 ->where('users.default_client_id', $clientId)
+                ->where('active', true)
                 ->whereIn('roles.id', array_values($allowedRoles))
                 ->pluck('roles.id')
                 ->toArray();
