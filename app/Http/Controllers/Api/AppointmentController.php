@@ -185,8 +185,9 @@ class AppointmentController extends Controller
             ]);
 
             $app = Appointment::find($appointmentId);
+            $app->source_creation = 'whatsapp';
 
-            if ($app) {
+            if ($app->save()) {
                 PatientClient::create([
                     'patient_id' => $patient->id,
                     'client_id' => $client_id,
