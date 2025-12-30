@@ -21,9 +21,11 @@
                             @else
                                 <div class="text-center" style="margin: 40px;">
                                     <h2>Para poder crear citas debes primero registrar un paciente</h2>
+                                    @if(auth()->user()->can('patients.create'))
                                     <a  class="btn btn-primary" style="margin-top: 20px;" href="{{route('patient.create')}}">
                                         + {{__('Registrar paciente')}}
                                     </a>
+                                    @endif
                                 </div>
                             @endif
 
