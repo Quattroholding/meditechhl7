@@ -15,7 +15,7 @@
                 <div class="col-sm-12">
                     @cannot('create',auth()->user())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                           {!! __('user.plan_error_message',['link'=>"<a class='btn btn-primary' href='".route('suscriptions.show')."'>aqui</a>"]) !!}
+                           {!! __('user.plan_error_message',['link'=>"<a class='btn btn-primary' href='".route('suscriptions.show')."'>clic aqui</a>"]) !!}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endcannot

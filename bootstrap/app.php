@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
             'api.token' => \App\Http\Middleware\ApiTokenMiddleware::class,
             'concurrent.session' => \App\Http\Middleware\DetectConcurrentSession::class,
+            'debug.ip' => \App\Http\Middleware\DebugIpRestriction::class,
 
         ]);
 

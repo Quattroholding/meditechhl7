@@ -22,13 +22,30 @@
                             <div class="login-right-wrap">
                                 <div class="account-logo">
                                     <img src="{{url('images/logoSAMI.jpg')}}" alt="" style="margin: 0 auto;" width="60%">
-                                    @if(config('app.env') === 'local' || in_array(request()->ip(), ['200.12.208.98', '200.75.229.130', '200.8.97.119', '186.14.57.59']))
-                                    <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-primary">Admin</a>
-                                    <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-primary">Admin Client</a>
-                                    <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-primary">Doctor</a>
-                                    <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-primary">Paciente</a>
-                                    <a href="{{route('autologin',['role'=>'recepcionista'])}}" class="btn btn-primary">Recepcionista</a>
+                                    @php
+                                        $trustedIps = array_merge(
+                                            config('debug.trusted_ips', []),
+                                            config('debug.additional_ips', [])
+                                        );
+                                    @endphp
+                                    {{--}}
+                                    @if(config('debug.enabled') && in_array(request()->ip(), $trustedIps))
+                                        <div class="mt-3 p-3 border border-warning rounded" style="background-color: rgba(255, 193, 7, 0.1);">
+                                            <p class="mb-2" style="font-size: 0.875rem;"><strong>Debug Mode</strong></p>
+                                            <div class="d-flex flex-wrap mb-2" style="gap: 0.5rem;">
+                                                <a href="{{route('autologin',['role'=>'admin'])}}" class="btn btn-sm btn-primary">Admin (Random)</a>
+                                                <a href="{{route('autologin',['role'=>'admin client'])}}" class="btn btn-sm btn-primary">Admin Client (Random)</a>
+                                                <a href="{{route('autologin',['role'=>'doctor'])}}" class="btn btn-sm btn-primary">Doctor (Random)</a>
+                                                <a href="{{route('autologin',['role'=>'paciente'])}}" class="btn btn-sm btn-primary">Paciente (Random)</a>
+                                                <a href="{{route('autologin',['role'=>'recepcionista'])}}" class="btn btn-sm btn-primary">Recepcionista (Random)</a>
+                                            </div>
+                                            <hr class="my-2">
+                                            <a href="{{ route('debug.login') }}" class="btn btn-sm btn-success" style="width: 100%;">
+                                                <i class="fas fa-user-cog"></i> Seleccionar Usuario Específico
+                                            </a>
+                                        </div>
                                     @endif
+                                    {{--}}
                                 </div>
                                 @include('partials.message')
 

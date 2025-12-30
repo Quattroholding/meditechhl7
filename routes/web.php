@@ -112,6 +112,7 @@ Route::get('/reset-password', function () {
     return view('auth/reset-password');
 })->name('reset-password');
 
+/*
 Route::get('/autologin', function () {
 
     if (request()->get('role') == 'admin') {
@@ -142,6 +143,7 @@ Route::get('/autologin', function () {
     return redirect($route.'?show_salute=true');
 
 })->name('autologin');
+*/
 
 Route::get('/dash', function () {
     if (auth()->user()->hasRole('admin')) {
@@ -665,4 +667,13 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
         Route::delete('/{id}/delete', [SuscriptionPaymentController::class, 'destroy'])->middleware('permission:suscriptions.payments.destroy')->name('suscriptions.payments.destroy');
     });
 
+});
+
+// Debug Login Routes - Solo accesible desde IPs autorizadas
+Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\DebugLoginController::class, 'index'])
+        ->name('login');
+
+    Route::post('/login/{user}', [\App\Http\Controllers\DebugLoginController::class, 'loginAs'])
+        ->name('login.as');
 });
