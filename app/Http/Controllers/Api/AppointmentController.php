@@ -163,8 +163,8 @@ class AppointmentController extends Controller
             $rooms = ConsultingRoom::find($request->consulting_room_id);
             $client_id = $rooms->branch->client_id;
 
-            // Create appointment without global scope to avoid auth issues
-            $appointmentId = DB::table('appointments')->insertGetId([
+            // Create appointment using Eloquent to properly handle all fields
+            $app = Appointment::create([
                 'fhir_id' => 'appointment-'.Str::uuid(),
                 'identifier' => 'APT-'.mt_rand(1000000, 9999999),
                 'patient_id' => $patient->id,
@@ -179,15 +179,10 @@ class AppointmentController extends Controller
                 'medical_speciality_id' => $request->medical_speciality_id,
                 'consulting_room_id' => $request->consulting_room_id,
                 'original_requested_datetime' => $startTime,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'source_creation'=>'whatsapp'
+                'source_creation' => 'whatsapp',
             ]);
 
-            $app = Appointment::find($appointmentId);
-            $app->source_creation = 'whatsapp';
-
-            if ($app->save()) {
+            if ($app) {
                 PatientClient::create([
                     'patient_id' => $patient->id,
                     'client_id' => $client_id,
@@ -204,7 +199,7 @@ class AppointmentController extends Controller
             return response()->json([
                 'message' => 'Cita creada exitosamente',
                 'appointment' => [
-                    'id' => $appointmentId,
+                    'id' => $app->id,
                     'status' => 'proposed',
                     'service_type' => $request->service_type,
                     'description' => $request->description,
@@ -618,14 +613,13 @@ class AppointmentController extends Controller
             }
 
             $practitioner = Practitioner::find($request->practitioner_id);
-            $client_id =1;
-            if(!empty($request->get('consulting_room_id'))){
+            $client_id = 1;
+            if (! empty($request->get('consulting_room_id'))) {
                 $rooms = ConsultingRoom::find($request->consulting_room_id);
                 $client_id = $rooms->branch->client_id;
-            }elseif($practitioner->user){
+            } elseif ($practitioner->user) {
                 $client_id = $practitioner->user->default_client_id;
             }
-
 
             // Create appointment
             $appointment = Appointment::create([
