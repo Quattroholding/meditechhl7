@@ -1,7 +1,26 @@
+<style>
+
+@media (max-width:991px){
+    .logo{
+        width: 150px;
+        margin-left: 35px;
+    }
+
+}
+
+@media (max-width:991px){
+    .logo{
+        width: 115px;
+        margin-left: 30px;
+    }
+
+}
+
+</style>
 <div class="header">
     <div class="header-left">
         <a href="{{ route('dash') }}" class="logo">
-           <img src="{{url('images/logoSAMI.jpg')}}" alt="">
+           <img src="{{url('images/logoSAMI.jpg')}}" alt="" class="sami-logo">
         </a>
     </div>
     <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>

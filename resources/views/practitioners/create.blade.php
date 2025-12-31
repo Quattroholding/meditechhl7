@@ -165,7 +165,7 @@
 
                                     </div>
                                     {{--}}
-                                <dic class="row">
+                                <div class="row">
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- REGISTRY -->
                                         <div class="input-block local-forms">
@@ -175,14 +175,14 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-6">
-                                        <!-- LICENCE CODE -->
+                                        <!-- LICENSE CODE -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="licence_code" value="{{__('doctor.licence_code')}}" required="true"/>
                                             <x-text-input id="licence_code" class="block mt-1 w-full" type="licence_code" name="licence_code" :value="old('licence_code')" maxlength="60"/>
                                             <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
                                         </div>
                                     </div>
-                                </dic>
+                                </div>
 
                                 <div class="flex items-center justify-end mt-4">
                                     <div class="doctor-submit text-end">

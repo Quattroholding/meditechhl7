@@ -20,11 +20,7 @@ class RolScope implements Scope
             return;
         }
 
-        // Caso DOCTOR
-        if ($user->hasRole('admin')) {
-            $builder->whereIn('id', [1,3,5,6,7]);
-            return;
-        }
+      
 
         // Caso DOCTOR
         if ($user->hasRole('doctor') && $user->practitioner) {
