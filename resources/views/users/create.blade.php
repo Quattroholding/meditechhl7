@@ -78,14 +78,14 @@
                                 </div>
 
                                 <!-- ID NUMBER -->
-                                <div class="col-4 col-md-4 col-xl-4" style="display: none" id="id_type">
+                                <div class="col-6 col-md-6 col-xl-6" style="display: none" id="id_type">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="id_type" :value="__('doctor.id_type')" />
                                         <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
                                         <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                     </div>
                                 </div>
-                                <div class="col-4 col-md-4 col-xl-4" style="display: none" id="id_number">
+                                <div class="col-6 col-md-6 col-xl-6" style="display: none" id="id_number">
                                     <div class=" input-block  local-forms ">
                                         <x-input-label for="id_number" :value="__('doctor.full_id_number')" />
                                         <x-text-input class="block mt-1 w-full" type="text" name="id_number" value="" autofocus/>
@@ -163,9 +163,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                    <div class="col-6 col-md-6 col-xl-6" style="display: none" id="registry_field">
+                                        <!-- REGISTRY -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
+                                            <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" :value="old('registry')" maxlength="60"/>
+                                            <x-input-error :messages="$errors->get('registry')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-xl-6" style="display: none" id="licensecode_field">
+                                        <!-- LICENSE CODE -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="licence_code" value="{{__('doctor.licence_code')}}" required="true"/>
+                                            <x-text-input id="licence_code" class="block mt-1 w-full" type="licence_code" name="licence_code" :value="old('licence_code')" maxlength="60"/>
+                                            <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
+                                        </div>
+                                    </div>
+                                </div>
                             <div class="row" style="display: none" id="image">
                                 <!-- PICTURE -->
-                                <div class="col-12 col-md-6 col-xl-12">
+                                <div class="col-12 col-md-12 col-xl-12">
                                     <div class="form-group local-top-form">
                                         <label class="local-top" for="avatar">Avatar</label>
                                         <div class="settings-btn upload-files-avator">
@@ -243,11 +261,15 @@
                 $('#confirm_password').hide();
                 $('#maritalstatus').hide();
                 $('#whatsapp').hide();
+                $("#registry_field").hide();
+                $("#licensecode_field").hide();
 
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
                     case 2: 
                         $("#medical_speciality").show();
+                        $("#registry_field").show();
+                        $("#licensecode_field").show();
                     case 6:
                         $("#client_id").show();
                         $("#id_type").show();

@@ -82,9 +82,9 @@
                         @can('practitioners.view')
                         <li><a class="{{ Request::is('practitioners') ? 'active' : '' }}"  href="{{ route('practitioner.index') }}">{{ __('generic.list') }} {{ __('doctor.titles') }}</a></li>
                         @endcan
-                        @can('practitioners.create')
+                        {{--}}@can('practitioners.create')
                         <li><a class="{{ Request::is('practitioners/create') ? 'active' : '' }}"   href="{{ route('practitioner.create') }}">{{ __('generic.create') }} {{ __('doctor.title') }}</a></li>
-                        @endcan
+                        @endcan{{--}}
                     </ul>
                 </li>
                 @endcanany
