@@ -510,7 +510,7 @@ class AuthController extends Controller
     {
         switch ($type) {
             case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
-                return '/^[0-9]+-[0-9]+$/';
+                return '/^[0-9]+-[0-9]+-[0-9]+$/';
             case 'CE': // Cédula Extranjera: Similar a CC
                 return '/^[A-Z]+-[0-9]+-[0-9]+$/';
             case 'PA': // Pasaporte: N1234567
