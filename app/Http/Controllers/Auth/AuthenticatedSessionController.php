@@ -38,11 +38,17 @@ class AuthenticatedSessionController extends Controller
     {
         $request->session()->forget('client_'.auth()->user()->id);
 
+        $is_admin = auth()->user()->hasRole('admin');
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+        
+        if($is_admin)
+            return redirect('/debug/login');
+        
 
         return redirect('/');
     }
