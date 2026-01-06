@@ -20,6 +20,8 @@ class ClientInvoice extends BaseModel
         'discount_amount',
         'discount_percentage',
         'discount_reason',
+        'tax_rate',
+        'tax_amount',
         'total',
         'status',
         'due_date',
@@ -36,6 +38,8 @@ class ClientInvoice extends BaseModel
             'subtotal' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'discount_percentage' => 'decimal:2',
+            'tax_rate' => 'decimal:4',
+            'tax_amount' => 'decimal:2',
             'total' => 'decimal:2',
             'status' => InvoiceStatus::class,
             'due_date' => 'date',
@@ -202,7 +206,16 @@ class ClientInvoice extends BaseModel
     public function calculateTotal(): void
     {
         $this->subtotal = $this->items()->sum('total');
-        $this->total = $this->subtotal - $this->discount_amount;
+
+        // Calculate taxable amount (subtotal minus discount)
+        $taxableAmount = $this->subtotal - $this->discount_amount;
+
+        // Calculate ITBMS tax (7% by default on taxable amount)
+        $this->tax_amount = round($taxableAmount * ($this->tax_rate ?? 0.07), 2);
+
+        // Total = taxable amount + tax
+        $this->total = $taxableAmount + $this->tax_amount;
+
         $this->save();
     }
 
@@ -210,7 +223,15 @@ class ClientInvoice extends BaseModel
     {
         $this->discount_amount = $amount;
         $this->discount_reason = $reason;
-        $this->total = max(0, $this->subtotal - $amount);
+
+        // Calculate taxable amount (subtotal minus discount)
+        $taxableAmount = max(0, $this->subtotal - $amount);
+
+        // Calculate ITBMS tax (7% by default on taxable amount)
+        $this->tax_amount = round($taxableAmount * ($this->tax_rate ?? 0.07), 2);
+
+        // Total = taxable amount + tax
+        $this->total = $taxableAmount + $this->tax_amount;
 
         return $this->save();
     }

@@ -211,7 +211,7 @@
                 </div>
                 <div class="company-info">
                     <h2>{{ $company->name }}</h2>
-                    <p><strong>RUC:</strong> {{ $company->ruc }}-{{ $company->dv }}</p>
+                    <p><strong>RUC:</strong> {{ $company->ruc }} DV {{ $company->dv }}</p>
                     <p><strong>Email:</strong> {{ $company->email }}</p>
                     <p><strong>Teléfono:</strong> {{ $company->whatsapp }}</p>
                 </div>
@@ -301,9 +301,19 @@
                         </td>
                         <td class="text-right" style="color: #28a745;">-${{ number_format($invoice->discount_amount, 2) }}</td>
                     </tr>
+                    <tr>
+                        <td><strong>Subtotal después de descuento:</strong></td>
+                        <td class="text-right">${{ number_format($invoice->subtotal - $invoice->discount_amount, 2) }}</td>
+                    </tr>
                 @endif
+                <tr>
+                    <td>
+                        <strong>ITBMS ({{ number_format(($invoice->tax_rate ?? 0.07) * 100, 0) }}%):</strong>
+                    </td>
+                    <td class="text-right">${{ number_format($invoice->tax_amount ?? 0, 2) }}</td>
+                </tr>
                 <tr class="total-row">
-                    <td><strong>TOTAL:</strong></td>
+                    <td><strong>TOTAL A PAGAR:</strong></td>
                     <td class="text-right"><strong>${{ number_format($invoice->total, 2) }}</strong></td>
                 </tr>
             </table>

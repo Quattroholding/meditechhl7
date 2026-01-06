@@ -28,14 +28,53 @@
                                                 </div>
                                                 <div class="col-md-6 text-md-end">
                                                     <h6 class="mb-2">
-                                                        <strong>Total:</strong> ${{ number_format($invoice->total, 2) }}
+                                                        <strong>Total a Pagar:</strong> ${{ number_format($invoice->total, 2) }}
                                                     </h6>
                                                     <p class="mb-1">
                                                         <strong>Pagado:</strong> ${{ number_format($invoice->getTotalPaid(), 2) }}
                                                     </p>
                                                     <p class="mb-0 text-danger">
-                                                        <strong>Saldo:</strong> ${{ number_format($invoice->amount_due, 2) }}
+                                                        <strong>Saldo Pendiente:</strong> ${{ number_format($invoice->amount_due, 2) }}
                                                     </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Tax Breakdown -->
+                                            <div class="row px-3 py-2 mt-3 border-top">
+                                                <div class="col-12">
+                                                    <h6 class="text-muted mb-2" style="font-size: 0.9rem;">
+                                                        <i class="fas fa-info-circle me-1"></i>Desglose de Factura
+                                                    </h6>
+                                                    <div class="row small">
+                                                        <div class="col-6">
+                                                            <div class="d-flex justify-content-between mb-1">
+                                                                <span>Subtotal:</span>
+                                                                <span>${{ number_format($invoice->subtotal, 2) }}</span>
+                                                            </div>
+                                                            @if($invoice->discount_amount > 0)
+                                                                <div class="d-flex justify-content-between mb-1 text-success">
+                                                                    <span>Descuento:</span>
+                                                                    <span>-${{ number_format($invoice->discount_amount, 2) }}</span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <div class="d-flex justify-content-between mb-1">
+                                                                <span>
+                                                                    <strong>ITBMS ({{ number_format(($invoice->tax_rate ?? 0.07) * 100, 0) }}%):</strong>
+                                                                    <i class="fas fa-question-circle text-muted ms-1"
+                                                                       data-bs-toggle="tooltip"
+                                                                       title="Impuesto de Transferencia de Bienes Muebles y Servicios - Panamá"></i>
+                                                                </span>
+                                                                <span><strong>${{ number_format($invoice->tax_amount ?? 0, 2) }}</strong></span>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="text-muted" style="font-size: 0.75rem;">
+                                                                    Este impuesto se paga a la DGI
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

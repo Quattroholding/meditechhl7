@@ -91,9 +91,20 @@
                                                 </td>
                                                 <td class="text-end text-success">-${{ number_format($invoice->discount_amount, 2) }}</td>
                                             </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-end">Subtotal después de descuento:</td>
+                                                <td class="text-end">${{ number_format($invoice->subtotal - $invoice->discount_amount, 2) }}</td>
+                                            </tr>
                                         @endif
+                                        <tr>
+                                            <td colspan="3" class="text-end">
+                                                <strong>ITBMS ({{ number_format(($invoice->tax_rate ?? 0.07) * 100, 0) }}%):</strong>
+                                                <br><small class="text-muted">Impuesto sobre Bienes y Servicios</small>
+                                            </td>
+                                            <td class="text-end"><strong>${{ number_format($invoice->tax_amount ?? 0, 2) }}</strong></td>
+                                        </tr>
                                         <tr class="table-primary">
-                                            <td colspan="3" class="text-end"><h5 class="mb-0">Total:</h5></td>
+                                            <td colspan="3" class="text-end"><h5 class="mb-0">Total a Pagar:</h5></td>
                                             <td class="text-end"><h5 class="mb-0">${{ number_format($invoice->total, 2) }}</h5></td>
                                         </tr>
                                     </tfoot>

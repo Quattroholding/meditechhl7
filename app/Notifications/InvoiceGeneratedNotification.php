@@ -77,11 +77,13 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
         return [
             // Standard notification fields
             'title' => 'Nueva Factura Generada',
-            'message' => 'Se ha generado la factura '.$this->invoice->invoice_number.' por un monto de $'.number_format($this->invoice->total, 2).'.',
+            'message' => 'Se ha generado la factura '.$this->invoice->invoice_number.' por un monto de $'.number_format($this->invoice->total, 2).' (incluye ITBMS).',
             'steps' => [
                 'Período: '.$this->invoice->period_start->format('d/m/Y').' - '.$this->invoice->period_end->format('d/m/Y'),
                 'Fecha de vencimiento: '.$this->invoice->due_date->format('d/m/Y'),
                 'Plan: '.($this->invoice->subscription->package->name ?? 'N/A'),
+                'Subtotal: $'.number_format($this->invoice->subtotal, 2),
+                'ITBMS (7%): $'.number_format($this->invoice->tax_amount ?? 0, 2),
             ],
             'action' => [
                 'text' => 'Ver Factura',
@@ -98,6 +100,10 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
             'client_name' => $this->invoice->client->name,
             'subscription_id' => $this->invoice->subscription_id,
             'package_name' => $this->invoice->subscription->package->name ?? null,
+            'subtotal' => $this->invoice->subtotal,
+            'discount_amount' => $this->invoice->discount_amount,
+            'tax_rate' => $this->invoice->tax_rate ?? 0.07,
+            'tax_amount' => $this->invoice->tax_amount ?? 0,
             'total' => $this->invoice->total,
             'due_date' => $this->invoice->due_date->format('Y-m-d'),
             'period_start' => $this->invoice->period_start->format('Y-m-d'),
