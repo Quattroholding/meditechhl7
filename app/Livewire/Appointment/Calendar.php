@@ -125,6 +125,7 @@ class Calendar extends Component
 
     public function changeView($view)
     {
+
         $this->currentView = $view;
         $this->loadAppointments();
     }
@@ -205,8 +206,9 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%".$this->searchTerm."%'");
             });
         }
+
         if ($this->currentView == 'daily') {
-            $query->whereNotIn('status', ['pending', 'whaitlist', 'noshow', 'cancelled']);
+            $query->whereNotIn('status', ['pending', 'whaitlist', 'noshow', 'cancelled','booked']);
         }
 
         $this->appointments = $query->orderBy('start')->get()->toArray();
