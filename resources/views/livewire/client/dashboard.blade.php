@@ -14,10 +14,7 @@
                     Admin Dashboard
                 @endslot
             @endcomponent
-            <!-- /Page Header -->
-            @if(request()->has('show_salute') && request()->get('show_salute') === 'true')
-                @livewire('welcome-salute')
-            @endif
+    
 
             <div class="dashboard-init-v2">
                 <x-dashboard>
