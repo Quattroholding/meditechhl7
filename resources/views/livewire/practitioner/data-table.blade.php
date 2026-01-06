@@ -9,9 +9,9 @@
                     @slot('title')
 
                     @endslot
-                    {{--}}@slot('li_1')
+                    @slot('li_1')
                         {{ route('practitioner.create') }}
-                    @endslot{{--}}
+                    @endslot
                 @endcomponent
                 <!-- /Table Header -->
                 <div class="table-responsive">
