@@ -4,8 +4,10 @@
         <div class="card card-table show-entire">
             <div class="card-body">
                 <!-- Table Header -->
-                @php $show_create=false; if(auth()->user()->can('practitioners.create'))  $show_create=true; @endphp
-                @component('components.table-header',['show_create'=>$show_create])
+                {{--}}
+                BOTON DE PRACTITIONER CREATE ELIMINADO 6/1/26
+                @php $show_create=false; if(auth()->user()->can('practitioners.create'))  $show_create=true; @endphp {{--}}
+                @component('components.table-header',array('show_create'=>false))
                     @slot('title')
 
                     @endslot
