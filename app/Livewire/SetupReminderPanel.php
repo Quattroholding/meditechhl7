@@ -7,6 +7,7 @@ use App\Models\ConsultingRoom;
 use App\Models\PatientClient;
 use App\Models\RapidAccess;
 use App\Models\ServiceCatalog;
+use App\Models\SetupReminderConfig;
 use Livewire\Component;
 
 class SetupReminderPanel extends Component
@@ -58,7 +59,7 @@ class SetupReminderPanel extends Component
                         return null;
                     }
 
-                    $invoice = $subscription->invoices()->whereIn('status', ['pending', 'overdue']) ->first();
+                    $invoice = $subscription->invoices()->whereIn('status', ['pending', 'overdue'])->first();
 
                     return [
                         'key' => 'subscription',
@@ -279,6 +280,11 @@ class SetupReminderPanel extends Component
         $checks = $this->getSetupChecks();
 
         foreach ($checks as $key => $checkFunction) {
+            // ⚠️ NUEVO: Verificar si el recordatorio está activo en la configuración
+            if (! SetupReminderConfig::isReminderActive($key)) {
+                continue;
+            }
+
             // Skip if this check was already dismissed in this session
             if (session()->has("setup_reminder_dismissed_{$key}")) {
                 continue;
@@ -294,7 +300,8 @@ class SetupReminderPanel extends Component
                 $this->reminderMessage = $result['message'];
                 $this->reminderActionUrl = $result['action_url'] ?? null;
                 $this->reminderActionText = $result['action_text'] ?? null;
-                $this->isRequired = $result['is_required'] ?? true;
+                // ⚠️ NUEVO: Obtener is_required desde la configuración de la base de datos
+                $this->isRequired = SetupReminderConfig::isReminderRequired($key);
 
                 // Only auto-open panel if it's required, suggestions need manual click
                 $this->showPanel = $this->isRequired;
@@ -339,6 +346,11 @@ class SetupReminderPanel extends Component
         $this->isRequired = true;
 
         foreach ($checks as $key => $checkFunction) {
+            // ⚠️ NUEVO: Verificar si el recordatorio está activo en la configuración
+            if (! SetupReminderConfig::isReminderActive($key)) {
+                continue;
+            }
+
             // Skip if this check was already dismissed in this session
             if (session()->has("setup_reminder_dismissed_{$key}")) {
                 continue;
@@ -354,7 +366,8 @@ class SetupReminderPanel extends Component
                 $this->reminderMessage = $result['message'];
                 $this->reminderActionUrl = $result['action_url'] ?? null;
                 $this->reminderActionText = $result['action_text'] ?? null;
-                $this->isRequired = $result['is_required'] ?? true;
+                // ⚠️ NUEVO: Obtener is_required desde la configuración de la base de datos
+                $this->isRequired = SetupReminderConfig::isReminderRequired($key);
 
                 // Only auto-open panel if it's required
                 $this->showPanel = $this->isRequired;
