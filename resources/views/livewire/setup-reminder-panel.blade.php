@@ -33,7 +33,7 @@
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="text-black font-semibold text-sm leading-tight truncate text-center">
+                                <h4 class="text-white font-semibold text-sm leading-tight truncate text-center">
                                    {!! $reminderTitle !!}
                                 </h4>
                                 {{--}}
@@ -46,7 +46,7 @@
 
                         <button
                             wire:click="closePanel"
-                            class="flex-shrink-0 ml-2 p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all bg-danger"
+                            class="flex-shrink-0 ml-2 p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all"
                             aria-label="Cerrar"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
@@ -64,8 +64,8 @@
                         @if($reminderActionUrl && $reminderActionText)
                         <div class="">
                             <a
-                                href="{{ $reminderActionUrl }}" class="w-full btn btn-primary"
-                                {{--}}class="w-full inline-flex items-center justify-center px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors duration-150 shadow-sm hover:shadow"{{--}}
+                                href="{{ $reminderActionUrl }}"
+                                class="w-full inline-flex items-center justify-center px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors duration-150 shadow-sm hover:shadow"
                             >
                                 <i class="fa fa-plus"></i>
                                 {{ $reminderActionText }}
@@ -101,13 +101,13 @@
             <button
                 wire:click="togglePanel"
                 style="position: relative; display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: all 0.2s;"
-                class="bg-primary text-white hover:shadow-xl transform hover:scale-105 {{ $isRequired ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' }}"
+                class="text-white hover:shadow-xl transform hover:scale-105 {{ $isRequired ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' }}"
                 aria-label="Toggle reminders"
                 title="Recomendaciones"
             >
                 <!-- Notification badge (color depends on required/suggestion) -->
                 <span style="position: absolute; top: -4px; right: -4px; display: flex; height: 20px; width: 20px;">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full  {{ $isRequired ? 'bg-red-400' : 'bg-yellow-500' }}"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full  {{ $isRequired ? 'bg-red-400' : 'bg-blue-500' }}"></span>
                     <span style="position: relative; display: inline-flex; border-radius: 50%; height: 20px; width: 20px; align-items: center; justify-content: center;" class="{{ $isRequired ? 'bg-red-500' : 'bg-blue-500' }}">
                         <span class="text-white text-xs font-bold">
                             {{ $currentReminder === 'subscription' ? '1' : ($currentReminder === 'branch' ? '2' : ($currentReminder === 'consulting_room' ? '3' : ($currentReminder === 'patient' ? '4' : ($currentReminder === 'service_catalog' ? '5' : ($currentReminder === 'working_hours' ? '6' : '7'))))) }}
