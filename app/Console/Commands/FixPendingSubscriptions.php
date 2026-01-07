@@ -37,7 +37,7 @@ class FixPendingSubscriptions extends Command
                 'ID' => $subscription->id,
                 'Client' => $subscription->client->name,
                 'Package' => $subscription->package->name,
-                'Created' => $subscription->created_at->format('Y-m-d H:i'),
+                'Created' => $subscription->created_at,
             ];
         }
 

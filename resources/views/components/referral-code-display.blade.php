@@ -184,21 +184,54 @@
 
 <script>
 function copyReferralCode() {
-    const codeValue = document.getElementById('referral-code-value').innerText;
+    // Busca el texto del código directamente
+    const codeElement = document.getElementById('referral-code-value');
+    
+    if (!codeElement) {
+        alert('No se encontró el código para copiar');
+        return;
+    }
+    
+    const codeValue = codeElement.innerText.trim();
     const copyBtn = document.getElementById('copy-btn');
 
-    navigator.clipboard.writeText(codeValue).then(() => {
-        const originalHTML = copyBtn.innerHTML;
-        copyBtn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
-        copyBtn.classList.add('copied');
+    // Verifica si el navegador soporta clipboard API
+    if (!navigator.clipboard) {
+        // Fallback para navegadores que no soportan clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = codeValue;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showCopiedFeedback(copyBtn);
+        } catch (err) {
+            document.body.removeChild(textArea);
+            alert('Error al copiar: ' + err);
+        }
+        return;
+    }
 
-        setTimeout(() => {
-            copyBtn.innerHTML = originalHTML;
-            copyBtn.classList.remove('copied');
-        }, 2000);
+    navigator.clipboard.writeText(codeValue).then(() => {
+        showCopiedFeedback(copyBtn);
     }).catch(err => {
         alert('Error al copiar: ' + err);
     });
+}
+
+function showCopiedFeedback(button) {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+    button.classList.add('copied');
+
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('copied');
+    }, 2000);
 }
 
 function copyShareUrl(btn) {
