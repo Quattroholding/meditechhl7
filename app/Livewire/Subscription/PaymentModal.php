@@ -180,8 +180,8 @@ class PaymentModal extends Component
             ]);
 
             session()->flash('message.success', '¡Pago registrado exitosamente!');
-
             $this->dispatch('paymentSaved');
+            $this->dispatch('refreshSetupReminders');
             $this->closeModal();
 
         } catch (\Exception $e) {

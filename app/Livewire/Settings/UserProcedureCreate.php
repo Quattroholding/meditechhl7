@@ -88,6 +88,9 @@ class UserProcedureCreate extends Component
         );*/
         session()->flash('message.success', '¡Guardado exitosamente!');
 
+        // Dispatch event to refresh setup reminders
+        $this->dispatch('refreshSetupReminders');
+
         $this->created = UserProcedure::whereUserId(auth()->user()->id)->get();
 
         $this->reset(['cpt_id', 'current_price_cpt']);
@@ -120,6 +123,9 @@ class UserProcedureCreate extends Component
             type: 'success',
             message: '¡Guardado exitosamente!'
         );
+
+        // Dispatch event to refresh setup reminders
+        $this->dispatch('refreshSetupReminders');
 
         $this->created = UserProcedure::whereUserId(auth()->user()->id)->get();
 

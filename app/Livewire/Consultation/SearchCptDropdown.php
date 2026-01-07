@@ -84,6 +84,8 @@ class SearchCptDropdown extends Component
                 })->whereEncounterSectionId($this->consultation_field_id)->whereType('CLIENT')->get();
 
         }
+
+        $this->dispatch('refreshSetupReminders');
     }
 
     public function delete($id)

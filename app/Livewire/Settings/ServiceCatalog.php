@@ -213,6 +213,9 @@ class ServiceCatalog extends Component
             'created_by' => auth()->id(),
         ]);
 
+        // Dispatch event to refresh setup reminders
+        $this->dispatch('refreshSetupReminders');
+
         session()->flash('message.success', '¡Servicio guardado exitosamente!');
         $this->loadServices();
         $this->resetCptForm();
@@ -255,6 +258,9 @@ class ServiceCatalog extends Component
             'client_id' => $this->clientId,
             'practitioner_id' => $this->practitionerId,
         ]);
+
+        // Dispatch event to refresh setup reminders
+        $this->dispatch('refreshSetupReminders');
 
         $this->dispatch('showToastr', [
             'type' => 'success',

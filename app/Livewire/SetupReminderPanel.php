@@ -25,6 +25,8 @@ class SetupReminderPanel extends Component
 
     public bool $isRequired = true;
 
+    protected $listeners = ['refreshSetupReminders' => 'refreshReminders'];
+
     /**
      * Define all setup checks in order of priority
      * Each check should return null if passed, or an array with reminder details if failed
@@ -45,17 +47,41 @@ class SetupReminderPanel extends Component
 
                 // Verificar estados problemáticos de la suscripción
                 if ($user->hasSubscriptionPendingActivation()) {
+                    // Verificar si la factura tiene un pago pendiente registrado
+                    $hasPendingPayment = $subscription->invoices()
+                        ->whereIn('status', ['pending', 'overdue'])
+                        ->get()
+                        ->contains(fn ($invoice) => $invoice->hasPendingPaymentForFullAmount());
+
+                    // Si ya tiene un pago registrado (aunque sea pending), no mostrar recordatorio
+                    if ($hasPendingPayment) {
+                        return null;
+                    }
+
+                    $invoice = $subscription->invoices()->whereIn('status', ['pending', 'overdue']) ->first();
+
                     return [
                         'key' => 'subscription',
                         'title' => 'Activa tu Suscripción',
                         'message' => 'Tu suscripción está pendiente de activación. Completa el pago de tu primera factura para comenzar a usar todas las funcionalidades del sistema.',
-                        'action_url' => route('suscriptions.invoices.index'),
+                        'action_url' => route('suscriptions.invoices.show', $invoice->id),
                         'action_text' => 'Ver Facturas',
                         'is_required' => true,
                     ];
                 }
 
                 if ($user->hasSubscriptionPastDue()) {
+                    // Verificar si las facturas vencidas tienen pagos pendientes registrados
+                    $hasPendingPayment = $subscription->invoices()
+                        ->whereIn('status', ['pending', 'overdue'])
+                        ->get()
+                        ->contains(fn ($invoice) => $invoice->hasPendingPaymentForFullAmount());
+
+                    // Si ya tiene un pago registrado (aunque sea pending), no mostrar recordatorio
+                    if ($hasPendingPayment) {
+                        return null;
+                    }
+
                     $daysRemaining = $user->getDaysUntilSubscriptionAction();
                     $daysText = $daysRemaining > 0 ? " Tienes {$daysRemaining} días antes de la suspensión." : '';
 
@@ -70,6 +96,17 @@ class SetupReminderPanel extends Component
                 }
 
                 if ($user->hasSubscriptionSuspended()) {
+                    // Verificar si las facturas tienen pagos pendientes registrados
+                    $hasPendingPayment = $subscription->invoices()
+                        ->whereIn('status', ['pending', 'overdue'])
+                        ->get()
+                        ->contains(fn ($invoice) => $invoice->hasPendingPaymentForFullAmount());
+
+                    // Si ya tiene un pago registrado (aunque sea pending), no mostrar recordatorio
+                    if ($hasPendingPayment) {
+                        return null;
+                    }
+
                     $daysRemaining = $user->getDaysUntilSubscriptionAction();
                     $daysText = $daysRemaining > 0 ? " Tienes {$daysRemaining} días para regularizar." : '';
 
@@ -324,6 +361,14 @@ class SetupReminderPanel extends Component
                 break;
             }
         }
+    }
+
+    /**
+     * Refresh reminders when called from other components
+     */
+    public function refreshReminders(): void
+    {
+        $this->recheckReminders();
     }
 
     public function render()

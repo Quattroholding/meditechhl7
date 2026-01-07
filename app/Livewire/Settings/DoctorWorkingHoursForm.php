@@ -139,6 +139,9 @@ class DoctorWorkingHoursForm extends Component
             }
         }
 
+        // Dispatch event to refresh setup reminders
+        $this->dispatch('refreshSetupReminders');
+
         session()->flash('message.success', 'Horario actualizado con éxito.');
     }
 
