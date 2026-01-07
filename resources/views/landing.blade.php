@@ -564,5 +564,85 @@
         }
     });
     </script>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5078316172" target="_blank" class="whatsapp-float" title="Agendar Cita por WhatsApp">
+        <img src="{{ asset('images/whatsapp.png') }}" alt="WhatsApp">
+        <span class="whatsapp-text">Agendar Cita</span>
+    </a>
+
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        .whatsapp-float:hover {
+            background: #128C7E;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+            color: white;
+        }
+
+        .whatsapp-float img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .whatsapp-text {
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        /* Responsive: Solo mostrar icono en móviles */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                padding: 15px;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                justify-content: center;
+            }
+
+            .whatsapp-text {
+                display: none;
+            }
+
+            .whatsapp-float img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        /* Animación de entrada */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .whatsapp-float {
+            animation: slideInUp 0.5s ease-out;
+        }
+    </style>
 </body>
 </html>
