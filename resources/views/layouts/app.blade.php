@@ -55,6 +55,12 @@
     </div>
     @component('components.modal-popup') @endcomponent
     <div class="sidebar-overlay" data-reff=""></div>
+
+    <!-- Setup Reminder Panel - Outside main-wrapper for proper fixed positioning -->
+    @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
+        <livewire:setup-reminder-panel />
+    @endif
+
     @include('layout.partials.footer-scripts')
 
     @stack('scripts')
