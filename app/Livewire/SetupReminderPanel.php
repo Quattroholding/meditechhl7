@@ -303,8 +303,11 @@ class SetupReminderPanel extends Component
                 // ⚠️ NUEVO: Obtener is_required desde la configuración de la base de datos
                 $this->isRequired = SetupReminderConfig::isReminderRequired($key);
 
-                // Only auto-open panel if it's required, suggestions need manual click
-                $this->showPanel = $this->isRequired;
+                // ⚠️ NUEVO: No abrir el panel si el usuario ya está en la página de la acción
+                $isOnActionPage = $this->reminderActionUrl && url()->current() === $this->reminderActionUrl;
+
+                // Only auto-open panel if it's required AND user is not already on the action page
+                $this->showPanel = $this->isRequired && ! $isOnActionPage;
                 break;
             }
         }
@@ -369,8 +372,11 @@ class SetupReminderPanel extends Component
                 // ⚠️ NUEVO: Obtener is_required desde la configuración de la base de datos
                 $this->isRequired = SetupReminderConfig::isReminderRequired($key);
 
-                // Only auto-open panel if it's required
-                $this->showPanel = $this->isRequired;
+                // ⚠️ NUEVO: No abrir el panel si el usuario ya está en la página de la acción
+                $isOnActionPage = $this->reminderActionUrl && url()->current() === $this->reminderActionUrl;
+
+                // Only auto-open panel if it's required AND user is not already on the action page
+                $this->showPanel = $this->isRequired && ! $isOnActionPage;
                 break;
             }
         }
