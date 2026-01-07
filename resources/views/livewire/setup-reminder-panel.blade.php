@@ -56,7 +56,7 @@
                     </div>
 
                     <!-- Content -->
-                    <div class="px-4">
+                    <div class="px-4 py-3">
                         <p class="text-gray-700 text-xs leading-relaxed mb-3 text-center">
                             {{ $reminderMessage }}
                         </p>
