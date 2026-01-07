@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EncounterSecctionSeeder::class);
         $this->call(EncounterQuestionsSeeder::class);
         $this->call(RapidAccessSeeder::class);
-
+        $this->call(SetupReminderConfigSeeder::class);
         //$this->call(ClientSeeder::class);
         $this->call(InsuranceCompanySeeder::class);
         // $this->call(UserSeeder::class);
