@@ -213,7 +213,7 @@ class Calendar extends Component
 
         $this->appointments = $query->orderBy('start')->get()->toArray();
 
-        if($this->currentView == 'weekly' && auth()->user()->id==1) dd($this->appointments);
+        //if($this->currentView == 'weekly' && auth()->user()->id==1) dd($this->appointments);
     }
 
     #[On('loadStats')]
