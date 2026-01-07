@@ -103,6 +103,7 @@
                 style="position: relative; display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: all 0.2s;"
                 class="bg-primary text-white hover:shadow-xl transform hover:scale-105 {{ $isRequired ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' }}"
                 aria-label="Toggle reminders"
+                title="Recomendaciones"
             >
                 <!-- Notification badge (color depends on required/suggestion) -->
                 <span style="position: absolute; top: -4px; right: -4px; display: flex; height: 20px; width: 20px;">
@@ -114,9 +115,9 @@
                     </span>
                 </span>
 
-                <!-- Icon -->
+                <!-- Icon - Lightbulb -->
                 <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                 </svg>
             </button>
         </div>
