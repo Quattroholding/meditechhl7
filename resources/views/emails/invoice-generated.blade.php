@@ -20,9 +20,48 @@
             <x-email.info-grid :items="[
                 'Número de Factura' => $invoice->invoice_number,
                 'Período' => $invoice->period_start->format('d/m/Y') . ' - ' . $invoice->period_end->format('d/m/Y'),
-                'Total a pagar' => '$' . number_format($invoice->total, 2),
                 'Fecha de vencimiento' => $invoice->due_date->format('d/m/Y')
             ]" />
+        </div>
+
+        {{-- Desglose de Costos --}}
+        <div style="background: #ffffff; border: 2px solid #e3f2fd; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <h4 style="color: #1976d2; margin: 0 0 15px; font-size: 16px; border-bottom: 2px solid #e3f2fd; padding-bottom: 10px;">
+                💰 Desglose de Costos
+            </h4>
+
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 10px 0; color: #666;">Subtotal:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: 600;">${{ number_format($invoice->subtotal, 2) }}</td>
+                </tr>
+                @if($invoice->discount_amount > 0)
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 10px 0; color: #28a745;">Descuento:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: 600; color: #28a745;">-${{ number_format($invoice->discount_amount, 2) }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e0e0e0;">
+                    <td style="padding: 10px 0; color: #666;">Subtotal después de descuento:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: 600;">${{ number_format($invoice->subtotal - $invoice->discount_amount, 2) }}</td>
+                </tr>
+                @endif
+                <tr style="border-bottom: 2px solid #1976d2;">
+                    <td style="padding: 10px 0; color: #666;">
+                        <strong>ITBMS ({{ number_format(($invoice->tax_rate ?? 0.07) * 100, 0) }}%):</strong>
+                    </td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: 600; color: #1976d2;">
+                        <strong>${{ number_format($invoice->tax_amount ?? 0, 2) }}</strong>
+                    </td>
+                </tr>
+                <tr style="background-color: #e3f2fd;">
+                    <td style="padding: 15px 10px;">
+                        <strong style="font-size: 18px; color: #1976d2;">TOTAL A PAGAR:</strong>
+                    </td>
+                    <td style="padding: 15px 10px; text-align: right;">
+                        <strong style="font-size: 22px; color: #1976d2;">${{ number_format($invoice->total, 2) }}</strong>
+                    </td>
+                </tr>
+            </table>
         </div>
     </x-email.message-box>
 
@@ -42,7 +81,7 @@
                     'Banco' => 'Banco General',
                     'Cuenta' => '04-99-99-999999-9',
                     'Tipo' => 'Cuenta Corriente',
-                    'Beneficiario' => 'Meditech S.A.'
+                    'Beneficiario' => 'Soluciones Meditec S.A.'
                 ]" />
             </div>
 

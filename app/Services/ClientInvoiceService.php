@@ -35,6 +35,8 @@ class ClientInvoiceService
             $invoice->due_date = $periodStart->copy()->addDays(7);
             $invoice->status = InvoiceStatus::PENDING;
             $invoice->subtotal = 0;
+            $invoice->tax_rate = 0.07; // 7% ITBMS Panama
+            $invoice->tax_amount = 0;
             $invoice->total = 0;
             $invoice->save();
 
@@ -80,6 +82,8 @@ class ClientInvoiceService
             $invoice->due_date = $startDate->copy()->addDays(7);
             $invoice->status = InvoiceStatus::PENDING;
             $invoice->subtotal = 0;
+            $invoice->tax_rate = 0.07; // 7% ITBMS Panama
+            $invoice->tax_amount = 0;
             $invoice->total = 0;
             $invoice->save();
 
@@ -224,7 +228,7 @@ class ClientInvoiceService
 
     public function processOverdue(): int
     {
-        $overdueInvoices = ClientInvoice::whereIn("status",[InvoiceStatus::PENDING->value, InvoiceStatus::PARTIALLY_PAID->value])
+        $overdueInvoices = ClientInvoice::whereIn('status', [InvoiceStatus::PENDING->value, InvoiceStatus::PARTIALLY_PAID->value])
             ->where('due_date', '<', now())
             ->get();
 

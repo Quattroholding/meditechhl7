@@ -48,7 +48,7 @@ class Calendar extends Component
 
     public $startHour = 6; // Hora de inicio del calendario
 
-    public $endHour = 21; // Hora de fin del calendario
+    public $endHour = 24; // Hora de fin del calendario (medianoche)
 
     public $showTimeBlockConfig = false; // Para mostrar/ocultar configuración
 
@@ -74,7 +74,7 @@ class Calendar extends Component
 
         $this->timeBlockMinutes = session('calendar.time_block_minutes', 30);
         $this->startHour = session('calendar.start_hour', 6);
-        $this->endHour = session('calendar.end_hour', 21);
+        $this->endHour = session('calendar.end_hour', 24);
         if (auth()->user()->hasRole('paciente')) {
             $this->patient_id = auth()->user()->patient->id;
             $this->currentView = 'monthly';
@@ -125,6 +125,7 @@ class Calendar extends Component
 
     public function changeView($view)
     {
+
         $this->currentView = $view;
         $this->loadAppointments();
     }
@@ -205,11 +206,20 @@ class Calendar extends Component
                 $q->orWhereRaw("practitioners.name like '%".$this->searchTerm."%'");
             });
         }
+
         if ($this->currentView == 'daily') {
             $query->whereNotIn('status', ['pending', 'whaitlist', 'noshow', 'cancelled']);
         }
 
-        $this->appointments = $query->orderBy('start')->get()->toArray();
+        // Convertir a array manualmente para preservar la zona horaria local
+        $this->appointments = $query->orderBy('start')->get()->map(function ($appointment) {
+            $data = $appointment->toArray();
+            // Mantener las fechas en la zona horaria local sin conversión a UTC
+            $data['start'] = $appointment->start->format('Y-m-d H:i:s');
+            $data['end'] = $appointment->end->format('Y-m-d H:i:s');
+            return $data;
+        })->toArray();
+
     }
 
     #[On('loadStats')]
@@ -565,7 +575,7 @@ class Calendar extends Component
 
     public function calculateAppointmentPosition($appointment, $blockHeight = 60)
     {
-        $appointmentTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
+        $appointmentTime = Carbon::parse($appointment['start']);
         $appointmentMinutes = $appointmentTime->minute;
 
         // Calcular posición dentro del bloque
