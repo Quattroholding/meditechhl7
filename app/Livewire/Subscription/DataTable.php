@@ -83,8 +83,7 @@ class DataTable extends Component
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->whereHas('client', function ($clientQuery) {
-                        $clientQuery->where('name', 'like', '%'.$this->search.'%')
-                            ->orWhere('identifier', 'like', '%'.$this->search.'%');
+                        $clientQuery->where('name', 'like', '%'.$this->search.'%');
                     })
                         ->orWhereHas('package', function ($packageQuery) {
                             $packageQuery->where('name', 'like', '%'.$this->search.'%');
