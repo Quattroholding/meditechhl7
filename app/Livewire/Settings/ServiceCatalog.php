@@ -195,7 +195,7 @@ class ServiceCatalog extends Component
         $cpt = CptCode::whereId($this->cpt_id)->first();
 
         ServiceCatalogModel::create([
-            'name' => $cpt->description_es ?? $cpt->description,
+            'name' => $cpt->tpye.' '.$cpt->code,
             'description' => $cpt->description_es ?? $cpt->description,
             'cpt_code' => $cpt->code,
             'service_type' => 'procedure',

@@ -93,7 +93,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        if ($this->hasRole('doctor')) {
+        if ($this->hasRole('doctor') && $this->practitioner) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
                 $prefix='Dra ';*/
