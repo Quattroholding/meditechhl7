@@ -128,6 +128,7 @@ class MedicalDirectory extends Component
                     $q->where('medical_speciality_id', $this->selectedSpecialty);
                 });
             })
+            ->withActiveSubscription()
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 

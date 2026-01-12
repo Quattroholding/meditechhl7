@@ -266,7 +266,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['suscriptions.show', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
+                @canany(['suscriptions.show', 'suscriptions.manage', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                         <i class="fa fa-dollar-sign"></i></span>
@@ -274,9 +274,13 @@
                         <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
-                        @can('suscriptions.show')
-                            <li><a class="{{ Request::is('suscriptions') ? 'active' : '' }}"  href="{{ route('suscriptions.show') }}">{{ __('Ver Plan') }}</a></li>
-                        @endcan
+                        @role('admin')
+                            <li><a class="{{ Request::is('suscriptions/list') ? 'active' : '' }}"  href="{{ route('suscriptions.index') }}">{{ __('Lista de Suscripciones') }}</a></li>
+                        @else
+                            @can('suscriptions.show')
+                                <li><a class="{{ Request::is('suscriptions') ? 'active' : '' }}"  href="{{ route('suscriptions.show') }}">{{ __('Ver Plan') }}</a></li>
+                            @endcan
+                        @endrole
                         @can('suscriptions.invoices.index')
                             <li><a class="{{ Request::is('suscriptions/invoices') ? 'active' : '' }}"  href="{{ route('suscriptions.invoices.index') }}">{{ __('Facturas') }}</a></li>
                         @endcan

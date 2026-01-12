@@ -155,7 +155,10 @@ class Calendar extends Component
 
     public function loadDoctors()
     {
-        $this->doctors = Practitioner::get()->pluck('name', 'id')->toArray();
+        $this->doctors = Practitioner::withActiveSubscription()
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function loadEspecialidades()
@@ -217,6 +220,7 @@ class Calendar extends Component
             // Mantener las fechas en la zona horaria local sin conversión a UTC
             $data['start'] = $appointment->start->format('Y-m-d H:i:s');
             $data['end'] = $appointment->end->format('Y-m-d H:i:s');
+
             return $data;
         })->toArray();
 
@@ -244,7 +248,7 @@ class Calendar extends Component
 
     public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal', $modalTitle,$date,$time);
+        $this->dispatch('openAppointmentModal', $modalTitle, $date, $time);
     }
 
     public function editAppointment($appointmentId)

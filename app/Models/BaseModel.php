@@ -33,20 +33,22 @@ class BaseModel extends Model
             $changes = $model->isDirty() ? $model->getDirty() : false;
 
             if (count($changes) > 0) {
+                $user_id = User::first()->id;
+                $user_name = 'Administrador Del Sistema';
+                if (Auth::check()) {
+                    $user_id = Auth::getUser()->id;
+                    $user_name = Auth::getUser()->full_name;
+                }
+
                 foreach ($changes as $attr => $value) {
                     if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION']) && ! is_array($model->$attr) && ! is_array($model->getOriginal($attr))) {
                         $oldValue = self::valueToString($model->getOriginal($attr));
                         $newValue = self::valueToString($model->$attr);
 
                         $accion = "Se modifico la columna ($attr) : de [{$oldValue}] a [{$newValue}]";
-                        $user_id = User::first()->id;
-                        $user_name = 'Administrador Del Sistema';
-                        if (Auth::check()) {
-                            $user_id = Auth::getUser()->id;
-                            $user_name = Auth::getUser()->full_name;
-                        }
 
-                        return UserLog::create([
+                        // Registrar cambio en UserLog
+                        UserLog::create([
                             'user_id' => $user_id,
                             'user_name' => $user_name,
                             'tabla' => $model->getTable(),
@@ -57,6 +59,8 @@ class BaseModel extends Model
                             'new_value' => $newValue,
                             'observation' => $accion,
                         ]);
+
+                        // Registrar cambio de estado en StatusHistoryLog
                         if (($attr == 'status' or $attr == 'estatus') && ! empty($model->$attr)) {
                             StatusHistoryLog::create([
                                 'table_name' => $model->getTable(),

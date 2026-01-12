@@ -176,6 +176,17 @@ class Practitioner extends BaseModel
     }
 
     /**
+     * Scope para filtrar solo practitioners cuyo cliente tiene suscripción activa o en periodo de gracia
+     * Incluye suscripciones: active, trial, y past_due dentro del periodo de gracia
+     */
+    public function scopeWithActiveSubscription($query)
+    {
+        return $query->whereHas('user.clients.subscriptions', function ($q) {
+            $q->activeOrInGracePeriod();
+        });
+    }
+
+    /**
      * Get completed survey responses for this practitioner
      */
     public function completedSurveyResponses()

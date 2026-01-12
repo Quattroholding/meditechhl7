@@ -108,6 +108,29 @@ class ClientSubscription extends BaseModel
             ->where('next_billing_date', '<=', now());
     }
 
+    /**
+     * Scope para suscripciones activas o en periodo de gracia
+     * Incluye: active, trial, y past_due que están en periodo de gracia
+     */
+    public function scopeActiveOrInGracePeriod(Builder $query): void
+    {
+        $gracePeriodDays = config('subscriptions.grace_period_days', 7);
+
+        $query->where(function ($q) use ($gracePeriodDays) {
+            // Suscripciones activas o en trial
+            $q->whereIn('status', [
+                SubscriptionStatus::ACTIVE->value,
+                SubscriptionStatus::TRIAL->value,
+            ])
+            // O suscripciones past_due que están dentro del periodo de gracia
+                ->orWhere(function ($q2) use ($gracePeriodDays) {
+                    $q2->where('status', SubscriptionStatus::PAST_DUE->value)
+                        ->whereNotNull('current_period_ends_at')
+                        ->whereRaw('DATE_ADD(current_period_ends_at, INTERVAL ? DAY) >= NOW()', [$gracePeriodDays]);
+                });
+        });
+    }
+
     // Accessors
     protected function isOnTrial(): Attribute
     {
@@ -136,7 +159,7 @@ class ClientSubscription extends BaseModel
                     return null;
                 }
 
-                return now()->diffInDays($this->next_billing_date, false);
+                return (int) now()->diffInDays($this->next_billing_date, false);
             }
         );
     }

@@ -120,7 +120,7 @@ class ModalSave extends Component
     }
 
     #[On('openAppointmentModal')]
-    public function openModal($title='',$date, $time)
+    public function openModal($title, $date, $time)
     {
         $this->resetForm($date, $time);
         $this->showModal = true;
@@ -137,7 +137,7 @@ class ModalSave extends Component
         }
     }
 
-    public function resetForm($date=null, $time='')
+    public function resetForm($date = null, $time = '')
     {
         $this->consulting_room_id = '';
         $this->medical_speciality_id = '';
@@ -171,12 +171,16 @@ class ModalSave extends Component
 
     public function loadDoctors()
     {
-        if (!auth()->user()->practitioner) {
+        if (! auth()->user()->practitioner) {
             $this->practitioners = Practitioner::when($this->medical_speciality_id, function ($q) {
                 $q->whereHas('qualifications', function ($q) {
                     $q->where('medical_speciality_id', $this->medical_speciality_id);
                 });
-            })->get()->pluck('name', 'id')->toArray();
+            })
+                ->withActiveSubscription()
+                ->get()
+                ->pluck('name', 'id')
+                ->toArray();
         }
 
     }
@@ -225,7 +229,7 @@ class ModalSave extends Component
     public function updatedMedicalSpecialityId($value)
     {
         \Log::info('updatedMedicalSpecialityId called', ['speciality_id' => $value]);
-        if (!auth()->user()->practitioner) {
+        if (! auth()->user()->practitioner) {
             // Recargar la lista de doctores filtrados por especialidad
             $this->loadDoctors();
             // Limpiar doctor y consultorios seleccionados
@@ -600,7 +604,7 @@ class ModalSave extends Component
             $this->notes = $this->appointment->comment;
             $this->canEdit = auth()->user()->can('edit', $this->appointment);
             $this->showModal = true;
-            //$this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
+            // $this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
         }
     }
 

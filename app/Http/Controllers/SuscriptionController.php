@@ -13,6 +13,11 @@ class SuscriptionController extends Controller
         protected SubscriptionService $subscriptionService
     ) {}
 
+    public function index()
+    {
+        return view('subscriptions.index');
+    }
+
     public function show()
     {
         $client = auth()->user()->getCurrentClient();
@@ -50,7 +55,7 @@ class SuscriptionController extends Controller
         // Get all active packages
         $packages = Package::where('is_active', true)
             ->where('id', '!=', $subscription->package_id)
-            ->where('id','<>',4)
+            ->where('id', '<>', 4)
             ->orderBy('base_price', 'asc')
             ->get();
 

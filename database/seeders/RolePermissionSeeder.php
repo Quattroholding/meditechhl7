@@ -134,6 +134,7 @@ class RolePermissionSeeder extends Seeder
 
             // Suscription access
             ['name' => 'suscriptions.show', 'description' => 'Ver plan de suscripcion', 'module' => 'suscripciones'],
+            ['name' => 'suscriptions.manage', 'description' => 'Ver lista de suscripciones', 'module' => 'suscripciones'],
             ['name' => 'suscriptions.upgrade', 'description' => 'Actualizar plan de suscripcion', 'module' => 'suscripciones'],
             ['name' => 'suscriptions.invoices.index', 'description' => 'Ver facturas de suscripciones', 'module' => 'suscripciones'],
             ['name' => 'suscriptions.invoices.pending', 'description' => 'Ver facturas de suscripciones pendientes', 'module' => 'suscripciones'],

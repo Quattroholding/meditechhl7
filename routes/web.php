@@ -614,7 +614,12 @@ Route::middleware(['auth', 'first.login'])->prefix('reports')->name('reports.')-
 
 Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
+    // Lista de todas las suscripciones (solo administradores)
+    Route::get('/list', [SuscriptionController::class, 'index'])->middleware('permission:suscriptions.manage')->name('suscriptions.index');
+
     Route::get('/', [SuscriptionController::class, 'show'])->middleware('permission:suscriptions.show')->name('suscriptions.show');
+
+    Route::get('/edit/{subscription}', [SuscriptionController::class, 'edit'])->middleware('permission:suscriptions.manage')->name('suscriptions.edit');
 
     Route::get('/upgrade', [SuscriptionController::class, 'upgrade'])->middleware('permission:suscriptions.show')->name('suscriptions.upgrade');
 
