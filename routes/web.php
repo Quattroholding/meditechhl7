@@ -16,6 +16,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PatientController;
@@ -38,18 +39,8 @@ use Illuminate\Support\Facades\Route;
 // Incluir el archivo de rutas de autenticación
 require __DIR__.'/auth.php';
 
-Route::get('/', function () {
-    $practitioners = \App\Models\Practitioner::with(['specialties', 'files'])
-        ->active()
-        ->limit(12)
-        ->get();
-
-    $specialties = \App\Models\MedicalSpeciality::whereHas('practitioners', function ($query) {
-        $query->where('active', true);
-    })->get();
-
-    return view('landing', compact('practitioners', 'specialties'));
-})->name('welcome');
+Route::get('/', [LandingController::class, 'index'])->name('welcome');
+Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
 /*
 Route::get('/register', function () {

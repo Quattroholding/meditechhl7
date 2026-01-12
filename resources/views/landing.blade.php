@@ -14,6 +14,8 @@
     <!-- Preload de la imagen de fondo -->
     <link rel="preload" as="image" href="{{ asset('landing/images/LANDING-PORTADA.png') }}">
     <link rel="preload" as="image" href="{{ asset('landing/images/logo-letras.png') }}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url('assets/css/bootstrap.min.css') }}">
 </head>
 <body>
      <!-- Loader Screen -->
@@ -40,6 +42,7 @@
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
                 <li><a href="#pricing-section">PRECIOS</a></li>
+                <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
@@ -56,6 +59,7 @@
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
                 <li><a href="#pricing-section">PRECIOS</a></li>
+                <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
@@ -291,6 +295,65 @@
          </div>
      </section>
 
+     <!-- Medical Directory Section -->
+     <section class="medical-directory-section" id="medical-directory-section">
+         <div class="container">
+             <div class="section-header">
+                 <img src="{{ asset('landing/images/Icono-9.png') }}" alt="App de Recetas" class="logo-color">
+                 <h2>Nuestro Directorio Médico</h2><br/>
+
+             </div>
+
+
+             <!-- Specialty Filter -->
+             <div class="specialty-filter">
+                 <p class="directory-subtitle">Encuentra al especialista que necesitas</p>
+                 <label for="specialty-select" class="filter-label">Filtrar por especialidad:</label>
+                 <select id="specialty-select" class="specialty-select">
+                     <option value="">Todas las especialidades</option>
+                     @foreach($specialties as $specialty)
+                         <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
+                     @endforeach
+                 </select>
+             </div>
+
+             <!-- Practitioners Grid -->
+             <div class="practitioners-grid" id="practitioners-grid">
+                 @foreach($practitioners as $practitioner)
+                     <div class="practitioner-card" data-specialties="{{ $practitioner->specialties->pluck('id')->join(',') }}">
+                         <div class="practitioner-avatar">
+                             @if($practitioner->avatar())
+                                 <img src="{{ asset('storage/' . $practitioner->avatar()->path) }}" alt="{{ $practitioner->name }}">
+                             @else
+                                 <img src="{{ asset('assets/img/profiles/avatar-02.jpg') }}" alt="{{ $practitioner->name }}">
+                             @endif
+                         </div>
+                         <div class="practitioner-info">
+                             <h3 class="practitioner-name">{{ $practitioner->name }}</h3>
+                             <div class="practitioner-specialties">
+                                 @foreach($practitioner->specialties as $specialty)
+                                     <span class="specialty-badge">{{ $specialty->name }}</span>
+                                 @endforeach
+                             </div>
+                             @if($practitioner->phone)
+                                 <a href="https://wa.me/5078316172?text=Hola quisiera una cita con {{ urlencode($practitioner->name) }}"
+                                    target="_blank"
+                                    class="whatsapp-btn">
+                                     <img src="{{ asset('images/whatsapp.png') }}" alt="WhatsApp" class="whatsapp-icon">
+                                     Agendar por WhatsApp
+                                 </a>
+                             @endif
+                         </div>
+                     </div>
+                 @endforeach
+             </div>
+
+             <div class="no-results" id="no-results" style="display: none;">
+                 <p>No se encontraron médicos con la especialidad seleccionada.</p>
+             </div>
+         </div>
+     </section>
+
     <!-- Medical Prescription App Section -->
     <section class="prescription-app-section" id="prescription-app-section">
         <div class="container">
@@ -345,20 +408,24 @@
                 </div>
 
                 <div class="app-visual">
-                    <div class="app-mockup">
-                        <img src="{{ asset('landing/images/Icono-5.png') }}" alt="App de Recetas" class="mockup-image">
-                    </div>
                     <div class="app-download">
-                        <a href="{{ asset('storage/app-recepy.apk') }}" class="download-button" download>
-                            <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Descargar" class="download-icon">
-                            Descargar APK para Android
-                        </a>
-                        <p class="download-note">Compatible con Android 5.0 o superior</p>
+                        <p class="download-title">Descarga la app ahora:</p>
+                        <div class="store-buttons">
+                            <a href="https://play.google.com/store/apps/details?id=com.meditec.recepy.meditec_recepy_app" target="_blank" class="store-button">
+                                <img src="{{ asset('images/google_play_logo_trim.png') }}" alt="Descargar en Google Play" class="store-logo">
+                            </a>
+                            <a href="#" class="store-button store-button-disabled" title="Próximamente disponible en App Store">
+                                <img src="{{ asset('images/apple_store_logo_trim.png') }}" alt="Descargar en App Store" class="store-logo">
+                            </a>
+                        </div>
+                        <p class="download-note">Compatible con Android 5.0+ e iOS 12.0+</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+
 
     <!-- Why Choose Section -->
     <section class="why-choose-section" id="why-choose-section">
@@ -563,86 +630,45 @@
             alert('Error de conexión. Por favor intenta más tarde.');
         }
     });
+
+    // Medical Directory Filter
+    const specialtySelect = document.getElementById('specialty-select');
+    const practitionersGrid = document.getElementById('practitioners-grid');
+    const noResults = document.getElementById('no-results');
+
+    if (specialtySelect) {
+        specialtySelect.addEventListener('change', function() {
+            const selectedSpecialty = this.value;
+            const practitionerCards = practitionersGrid.querySelectorAll('.practitioner-card');
+            let visibleCount = 0;
+
+            practitionerCards.forEach(card => {
+                const cardSpecialties = card.dataset.specialties.split(',');
+
+                if (selectedSpecialty === '' || cardSpecialties.includes(selectedSpecialty)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                practitionersGrid.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                practitionersGrid.style.display = 'grid';
+            }
+        });
+    }
     </script>
 
     <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/5078316172" target="_blank" class="whatsapp-float" title="Agendar Cita por WhatsApp">
+    <a href="https://wa.me/5078316172?text=Hola" target="_blank" class="whatsapp-float" title="Agendar Cita por WhatsApp">
         <img src="{{ asset('images/whatsapp.png') }}" alt="WhatsApp">
         <span class="whatsapp-text">Agendar Cita</span>
     </a>
-
-    <style>
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #25D366;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-        }
-
-        .whatsapp-float:hover {
-            background: #128C7E;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
-            color: white;
-        }
-
-        .whatsapp-float img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .whatsapp-text {
-            font-size: 16px;
-            white-space: nowrap;
-        }
-
-        /* Responsive: Solo mostrar icono en móviles */
-        @media (max-width: 768px) {
-            .whatsapp-float {
-                padding: 15px;
-                border-radius: 50%;
-                width: 60px;
-                height: 60px;
-                justify-content: center;
-            }
-
-            .whatsapp-text {
-                display: none;
-            }
-
-            .whatsapp-float img {
-                width: 30px;
-                height: 30px;
-            }
-        }
-
-        /* Animación de entrada */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .whatsapp-float {
-            animation: slideInUp 0.5s ease-out;
-        }
-    </style>
 </body>
 </html>
