@@ -41,10 +41,11 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="#pricing-section">PRECIOS</a></li>
                 <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
-                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
+
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
             {{--}}<button class="search-btn">
@@ -58,10 +59,11 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
+                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
                 <li><a href="#pricing-section">PRECIOS</a></li>
                 <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
-                <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
+
                 <li><a href="{{route('login')}}">INGRESAR</a></li>
             </ul>
         </div>
@@ -202,6 +204,33 @@
             </div>
         </div>
     </section>
+
+     <!-- Why Choose Section -->
+     <section class="why-choose-section" id="why-choose-section">
+         <div class="container">
+             <div class="why-choose-header">
+                 <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
+                 <h2> ¿Por qué elegir Soluciones Meditec?</h2>
+             </div>
+             <p>Porque creemos que la tecnología debe estar al servicio de la salud.</p>
+             <p>Con Soluciones Meditec, tendrás:</p>
+
+             <div class="benefits-list">
+                 <div class="benefit-item">
+                     <span class="benefit-text">Toda tu clínica en una sola plataforma digital, simple y segura</span>
+                 </div>
+                 <div class="benefit-item">
+                     <span class="benefit-text">Mejora la organización y gestión de los servicios que ofreces</span>
+                 </div>
+                 <div class="benefit-item">
+                     <span class="benefit-text">Reduce errores, optimiza procesos y mejora la experiencia de tus pacientes </span>
+                 </div>
+                 <div class="benefit-item">
+                     <span class="benefit-text">Conéctate desde cualquier lugar y dispositivo</span>
+                 </div>
+             </div>
+         </div>
+     </section>
 
      <!-- Pricing Section -->
      <section class="pricing-section" id="pricing-section">
@@ -420,35 +449,6 @@
                         </div>
                         <p class="download-note">Compatible con Android 5.0+ e iOS 12.0+</p>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-    <!-- Why Choose Section -->
-    <section class="why-choose-section" id="why-choose-section">
-        <div class="container">
-            <div class="why-choose-header">
-                <img src="{{ asset('landing/images/Icono-8.png') }}" alt="Logo Blanco"  class="logo-blanco">
-                <h2> ¿Por qué elegir Soluciones Meditec?</h2>
-            </div>
-            <p>Porque creemos que la tecnología debe estar al servicio de la salud.</p>
-            <p>Con Soluciones Meditec, tendrás:</p>
-
-            <div class="benefits-list">
-                <div class="benefit-item">
-                    <span class="benefit-text">Toda tu clínica en una sola plataforma digital, simple y segura</span>
-                </div>
-                <div class="benefit-item">
-                    <span class="benefit-text">Mejora la organización y gestión de los servicios que ofreces</span>
-                </div>
-                <div class="benefit-item">
-                    <span class="benefit-text">Reduce errores, optimiza procesos y mejora la experiencia de tus pacientes </span>
-                </div>
-                <div class="benefit-item">
-                    <span class="benefit-text">Conéctate desde cualquier lugar y dispositivo</span>
                 </div>
             </div>
         </div>
