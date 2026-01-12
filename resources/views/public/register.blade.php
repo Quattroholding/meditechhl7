@@ -423,7 +423,7 @@
                         <div class="form-field">
                             <label>Teléfono <span class="required">*</span></label>
 
-                            <input id="phone" class="block mt-1 w-full" type="phone" name="phone" value="{{old('phone')}}">
+                            <input id="phone" class="block mt-1 w-full" type="phone" name="phone" value="{{old('phone')}}" autocomplete="off">
                             @error('phone')
                             <span class="error">{{ $message }}</span>
                             @enderror
@@ -432,14 +432,14 @@
                     <div class="form-row">
                         <div class="form-field">
                             <label>Contraseña <span class="required">*</span></label>
-                            <input type="password" name="password" required minlength="8">
+                            <input type="password" name="password" required minlength="8" autocomplete="off">
                             @error('password')
                             <span class="error">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="form-field">
                             <label>Confirmar Contraseña <span class="required">*</span></label>
-                            <input type="password" name="password_confirmation" required minlength="8">
+                            <input type="password" name="password_confirmation" required minlength="8" autocomplete="off">
                         </div>
                     </div>
                     <div class="form-row">

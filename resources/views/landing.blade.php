@@ -42,7 +42,7 @@
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
-                <li><a href="#pricing-section">PRECIOS</a></li>
+                <li><a href="#pricing-section">PLANES</a></li>
                 <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
 
@@ -60,7 +60,7 @@
                 <li><a href="#what-is-section">QUIENES SOMOS</a></li>
                 <li><a href="#features-section">COMO FUNCIONA</a></li>
                 <li><a href="#why-choose-section">¿POR QUÉ ELEGIRNOS?</a></li>
-                <li><a href="#pricing-section">PRECIOS</a></li>
+                <li><a href="#pricing-section">PLANES</a></li>
                 <li><a href="#medical-directory-section">DIRECTORIO MÉDICO</a></li>
                 <li><a href="#prescription-app-section">HERRAMIENTAS</a></li>
 
@@ -284,9 +284,11 @@
                              @if($package->base_price > 0 and $package->id <>4)
                                  <div class="pricing-price">
                                      <span class="currency">$</span>
-                                     <span class="amount">@isset($package->base_price){{ number_format($package->base_price, 0) }} @else XXX @endif</span>
+                                     <span class="amount">@isset($package->base_price){{ number_format($package->base_price,2) }} @else XXX @endif</span>
                                      <span class="period">/mes</span>
+
                                  </div>
+                                 <span class="no_tax">Los precios no incluyen ITBMS</span>
                              @else
                                  <div class="pricing-price">
                                      <span class="amount">Contactar</span>
@@ -316,6 +318,7 @@
                                  <a href="{{ route('public.register', ['package' => $package->id]) }}" class="pricing-button">
                                      Suscribirse Ahora
                                  </a>
+                                 <div class="cancel_section"><span class='msg'>Puede cancelar o cambiar <br/>su plan cuando quiera</span></div>
                              @endif
                          </div>
                      </div>

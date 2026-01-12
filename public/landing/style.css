@@ -1431,7 +1431,6 @@ body.loaded .hero {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    margin: 20px 0;
 }
 
 .pricing-price .currency {
@@ -1448,6 +1447,27 @@ body.loaded .hero {
 .pricing-price .period {
     font-size: 16px;
     color: #666;
+}
+
+.no_tax {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fe0000;
+    text-align: center;
+    margin-top: 8px;
+    clear: both;
+    margin-bottom:8px ;
+}
+
+.cancel_section{
+    text-align: center;
+}
+
+.cancel_section .msg{
+    color:gray;
+    font-size: 13px;
 }
 
 .pricing-card-enterprise .pricing-price .period {
