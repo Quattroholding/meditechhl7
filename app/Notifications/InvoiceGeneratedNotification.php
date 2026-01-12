@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\ClientInvoice;
 use App\Models\User;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class InvoiceGeneratedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -26,7 +27,10 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return array_filter([
+            'database',
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     /**
@@ -118,11 +122,23 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de notificación de factura generada', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'invoice_id' => $this->invoice->id,
             'client_id' => $this->invoice->client_id,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', $context);
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de notificación de factura generada', $context);
     }
 
     /**

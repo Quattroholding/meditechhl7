@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Appointment;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class AppointmentRejectedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -25,7 +26,10 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
 
     public function via($notifiable)
     {
-        return ['mail', 'database']; // También guardamos en BD para historial
+        return array_filter([
+            'database',
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     public function toMail($notifiable)
@@ -92,12 +96,27 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de notificación de cita rechazada', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'appointment_id' => $this->appointment->id,
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
             'rejection_reason' => $this->rejectionReason,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', array_merge($context, [
+                'patient_email' => $this->appointment->patient->email ?? 'N/A',
+                'note' => 'El email del paciente usa un dominio reservado (example.com, test.com, etc.)',
+            ]));
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de notificación de cita rechazada', $context);
     }
 }

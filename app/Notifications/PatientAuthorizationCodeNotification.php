@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\AuthorizationCode;
 use App\Models\Practitioner;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 
 class PatientAuthorizationCodeNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -26,7 +27,10 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return array_filter([
+            'database',
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     public function toMail($notifiable)
@@ -82,11 +86,26 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de código de autorización', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'authorization_code_id' => $this->authorizationCode->id,
             'patient_id' => $this->authorizationCode->patient_id,
             'practitioner_id' => $this->authorizationCode->practitioner_id,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', array_merge($context, [
+                'patient_email' => $this->authorizationCode->patient->email ?? 'N/A',
+                'note' => 'El email del paciente usa un dominio reservado (example.com, test.com, etc.)',
+            ]));
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de código de autorización', $context);
     }
 }

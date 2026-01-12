@@ -3,13 +3,14 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class PractitionerCredentialsNotification extends Notification
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     protected $user;
 
@@ -26,7 +27,9 @@ class PractitionerCredentialsNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+        return array_filter([
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     public function toMail($notifiable)

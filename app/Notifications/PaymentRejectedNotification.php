@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\ClientInvoicePayment;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class PaymentRejectedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -25,7 +26,10 @@ class PaymentRejectedNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return array_filter([
+            'database',
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     /**
@@ -102,10 +106,22 @@ class PaymentRejectedNotification extends Notification implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de notificación de pago rechazado', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'payment_id' => $this->payment->id,
             'invoice_id' => $this->payment->client_invoice_id,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', $context);
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de notificación de pago rechazado', $context);
     }
 }

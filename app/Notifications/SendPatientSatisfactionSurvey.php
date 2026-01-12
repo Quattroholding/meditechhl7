@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -36,7 +37,12 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        $channels = ['mail', 'database'];
+        $channels = ['database'];
+
+        // Only add mail channel if email is valid and not reserved
+        if ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
 
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
@@ -136,11 +142,26 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de notificación de encuesta de satisfacción', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'survey_response_id' => $this->surveyResponse->id,
             'encounter_id' => $this->encounter->id,
             'patient_id' => $this->surveyResponse->patient_id,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', array_merge($context, [
+                'patient_email' => $this->surveyResponse->patient->email ?? 'N/A',
+                'note' => 'El email del paciente usa un dominio reservado (example.com, test.com, etc.)',
+            ]));
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de notificación de encuesta de satisfacción', $context);
     }
 }

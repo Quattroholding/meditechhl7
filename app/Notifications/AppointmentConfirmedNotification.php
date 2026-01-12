@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Appointment;
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class AppointmentConfirmedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     public $tries = 3;
 
@@ -24,7 +25,12 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
 
     public function via($notifiable)
     {
-        $channels = ['mail', 'database'];
+        $channels = ['database'];
+
+        // Only add mail channel if email is valid and not reserved
+        if ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
 
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
@@ -166,11 +172,26 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
      */
     public function failed(\Throwable $exception): void
     {
-        \Log::error('Falló el envío de notificación de cita confirmada', [
+        $errorMessage = $exception->getMessage();
+        $context = [
             'appointment_id' => $this->appointment->id,
             'patient_id' => $this->appointment->patient_id,
             'practitioner_id' => $this->appointment->practitioner_id,
-            'error' => $exception->getMessage(),
-        ]);
+            'error' => $errorMessage,
+        ];
+
+        // Check if it's an RFC 2606 reserved domain error
+        if (str_contains($errorMessage, 'Recipient address reserved by RFC 2606') ||
+            str_contains($errorMessage, 'code "501"')) {
+            \Log::warning('Intento de envío a dirección reservada RFC 2606', array_merge($context, [
+                'patient_email' => $this->appointment->patient->email ?? 'N/A',
+                'note' => 'El email del paciente usa un dominio reservado (example.com, test.com, etc.)',
+            ]));
+
+            return;
+        }
+
+        // Log other errors as errors
+        \Log::error('Falló el envío de notificación de cita confirmada', $context);
     }
 }

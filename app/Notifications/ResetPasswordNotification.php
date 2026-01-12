@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +10,17 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class ResetPasswordNotification extends ResetPassword implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
+
+    /**
+     * Get the notification's delivery channels.
+     */
+    public function via($notifiable): array
+    {
+        return array_filter([
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
+    }
 
     /**
      * Get the mail representation of the notification.
