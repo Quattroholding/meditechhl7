@@ -57,6 +57,12 @@ class Referral extends Component
     {
         $this->encounter = Encounter::find($this->encounter_id);
 
+        $this->init();
+
+    }
+
+    public function init()
+    {
         $this->selectedLists = $this->encounter->referrals()->get();
 
         foreach ($this->selectedLists as $selected) {
@@ -97,7 +103,7 @@ class Referral extends Component
             $referral = \App\Models\Referral::whereEncounterId($this->encounter->id)->whereCode($option)->first();
             $specialty = MedicalSpeciality::whereId($option)->first();
             if (! $referral) {
-                $this->encounter->referrals()->create([
+                $ref_created= $this->encounter->referrals()->create([
                     'fhir_id' => 'servicerequest-'.Str::uuid(),
                     'identifier' => 'REF-'.strtoupper(Str::random(7)),
                     'status' => 'active',
@@ -127,7 +133,7 @@ class Referral extends Component
 
             $this->query = '';
 
-            $this->selectedLists = $this->encounter->referrals()->get();
+            $this->init();
 
             // Disparar evento para actualizar el estado del botón de finalizar
             $this->dispatch('findFinishedButtonStatus');
