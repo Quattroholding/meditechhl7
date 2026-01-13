@@ -68,7 +68,7 @@ class ReferralService
             $referral->status = ReferralStatus::PENDING;
 
             $rewardConfig = config('subscriptions.default_referrer_reward', []);
-            $referral->referrer_reward_type = $rewardConfig['type'] ?? 'credit';
+            $referral->referrer_reward_type = $rewardConfig['type'] ?? 'fixed_amount';
             $referral->referrer_reward_value = $rewardConfig['value'] ?? 5;
 
             $referral->save();
@@ -128,8 +128,11 @@ class ReferralService
 
         $invoicesCount = config('subscriptions.default_referrer_reward.invoices', 1);
 
+        // Mapear ReferrerRewardType a DiscountType
+        $discountType = $this->mapReferrerRewardTypeToDiscountType($referral->referrer_reward_type);
+
         $this->discountService->create($referrerClient, [
-            'discount_type' => $referral->referrer_reward_type->value,
+            'discount_type' => $discountType,
             'discount_value' => $referral->referrer_reward_value,
             'reason' => "Referral reward for referring client #{$referral->referred_client_id}",
             'source' => DiscountSource::REFERRAL->value,
@@ -138,11 +141,26 @@ class ReferralService
         ]);
 
         $referral->applyReferrerReward();
+        $referral->markAsRewarded();
 
         Log::info('Referrer reward applied', [
             'referral_id' => $referral->id,
             'referrer_id' => $referral->referrer_client_id,
+            'status' => $referral->status->value,
         ]);
+    }
+
+    /**
+     * Mapear ReferrerRewardType a DiscountType
+     */
+    protected function mapReferrerRewardTypeToDiscountType(\App\Enums\ReferrerRewardType $type): string
+    {
+        return match ($type) {
+            \App\Enums\ReferrerRewardType::CREDIT => 'fixed_amount',
+            \App\Enums\ReferrerRewardType::FIXED_DISCOUNT => 'fixed_amount',
+            \App\Enums\ReferrerRewardType::PERCENTAGE_DISCOUNT => 'percentage',
+            \App\Enums\ReferrerRewardType::FREE_MONTHS => 'free_months',
+        };
     }
 
     public function getClientStats(Client $client): array

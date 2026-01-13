@@ -312,6 +312,9 @@ class ClientInvoice extends BaseModel
                 if ($this->subscription->status === \App\Enums\SubscriptionStatus::PENDING_ACTIVATION) {
                     $this->subscription->activate();
 
+                    // Confirmar referral si el cliente fue referido y es su primera factura pagada
+                    $this->confirmReferralIfApplicable();
+
                     // Enviar notificación de agradecimiento al cliente
                     $notifiableUser = \App\Notifications\InvoiceGeneratedNotification::getNotifiableUser($this);
                     if ($notifiableUser) {
@@ -328,6 +331,41 @@ class ClientInvoice extends BaseModel
         }
 
         return false;
+    }
+
+    /**
+     * Confirmar referral si el cliente fue referido y esta es su primera factura pagada
+     */
+    protected function confirmReferralIfApplicable(): void
+    {
+        $client = $this->client;
+
+        // Verificar si el cliente fue referido
+        if (! $client->referred_by_client_id) {
+            return;
+        }
+
+        // Buscar el referral pendiente
+        $referral = ClientReferral::where('referred_client_id', $client->id)
+            ->where('status', \App\Enums\ReferralStatus::PENDING)
+            ->first();
+
+        if (! $referral) {
+            return;
+        }
+
+        // Confirmar el referral (esto aplicará automáticamente la recompensa al referrer)
+        $referralService = app(\App\Services\ReferralService::class);
+        $confirmed = $referralService->confirmReferral($referral);
+
+        if ($confirmed) {
+            \Log::info('Referral confirmed automatically after first invoice payment', [
+                'referral_id' => $referral->id,
+                'referred_client_id' => $client->id,
+                'referrer_client_id' => $referral->referrer_client_id,
+                'invoice_id' => $this->id,
+            ]);
+        }
     }
 
     /**

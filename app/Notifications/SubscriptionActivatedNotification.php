@@ -158,7 +158,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
             ],
             'action' => [
                 'text' => 'Ver Suscripción',
-                'url' => route('subscriptions.show', $this->subscription->id),
+                'url' => route('suscriptions.show', $this->subscription->id),
             ],
             'priority' => 'high',
             'icon' => 'fas fa-check-circle',

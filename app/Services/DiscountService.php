@@ -62,14 +62,30 @@ class DiscountService
 
     public function createReferralDiscount(Client $client, ClientReferral $referral): SubscriptionDiscount
     {
+        // Mapear ReferrerRewardType a DiscountType
+        $discountType = $this->mapReferrerRewardTypeToDiscountType($referral->referrer_reward_type);
+
         return $this->create($client, [
-            'discount_type' => $referral->referrer_reward_type->value,
+            'discount_type' => $discountType,
             'discount_value' => $referral->referrer_reward_value,
             'reason' => 'Referral reward',
             'source' => DiscountSource::REFERRAL->value,
             'source_id' => $referral->id,
             'applies_to_invoices' => 1,
         ]);
+    }
+
+    /**
+     * Mapear ReferrerRewardType a DiscountType
+     */
+    protected function mapReferrerRewardTypeToDiscountType(\App\Enums\ReferrerRewardType $type): string
+    {
+        return match ($type) {
+            \App\Enums\ReferrerRewardType::CREDIT => 'fixed_amount',
+            \App\Enums\ReferrerRewardType::FIXED_DISCOUNT => 'fixed_amount',
+            \App\Enums\ReferrerRewardType::PERCENTAGE_DISCOUNT => 'percentage',
+            \App\Enums\ReferrerRewardType::FREE_MONTHS => 'free_months',
+        };
     }
 
     public function createPromoDiscount(Client $client, float $value, string $type, int $invoicesCount = 1): SubscriptionDiscount

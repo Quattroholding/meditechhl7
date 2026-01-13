@@ -91,33 +91,38 @@ class ClientInvoicePayment extends Model
     // Methods
     public function markAsCompleted(?int $verifiedBy = null): bool
     {
-        $this->status = PaymentStatus::COMPLETED;
+        return \DB::transaction(function () use ($verifiedBy) {
+            $this->status = PaymentStatus::COMPLETED;
 
-        if ($verifiedBy) {
-            $this->notes = ($this->notes ? $this->notes."\n" : '').'Verificado por: '.User::find($verifiedBy)->full_name.' el '.now()->format('d/m/Y H:i');
-        }
+            if ($verifiedBy) {
+                $this->notes = ($this->notes ? $this->notes."\n" : '').'Verificado por: '.User::find($verifiedBy)->full_name.' el '.now()->format('d/m/Y H:i');
+            }
 
-        $saved = $this->save();
+            $saved = $this->save();
 
-        if ($saved) {
-            $this->invoice->updatePaymentStatus();
-        }
+            if ($saved) {
+                // Este método puede fallar y causará rollback automático
+                $this->invoice->updatePaymentStatus();
+            }
 
-        return $saved;
+            return $saved;
+        });
     }
 
     public function markAsFailed(?string $reason = null, ?int $rejectedBy = null): bool
     {
-        $this->status = PaymentStatus::REJECTED;
+        return \DB::transaction(function () use ($reason, $rejectedBy) {
+            $this->status = PaymentStatus::REJECTED;
 
-        if ($reason) {
-            $this->notes = ($this->notes ? $this->notes."\n" : '').'Rechazado: '.$reason;
-        }
+            if ($reason) {
+                $this->notes = ($this->notes ? $this->notes."\n" : '').'Rechazado: '.$reason;
+            }
 
-        if ($rejectedBy) {
-            $this->notes = ($this->notes ? $this->notes."\n" : '').'Rechazado por: '.User::find($rejectedBy)->full_name.' el '.now()->format('d/m/Y H:i');
-        }
+            if ($rejectedBy) {
+                $this->notes = ($this->notes ? $this->notes."\n" : '').'Rechazado por: '.User::find($rejectedBy)->full_name.' el '.now()->format('d/m/Y H:i');
+            }
 
-        return $this->save();
+            return $this->save();
+        });
     }
 }
