@@ -30,7 +30,7 @@
                                         <p><strong>Banco:</strong> Banco General</p>
                                         <p><strong>Cuenta:</strong> 04-99-99-999999-9</p>
                                         <p><strong>Tipo:</strong> Cuenta Corriente</p>
-                                        <p><strong>Beneficiario:</strong> Meditech S.A.</p>
+                                        <p><strong>Beneficiario:</strong> Soluciones Meditec S.A.</p>
                                     </div>
                                 </div>
 
@@ -38,9 +38,9 @@
                                     <h5 class="mb-3">YAPPY</h5>
                                     <div class="ps-4">
                                         <p><strong>Número:</strong> 6XXX-XXXX</p>
-                                        <p><strong>Nombre:</strong> Meditech</p>
+                                        <p><strong>Nombre:</strong> Soluciones Meditec S.A.</p>
                                         <p><strong>Cliente YAPPY:</strong>  {{auth()->user()->getCurrentClient()->yappy_code}}</p>
-                                        <p><strong>NOTA :</strong> En el mensaje de la trasferencia yappy poner su número de cliente yappy (<b>{{auth()->user()->getCurrentClient()->yappy_code}}</b>) para poder cargar el pago a su cuenta.</p>
+                                        <p><strong>NOTA :</strong> En el mensaje del envio de yappy poner su número de cliente yappy (<b>{{auth()->user()->getCurrentClient()->yappy_code}}</b>) para poder cargar el pago a su cuenta.</p>
                                     </div>
                                 </div>
                                 <div class="mb-4">

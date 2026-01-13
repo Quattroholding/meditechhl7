@@ -242,11 +242,48 @@ class ClientInvoice extends BaseModel
 
         $year = now()->format('Y');
         $month = now()->format('m');
-        $sequence = static::where('invoice_number', 'like', "SUB-{$year}{$month}-%")->count() + 1;
+        $prefix = "SUB-{$year}{$month}-";
 
+        // Buscar el último número de secuencia para este período
+        // Usando max() + regex para extraer solo el número de secuencia
+        $lastInvoice = static::where('invoice_number', 'like', $prefix.'%')
+            ->orderByRaw('CAST(SUBSTRING(invoice_number, '.strlen($prefix).' + 1) AS UNSIGNED) DESC')
+            ->first();
+
+        if ($lastInvoice) {
+            // Extraer el número de secuencia del último invoice_number
+            preg_match('/'.preg_quote($prefix, '/').'(\d+)/', $lastInvoice->invoice_number, $matches);
+            $sequence = isset($matches[1]) ? (int) $matches[1] + 1 : 1;
+        } else {
+            $sequence = 1;
+        }
+
+        // Intentar generar un número único (retry loop por si hay race condition)
+        $maxAttempts = 10;
+        $attempt = 0;
+
+        do {
+            $invoiceNumber = str_replace(
+                ['{YEAR}', '{MONTH}', '{SEQUENCE}'],
+                [$year, $month, str_pad($sequence + $attempt, 4, '0', STR_PAD_LEFT)],
+                $format
+            );
+
+            // Verificar si ya existe
+            $exists = static::where('invoice_number', $invoiceNumber)->exists();
+
+            if (! $exists) {
+                return $invoiceNumber;
+            }
+
+            $attempt++;
+        } while ($attempt < $maxAttempts);
+
+        // Si después de 10 intentos no se puede generar un número único,
+        // agregar timestamp para garantizar unicidad
         return str_replace(
             ['{YEAR}', '{MONTH}', '{SEQUENCE}'],
-            [$year, $month, str_pad($sequence, 4, '0', STR_PAD_LEFT)],
+            [$year, $month, str_pad($sequence + $attempt, 4, '0', STR_PAD_LEFT).'-'.now()->timestamp],
             $format
         );
     }
@@ -274,6 +311,12 @@ class ClientInvoice extends BaseModel
             if ($result && $this->subscription) {
                 if ($this->subscription->status === \App\Enums\SubscriptionStatus::PENDING_ACTIVATION) {
                     $this->subscription->activate();
+
+                    // Enviar notificación de agradecimiento al cliente
+                    $notifiableUser = \App\Notifications\InvoiceGeneratedNotification::getNotifiableUser($this);
+                    if ($notifiableUser) {
+                        $notifiableUser->notify(new \App\Notifications\SubscriptionActivatedNotification($this->subscription));
+                    }
                 }
             }
 
