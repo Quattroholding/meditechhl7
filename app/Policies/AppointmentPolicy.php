@@ -70,7 +70,7 @@ class AppointmentPolicy
 
     public function edit(User $user, Appointment $appointment): bool
     {
-        return $this->booked($user, $appointment) or $this->arrived($user, $appointment);
+        return $this->booked($user, $appointment) or $this->arrived($user, $appointment) or ($user->hasRole('paciente') && $appointment->status == 'proposed');
     }
 
     public function delete(User $user, Appointment $appointment): bool
