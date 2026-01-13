@@ -19,6 +19,8 @@ class PackageSeeder extends Seeder
             'max_doctors_included' => 1,
             'is_active' => true,
             'base_price' => 49.99,
+            'features'=>["Administración y Agendamiento de citas", "Límite de agendamiento de hasta 30 citas  (Tentativo)", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI (Tentativo)"],
+            'appointments_limit'=>30,
         ]);
 
         Package::create([
@@ -29,6 +31,8 @@ class PackageSeeder extends Seeder
             'is_active' => true,
             'base_price' => 74.99,
             'agent_available' => true,
+            'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"],
+
         ]);
 
         Package::create([
@@ -39,15 +43,17 @@ class PackageSeeder extends Seeder
             'is_active' => true,
             'base_price' => 124.99,
             'agent_available' => true,
+            'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"]
         ]);
 
         Package::create([
             'name' => 'Empresarial',
             'description' => 'Paquete empresarial para grandes organizaciones de salud con usuarios ilimitados',
             'max_users' => 50,
-            'max_doctors_included' => 20,
+            'max_doctors_included' => 10,
             'is_active' => true,
             'base_price' => 999.99,
+            'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas a través de whatsapp personalizado"],
         ]);
     }
 }

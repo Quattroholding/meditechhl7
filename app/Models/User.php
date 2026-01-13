@@ -135,6 +135,15 @@ class User extends Authenticatable
         });
     }
 
+    public function scopePackage($query, $packageId)
+    {
+        return $query->whereHas('clients', function ($query) use ($packageId) {
+            $query->whereHas('subscription', function ($query) use ($packageId) {
+                $query->where('package_id', $packageId);
+            });
+        });
+    }
+
     public function activate()
     {
         $this->update(['active' => true]);

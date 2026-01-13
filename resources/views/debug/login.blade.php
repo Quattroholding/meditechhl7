@@ -66,6 +66,18 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por plan</label>
+                                    <select name="package" class="form-select">
+                                        <option value="">Todos los Planes</option>
+                                        @foreach($packages as $packageOption)
+                                            <option value="{{ $packageOption->id }}"
+                                                {{ request('package') == $packageOption->id ? 'selected' : '' }}>
+                                                {{ ucfirst($packageOption->name) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
                                 <div class="col-md-4 d-flex align-items-end">
                                     <button type="submit" class="btn btn-primary me-2">
@@ -87,6 +99,7 @@
                                             <th>Email</th>
                                             <th>Roles</th>
                                             <th>Cliente</th>
+                                            <th>Plan</th>
                                             <th class="text-end">Acciones</th>
                                         </tr>
                                     </thead>
@@ -125,6 +138,9 @@
                                                         $defaultClient = $user->default_client_id ? \App\Models\Client::find($user->default_client_id) : null;
                                                     @endphp
                                                     {{ $defaultClient?->name ?? 'N/A' }}
+                                                </td>
+                                                <td>
+                                                    {{$defaultClient?->package->name}}
                                                 </td>
                                                 <td class="text-end">
                                                     <form method="POST"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,14 +16,19 @@ class DebugLoginController extends Controller
     {
         // Obtener filtros
         $role = $request->get('role');
+        $package = $request->get('package');
         $search = $request->get('search');
 
         // Query base
-        $query = User::query()->where('active', 1)->with('roles');
+        $query = User::query()->where('active', 1)->with('roles')->with('clients.package');
 
         // Filtrar por rol si se especifica
         if ($role) {
             $query->role($role);
+        }
+
+        if ($package) {
+            $query->package($package);
         }
 
         // Buscar por nombre o email
@@ -40,8 +46,10 @@ class DebugLoginController extends Controller
 
         // Obtener roles disponibles
         $roles = \Spatie\Permission\Models\Role::all();
+        // Obtener paquetes disponibles
+        $packages = Package::all();
 
-        return view('debug.login', compact('users', 'roles', 'role', 'search'));
+        return view('debug.login', compact('users', 'roles', 'role','packages','package', 'search'));
     }
 
     /**
