@@ -30,6 +30,9 @@
                 </div>
             </div>
             @endslot
+            @slot('buttons')
+                <a class="btn btn-primary btn-sm" href="{{route('suscriptions.payments.settings')}}" target="_blank"><i class="fa fa-credit-card"></i> Ver Formas de pago</a>
+            @endslot
             @slot('li_1')
 
             @endslot
@@ -143,18 +146,12 @@
                         {{--}}
                         <td data-column="acciones" data-priority="1" data-label="Acciones" >
                             <div class="btn-group btn-group-sm">
-                                @can('suscriptions.invoices.show')
-                                    <a href="{{ route('suscriptions.invoices.show', $invoice->id) }}"
-                                       class="btn btn-info btn-sm"
-                                       title="Ver detalles">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                @endcan
+
                                 @can('createPayment', $invoice)
                                     <button type="button" title="{{__('Registrar Pago')}}"
                                             onclick="Livewire.dispatch('openPaymentModal', { invoiceId: {{ $invoice->id }} })"
                                             class="btn btn-primary btn-sm">
-                                        <i class="fas fa-credit-card me-2"></i>
+                                        <i class="fas fa-credit-card me-2"></i> Pagar ahora
                                     </button>
                                 @elsecan('suscriptions.payments.store')
                                     @if($invoice->hasPendingPaymentForFullAmount())
@@ -163,6 +160,15 @@
                                         </span>
                                     @endif
                                 @endcan
+
+                                @can('suscriptions.invoices.show')
+                                    <a href="{{ route('suscriptions.invoices.show', $invoice->id) }}"
+                                       class="btn btn-info btn-sm"
+                                       title="Ver detalles">
+                                        <i class="far fa-eye"></i>
+                                    </a>
+                                @endcan
+
                                 @can('suscriptions.invoices.download')
                                     <a href="{{ route('suscriptions.invoices.download', $invoice->id) }}"
                                        target="_blank"

@@ -27,7 +27,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::ACH => 'primary',
-            self::YAPPY => 'secundary',
+            self::YAPPY => 'info',
         };
     }
 

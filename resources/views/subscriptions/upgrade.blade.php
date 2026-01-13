@@ -167,7 +167,7 @@
                                 <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>Información Importante</h5>
                                 <ul class="mb-0">
                                     <li>Al actualizar su plan, se calculará automáticamente el <strong>prorrateo</strong> correspondiente al tiempo restante de su período actual.</li>
-                                    <li>El cambio de plan es <strong>inmediato</strong> y tendrá acceso a las nuevas características de inmediato.</li>
+                                    <li>El cambio de plan es <strong>inmediato</strong>.</li>
                                     <li>Se generará un <strong>crédito o cargo adicional</strong> según la diferencia de precio entre los planes.</li>
                                     <li>Su próxima facturación reflejará el nuevo precio del plan seleccionado.</li>
                                     <li>Si tiene un <strong>límite de citas alcanzado</strong>, al actualizar a un plan superior podrá seguir agendando citas.</li>

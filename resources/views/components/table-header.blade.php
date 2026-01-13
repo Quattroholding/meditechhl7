@@ -28,6 +28,11 @@ if(!isset($show_create)) $show_create=true;
                                 {{ $filters }}
                                 </div>
                             @endif
+                            @if(isset($buttons))
+                                <div class="float-end">
+                                    {{ $buttons }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
