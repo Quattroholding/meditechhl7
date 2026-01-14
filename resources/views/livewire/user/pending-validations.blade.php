@@ -80,7 +80,7 @@
                                                     </span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-end">
                                             <button wire:click="viewDocuments({{ $user->id }})"
                                                     class="btn btn-sm btn-primary">
                                                 <i class="fa fa-eye"></i> Revisar
@@ -112,14 +112,14 @@
             @if ($showModal && $selectedUser)
                 <!-- Modal -->
                 <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
-                    <div class="modal-content">
+                    <div class="modal-content modal-lg">
                             <div class="modal-header">
                                 <h5 class="modal-title">Revisar Documentos</h5>
                                 <button type="button" class="btn-close" wire:click="closeModal"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="row mb-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <h6>Información del Usuario</h6>
                                         <table class="table table-sm">
                                             <tr>
@@ -148,7 +148,7 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <h6>Documentos Subidos</h6>
                                         @if ($documents->count() > 0)
                                             <div class="list-group">

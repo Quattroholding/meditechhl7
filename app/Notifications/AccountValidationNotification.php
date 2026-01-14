@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,7 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class AccountValidationNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, ValidatesEmailChannel;
 
     /**
      * Create a new notification instance.
@@ -26,7 +27,9 @@ class AccountValidationNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return array_filter([
+            $this->getMailChannelIfValid($notifiable->email),
+        ]);
     }
 
     /**
@@ -47,14 +50,14 @@ class AccountValidationNotification extends Notification implements ShouldQueue
     private function approvedMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Cuenta Aprobada - Bienvenido a Meditech')
+            ->subject('Cuenta Aprobada - Bienvenido a SAMI Recetas')
             ->greeting('¡Felicitaciones '.$notifiable->first_name.'!')
             ->line('Tu cuenta de médico ha sido aprobada exitosamente.')
             ->line('Hemos revisado y validado tus documentos.')
             ->line('Ya puedes iniciar sesión en la aplicación móvil con tus credenciales.')
-            ->action('Descargar la App', url('/'))
+            ->action('Descargar la App', url('/#prescription-app-section'))
             ->line('Si tienes alguna pregunta, no dudes en contactarnos.')
-            ->salutation('Saludos, El equipo de Meditech');
+            ->salutation('Saludos, El equipo de Soluciones Meditec');
     }
 
     /**
@@ -63,7 +66,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
     private function rejectedMail(object $notifiable): MailMessage
     {
         $mail = (new MailMessage)
-            ->subject('Registro No Aprobado - Meditech')
+            ->subject('Registro No Aprobado - SAMI Recetas')
             ->greeting('Hola '.$notifiable->first_name.',')
             ->line('Lamentamos informarte que tu registro no ha sido aprobado.')
             ->error();
@@ -75,7 +78,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
 
         return $mail->line('Si consideras que esto es un error o deseas más información, por favor contáctanos.')
             ->line('Puedes volver a registrarte corrigiendo la información solicitada.')
-            ->salutation('Saludos, El equipo de Meditech');
+            ->salutation('Saludos, El equipo de Soluciones Meditec');
     }
 
     /**

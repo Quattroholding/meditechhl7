@@ -9,9 +9,11 @@ use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\User;
+use App\Notifications\NewUserRegistrationNotification;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -234,6 +236,9 @@ class AuthController extends Controller
         // Guardar archivos de documentación
         $this->storeVerificationDocuments($request, $user);
 
+        // Notificar a administradores y validadores
+        $this->notifyAdminsAndValidators($user);
+
         return response()->json([
             'message' => 'Registro recibido exitosamente. Su cuenta está pendiente de validación. Recibirá un correo electrónico una vez que sus documentos sean revisados y aprobados.',
             'status' => 'pending_verification',
@@ -243,6 +248,24 @@ class AuthController extends Controller
                 'email' => $user->email,
             ],
         ], 201);
+    }
+
+    /**
+     * Notify administrators and validators about new user registration
+     */
+    private function notifyAdminsAndValidators(User $user): void
+    {
+        // Obtener todos los usuarios con rol admin o validador
+        $adminsAndValidators = User::where('active', true)
+            ->where(function ($query) {
+                $query->whereHas('roles', function ($q) {
+                    $q->whereIn('name', ['admin', 'validador']);
+                });
+            })
+            ->get();
+
+        // Enviar notificación a cada uno
+        Notification::send($adminsAndValidators, new NewUserRegistrationNotification($user));
     }
 
     /**
