@@ -75,16 +75,14 @@ class PractitionerAuthorizationController extends Controller
         }
 
         // Verificar firma y sello desde la tabla files
-        $hasSignature = DB::table('files')
-            ->where('fileable_type', 'App\Models\Practitioner')
-            ->where('fileable_id', $practitioner->id)
-            ->where('type', 'signature')
+        $hasSignature = DB::table('recepy_doctor_profiles')
+            ->where('user_id', $practitioner->user_id)
+            ->whereNotNull('signature')
             ->exists();
 
-        $hasSeal = DB::table('files')
-            ->where('fileable_type', 'App\Models\Practitioner')
-            ->where('fileable_id', $practitioner->id)
-            ->where('type', 'seal')
+        $hasSeal = DB::table('recepy_doctor_profiles')
+            ->where('record_id', $practitioner->user_id)
+            ->whereNotNull('seal')
             ->exists();
 
         return response()->json([

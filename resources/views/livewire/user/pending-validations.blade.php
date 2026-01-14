@@ -103,7 +103,7 @@
             @if ($showModal && $selectedUser)
                 <!-- Modal -->
                 <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
-                    <div class="modal-content modal-lg">
+                    <div class="modal-content modal-lg" wire:click.stop>
                             <div class="modal-header">
                                 <h5 class="modal-title">Revisar Documentos</h5>
                                 <button type="button" class="btn-close" wire:click="closeModal"></button>
