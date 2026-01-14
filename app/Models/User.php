@@ -32,6 +32,10 @@ class User extends Authenticatable
         'active',
         'created_by',
         'register_source',
+        'validation_status',
+        'validated_at',
+        'validated_by',
+        'rejection_reason',
     ];
 
     /**
@@ -54,6 +58,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'first_login_at' => 'datetime',
+            'validated_at' => 'datetime',
             'password' => 'hashed',
             'active' => 'boolean',
         ];
@@ -227,6 +232,21 @@ class User extends Authenticatable
     public function avatar()
     {
         return $this->files()->whereType('avatar')->latest()->first();
+    }
+
+    public function validator()
+    {
+        return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    public function scopePendingValidation($query)
+    {
+        return $query->where('register_source', 'app')
+            ->where('active', false)
+            ->where(function ($q) {
+                $q->whereNull('validation_status')
+                    ->orWhere('validation_status', 'pending');
+            });
     }
 
     /**

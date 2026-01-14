@@ -361,6 +361,10 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.l
 
     Route::post('/{id}/activate', [UserController::class, 'activate'])->middleware('permission:users.activate')->name('user.activate');
 
+    Route::get('/pending-validations', function () {
+        return view('users.pending-validations');
+    })->middleware('permission:users.validate')->name('user.pending-validations');
+
 });
 
 Route::group(['prefix' => 'appointments', 'middleware' => ['auth', 'verified', 'first.login']], function () {

@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'users.profile', 'description' => 'Ver perfil del usuario', 'module' => 'usuarios'],
             ['name' => 'users.change_client', 'description' => 'Cambiar de cliente', 'module' => 'usuarios'],
             ['name' => 'users.activate', 'description' => 'Activar usuarios', 'module' => 'usuarios'],
+            ['name' => 'users.validate', 'description' => 'Validar usuarios registrados desde la aplicación móvil', 'module' => 'usuarios'],
 
             // Client management
             ['name' => 'clients.view', 'description' => 'Ver lista de clientes/organizaciones', 'module' => 'clientes'],
@@ -381,6 +382,12 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
             'suscriptions.payments.verify',
+        ]);
+
+        // Validador role - Only validates user registrations from mobile app
+        $validadorRole = Role::firstOrCreate(['name' => 'validador']);
+        $validadorRole->givePermissionTo([
+            'users.validate',
         ]);
     }
 }
