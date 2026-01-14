@@ -150,7 +150,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-3">Acciones</h5>
-                            <a class="btn btn-primary btn-sm" href="{{route('suscriptions.payments.settings')}}" target="_blank"><i class="fa fa-credit-card"></i> Ver Formas de pago</a>
+                            <a class="btn btn-warning  w-100 mb-2" href="{{route('suscriptions.payments.settings')}}" target="_blank"><i class="fa fa-credit-card"></i> Ver Formas de pago</a>
                             @can('suscriptions.invoices.download')
                                 <a href="{{ route('suscriptions.invoices.download', $invoice->id) }}"
                                    target="_blank"
