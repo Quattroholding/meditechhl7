@@ -240,7 +240,7 @@
                     </a>
                 </li>
                 @endcan
-                @canany(['users.view', 'users.create'])
+                @canany(['users.view', 'users.create','users.validate'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-users"></i></span>
