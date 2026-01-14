@@ -12,7 +12,9 @@ use App\Models\User;
 use App\Notifications\NewUserRegistrationNotification;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -187,67 +189,95 @@ class AuthController extends Controller
      */
     private function registerPractitioner(RegisterPractitionerRequest $request)
     {
-        // Crear usuario inactivo (active = 0) pendiente de validación
-        $user = User::create([
-            'first_name' => $request->given_name,
-            'last_name' => $request->family_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'default_client_id' => 1,
-            'register_source' => 'app',
-            'active' => false, // Usuario inactivo hasta validación de documentos
-            'validation_status' => 'pending', // Estado de validación pendiente
-        ]);
+        DB::beginTransaction();
 
-        // Asignar rol de doctor
-        $user->assignRole('doctor');
+        try {
+            // Crear usuario inactivo (active = 0) pendiente de validación
+            $user = User::create([
+                'first_name' => $request->given_name,
+                'last_name' => $request->family_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'default_client_id' => 1,
+                'register_source' => 'app',
+                'active' => false, // Usuario inactivo hasta validación de documentos
+                'validation_status' => 'pending', // Estado de validación pendiente
+            ]);
 
-        // Crear practitioner
-        $prefix = $request->gender == 'female' ? 'Dra. ' : 'Dr. ';
-        $practitioner = Practitioner::create([
-            'user_id' => $user->id,
-            'identifier' => strtoupper($request->identifier),
-            'identifier_type' => $request->identifier_type,
-            'given_name' => $request->given_name,
-            'family_name' => $request->family_name,
-            'name' => $prefix.$request->given_name.' '.$request->family_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'registry' => $request->registry,
-            'active' => false, // Practitioner inactivo hasta validación
-            'fhir_id' => 'practitioner-'.Str::uuid(),
-        ]);
+            // Asignar rol de doctor
+            $user->assignRole('doctor');
 
-        // Relacionar practitioner con client_id = 1
-        $user->clients()->attach(1);
+            // Crear practitioner
+            $prefix = $request->gender == 'female' ? 'Dra. ' : 'Dr. ';
+            $practitioner = Practitioner::create([
+                'user_id' => $user->id,
+                'identifier' => strtoupper($request->identifier),
+                'identifier_type' => $request->identifier_type,
+                'given_name' => $request->given_name,
+                'family_name' => $request->family_name,
+                'name' => $prefix.$request->given_name.' '.$request->family_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'registry' => $request->registry,
+                'active' => false, // Practitioner inactivo hasta validación
+                'fhir_id' => 'practitioner-'.Str::uuid(),
+            ]);
 
-        // Crear RecepyDoctorProfile (inactivo)
-        $doctorProfile = RecepyDoctorProfile::create([
-            'user_id' => $user->id,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'medical_license_number' => $request->registry,
-            'is_active' => false, // Perfil inactivo hasta validación
-            'recepy_background_color' => 'ffffff',
-        ]);
+            // Relacionar practitioner con client_id = 1
+            $user->clients()->attach(1);
 
-        // Guardar archivos de documentación
-        $this->storeVerificationDocuments($request, $user);
+            // Crear RecepyDoctorProfile (inactivo)
+            $doctorProfile = RecepyDoctorProfile::create([
+                'user_id' => $user->id,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'medical_license_number' => $request->registry,
+                'is_active' => false, // Perfil inactivo hasta validación
+                'recepy_background_color' => 'ffffff',
+            ]);
 
-        // Notificar a administradores y validadores
-        $this->notifyAdminsAndValidators($user);
+            // Guardar archivos de documentación
+            $this->storeVerificationDocuments($request, $user);
 
-        return response()->json([
-            'message' => 'Registro recibido exitosamente. Su cuenta está pendiente de validación. Recibirá un correo electrónico una vez que sus documentos sean revisados y aprobados.',
-            'status' => 'pending_verification',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->first_name.' '.$user->last_name,
-                'email' => $user->email,
-            ],
-        ], 201);
+            // Commit de la transacción si todo salió bien
+            DB::commit();
+
+            // Notificar a administradores y validadores (fuera de la transacción)
+            // Si esto falla, no afecta el registro del usuario
+            try {
+                $this->notifyAdminsAndValidators($user);
+            } catch (\Exception $notificationError) {
+                // Log del error pero no fallar el registro
+                Log::error('Error al enviar notificaciones de registro: '.$notificationError->getMessage());
+            }
+
+            return response()->json([
+                'message' => 'Registro recibido exitosamente. Su cuenta está pendiente de validación. Recibirá un correo electrónico una vez que sus documentos sean revisados y aprobados.',
+                'status' => 'pending_verification',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->first_name.' '.$user->last_name,
+                    'email' => $user->email,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            // Rollback de la transacción en caso de error
+            DB::rollBack();
+
+            // Log del error para debugging
+            Log::error('Error en registro de practitioner: '.$e->getMessage(), [
+                'email' => $request->email,
+                'exception' => $e,
+            ]);
+
+            // Retornar error al usuario
+            return response()->json([
+                'message' => 'Error al procesar el registro. Por favor, intenta nuevamente.',
+                'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor',
+            ], 500);
+        }
     }
 
     /**

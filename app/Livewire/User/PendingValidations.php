@@ -89,13 +89,22 @@ class PendingValidations extends Component
 
             DB::commit();
 
-            $this->dispatch('user-approved');
+            // $this->dispatch('user-approved');
+            $this->dispatch('showToastrValidation',
+                type: 'success',
+                message: 'Usuario Activado Correctamente'
+            );
+
             session()->flash('message', 'Usuario aprobado exitosamente');
 
             $this->closeModal();
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Error al aprobar usuario: '.$e->getMessage());
+            $this->dispatch('showToastrValidation',
+                type: 'error',
+                message: 'Error al aprobar usuario: '.$e->getMessage()
+            );
         }
     }
 
@@ -135,11 +144,18 @@ class PendingValidations extends Component
 
             $this->dispatch('user-rejected');
             session()->flash('message', 'Usuario rechazado. Se ha enviado notificación.');
-
+            $this->dispatch('showToastrValidation',
+                type: 'success',
+                message: 'Usuario rechazado. Se ha enviado notificación.'
+            );
             $this->closeModal();
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Error al rechazar usuario: '.$e->getMessage());
+            $this->dispatch('showToastrValidation',
+                type: 'error',
+                message: 'Error al aprobar usuario: '.$e->getMessage()
+            );
         }
     }
 

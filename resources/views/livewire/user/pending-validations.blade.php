@@ -55,16 +55,7 @@
                                 <tbody>
                                 @foreach ($pendingUsers as $user)
                                     <tr>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                    <span class="avatar avatar-sm me-2">
-                                                        <img class="avatar-img rounded-circle"
-                                                             src="{{ asset('assets/img/profiles/avatar-02.jpg') }}"
-                                                             alt="User Image">
-                                                    </span>
-                                                {{ $user->first_name }} {{ $user->last_name }}
-                                            </h2>
-                                        </td>
+                                        <td>{!!  $user->profile_name !!} </td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->practitioner->phone ?? 'N/A' }}</td>
                                         <td>{{ $user->practitioner->registry ?? 'N/A' }}</td>
@@ -209,4 +200,16 @@
             @endif
         </div>
     </div>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrValidation', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>
