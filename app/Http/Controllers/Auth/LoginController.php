@@ -101,6 +101,10 @@ class LoginController extends Controller
                 $route = route('accounting.dashboard');
             }
 
+            if ($user->hasRole('validador')) {
+                $route =  route('user.pending-validations');
+            }
+
             return redirect()->intended($route.'?show_salute=true');
         }
 

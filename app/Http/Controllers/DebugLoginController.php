@@ -80,6 +80,8 @@ class DebugLoginController extends Controller
             $route = route('accounting.dashboard');
         } elseif ($user->hasRole('admin client')) {
             $route = route('client.dashboard');
+        } else if ($user->hasRole('validador')) {
+            $route =  route('user.pending-validations');
         }
 
         return redirect($route.'?show_salute=true')
