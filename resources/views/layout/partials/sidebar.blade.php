@@ -252,6 +252,9 @@
                         @can('users.create')
                         <li><a class="{{ Request::is('users/create') ? 'active' : '' }}"  href="{{ route('user.create') }}">{{ __('generic.create') }} {{ __('user.title') }}</a></li>
                         @endcan
+                        @can('users.validate')
+                            <li><a class="{{ Request::is('users/pending-validations') ? 'active' : '' }}"  href="{{ route('user.pending-validations') }}">{{ __('Validar Documentación') }}</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcanany

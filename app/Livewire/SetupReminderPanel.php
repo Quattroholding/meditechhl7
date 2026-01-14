@@ -272,9 +272,9 @@ class SetupReminderPanel extends Component
     public function mount(): void
     {
         // Only show for doctors
-        /*if (! auth()->user()->hasRole('doctor') or ! auth()->user()->hasRole('admin client')) {
+        if (! auth()->user()->hasRole('doctor') or ! auth()->user()->hasRole('admin client')) {
             return;
-        }*/
+        }
 
         // Check if user has already dismissed in this session
         $checks = $this->getSetupChecks();
