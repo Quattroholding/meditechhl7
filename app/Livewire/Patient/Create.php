@@ -388,7 +388,7 @@ class Create extends Component
     {
         switch ($this->id_type) {
             case 'CC':
-                return 'Ej: 8-123456 ';
+                return 'Ej: 8-123-456 ';
             case 'CE':
                 return 'Ej: E-8-123456 o PE-123456';
             case 'PA':
