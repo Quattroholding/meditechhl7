@@ -25,6 +25,12 @@ class PendingValidations extends Component
 
     public $documents = [];
 
+    public $sortField = 'id'; // Ordenación por defecto
+
+    public $sortDirection = 'desc'; // Dirección de orden
+
+    public $pagination = 10;
+
     public function mount()
     {
         if (! auth()->user()->can('users.validate')) {
@@ -171,5 +177,17 @@ class PendingValidations extends Component
         return view('livewire.user.pending-validations', [
             'pendingUsers' => $pendingUsers,
         ]);
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortDirection = 'asc';
+        }
+
+        $this->sortField = $field;
+        $this->resetPage();
     }
 }

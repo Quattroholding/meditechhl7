@@ -37,16 +37,19 @@
                     <!-- /Table Header -->
                     @if ($pendingUsers->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                                 <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Email</th>
-                                    <th>Teléfono</th>
-                                    <th>Registro Médico</th>
-                                    <th>Fecha Registro</th>
-                                    <th>Documentos</th>
-                                    <th>Acciones</th>
+                                    <th data-column="users.first_name" data-priority="1">
+                                        <x-table-sort-button title="NOMBRE" columnName="users.first_name" :sortField="$sortField" :sortDirection="$sortDirection"/>
+                                        <span class="expand-control d-none">  <i class="fas fa-plus-circle text-primary"></i></span>
+                                    </th>
+                                    <th data-column="users.email" data-priority="2"><x-table-sort-button title="EMAIL" columnName="users.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                    <th data-column="users.whatsapp_phone" data-priority="2"><x-table-sort-button title="TELÉFONO" columnName="users.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                    <th data-column="recepy_doctor_profiles.medical_licence_number" data-priority="2"><x-table-sort-button title="REGISTRO MÉDICO" columnName="recepy_doctor_profiles.medical_licence_number" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                    <th data-column="users.created_at" data-priority="2"><x-table-sort-button title="FECHA REGISTRO" columnName="users.created_at" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                    <th data-column="documentos" data-priority="2"><x-table-sort-button title="DOCUMENTOS" columnName="" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
+                                    <th data-column="acciones" data-priority="7" class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -84,14 +87,19 @@
                                             </button>
                                         </td>
                                     </tr>
+                                    <!-- Hidden row for expanded details -->
+                                    <tr class="row-details d-none" data-parent-row="{{ $user->id }}">
+                                        <td colspan="8" class="p-3 bg-light">
+                                            <div class="row-details-content">
+                                                <!-- Details will be populated by JavaScript -->
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="mt-3">
-                            {{ $pendingUsers->links() }}
-                        </div>
+                        @include('partials.pagination',['data'=>$pendingUsers])
                     @else
                         <div class="text-center py-5">
                             <i class="fa fa-check-circle text-success" style="font-size: 48px;"></i>
@@ -102,9 +110,9 @@
             </div>
             <!-- Modal para revisar documentos -->
             @if ($showModal && $selectedUser)
-                <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
+                <!-- Modal -->
+                <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
+                    <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Revisar Documentos</h5>
                                 <button type="button" class="btn-close" wire:click="closeModal"></button>
@@ -197,7 +205,6 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
                 </div>
             @endif
         </div>
