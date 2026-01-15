@@ -34,7 +34,10 @@ class DebugLoginController extends Controller
         // Buscar por nombre o email
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('email', 'like', "%{$search}%")
+                $q->whereHas('clients', function ($q2) use ($search) {
+                    $q2->where('clients.name', 'like', '%' . $search . '%');
+                });
+                $q->orWhere('email', 'like', "%{$search}%")
                     ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
             });
         }
@@ -48,6 +51,8 @@ class DebugLoginController extends Controller
         $roles = \Spatie\Permission\Models\Role::all();
         // Obtener paquetes disponibles
         $packages = Package::all();
+
+
 
         return view('debug.login', compact('users', 'roles', 'role','packages','package', 'search'));
     }
