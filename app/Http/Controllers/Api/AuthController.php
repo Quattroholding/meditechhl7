@@ -8,6 +8,8 @@ use App\Models\File;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\Recepy\RecepyDoctorProfile;
+use App\Models\Recepy\RecepyPrescription;
+use App\Models\Recepy\RecepyPrescriptionMedication;
 use App\Models\User;
 use App\Notifications\NewUserRegistrationNotification;
 use Illuminate\Auth\Events\PasswordReset;
@@ -31,7 +33,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password) || !empty($user->inactive_at)) {
+        if (! $user || ! Hash::check($request->password, $user->password) || ! empty($user->inactive_at)) {
             throw ValidationException::withMessages([
                 'email' => ['Las credenciales proporcionadas son incorrectas.'],
             ]);
@@ -192,51 +194,18 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
-            // Crear usuario inactivo (active = 0) pendiente de validación
-            $user = User::create([
-                'first_name' => $request->given_name,
-                'last_name' => $request->family_name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'default_client_id' => 1,
-                'register_source' => 'app',
-                'active' => false, // Usuario inactivo hasta validación de documentos
-                'validation_status' => 'pending', // Estado de validación pendiente
-            ]);
+            // Verificar si existe un usuario desactivado con este email
+            $existingUser = User::where('email', $request->email)
+                ->whereNotNull('inactive_at')
+                ->first();
 
-            // Asignar rol de doctor
-            $user->assignRole('doctor');
-
-            // Crear practitioner
-            $prefix = $request->gender == 'female' ? 'Dra. ' : 'Dr. ';
-            $practitioner = Practitioner::create([
-                'user_id' => $user->id,
-                'identifier' => strtoupper($request->identifier),
-                'identifier_type' => $request->identifier_type,
-                'given_name' => $request->given_name,
-                'family_name' => $request->family_name,
-                'name' => $prefix.$request->given_name.' '.$request->family_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'registry' => $request->registry,
-                'active' => false, // Practitioner inactivo hasta validación
-                'fhir_id' => 'practitioner-'.Str::uuid(),
-            ]);
-
-            // Relacionar practitioner con client_id = 1
-            $user->clients()->attach(1);
-
-            // Crear RecepyDoctorProfile (inactivo)
-            $doctorProfile = RecepyDoctorProfile::create([
-                'user_id' => $user->id,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'medical_license_number' => $request->registry,
-                'is_active' => false, // Perfil inactivo hasta validación
-                'recepy_background_color' => 'ffffff',
-            ]);
+            if ($existingUser) {
+                // Reactivar usuario existente (como nuevo registro, sin datos anteriores)
+                $user = $this->reactivateDeactivatedPractitioner($existingUser, $request);
+            } else {
+                // Crear nuevo usuario
+                $user = $this->createNewPractitioner($request);
+            }
 
             // Guardar archivos de documentación
             $this->storeVerificationDocuments($request, $user);
@@ -245,11 +214,9 @@ class AuthController extends Controller
             DB::commit();
 
             // Notificar a administradores y validadores (fuera de la transacción)
-            // Si esto falla, no afecta el registro del usuario
             try {
                 $this->notifyAdminsAndValidators($user);
             } catch (\Exception $notificationError) {
-                // Log del error pero no fallar el registro
                 Log::error('Error al enviar notificaciones de registro: '.$notificationError->getMessage());
             }
 
@@ -263,21 +230,146 @@ class AuthController extends Controller
                 ],
             ], 201);
         } catch (\Exception $e) {
-            // Rollback de la transacción en caso de error
             DB::rollBack();
 
-            // Log del error para debugging
             Log::error('Error en registro de practitioner: '.$e->getMessage(), [
                 'email' => $request->email,
                 'exception' => $e,
             ]);
 
-            // Retornar error al usuario
             return response()->json([
                 'message' => 'Error al procesar el registro. Por favor, intenta nuevamente.',
                 'error' => config('app.debug') ? $e->getMessage() : 'Error interno del servidor',
             ], 500);
         }
+    }
+
+    /**
+     * Reactivate a deactivated practitioner (user registers again with same email)
+     * Does NOT restore previous Recepy data - creates fresh profile
+     */
+    private function reactivateDeactivatedPractitioner(User $user, RegisterPractitionerRequest $request): User
+    {
+        $prefix = $request->gender == 'female' ? 'Dra. ' : 'Dr. ';
+
+        // Reactivar usuario con nuevos datos (pendiente de validación)
+        $user->update([
+            'first_name' => $request->given_name,
+            'last_name' => $request->family_name,
+            'password' => Hash::make($request->password),
+            'active' => false,
+            'inactive_at' => null,
+            'inactivate_by' => null,
+            'validation_status' => 'pending',
+            'validated_at' => null,
+            'validated_by' => null,
+            'rejection_reason' => null,
+        ]);
+
+        // Restaurar y actualizar practitioner (usando withTrashed para encontrar el soft-deleted)
+        $practitioner = Practitioner::withTrashed()->where('user_id', $user->id)->first();
+
+        if ($practitioner) {
+            $practitioner->restore();
+            $practitioner->update([
+                'identifier' => strtoupper($request->identifier),
+                'identifier_type' => $request->identifier_type,
+                'given_name' => $request->given_name,
+                'family_name' => $request->family_name,
+                'name' => $prefix.$request->given_name.' '.$request->family_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'registry' => $request->registry,
+                'active' => false,
+            ]);
+        } else {
+            // Si por alguna razón no existe, crear uno nuevo
+            Practitioner::create([
+                'user_id' => $user->id,
+                'identifier' => strtoupper($request->identifier),
+                'identifier_type' => $request->identifier_type,
+                'given_name' => $request->given_name,
+                'family_name' => $request->family_name,
+                'name' => $prefix.$request->given_name.' '.$request->family_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'registry' => $request->registry,
+                'active' => false,
+                'fhir_id' => 'practitioner-'.Str::uuid(),
+            ]);
+        }
+
+        // NO restaurar datos de Recepy anteriores - crear perfil nuevo y fresco
+        // Los datos anteriores quedan soft-deleted permanentemente
+        RecepyDoctorProfile::create([
+            'user_id' => $user->id,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'medical_license_number' => $request->registry,
+            'is_active' => false,
+            'recepy_background_color' => 'ffffff',
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Create a new practitioner user
+     */
+    private function createNewPractitioner(RegisterPractitionerRequest $request): User
+    {
+        $prefix = $request->gender == 'female' ? 'Dra. ' : 'Dr. ';
+
+        // Crear usuario inactivo (active = 0) pendiente de validación
+        $user = User::create([
+            'first_name' => $request->given_name,
+            'last_name' => $request->family_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'default_client_id' => 1,
+            'register_source' => 'app',
+            'active' => false,
+            'validation_status' => 'pending',
+        ]);
+
+        // Asignar rol de doctor
+        $user->assignRole('doctor');
+
+        // Crear practitioner
+        Practitioner::create([
+            'user_id' => $user->id,
+            'identifier' => strtoupper($request->identifier),
+            'identifier_type' => $request->identifier_type,
+            'given_name' => $request->given_name,
+            'family_name' => $request->family_name,
+            'name' => $prefix.$request->given_name.' '.$request->family_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'birth_date' => $request->birth_date,
+            'gender' => $request->gender,
+            'registry' => $request->registry,
+            'active' => false,
+            'fhir_id' => 'practitioner-'.Str::uuid(),
+        ]);
+
+        // Relacionar practitioner con client_id = 1
+        $user->clients()->attach(1);
+
+        // Crear RecepyDoctorProfile (inactivo)
+        RecepyDoctorProfile::create([
+            'user_id' => $user->id,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'medical_license_number' => $request->registry,
+            'is_active' => false,
+            'recepy_background_color' => 'ffffff',
+        ]);
+
+        return $user;
     }
 
     /**
@@ -348,7 +440,7 @@ class AuthController extends Controller
 
     /**
      * Deactivate the authenticated user's account
-     * Sets user active = false and soft deletes related practitioner if exists
+     * Sets user active = false and soft deletes related practitioner and recepy data if exists
      */
     public function deactivateAccount(Request $request)
     {
@@ -367,6 +459,21 @@ class AuthController extends Controller
             // Soft delete practitioner if exists
             if ($user->practitioner) {
                 $user->practitioner->delete();
+            }
+
+            // Soft delete Recepy data if exists
+            $doctorProfiles = RecepyDoctorProfile::where('user_id', $user->id)->get();
+            foreach ($doctorProfiles as $profile) {
+                // Get all prescriptions for this doctor profile
+                $prescriptions = RecepyPrescription::where('doctor_profile_id', $profile->id)->get();
+                foreach ($prescriptions as $prescription) {
+                    // Soft delete all medications for this prescription
+                    RecepyPrescriptionMedication::where('prescription_id', $prescription->id)->delete();
+                    // Soft delete the prescription
+                    $prescription->delete();
+                }
+                // Soft delete the doctor profile
+                $profile->delete();
             }
 
             // Revoke all user tokens
