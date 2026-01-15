@@ -346,6 +346,51 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Deactivate the authenticated user's account
+     * Sets user active = false and soft deletes related practitioner if exists
+     */
+    public function deactivateAccount(Request $request)
+    {
+        $user = $request->user();
+
+        DB::beginTransaction();
+
+        try {
+            // Deactivate user account
+            $user->update([
+                'active' => false,
+                'inactive_at' => now(),
+                'inactivate_by' => $user->id,
+            ]);
+
+            // Soft delete practitioner if exists
+            if ($user->practitioner) {
+                $user->practitioner->delete();
+            }
+
+            // Revoke all user tokens
+            $user->tokens()->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Su cuenta ha sido desactivada exitosamente.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error al desactivar cuenta: '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'exception' => $e,
+            ]);
+
+            return response()->json([
+                'message' => 'Error al desactivar la cuenta. Por favor, intente nuevamente.',
+            ], 500);
+        }
+    }
+
     public function refresh(Request $request)
     {
         $user = $request->user();

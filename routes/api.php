@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refresh', [AuthController::class, 'refresh']);
     Route::get('/auth/user', [AuthController::class, 'user']);
+    Route::delete('/auth/account', [AuthController::class, 'deactivateAccount']);
 
     // Appointments
     Route::apiResource('appointments', AppointmentController::class);

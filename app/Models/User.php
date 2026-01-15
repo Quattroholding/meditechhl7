@@ -36,6 +36,8 @@ class User extends Authenticatable
         'validated_at',
         'validated_by',
         'rejection_reason',
+        'inactive_at',
+        'inactivate_by',
     ];
 
     /**
