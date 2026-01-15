@@ -36,19 +36,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->session()->forget('client_'.auth()->user()->id);
 
-        $is_admin = auth()->user()->hasRole('admin');
+        $is_admin = false;
+        if($request->ip() ==  config('debug.ip_oficina_san_francisco')) $is_admin = true; // IP OFICINA SAN FRANCISCO
+
+        $request->session()->forget('client_'.auth()->user()->id);
 
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        
+
         if($is_admin)
             return redirect('/debug/login');
-        
+
 
         return redirect('/');
     }
