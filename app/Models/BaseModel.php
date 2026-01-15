@@ -36,8 +36,8 @@ class BaseModel extends Model
                 $user_id = User::first()->id;
                 $user_name = 'Administrador Del Sistema';
                 if (Auth::check()) {
-                    $user_id = Auth::getUser()->id;
-                    $user_name = Auth::getUser()->full_name;
+                    $user_id = Auth::user()->id;
+                    $user_name = Auth::user()->full_name;
                 }
 
                 foreach ($changes as $attr => $value) {
@@ -83,8 +83,8 @@ class BaseModel extends Model
             $user_id = User::first()->id;
             $user_name = 'Administrador Del Sistema';
             if (Auth::check()) {
-                $user_id = Auth::getUser()->id;
-                $user_name = Auth::getUser()->full_name;
+                $user_id = Auth::user()->id;
+                $user_name = Auth::user()->full_name;
             }
 
             return UserLog::create([
@@ -116,8 +116,8 @@ class BaseModel extends Model
             $user_id = User::first()->id;
             $user_name = 'Administrador Del Sistema';
             if (Auth::check()) {
-                $user_id = Auth::getUser()->id;
-                $user_name = Auth::getUser()->full_name;
+                $user_id = Auth::user()->id;
+                $user_name = Auth::user()->full_name;
             }
 
             return UserLog::create([
