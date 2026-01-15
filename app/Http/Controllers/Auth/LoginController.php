@@ -84,7 +84,7 @@ class LoginController extends Controller
             }
 
             $route = route('admin.dashboard');
-            if ($user->hasRole('doctor')) {
+            if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
                 $route = route('doctor.dashboard');
             }
             if ($user->hasRole('paciente')) {
