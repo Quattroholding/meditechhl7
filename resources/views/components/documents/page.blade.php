@@ -34,8 +34,17 @@
         </div>
     </div>
 
-    {{-- Footer --}}
+    {{-- Footer
     @include('documents.partials.footer', [
         'documentNumber' => $documentNumber,
         'pdfService'=>$pdfService])
+        --}}
+
+    @include('documents.partials.footer', [
+        'documentNumber' => $documentNumber,
+        'doctorProfile' => $doctorProfile ?? null,
+        'practitioner' => $practitioner ?? null,
+        'pdfService' => $pdfService ?? null,
+    ])
+
 </div>

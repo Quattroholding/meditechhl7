@@ -11,8 +11,9 @@ class MedicationRequest extends Model
     protected $fillable = [
         'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'medication_id',
         'identifier', 'status', 'intent', 'priority', 'reason', 'dosage_instruction',
-        'dosage_text', 'route', 'frequency', 'quantity', 'refills', 'valid_from','duration',
+        'dosage_text', 'route', 'frequency', 'quantity', 'refills', 'valid_from', 'duration',
         'valid_to', 'substitution_allowed', 'note', 'medication', 'narcotic', 'client_id', 'branch_id', 'consulting_room_id',
+        'notification_sent_at',
     ];
 
     protected $casts = [
@@ -20,6 +21,7 @@ class MedicationRequest extends Model
         'valid_to' => 'date',
         'substitution_allowed' => 'boolean',
         'dosage_instruction' => 'array',
+        'notification_sent_at' => 'datetime',
     ];
 
     // Relaciones
@@ -39,6 +41,11 @@ class MedicationRequest extends Model
     }
 
     public function medicine(): BelongsTo
+    {
+        return $this->belongsTo(Medicine::class, 'medication_id');
+    }
+
+    public function medicina(): BelongsTo
     {
         return $this->belongsTo(Medicine::class, 'medication_id');
     }

@@ -253,6 +253,7 @@ class ConsultationController extends Controller
             $encounter->end = now();
             $encounter->save();
 
+
             if ($invoice) {
                 $downloadUrl = route('invoice.download', $invoice->id);
                 session()->flash('message.success', '¡Consulta finalizada con éxito! Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>');
@@ -260,7 +261,7 @@ class ConsultationController extends Controller
                 session()->flash('message.success', '¡Consulta finalizada con éxito! (Sin servicios facturables)');
             }
 
-            return redirect(route('consultation.index'));
+            return redirect(route('consultation.view', $encounter->id));
 
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al finalizar consulta: '.$e->getMessage());
@@ -290,11 +291,11 @@ class ConsultationController extends Controller
     public function downloadResumen(Request $request, $appointment_id)
     {
 
-        try{
+        try {
             $appointment = Appointment::find($appointment_id);
             $auth = false;
             if (auth()->user()->hasRole('doctor') && auth()->user()->pranctitioner && PatientPractitionerAuthorization::wherePatientId($appointment->patient_id)
-                    ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()) {
+                ->wherePrantitionerId(auth()->user()->pranctitioner->id)->first()) {
                 $auth = true;
             }
             $data = Encounter::when($auth, function ($query) {
@@ -308,7 +309,7 @@ class ConsultationController extends Controller
             $sello = $firma = '';
             $mode = 'full';
             foreach ($data->diagnoses()->get() as $d) {
-                if($d->condition){
+                if ($d->condition) {
                     if ($d->condition->icd10Code) {
                         array_push($consultation_disabilities, '<td>'.$d->condition->code.'</td><td>'.$d->condition->icd10Code->description_es.'</td>');
                     } else {
@@ -325,8 +326,9 @@ class ConsultationController extends Controller
             $pdf = Pdf::loadView('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
 
             return $pdf->stream('resumen.pdf');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             session()->flash('message.error', 'Error al descargar el resumen: '.$e->getMessage());
+
             return back();
         }
 

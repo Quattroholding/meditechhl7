@@ -13,7 +13,7 @@ class ServiceRequest extends BaseModel
 
     protected $fillable = ['fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status', 'intent', 'priority', 'do_not_perform', 'code', 'service_type',
         'code_system', 'code_display', 'quantity', 'quantity_unit', 'occurrence_start', 'occurrence_end', 'body_site', 'note', 'patient_instruction',
-        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id'];
+        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id', 'notification_sent_at'];
 
     protected $casts = [
         'body_site' => 'array',
@@ -22,6 +22,7 @@ class ServiceRequest extends BaseModel
         'occurrence_end' => 'datetime',
         'authored_on' => 'datetime',
         'last_updated' => 'datetime',
+        'notification_sent_at' => 'datetime',
     ];
 
     // Relación con Encounter

@@ -65,15 +65,26 @@ class InvoiceController extends Controller
                 'tax' => $invoice->tax_amount,
                 'total' => $invoice->total_amount,
                 'generateDate' => now()->format('d/m/Y H:i:s'),
+                'template' => $request->get('template', null),
             ];
+
+            // Determine which template to use
+            $templateNumber = $request->get('template', null);
+            $templateView = 'Invoice.invoice_template'; // default template
+
+            if ($templateNumber && view()->exists("Invoice.templates.template_{$templateNumber}")) {
+                $templateView = "Invoice.templates.template_{$templateNumber}";
+            }
 
             // If HTML preview is requested
             if ($request->has('html')) {
-                return view('Invoice.invoice_template', $data);
+                return view($templateView, $data);
             }
 
-            // Generate PDF
-            $pdf = Pdf::loadView('Invoice.invoice_template', $data)
+            // Generate PDF}
+            $customPaper = [0, 0, 700, 850];
+            $pdf = Pdf::loadView($templateView, $data)
+            // $pdf = Pdf::loadView('Invoice.templates.master_template', $data)
                 ->setPaper('letter', 'portrait')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,

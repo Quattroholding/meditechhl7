@@ -5,7 +5,9 @@ namespace App\Observers;
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
+use App\Notifications\EncounterPrescriptionNotification;
 use App\Notifications\SendPatientSatisfactionSurvey;
+use App\Services\EncounterPrescriptionPdfService;
 use Illuminate\Support\Facades\Log;
 
 class EncounterObserver
@@ -16,8 +18,94 @@ class EncounterObserver
     public function updated(Encounter $encounter): void
     {
         if ($encounter->isDirty('status') && $encounter->getRawOriginal('status') == 'in-progress') {
-
             $this->sendSatisfactionSurvey($encounter);
+        }
+
+        $this->sendPrescriptionNotification($encounter);
+    }
+
+    /**
+     * Send prescription notification to patient with attached PDFs
+     * Only sends if practitioner has signature and seal, and there are unsent prescriptions
+     */
+    private function sendPrescriptionNotification(Encounter $encounter): void
+    {
+        try {
+            $pdfService = new EncounterPrescriptionPdfService;
+            $practitioner = $encounter->practitioner;
+            $patient = $encounter->patient;
+
+
+            // Validate practitioner has signature and seal
+            if (! $pdfService->practitionerHasSignatureAndSeal($practitioner)) {
+                Log::info('Practitioner no tiene firma y sello configurados, no se envian recetas', [
+                    'encounter_id' => $encounter->id,
+                    'practitioner_id' => $practitioner->id,
+                ]);
+
+                return;
+            }
+
+            // Validate patient has email
+            if (! $patient || ! $patient->email) {
+                Log::info('Paciente sin email para envio de recetas', [
+                    'encounter_id' => $encounter->id,
+                    'patient_id' => $patient?->id,
+                ]);
+
+                return;
+            }
+
+            // Check for unsent prescriptions
+            $hasUnsentMedications = $encounter->medicationRequests()
+                ->whereNull('notification_sent_at')
+                ->exists();
+
+            $hasUnsentServiceRequests = $encounter->serviceRequests()
+                ->whereNull('notification_sent_at')
+                ->exists();
+
+            // If no unsent prescriptions, skip
+            if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
+                Log::info('No hay recetas pendientes de envio para este encounter', [
+                    'encounter_id' => $encounter->id,
+                    'patient_id' => $patient->id,
+                ]);
+
+                return;
+            }
+
+            // Send notification with PDFs attached
+            $patient->notify(new EncounterPrescriptionNotification(
+                $encounter,
+                $hasUnsentMedications,
+                $hasUnsentServiceRequests
+            ));
+
+            // Mark prescriptions as sent
+            if ($hasUnsentMedications) {
+                $pdfService->markMedicationsAsSent($encounter);
+            }
+
+            if ($hasUnsentServiceRequests) {
+                $pdfService->markServiceRequestsAsSent($encounter);
+            }
+
+            Log::info('Notificacion de recetas medicas enviada', [
+                'encounter_id' => $encounter->id,
+                'patient_id' => $patient->id,
+                'practitioner_id' => $practitioner->id,
+                'has_medications' => $hasUnsentMedications,
+                'has_service_requests' => $hasUnsentServiceRequests,
+                'patient_email' => $patient->email,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar notificacion de recetas medicas', [
+                'encounter_id' => $encounter->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 

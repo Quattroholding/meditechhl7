@@ -82,7 +82,7 @@
                                     <td data-column="payment_status" data-priority="7" data-label="{{ __('invoice.statuss') }}">
                                         <span class="cell-content">
                                             @if($invoice->payment_status)
-                                                <small class="custom-badge {{__('invoice.payment_status_class.'.$invoice->payment_status)}}  mt-1">{{ __('invoice.payment_status.' . $invoice->payment_status) }}</small>
+                                                <small class="{{$invoice->payment_status->color()}}  mt-1">{{  $invoice->payment_status->label() }}</small>
                                             @endif
                                         </span>
                                     </td>

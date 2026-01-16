@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InvoivePatientStatus;
 use App\Models\Scopes\InvoiceScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,6 +79,7 @@ class Invoice extends BaseModel
 
     protected $casts = [
         'identifier' => 'array',
+        'payment_status' => InvoivePatientStatus::class,
         'date' => 'date',
         'issue_date' => 'date',
         'due_date' => 'date',

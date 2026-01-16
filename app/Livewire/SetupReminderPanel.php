@@ -239,6 +239,31 @@ class SetupReminderPanel extends Component
 
                 return null;
             },
+            'signature_and_seal' => function () {
+                $user = auth()->user();
+                $client = $user->getCurrentClient();
+
+                if (! $client) {
+                    return null;
+                }
+
+                $hasRapidAccess = RapidAccess::where('client_id', $client->id)
+                    ->where('active', true)
+                    ->exists();
+
+                if (! $hasRapidAccess) {
+                    return [
+                        'key' => 'rapid_access',
+                        'title' => 'Configura Accesos <br/> Rápidos',
+                        'message' => 'Configura tus accesos rápidos de laboratorios, imágenes y procedimientos para agilizar el llenado de consultas médicas.',
+                        'action_url' => route('setting.create_rapid_access'),
+                        'action_text' => 'Configurar Accesos',
+                        'is_required' => false,
+                    ];
+                }
+
+                return null;
+            },
             'rapid_access' => function () {
                 $user = auth()->user();
                 $client = $user->getCurrentClient();

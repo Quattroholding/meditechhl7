@@ -86,11 +86,11 @@
                             <div class="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
                                 <div
                                     class="h-full bg-blue-500 transition-all duration-300 rounded-full"
-                                    style="width: {{ $currentReminder === 'subscription' ? '14.28%' : ($currentReminder === 'branch' ? '28.57%' : ($currentReminder === 'consulting_room' ? '42.85%' : ($currentReminder === 'patient' ? '57.14%' : ($currentReminder === 'service_catalog' ? '71.42%' : ($currentReminder === 'working_hours' ? '85.71%' : '100%'))))) }}"
+                                    style="width: {{ $currentReminder === 'subscription' ? '16.67%' : ($currentReminder === 'branch' ? '33.33%' : ($currentReminder === 'consulting_room' ? '50%' : ($currentReminder === 'patient' ? '66.67%' : ($currentReminder === 'service_catalog' ? '83.33%' : '100%')))) }}"
                                 ></div>
                             </div>
                             <span class="text-xs text-gray-500 font-medium">
-                                {{ $currentReminder === 'subscription' ? '1/7' : ($currentReminder === 'branch' ? '2/7' : ($currentReminder === 'consulting_room' ? '3/7' : ($currentReminder === 'patient' ? '4/7' : ($currentReminder === 'service_catalog' ? '5/7' : ($currentReminder === 'working_hours' ? '6/7' : '7/7'))))) }}
+                                {{ $currentReminder === 'subscription' ? '1/6' : ($currentReminder === 'branch' ? '2/6' : ($currentReminder === 'consulting_room' ? '3/6' : ($currentReminder === 'patient' ? '4/6' : ($currentReminder === 'service_catalog' ? '5/6' : '6/6')))) }}
                             </span>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full  {{ $isRequired ? 'bg-red-400' : 'bg-blue-500' }}"></span>
                     <span style="position: relative; display: inline-flex; border-radius: 50%; height: 20px; width: 20px; align-items: center; justify-content: center;" class="{{ $isRequired ? 'bg-red-500' : 'bg-blue-500' }}">
                         <span class="text-white text-xs font-bold">
-                            {{ $currentReminder === 'subscription' ? '1' : ($currentReminder === 'branch' ? '2' : ($currentReminder === 'consulting_room' ? '3' : ($currentReminder === 'patient' ? '4' : ($currentReminder === 'service_catalog' ? '5' : ($currentReminder === 'working_hours' ? '6' : '7'))))) }}
+                            {{ $currentReminder === 'subscription' ? '1' : ($currentReminder === 'branch' ? '2' : ($currentReminder === 'consulting_room' ? '3' : ($currentReminder === 'patient' ? '4' : ($currentReminder === 'service_catalog' ? '5' : '6')))) }}
                         </span>
                     </span>
                 </span>

@@ -50,7 +50,7 @@
                                                 <p class="text-muted mb-0">
                                                     {{ __('invoice.payment_statuss') }}:
                                                     <span class="badge bg-{{ $invoice->payment_status === 'paid' ? 'success' : ($invoice->payment_status === 'partial' ? 'warning' : 'danger') }}">
-                                                        {{ __('invoice.payment_status.' . $invoice->payment_status) }}
+                                                        {{ $invoice->payment_status->label() }}
                                                     </span>
                                                 </p>
                                             @endif
