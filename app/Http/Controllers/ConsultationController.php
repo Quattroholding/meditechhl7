@@ -248,18 +248,37 @@ class ConsultationController extends Controller
             // Update appointment status
             $appointment->update(['status' => 'fulfilled']);
 
+            // Check if prescriptions will be sent (before saving encounter triggers observer)
+            $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
+
             // Update encounter status
             $encounter->status = 'finished';
             $encounter->end = now();
             $encounter->save();
 
+            // Build success message
+            $messages = ['¡Consulta finalizada con éxito!'];
 
             if ($invoice) {
                 $downloadUrl = route('invoice.download', $invoice->id);
-                session()->flash('message.success', '¡Consulta finalizada con éxito! Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>');
+                $messages[] = 'Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>';
             } else {
-                session()->flash('message.success', '¡Consulta finalizada con éxito! (Sin servicios facturables)');
+                $messages[] = '(Sin servicios facturables)';
             }
+
+            // Add prescription notification message if applicable
+            if ($prescriptionNotificationInfo['will_send']) {
+                $sentItems = [];
+                if ($prescriptionNotificationInfo['has_medications']) {
+                    $sentItems[] = 'recetas médicas';
+                }
+                if ($prescriptionNotificationInfo['has_service_requests']) {
+                    $sentItems[] = 'órdenes de laboratorio/imágenes';
+                }
+                $messages[] = '<br><i class="fa fa-envelope text-success"></i> Se enviaron '.implode(' y ', $sentItems).' al correo del paciente: <strong>'.$prescriptionNotificationInfo['patient_email'].'</strong>';
+            }
+
+            session()->flash('message.success', implode(' ', $messages));
 
             return redirect(route('consultation.view', $encounter->id));
 

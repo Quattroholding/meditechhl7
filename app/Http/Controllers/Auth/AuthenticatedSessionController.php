@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
     {
 
         $is_admin = false;
-        if($request->ip() ==  config('debug.ip_oficina_san_francisco')) $is_admin = true; // IP OFICINA SAN FRANCISCO
+        if($request->ip() ==  config('debug.ip_oficina_san_francisco') && auth()->user()->hasRole('admin')) $is_admin = true; // IP OFICINA SAN FRANCISCO
 
         $request->session()->forget('client_'.auth()->user()->id);
 
