@@ -71,11 +71,11 @@ class PayInvoiceYappy extends Component
 
             $config = [
                 'merchantId'  => $merchantId,
-                'orderId'     => 'INV-'.$this->invoice->id.'-'.time(),
+                'orderId'     => $this->invoice->invoice_number,
                 'domain'      => parse_url($appUrl, PHP_URL_HOST),
                 'paymentDate' => time(),
                 'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
-                'taxes'       => number_format($this->invoice->taxes ?? 0, 2, '.', ''),
+                'taxes'       => number_format($this->invoice->tax_amount ?? 0, 2, '.', ''),
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
@@ -149,6 +149,8 @@ class PayInvoiceYappy extends Component
             ]);
 
             \Log::info('========== YAPPY REQUEST DEBUG END (ERROR) ==========');
+
+            $this->dispatch('refreshSetupReminders');
 
             $this->dispatch('yappy-error', [
                 'message' => $e->getMessage(),

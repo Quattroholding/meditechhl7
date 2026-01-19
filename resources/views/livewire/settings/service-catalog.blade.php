@@ -46,16 +46,7 @@
                                     <x-text-input wire:model="cpt_specialty" class="block mt-1 w-full" type="text" name="cpt_specialty"/>
                                 </div>
                             </div>{{--}}
-                            <!-- Copay -->
-                            <div class="col-12 col-md-6">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="cpt_patient_copay" :value="__('Copago Paciente')"/>
-                                    <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
                             <!-- Complexity -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block local-forms">
@@ -67,15 +58,25 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
+                        {{--}}
+                        <div class="row">
+                            <!-- Copay -->
+                            <div class="col-12 col-md-6">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="cpt_patient_copay" :value="__('Copago Paciente')"/>
+                                    <x-text-input wire:model="cpt_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="cpt_patient_copay"/>
+                                </div>
+                            </div>
                             <!-- Duration -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="cpt_duration" :value="__('Duración (minutos)')"/>
                                     <x-text-input wire:model="cpt_duration" class="block mt-1 w-full" type="number" name="cpt_duration"/>
                                 </div>
-                            </div>                       
+                            </div>
                         </div>
-
+                        {{--}}
 
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
@@ -108,16 +109,16 @@
                         <div class="col-12">
                             <div class="input-block local-forms">
                                 <x-input-label for="custom_name" :value="__('Nombre del Servicio')" required="true"/>
-                                <x-text-input 
-                                    wire:model.live="custom_name" 
-                                    class="block mt-1 w-full" 
-                                    type="text" 
+                                <x-text-input
+                                    wire:model.live="custom_name"
+                                    class="block mt-1 w-full"
+                                    type="text"
                                     name="custom_name"
                                     maxlength="500"
                                 />
                                 <div class="d-flex justify-content-between align-items-center mt-1">
-                                    @error('custom_name') 
-                                        <span class="text-red-500 text-sm">{{ $message }}</span> 
+                                    @error('custom_name')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
                                     @else
                                         <span></span>
                                     @enderror
@@ -160,7 +161,8 @@
                                 </div>
                             </div>
                         </div>
-
+                        <input type="hidden" wire:model="custom_complexity" value="medium">
+                        {{--}}
                         <div class="row">
                             <!-- Specialty -->
                             <div class="col-12 col-md-6">
@@ -209,7 +211,7 @@
                                     <x-text-input wire:model="custom_patient_copay" class="block mt-1 w-full" type="number" step="0.01" name="custom_patient_copay"/>
                                 </div>
                             </div>
-                            {{--}}
+
                             <!-- Checkboxes -->
                             <div class="col-12 col-md-6">
                                 <div class="input-block">
@@ -227,9 +229,9 @@
                                     </div>
                                 </div>
                             </div>
-                            {{--}}
-                        </div>
 
+                        </div>
+                        {{--}}
                         <div class="flex items-center justify-end mt-4">
                             <div class="doctor-submit text-end">
                                 <button type="submit" class="btn btn-primary submit-form me-2">{{ __('button.register') }}</button>
@@ -410,7 +412,7 @@
 
     <script>
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastr', (event) => {
+            Livewire.on('showToastrServiceCatalog', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,

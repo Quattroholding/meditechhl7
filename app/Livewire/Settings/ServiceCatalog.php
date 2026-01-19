@@ -216,7 +216,11 @@ class ServiceCatalog extends Component
         // Dispatch event to refresh setup reminders
         $this->dispatch('refreshSetupReminders');
 
-        session()->flash('message.success', '¡Servicio guardado exitosamente!');
+
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'success',
+            message: '¡Servicio guardado exitosamente!',
+        );
         $this->loadServices();
         $this->resetCptForm();
     }
@@ -262,10 +266,10 @@ class ServiceCatalog extends Component
         // Dispatch event to refresh setup reminders
         $this->dispatch('refreshSetupReminders');
 
-        $this->dispatch('showToastr', [
-            'type' => 'success',
-            'message' => '¡Servicio personalizado guardado exitosamente!',
-        ]);
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'success',
+            message: '¡Servicio personalizado guardado exitosamente!'
+        );
 
         $this->loadServices();
         $this->resetCustomForm();
@@ -324,10 +328,11 @@ class ServiceCatalog extends Component
             'updated_by' => auth()->id(),
         ]);
 
-        $this->dispatch('showToastr', [
-            'type' => 'success',
-            'message' => '¡Servicio actualizado exitosamente!',
-        ]);
+
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'success',
+            message: '¡Servicio actualizado exitosamente!',
+        );
 
         $this->loadServices();
         $this->cancelEdit();
@@ -352,10 +357,12 @@ class ServiceCatalog extends Component
             'updated_by' => auth()->id(),
         ]);
 
-        $this->dispatch('showToastr', [
-            'type' => 'info',
-            'message' => $service->is_active ? 'Servicio activado' : 'Servicio desactivado',
-        ]);
+
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'info',
+            message: $service->is_active ? 'Servicio activado' : 'Servicio desactivado',
+        );
+
 
         $this->loadServices();
     }
@@ -370,10 +377,11 @@ class ServiceCatalog extends Component
 
         $service->delete();
 
-        $this->dispatch('showToastr', [
-            'type' => 'error',
-            'message' => '¡Servicio eliminado exitosamente!',
-        ]);
+
+        $this->dispatch('showToastrServiceCatalog',
+            type: 'error',
+            message: '¡Servicio eliminado exitosamente!',
+        );
 
         $this->loadServices();
     }

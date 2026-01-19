@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentMethod;
+use App\Enums\PaymentStatus;
 use App\Models\Client;
+use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -157,16 +160,61 @@ class SuscriptionPaymentController extends Controller
 
     public function yappyIPN(Request $request){
         // Yappy enviará: orderId, hash, status, domain
+
         $orderId = $request->query('orderId');
         $status  = $request->query('status');
         $hash    = $request->query('hash');
+        $domain = $_GET['domain'];
+        $invoice = ClientInvoice::whereInvoiceNumber($orderId)->first();
 
         // TODO: validar hash con tu clave secreta
-        Log::info("Yappy IPN: {$orderId} => {$status}");
+        Log::info("Yappy IPN: {$invoice->id} => {$status}");
 
-        // Actualizar modelo de factura según el estado
-        // E = Ejecuto, R = Rechazado, C = Cancelado, X = Expirado
+        if (isset($orderId) && isset($status) && isset($domain) && isset($hash)) {
+            header('Content-Type: application/json');
+            $success = validateHash();
+            if ($success && $status=='E' && $invoice) {
+                // LÓGICA DE NEGOCIOS
+                // Actualizar modelo de factura según el estado
+                // E = Ejecuto, R = Rechazado, C = Cancelado, X = Expirado
+                $statusPayment = PaymentStatus::COMPLETED;
+                // Create payment record
+                $payment = ClientInvoicePayment::create([
+                    'client_invoice_id' => $invoice->id,
+                    'amount' => $invoice->total,
+                    'payment_date' => now(),
+                    'payment_method' => PaymentMethod::YAPPY,
+                    'payment_reference' => 'YAPPY-'.$invoice->invoice_number,
+                    'status' => $statusPayment,
+                ]);
 
-        return response()->json(['success' => true]);
+                // Update invoice payment status
+                $invoice->updatePaymentStatus();
+            }
+
+            return response()->json(['success' => true]);
+        }
+
     }
+
+
+    function validateHash()
+    {
+        try {
+            $secretKey = env('YAPPY_SECRET_KEY');
+            $orderId = $_GET['orderId'];
+            $status = $_GET['status'];
+            $hash = $_GET['hash'];
+            $domain = $_GET['domain'];
+            $values = base64_decode($secretKey);
+            $secrete = explode('.', $values);
+            $signature = hash_hmac('sha256', $orderId . $status . $domain, $secrete[0]);
+            $success = strcmp($hash, $signature) === 0;
+        } catch (\Throwable $th) {
+            $success = false;
+        }
+        return $success;
+    }
+
+
 }
