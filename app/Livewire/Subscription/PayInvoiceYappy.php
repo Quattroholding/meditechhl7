@@ -17,28 +17,62 @@ class PayInvoiceYappy extends Component
 
     public function crearOrdenYappy()
     {
+        \Log::info('========== YAPPY REQUEST DEBUG START ==========');
         \Log::info('YAPPY crearOrdenYappy()', [
-            'invoice_id' => $this->invoice->id
+            'invoice_id' => $this->invoice->id,
+            'invoice_total' => $this->invoice->total,
         ]);
 
         try {
+            // Log configuración
+            $baseUrl = config('services.yappy.base_url');
+            $merchantId = config('services.yappy.merchant_id');
+            $appUrl = config('app.url');
+
+            \Log::info('YAPPY Config', [
+                'base_url' => $baseUrl,
+                'merchant_id' => $merchantId,
+                'app_url' => $appUrl,
+            ]);
 
             // 1️⃣ Validar comercio
-            $validate = Http::post(config('services.yappy.base_url') . '/payments/validate/merchant', [
-                'merchantId' => config('services.yappy.merchant_id'),
-                'urlDomain'  => config('app.url'),
+            $validateUrl = $baseUrl . '/payments/validate/merchant';
+            $validatePayload = [
+                'merchantId' => $merchantId,
+                'urlDomain'  => $appUrl,
+            ];
+
+            \Log::info('YAPPY Step 1: Validate Merchant REQUEST', [
+                'url' => $validateUrl,
+                'method' => 'POST',
+                'payload' => $validatePayload,
+            ]);
+
+            $validate = Http::post($validateUrl, $validatePayload);
+
+            \Log::info('YAPPY Step 1: Validate Merchant RESPONSE', [
+                'status' => $validate->status(),
+                'successful' => $validate->successful(),
+                'headers' => $validate->headers(),
+                'body' => $validate->json(),
+                'raw_body' => $validate->body(),
             ]);
 
             if (!$validate->successful()) {
-                throw new \Exception('Error validando comercio Yappy');
+                throw new \Exception('Error validando comercio Yappy: ' . $validate->body());
             }
 
             $token = data_get($validate->json(), 'body.token');
 
+            \Log::info('YAPPY Token received', [
+                'token' => $token,
+                'token_length' => strlen($token ?? ''),
+            ]);
+
             $config = [
-                'merchantId'  => config('services.yappy.merchant_id'),
+                'merchantId'  => $merchantId,
                 'orderId'     => 'INV-'.$this->invoice->id.'-'.time(),
-                'domain'      => parse_url(config('app.url'), PHP_URL_HOST),
+                'domain'      => parse_url($appUrl, PHP_URL_HOST),
                 'paymentDate' => time(),
                 'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
                 'taxes'       => number_format($this->invoice->taxes ?? 0, 2, '.', ''),
@@ -46,21 +80,35 @@ class PayInvoiceYappy extends Component
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
                 'aliasYappy'  => '12091',
-                // CAMPOS ADICIONALES REQUERIDOS
                 'reference'   => $this->invoice->id,
                 'description' => "Pago factura #{$this->invoice->id}",
             ];
 
-            \Log::info('Config Yappy',$config);
-
             // 2️⃣ Crear orden
-            $order = Http::withHeaders([
+            $orderUrl = $baseUrl . '/payments/payment-wc';
+            $orderHeaders = [
                 'Authorization' => $token,
                 'Content-Type'  => 'application/json',
-            ])->post(config('services.yappy.base_url') . '/payments/payment-wc',$config);
+            ];
+
+            \Log::info('YAPPY Step 2: Create Order REQUEST', [
+                'url' => $orderUrl,
+                'method' => 'POST',
+                'headers' => $orderHeaders,
+                'payload' => $config,
+            ]);
+
+            $order = Http::withHeaders($orderHeaders)->post($orderUrl, $config);
+
+            \Log::info('YAPPY Step 2: Create Order RESPONSE', [
+                'status' => $order->status(),
+                'successful' => $order->successful(),
+                'headers' => $order->headers(),
+                'body' => $order->json(),
+                'raw_body' => $order->body(),
+            ]);
 
             if (!$order->successful()) {
-
                 \Log::error('YAPPY response error', [
                     'status' => $order->status(),
                     'body'   => $order->json(),
@@ -75,7 +123,12 @@ class PayInvoiceYappy extends Component
 
             $body = $order->json('body');
 
-            \Log::info('YAPPY orden creada', $body);
+            \Log::info('YAPPY orden creada exitosamente', [
+                'transactionId' => $body['transactionId'] ?? null,
+                'token' => $body['token'] ?? null,
+                'documentName' => $body['documentName'] ?? null,
+                'full_body' => $body,
+            ]);
 
             // 3️⃣ Disparar evento Livewire 3
             $this->dispatch('yappy-ready', [
@@ -85,11 +138,17 @@ class PayInvoiceYappy extends Component
                 'documentName'  => $body['documentName'],
             ]);
 
-        } catch (\Throwable $e) {
+            \Log::info('========== YAPPY REQUEST DEBUG END (SUCCESS) ==========');
 
+        } catch (\Throwable $e) {
             \Log::error('YAPPY error', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
             ]);
+
+            \Log::info('========== YAPPY REQUEST DEBUG END (ERROR) ==========');
 
             $this->dispatch('yappy-error', [
                 'message' => $e->getMessage(),
