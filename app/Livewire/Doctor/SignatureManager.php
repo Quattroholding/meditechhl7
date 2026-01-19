@@ -120,6 +120,8 @@ class SignatureManager extends Component
 
             session()->flash('message', 'Firma subida exitosamente.');
             $this->dispatch('signature-uploaded');
+            // Dispatch event to refresh setup reminders
+            $this->dispatch('refreshSetupReminders');
 
         } catch (\Exception $e) {
             $this->uploading_signature = false;
@@ -160,6 +162,8 @@ class SignatureManager extends Component
 
             session()->flash('message', 'Sello subido exitosamente.');
             $this->dispatch('seal-uploaded');
+            // Dispatch event to refresh setup reminders
+            $this->dispatch('refreshSetupReminders');
 
         } catch (\Exception $e) {
             $this->uploading_seal = false;

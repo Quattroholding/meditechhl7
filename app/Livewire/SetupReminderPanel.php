@@ -241,23 +241,32 @@ class SetupReminderPanel extends Component
             },
             'signature_and_seal' => function () {
                 $user = auth()->user();
-                $client = $user->getCurrentClient();
 
-                if (! $client) {
+                // Solo aplica para doctores con practitioner asociado
+                if (! $user->hasRole('doctor') || ! $user->practitioner) {
                     return null;
                 }
 
-                $hasRapidAccess = RapidAccess::where('client_id', $client->id)
-                    ->where('active', true)
-                    ->exists();
+                $practitioner = $user->practitioner;
+                $hasSignature = $practitioner->signature() !== null;
+                $hasSeal = $practitioner->seal() !== null;
 
-                if (! $hasRapidAccess) {
+                if (! $hasSignature || ! $hasSeal) {
+                    $missingItems = [];
+                    if (! $hasSignature) {
+                        $missingItems[] = 'firma';
+                    }
+                    if (! $hasSeal) {
+                        $missingItems[] = 'sello';
+                    }
+                    $missingText = implode(' y ', $missingItems);
+
                     return [
-                        'key' => 'rapid_access',
-                        'title' => 'Configura Accesos <br/> Rápidos',
-                        'message' => 'Configura tus accesos rápidos de laboratorios, imágenes y procedimientos para agilizar el llenado de consultas médicas.',
-                        'action_url' => route('setting.create_rapid_access'),
-                        'action_text' => 'Configurar Accesos',
+                        'key' => 'signature_and_seal',
+                        'title' => 'Sube tu Firma <br/> y Sello Médico',
+                        'message' => "Configura tu {$missingText} para que las recetas médicas puedan enviarse automáticamente a tus pacientes al finalizar una consulta.",
+                        'action_url' => route('setting.signature_and_seal', $practitioner->id),
+                        'action_text' => 'Configurar Firma y Sello',
                         'is_required' => false,
                     ];
                 }

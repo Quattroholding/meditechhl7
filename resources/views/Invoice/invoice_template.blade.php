@@ -146,6 +146,15 @@
             body { margin: 0; }
             .no-print { display: none; }
         }
+        .custom-badge {	border-radius: 8px;display: inline-block;font-size: 12px;min-width: 115px;padding: 5px 15px;text-align: center;border: 0;}
+        .status-red,a.status-red {background-color: #ffe5e6;color: #fe0000;}
+        .status-green,a.status-green {background: rgba(0, 211, 199, 0.1);color: #00D3C7;}
+        .status-orange,a.status-orange {background-color: #fef5e4;color: #ff9b01;}
+        .status-blue,a.status-blue {background-color: #e5f3fe;color: #008cff;}
+        .status-purple,a.status-purple {background-color: #f3e7fd;olor: #8f13fd;}
+        .status-pink,a.status-pink {background-color: #ffe5f6;color: #ff01a2;}
+        .status-grey,a.status-grey {background-color: #ddd;color: #818181;}
+        .btn-grey {background-color: #b2b2b2;border: 1px solid #b2b2b2;}
     </style>
 </head>
 <body style="max-width: 800px;margin: 0 auto;">
@@ -214,9 +223,9 @@
                         </div>
                         <div class="info-row">
                             <span class="label">Estado:</span>
-                            <span style="color: {{ $invoice->payment_status === 'paid' ? 'green' : ($invoice->payment_status === 'partial' ? 'orange' : 'red') }};">
-                    {{ ucfirst($invoice->payment_status) }}
-                </span>
+                            <span style="color: {{ $invoice->payment_status === 'paid' ? 'green' : ($invoice->payment_status === 'partial' ? 'orange' : 'red') }};" class="{{$invoice->payment_status->color()}}">
+                                {{ ucfirst($invoice->payment_status->label()) }}
+                            </span>
                         </div>
                         <div class="info-row">
                             <span class="label">Moneda:</span>

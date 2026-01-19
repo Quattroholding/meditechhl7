@@ -66,8 +66,16 @@ class SetupReminderConfigSeeder extends Seeder
                 'title' => 'Accesos Rápidos',
                 'is_active' => false, // ⚠️ Este está desactivado por defecto
                 'is_required' => false,
-                'order' => 7,
+                'order' => 8,
                 'description' => 'Configurar accesos rápidos de laboratorios, imágenes y procedimientos.',
+            ],
+            [
+                'reminder_key' => 'signature_and_seal',
+                'title' => 'Firma y Sello Médico',
+                'is_active' => true, // ⚠️ Este está desactivado por defecto
+                'is_required' => false,
+                'order' => 7,
+                'description' => 'Configurar firma y sello médico para enviar recetas automaticas a pacientes.',
             ],
         ];
 

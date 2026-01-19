@@ -20,6 +20,7 @@ class EncounterSecctionSeeder extends Seeder
             'table_list_filter' => null,
             'livewire_component_name' => 'consultation.reason',
             'livewire_component_fields' => [['name' => 'reason', 'type' => 'textarea', 'table_list_id' => null]],
+            'order'=>2,
         ]);
 
         EncounterSection::create([
@@ -41,6 +42,7 @@ class EncounterSecctionSeeder extends Seeder
                 ['name' => 'Glucemia Capilar', 'type' => 'number', 'table_list_id' => 10],
             ],
             'available_for_medical_assistant'=>true,
+            'order'=>3,
         ]);
 
         EncounterSection::create([
@@ -56,6 +58,7 @@ class EncounterSecctionSeeder extends Seeder
                 ['name' => 'severity', 'type' => 'number', 'table_list_id' => [66, 67, 68, 69]],
                 ['name' => 'timing', 'type' => 'number', 'table_list_id' => [70, 71, 72, 73, 74]],
             ],
+            'order'=>4,
         ]);
 
         EncounterSection::create([
@@ -78,6 +81,7 @@ class EncounterSecctionSeeder extends Seeder
                 ['name' => 'Examen de Piel y Faneras', 'type' => 'number', 'table_list_id' => 21],
                 ['name' => 'Examen del Estado Mental', 'type' => 'number', 'table_list_id' => 22],
             ],
+            'order'=>5,
         ]);
 
         EncounterSection::create([
@@ -90,6 +94,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Diagnosticos', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/diagnostics'],
             ],
+            'order'=>6,
         ]);
 
         EncounterSection::create([
@@ -102,6 +107,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Laboratorios', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/cpts/laboratory'],
             ],
+            'order'=>7,
         ]);
 
         EncounterSection::create([
@@ -114,6 +120,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Imagenes', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/cpts/images'],
             ],
+            'order'=>8,
         ]);
 
         EncounterSection::create([
@@ -125,11 +132,12 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Procedimentos', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/cpts/procedure'],
             ],
+            'order'=>9,
         ]);
 
         EncounterSection::create([
             'name' => 'Services',
-            'name_esp' => 'Servicios',
+            'name_esp' => 'Servicios Facturables',
             'table_list' => '',
             'table_list_filter' => '',
             'livewire_component_name' => 'consultation.services',
@@ -137,6 +145,7 @@ class EncounterSecctionSeeder extends Seeder
                 ['name' => 'Procedimentos', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/cpts/procedure'],
             ],
             'available_for_medical_assistant'=>true,
+            'order'=>1,
         ]);
 
         EncounterSection::create([
@@ -148,6 +157,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Especialidad', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/medical_speciality'],
             ],
+            'order'=>10,
         ]);
 
         EncounterSection::create([
@@ -159,6 +169,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_fields' => [
                 ['name' => 'Medicinas', 'type' => 'dropdown', 'table_list_id' => '', 'api_path' => 'api/medicines'],
             ],
+            'order'=>11,
         ]);
 
         EncounterSection::create([
@@ -243,6 +254,7 @@ class EncounterSecctionSeeder extends Seeder
                     'api_path' => 'api/medicines',
                 ],
             ],
+            'order'=>12,
         ]);
 
         EncounterSection::create([
@@ -253,6 +265,7 @@ class EncounterSecctionSeeder extends Seeder
             'livewire_component_name' => 'consultation.general_note',
             'livewire_component_fields' => [['name' => 'general_note', 'type' => 'textarea', 'table_list_id' => null]],
             'available_for_medical_assistant'=>true,
+            'order'=>13,
         ]);
 
         EncounterSection::create([
@@ -310,6 +323,7 @@ class EncounterSecctionSeeder extends Seeder
                     'label_esp' => 'Notas Clínicas',
                 ],
             ],
+            'order'=>3,
         ]);
 
     }

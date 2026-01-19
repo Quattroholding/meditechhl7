@@ -1,5 +1,20 @@
 <div>
     @if($currentReminder)
+    @php
+        $stepMap = [
+            'subscription' => 1,
+            'branch' => 2,
+            'consulting_room' => 3,
+            'patient' => 4,
+            'service_catalog' => 5,
+            'working_hours' => 6,
+            'signature_and_seal' => 7,
+            'rapid_access' => 8,
+        ];
+        $currentStep = $stepMap[$currentReminder] ?? 8;
+        $totalSteps = 8;
+        $progress = ($currentStep / $totalSteps) * 100;
+    @endphp
     <div style="position: fixed !important; bottom: 24px !important; right: 24px !important; z-index: 99999 !important; pointer-events: auto !important;">
         <!-- Floating Icon Button (always visible when there's a reminder) -->
         <div style="position: relative;">
@@ -86,11 +101,11 @@
                             <div class="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
                                 <div
                                     class="h-full bg-blue-500 transition-all duration-300 rounded-full"
-                                    style="width: {{ $currentReminder === 'subscription' ? '16.67%' : ($currentReminder === 'branch' ? '33.33%' : ($currentReminder === 'consulting_room' ? '50%' : ($currentReminder === 'patient' ? '66.67%' : ($currentReminder === 'service_catalog' ? '83.33%' : '100%')))) }}"
+                                    style="width: {{ $progress }}%"
                                 ></div>
                             </div>
                             <span class="text-xs text-gray-500 font-medium">
-                                {{ $currentReminder === 'subscription' ? '1/6' : ($currentReminder === 'branch' ? '2/6' : ($currentReminder === 'consulting_room' ? '3/6' : ($currentReminder === 'patient' ? '4/6' : ($currentReminder === 'service_catalog' ? '5/6' : '6/6')))) }}
+                                {{ $currentStep }}/{{ $totalSteps }}
                             </span>
                         </div>
                     </div>
@@ -110,7 +125,7 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full  {{ $isRequired ? 'bg-red-400' : 'bg-blue-500' }}"></span>
                     <span style="position: relative; display: inline-flex; border-radius: 50%; height: 20px; width: 20px; align-items: center; justify-content: center;" class="{{ $isRequired ? 'bg-red-500' : 'bg-blue-500' }}">
                         <span class="text-white text-xs font-bold">
-                            {{ $currentReminder === 'subscription' ? '1' : ($currentReminder === 'branch' ? '2' : ($currentReminder === 'consulting_room' ? '3' : ($currentReminder === 'patient' ? '4' : ($currentReminder === 'service_catalog' ? '5' : '6')))) }}
+                            {{ $currentStep }}
                         </span>
                     </span>
                 </span>

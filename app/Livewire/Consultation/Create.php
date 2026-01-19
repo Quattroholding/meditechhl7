@@ -33,11 +33,11 @@ class Create extends Component
         $specialities = $user->practitioner?->specialties->pluck('id')->contains(42);
 
         if ($encounter_sections_user->count() > 0) {
-            $this->encounter_sections = EncounterSection::whereIn('id', $encounter_sections_user->pluck('encounter_section_id'))->get();
+            $this->encounter_sections = EncounterSection::whereIn('id', $encounter_sections_user->pluck('encounter_section_id'))->orderBy('order')->get();
         } elseif ($specialities && auth()->user()->hasRole('practitioner')) {
-            $this->encounter_sections = EncounterSection::whereNull('deleted_at')->get();
+            $this->encounter_sections = EncounterSection::whereNull('deleted_at')->orderBy('order')->get();
         }else{
-            $this->encounter_sections = EncounterSection::whereNull('category')->get();
+            $this->encounter_sections = EncounterSection::whereNull('category')->orderBy('order')->get();
         }
 
         $this->secciones = $this->encounter_sections->pluck('name_esp', 'id');
