@@ -446,11 +446,10 @@
                             <a href="https://play.google.com/store/apps/details?id=com.meditec.recepy.meditec_recepy_app" target="_blank" class="store-button">
                                 <img src="{{ asset('images/google_play_logo_trim.png') }}" alt="Descargar en Google Play" class="store-logo">
                             </a>
-                            <a href="https://apps.apple.com/app/sami-recetas/id6757765164" class="store-button store-button-disabled" title="Próximamente disponible en App Store">
+                            <a href="https://apps.apple.com/app/sami-recetas/id6757765164" class="store-button" target="_blank" title="Próximamente disponible en App Store">
                                 <img src="{{ asset('images/apple_store_logo_trim.png') }}" alt="Descargar en App Store" class="store-logo">
                             </a>
                         </div>
-                        <p class="download-note">Compatible con Android 5.0+ e iOS 12.0+</p>
                     </div>
                 </div>
             </div>
