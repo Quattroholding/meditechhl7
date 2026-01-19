@@ -161,6 +161,10 @@
 
                             @can('suscriptions.payments.store')
                                 @if($invoice->amount_due > 0)
+                                    <livewire:subscription.pay-invoice-yappy
+                                        :invoice="$invoice"
+                                        :wire:key="'pay-invoice-'.$invoice->id"
+                                    /><p>&nbsp;</p>
                                     <button type="button"
                                             onclick="Livewire.dispatch('openPaymentModal', { invoiceId: {{ $invoice->id }} })"
                                             class="btn btn-primary w-100 mb-2">
