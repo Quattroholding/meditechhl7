@@ -307,6 +307,61 @@ class ConsultationController extends Controller
         return view('consultations.view', compact('encounter'));
     }
 
+    /**
+     * Check if prescription notification will be sent to patient
+     * This mirrors the logic in EncounterObserver to predict if email will be sent
+     */
+    private function checkPrescriptionNotification(Encounter $encounter): array
+    {
+        $result = [
+            'will_send' => false,
+            'has_medications' => false,
+            'has_service_requests' => false,
+            'patient_email' => null,
+            'reason' => null,
+        ];
+
+        $practitioner = $encounter->practitioner;
+        $patient = $encounter->patient;
+
+        // Check if practitioner has signature and seal
+        if (! $practitioner || ! $practitioner->signature() || ! $practitioner->seal()) {
+            $result['reason'] = 'practitioner_no_signature_seal';
+
+            return $result;
+        }
+
+        // Check if patient has email
+        if (! $patient || ! $patient->email) {
+            $result['reason'] = 'patient_no_email';
+
+            return $result;
+        }
+
+        // Check for unsent prescriptions
+        $hasUnsentMedications = $encounter->medicationRequests()
+            ->whereNull('notification_sent_at')
+            ->exists();
+
+        $hasUnsentServiceRequests = $encounter->serviceRequests()
+            ->whereNull('notification_sent_at')
+            ->exists();
+
+        // If no unsent prescriptions, skip
+        if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
+            $result['reason'] = 'no_unsent_prescriptions';
+
+            return $result;
+        }
+
+        $result['will_send'] = true;
+        $result['has_medications'] = $hasUnsentMedications;
+        $result['has_service_requests'] = $hasUnsentServiceRequests;
+        $result['patient_email'] = $patient->email;
+
+        return $result;
+    }
+
     public function downloadResumen(Request $request, $appointment_id)
     {
 

@@ -68,7 +68,18 @@ class Services extends Component
 
     private function loadRapidAccess()
     {
-        $this->rapidAccess = ServiceCatalog::active()->get();
+        // Obtener los IDs de los servicios ya seleccionados en este encounter
+        $selectedServiceIds = ChargeItem::where('encounter_id', $this->encounter_id)
+            ->pluck('service_catalog_id')
+            ->toArray();
+
+        $this->rapidAccess = ServiceCatalog::active()
+            ->get()
+            ->map(function ($service) use ($selectedServiceIds) {
+                $service->is_selected = in_array($service->id, $selectedServiceIds);
+
+                return $service;
+            });
     }
 
     public function updatedQuery()
@@ -111,6 +122,83 @@ class Services extends Component
         $this->results = [];
     }
 
+    /**
+     * Select service from rapid access offcanvas without closing it
+     */
+    public function selectFromRapidAccess($serviceData)
+    {
+        $this->selectedServiceId = $serviceData['id'];
+        $this->addServiceFromRapidAccess();
+        $this->results = [];
+    }
+
+    /**
+     * Add service from rapid access without closing offcanvas
+     */
+    public function addServiceFromRapidAccess()
+    {
+        $this->validate();
+
+        $key = 'catalog-search';
+
+        if (! $this->selectedServiceId) {
+            $this->dispatch('error-'.$key, 'Debe seleccionar un servicio válido.');
+
+            return;
+        }
+
+        $service = ServiceCatalog::findOrFail($this->selectedServiceId);
+
+        if (! $service) {
+            $this->dispatch('error-'.$key, 'Servicio no encontrado.');
+
+            return;
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $chargeItem = ChargeItem::whereEncounterId($this->encounter->id)
+                ->whereServiceCatalogId($this->selectedServiceId)
+                ->first();
+
+            if (! $chargeItem) {
+                // Crear ChargeItem usando el método del ServiceCatalog
+                $chargeItem = $service->createChargeItem(
+                    patientId: $this->encounter->patient_id,
+                    practitionerId: $this->encounter->practitioner_id,
+                    encounterId: $this->encounter->id,
+                    appointmentId: $this->encounter->appointment_id,
+                    quantity: $this->customQuantity,
+                    customPrice: $this->customPrice
+                );
+
+                // Agregar notas si existen
+                if ($this->serviceNotes) {
+                    $chargeItem->update(['note' => $this->serviceNotes]);
+                }
+
+                DB::commit();
+
+                $this->resetForm();
+                $this->loadSelectedServices();
+                $this->loadRapidAccess();
+
+                $this->dispatch('saved-'.$key);
+                // Dispatch event to keep offcanvas open and update visual state
+                $this->dispatch('service-added-from-rapid-access', serviceId: $this->selectedServiceId);
+            } else {
+                $this->dispatch('error-'.$key, '¡Servicio ya está agregado a la consulta!');
+                // Update visual state even if service was already added
+                $this->dispatch('service-added-from-rapid-access', serviceId: $this->selectedServiceId);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error-'.$key, 'Error al agregar el servicio: '.$e->getMessage());
+        }
+    }
+
     public function addServiceToEncounter()
     {
         $this->validate();
@@ -118,7 +206,8 @@ class Services extends Component
         $key = 'catalog-search';
 
         if (! $this->selectedServiceId) {
-            $this->dispatch('error-'.$key,'Debe seleccionar un servicio válido.');
+            $this->dispatch('error-'.$key, 'Debe seleccionar un servicio válido.');
+
             return;
         }
 
@@ -126,7 +215,8 @@ class Services extends Component
 
         if (! $service) {
 
-            $this->dispatch('error-'.$key,'Servicio no encontrado.');
+            $this->dispatch('error-'.$key, 'Servicio no encontrado.');
+
             return;
         }
 
@@ -163,14 +253,14 @@ class Services extends Component
                 // Dispatch event to fix scroll freeze after offcanvas closes
                 $this->dispatch('service-selected');
             } else {
-                $this->dispatch('error-'.$key,'¡Servicio ya esta agregado a la  consulta.!');
+                $this->dispatch('error-'.$key, '¡Servicio ya esta agregado a la  consulta.!');
                 // Also dispatch event to close offcanvas even on error
                 $this->dispatch('service-selected');
             }
 
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('error-'.$key,'Error al agregar el servicio: '.$e->getMessage());
+            $this->dispatch('error-'.$key, 'Error al agregar el servicio: '.$e->getMessage());
         }
     }
 
@@ -179,34 +269,36 @@ class Services extends Component
         $chargeItem = ChargeItem::find($chargeItemId);
 
         if (! $chargeItem || $chargeItem->encounter_id != $this->encounter_id) {
-            //session()->flash('error', 'ChargeItem no encontrado.');
+            // session()->flash('error', 'ChargeItem no encontrado.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
                 message: 'Item no encontrado.'
             );
+
             return;
         }
 
         // Verificar que no esté facturado
         if ($chargeItem->status === 'billed') {
-            //session()->flash('error', 'No se puede eliminar un servicio que ya ha sido facturado.');
+            // session()->flash('error', 'No se puede eliminar un servicio que ya ha sido facturado.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
-                message:'No se puede eliminar un servicio que ya ha sido facturado.'
+                message: 'No se puede eliminar un servicio que ya ha sido facturado.'
             );
+
             return;
         }
 
         try {
             $chargeItem->delete();
-            //session()->flash('message.success', 'Servicio eliminado del encounter.');
+            // session()->flash('message.success', 'Servicio eliminado del encounter.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
                 message: 'Servicio eliminado del encounter.'
             );
             $this->loadSelectedServices();
         } catch (\Exception $e) {
-            //session()->flash('error', 'Error al eliminar el servicio.');
+            // session()->flash('error', 'Error al eliminar el servicio.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
                 message: 'Error al eliminar el servicio.'
