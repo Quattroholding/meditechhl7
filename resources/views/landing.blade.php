@@ -446,7 +446,7 @@
                             <a href="https://play.google.com/store/apps/details?id=com.meditec.recepy.meditec_recepy_app" target="_blank" class="store-button">
                                 <img src="{{ asset('images/google_play_logo_trim.png') }}" alt="Descargar en Google Play" class="store-logo">
                             </a>
-                            <a href="#" class="store-button store-button-disabled" title="Próximamente disponible en App Store">
+                            <a href="https://apps.apple.com/app/sami-recetas/id6757765164" class="store-button store-button-disabled" title="Próximamente disponible en App Store">
                                 <img src="{{ asset('images/apple_store_logo_trim.png') }}" alt="Descargar en App Store" class="store-logo">
                             </a>
                         </div>
