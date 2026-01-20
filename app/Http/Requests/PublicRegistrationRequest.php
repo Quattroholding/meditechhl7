@@ -46,6 +46,11 @@ class PublicRegistrationRequest extends FormRequest
                         return; // Email no existe, todo bien
                     }
 
+                    // Si el usuario tiene active=0, permitir registro (usuario de app sin plan)
+                    if (! $existingUser->active) {
+                        return; // Usuario inactivo puede completar su registro
+                    }
+
                     // Si el usuario ya tiene un client asignado, no puede registrarse de nuevo
                     if ($existingUser->default_client_id || $existingUser->clients()->exists()) {
                         $fail('Este email ya está registrado en el sistema.');

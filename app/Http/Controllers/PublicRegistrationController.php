@@ -55,11 +55,14 @@ class PublicRegistrationController extends Controller
 
             return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService) {
 
-                // Verificar si es un usuario existente de SAMI Recetas (sin client asociado)
+                // Verificar si es un usuario existente que puede completar registro:
+                // 1. Usuario de SAMI Recetas (sin client asociado)
+                // 2. Usuario de la app (active=0, registrado pero sin plan)
                 $existingUser = User::where('email', $request->email)->first();
                 $isExistingUserWithoutClient = $existingUser
                     && ! $existingUser->default_client_id
                     && ! $existingUser->clients()->exists();
+                $isInactiveAppUser = $existingUser && ! $existingUser->active;
 
                 // 1. Crear el cliente con valores por defecto
                 $client = new Client;
@@ -92,21 +95,23 @@ class PublicRegistrationController extends Controller
                 $package = Package::findOrFail($request->package_id);
 
                 // 3. Crear o reutilizar usuario
-                if ($isExistingUserWithoutClient) {
-                    // Usuario existente de SAMI Recetas - actualizar y reutilizar
+                if ($isExistingUserWithoutClient || $isInactiveAppUser) {
+                    // Usuario existente (SAMI Recetas o app con active=0) - actualizar y reutilizar
                     $user = $existingUser;
                     $user->first_name = $request->first_name;
                     $user->last_name = $request->last_name;
                     $user->password = $request->password;
                     $user->first_login_at = now();
                     $user->default_client_id = $client->id;
-                    $user->active = true;
+                    $user->active = true; // Activar usuario
                     $user->save();
 
-                    Log::info('Public registration: Reusing existing SAMI Recetas user', [
+                    Log::info('Public registration: Reusing existing user', [
                         'user_id' => $user->id,
                         'email' => $user->email,
                         'client_id' => $client->id,
+                        'was_inactive_app_user' => $isInactiveAppUser,
+                        'was_sami_recetas_user' => $isExistingUserWithoutClient && ! $isInactiveAppUser,
                     ]);
                 } else {
                     // Nuevo usuario
@@ -122,6 +127,14 @@ class PublicRegistrationController extends Controller
                 }
 
                 // 4. Relación usuario-cliente
+                // Si es usuario de la app (inactivo), limpiar relaciones anteriores
+                if ($isInactiveAppUser) {
+                    UserClient::where('user_id', $user->id)->delete();
+                    Log::info('Public registration: Cleaned previous user-client relationships', [
+                        'user_id' => $user->id,
+                    ]);
+                }
+
                 $userClient = new UserClient;
                 $userClient->user_id = $user->id;
                 $userClient->client_id = $client->id;
@@ -143,8 +156,8 @@ class PublicRegistrationController extends Controller
                 // 6. Crear o actualizar Practitioner si paquete max_users=1
                 $practitionerCreated = false;
                 if ($package->max_users === 1 && $request->filled('identifier')) {
-                    // Verificar si ya tiene practitioner (usuario de SAMI Recetas)
-                    $existingPractitioner = $isExistingUserWithoutClient ? $user->practitioner : null;
+                    // Verificar si ya tiene practitioner (usuario existente de SAMI Recetas o app)
+                    $existingPractitioner = ($isExistingUserWithoutClient || $isInactiveAppUser) ? $user->practitioner : null;
 
                     if ($existingPractitioner) {
                         // Actualizar practitioner existente con datos del formulario
@@ -229,6 +242,7 @@ class PublicRegistrationController extends Controller
                     'status' => $subscription->status->value,
                     'practitioner_created' => $practitionerCreated,
                     'existing_sami_recetas_user' => $isExistingUserWithoutClient,
+                    'existing_inactive_app_user' => $isInactiveAppUser,
                 ]);
 
                 // 8. Redireccionar a success con información de pago
