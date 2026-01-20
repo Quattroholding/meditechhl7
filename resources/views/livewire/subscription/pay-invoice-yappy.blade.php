@@ -32,24 +32,39 @@
 
                     console.log('yappy-ready', data);
 
-                    const btn = document.getElementById(`btn-yappy-${data.invoiceId}`);
+
 
                     if (!btn) {
                         console.error('Botón Yappy no encontrado');
                         return;
                     }
 
-                    btn.eventPayment({
-                        transactionId: data.transactionId,
-                        token: data.token,
-                        documentName: data.documentName,
-                    });
+
                 });
 
                 Livewire.on('yappy-error', ([data]) => {
                     alert(data.message);
                 });
 
+            });
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('showToastrYappy', (event) => {
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                });
+                Livewire.on('yappy-ready', (event) => {
+                    const btn = document.getElementById(`btn-yappy-${event.invoiceId}`);
+
+                    btn.eventPayment({
+                        transactionId: event.transactionId,
+                        token: event.token,
+                        documentName: event.documentName,
+                    });
+                });
             });
         </script>
     @endonce

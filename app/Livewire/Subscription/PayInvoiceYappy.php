@@ -65,7 +65,7 @@ class PayInvoiceYappy extends Component
             $token = data_get($validate->json(), 'body.token');
 
             \Log::info('YAPPY Token received', [
-                'token' => $token,
+                //'token' => $token,
                 'token_length' => strlen($token ?? ''),
             ]);
 
@@ -124,18 +124,18 @@ class PayInvoiceYappy extends Component
 
             \Log::info('YAPPY orden creada exitosamente', [
                 'transactionId' => $body['transactionId'] ?? null,
-                'token' => $body['token'] ?? null,
+               // 'token' => $body['token'] ?? null,
                 'documentName' => $body['documentName'] ?? null,
                 'full_body' => $body,
             ]);
 
             // 3️⃣ Disparar evento Livewire 3
-            $this->dispatch('yappy-ready', [
-                'invoiceId'     => $this->invoice->id,
-                'transactionId' => $body['transactionId'],
-                'token'         => $body['token'],
-                'documentName'  => $body['documentName'],
-            ]);
+            $this->dispatch('showToastrYappy',
+                invoiceId:  $this->invoice->id,
+                transactionId: $body['transactionId'],
+                token: $body['token'],
+                documentName:$body['documentName'],
+            );
 
             \Log::info('========== YAPPY REQUEST DEBUG END (SUCCESS) ==========');
 
@@ -151,9 +151,10 @@ class PayInvoiceYappy extends Component
 
             $this->dispatch('refreshSetupReminders');
 
-            $this->dispatch('yappy-error', [
-                'message' => $e->getMessage(),
-            ]);
+            $this->dispatch('showToastrYappy',
+                type: 'error',
+                message: $e->getMessage(),
+            );
         }
     }
 

@@ -164,7 +164,7 @@ class SuscriptionPaymentController extends Controller
         $orderId = $request->query('orderId');
         $status  = $request->query('status');
         $hash    = $request->query('hash');
-        $domain = $_GET['domain'];
+        $domain =  $request->query('domain');
         $invoice = ClientInvoice::find($orderId);
 
         // TODO: validar hash con tu clave secreta
