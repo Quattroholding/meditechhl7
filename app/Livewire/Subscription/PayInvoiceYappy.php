@@ -130,11 +130,16 @@ class PayInvoiceYappy extends Component
             ]);
 
             // 3️⃣ Disparar evento Livewire 3
-            $this->dispatch('yappy-ready',
+            /*$this->dispatch('yappy-ready',
                 invoiceId:  $this->invoice->id,
                 transactionId: $body['transactionId'],
                 token: $body['token'],
                 documentName:$body['documentName'],
+            );*/
+
+            $this->dispatch('showToastrYappy',
+                type: 'success',
+                message: 'Se a enviado una petición de pago por yappy Nro Trnsaccion :'.$body['transactionId'],
             );
 
             \Log::info('========== YAPPY REQUEST DEBUG END (SUCCESS) ==========');
