@@ -172,7 +172,7 @@ class SuscriptionPaymentController extends Controller
 
         if (isset($orderId) && isset($status) && isset($domain) && isset($hash)) {
             header('Content-Type: application/json');
-            $success = validateHash();
+            $success = $this->validateHash();
             if ($success && $status=='E' && $invoice) {
                 // LÓGICA DE NEGOCIOS
                 // Actualizar modelo de factura según el estado
