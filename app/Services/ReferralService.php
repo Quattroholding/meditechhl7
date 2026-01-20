@@ -134,7 +134,7 @@ class ReferralService
         $this->discountService->create($referrerClient, [
             'discount_type' => $discountType,
             'discount_value' => $referral->referrer_reward_value,
-            'reason' => "Referral reward for referring client #{$referral->referred_client_id}",
+            'reason' => "Descuento por cliente referido #{$referral->referred_client_id}",
             'source' => DiscountSource::REFERRAL->value,
             'source_id' => $referral->id,
             'applies_to_invoices' => $invoicesCount,
