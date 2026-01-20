@@ -80,7 +80,7 @@ class PayInvoiceYappy extends Component
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
                 //'aliasYappy'  => preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? ''),
-                'aliasYappy'  => '60016054',
+                'aliasYappy'  => '60800131',
             ];
 
             // 2️⃣ Crear orden
