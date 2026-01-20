@@ -172,7 +172,7 @@ class SuscriptionPaymentController extends Controller
 
         if (isset($orderId) && isset($status) && isset($domain) && isset($hash)) {
             header('Content-Type: application/json');
-            $success = $this->validateHash();
+            $success = $this->validateHash($orderId,$status,$hash,$domain);
             if ($success && $status=='E' && $invoice) {
                 // LÓGICA DE NEGOCIOS
                 // Actualizar modelo de factura según el estado
@@ -188,8 +188,12 @@ class SuscriptionPaymentController extends Controller
                     'status' => $statusPayment,
                 ]);
 
+                \Log::info("Payment creado con exito :".$payment->id);
+
                 // Update invoice payment status
                 $invoice->updatePaymentStatus();
+            }else{
+                \Log::error("validate hash invalido");
             }
 
             return response()->json(['success' => true]);
@@ -198,14 +202,10 @@ class SuscriptionPaymentController extends Controller
     }
 
 
-    function validateHash()
+    function validateHash($orderId,$status,$hash,$domain)
     {
         try {
             $secretKey = env('YAPPY_SECRET_KEY');
-            $orderId = $_GET['orderId'];
-            $status = $_GET['status'];
-            $hash = $_GET['hash'];
-            $domain = $_GET['domain'];
             $values = base64_decode($secretKey);
             $secrete = explode('.', $values);
             $signature = hash_hmac('sha256', $orderId . $status . $domain, $secrete[0]);

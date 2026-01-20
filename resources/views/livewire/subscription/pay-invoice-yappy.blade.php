@@ -33,20 +33,7 @@
                         timeOut: 5000,
                     });
                 });
-                Livewire.on('yappy-ready', (event) => {
-                    const btn = document.getElementById(`btn-yappy-${event.invoiceId}`);
 
-                    if (!btn) {
-                        console.error('Botón Yappy no encontrado');
-                        return;
-                    }
-
-                    btn.eventPayment({
-                        transactionId: event.transactionId,
-                        token: event.token,
-                        documentName: event.documentName,
-                    });
-                });
             });
         </script>
     @endonce
