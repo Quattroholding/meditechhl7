@@ -679,4 +679,4 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
 });
 
 
-Route::get('/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
+Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');

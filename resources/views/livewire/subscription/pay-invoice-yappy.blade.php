@@ -28,7 +28,7 @@
 
                 console.log('Yappy listeners cargados');
 
-                Livewire.on('yappy-ready', (data) => {
+                Livewire.on('yappy-ready', ([data]) => {
 
                     console.log('yappy-ready', data);
 
@@ -46,7 +46,7 @@
                     });
                 });
 
-                Livewire.on('yappy-error', (data) => {
+                Livewire.on('yappy-error', ([data]) => {
                     alert(data.message);
                 });
 
