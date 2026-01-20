@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Medicine;
 
-use App\Models\Medicine;
+use App\Models\Medication;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class CreateForm extends Component
@@ -11,35 +12,35 @@ class CreateForm extends Component
 
     public $home_name = '';
 
-    public $ndc_code = '';
+    public $code = '';
 
-    public $type = '';
+    public $form = '';
 
-    public $mgs = '';
+    public $strength_value = '';
 
-    public $mgs_type = '';
+    public $strength_unit = '';
 
-    public $active = 1;
+    public $manufacturer = '';
 
-    public $narcotic = 0;
+    public $status = 'active';
 
     protected $rules = [
         'generic_name' => 'required|string|max:255',
         'home_name' => 'nullable|string|max:255',
-        'ndc_code' => ['nullable', 'string', 'regex:/^(\d{5}-\d{3}-\d{2}|\d{4}-\d{4}-\d{2}|\d{5}-\d{4}-\d{1})$/'],
-        'type' => 'required|string|max:100',
-        'mgs' => 'required|string|max:50',
-        'mgs_type' => 'required|string|max:50',
-        'active' => 'required',
-        'narcotic' => 'required',
+        'code' => 'nullable|string|max:100',
+        'form' => 'required|string|max:100',
+        'strength_value' => 'required|numeric',
+        'strength_unit' => 'required|string|max:50',
+        'manufacturer' => 'nullable|string|max:255',
+        'status' => 'required|in:active,inactive',
     ];
 
     protected $messages = [
         'generic_name.required' => 'El nombre genérico es obligatorio.',
-        'type.required' => 'El tipo de medicamento es obligatorio.',
-        'mgs.required' => 'La dosis es obligatoria.',
-        'mgs_type.required' => 'El tipo de dosis es obligatorio.',
-        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.',
+        'form.required' => 'El tipo de medicamento es obligatorio.',
+        'strength_value.required' => 'La dosis es obligatoria.',
+        'strength_value.numeric' => 'La dosis debe ser un número.',
+        'strength_unit.required' => 'La unidad de dosis es obligatoria.',
     ];
 
     public function render()
@@ -52,21 +53,25 @@ class CreateForm extends Component
         $this->validate();
 
         try {
-            $medicineData = [
+            $medication = Medication::create([
+                'fhir_id' => (string) Str::uuid(),
                 'generic_name' => $this->generic_name,
                 'home_name' => $this->home_name,
-                'ndc_code' => $this->ndc_code,
-                'type' => $this->type,
-                'mgs' => $this->mgs,
-                'mgs_type' => $this->mgs_type,
-                'narcotic' => $this->narcotic,
-                'active' => $this->active,
-                'client_id' => auth()->user()->getCurrentClient()->id,
-                'user_id' => auth()->user()->id,
-                'source' => 'CUSTOM',
-            ];
+                'display' => $this->home_name ?: $this->generic_name,
+                'code' => $this->code,
+                'code_system' => 'CUSTOM',
+                'form' => $this->form,
+                'manufacturer' => $this->manufacturer,
+                'status' => $this->status,
+                'is_brand' => ! empty($this->home_name) && $this->home_name !== $this->generic_name,
+            ]);
 
-            Medicine::create($medicineData);
+            // Create the primary ingredient
+            $medication->ingredients()->create([
+                'substance_display' => $this->generic_name,
+                'strength_value' => $this->strength_value,
+                'strength_unit' => $this->strength_unit,
+            ]);
 
             session()->flash('message.success', 'Medicamento creado exitosamente.');
 

@@ -4,33 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Medication extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'fhir_id',
+        'status',
         'code',
-        'name',
+        'code_system',
+        'display',
+        'home_name',
+        'generic_name',
         'form',
-        'dose',
-        'strength',
-        'ingredient',
         'manufacturer',
         'is_brand',
-        'is_over_the_counter',
-        'status',
-        'product_type',
+        'fhir_payload',
     ];
 
-    protected $casts = [
-        'ingredient' => 'array',
-        'is_brand' => 'boolean',
-        'is_over_the_counter' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_brand' => 'boolean',
+            'fhir_payload' => 'array',
+        ];
+    }
 
     public function medicationRequests(): HasMany
     {
         return $this->hasMany(MedicationRequest::class);
+    }
+
+    public function ingredients(): HasMany
+    {
+        return $this->hasMany(MedicationIngredient::class);
     }
 
     // Accesor para FHIR

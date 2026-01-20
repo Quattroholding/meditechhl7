@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Medicine;
 
-use App\Models\Medicine;
+use App\Models\Medication;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -12,7 +13,7 @@ class ModalSave extends Component
     #[Modelable]
     public $showModal;
 
-    public $medicine;
+    public $medication;
 
     public $title;
 
@@ -22,48 +23,35 @@ class ModalSave extends Component
 
     public $home_name = '';
 
-    public $ndc_code = '';
+    public $code = '';
 
-    public $type = '';
+    public $form = '';
 
-    public $mgs = '';
+    public $strength_value = '';
 
-    public $mgs_type = '';
+    public $strength_unit = '';
 
-    public $instructions = '';
+    public $manufacturer = '';
 
-    public $side_effects = '';
-
-    public $contraindications = '';
-
-    public $interactions = '';
-
-    public $active = 1;
-
-    public $narcotic = 1;
+    public $status = 'active';
 
     protected $rules = [
         'generic_name' => 'required|string|max:255',
         'home_name' => 'nullable|string|max:255',
-        'ndc_code' => ['nullable', 'string', 'regex:/^(\d{5}-\d{3}-\d{2}|\d{4}-\d{4}-\d{2}|\d{5}-\d{4}-\d{1})$/'],
-        'type' => 'required|string|max:100',
-        'mgs' => 'required|string|max:50',
-        'mgs_type' => 'required|string|max:50',
-        /*
-        'instructions' => 'nullable|string',
-        'side_effects' => 'nullable|string',
-        'contraindications' => 'nullable|string',
-        'interactions' => 'nullable|string',
-        */
-        'active' => 'required',
+        'code' => 'nullable|string|max:100',
+        'form' => 'required|string|max:100',
+        'strength_value' => 'required|numeric',
+        'strength_unit' => 'required|string|max:50',
+        'manufacturer' => 'nullable|string|max:255',
+        'status' => 'required|in:active,inactive',
     ];
 
     protected $messages = [
         'generic_name.required' => 'El nombre genérico es obligatorio.',
-        'type.required' => 'El tipo de medicamento es obligatorio.',
-        'mgs.required' => 'La dosis es obligatoria.',
-        'mgs_type.required' => 'El tipo de dosis es obligatorio.',
-        'ndc_code.regex' => 'El código NDC debe tener el formato #####-###-##, ####-####-## o #####-####-#.',
+        'form.required' => 'El tipo de medicamento es obligatorio.',
+        'strength_value.required' => 'La dosis es obligatoria.',
+        'strength_value.numeric' => 'La dosis debe ser un número.',
+        'strength_unit.required' => 'La unidad de dosis es obligatoria.',
     ];
 
     public function render()
@@ -88,19 +76,15 @@ class ModalSave extends Component
 
     public function resetForm()
     {
-        $this->medicine = null;
+        $this->medication = null;
         $this->generic_name = '';
         $this->home_name = '';
-        $this->ndc_code = '';
-        $this->type = '';
-        $this->mgs = '';
-        $this->mgs_type = '';
-        $this->instructions = '';
-        $this->side_effects = '';
-        $this->contraindications = '';
-        $this->interactions = '';
-        $this->active = 1;
-        $this->narcotic = 0;
+        $this->code = '';
+        $this->form = '';
+        $this->strength_value = '';
+        $this->strength_unit = '';
+        $this->manufacturer = '';
+        $this->status = 'active';
         $this->buttonSaveTitle = 'Guardar Medicamento';
     }
 
@@ -109,34 +93,55 @@ class ModalSave extends Component
         $this->validate();
 
         try {
-            $medicineData = [
+            $medicationData = [
+                'fhir_id' => (string) Str::uuid(),
                 'generic_name' => $this->generic_name,
                 'home_name' => $this->home_name,
-                'ndc_code' => $this->ndc_code,
-                'type' => $this->type,
-                'mgs' => $this->mgs,
-                'mgs_type' => $this->mgs_type,
-                /*
-                'instructions' => $this->instructions,
-                'side_effects' => $this->side_effects,
-                'contraindications' => $this->contraindications,
-                'interactions' => $this->interactions,
-                */
-                'narcotic' => $this->narcotic,
-                'active' => $this->active,
-                'client_id' => auth()->user()->getCurrentClient()->id,
-                'user_id' => auth()->user()->id,
+                'display' => $this->home_name ?: $this->generic_name,
+                'code' => $this->code,
+                'code_system' => 'CUSTOM',
+                'form' => $this->form,
+                'manufacturer' => $this->manufacturer,
+                'status' => $this->status,
+                'is_brand' => ! empty($this->home_name) && $this->home_name !== $this->generic_name,
             ];
 
-            if ($this->medicine) {
-                $this->medicine->update($medicineData);
+            if ($this->medication) {
+                // Update existing medication
+                unset($medicationData['fhir_id']);
+                $this->medication->update($medicationData);
+
+                // Update or create the primary ingredient
+                $ingredient = $this->medication->ingredients()->first();
+                if ($ingredient) {
+                    $ingredient->update([
+                        'substance_display' => $this->generic_name,
+                        'strength_value' => $this->strength_value,
+                        'strength_unit' => $this->strength_unit,
+                    ]);
+                } else {
+                    $this->medication->ingredients()->create([
+                        'substance_display' => $this->generic_name,
+                        'strength_value' => $this->strength_value,
+                        'strength_unit' => $this->strength_unit,
+                    ]);
+                }
 
                 $this->dispatch('showToastr',
                     type: 'success',
                     message: '¡Actualizado exitosamente!'
                 );
             } else {
-                Medicine::create($medicineData);
+                // Create new medication
+                $medication = Medication::create($medicationData);
+
+                // Create the primary ingredient
+                $medication->ingredients()->create([
+                    'substance_display' => $this->generic_name,
+                    'strength_value' => $this->strength_value,
+                    'strength_unit' => $this->strength_unit,
+                ]);
+
                 $this->dispatch('showToastr',
                     type: 'success',
                     message: '¡Creado exitosamente!'
@@ -153,37 +158,37 @@ class ModalSave extends Component
     }
 
     #[On('editMedicineModal')]
-    public function editMedicine($medicine_id)
+    public function editMedicine($medication_id)
     {
-        $this->medicine = Medicine::find($medicine_id);
+        $this->medication = Medication::with('ingredients')->find($medication_id);
         $this->title = 'Actualizar Medicamento';
         $this->buttonSaveTitle = 'Actualizar Medicamento';
 
-        if ($this->medicine) {
-            $this->generic_name = $this->medicine->generic_name;
-            $this->home_name = $this->medicine->home_name;
-            $this->ndc_code = $this->medicine->ndc_code;
-            $this->type = $this->medicine->type;
-            $this->mgs = $this->medicine->mgs;
-            $this->mgs_type = $this->medicine->mgs_type;
-            /*
-            $this->instructions = $this->medicine->instructions;
-            $this->side_effects = $this->medicine->side_effects;
-            $this->contraindications = $this->medicine->contraindications;
-            $this->interactions = $this->medicine->interactions;
-            */
-            $this->narcotic = $this->medicine->narcotic;
-            $this->active = $this->medicine->active;
+        if ($this->medication) {
+            $this->generic_name = $this->medication->generic_name;
+            $this->home_name = $this->medication->home_name;
+            $this->code = $this->medication->code;
+            $this->form = $this->medication->form;
+            $this->manufacturer = $this->medication->manufacturer;
+            $this->status = $this->medication->status;
+
+            // Load primary ingredient data
+            $ingredient = $this->medication->ingredients->first();
+            if ($ingredient) {
+                $this->strength_value = $ingredient->strength_value;
+                $this->strength_unit = $ingredient->strength_unit;
+            }
+
             $this->showModal = true;
         }
     }
 
-    public function deleteMedicine($medicineId)
+    public function deleteMedicine($medicationId)
     {
         try {
-            $medicine = Medicine::find($medicineId);
-            if ($medicine) {
-                $medicine->delete();
+            $medication = Medication::find($medicationId);
+            if ($medication) {
+                $medication->delete();
                 session()->flash('message.success', 'Medicamento eliminado exitosamente.');
                 $this->dispatch('refreshMedicines');
             }

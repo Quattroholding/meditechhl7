@@ -34,6 +34,7 @@ class Medicine extends BaseModel
         'usage_indications',
         'porpuse',
         'indication_and_usage',
+        'labeler_name',
     ];
 
     public function client()

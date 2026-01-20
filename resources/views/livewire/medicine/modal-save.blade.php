@@ -16,81 +16,51 @@
                     </div>
 
                     <div class="input-block local-forms">
-                        <x-input-label for="home_name" value="Home name"/>
+                        <x-input-label for="home_name" value="Nombre Comercial"/>
                         <input wire:model="home_name" type="text" class="form-control" id="home_name" placeholder="Ingrese el nombre comercial">
                         <x-input-error :messages="$errors->get('home_name')"/>
                     </div>
 
                     <div class="input-block local-forms">
-                        <x-input-label for="ndc_code" value="NDC Code"/>
-                        <input wire:model="ndc_code" type="text" class="form-control" id="ndc_code" placeholder="ej: 12345-123-12, 1234-1234-12 o 12345-1234-1">
-                        <x-input-error :messages="$errors->get('ndc_code')"/>
-                        <small class="text-muted">Formato: #####-###-##, ####-####-## o #####-####-#</small>
+                        <x-input-label for="code" value="Código"/>
+                        <input wire:model="code" type="text" class="form-control" id="code" placeholder="Código del medicamento">
+                        <x-input-error :messages="$errors->get('code')"/>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
-                            <x-input-label for="type" value="Tipo" required/>
-                            <x-select-input wire:model="type" name="type" :options="\App\Models\Lista::medicineTypes()" :selected="[]" class="block w-full"/>
-                            <x-input-error :messages="$errors->get('type')"/>
+                            <x-input-label for="form" value="Forma Farmacéutica" required/>
+                            <x-select-input wire:model="form" name="form" :options="\App\Models\Lista::medicineTypes()" :selected="[]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('form')"/>
                         </div>
 
                         <div class="input-block local-forms">
-                            <x-input-label for="mgs" value="Dosis" required/>
-                            <input wire:model="mgs" type="text" class="form-control" id="mgs" placeholder="ej: 500">
-                            <x-input-error :messages="$errors->get('mgs')"/>
+                            <x-input-label for="strength_value" value="Dosis" required/>
+                            <input wire:model="strength_value" type="text" class="form-control" id="strength_value" placeholder="ej: 500">
+                            <x-input-error :messages="$errors->get('strength_value')"/>
                         </div>
 
                         <div class="input-block local-forms">
-                            <x-input-label for="mgs_type" value="Unidad" required/>
-                            <x-select-input wire:model="mgs_type" name="type" :options="\App\Models\Lista::medicineMgsTypes()" :selected="[]" class="block w-full"/>
-                            <x-input-error :messages="$errors->get('mgs_type')"/>
-                        </div>
-                    </div>
-                    {{--}}
-                    <div class="input-block local-forms">
-                        <x-input-label for="instructions" value="Instrucciones de Uso"/>
-                        <textarea wire:model="instructions" class="form-control" id="instructions" rows="3" placeholder="Ingrese las instrucciones de uso"></textarea>
-                        <x-input-error :messages="$errors->get('instructions')"/>
-                    </div>
-
-                    <div class="input-block local-forms">
-                        <x-input-label for="side_effects" value="Efectos Secundarios"/>
-                        <textarea wire:model="side_effects" class="form-control" id="side_effects" rows="3" placeholder="Ingrese los efectos secundarios"></textarea>
-                        <x-input-error :messages="$errors->get('side_effects')"/>
-                    </div>
-
-                    <div class="input-block local-forms">
-                        <x-input-label for="contraindications" value="Contraindicaciones"/>
-                        <textarea wire:model="contraindications" class="form-control" id="contraindications" rows="3" placeholder="Ingrese las contraindicaciones"></textarea>
-                        <x-input-error :messages="$errors->get('contraindications')"/>
-                    </div>
-
-                    <div class="input-block local-forms">
-                        <x-input-label for="interactions" value="Interacciones"/>
-                        <textarea wire:model="interactions" class="form-control" id="interactions" rows="3" placeholder="Ingrese las interacciones medicamentosas"></textarea>
-                        <x-input-error :messages="$errors->get('interactions')"/>
-                    </div>
-                    {{--}}
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="input-block local-forms">
-                            <x-input-label for="active" value="Estado" required/>
-                            <select wire:model="active" class="form-control" id="status">
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('status')"/>
-                        </div>
-                        <div class="input-block local-forms">
-                            <x-input-label for="narcotic" value="Narcotico" required/>
-                            <select wire:model="narcotic" class="form-control" id="narcotic">
-                                <option value="1">SI</option>
-                                <option value="0">NO</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('narcotic')"/>
+                            <x-input-label for="strength_unit" value="Unidad" required/>
+                            <x-select-input wire:model="strength_unit" name="strength_unit" :options="\App\Models\Lista::medicineMgsTypes()" :selected="[]" class="block w-full"/>
+                            <x-input-error :messages="$errors->get('strength_unit')"/>
                         </div>
                     </div>
 
+                    <div class="input-block local-forms">
+                        <x-input-label for="manufacturer" value="Fabricante"/>
+                        <input wire:model="manufacturer" type="text" class="form-control" id="manufacturer" placeholder="Nombre del fabricante">
+                        <x-input-error :messages="$errors->get('manufacturer')"/>
+                    </div>
+
+                    <div class="input-block local-forms">
+                        <x-input-label for="status" value="Estado" required/>
+                        <select wire:model="status" class="form-control" id="status">
+                            <option value="active">Activo</option>
+                            <option value="inactive">Inactivo</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('status')"/>
+                    </div>
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">{{ $buttonSaveTitle }}</button>

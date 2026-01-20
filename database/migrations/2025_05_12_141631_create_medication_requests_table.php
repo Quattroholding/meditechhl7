@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
             $table->foreignId('practitioner_id')->constrained('practitioners');
             $table->foreignId('medication_id')->nullable()->constrained('medicines');
+            $table->foreignId('medication_id2')->nullable()->constrained('medications');
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->foreignId('consulting_room_id')->nullable()->constrained('consulting_rooms');

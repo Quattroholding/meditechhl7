@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Medicine;
 
-use App\Models\Medicine;
+use App\Models\Medication;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -16,7 +16,7 @@ class DataTable extends Component
 
     public $sortField = 'id';
 
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
 
     public $pagination = 10;
 
@@ -39,15 +39,16 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = Medicine::query()
+        $data = Medication::query()
+            ->with('ingredients')
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->orWhere('generic_name', 'like', '%'.$this->search.'%')
                         ->orWhere('home_name', 'like', '%'.$this->search.'%')
-                        ->orWhere('ndc_code', 'like', '%'.$this->search.'%')
-                        ->orWhere('type', 'like', '%'.$this->search.'%')
-                        ->orWhere('mgs', 'like', '%'.$this->search.'%')
-                        ->orWhere('mgs_type', 'like', '%'.$this->search.'%');
+                        ->orWhere('display', 'like', '%'.$this->search.'%')
+                        ->orWhere('code', 'like', '%'.$this->search.'%')
+                        ->orWhere('form', 'like', '%'.$this->search.'%')
+                        ->orWhere('manufacturer', 'like', '%'.$this->search.'%');
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
