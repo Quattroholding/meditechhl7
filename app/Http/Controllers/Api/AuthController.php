@@ -40,9 +40,15 @@ class AuthController extends Controller
         }
 
         // Verificar si el usuario está activo
-        if (! $user->isActive()) {
+        if ($user->validation_status=='pending') {
             throw ValidationException::withMessages([
                 'email' => ['Su cuenta está pendiente de validación. Por favor espere a que nuestro equipo revise y apruebe sus documentos. Recibirá un correo electrónico cuando su cuenta sea activada.'],
+            ]);
+        }
+
+        if ($user->validation_status=='rejected') {
+            throw ValidationException::withMessages([
+                'email' => ['Su solicitud ha sido rechazada , si cree que esto es un error , ponerse en contacto al correo business@meditecpty.com para mayor información.'],
             ]);
         }
 

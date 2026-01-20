@@ -139,7 +139,7 @@ class PayInvoiceYappy extends Component
 
             $this->dispatch('showToastrYappy',
                 type: 'success',
-                message: 'Se a enviado una petición de pago por yappy Nro Trnsaccion :'.$body['transactionId'],
+                message: 'Se a enviado una petición de pago por yappy Nro Transacción :'.$body['transactionId'].' Al finalizar el pago en la aplicación de yappy recargue la pagina para validar el cambio de estatus.',
             );
 
             \Log::info('========== YAPPY REQUEST DEBUG END (SUCCESS) ==========');

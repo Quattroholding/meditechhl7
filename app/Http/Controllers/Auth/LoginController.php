@@ -31,7 +31,7 @@ class LoginController extends Controller
             }
         }
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(array_merge($credentials, ['active' => 1]))) {
             $user = Auth::user();
 
             // Verificar si el usuario tiene sesiones activas en otros dispositivos
@@ -102,11 +102,19 @@ class LoginController extends Controller
             }
 
             if ($user->hasRole('validador')) {
-                $route =  route('user.pending-validations');
+                $route = route('user.pending-validations');
             }
 
             return redirect()->intended($route.'?show_salute=true');
         }
+
+        // Verificar si el usuario existe pero está inactivo
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        /*if ($user && ! $user->active) {
+            return back()->withErrors([
+                'email' => 'Tu cuenta está desactivada. Por favor, contacta al administrador.',
+            ])->onlyInput('email');
+        }*/
 
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',

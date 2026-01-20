@@ -65,7 +65,7 @@ class PendingValidations extends Component
         try {
             // Actualizar usuario
             $this->selectedUser->update([
-                'active' => true,
+                //'active' => true,
                 'validation_status' => 'approved',
                 'validated_at' => now(),
                 'validated_by' => auth()->id(),
