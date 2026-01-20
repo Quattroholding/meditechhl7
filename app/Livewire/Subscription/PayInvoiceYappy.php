@@ -130,7 +130,7 @@ class PayInvoiceYappy extends Component
             ]);
 
             // 3️⃣ Disparar evento Livewire 3
-            $this->dispatch('showToastrYappy',
+            $this->dispatch('yappy-ready',
                 invoiceId:  $this->invoice->id,
                 transactionId: $body['transactionId'],
                 token: $body['token'],

@@ -168,7 +168,7 @@ class SuscriptionPaymentController extends Controller
         $invoice = ClientInvoice::find($orderId);
 
         // TODO: validar hash con tu clave secreta
-        Log::info("Yappy IPN: {$invoice->id} => {$status}");
+        \Log::info("Yappy IPN: {$invoice->id} => {$status}");
 
         if (isset($orderId) && isset($status) && isset($domain) && isset($hash)) {
             header('Content-Type: application/json');
