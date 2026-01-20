@@ -648,7 +648,7 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
 
         Route::get('/', [SuscriptionPaymentController::class, 'index'])->middleware('permission:suscriptions.payments.index')->name('suscriptions.payments.index');
 
-        Route::get('/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
+
 
         Route::get('/settings', [SuscriptionPaymentController::class, 'settings'])->middleware('permission:suscriptions.payments.settings')->name('suscriptions.payments.settings');
 
@@ -677,3 +677,6 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
     Route::post('/login/{user}', [\App\Http\Controllers\DebugLoginController::class, 'loginAs'])
         ->name('login.as');
 });
+
+
+Route::get('/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
