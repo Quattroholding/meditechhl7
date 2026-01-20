@@ -187,7 +187,19 @@
 
                                         <div>
                                             <div style="font-size: 12px; color: #059669; font-weight: 600;">💊 Medicamento</div>
-                                            <div style="font-weight: 600; color: #1e293b;">{{ $request->medicine ? $request->medicine->full_name : $request->medication }}</div>
+                                            <div style="font-weight: 600; color: #1e293b;">
+                                                @if($request->medication2)
+                                                    @php
+                                                        $ingredient = $request->medication2->ingredients->first();
+                                                        $strength = $ingredient ? $ingredient->strength_value . ' ' . $ingredient->strength_unit : '';
+                                                    @endphp
+                                                    {{ $request->medication2->display }} {{ $strength }} {{ $request->medication2->form }}
+                                                @elseif($request->medicine)
+                                                    {{ $request->medicine->full_name }}
+                                                @else
+                                                    {{ $request->medication }}
+                                                @endif
+                                            </div>
                                         </div>
 
                                     @if($request->dosage_text)

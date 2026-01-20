@@ -33,7 +33,7 @@ class EncounterPrescriptionPdfService
         if ($medications === null) {
             $medications = $encounter->medicationRequests;
         } elseif (is_array($medications)) {
-            $medications = MedicationRequest::with('medicine')
+            $medications = MedicationRequest::with(['medicine', 'medication2.ingredients'])
                 ->whereIn('id', $medications)
                 ->get();
         }
@@ -129,7 +129,7 @@ class EncounterPrescriptionPdfService
         if ($medications === null) {
             $medications = $encounter->medicationRequests;
         } elseif (is_array($medications)) {
-            $medications = MedicationRequest::with('medicine')
+            $medications = MedicationRequest::with(['medicine', 'medication2.ingredients'])
                 ->whereIn('id', $medications)
                 ->get();
         }
@@ -209,7 +209,8 @@ class EncounterPrescriptionPdfService
             'diagnoses.condition',
             'appointment.client',
             'medicationRequests.medicine',
-            'serviceRequests.cpt'
+            'medicationRequests.medication2.ingredients',
+            'serviceRequests.cpt',
         ];
 
         $encounter->load($relations);

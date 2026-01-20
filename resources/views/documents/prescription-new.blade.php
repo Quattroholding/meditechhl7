@@ -55,10 +55,17 @@ $medicationPages = array_chunk($allMedications, $medicationsPerPage);
                             @php $medication = (object) $medication; @endphp
                             <div class="medication-item">
                                 <div class="medication-name">
-                                    @if($medication->medication_id)
+                                    @if(!empty($medication->medication_id2) && !empty($medication->medication2))
+                                        @php
+                                            $med2 = (object) $medication->medication2;
+                                            $ingredient = isset($med2->ingredients) && count($med2->ingredients) > 0 ? (object) $med2->ingredients[0] : null;
+                                            $strength = $ingredient ? $ingredient->strength_value . ' ' . $ingredient->strength_unit : '';
+                                        @endphp
+                                        {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{ $med2->display ?? $med2->home_name }}     {{ $strength }}    #{{ $medication->quantity }} {{ $med2->form }}
+                                    @elseif(!empty($medication->medication_id) && !empty($medication->medicine))
                                         {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{ $medication->medicine['home_name'] .'     '.$medication->medicine['mgs'].' '.$medication->medicine['mgs_type'].'    #'.$medication->quantity.' '.$medication->medicine['type']}}
                                     @else
-                                        {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{$medication->medication}}
+                                        {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{ $medication->medication }}
                                     @endif
                                 </div>
                                 <div class="medication-details">

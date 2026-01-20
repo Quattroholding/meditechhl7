@@ -50,7 +50,19 @@
             @foreach($selectedLists as $m)
             <tr class="consultation-tr-inputs" style="background: {{ $loop->iteration % 2 == 0 ? '#fff' : '#ededed' }}">
                 <td>
-                    <b rel="producto-full-name">{{$m->medicine ? $m->medicine->full_name : $m->medication}}</b>
+                    <b rel="producto-full-name">
+                        @if($m->medication2)
+                            {{ $m->medication2->display }}
+                            @if($m->medication2->ingredients->count() > 0)
+                                @php $ing = $m->medication2->ingredients->first(); @endphp
+                                ({{ $m->medication2->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})
+                            @endif
+                        @elseif($m->medicine)
+                            {{ $m->medicine->full_name }}
+                        @else
+                            {{ $m->medication }}
+                        @endif
+                    </b>
                 </td>
                 <td>
                     <table style="width:100%;">
@@ -205,10 +217,23 @@
                              style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
 
                             {{-- Contenido principal clickeable --}}
-                            <div wire:click="selectOption({{ json_encode(['id'=>$i->medicine_id,'name'=>'']) }})">
-                                <div class="sel-list-item-code fw-bold">{{$i->medicine->home_name}}</div>
-                                <div class="sel-list-item-content">{{$i->medicine->full_name}}</div>
-                            </div>
+                            @if($i->medication)
+                                <div wire:click="selectOption({{ json_encode(['id'=>$i->medication_id,'name'=>$i->medication->display]) }})">
+                                    <div class="sel-list-item-code fw-bold">{{ $i->medication->home_name ?? $i->medication->display }}</div>
+                                    <div class="sel-list-item-content">
+                                        {{ $i->medication->display }}
+                                        @if($i->medication->ingredients->count() > 0)
+                                            @php $ing = $i->medication->ingredients->first(); @endphp
+                                            ({{ $i->medication->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})
+                                        @endif
+                                    </div>
+                                </div>
+                            @elseif($i->medicine)
+                                <div wire:click="selectOption({{ json_encode(['id'=>$i->medicine_id,'name'=>$i->medicine->full_name]) }})">
+                                    <div class="sel-list-item-code fw-bold">{{ $i->medicine->home_name }}</div>
+                                    <div class="sel-list-item-content">{{ $i->medicine->full_name }}</div>
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                 @else

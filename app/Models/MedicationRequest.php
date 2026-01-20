@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MedicationRequest extends Model
 {
     protected $fillable = [
-        'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'medication_id',
+        'fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'medication_id', 'medication_id2',
         'identifier', 'status', 'intent', 'priority', 'reason', 'dosage_instruction',
         'dosage_text', 'route', 'frequency', 'quantity', 'refills', 'valid_from', 'duration',
         'valid_to', 'substitution_allowed', 'note', 'medication', 'narcotic', 'client_id', 'branch_id', 'consulting_room_id',
@@ -48,6 +48,11 @@ class MedicationRequest extends Model
     public function medicina(): BelongsTo
     {
         return $this->belongsTo(Medicine::class, 'medication_id');
+    }
+
+    public function medication2(): BelongsTo
+    {
+        return $this->belongsTo(Medication::class, 'medication_id2');
     }
 
     public function getValidFromAttribute($attr)

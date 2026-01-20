@@ -3,8 +3,8 @@
 namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
+use App\Models\Medication;
 use App\Models\MedicationRequest;
-use App\Models\Medicine;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -67,11 +67,27 @@ class MedicationRequests extends Component
             return;
         }
 
-        // Query medicines directly instead of using API to maintain authentication context
-        $this->results = Medicine::selectRaw("id,concat(home_name,' de ',mgs,' ',mgs_type,' en ',type) as name")
-            ->whereRaw("(ndc_code LIKE '%".$this->query."%' or home_name LIKE '%".$this->query."%' or generic_name LIKE '%".$this->query."%')")
+        // Query medications table with ingredients
+        $this->results = Medication::query()
+            ->with('ingredients')
+            ->where(function ($q) {
+                $q->where('code', 'like', '%'.$this->query.'%')
+                    ->orWhere('home_name', 'like', '%'.$this->query.'%')
+                    ->orWhere('generic_name', 'like', '%'.$this->query.'%')
+                    ->orWhere('display', 'like', '%'.$this->query.'%');
+            })
+            ->where('status', 'active')
             ->take(10)
             ->get()
+            ->map(function ($med) {
+                $ingredient = $med->ingredients->first();
+                $strength = $ingredient ? $ingredient->strength_value.' '.$ingredient->strength_unit : '';
+
+                return [
+                    'id' => $med->id,
+                    'name' => $med->display.($strength ? ' de '.$strength : '').($med->form ? ' en '.$med->form : ''),
+                ];
+            })
             ->toArray();
     }
 
@@ -86,15 +102,15 @@ class MedicationRequests extends Component
             $this->selectedOption = $option;
             $this->query = $option['name']; // Asigna el nombre seleccionado al input
             $this->results = []; // Limpia los resultados
-            $medicine_request = MedicationRequest::whereEncounterId($this->encounter->id)->whereMedicationId($option)->first();
-            $medicine = Medicine::whereId($option)->first();
+            $medicine_request = MedicationRequest::whereEncounterId($this->encounter->id)->whereMedicationId2($option['id'])->first();
+            $medication = Medication::whereId($option['id'])->first();
             if (! $medicine_request) {
                 $this->encounter->medicationRequests()->create([
                     'fhir_id' => 'medicationrequest-'.Str::uuid(),
                     'identifier' => 'RX-'.strtoupper(Str::random(7)),
                     'status' => 'active',
                     'intent' => 'order',
-                    'medication_id' => $medicine->id,
+                    'medication_id2' => $medication->id,
                     'valid_from' => now(),
                     'valid_to' => now()->addDays(30),
                     'patient_id' => $this->encounter->patient_id,
@@ -107,7 +123,7 @@ class MedicationRequests extends Component
                 $this->dispatch('saved-'.$key);
 
             } else {
-                $this->dispatch('error-'.$key,  '¡Medicamento ('.$option['name'].') ya esta agregado a la  consulta.!');
+                $this->dispatch('error-'.$key, '¡Medicamento ('.$option['name'].') ya esta agregado a la  consulta.!');
             }
 
             $this->getMedicationRequestsProperty();
@@ -119,7 +135,7 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,  'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key, 'Error al guardar: '.$e->getMessage());
         }
     }
 
@@ -133,18 +149,18 @@ class MedicationRequests extends Component
         $this->dispatch('findFinishedButtonStatus');
     }
 
-    public function updatedQuantitys($value, $code){
+    public function updatedQuantitys($value, $code)
+    {
         $this->saveQuatity($code);
     }
 
     public function saveQuatity($id)
     {
-        try{
+        try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['quantity' => $this->quantitys[$id]]);
 
             $this->generateDosageInstruction($id);
-
 
             $this->dispatch('saved-quantity-'.$id);
 
@@ -152,23 +168,23 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
     }
 
-    public function updatedFrecuencies($value, $code){
+    public function updatedFrecuencies($value, $code)
+    {
         $this->saveFrecuency($code);
     }
 
     public function saveFrecuency($id)
     {
-        try{
+        try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['frequency' => $this->frecuencies[$id]]);
 
             $this->generateDosageInstruction($id);
-
 
             $this->dispatch('saved-frecuency-'.$id);
 
@@ -176,18 +192,19 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
     }
 
-    public function updatedDurations($value, $code){
+    public function updatedDurations($value, $code)
+    {
         $this->saveDuration($code);
     }
 
     public function saveDuration($id)
     {
-        try{
+        try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['duration' => $this->durations[$id]]);
             $this->generateDosageInstruction($id);
@@ -198,23 +215,23 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
     }
 
-    public function updatedRoutes($value, $code){
+    public function updatedRoutes($value, $code)
+    {
         $this->saveRoute($code);
     }
 
     public function saveRoute($id)
     {
-        try{
+        try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['route' => $this->routes[$id]]);
 
             $this->generateDosageInstruction($id);
-
 
             $this->dispatch('saved-route-'.$id);
 
@@ -222,11 +239,10 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$id,'Error al guardar : '.$e->getMessage());
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
     }
-
 
     protected function generateDosageInstruction($id)
     {
@@ -234,7 +250,7 @@ class MedicationRequests extends Component
         $route = '';
         $duration = '';
         $quantity = '';
-        $key='dosage_text_'.$id;
+        $key = 'dosage_text_'.$id;
 
         try {
             if (isset($this->frecuencies[$id])) {
@@ -252,11 +268,15 @@ class MedicationRequests extends Component
 
             $requestMedicine = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicine_type = '';
-            if ($requestMedicine->medicine) {
+
+            // Try medication2 first (new medications table), then fall back to medicine (old medicines table)
+            if ($requestMedicine->medication2) {
+                $medicine_type = $requestMedicine->medication2->form;
+            } elseif ($requestMedicine->medicine) {
                 $medicine_type = $requestMedicine->medicine->type;
             }
 
-            $dosage_instructions =[
+            $dosage_instructions = [
                 'text' => $quantity.' '.$medicine_type.
                     ' cada '.$frequency.' horas'.
                     ' via '.$route.
@@ -273,7 +293,7 @@ class MedicationRequests extends Component
 
             $this->dispatch('saved-dosage_text_'.$key);
 
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->dispatch('error-'.$key, 'Error al guardar :'.$e->getMessage());
         }
 
@@ -291,6 +311,9 @@ class MedicationRequests extends Component
         foreach ($selectedMedications as $medication) {
             // Verificar si el medicamento ya existe en la receta actual
             $existingMedication = $this->encounter->medicationRequests()
+                ->when(! empty($medication['medication_id2']), function ($query) use ($medication) {
+                    return $query->where('medication_id2', $medication['medication_id2']);
+                })
                 ->when(! empty($medication['medication_id']), function ($query) use ($medication) {
                     return $query->where('medication_id', $medication['medication_id']);
                 })
@@ -306,7 +329,8 @@ class MedicationRequests extends Component
                     'identifier' => 'RX-'.strtoupper(Str::random(7)),
                     'status' => 'active',
                     'intent' => 'order',
-                    'medication_id' => $medication['medication_id'],
+                    'medication_id' => $medication['medication_id'] ?? null,
+                    'medication_id2' => $medication['medication_id2'] ?? null,
                     'medication' => $medication['medication'],
                     'quantity' => $medication['quantity'],
                     'frequency' => $medication['frequency'],
@@ -350,14 +374,14 @@ class MedicationRequests extends Component
         $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
             ->whereType('CLIENT')
             ->whereEncounterSectionId($this->section_id)
-            ->with('medicine')
+            ->with('medication')
             ->get()
             ->take(10);
 
         if ($this->rapidAccess->count() == 0) {
             $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
                 ->whereEncounterSectionId($this->section_id)
-                ->with('medicine')
+                ->with('medication')
                 ->get()
                 ->take(10);
         }
@@ -369,13 +393,13 @@ class MedicationRequests extends Component
         $this->results = [];
     }
 
-    public function addToRapidAccess($medicineId)
+    public function addToRapidAccess($medicationId)
     {
         try {
             $existing = \App\Models\RapidAccess::whereUserId(auth()->id())
                 ->whereType('CLIENT')
                 ->whereEncounterSectionId($this->section_id)
-                ->where('medicine_id', $medicineId)
+                ->where('medication_id', $medicationId)
                 ->first();
 
             if (! $existing) {
@@ -383,7 +407,7 @@ class MedicationRequests extends Component
                     'user_id' => auth()->id(),
                     'type' => 'CLIENT',
                     'encounter_section_id' => $this->section_id,
-                    'medicine_id' => $medicineId,
+                    'medication_id' => $medicationId,
                 ]);
 
                 $this->loadRapidAccess();

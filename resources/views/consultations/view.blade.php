@@ -290,7 +290,13 @@
                                                     <tbody>
                                                         @foreach($encounter->medicationRequests as $medication)
                                                             <tr>
-                                                                <td>{{ $medication->medicine ? $medication->medicine->full_name :  $medication->medication }}</td>
+                                                                <td>
+                                                                    @if(!empty($medication->medication_id2) && !empty($medication->medication2))
+                                                                        {{$medication->medication2->display}}
+                                                                    @else
+                                                                    {{ $medication->medicine ? $medication->medicine->full_name :  $medication->medication }}
+                                                                    @endif
+                                                                </td>
                                                                 <td>
                                                                     {{$medication->dosage_text ?? $medication->dosage_instruction }}
                                                                 </td>
