@@ -11,6 +11,10 @@ enum PaymentStatus: string
     case REJECTED = 'rejected';
     case REFUNDED = 'refunded';
 
+    case CANCELLED = 'cancelled';
+
+    case EXPIRED = 'expired';
+
     public function label(): string
     {
         return match ($this) {
@@ -19,6 +23,8 @@ enum PaymentStatus: string
             self::FAILED => 'Fallido',
             self::REJECTED => 'Rechazado',
             self::REFUNDED => 'Reembolsado',
+            self::CANCELLED => 'Cancelado',
+            self::EXPIRED => 'Expirado',
         };
     }
 
@@ -29,6 +35,8 @@ enum PaymentStatus: string
             self::COMPLETED => 'success',
             self::FAILED => 'danger',
             self::REJECTED => 'danger',
+            self::CANCELLED => 'danger',
+            self::EXPIRED => 'danger',
             self::REFUNDED => 'info',
         };
     }

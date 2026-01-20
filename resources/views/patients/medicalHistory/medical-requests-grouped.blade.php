@@ -63,11 +63,14 @@
                                                 <div>
                                                     <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0;">
                                                         {{ $medication->medicine ? $medication->medicine->full_name : $medication->medication }}
+                                                        {{ $medication->medication2 ? $medication->medication2->display : $medication->medication2 }}
                                                     </h4>
                                                     <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 13px; color: #374151;">
+                                                        {{--}}
                                                         @if($medication->dosage_text)
                                                             <span><strong>📏 Dosis:</strong> {{ $medication->dosage_text }}</span>
                                                         @endif
+                                                        {{--}}
                                                         @if($medication->frequency)
                                                             <span><strong>⏰ Frecuencia:</strong> {{ $medication->frequency }}</span>
                                                         @endif
@@ -92,13 +95,7 @@
                                             @if($medication->dosage_instruction)
                                                 <div style="background: white; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151; border: 1px solid #d1fae5;">
                                                     <strong>📋 Instrucciones:</strong>
-                                                    @if(is_array($medication->dosage_instruction))
-                                                        @foreach($medication->dosage_instruction as $i)
-                                                            {{ $i }}
-                                                        @endforeach
-                                                    @else
-                                                        {{$medication->dosage_instruction}}
-                                                    @endif
+                                                    {{$medication->dosage_text}}
                                                 </div>
                                             @endif
                                         </div>
