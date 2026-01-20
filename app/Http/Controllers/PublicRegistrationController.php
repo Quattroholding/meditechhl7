@@ -55,6 +55,12 @@ class PublicRegistrationController extends Controller
 
             return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService) {
 
+                // Verificar si es un usuario existente de SAMI Recetas (sin client asociado)
+                $existingUser = User::where('email', $request->email)->first();
+                $isExistingUserWithoutClient = $existingUser
+                    && ! $existingUser->default_client_id
+                    && ! $existingUser->clients()->exists();
+
                 // 1. Crear el cliente con valores por defecto
                 $client = new Client;
                 $prefix = 'Dr';
@@ -85,18 +91,35 @@ class PublicRegistrationController extends Controller
                 // 2. Obtener paquete
                 $package = Package::findOrFail($request->package_id);
 
-                // 2.1 Validar que ese co
+                // 3. Crear o reutilizar usuario
+                if ($isExistingUserWithoutClient) {
+                    // Usuario existente de SAMI Recetas - actualizar y reutilizar
+                    $user = $existingUser;
+                    $user->first_name = $request->first_name;
+                    $user->last_name = $request->last_name;
+                    $user->password = $request->password;
+                    $user->first_login_at = now();
+                    $user->default_client_id = $client->id;
+                    $user->active = true;
+                    $user->save();
 
-                // 3. Crear usuario admin
-                $user = new User;
-                $user->first_name = $request->first_name;
-                $user->last_name = $request->last_name;
-                $user->email = $request->email;
-                $user->password = $request->password;
-                $user->first_login_at = now();
-                $user->default_client_id = $client->id;
-                $user->assignRole('admin client');
-                $user->save();
+                    Log::info('Public registration: Reusing existing SAMI Recetas user', [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                        'client_id' => $client->id,
+                    ]);
+                } else {
+                    // Nuevo usuario
+                    $user = new User;
+                    $user->first_name = $request->first_name;
+                    $user->last_name = $request->last_name;
+                    $user->email = $request->email;
+                    $user->password = $request->password;
+                    $user->first_login_at = now();
+                    $user->default_client_id = $client->id;
+                    $user->assignRole('admin client');
+                    $user->save();
+                }
 
                 // 4. Relación usuario-cliente
                 $userClient = new UserClient;
@@ -117,26 +140,61 @@ class PublicRegistrationController extends Controller
                     $user->save();
                 }
 
-                // 6. Crear Practitioner si paquete max_users=1
+                // 6. Crear o actualizar Practitioner si paquete max_users=1
                 $practitionerCreated = false;
                 if ($package->max_users === 1 && $request->filled('identifier')) {
-                    $practitioner = $practitionerService->createOrUpdatePractitioner(
-                        $user,
-                        $request->all(),
-                        [$request->medical_speciality]
-                    );
+                    // Verificar si ya tiene practitioner (usuario de SAMI Recetas)
+                    $existingPractitioner = $isExistingUserWithoutClient ? $user->practitioner : null;
 
-                    $user->assignRole('doctor');
+                    if ($existingPractitioner) {
+                        // Actualizar practitioner existente con datos del formulario
+                        $existingPractitioner->update([
+                            'name' => $request->first_name.' '.$request->last_name,
+                            'given_name' => $request->first_name,
+                            'family_name' => $request->last_name,
+                            'phone' => $request->phone,
+                            'email' => $request->email,
+                            'gender' => $request->gender,
+                            'identifier_type' => $request->identifier_type,
+                        ]);
+
+                        // Actualizar especialidad si es diferente
+                        if ($request->medical_speciality) {
+                            $existingPractitioner->qualifications()->delete();
+                            $existingPractitioner->qualifications()->create([
+                                'medical_speciality_id' => $request->medical_speciality,
+                            ]);
+                        }
+
+                        $practitioner = $existingPractitioner;
+
+                        Log::info('Public registration: Updated existing practitioner', [
+                            'client_id' => $client->id,
+                            'practitioner_id' => $practitioner->id,
+                        ]);
+                    } else {
+                        // Crear nuevo practitioner
+                        $practitioner = $practitionerService->createOrUpdatePractitioner(
+                            $user,
+                            $request->all(),
+                            [$request->medical_speciality]
+                        );
+
+                        Log::info('Public registration: Practitioner created', [
+                            'client_id' => $client->id,
+                            'practitioner_id' => $practitioner->id,
+                        ]);
+                    }
+
+                    // Asignar rol de doctor
+                    if (! $user->hasRole('doctor')) {
+                        $user->assignRole('doctor');
+                    }
                     $user->removeRole('admin client');
                     $practitionerCreated = true;
 
                     // Notificar al médico sobre la configuración requerida
                     $user->notify(new PractitionerSetupRequiredNotification);
-
-                    Log::info('Public registration: Practitioner created', [
-                        'client_id' => $client->id,
-                        'practitioner_id' => $practitioner->id,
-                    ]);
                 }
 
                 // 7. Crear suscripción (SIN trial, SIN descuentos)
@@ -170,6 +228,7 @@ class PublicRegistrationController extends Controller
                     'package' => $package->name,
                     'status' => $subscription->status->value,
                     'practitioner_created' => $practitionerCreated,
+                    'existing_sami_recetas_user' => $isExistingUserWithoutClient,
                 ]);
 
                 // 8. Redireccionar a success con información de pago

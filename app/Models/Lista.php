@@ -98,12 +98,12 @@ class Lista extends Model
 
     public static function medicineTypes()
     {
-        return Medicine::selectRaw('distinct(type) as type')->pluck('type', 'type')->toArray();
+        return Medication::selectRaw('distinct(form) as type')->pluck('type', 'type')->toArray();
     }
 
     public static function medicineMgsTypes()
     {
-        return Medicine::selectRaw('distinct(mgs_type) as type')->pluck('type', 'type')->toArray();
+        return MedicationIngredient::selectRaw('distinct(strength_unit) as type')->pluck('type', 'type')->toArray();
     }
 
     public static function conditionClinicalStatus()

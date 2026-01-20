@@ -27,32 +27,51 @@ class ModalSave extends Component
 
     public $form = '';
 
-    public $strength_value = '';
-
-    public $strength_unit = '';
-
     public $manufacturer = '';
 
     public $status = 'active';
 
-    protected $rules = [
-        'generic_name' => 'required|string|max:255',
-        'home_name' => 'nullable|string|max:255',
-        'code' => 'nullable|string|max:100',
-        'form' => 'required|string|max:100',
-        'strength_value' => 'required|numeric',
-        'strength_unit' => 'required|string|max:50',
-        'manufacturer' => 'nullable|string|max:255',
-        'status' => 'required|in:active,inactive',
-    ];
+    public $ingredients = [];
+
+    protected function rules()
+    {
+        return [
+            'generic_name' => 'required|string|max:255',
+            'home_name' => 'nullable|string|max:255',
+            'code' => 'nullable|string|max:100',
+            'form' => 'required|string|max:100',
+            'manufacturer' => 'nullable|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'ingredients' => 'required|array|min:1',
+            'ingredients.*.substance_display' => 'required|string|max:255',
+            'ingredients.*.strength_value' => 'required|numeric',
+            'ingredients.*.strength_unit' => 'required|string|max:50',
+        ];
+    }
 
     protected $messages = [
         'generic_name.required' => 'El nombre genérico es obligatorio.',
-        'form.required' => 'El tipo de medicamento es obligatorio.',
-        'strength_value.required' => 'La dosis es obligatoria.',
-        'strength_value.numeric' => 'La dosis debe ser un número.',
-        'strength_unit.required' => 'La unidad de dosis es obligatoria.',
+        'form.required' => 'La forma farmacéutica es obligatoria.',
+        'ingredients.required' => 'Debe agregar al menos un ingrediente.',
+        'ingredients.min' => 'Debe agregar al menos un ingrediente.',
+        'ingredients.*.substance_display.required' => 'El nombre del ingrediente es obligatorio.',
+        'ingredients.*.strength_value.required' => 'La dosis es obligatoria.',
+        'ingredients.*.strength_value.numeric' => 'La dosis debe ser un número.',
+        'ingredients.*.strength_unit.required' => 'La unidad es obligatoria.',
     ];
+
+    public function addIngredient()
+    {
+        $this->ingredients[] = ['id' => null, 'substance_display' => '', 'strength_value' => '', 'strength_unit' => ''];
+    }
+
+    public function removeIngredient($index)
+    {
+        if (count($this->ingredients) > 1) {
+            unset($this->ingredients[$index]);
+            $this->ingredients = array_values($this->ingredients);
+        }
+    }
 
     public function render()
     {
@@ -81,10 +100,11 @@ class ModalSave extends Component
         $this->home_name = '';
         $this->code = '';
         $this->form = '';
-        $this->strength_value = '';
-        $this->strength_unit = '';
         $this->manufacturer = '';
         $this->status = 'active';
+        $this->ingredients = [
+            ['id' => null, 'substance_display' => '', 'strength_value' => '', 'strength_unit' => ''],
+        ];
         $this->buttonSaveTitle = 'Guardar Medicamento';
     }
 
@@ -111,20 +131,37 @@ class ModalSave extends Component
                 unset($medicationData['fhir_id']);
                 $this->medication->update($medicationData);
 
-                // Update or create the primary ingredient
-                $ingredient = $this->medication->ingredients()->first();
-                if ($ingredient) {
-                    $ingredient->update([
-                        'substance_display' => $this->generic_name,
-                        'strength_value' => $this->strength_value,
-                        'strength_unit' => $this->strength_unit,
-                    ]);
-                } else {
-                    $this->medication->ingredients()->create([
-                        'substance_display' => $this->generic_name,
-                        'strength_value' => $this->strength_value,
-                        'strength_unit' => $this->strength_unit,
-                    ]);
+                // Get existing ingredient IDs
+                $existingIds = $this->medication->ingredients()->pluck('id')->toArray();
+                $updatedIds = [];
+
+                // Update or create ingredients
+                foreach ($this->ingredients as $ingredientData) {
+                    if (! empty($ingredientData['id'])) {
+                        // Update existing ingredient
+                        $this->medication->ingredients()
+                            ->where('id', $ingredientData['id'])
+                            ->update([
+                                'substance_display' => $ingredientData['substance_display'],
+                                'strength_value' => $ingredientData['strength_value'],
+                                'strength_unit' => $ingredientData['strength_unit'],
+                            ]);
+                        $updatedIds[] = $ingredientData['id'];
+                    } else {
+                        // Create new ingredient
+                        $newIngredient = $this->medication->ingredients()->create([
+                            'substance_display' => $ingredientData['substance_display'],
+                            'strength_value' => $ingredientData['strength_value'],
+                            'strength_unit' => $ingredientData['strength_unit'],
+                        ]);
+                        $updatedIds[] = $newIngredient->id;
+                    }
+                }
+
+                // Delete removed ingredients
+                $toDelete = array_diff($existingIds, $updatedIds);
+                if (! empty($toDelete)) {
+                    $this->medication->ingredients()->whereIn('id', $toDelete)->delete();
                 }
 
                 $this->dispatch('showToastr',
@@ -135,12 +172,14 @@ class ModalSave extends Component
                 // Create new medication
                 $medication = Medication::create($medicationData);
 
-                // Create the primary ingredient
-                $medication->ingredients()->create([
-                    'substance_display' => $this->generic_name,
-                    'strength_value' => $this->strength_value,
-                    'strength_unit' => $this->strength_unit,
-                ]);
+                // Create all ingredients
+                foreach ($this->ingredients as $ingredientData) {
+                    $medication->ingredients()->create([
+                        'substance_display' => $ingredientData['substance_display'],
+                        'strength_value' => $ingredientData['strength_value'],
+                        'strength_unit' => $ingredientData['strength_unit'],
+                    ]);
+                }
 
                 $this->dispatch('showToastr',
                     type: 'success',
@@ -152,8 +191,10 @@ class ModalSave extends Component
             $this->dispatch('refreshMedicines');
 
         } catch (\Exception $e) {
-            $this->closeModal();
-            session()->flash('message.error', 'Error al guardar el medicamento: '.$e->getMessage());
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al guardar el medicamento: '.$e->getMessage()
+            );
         }
     }
 
@@ -172,11 +213,21 @@ class ModalSave extends Component
             $this->manufacturer = $this->medication->manufacturer;
             $this->status = $this->medication->status;
 
-            // Load primary ingredient data
-            $ingredient = $this->medication->ingredients->first();
-            if ($ingredient) {
-                $this->strength_value = $ingredient->strength_value;
-                $this->strength_unit = $ingredient->strength_unit;
+            // Load all ingredients
+            $this->ingredients = $this->medication->ingredients->map(function ($ing) {
+                return [
+                    'id' => $ing->id,
+                    'substance_display' => $ing->substance_display,
+                    'strength_value' => $ing->strength_value,
+                    'strength_unit' => $ing->strength_unit,
+                ];
+            })->toArray();
+
+            // Ensure at least one ingredient row
+            if (empty($this->ingredients)) {
+                $this->ingredients = [
+                    ['id' => null, 'substance_display' => '', 'strength_value' => '', 'strength_unit' => ''],
+                ];
             }
 
             $this->showModal = true;

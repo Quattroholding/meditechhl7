@@ -16,7 +16,7 @@
                         <div class="card-body">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>  {{ __('generic.create') }} {{ __('patient.title') }}</h4>
+                                    <h4>  {{ __('generic.create') }} {{ __('medication.title') }}</h4>
                                 </div>
                             </div>
                             <livewire:medicine.create-form />

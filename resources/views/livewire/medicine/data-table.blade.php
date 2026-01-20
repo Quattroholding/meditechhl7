@@ -96,11 +96,14 @@
                                         </span>
                                     </td>
                                     <td data-column="acciones" data-priority="1" data-label="Acciones" class="text-end">
+                                        @if(auth()->user()->can('medicines.edit'))
+                                            <a href="{{ route('medicine.edit', $medication->id) }}" class="btn btn-success btn-sm" title="Editar">
+                                                <i class="fa-solid fa-pen-to-square m-r-5"></i>
+                                            </a>
+                                        @endif
                                         @if($medication->code_system === 'CUSTOM')
                                             <div class="btn-group btn-group-sm">
-                                                <a wire:click="openModal({{ $medication->id }})" class="btn btn-success btn-sm" title="Editar">
-                                                    <i class="fa-solid fa-pen-to-square m-r-5"></i>
-                                                </a>
+
                                                 <a href="javascript:;" onclick="confirm('¿Estás seguro de eliminar este medicamento?') || event.stopImmediatePropagation()" wire:click="$dispatch('deleteMedication', { id: {{ $medication->id }} })" class="btn btn-danger btn-sm" title="Eliminar">
                                                     <i class="fa fa-trash-alt m-r-5"></i>
                                                 </a>

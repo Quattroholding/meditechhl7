@@ -1,38 +1,29 @@
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
-            <div class="page-header">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('medicine.index') }}">Medicamentos</a></li>
-                            <li class="breadcrumb-item active">Editar Medicamento</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- /Page Header -->
-            
+            @component('components.page-header')
+                @slot('title')
+                    {{ __('medication.title') }}
+                @endslot
+                @slot('li_1')
+                    {{ __('generic.edit') }} {{ __('medication.title') }}
+                @endslot
+            @endcomponent
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Editar Medicamento</h4>
-                        </div>
                         <div class="card-body">
-                            <livewire:medicine.modal-save />
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    Livewire.dispatch('editMedicineModal', {{ $medicine_id }});
-                                });
-                            </script>
+                            <div class="col-12">
+                                <div class="form-heading">
+                                    <h4>{{ __('generic.edit') }} {{ __('medication.title') }}</h4>
+                                </div>
+                            </div>
+                            <livewire:medicine.edit-form :medication_id="$medicine_id" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

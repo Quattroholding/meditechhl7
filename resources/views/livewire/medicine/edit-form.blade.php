@@ -1,9 +1,9 @@
 <div>
-    <form wire:submit="saveMedicine">
+    <form wire:submit="updateMedicine">
         <div class="row">
             <div class="col-12 col-sm-4">
                 <div class="input-block local-forms">
-                    <x-input-label for="generic_name" value="Nombre Genérico" required/>
+                    <x-input-label for="generic_name" value="Nombre" required/>
                     <input wire:model="generic_name" type="text" class="form-control" id="generic_name" placeholder="Ingrese el nombre genérico">
                     <x-input-error :messages="$errors->get('generic_name')"/>
                 </div>
@@ -54,7 +54,7 @@
         <!-- Ingredients Section -->
         <div class="card mt-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 text-whiteahora " >Ingredientes Activos</h5>
+                <h5 class="mb-0 text-white">Ingredientes Activos</h5>
                 <button type="button" wire:click="addIngredient" class="btn btn-sm btn-primary">
                     <i class="fa fa-plus"></i> Agregar Ingrediente
                 </button>
@@ -118,7 +118,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <div class="doctor-submit text-end">
-                <button type="submit" class="btn btn-primary submit-form me-2">{{ __('button.register') }}</button>
+                <button type="submit" class="btn btn-primary submit-form me-2">{{ __('button.update') }}</button>
                 <a class="btn btn-secondary cancel-form" href="{{ route('medicine.index') }}">{{ __('button.cancel') }}</a>
             </div>
         </div>

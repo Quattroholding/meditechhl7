@@ -39,7 +39,19 @@ class PublicRegistrationRequest extends FormRequest
                 'required',
                 'email',
                 'max:255',
-                Rule::unique(User::class, 'email'),
+                function ($attribute, $value, $fail) {
+                    $existingUser = User::where('email', $value)->first();
+
+                    if (! $existingUser) {
+                        return; // Email no existe, todo bien
+                    }
+
+                    // Si el usuario ya tiene un client asignado, no puede registrarse de nuevo
+                    if ($existingUser->default_client_id || $existingUser->clients()->exists()) {
+                        $fail('Este email ya está registrado en el sistema.');
+                    }
+                    // Si no tiene client, es un usuario de SAMI Recetas - permitir registro
+                },
             ],
             'password' => ['required', 'confirmed', Password::defaults()],
             'phone' => ['required', 'string', 'max:50'],
@@ -53,7 +65,34 @@ class PublicRegistrationRequest extends FormRequest
                 $requiresPractitioner ? 'required' : 'nullable',
                 'string',
                 'max:50',
-                'unique:practitioners,identifier',
+                function ($attribute, $value, $fail) {
+                    if (! $value) {
+                        return;
+                    }
+
+                    $existingPractitioner = \App\Models\Practitioner::withoutGlobalScopes()
+                        ->where('identifier', $value)
+                        ->first();
+
+                    if (! $existingPractitioner) {
+                        return; // Identifier no existe, todo bien
+                    }
+
+                    // Verificar si el practitioner tiene un usuario asociado
+                    $user = $existingPractitioner->user;
+
+                    if (! $user) {
+                        $fail('Este número de documento ya está registrado.');
+
+                        return;
+                    }
+
+                    // Si el usuario ya tiene un client asignado, no puede registrarse de nuevo
+                    if ($user->default_client_id || $user->clients()->exists()) {
+                        $fail('Este número de documento ya está registrado.');
+                    }
+                    // Si no tiene client, es un usuario de SAMI Recetas - permitir registro
+                },
             ],
             'gender' => [
                 $requiresPractitioner ? 'required' : 'nullable',
