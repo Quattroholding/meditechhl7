@@ -162,7 +162,7 @@ class PublicRegistrationController extends Controller
                     if ($existingPractitioner) {
                         // Actualizar practitioner existente con datos del formulario
                         $existingPractitioner->update([
-                            'name' => $request->first_name.' '.$request->last_name,
+                            'name' =>  $prefix.' '.$request->first_name.' '.$request->last_name,
                             'given_name' => $request->first_name,
                             'family_name' => $request->last_name,
                             'phone' => $request->phone,
