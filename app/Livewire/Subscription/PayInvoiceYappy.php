@@ -71,17 +71,15 @@ class PayInvoiceYappy extends Component
 
             $config = [
                 'merchantId'  => $merchantId,
-                'orderId'     => $this->invoice->invoice_number,
+                'orderId'     => $this->invoice->id,
                 'domain'      => parse_url($appUrl, PHP_URL_HOST),
                 'paymentDate' => time(),
-                'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
-                'taxes'       => number_format($this->invoice->tax_amount ?? 0, 2, '.', ''),
+                'subtotal'    => number_format($this->invoice->total ?? 0, 2, '.', ''),
+                'taxes'       => '0.00',
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
-                'aliasYappy'  => '12091',
-                'reference'   => $this->invoice->id,
-                'description' => "Pago factura #{$this->invoice->id}",
+                'aliasYappy'  => preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? ''),
             ];
 
             // 2️⃣ Crear orden

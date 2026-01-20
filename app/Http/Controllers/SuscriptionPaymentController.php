@@ -165,7 +165,7 @@ class SuscriptionPaymentController extends Controller
         $status  = $request->query('status');
         $hash    = $request->query('hash');
         $domain = $_GET['domain'];
-        $invoice = ClientInvoice::whereInvoiceNumber($orderId)->first();
+        $invoice = ClientInvoice::find($orderId);
 
         // TODO: validar hash con tu clave secreta
         Log::info("Yappy IPN: {$invoice->id} => {$status}");
