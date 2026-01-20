@@ -173,9 +173,13 @@ class PublicRegistrationController extends Controller
 
                         // Actualizar especialidad si es diferente
                         if ($request->medical_speciality) {
+                            $medicalSpeciality = \App\Models\MedicalSpeciality::find($request->medical_speciality);
                             $existingPractitioner->qualifications()->delete();
                             $existingPractitioner->qualifications()->create([
                                 'medical_speciality_id' => $request->medical_speciality,
+                                'code' => $request->medical_speciality,
+                                'system' => 'http://terminology.hl7.org/CodeSystem/v2-0360',
+                                'display' => $medicalSpeciality?->name,
                             ]);
                         }
 
