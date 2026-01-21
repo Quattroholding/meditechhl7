@@ -680,3 +680,35 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
 
 
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
+
+// Help Center Routes (Public)
+Route::prefix('help')->name('help.')->group(function () {
+    Route::get('/', function () {
+        return view('help.index');
+    })->name('index');
+
+    Route::get('/registration', function () {
+        return view('help.registration');
+    })->name('registration');
+
+    Route::get('/branches', function () {
+        return view('help.branches');
+    })->name('branches');
+
+    Route::get('/consulting-rooms', function () {
+        return view('help.consulting-rooms');
+    })->name('consulting-rooms');
+
+    Route::get('/patients', function () {
+        return view('help.patients');
+    })->name('patients');
+
+    Route::get('/medical-history', function () {
+        return view('help.medical-history');
+    })->name('medical-history');
+
+    // Future help pages can be added here
+    // Route::get('/appointments', function () { return view('help.appointments'); })->name('appointments');
+    // Route::get('/consultations', function () { return view('help.consultations'); })->name('consultations');
+    // Route::get('/billing', function () { return view('help.billing'); })->name('billing');
+});
