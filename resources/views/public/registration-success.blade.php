@@ -6,6 +6,9 @@
     <title>Registro Exitoso - Soluciones Meditec</title>
     <link rel="stylesheet" href="{{ url('landing/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @livewireStyles
     <style>
         body {
             margin: 0;
@@ -220,24 +223,42 @@
             <div class="alert-box">
                 <h3>
                     <i class="fas fa-exclamation-triangle"></i>
-                    Pago Pendiente
+                    Suscripción Pendiente de Activación
                 </h3>
                 <p>
-                    <strong>Importante:</strong> Hemos generado tu primera factura de suscripción.
-                    Para activar tu cuenta y comenzar a usar la plataforma, debes realizar el pago correspondiente.
+                    <strong>Tu cuenta está activa</strong>, pero tu suscripción aún no.
+                    La suscripción se activará automáticamente cuando recibamos la confirmación de pago por parte de Yappy.
                 </p>
                 <p>
-                    Recibirás un email con las instrucciones detalladas de pago y los datos de acceso a tu cuenta.
+                    <i class="fas fa-calendar-check text-primary"></i>
+                    <strong>Importante:</strong> Tener la suscripción activa es lo que te permite realizar el agendamiento de citas en la plataforma.
                 </p>
+                @if($pendingInvoice)
+                <div class="yappy-payment-section" style="margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 2px solid #2D1B69;">
+                    <p style="margin-bottom: 15px; font-weight: 600; color: #2D1B69;">
+                        <i class="fas fa-credit-card"></i> Paga ahora con Yappy:
+                    </p>
+                    <p style="margin-bottom: 10px; color: #666; font-size: 14px;">
+                        Total a pagar: <strong style="color: #2D1B69; font-size: 18px;">${{ number_format($pendingInvoice->total, 2) }}</strong>
+                    </p>
+                    <livewire:subscription.pay-invoice-yappy :invoice="$pendingInvoice" />
+                    <p style="margin-top: 10px; font-size: 12px; color: #888;">
+                        Al finalizar el pago en la aplicación de Yappy, tu suscripción se activará automáticamente.
+                    </p>
+                </div>
+                @endif
             </div>
             @endif
 
             <div class="next-steps">
                 <h3><i class="fas fa-list-check"></i> Próximos Pasos:</h3>
                 <ol>
-                    <li><i class="fas fa-envelope"></i> Revisa tu correo electrónico para las instrucciones de pago</li>
-                    <li><i class="fas fa-credit-card"></i> Realiza el pago de tu primera factura</li>
-                    <li><i class="fas fa-clock"></i> Una vez confirmado el pago, tu cuenta será activada</li>
+                    @if($invoicePending)
+                    <li><i class="fas fa-mobile-alt"></i> Realiza el pago con Yappy usando el botón de arriba</li>
+                    <li><i class="fas fa-bell"></i> Recibirás una notificación en tu app de Yappy</li>
+                    <li><i class="fas fa-check-circle"></i> Confirma el pago en la aplicación de Yappy</li>
+                    <li><i class="fas fa-rocket"></i> Tu suscripción se activará automáticamente</li>
+                    @endif
                     <li><i class="fas fa-sign-in-alt"></i> Inicia sesión y comienza a usar la plataforma</li>
                     <li><i class="fas fa-cogs"></i> Configura tu consultorio y personaliza el sistema</li>
                 </ol>
@@ -266,5 +287,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Scripts necesarios para Yappy -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @livewireScripts
+
+    @if($invoicePending && $pendingInvoice)
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrYappy', (event) => {
+                const data = Array.isArray(event) ? event[0] : event;
+                toastr[data.type](data.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 10000,
+                });
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>

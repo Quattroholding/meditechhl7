@@ -276,7 +276,19 @@ class PublicRegistrationController extends Controller
         $clientId = session('client_id');
         $invoicePending = session('invoice_pending', false);
 
-        return view('public.registration-success', compact('invoicePending'));
+        // Obtener la factura pendiente para el botón de Yappy
+        $pendingInvoice = null;
+        if ($invoicePending) {
+            $client = Client::find($clientId);
+            if ($client) {
+                $pendingInvoice = $client->invoices()
+                    ->where('status', \App\Enums\InvoiceStatus::PENDING->value)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            }
+        }
+
+        return view('public.registration-success', compact('invoicePending', 'pendingInvoice'));
     }
 
     private function validateTurnstile(string $token): bool
