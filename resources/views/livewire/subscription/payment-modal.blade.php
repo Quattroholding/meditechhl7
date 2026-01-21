@@ -186,7 +186,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="input-block local-forms">
-                                        <x-input-label for="receipt_file" :value="__('Comprobante de Transacción')"/>
+                                        <x-input-label for="receipt_file" :value="__('Comprobante de Transacción')" required="true" />
                                         <input type="file"
                                                wire:model="receipt_file"
                                                class="form-control"

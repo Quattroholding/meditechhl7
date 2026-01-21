@@ -51,11 +51,12 @@ class PaymentModal extends Component
         'gateway_transaction_id' => 'nullable|string|max:255',
         'payment_gateway' => 'nullable|string|max:100',
         'notes' => 'nullable|string|max:1000',
-        'receipt_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        'receipt_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
     ];
 
     protected $messages = [
         'amount.required' => 'El monto es obligatorio.',
+        'receipt_file.required' => 'Debe agregar el comprobante de pago.',
         'amount.numeric' => 'El monto debe ser numérico.',
         'amount.min' => 'El monto debe ser mayor a 0.',
         'payment_date.required' => 'La fecha de pago es obligatoria.',
