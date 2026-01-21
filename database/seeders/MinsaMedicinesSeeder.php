@@ -56,9 +56,9 @@ class MinsaMedicinesSeeder extends Seeder
                 }
 
                 $ndcCode = $rowData[1];
-                $homeName = $rowData[2];
-                $genericName = $rowData[3];
-                $otherActive = $rowData[4];
+                $homeName = strtoupper($rowData[2]);
+                $genericName = strtoupper($rowData[3]);
+                $otherActive = strtoupper($rowData[4]);
                 $type = $rowData[5];
                 $mgs = $rowData[6];
                 $mgsType = $rowData[7];

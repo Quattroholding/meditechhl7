@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PresentIllnesTypesSeeder::class);
         $this->call(ClinicalObservationTypeSeeder::class);
         $this->call(MedicationTypeSeeder::class);
-        $this->call(MedicineSeeder::class);
+        $this->call(MinsaMedicinesSeeder::class);
         $this->call(EncounterSecctionSeeder::class);
         $this->call(EncounterQuestionsSeeder::class);
         $this->call(RapidAccessSeeder::class);
