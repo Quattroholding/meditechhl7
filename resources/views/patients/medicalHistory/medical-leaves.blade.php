@@ -136,8 +136,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">📄</div>
-            <h3>No hay licencias médicas registradas</h3>
-            <p>Este paciente no tiene licencias médicas emitidas en el período seleccionado.</p>
+            <h3>No hay incapacidades médicas registradas</h3>
+            <p>Este paciente no tiene incapacidades médicas emitidas en el período seleccionado.</p>
         </div>
     @endif
 </div>

@@ -10,7 +10,7 @@
     {{-- Mensaje principal --}}
     <x-email.message-box title="Estimado(a) {{ $patient->name ?? 'Paciente' }}">
         <p style="font-size: 16px; margin: 0;">
-            El <strong>Dr(a). {{ $practitioner->name ?? 'Medico' }}</strong> le ha enviado
+            El <strong>{{ $practitioner->name ?? 'Medico' }}</strong> le ha enviado
             @if($hasMedications && $hasServiceRequests)
                 su receta de medicamentos y ordenes médicas
             @elseif($hasMedications)
@@ -49,11 +49,11 @@
     <x-email.message-box type="info" title="👨‍⚕️ Información del Médico">
         <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin-top: 10px;">
             <p style="margin: 0 0 5px 0; font-weight: bold; color: #2c5282; font-size: 16px;">
-                Dr(a). {{ $practitioner->name ?? 'Médico' }}
+                {{ $practitioner->name ?? 'Médico' }}
             </p>
             @if($practitioner->registry)
                 <p style="margin: 3px 0; color: #4a5568; font-size: 14px;">
-                    <strong>Registro Medico:</strong> {{ $practitioner->registry }}
+                    <strong>Registro Médico:</strong> {{ $practitioner->registry }}
                 </p>
             @endif
             @if($practitioner->licence_code)

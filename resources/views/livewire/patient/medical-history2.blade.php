@@ -600,7 +600,7 @@
                     <div wire:click="changeSection('medical-leaves')"
                          class="nav-link {{ $activeSection === 'medical-leaves' ? 'active' : '' }}">
                         <span class="nav-icon">📄</span>
-                        <span class="nav-text">Licencias Médicas</span>
+                        <span class="nav-text">Incapacidades Médicas</span>
                         <span class="nav-count">{{ $overviewData['total_medical_leaves'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -657,7 +657,7 @@
                                  Notas Privadas
                             @break
                             @case('medical-leaves')
-                                📄 Licencias Médicas
+                                📄 Incapacidades Médicas
                             @break
                         @endswitch
                     </h2>
@@ -859,10 +859,10 @@
                         @case('medical-leaves')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Licencias Médicas</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Incapacidades Médicas</h3>
                                     @if(isset($sectionData['total']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total'] }} licencias médicas emitidas
+                                            {{ $sectionData['total'] }} incapacidades médicas emitidas
                                         </p>
                                     @endif
                                 </div>

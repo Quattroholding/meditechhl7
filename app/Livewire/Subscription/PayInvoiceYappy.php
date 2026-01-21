@@ -69,6 +69,7 @@ class PayInvoiceYappy extends Component
                 'token_length' => strlen($token ?? ''),
             ]);
 
+            $aliasYappy =  preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
             $config = [
                 'merchantId'  => $merchantId,
                 'orderId'     => $this->invoice->id,
@@ -79,7 +80,7 @@ class PayInvoiceYappy extends Component
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
-                //'aliasYappy'  => preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? ''),
+                //'aliasYappy'  =>$aliasYappy,
                 'aliasYappy'  => '60800131',
             ];
 
@@ -139,7 +140,7 @@ class PayInvoiceYappy extends Component
 
             $this->dispatch('showToastrYappy',
                 type: 'success',
-                message: 'Se a enviado una petición de pago por yappy Nro Transacción :'.$body['transactionId'].' Al finalizar el pago en la aplicación de yappy recargue la pagina para validar el cambio de estatus.',
+                message: 'Se a enviado una petición de pago por yappy al número de teléfono '.$aliasYappy.'. Una vez recibida la confirmación del pago su suscripción sera activada.',
             );
 
             \Log::info('========== YAPPY REQUEST DEBUG END (SUCCESS) ==========');

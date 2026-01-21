@@ -106,15 +106,26 @@
                     @if($practitioner->user && $practitioner->user->workingHours->count() > 0)
                         <div class="border-t border-gray-200 px-6 py-4">
                             <h4 class="text-sm font-medium text-gray-900 mb-3">{{__('Horario Laboral')}}</h4>
-                            <div class="space-y-2">
-                                @foreach($practitioner->user->workingHours()->get() as $wh)
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-gray-900 truncate">
-                                                {{ $wh->day_of_week }} :  {{ substr($wh->start_time,0,5) }} -  {{ substr($wh->end_time,0,5) }}
+                            <div class="space-y-3">
+                                @foreach($practitioner->user->workingHours()->with('branch')->get()->groupBy('branch_id') as $branchId => $hours)
+                                    @php $branch = $hours->first()->branch; @endphp
+                                    <div class="bg-gray-50 rounded-md p-2">
+                                        @if($branch)
+                                            <p class="text-xs font-medium text-gray-700 mb-1">
+                                                <i class="fa fa-map-marker-alt mr-1"></i>{{ $branch->name }}
                                             </p>
+                                            @if($branch->address)
+                                                <p class="text-xs text-gray-500 mb-2">{{ $branch->address }}</p>
+                                            @endif
+                                        @endif
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach($hours as $wh)
+                                                <span class="inline-block text-xs bg-white border border-gray-200 rounded px-2 py-1">
+                                                    {{ $wh->day_of_week }}: {{ substr($wh->start_time,0,5) }}-{{ substr($wh->end_time,0,5) }}
+                                                </span>
+                                            @endforeach
                                         </div>
-                                    </div>
+                                    </div><div class="m-3"></div>
                                 @endforeach
                             </div>
                         </div>

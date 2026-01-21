@@ -214,7 +214,7 @@ class MedicalHistory2 extends Component
         $medications = collect($current_medications)->map(function ($medication) {
             return [
                 'id' => $medication->id ?? null,
-                'medicine_name' => $medication->medicine->full_name ?? 'N/A',
+                'medicine_name' => $medication->medication2?->display ?? $medication->medicine?->full_name ?? 'N/A',
                 'dosage_text' => $medication->dosage_text ?? '',
             ];
         })->toArray();

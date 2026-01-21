@@ -13,7 +13,7 @@
                         $ingredient = $mp->medication2->ingredients->first();
                         $strength = $ingredient ? $ingredient->strength_value . ' ' . $ingredient->strength_unit : '';
                     @endphp
-                    <td>{{ $mp->medication2->display }} {{ $strength }} {{ $mp->medication2->form }}</td>
+                    <td>{{ $mp->medication2->display }}</td>
                     <td>{{ $mp->dosage_text }}</td>
                 @elseif($mp->medicine)
                     <td>{{ $mp->medicine->full_name }}</td>

@@ -95,6 +95,23 @@
                 </div>
             </div>
             <div class="row">
+                <!-- PHONE -->
+                <div class=" col-12 col-md-6 col-xl-6">
+                    <div class="input-block local-forms">
+                        <x-input-label for="phone" :value="__('patient.phone')" required/>
+                        <input   wire:model="phone" id="phone" class="block mt-1 w-full form-control" type="tel" name="phone" value="{{old('phone')}}">
+                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                    </div>
+                </div>
+                <div class=" col-12 col-md-6 col-xl-6">
+                    <div class="input-block local-forms">
+                        <x-input-label for="marital_status" :value="__('patient.marital_status')" required/>
+                        <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[null]" class="block w-full"/>
+                        <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <!-- COUNTRY -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
@@ -122,23 +139,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <!-- PHONE -->
-                <div class=" col-12 col-md-6 col-xl-6">
-                    <div class="input-block local-forms">
-                        <x-input-label for="phone" :value="__('patient.phone')" required/>
-                        <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
-                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-                    </div>
-                </div>
-                <div class=" col-12 col-md-6 col-xl-6">
-                    <div class="input-block local-forms">
-                        <x-input-label for="marital_status" :value="__('patient.marital_status')" required/>
-                        <x-select-input wire:model="marital_status" name="marital_status" :options="\App\Models\Lista::maritalStatus()" :selected="[null]" class="block w-full"/>
-                        <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Emergency Contact Section -->
             <div class="row">

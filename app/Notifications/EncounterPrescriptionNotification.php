@@ -68,7 +68,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
         $practitioner = $this->encounter->practitioner;
         $patient = $this->encounter->patient;
 
-        $subject = 'Sus Recetas Medicas - Dr(a). '.($practitioner->name ?? 'Medico').' - SAMI';
+        $subject = 'Sus Recetas Medicas - '.($practitioner->name ?? 'Medico').' - SAMI';
 
         $mailMessage = (new MailMessage)
             ->subject($subject)
@@ -128,7 +128,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
         return [
             // Standard notification fields
             'title' => 'Nuevas Recetas Medicas',
-            'message' => 'Ha recibido nuevas recetas medicas del Dr(a). '.($practitioner->name ?? 'Medico').'. Los documentos han sido enviados a su correo electronico.',
+            'message' => 'Ha recibido nuevas recetas medicas del '.($practitioner->name ?? 'Medico').'. Los documentos han sido enviados a su correo electrónico.',
             'steps' => $attachments,
             'action' => [
                 'text' => 'Iniciar Sesion',

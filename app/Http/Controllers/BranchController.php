@@ -27,8 +27,8 @@ class BranchController extends Controller
         $validated = $request->validate([
             'client_id' => 'required',
             'name' => 'required',
-            'phone' => 'required',
-            //'full_phone' => 'required',
+            //'phone' => 'required',
+            'full_phone' => 'required',
             'address' => 'required',
             'type' => 'required',
             'country_id' => 'nullable|exists:countries,id',
@@ -38,7 +38,7 @@ class BranchController extends Controller
         $model = new Branch;
         $model->client_id = $request->client_id;
         $model->name = $request->name;
-        $model->phone = $request->phone;
+        $model->phone = $request->full_phone;
         $model->address = $request->address;
         $model->type = $request->type;
         $model->country_id = $request->country_id;

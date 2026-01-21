@@ -18,7 +18,7 @@
                     <div class="card card-table show-entire p-2">
                         <div class="card-body">
                             <livewire:data-table model="{{$model}}"
-                                                 :columns="['id', 'branch_name', 'name','number','floor','active','acciones']"
+                                                 :columns="['id', 'branch_name', 'name','number','floor','acciones']"
                                                  :actions="['edit','delete']"
                                                  routename="client.room"
                                                  wire:key="{{\Illuminate\Support\Str::random(5)}}"/>

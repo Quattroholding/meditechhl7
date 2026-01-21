@@ -85,7 +85,7 @@ class MedicationRequests extends Component
 
                 return [
                     'id' => $med->id,
-                    'name' => $med->display.($strength ? ' de '.$strength : '').($med->form ? ' en '.$med->form : ''),
+                    'name' => $med->display,
                 ];
             })
             ->toArray();
