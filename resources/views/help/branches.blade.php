@@ -951,11 +951,8 @@
                             </li>
                         </ul>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #1</h5>
-                            <p>Dashboard principal mostrando la notificacion de "Configuracion inicial requerida" que aparece despues del registro</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/dashboard.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -976,24 +973,14 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #2</h5>
-                            <p>Menu lateral con la opcion "Sucursales" resaltada dentro de la seccion de Clientes</p>
-                            <span class="dimensions">Recomendado: 400x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/branch.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <p class="mt-3">Tambien puedes acceder directamente via URL:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/clients/branch</code>
-                        </div>
-
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #3</h5>
-                            <p>Lista de sucursales (puede estar vacia si es la primera vez). Mostrar la tabla con columnas: ID, Nombre, Telefono, Direccion, Tipo, Acciones</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
                         </div>
                     </div>
                 </section>
@@ -1003,13 +990,10 @@
                     <div class="step-number">2</div>
                     <h3 class="step-title">Iniciar Creacion de Nueva Sucursal</h3>
                     <div class="step-content">
-                        <p>En la lista de sucursales, haz clic en el boton <strong>"Nueva Sucursal"</strong> o <strong>"Agregar"</strong>:</p>
+                        <p>En la lista de sucursales, haz clic en el boton <strong>"Nuevo(a)"</strong> o <strong>"Agregar"</strong>:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #4</h5>
-                            <p>Boton "Nueva Sucursal" resaltado en la parte superior de la lista de sucursales</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/branch.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1028,11 +1012,8 @@
                     <div class="step-content">
                         <p>Llena todos los campos del formulario de creacion de sucursal:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #5</h5>
-                            <p>Formulario completo de creacion de sucursal mostrando todos los campos</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/nuevo.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4 mb-3">Campos del Formulario:</h5>
@@ -1098,11 +1079,8 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #6</h5>
-                            <p>Campo de telefono con el selector de codigo de pais desplegado</p>
-                            <span class="dimensions">Recomendado: 600x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/form-branch.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -1116,15 +1094,12 @@
 
                         <ol>
                             <li>Revisa que toda la informacion sea correcta</li>
-                            <li>Haz clic en el boton <strong>"Guardar"</strong> o <strong>"Crear Sucursal"</strong></li>
+                            <li>Haz clic en el boton <strong>"Registrar"</li>
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #7</h5>
-                            <p>Boton "Guardar" resaltado en el formulario y/o mensaje de exito despues de crear la sucursal</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/register-branch.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1134,11 +1109,8 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #8</h5>
-                            <p>Lista de sucursales mostrando la nueva sucursal recien creada</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/branch-registered.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -1157,11 +1129,8 @@
                             <li>Haz clic en <strong>"Actualizar"</strong></li>
                         </ol>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #9</h5>
-                            <p>Fila de la tabla con el boton de editar resaltado</p>
-                            <span class="dimensions">Recomendado: 1200x300px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/edit.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -1186,11 +1155,8 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #10</h5>
-                            <p>Dialogo de confirmacion de eliminacion de sucursal</p>
-                            <span class="dimensions">Recomendado: 600x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/branches/delete.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
