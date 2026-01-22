@@ -623,15 +623,17 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Citas</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-calendar-plus"></i>
-                <span>Agendar Citas</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('help.appointments') }}" class="nav-link">
                 <i class="fas fa-calendar-check"></i>
-                <span>Gestionar Citas</span>
-                <span class="badge bg-secondary">Pronto</span>
+                <span>Agendamiento de Citas</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Configuracion</div>
+            <a href="{{ route('help.settings') }}" class="nav-link">
+                <i class="fas fa-cogs"></i>
+                <span>Configuraciones</span>
             </a>
         </div>
 
