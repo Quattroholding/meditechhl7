@@ -978,11 +978,8 @@
                             <p class="mt-2 mb-0"><small class="text-muted">Tambien puedes acceder desde el boton "Registrarse" en la pagina principal.</small></p>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #1</h5>
-                            <p>Pagina principal con el boton "Registrarse" resaltado o la URL del navegador mostrando /register/client</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div class="screenshot-registerclient">
+                            <img src="{{ asset('images/tutorial/register/registro.png') }}" alt="">
                         </div>
 
                         <div class="info-box info-note">
@@ -1001,11 +998,8 @@
                     <div class="step-content">
                         <p>El primer campo del formulario te permite seleccionar el plan que mejor se adapte a tus necesidades:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #2</h5>
-                            <p>Selector de planes mostrando las diferentes opciones disponibles con sus precios y caracteristicas</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/plan.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-warning">
@@ -1118,11 +1112,8 @@
 
                         <p class="mt-3"><small class="text-muted">* Requerido solo para planes individuales (1 usuario)</small></p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #3</h5>
-                            <p>Seccion de datos personales del formulario con los campos nombre, apellido, email, telefono, contrasena y genero</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/form.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-warning">
@@ -1141,11 +1132,8 @@
                     <div class="step-content">
                         <p>Selecciona tu especialidad medica de la lista disponible:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #4</h5>
-                            <p>Campo de seleccion de especialidad medica mostrando el dropdown con las opciones disponibles</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/speciality.png') }}" alt="">
                         </div>
 
                         <div class="info-box info-note">
@@ -1192,11 +1180,8 @@
                     <div class="step-content">
                         <p>Puedes subir el logo de tu clinica o consultorio. Este aparecera en tu perfil y en los documentos que generes:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #5</h5>
-                            <p>Campo de carga de logo con el area de arrastrar/soltar o boton para seleccionar archivo</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/logo.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Requisitos del Logo:</h5>
@@ -1237,11 +1222,8 @@
                     <div class="step-content">
                         <p>Si alguien te refirio a SAMI, ingresa su codigo de referido para obtener un descuento:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #6</h5>
-                            <p>Campo de codigo de referido con un ejemplo de codigo ingresado</p>
-                            <span class="dimensions">Recomendado: 1200x300px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/codigo.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1271,11 +1253,8 @@
                     <div class="step-content">
                         <p>Finalmente, debes aceptar los terminos y condiciones y la politica de privacidad:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #7</h5>
-                            <p>Checkbox de terminos y condiciones, verificacion CAPTCHA y boton "Registrarse"</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/terminos.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="sub-step">
@@ -1302,11 +1281,8 @@
                     <div class="step-content">
                         <p>Una vez enviado el formulario exitosamente, seras redirigido a la pagina de confirmacion:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #8</h5>
-                            <p>Pagina de registro exitoso mostrando el mensaje de confirmacion y los siguientes pasos</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/registro-completado.png') }}" alt="">
                         </div>
 
                         <h5 class="mt-4">Lo que sucede automaticamente:</h5>
@@ -1356,11 +1332,8 @@
                     <div class="step-content">
                         <p>Si tu plan no incluye periodo de prueba, deberas completar el pago para activar tu cuenta:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #9</h5>
-                            <p>Seccion de pago en la pagina de confirmacion mostrando el monto a pagar y el boton de Yappy</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/pago.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Estados de tu Suscripcion:</h5>
@@ -1395,11 +1368,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #10</h5>
-                            <p>Notificacion o pantalla de Yappy mostrando el proceso de confirmacion de pago</p>
-                            <span class="dimensions">Recomendado: 400x800px (formato movil)</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/yappy.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
