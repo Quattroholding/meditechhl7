@@ -871,11 +871,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #1</h5>
-                            <p>Menu lateral con la opcion "Consultorios" resaltada</p>
-                            <span class="dimensions">Recomendado: 400x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/create.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <p class="mt-3">URL directa:</p>
@@ -884,11 +881,8 @@
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/clients/consulting_rooms</code>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #2</h5>
-                            <p>Lista de consultorios mostrando las columnas: ID, Sucursal, Nombre, Numero, Piso, Acciones</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/index.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -900,11 +894,8 @@
                     <div class="step-content">
                         <p>En la lista de consultorios, haz clic en el boton <strong>"Nuevo Consultorio"</strong> o <strong>"Agregar"</strong>:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #3</h5>
-                            <p>Boton "Nuevo Consultorio" resaltado en la parte superior de la lista</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/new.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-warning">
@@ -923,12 +914,10 @@
                     <div class="step-content">
                         <p>El formulario de consultorio es sencillo pero todos los campos son obligatorios:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #4</h5>
-                            <p>Formulario completo de creacion de consultorio mostrando todos los campos</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/form-crooms.png') }}" alt="" style="width: 100%;">
                         </div>
+
 
                         <h5 class="mt-4 mb-3">Campos del Formulario:</h5>
                         <table class="field-table">
@@ -978,12 +967,10 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #5</h5>
-                            <p>Selector de sucursal desplegado mostrando las opciones disponibles</p>
-                            <span class="dimensions">Recomendado: 800x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/filled.png') }}" alt="" style="width: 100%;">
                         </div>
+
                     </div>
                 </section>
 
@@ -1001,12 +988,10 @@
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #6</h5>
-                            <p>Boton "Guardar" y mensaje de exito despues de crear el consultorio</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/save.png') }}" alt="" style="width: 100%;">
                         </div>
+
 
                         <div class="info-box info-tip">
                             <i class="fas fa-check-circle"></i>
@@ -1015,12 +1000,10 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #7</h5>
-                            <p>Lista de consultorios mostrando el nuevo consultorio creado</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/saved.png') }}" alt="" style="width: 100%;">
                         </div>
+
                     </div>
                 </section>
 
@@ -1078,12 +1061,10 @@
                             <li>Haz clic en <strong>"Actualizar"</strong></li>
                         </ol>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #8</h5>
-                            <p>Fila de la tabla con el boton de editar resaltado</p>
-                            <span class="dimensions">Recomendado: 1200x300px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/update.png') }}" alt="" style="width: 100%;">
                         </div>
+
 
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1119,12 +1100,10 @@
                             </div>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #9</h5>
-                            <p>Dialogo de confirmacion de eliminacion de consultorio</p>
-                            <span class="dimensions">Recomendado: 600x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/consulting_rooms/delete.png') }}" alt="" style="width: 100%;">
                         </div>
+
                     </div>
                 </section>
 
