@@ -102,6 +102,15 @@
             min-height: 100vh;
         }
 
+         /* Breadcrumb */
+        .help-breadcrumb {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         /* Header */
         .help-header {
             background: linear-gradient(135deg, #5e35b1 0%, #7c4dff 100%);
@@ -268,17 +277,20 @@
         }
 
         /* Table of Contents */
-        .toc {
-            background: #ede7f6;
-            border-radius: 10px;
+        .toc-card {
+            background: #fff;
+            border-radius: 15px;
             padding: 25px;
             margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
 
-        .toc h5 {
+        .toc-card h5 {
             color: #5e35b1;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ede7f6;
         }
 
         .toc-list {
@@ -288,7 +300,7 @@
         }
 
         .toc-list li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .toc-list a {
@@ -296,15 +308,20 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
         .toc-list a:hover {
-            background: rgba(94, 53, 177, 0.1);
+            background: #ede7f6;
             color: #5e35b1;
+        }
+
+        .toc-list a i {
+            width: 20px;
+            text-align: center;
         }
 
         /* Field Tables */
@@ -511,109 +528,43 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="help-sidebar">
-        <div class="logo">
-            <img src="{{ asset('assets/img/logo.png') }}" alt="SAMI Logo" onerror="this.style.display='none'">
-            <h4>Centro de Ayuda</h4>
-        </div>
-
-        <nav class="nav-section">
-            <div class="nav-section-title">Navegacion</div>
-            <a href="{{ route('help.index') }}" class="nav-link">
-                <i class="fas fa-home"></i>
-                <span>Inicio</span>
-            </a>
-            <a href="{{ route('help.registration') }}" class="nav-link">
-                <i class="fas fa-user-plus"></i>
-                <span>Registro</span>
-            </a>
-            <a href="{{ route('help.branches') }}" class="nav-link">
-                <i class="fas fa-building"></i>
-                <span>Sucursales</span>
-            </a>
-            <a href="{{ route('help.consulting-rooms') }}" class="nav-link">
-                <i class="fas fa-door-open"></i>
-                <span>Consultorios</span>
-            </a>
-            <a href="{{ route('help.patients') }}" class="nav-link">
-                <i class="fas fa-hospital-user"></i>
-                <span>Pacientes</span>
-            </a>
-            <a href="{{ route('help.medical-history') }}" class="nav-link">
-                <i class="fas fa-notes-medical"></i>
-                <span>Historia Medica</span>
-            </a>
-            <a href="{{ route('help.appointments') }}" class="nav-link">
-                <i class="fas fa-calendar-check"></i>
-                <span>Citas</span>
-            </a>
-            <a href="{{ route('help.settings') }}" class="nav-link active">
-                <i class="fas fa-cogs"></i>
-                <span>Configuraciones</span>
-                <span class="badge bg-warning">Actual</span>
-            </a>
-        </nav>
-
-        <nav class="nav-section">
-            <div class="nav-section-title">En esta pagina</div>
-            <a href="#introduccion" class="nav-link">
-                <i class="fas fa-info-circle"></i>
-                <span>Introduccion</span>
-            </a>
-            <a href="#catalogo-servicios" class="nav-link">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Catalogo de Servicios</span>
-            </a>
-            <a href="#horarios-laborales" class="nav-link">
-                <i class="fas fa-clock"></i>
-                <span>Horarios Laborales</span>
-            </a>
-            <a href="#accesos-rapidos" class="nav-link">
-                <i class="fas fa-bolt"></i>
-                <span>Accesos Rapidos</span>
-            </a>
-            <a href="#plantilla-consulta" class="nav-link">
-                <i class="fas fa-file-medical"></i>
-                <span>Plantilla de Consulta</span>
-            </a>
-        </nav>
-    </aside>
+   @include('help.sidebar', ['active' => 'settings'])
 
     <!-- Main Content -->
     <main class="help-content">
+
+        <nav class="help-breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('help.settings') }}">Guias de Configuraciones</a></li>
+                <li class="breadcrumb-item active">Configuraciones</li>
+            </ol>
+        </nav>
         <!-- Header -->
         <header class="help-header">
             <h1><i class="fas fa-cogs me-3"></i>Guia de Configuraciones</h1>
-            <p>Aprende a configurar tu cuenta: servicios, horarios, accesos rapidos y plantillas de consulta.</p>
-            <nav class="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('help.index') }}">Centro de Ayuda</a></li>
-                    <li class="breadcrumb-item active">Configuraciones</li>
-                </ol>
-            </nav>
+            <p>Aprende a configurar tu cuenta: servicios, horarios, accesos rapidos y plantillas de consulta.</p>           
         </header>
 
-        <!-- Table of Contents -->
-        <div class="toc">
-            <h5><i class="fas fa-list-ul me-2"></i>Contenido de esta Guia</h5>
-            <div class="row">
-                <div class="col-md-6">
+        <!-- Main Content Area -->
+        <div class="row">
+            <!-- Table of Contents -->
+            <div class="col-lg-4">
+                <div class="toc-card sticky-top" style="top: 20px;">
+                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                     <ul class="toc-list">
-                        <li><a href="#introduccion"><i class="fas fa-chevron-right"></i> 1. Introduccion</a></li>
-                        <li><a href="#catalogo-servicios"><i class="fas fa-chevron-right"></i> 2. Catalogo de Servicios</a></li>
-                        <li><a href="#horarios-laborales"><i class="fas fa-chevron-right"></i> 3. Horarios Laborales</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <ul class="toc-list">
-                        <li><a href="#accesos-rapidos"><i class="fas fa-chevron-right"></i> 4. Accesos Rapidos</a></li>
-                        <li><a href="#plantilla-consulta"><i class="fas fa-chevron-right"></i> 5. Plantilla de Consulta</a></li>
-                        <li><a href="#tips"><i class="fas fa-chevron-right"></i> 6. Tips y Mejores Practicas</a></li>
+                        <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
+                        <li><a href="#catalogo-servicios"><i class="fas fa-clipboard-list"></i> 2. Catálogo de Servicios</a></li>
+                        <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 3. Horarios Laborales</a></li>
+                        <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
+                        <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 5. Plantilla de Consulta</a></li>
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 6. Tips y Mejores Prácticas</a></li>
                     </ul>
                 </div>
             </div>
-        </div>
+
+            <!-- Content -->
+            <div class="col-lg-8">
 
         <!-- Section 1: Introduction -->
         <section id="introduccion" class="content-section">
@@ -1442,6 +1393,9 @@
                 <p class="mb-0">Si tiene dudas sobre la configuracion de su cuenta o encuentra algun problema, contacte al equipo de soporte tecnico de SAMI. Tambien puede revisar las otras guias del Centro de Ayuda para aprender sobre funcionalidades relacionadas.</p>
             </div>
         </section>
+
+            </div> <!-- End col-lg-8 -->
+        </div> <!-- End row -->
 
         <!-- Navigation -->
         <div class="d-flex justify-content-between mt-4">

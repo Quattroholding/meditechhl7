@@ -715,7 +715,21 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.settings');
     })->name('settings');
 
+    Route::get('/consultation', function () {
+        return view('help.consultation');
+    })->name('consultation');
+
+    Route::get('/billing', function () {
+        return view('help.billing');
+    })->name('billing');
+
+    Route::get('/payments', function () {
+        return view('help.payments');
+    })->name('payments');
+
+    Route::get('/subscriptions', function () {
+        return view('help.subscriptions');
+    })->name('subscriptions');
+
     // Future help pages can be added here
-    // Route::get('/consultations', function () { return view('help.consultations'); })->name('consultations');
-    // Route::get('/billing', function () { return view('help.billing'); })->name('billing');
 });

@@ -545,106 +545,9 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <nav class="help-sidebar">
-        <div class="logo">
-            <img src="{{ asset('assets/img/logo-sami.png') }}" alt="SAMI Logo" onerror="this.style.display='none'">
-            <h4>Centro de Ayuda</h4>
-        </div>
 
-        <div class="nav-section">
-            <div class="nav-section-title">Inicio</div>
-            <a href="#" class="nav-link active">
-                <i class="fas fa-home"></i>
-                <span>Inicio</span>
-            </a>
-        </div>
+   @include('help.sidebar', ['active' => 'index'])
 
-        <div class="nav-section">
-            <div class="nav-section-title">Guias de Registro</div>
-            <a href="{{ route('help.registration') }}" class="nav-link">
-                <i class="fas fa-user-plus"></i>
-                <span>Registro de Cliente</span>
-            </a>
-            <a href="{{ route('help.branches') }}" class="nav-link">
-                <i class="fas fa-building"></i>
-                <span>Crear Sucursales</span>
-            </a>
-            <a href="{{ route('help.consulting-rooms') }}" class="nav-link">
-                <i class="fas fa-door-open"></i>
-                <span>Crear Consultorios</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Gestion de Pacientes</div>
-            <a href="{{ route('help.patients') }}" class="nav-link">
-                <i class="fas fa-users"></i>
-                <span>Registrar Pacientes</span>
-            </a>
-            <a href="{{ route('help.medical-history') }}" class="nav-link">
-                <i class="fas fa-notes-medical"></i>
-                <span>Historia Medica</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Citas</div>
-            <a href="{{ route('help.appointments') }}" class="nav-link">
-                <i class="fas fa-calendar-check"></i>
-                <span>Agendamiento de Citas</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Configuracion</div>
-            <a href="{{ route('help.settings') }}" class="nav-link">
-                <i class="fas fa-cogs"></i>
-                <span>Configuraciones</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Consultas</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-stethoscope"></i>
-                <span>Realizar Consulta</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-prescription"></i>
-                <span>Crear Recetas</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Facturacion</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <span>Crear Facturas</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-credit-card"></i>
-                <span>Procesar Pagos</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Soporte</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-question-circle"></i>
-                <span>Preguntas Frecuentes</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i class="fas fa-headset"></i>
-                <span>Contactar Soporte</span>
-            </a>
-        </div>
-    </nav>
 
     <!-- Main Content -->
     <main class="help-content">
@@ -777,9 +680,9 @@
                         </div>
                         <h5 class="card-title">Realizar Consultas</h5>
                         <p class="card-text text-muted">Aprende a documentar consultas medicas.</p>
-                        <button class="btn btn-outline-secondary" disabled>
-                            <i class="fas fa-clock me-2"></i>Proximamente
-                        </button>
+                        <a href="{{ route('help.consultation') }}" class="btn btn-danger">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
                     </div>
                 </div>
             </div>
@@ -787,14 +690,44 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center p-4">
-                        <div class="rounded-circle bg-secondary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-file-invoice-dollar fa-2x text-secondary"></i>
+                        <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-file-invoice-dollar fa-2x text-success"></i>
                         </div>
-                        <h5 class="card-title">Facturacion</h5>
-                        <p class="card-text text-muted">Genera facturas y gestiona pagos.</p>
-                        <button class="btn btn-outline-secondary" disabled>
-                            <i class="fas fa-clock me-2"></i>Proximamente
-                        </button>
+                        <h5 class="card-title">Crear Facturas</h5>
+                        <p class="card-text text-muted">Aprende a generar facturas desde consultas.</p>
+                        <a href="{{ route('help.billing') }}" class="btn btn-success">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-credit-card fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Procesar Pagos</h5>
+                        <p class="card-text text-muted">Gestiona pagos de facturas de pacientes.</p>
+                        <a href="{{ route('help.payments') }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-crown fa-2x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Mi Suscripción</h5>
+                        <p class="card-text text-muted">Gestiona tu plan y pagos mensuales.</p>
+                        <a href="{{ route('help.subscriptions') }}" class="btn btn-warning">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
                     </div>
                 </div>
             </div>

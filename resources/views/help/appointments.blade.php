@@ -102,14 +102,45 @@
             min-height: 100vh;
         }
 
+         /* Breadcrumb */
+        .help-breadcrumb {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         /* Header */
-        .help-header {
+        .module-header{
             background: linear-gradient(135deg, #e65100 0%, #ff9800 100%);
             color: white;
             padding: 40px;
             border-radius: 16px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
+        }
+
+         .module-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .module-header h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .module-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
         }
 
         .help-header h1 {
@@ -171,6 +202,54 @@
             font-weight: 600;
             margin-top: 20px;
             margin-bottom: 10px;
+        }
+
+        /* Table of Contents */
+        .toc-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .toc-card h5 {
+            color: #01579b;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1f5fe;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 10px;
+        }
+
+        .toc-list a {
+            color: #0288d1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-list a:hover {
+            background: #e1f5fe;
+            color: #01579b;
+        }
+
+        .toc-list a i {
+            width: 20px;
+            text-align: center;
         }
 
         /* Steps */
@@ -515,124 +594,49 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="help-sidebar">
-        <div class="logo">
-            <img src="{{ asset('assets/img/logo.png') }}" alt="SAMI Logo" onerror="this.style.display='none'">
-            <h4>Centro de Ayuda</h4>
-        </div>
-
-        <nav class="nav-section">
-            <div class="nav-section-title">Navegación</div>
-            <a href="{{ route('help.index') }}" class="nav-link">
-                <i class="fas fa-home"></i>
-                <span>Inicio</span>
-            </a>
-            <a href="{{ route('help.registration') }}" class="nav-link">
-                <i class="fas fa-user-plus"></i>
-                <span>Registro</span>
-            </a>
-            <a href="{{ route('help.branches') }}" class="nav-link">
-                <i class="fas fa-building"></i>
-                <span>Sucursales</span>
-            </a>
-            <a href="{{ route('help.consulting-rooms') }}" class="nav-link">
-                <i class="fas fa-door-open"></i>
-                <span>Consultorios</span>
-            </a>
-            <a href="{{ route('help.patients') }}" class="nav-link">
-                <i class="fas fa-hospital-user"></i>
-                <span>Pacientes</span>
-            </a>
-            <a href="{{ route('help.medical-history') }}" class="nav-link">
-                <i class="fas fa-notes-medical"></i>
-                <span>Historia Médica</span>
-            </a>
-            <a href="{{ route('help.appointments') }}" class="nav-link active">
-                <i class="fas fa-calendar-check"></i>
-                <span>Citas</span>
-                <span class="badge bg-warning">Actual</span>
-            </a>
-            <a href="{{ route('help.settings') }}" class="nav-link">
-                <i class="fas fa-cogs"></i>
-                <span>Configuraciones</span>
-            </a>
-        </nav>
-
-        <nav class="nav-section">
-            <div class="nav-section-title">En esta página</div>
-            <a href="#introduccion" class="nav-link">
-                <i class="fas fa-info-circle"></i>
-                <span>Introducción</span>
-            </a>
-            <a href="#tipos-cita" class="nav-link">
-                <i class="fas fa-list"></i>
-                <span>Tipos de Cita</span>
-            </a>
-            <a href="#crear-cita" class="nav-link">
-                <i class="fas fa-plus-circle"></i>
-                <span>Crear Cita</span>
-            </a>
-            <a href="#calendario" class="nav-link">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Vista Calendario</span>
-            </a>
-            <a href="#estados" class="nav-link">
-                <i class="fas fa-exchange-alt"></i>
-                <span>Estados de Cita</span>
-            </a>
-            <a href="#gestion" class="nav-link">
-                <i class="fas fa-tasks"></i>
-                <span>Gestión de Citas</span>
-            </a>
-            <a href="#whatsapp" class="nav-link">
-                <i class="fab fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-        </nav>
-    </aside>
+  @include('help.sidebar', ['active' => 'appointments'])
 
     <!-- Main Content -->
     <main class="help-content">
-        <!-- Header -->
-        <header class="help-header">
-            <h1><i class="fas fa-calendar-check me-3"></i>Guía de Agendamiento de Citas</h1>
-            <p>Aprende a gestionar citas médicas, usar el calendario y administrar el flujo de atención de pacientes.</p>
-            <nav class="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('help.index') }}">Centro de Ayuda</a></li>
-                    <li class="breadcrumb-item active">Agendamiento de Citas</li>
-                </ol>
-            </nav>
-        </header>
+       
 
-        <!-- Table of Contents -->
-        <div class="toc">
-            <h5><i class="fas fa-list-ul me-2"></i>Contenido de esta Guía</h5>
-            <div class="row">
-                <div class="col-md-4">
+         <!-- Breadcrumb -->
+        <nav class="help-breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="breadcrumb-item"><a href="#">Guia de Agendamiento de Citas</a></li>
+                <li class="breadcrumb-item active">Agendamiento de Citas</li>
+            </ol>
+        </nav>
+
+          <!-- Module Header -->
+        <div class="module-header">
+             <h1><i class="fas fa-calendar-check me-3"></i>Guía de Agendamiento de Citas</h1>
+            <p>Aprende a gestionar citas médicas, usar el calendario y administrar el flujo de atención de pacientes.</p>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="row">
+            <!-- Table of Contents -->
+            <div class="col-lg-4">
+                <div class="toc-card sticky-top" style="top: 20px;">
+                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                     <ul class="toc-list">
-                        <li><a href="#introduccion"><i class="fas fa-chevron-right"></i> 1. Introducción</a></li>
-                        <li><a href="#tipos-cita"><i class="fas fa-chevron-right"></i> 2. Tipos de Cita</a></li>
-                        <li><a href="#crear-cita"><i class="fas fa-chevron-right"></i> 3. Crear Nueva Cita</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <ul class="toc-list">
-                        <li><a href="#calendario"><i class="fas fa-chevron-right"></i> 4. Vista Calendario</a></li>
-                        <li><a href="#estados"><i class="fas fa-chevron-right"></i> 5. Estados de Cita</a></li>
-                        <li><a href="#gestion"><i class="fas fa-chevron-right"></i> 6. Gestión de Citas</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <ul class="toc-list">
-                        <li><a href="#whatsapp"><i class="fas fa-chevron-right"></i> 7. Integración WhatsApp</a></li>
-                        <li><a href="#listado"><i class="fas fa-chevron-right"></i> 8. Listado de Citas</a></li>
-                        <li><a href="#tips"><i class="fas fa-chevron-right"></i> 9. Tips y Mejores Prácticas</a></li>
+                        <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
+                        <li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>
+                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 3. Crear Nueva Cita</a></li>
+                        <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 4. Vista Calendario</a></li>
+                        <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 5. Estados de Cita</a></li>
+                        <li><a href="#gestion"><i class="fas fa-tasks"></i> 6. Gestión de Citas</a></li>
+                        <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 7. Integración WhatsApp</a></li>
+                        <li><a href="#listado"><i class="fas fa-table"></i> 8. Listado de Citas</a></li>
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 9. Tips y Mejores Prácticas</a></li>
                     </ul>
                 </div>
             </div>
-        </div>
+
+            <!-- Content -->
+            <div class="col-lg-8">
 
         <!-- Section 1: Introduction -->
         <section id="introduccion" class="content-section">
@@ -1480,6 +1484,9 @@
                 <p class="mb-0">Si tiene dudas sobre el módulo de citas o encuentra algún problema, contacte al equipo de soporte técnico de SAMI. Recuerde que puede acceder a otras guías desde el menú lateral para aprender sobre funcionalidades relacionadas como la <a href="{{ route('help.medical-history') }}">Historia Médica</a>.</p>
             </div>
         </section>
+
+            </div> <!-- End col-lg-8 -->
+        </div> <!-- End row -->
 
         <!-- Navigation -->
         <div class="d-flex justify-content-between mt-4">
