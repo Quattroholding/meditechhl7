@@ -707,8 +707,15 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.medical-history');
     })->name('medical-history');
 
+    Route::get('/appointments', function () {
+        return view('help.appointments');
+    })->name('appointments');
+
+    Route::get('/settings', function () {
+        return view('help.settings');
+    })->name('settings');
+
     // Future help pages can be added here
-    // Route::get('/appointments', function () { return view('help.appointments'); })->name('appointments');
     // Route::get('/consultations', function () { return view('help.consultations'); })->name('consultations');
     // Route::get('/billing', function () { return view('help.billing'); })->name('billing');
 });

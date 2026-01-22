@@ -590,15 +590,17 @@
 
         <div class="nav-section">
             <div class="nav-section-title">Citas</div>
-            <a href="#" class="nav-link">
-                <i class="fas fa-calendar-plus"></i>
-                <span>Agendar Citas</span>
-                <span class="badge bg-secondary">Pronto</span>
-            </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('help.appointments') }}" class="nav-link">
                 <i class="fas fa-calendar-check"></i>
-                <span>Gestionar Citas</span>
-                <span class="badge bg-secondary">Pronto</span>
+                <span>Agendamiento de Citas</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Configuracion</div>
+            <a href="{{ route('help.settings') }}" class="nav-link">
+                <i class="fas fa-cogs"></i>
+                <span>Configuraciones</span>
             </a>
         </div>
 
@@ -740,14 +742,29 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center p-4">
-                        <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-calendar-alt fa-2x text-warning"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(230, 81, 0, 0.1);">
+                            <i class="fas fa-calendar-check fa-2x" style="color: #e65100;"></i>
                         </div>
-                        <h5 class="card-title">Agendar Citas</h5>
+                        <h5 class="card-title">Agendamiento de Citas</h5>
                         <p class="card-text text-muted">Domina el sistema de agendamiento de citas.</p>
-                        <button class="btn btn-outline-secondary" disabled>
-                            <i class="fas fa-clock me-2"></i>Proximamente
-                        </button>
+                        <a href="{{ route('help.appointments') }}" class="btn text-white" style="background: #e65100;">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(94, 53, 177, 0.1);">
+                            <i class="fas fa-cogs fa-2x" style="color: #5e35b1;"></i>
+                        </div>
+                        <h5 class="card-title">Configuraciones</h5>
+                        <p class="card-text text-muted">Configura servicios, horarios y plantillas.</p>
+                        <a href="{{ route('help.settings') }}" class="btn text-white" style="background: #5e35b1;">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
                     </div>
                 </div>
             </div>
