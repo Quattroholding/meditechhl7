@@ -152,6 +152,14 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'suscriptions.payments.verify', 'description' => 'Verificar pago de suscripcion', 'module' => 'suscripciones'],
             ['name' => 'suscriptions.invoices.destroy', 'description' => 'Cancelar pago de suscripcion', 'module' => 'suscripciones'],
 
+
+            ['name' => 'tickets.index', 'description' => 'Ver tickets', 'module' => 'tickets'],
+            ['name' => 'tickets.create', 'description' => 'Crear Tickets', 'module' => 'tickets'],
+            ['name' => 'tickets.comment', 'description' => 'Comentar ticket', 'module' => 'tickets'],
+            ['name' => 'tickets.change_status', 'description' => 'Comentar cambiar estauts', 'module' => 'tickets'],
+            ['name' => 'tickets.assign', 'description' => 'Asignar ticket', 'module' => 'tickets'],
+
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -235,6 +243,9 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.download',
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
         ]);
 
         $assistantRole = Role::firstOrCreate(['name' => 'recepcionista']);
@@ -318,6 +329,9 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.download',
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
@@ -382,12 +396,18 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
             'suscriptions.payments.verify',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
         ]);
 
         // Validador role - Only validates user registrations from mobile app
         $validadorRole = Role::firstOrCreate(['name' => 'validador']);
         $validadorRole->givePermissionTo([
             'users.validate',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
         ]);
     }
 }

@@ -200,6 +200,11 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
     Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+
+    // Ticket System Routes
+    Route::get('/tickets', function () {
+        return view('ticket-system.index');
+    })->name('tickets.index')->middleware('permission:tickets.index');
 });
 
 Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', 'first.login']], function () {
@@ -361,7 +366,7 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.l
 
     Route::post('/{id}/activate', [UserController::class, 'activate'])->middleware('permission:users.activate')->name('user.activate');
 
-        Route::get('/pending-validations', function () {
+    Route::get('/pending-validations', function () {
         return view('users.pending-validations');
     })->middleware('permission:users.validate')->name('user.pending-validations');
 
@@ -648,8 +653,6 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
 
         Route::get('/', [SuscriptionPaymentController::class, 'index'])->middleware('permission:suscriptions.payments.index')->name('suscriptions.payments.index');
 
-
-
         Route::get('/settings', [SuscriptionPaymentController::class, 'settings'])->middleware('permission:suscriptions.payments.settings')->name('suscriptions.payments.settings');
 
         Route::get('/{id}/verify', [SuscriptionPaymentController::class, 'verify'])->middleware('permission:suscriptions.payments.verify')->name('suscriptions.payments.verify');
@@ -677,7 +680,6 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
     Route::post('/login/{user}', [\App\Http\Controllers\DebugLoginController::class, 'loginAs'])
         ->name('login.as');
 });
-
 
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
 
