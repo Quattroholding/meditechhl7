@@ -304,6 +304,14 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['tickets.index'])
+                <li>
+                    <a class="{{ Request::is('tickets') ? 'active' : '' }}"  href="{{ route('tickets.index') }}">
+                        <span class="menu-side"><i class="fa fa-ticket-alt"></i></span>&nbsp;
+                        <span>Soporte</span>
+                    </a>
+                </li>
+                @endcanany
                 @if(auth()->user()->can('practitioners.profile') && auth()->user()->practitioner)
                 <li>
                     <a class="{{ Request::is('practitioners/'.auth()->user()->practitioner->id.'/profile') ? 'active' : '' }}"  href="{{ route('practitioner.profile',auth()->user()->practitioner->id) }}">

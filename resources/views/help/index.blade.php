@@ -6,6 +6,10 @@
     <title>Centro de Ayuda - SAMI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @auth
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    @endauth
+    @livewireStyles
     <style>
         :root {
             --primary-color: #0d6efd;
@@ -742,9 +746,15 @@
                         <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte con cualquier duda o problema.</p>
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <a href="mailto:soporte@sami.com" class="btn btn-primary">
-                            <i class="fas fa-envelope me-2"></i>Contactar Soporte
-                        </a>
+                        @auth
+                            <button type="button" class="btn btn-primary" onclick="Livewire.dispatch('openTicketModal')">
+                                <i class="fas fa-ticket-alt me-2"></i>Crear Ticket de Soporte
+                            </button>
+                        @else
+                            <a href="mailto:bussines@meditecpty.com" class="btn btn-primary">
+                                <i class="fas fa-envelope me-2"></i>Contactar Soporte
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -756,7 +766,17 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <!-- Modal de Ticket (solo para usuarios autenticados) -->
+    @auth
+        @livewire('ticket-system.modal-save')
+    @endauth
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @auth
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @endauth
+    @livewireScripts
     <script>
         // Back to Top functionality
         const backToTop = document.getElementById('backToTop');
@@ -772,6 +792,21 @@
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // Livewire event listener para notificaciones toastr
+        @auth
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('showToastr', (event) => {
+                // Si existe toastr, usarlo
+                if (typeof toastr !== 'undefined') {
+                    toastr[event.type](event.message);
+                } else {
+                    // Fallback a alert si no hay toastr
+                    alert(event.message);
+                }
+            });
+        });
+        @endauth
     </script>
 </body>
 </html>
