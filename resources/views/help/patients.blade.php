@@ -769,11 +769,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #1</h5>
-                            <p>Menu lateral con la opcion "Pacientes" resaltada</p>
-                            <span class="dimensions">Recomendado: 400x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <p class="mt-3">URL directa:</p>
@@ -782,11 +779,8 @@
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients</code>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #2</h5>
-                            <p>Lista de pacientes con buscador y boton "Nuevo Paciente"</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -798,11 +792,8 @@
                     <div class="step-content">
                         <p>En la lista de pacientes, haz clic en el boton <strong>"Nuevo Paciente"</strong> o <strong>"Agregar"</strong>:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #3</h5>
-                            <p>Boton "Nuevo Paciente" resaltado en la parte superior</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/id-data.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -821,11 +812,8 @@
                     <div class="step-content">
                         <p>La primera seccion del formulario es la <strong>identificacion del paciente</strong>:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #4</h5>
-                            <p>Seccion de identificacion con campos: Tipo de documento, Numero, Genero</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/id-data.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <table class="field-table">
@@ -871,11 +859,8 @@
                     <div class="step-content">
                         <p>Ingresa los datos personales del paciente:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #5</h5>
-                            <p>Seccion de datos personales: Nombre, Apellido, Email, Fecha de nacimiento, Tipo de sangre, Estado civil</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/personal-data.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <table class="field-table">
@@ -941,11 +926,8 @@
                     <div class="step-content">
                         <p>Completa la informacion de ubicacion del paciente:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #6</h5>
-                            <p>Seccion de direccion: Direccion fisica, Pais, Provincia/Estado</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/address-data.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <table class="field-table">
@@ -984,11 +966,8 @@
                     <div class="step-content">
                         <p>Puedes agregar informacion de un contacto de emergencia:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #7</h5>
-                            <p>Seccion de contacto de emergencia: Nombre, Email, Telefono del contacto</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/emergency-contact.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <table class="field-table">
@@ -1034,11 +1013,8 @@
                     <div class="step-content">
                         <p>Puedes adjuntar documentos del paciente como identificacion, seguros, examenes previos, etc:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #8</h5>
-                            <p>Area de carga de documentos con lista de archivos adjuntos</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/file-data.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Formatos Aceptados:</h5>
@@ -1071,7 +1047,7 @@
                     </div>
                 </section>
 
-                <!-- Paso 8: Dependientes -->
+                <!-- Paso 8: Dependientes 
                 <section id="paso-8" class="step-card step-important">
                     <div class="step-number">8</div>
                     <h3 class="step-title">Configurar Dependientes (Opcional)</h3>
@@ -1119,11 +1095,11 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> -->
 
                 <!-- Paso 9: Guardar -->
                 <section id="paso-9" class="step-card step-success">
-                    <div class="step-number">9</div>
+                    <div class="step-number">8</div>
                     <h3 class="step-title">Guardar el Paciente</h3>
                     <div class="step-content">
                         <p>Una vez completada toda la informacion:</p>
@@ -1135,11 +1111,8 @@
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #10</h5>
-                            <p>Boton "Guardar" y mensaje de exito despues de crear el paciente</p>
-                            <span class="dimensions">Recomendado: 1200x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/save-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1152,6 +1125,10 @@
                                     <li>Registrar su historia medica</li>
                                 </ul>
                             </div>
+                        </div>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/saved-patient.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -1172,11 +1149,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #11</h5>
-                            <p>Mensaje de paciente existente con boton "Asociar a mi clinica"</p>
-                            <span class="dimensions">Recomendado: 800x400px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/asociar.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-note">
@@ -1194,11 +1168,8 @@
                     <div class="step-content">
                         <p>Despues de crear o asociar un paciente, puedes ver su perfil completo:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #12</h5>
-                            <p>Perfil completo del paciente mostrando datos personales, foto, acciones disponibles</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/profile.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">El perfil incluye:</h5>
