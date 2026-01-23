@@ -43,7 +43,7 @@
                                         <p><strong>Cliente YAPPY:</strong>  {{auth()->user()->getCurrentClient()->yappy_code}}</p>
                                         <p><strong>NOTA :</strong> En el mensaje del envio de yappy poner su número de cliente yappy (<b>{{auth()->user()->getCurrentClient()->yappy_code}}</b>) para poder cargar el pago a su cuenta.</p>
                                         {{--}}
-                                        <p>USAR EL BÓTON DE PAGO YAPPY EN EL DETALLE DE LA FACTURA</p>
+                                        <p>USAR EL BÓTON PAGAR CON YAPPY EN EL DETALLE DE LA FACTURA</p>
                                     </div>
                                 </div>
                                 <div class="mb-4">
