@@ -442,10 +442,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-desktop"></i>
-                <p>Captura de pantalla: Vista general del módulo de suscripciones</p>
-                <small>Recomendado: 1200x700px - Mostrar dashboard con plan actual, próxima factura y estado</small>
+            <div>
+                <img src="{{ asset('images/tutorial/subscriptions/subscription.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -467,10 +465,8 @@
                     <li><strong>Características:</strong> Límites y funcionalidades incluidas</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-id-card"></i>
-                    <p>Captura de pantalla: Detalle del plan actual</p>
-                    <small>Recomendado: 1000x600px - Mostrar tarjeta con información completa del plan</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/subscriptions/plan-detail.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -582,10 +578,8 @@
                     <li>Descargue el PDF de cada factura</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-list"></i>
-                    <p>Captura de pantalla: Listado de facturas de suscripción</p>
-                    <small>Recomendado: 1200x600px - Mostrar tabla con facturas mensuales y estados</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/subscriptions/invoices.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -644,10 +638,8 @@
                     <li>Haga clic en <strong>"Enviar"</strong></li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-edit"></i>
-                    <p>Captura de pantalla: Formulario de registro de pago</p>
-                    <small>Recomendado: 800x600px - Mostrar formulario completo con todos los campos</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/subscriptions/payment-form.png') }}" alt="">
                 </div>
             </div>
 
