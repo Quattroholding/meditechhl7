@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Agenda tu cita médica fácil y rápido por WhatsApp. Atención inmediata con los mejores especialistas.">
-    <meta name="keywords" content="citas médicas, agendar cita, whatsapp médico, telemedicina, doctores">
+    <meta name="keywords" content="sami,  soluciones meditec, citas médicas, agendar cita, whatsapp médico, telemedicina, doctores">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Agenda tu Cita Médica por WhatsApp">
-    <meta property="og:description" content="Obtén atención médica rápida y profesional. Agenda tu cita en segundos por WhatsApp.">
+    <meta property="og:description" content="Obtén atención médica rápida y profesional. Agenda tu cita en segundos por WhatsApp con SAMI.">
     <meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Agenda tu Cita Médica por WhatsApp">
-    <meta property="twitter:description" content="Obtén atención médica rápida y profesional. Agenda tu cita en segundos por WhatsApp.">
+    <meta property="twitter:title" content="Agenda tu Cita Médica por WhatsApp con SAMI">
+    <meta property="twitter:description" content="Obtén atención médica rápida y profesional. Agenda tu cita en segundos por WhatsApp con SAMI.">
 
-    <title>Agenda tu Cita Médica por WhatsApp | Soluciones Meditec</title>
+    <title>Agenda tu Cita Médica por WhatsApp | SAMI</title>
     <link rel="icon" href="{{ url('images/favicon.ico') }}" type="image/x-icon">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
