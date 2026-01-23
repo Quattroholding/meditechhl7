@@ -891,6 +891,9 @@
                                 <li>Haz clic en el boton <strong>"Suscribirse Ahora"</strong> del plan que desees</li>
                             </ol>
                         </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/register/plans.png') }}" alt="" style="width: 100%;">
+                        </div>
                     </div>
                 </section>
 
@@ -1000,7 +1003,7 @@
                         </div>
 
                         <div class="screenshot-registerclient">
-                            <img src="{{ asset('images/tutorial/register/registro.png') }}" alt="">
+                            <img src="{{ asset('images/tutorial/register/registro.png') }}" alt="" style="margin: 0 auto;">
                         </div>
 
                         <div class="info-box info-note">
