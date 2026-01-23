@@ -136,7 +136,7 @@
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
             <!-- Logo -->
             <div class="mb-8 animate-slide-up">
-                <img src="{{ asset('landing/images/logo-letras.png') }}" alt="Soluciones Meditec" class="h-16 md:h-20 mx-auto">
+                <img src="{{ asset('images/logoSAMI.jpg') }}" alt="SAMI por Soluciones Meditec" class="h-16 md:h-20 mx-auto">
             </div>
 
             <!-- Main Headline -->
