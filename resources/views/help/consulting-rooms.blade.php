@@ -1122,7 +1122,9 @@
                                         </div>
                                         <h5 class="card-title">Configurar Horarios</h5>
                                         <p class="card-text text-muted small">Define tus horarios de trabajo para cada sucursal</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <a href="{{ route('help.settings','#horarios-laborales') }}" class="btn btn-warning btn-sm text-white">
+                                            <i class="fas fa-clock me-1"></i>Ver guia
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1134,7 +1136,9 @@
                                         </div>
                                         <h5 class="card-title">Registrar Pacientes</h5>
                                         <p class="card-text text-muted small">Comienza a registrar a tus pacientes</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <a href="{{ route('help.patients') }}" class="btn btn-info btn-sm text-white">
+                                            <i class="fas fa-users me-1"></i>Ver guia
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1146,7 +1150,9 @@
                                         </div>
                                         <h5 class="card-title">Agendar Citas</h5>
                                         <p class="card-text text-muted small">Agenda tu primera cita en el consultorio</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <a href="{{ route('help.appointments') }}" class="btn btn-success btn-sm text-white">
+                                            <i class="fas fa-calendar me-1"></i>Ver guia
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1158,7 +1164,9 @@
                                         </div>
                                         <h5 class="card-title">Realizar Consultas</h5>
                                         <p class="card-text text-muted small">Documenta tus consultas medicas</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <a href="{{ route('help.consultation') }}" class="btn btn-danger btn-sm text-white">
+                                            <i class="fas fa-stethoscope me-1"></i>Ver guia
+                                        </a>
                                     </div>
                                 </div>
                             </div>
