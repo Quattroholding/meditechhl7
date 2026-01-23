@@ -623,14 +623,14 @@
                     <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                     <ul class="toc-list">
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
-                        <li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>
-                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 3. Crear Nueva Cita</a></li>
-                        <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 4. Vista Calendario</a></li>
-                        <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 5. Estados de Cita</a></li>
-                        <li><a href="#gestion"><i class="fas fa-tasks"></i> 6. Gestión de Citas</a></li>
-                        <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 7. Integración WhatsApp</a></li>
-                        <li><a href="#listado"><i class="fas fa-table"></i> 8. Listado de Citas</a></li>
-                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 9. Tips y Mejores Prácticas</a></li>
+                        {{--}}<li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>{{--}}
+                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 2. Crear Nueva Cita</a></li>
+                        <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 3. Vista Calendario</a></li>
+                        <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 4. Estados de Cita</a></li>
+                        <li><a href="#gestion"><i class="fas fa-tasks"></i> 5. Gestión de Citas</a></li>
+                        <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 6. Integración WhatsApp</a></li>
+                        <li><a href="#listado"><i class="fas fa-table"></i> 7. Listado de Citas</a></li>
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 8. Tips y Mejores Prácticas</a></li>
                     </ul>
                 </div>
             </div>
@@ -684,7 +684,7 @@
             </div>
         </section>
 
-        <!-- Section 2: Appointment Types -->
+        <!-- Section 2: Appointment Types
         <section id="tipos-cita" class="content-section">
             <h2><i class="fas fa-list me-2"></i>2. Tipos de Cita</h2>
 
@@ -736,11 +736,11 @@
                 <p>Captura de pantalla: Selector de tipo de cita en el formulario de creación</p>
                 <small>Recomendado: 600x300px - Mostrar el campo "Tipo de Cita" con las opciones desplegadas</small>
             </div>
-        </section>
+        </section> -->
 
         <!-- Section 3: Create Appointment -->
         <section id="crear-cita" class="content-section">
-            <h2><i class="fas fa-plus-circle me-2"></i>3. Crear Nueva Cita</h2>
+            <h2><i class="fas fa-plus-circle me-2"></i>2. Crear Nueva Cita</h2>
 
             <p>Siga estos pasos para agendar una nueva cita médica en el sistema:</p>
 
@@ -930,7 +930,7 @@
 
         <!-- Section 4: Calendar View -->
         <section id="calendario" class="content-section">
-            <h2><i class="fas fa-calendar-alt me-2"></i>4. Vista Calendario</h2>
+            <h2><i class="fas fa-calendar-alt me-2"></i>3. Vista Calendario</h2>
 
             <p>El calendario interactivo es la herramienta principal para visualizar y gestionar las citas. SAMI ofrece tres vistas diferentes:</p>
 
@@ -1066,7 +1066,7 @@
 
         <!-- Section 5: Appointment States -->
         <section id="estados" class="content-section">
-            <h2><i class="fas fa-exchange-alt me-2"></i>5. Estados de Cita</h2>
+            <h2><i class="fas fa-exchange-alt me-2"></i>4. Estados de Cita</h2>
 
             <p>Las citas en SAMI siguen un flujo de trabajo definido. Cada estado representa una etapa en el proceso de atención:</p>
 
@@ -1190,7 +1190,7 @@
 
         <!-- Section 6: Appointment Management -->
         <section id="gestion" class="content-section">
-            <h2><i class="fas fa-tasks me-2"></i>6. Gestión de Citas</h2>
+            <h2><i class="fas fa-tasks me-2"></i>5. Gestión de Citas</h2>
 
             <h3>Ver Detalles de una Cita</h3>
             <p>Al hacer click en una cita del calendario, se muestra un panel con información detallada:</p>
@@ -1279,7 +1279,7 @@
 
         <!-- Section 7: WhatsApp Integration -->
         <section id="whatsapp" class="content-section">
-            <h2><i class="fab fa-whatsapp me-2"></i>7. Integración con WhatsApp</h2>
+            <h2><i class="fab fa-whatsapp me-2"></i>6. Integración con WhatsApp</h2>
 
             <p>SAMI incluye integración con WhatsApp para comunicación directa con los pacientes sobre sus citas:</p>
 
@@ -1342,7 +1342,7 @@
 
         <!-- Section 8: Appointment List -->
         <section id="listado" class="content-section">
-            <h2><i class="fas fa-list-alt me-2"></i>8. Listado de Citas</h2>
+            <h2><i class="fas fa-list-alt me-2"></i>7. Listado de Citas</h2>
 
             <p>Además del calendario, SAMI ofrece una vista de lista que permite gestionar citas de forma tabular:</p>
 
@@ -1407,7 +1407,7 @@
 
         <!-- Section 9: Tips -->
         <section id="tips" class="content-section">
-            <h2><i class="fas fa-lightbulb me-2"></i>9. Tips y Mejores Prácticas</h2>
+            <h2><i class="fas fa-lightbulb me-2"></i>8. Tips y Mejores Prácticas</h2>
 
             <div class="row">
                 <div class="col-md-6">
