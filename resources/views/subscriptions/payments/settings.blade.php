@@ -27,10 +27,10 @@
                                 <div class="mb-4">
                                     <h5 class="mb-3">ACH</h5>
                                     <div class="ps-4">
-                                        <p><strong>Banco:</strong>BANCO GENERAL</p>
-                                        <p><strong>Cuenta:</strong> 03-71-01-130151-6 </p>
-                                        <p><strong>Tipo:</strong> Cuenta Corriente</p>
-                                        <p><strong>Beneficiario:</strong>SOLUCIONES MEDITEC, S.A.</p>
+                                        <p><strong>Banco:</strong> BANCO GENERAL</p>
+                                        <p><strong>Cuenta:</strong> {{env('ACCOUNT_ACH_BG_NAME')}}</p>
+                                        <p><strong>Tipo:</strong> {{env('ACCOUNT_ACH_BG_NUMBER')}}</p>
+                                        <p><strong>Beneficiario:</strong> {{env('ACCOUNT_ACH_BG_TYPE')}}</p>
                                     </div>
                                 </div>
 

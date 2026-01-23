@@ -78,10 +78,10 @@
             </h4>
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
                 <x-email.info-grid :items="[
-                    'Banco' => 'Banco General',
-                    'Cuenta' => '04-99-99-999999-9',
-                    'Tipo' => 'Cuenta Corriente',
-                    'Beneficiario' => 'Soluciones Meditec S.A.'
+                    'Banco' => 'BANCO GENERAL',
+                    'Cuenta' => env('ACCOUNT_ACH_BG_NUMBER'),
+                    'Tipo' => env('ACCOUNT_ACH_BG_TYPE'),
+                    'Beneficiario' =>env('ACCOUNT_ACH_BG_NAME')
                 ]" />
             </div>
 
@@ -90,17 +90,16 @@
             </h4>
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
                 <x-email.info-grid :items="[
-                    'Número' => '6XXX-XXXX',
-                    'Nombre' => 'Meditech',
-                    'Código YAPPY' => $client->yappy_code
+                    'NOTA' => 'USAR EL BÓTON DE PAGAR CON YAPPY EN EL DETALLE DE LA FACTURA.',
                 ]" />
             </div>
-
+            {{--}}
             <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-top: 15px;">
                 <p style="margin: 0; color: #856404; font-weight: 600;">
                     ⚠️ <strong>IMPORTANTE:</strong> En el mensaje de la transferencia YAPPY incluya su código (<strong>{{ $client->yappy_code }}</strong>) para identificar el pago.
                 </p>
             </div>
+            {{--}}
         </div>
     </x-email.message-box>
 
