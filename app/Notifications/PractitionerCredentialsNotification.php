@@ -7,10 +7,15 @@ use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PractitionerCredentialsNotification extends Notification
+class PractitionerCredentialsNotification extends Notification implements ShouldQueue
 {
     use Queueable, ValidatesEmailChannel;
+
+    public $tries = 3;
+
+    public $backoff = [60, 300, 600];
 
     protected $user;
 

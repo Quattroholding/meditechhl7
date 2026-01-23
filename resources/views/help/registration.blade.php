@@ -668,7 +668,7 @@
         <!-- Module Header -->
         <div class="module-header">
             <h1><i class="fas fa-user-plus me-3"></i>Guia de Registro de Cliente/Medico</h1>
-            <p>Aprende paso a paso como registrar tu clinica o consultorio medico en SAMI. Este proceso te permitira acceder a todas las funcionalidades del sistema.</p>
+            <p>Aprende paso a paso como registrar tu clinica o consultorio medico en SAMI. El proceso inicia desde la pagina principal, donde seleccionas tu plan y luego completas el formulario de registro.</p>
         </div>
 
         <div class="row">
@@ -690,43 +690,49 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#paso-1">
+                            <a href="#paso-0">
                                 <i class="fas fa-globe"></i>
-                                Paso 1: Acceder al Formulario
+                                Paso 1: Seleccionar Plan en Landing
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#planes-disponibles">
+                                <i class="fas fa-box"></i>
+                                Planes Disponibles
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#paso-1">
+                                <i class="fas fa-edit"></i>
+                                Paso 2: Completar Formulario
                             </a>
                         </li>
                         <li>
                             <a href="#paso-2">
-                                <i class="fas fa-box"></i>
-                                Paso 2: Seleccionar Plan
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#paso-3">
                                 <i class="fas fa-user"></i>
                                 Paso 3: Datos Personales
                             </a>
                         </li>
                         <li>
-                            <a href="#paso-4">
+                            <a href="#paso-3">
                                 <i class="fas fa-stethoscope"></i>
                                 Paso 4: Info Profesional
                             </a>
                         </li>
                         <li>
-                            <a href="#paso-5">
+                            <a href="#paso-4">
                                 <i class="fas fa-image"></i>
                                 Paso 5: Logo (Opcional)
                             </a>
                         </li>
                         <li>
-                            <a href="#paso-6">
+                            <a href="#paso-5">
                                 <i class="fas fa-gift"></i>
                                 Paso 6: Codigo de Referido
                             </a>
                         </li>
                         <li>
-                            <a href="#paso-7">
+                            <a href="#paso-6">
                                 <i class="fas fa-check-square"></i>
                                 Paso 7: Terminos y Envio
                             </a>
@@ -770,9 +776,17 @@
                         <!-- Flow Diagram -->
                         <div class="flow-diagram">
                             <div class="flow-step">
-                                <i class="fas fa-globe"></i>
-                                <h6>Acceder</h6>
-                                <p>Ir al formulario</p>
+                                <i class="fas fa-home"></i>
+                                <h6>Landing Page</h6>
+                                <p>Ver planes</p>
+                            </div>
+                            <div class="flow-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                            <div class="flow-step">
+                                <i class="fas fa-box"></i>
+                                <h6>Seleccionar</h6>
+                                <p>Elegir plan</p>
                             </div>
                             <div class="flow-arrow">
                                 <i class="fas fa-chevron-right"></i>
@@ -863,19 +877,126 @@
                     </div>
                 </section>
 
-                <!-- Paso 1: Acceder al Formulario -->
-                <section id="paso-1" class="step-card">
+                <!-- Paso 0: Seleccionar Plan desde Landing -->
+                <section id="paso-0" class="step-card step-important">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Acceder al Formulario de Registro</h3>
+                    <h3 class="step-title">Seleccionar Plan desde la Pagina Principal</h3>
                     <div class="step-content">
-                        <p>Para comenzar el registro, accede al formulario publico de registro de SAMI:</p>
+                        <div class="sub-step">
+                            <h6><i class="fas fa-home me-2"></i>Pasos para Iniciar</h6>
+                            <ol>
+                                <li>Visita la pagina principal: <div class="code-block">{{ config('app.url') }}</div></li>
+                                <li>Navega a la seccion <strong>"Planes"</strong> (menu o scroll hacia abajo)</li>
+                                <li>Revisa los planes disponibles y sus caracteristicas</li>
+                                <li>Haz clic en el boton <strong>"Suscribirse Ahora"</strong> del plan que desees</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Planes Disponibles -->
+                <section id="planes-disponibles" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-box me-2"></i>Planes Disponibles</h3>
+                    <div class="step-content">
+                        <p>SAMI ofrece tres planes para registro publico (el plan Empresarial solo esta disponible contactando ventas):</p>
+
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Plan</th>
+                                    <th>Precio/mes</th>
+                                    <th>Usuarios</th>
+                                    <th>Citas</th>
+                                    <th>SAMI</th>
+                                    <th>Directorio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Basico</strong></td>
+                                    <td>$49.99</td>
+                                    <td>1</td>
+                                    <td>30/mes</td>
+                                    <td><span class="text-muted">Tentativo</span></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                </tr>
+                                <tr style="background-color: #e8f5e9;">
+                                    <td><strong>Estandar ⭐</strong><br><small class="text-success">RECOMENDADO</small></td>
+                                    <td>$74.99</td>
+                                    <td>1</td>
+                                    <td>Ilimitadas</td>
+                                    <td><i class="fas fa-check text-success"></i> Activo</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Premium</strong></td>
+                                    <td>$124.99</td>
+                                    <td>4</td>
+                                    <td>Ilimitadas</td>
+                                    <td><i class="fas fa-check text-success"></i> Activo</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h5 class="mt-4">Diferencias Clave Entre Planes:</h5>
 
                         <div class="sub-step">
-                            <h6><i class="fas fa-link me-2"></i>URL de Registro</h6>
-                            <div class="code-block">
-                                {{ config('app.url') }}/register/client
+                            <h6><i class="fas fa-balance-scale me-2"></i>Basico vs Estandar</h6>
+                            <p><strong>UNICA DIFERENCIA:</strong></p>
+                            <ul>
+                                <li><strong>Basico:</strong> Limite de 30 citas por mes, SAMI no activo</li>
+                                <li><strong>Estandar:</strong> Citas ilimitadas + SAMI activo + Directorio Medico</li>
+                            </ul>
+                            <p><strong>Todo lo demas es EXACTAMENTE IGUAL</strong> (gestion de pacientes, historia clinica, dashboard, etc.)</p>
+                        </div>
+
+                        <div class="sub-step">
+                            <h6><i class="fas fa-balance-scale me-2"></i>Estandar vs Premium</h6>
+                            <p><strong>UNICA DIFERENCIA:</strong></p>
+                            <ul>
+                                <li><strong>Estandar:</strong> 1 usuario (medico solo)</li>
+                                <li><strong>Premium:</strong> 4 usuarios (Admin + Doctor + Recepcionista + Asistente)</li>
+                            </ul>
+                            <p><strong>Todo lo demas es EXACTAMENTE IGUAL</strong> (citas ilimitadas, SAMI activo, todas las funcionalidades)</p>
+                        </div>
+
+                        <div class="info-box info-tip">
+                            <i class="fas fa-star"></i>
+                            <div>
+                                <strong>Por que el Estandar es recomendado?</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Por solo $25 mas que el Basico, obtienes citas ilimitadas</li>
+                                    <li>SAMI activo automatiza tus citas por WhatsApp 24/7</li>
+                                    <li>Apareces en el Directorio Medico, captando nuevos pacientes constantemente</li>
+                                    <li>Potencial ilimitado de crecimiento sin restricciones</li>
+                                </ul>
                             </div>
-                            <p class="mt-2 mb-0"><small class="text-muted">Tambien puedes acceder desde el boton "Registrarse" en la pagina principal.</small></p>
+                        </div>
+                        {{--}}
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Plan Empresarial:</strong> Este plan (50+ usuarios, SAMI personalizado) NO aparece en el registro publico. Solo se puede acceder contactando al equipo de ventas desde el landing page.
+                            </div>
+                        </div>
+                        {{--}}
+                    </div>
+                </section>
+
+                <!-- Paso 1: Completar Formulario -->
+                <section id="paso-1" class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Completar Formulario de Registro</h3>
+                    <div class="step-content">
+                        <p>Una vez hayas seleccionado tu plan desde el landing page, seras redirigido al formulario de registro con tu plan pre-seleccionado:</p>
+
+                        <div class="sub-step">
+                            <h6><i class="fas fa-link me-2"></i>URL del Formulario</h6>
+                            <div class="code-block">
+                                {{ config('app.url') }}/register/client?package={id}
+                            </div>
+                            <p class="mt-2 mb-0"><small class="text-muted">Notaras que la URL incluye el parametro <code>package</code> con el ID del plan seleccionado.</small></p>
                         </div>
 
                         <div class="screenshot-registerclient">
@@ -888,66 +1009,19 @@
                                 <strong>Nota:</strong> Si ya tienes una cuenta pero esta inactiva, puedes usar este mismo formulario para reactivarla con un nuevo plan.
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Paso 2: Seleccionar Plan -->
-                <section id="paso-2" class="step-card step-important">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">Seleccionar tu Plan</h3>
-                    <div class="step-content">
-                        <p>El primer campo del formulario te permite seleccionar el plan que mejor se adapte a tus necesidades:</p>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/register/plan.png') }}" alt="" style="width: 100%;">
-                        </div>
-
-                        <div class="info-box info-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div>
-                                <strong>Importante:</strong> El plan que selecciones determinara los campos adicionales que deberas completar. Los planes individuales (1 usuario) requieren informacion del medico.
-                            </div>
-                        </div>
-
-                        <h5 class="mt-4 mb-3">Tipos de Planes Disponibles:</h5>
-                        <table class="field-table">
-                            <thead>
-                                <tr>
-                                    <th>Plan</th>
-                                    <th>Usuarios</th>
-                                    <th>Ideal Para</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Plan Individual</strong></td>
-                                    <td>1 usuario</td>
-                                    <td>Medicos con consultorio propio</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Plan Clinica</strong></td>
-                                    <td>Multiples usuarios</td>
-                                    <td>Clinicas con varios medicos</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Plan Enterprise</strong></td>
-                                    <td>Ilimitados</td>
-                                    <td>Hospitales y grandes centros</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        {{--}}
                         <div class="info-box info-tip">
-                            <i class="fas fa-lightbulb"></i>
+                            <i class="fas fa-robot"></i>
                             <div>
-                                <strong>Caracteristica Especial:</strong> Algunos planes incluyen acceso al <strong>Agente SAMI AI</strong> via WhatsApp, que permite a tus pacientes agendar citas automaticamente.
+                                <strong>Alerta SAMI:</strong> Si seleccionaste el plan Estandar o Premium, veras una alerta animada explicando los beneficios del agente SAMI y el Directorio Medico.
                             </div>
                         </div>
+                        {{--}}
                     </div>
                 </section>
 
-                <!-- Paso 3: Datos Personales -->
-                <section id="paso-3" class="step-card">
+                <!-- Paso 2: Datos Personales -->
+                <section id="paso-2" class="step-card">
                     <div class="step-number">3</div>
                     <h3 class="step-title">Completar Datos Personales</h3>
                     <div class="step-content">
@@ -1025,8 +1099,8 @@
                     </div>
                 </section>
 
-                <!-- Paso 4: Informacion Profesional -->
-                <section id="paso-4" class="step-card">
+                <!-- Paso 3: Informacion Profesional -->
+                <section id="paso-3" class="step-card">
                     <div class="step-number">4</div>
                     <h3 class="step-title">Informacion Profesional</h3>
                     <div class="step-content">
@@ -1073,8 +1147,8 @@
                     </div>
                 </section>
 
-                <!-- Paso 5: Logo (Opcional) -->
-                <section id="paso-5" class="step-card">
+                <!-- Paso 4: Logo (Opcional) -->
+                <section id="paso-4" class="step-card">
                     <div class="step-number">5</div>
                     <h3 class="step-title">Subir Logo (Opcional)</h3>
                     <div class="step-content">
@@ -1115,8 +1189,8 @@
                     </div>
                 </section>
 
-                <!-- Paso 6: Codigo de Referido -->
-                <section id="paso-6" class="step-card">
+                <!-- Paso 5: Codigo de Referido -->
+                <section id="paso-5" class="step-card">
                     <div class="step-number">6</div>
                     <h3 class="step-title">Codigo de Referido (Opcional)</h3>
                     <div class="step-content">
@@ -1146,8 +1220,8 @@
                     </div>
                 </section>
 
-                <!-- Paso 7: Terminos y Envio -->
-                <section id="paso-7" class="step-card step-success">
+                <!-- Paso 6: Terminos y Envio -->
+                <section id="paso-6" class="step-card step-success">
                     <div class="step-number">7</div>
                     <h3 class="step-title">Aceptar Terminos y Enviar</h3>
                     <div class="step-content">
@@ -1410,12 +1484,12 @@
                                 <div class="card h-100 border-0 shadow-sm">
                                     <div class="card-body">
                                         <h5 class="card-title">
-                                            <i class="fas fa-user-md text-info me-2"></i>
-                                            Agregar Medicos
+                                            <i class="fas fa-users text-warning me-2"></i>
+                                            Registrar Pacientes
                                         </h5>
-                                        <p class="card-text text-muted">Invita a otros medicos a unirse a tu clinica (planes multi-usuario).</p>
-                                        <a href="#" class="btn btn-outline-info btn-sm disabled">
-                                            <i class="fas fa-clock me-1"></i>Guia Proximamente
+                                        <p class="card-text text-muted">Comienza a registrar a tus pacientes en el sistema.</p>
+                                        <a href="{{ route('help.patients') }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-clock me-1"></i>Ver Guia
                                         </a>
                                     </div>
                                 </div>
@@ -1424,16 +1498,17 @@
                                 <div class="card h-100 border-0 shadow-sm">
                                     <div class="card-body">
                                         <h5 class="card-title">
-                                            <i class="fas fa-users text-warning me-2"></i>
-                                            Registrar Pacientes
+                                            <i class="fas fa-user-md text-info me-2"></i>
+                                            Agendar Citas
                                         </h5>
-                                        <p class="card-text text-muted">Comienza a registrar a tus pacientes en el sistema.</p>
-                                        <a href="#" class="btn btn-outline-warning btn-sm disabled">
-                                            <i class="fas fa-clock me-1"></i>Guia Proximamente
+                                        <p class="card-text text-muted">empieza a agandar citas a tus pacientes.</p>
+                                        <a href="{{ route('help.appointments') }}" class="btn btn-info btn-sm text-white">
+                                            <i class="fas fa-clock me-1"></i>Ver guia
                                         </a>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <div class="info-box info-tip">

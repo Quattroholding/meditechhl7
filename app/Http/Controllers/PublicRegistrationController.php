@@ -209,7 +209,6 @@ class PublicRegistrationController extends Controller
                     }
                     $user->removeRole('admin client');
                     $practitionerCreated = true;
-
                     // Notificar al médico sobre la configuración requerida
                     $user->notify(new PractitionerSetupRequiredNotification);
                 }
@@ -235,10 +234,9 @@ class PublicRegistrationController extends Controller
                         ]);
                     }
                 }
-
                 // Enviar notificación con credenciales temporales
-                $user->notify(new PractitionerCredentialsNotification($user, $request->password, false));
-
+                $delay = now()->plus(minutes: 1);
+                $user->notify((new PractitionerCredentialsNotification($user, $request->password, false))->delay($delay));
                 Log::info('Public client registration successful', [
                     'client_id' => $client->id,
                     'subscription_id' => $subscription->id,

@@ -53,7 +53,8 @@ class ClientInvoiceService
             // Send notification to admin client or doctor
             $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
             if ($notifiableUser) {
-                $notifiableUser->notify(new InvoiceGeneratedNotification($invoice));
+                $delay = now()->plus(minutes: 1);
+                $notifiableUser->notify((new InvoiceGeneratedNotification($invoice))->delay($delay));
 
                 Log::info('Invoice notification sent', [
                     'invoice_id' => $invoice->id,
