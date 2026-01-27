@@ -132,6 +132,34 @@ class ClientInvoiceService
             $extraItem->save();
         }
 
+        // Apply pending proration adjustment if exists
+        $metadata = $subscription->metadata ?? [];
+        if (isset($metadata['pending_proration'])) {
+            $proration = $metadata['pending_proration'];
+            $amount = (float) $proration['amount'];
+            $description = $proration['description'] ?? 'Proration adjustment';
+
+            $prorationItem = new ClientInvoiceItem;
+            $prorationItem->client_invoice_id = $invoice->id;
+            $prorationItem->description = $description;
+            $prorationItem->quantity = 1;
+            $prorationItem->unit_price = $amount;
+            $prorationItem->total = $amount;
+            $prorationItem->type = $amount >= 0 ? InvoiceItemType::ADJUSTMENT : InvoiceItemType::CREDIT;
+            $prorationItem->save();
+
+            // Clear the pending proration after applying
+            unset($metadata['pending_proration']);
+            $subscription->metadata = $metadata;
+            $subscription->save();
+
+            Log::info('Proration adjustment applied to invoice', [
+                'invoice_id' => $invoice->id,
+                'subscription_id' => $subscription->id,
+                'adjustment_amount' => $amount,
+            ]);
+        }
+
         $invoice->calculateTotal();
     }
 

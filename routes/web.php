@@ -42,6 +42,8 @@ require __DIR__.'/auth.php';
 Route::get('/', [LandingController::class, 'index'])->name('welcome');
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
+
+Route::get('/patient', [LandingController::class, 'patientLanding'])->name('patients.landing');
 /*
 Route::get('/register', function () {
     return view('Pages.register');
