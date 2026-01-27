@@ -677,10 +677,9 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-desktop"></i>
-                <p>Captura de pantalla: Vista general del módulo de citas</p>
-                <small>Recomendado: 1200x700px - Mostrar el menú lateral con la opción "Citas" resaltada y la vista principal del calendario</small>
+            
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-btn.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -750,13 +749,11 @@
                 <p>Navegue a <strong>Citas</strong> desde el menú lateral izquierdo. Puede acceder a través de:</p>
                 <ul>
                     <li><strong>Vista Calendario:</strong> Menú → Citas → Calendario</li>
-                    <li><strong>Vista Lista:</strong> Menú → Citas → Listado</li>
+                    <!--<li><strong>Vista Lista:</strong> Menú → Citas → Listado</li>-->
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-mouse-pointer"></i>
-                    <p>Captura de pantalla: Menú lateral con opciones de Citas expandidas</p>
-                    <small>Recomendado: 400x500px - Mostrar el menú con las opciones "Calendario" y "Listado"</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-list.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -770,11 +767,9 @@
                     <li><strong>Arrastrar y soltar:</strong> Arrastre sobre un rango de tiempo para preseleccionar la hora</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-hand-pointer"></i>
-                    <p>Captura de pantalla: Calendario con botón "Nueva Cita" resaltado</p>
-                    <small>Recomendado: 1000x500px - Mostrar el calendario con el botón visible y un click sobre un espacio de tiempo</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-new.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 3 -->
@@ -844,11 +839,9 @@
                     </tbody>
                 </table>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-edit"></i>
-                    <p>Captura de pantalla: Modal de creación de cita con todos los campos</p>
-                    <small>Recomendado: 700x800px - Mostrar el formulario completo con campos de ejemplo</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-modal.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 4 -->
@@ -869,10 +862,8 @@
                     <p class="mb-0">Si el paciente no existe, puede crear uno nuevo desde el módulo de <a href="{{ route('help.patients') }}">Pacientes</a> y luego regresar a crear la cita.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search"></i>
-                    <p>Captura de pantalla: Campo de búsqueda de paciente con resultados</p>
-                    <small>Recomendado: 500x300px - Mostrar el dropdown con pacientes encontrados</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-patient.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -894,10 +885,8 @@
                     <p class="mb-0">Si intenta agendar fuera del horario de trabajo del doctor o en un horario ya ocupado, el sistema mostrará un mensaje de error indicando el conflicto.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-clock"></i>
-                    <p>Captura de pantalla: Selectores de fecha y hora con validación</p>
-                    <small>Recomendado: 600x400px - Mostrar los campos de fecha/hora con el datepicker abierto</small>
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-schedule.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -920,11 +909,9 @@
                     <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por WhatsApp o correo electrónico, dependiendo de la configuración del sistema.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-save"></i>
-                    <p>Captura de pantalla: Cita creada exitosamente en el calendario</p>
-                    <small>Recomendado: 900x500px - Mostrar el calendario con la nueva cita visible</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-created.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
         </section>
 
@@ -981,10 +968,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-calendar-alt"></i>
-                <p>Captura de pantalla: Vista semanal del calendario con múltiples citas</p>
-                <small>Recomendado: 1200x700px - Mostrar calendario en vista semanal con varias citas de diferentes colores/estados</small>
+             <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-weekly.png') }}" alt="" style="width: 100%;">
             </div>
 
             <h3>Código de Colores</h3>
@@ -1057,10 +1042,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-palette"></i>
-                <p>Captura de pantalla: Calendario mostrando citas con diferentes colores de estado</p>
-                <small>Recomendado: 1000x600px - Mostrar varias citas con diferentes estados para ilustrar el código de colores</small>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-colors.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -1181,10 +1164,8 @@
                 </tbody>
             </table>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-exchange-alt"></i>
-                <p>Captura de pantalla: Modal de cambio de estado con opciones disponibles</p>
-                <small>Recomendado: 500x400px - Mostrar el popup/modal con los botones de cambio de estado</small>
+                        <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-status.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -1216,10 +1197,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-info-circle"></i>
-                <p>Captura de pantalla: Panel de detalles de una cita</p>
-                <small>Recomendado: 600x500px - Mostrar el popover o modal con todos los detalles de la cita</small>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-detail.png') }}" alt="" style="width: 100%;">
             </div>
 
             <h3>Editar una Cita</h3>
@@ -1243,7 +1222,7 @@
                 </ul>
             </div>
 
-            <h3>Reprogramar una Cita (Drag & Drop)</h3>
+            <!-- <h3>Reprogramar una Cita (Drag & Drop)</h3>
             <p>El calendario permite reprogramar citas arrastrándolas:</p>
             <ol>
                 <li>Ubique la cita en el calendario</li>
@@ -1257,14 +1236,14 @@
                 <i class="fas fa-arrows-alt"></i>
                 <p>Captura de pantalla: Cita siendo arrastrada a nuevo horario</p>
                 <small>Recomendado: 800x500px - Mostrar el efecto visual de arrastrar una cita en el calendario</small>
-            </div>
+            </div> -->
 
             <h3>Cancelar una Cita</h3>
             <p>Para cancelar una cita:</p>
             <ol>
                 <li>Seleccione la cita</li>
                 <li>Click en <strong>"Cancelar cita"</strong></li>
-                <li>Ingrese el motivo de cancelación (opcional pero recomendado)</li>
+                <!--<li>Ingrese el motivo de cancelación (opcional pero recomendado)</li> -->
                 <li>Confirme la cancelación</li>
             </ol>
 
@@ -1309,18 +1288,14 @@
                 </div>
             </div>
 
-            <h3>Enviar Mensaje de Confirmación</h3>
-            <ol>
-                <li>Seleccione una cita en estado <span class="status-badge status-pending">Pendiente</span></li>
-                <li>Click en el icono de WhatsApp o botón <strong>"Enviar WhatsApp"</strong></li>
-                <li>Seleccione la plantilla de mensaje (confirmación, recordatorio, etc.)</li>
+            <h3>Mensaje de Confirmación</h3>
+            <p>Se le enviará al paciente un mensaje vía WhatsApp, 2 horas antes de la cita programada como recordatorio para que confirme o cancele la cita.</p>
+            <!--<ol>
                 <li>El sistema enviará el mensaje al número registrado del paciente</li>
-            </ol>
+            </ol> -->
 
-            <div class="screenshot-placeholder">
-                <i class="fab fa-whatsapp"></i>
-                <p>Captura de pantalla: Botones de acción WhatsApp en la cita</p>
-                <small>Recomendado: 600x400px - Mostrar los botones de WhatsApp disponibles en el detalle de una cita</small>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-wp.jpeg') }}" alt="" >
             </div>
 
             <h3>Mensajes Interactivos</h3>
@@ -1358,10 +1333,8 @@
                 <li><strong>Acciones rápidas:</strong> Cambiar estado, editar, cancelar desde la lista</li>
             </ul>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-table"></i>
-                <p>Captura de pantalla: Vista de listado de citas con filtros</p>
-                <small>Recomendado: 1200x600px - Mostrar la tabla de citas con los filtros visibles y algunas citas listadas</small>
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-filter.png') }}" alt="" style="width: 100%;">
             </div>
 
             <h3>Columnas del Listado</h3>
