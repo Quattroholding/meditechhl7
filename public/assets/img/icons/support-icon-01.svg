@@ -1,0 +1,19 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Head/Face - Same opacity as note-icon bell -->
+<circle opacity="0.4" cx="12" cy="10" r="6" fill="#2E37A4"/>
+<!-- Headphone Band -->
+<path opacity="0.4" d="M12 3C7.58 3 4 6.58 4 11V15C4 15.55 4.45 16 5 16C5.55 16 6 15.55 6 15V13C6 11.34 4.66 10 3 10C3 6.69 6.69 3 11 3H13C17.31 3 21 6.69 21 10C19.34 10 18 11.34 18 13V15C18 15.55 18.45 16 19 16C19.55 16 20 15.55 20 15V11C20 6.58 16.42 3 12 3Z" fill="#2E37A4"/>
+<!-- Left Ear Pad -->
+<rect x="3" y="10" width="3" height="6" rx="1.5" fill="#2E37A4"/>
+<!-- Right Ear Pad -->
+<rect x="18" y="10" width="3" height="6" rx="1.5" fill="#2E37A4"/>
+<!-- Face - Eyes (White) -->
+<circle cx="9.5" cy="9.5" r="1" fill="white"/>
+<circle cx="14.5" cy="9.5" r="1" fill="white"/>
+<!-- Face - Smile (White) -->
+<path d="M9.5 12C10 12.5 11 13 12 13C13 13 14 12.5 14.5 12" stroke="white" stroke-width="1" stroke-linecap="round"/>
+<!-- Microphone Boom -->
+<path d="M18 14C17 15 15.5 16 14 16.5" stroke="#2E37A4" stroke-width="1.2" stroke-linecap="round"/>
+<!-- Microphone Capsule -->
+<ellipse cx="13.5" cy="17" rx="1.5" ry="2" fill="#2E37A4"/>
+</svg>
