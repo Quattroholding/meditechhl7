@@ -135,16 +135,27 @@ class SubscriptionService
                     $chargeAmount = $newDailyRate * $daysRemaining;
                     $difference = $chargeAmount - $creditAmount;
 
-                    if ($difference > 0) {
-                        $this->discountService->create($subscription->client, [
-                            'subscription_id' => $subscription->id,
-                            'discount_type' => 'fixed_amount',
-                            'discount_value' => abs($difference),
-                            'reason' => "Prorated upgrade from {$oldPackage->name} to {$newPackage->name}",
-                            'source' => 'other',
-                            'applies_to_invoices' => 1,
-                        ]);
-                    }
+                    // Store proration adjustment in subscription metadata for next invoice
+                    $metadata = $subscription->metadata ?? [];
+                    $metadata['pending_proration'] = [
+                        'amount' => round($difference, 2),
+                        'description' => $difference > 0
+                            ? "Prorated charge for upgrade from {$oldPackage->name} to {$newPackage->name}"
+                            : "Prorated credit for downgrade from {$oldPackage->name} to {$newPackage->name}",
+                        'old_package' => $oldPackage->name,
+                        'new_package' => $newPackage->name,
+                        'days_remaining' => $daysRemaining,
+                        'created_at' => now()->toDateTimeString(),
+                    ];
+                    $subscription->metadata = $metadata;
+
+                    Log::info('Proration adjustment calculated', [
+                        'subscription_id' => $subscription->id,
+                        'old_package' => $oldPackage->name,
+                        'new_package' => $newPackage->name,
+                        'days_remaining' => $daysRemaining,
+                        'adjustment_amount' => round($difference, 2),
+                    ]);
                 }
             }
 

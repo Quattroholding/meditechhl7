@@ -34,7 +34,11 @@
     </div>
     {{--}}
     <ul class="nav user-menu float-end">
-
+        <li class="nav-item">
+            <a href="{{url('help')}}" target="_blank" class="nav-link" style="padding-top: 20px" title="Centro de ayuda">
+                <img src="{{ URL::asset('/assets/img/icons/support-icon-01.svg') }}" alt="Centro de Ayuda" style="width: 32px; height: 32px;">
+            </a>
+        </li>
         <li class="nav-item dropdown d-none d-md-block">
             @php
                 $unreadNotifications = auth()->user()->unreadNotifications()->limit(10)->get();
