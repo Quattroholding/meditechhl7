@@ -507,10 +507,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-desktop"></i>
-                <p>Captura de pantalla: Vista general del módulo de consultas</p>
-                <small>Recomendado: 1200x700px - Mostrar la interfaz principal de consulta con las secciones visibles</small>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_view.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -531,11 +529,9 @@
                     <li>Presione el botón <strong>"Iniciar Consulta"</strong></li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-calendar-alt"></i>
-                    <p>Captura de pantalla: Calendario con cita seleccionada</p>
-                    <small>Recomendado: 1000x600px - Mostrar el calendario con una cita seleccionada y el botón "Iniciar Consulta" visible</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_start.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 2 -->
@@ -548,11 +544,9 @@
                     <li>En la columna de acciones, haga clic en el ícono de <i class="fas fa-stethoscope text-danger"></i> <strong>"Consultar"</strong></li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-list"></i>
-                    <p>Captura de pantalla: Listado de citas con botón de consulta</p>
-                    <small>Recomendado: 1000x400px - Mostrar la tabla de citas con el ícono de consulta resaltado</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_start2.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 3 -->
@@ -673,10 +667,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-th-list"></i>
-                <p>Captura de pantalla: Vista de secciones expandibles en la consulta</p>
-                <small>Recomendado: 1000x700px - Mostrar el acordeón con varias secciones, una expandida mostrando los campos</small>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_tab.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box tip">
@@ -713,11 +705,9 @@
                     <p class="mb-0">En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-user-circle"></i>
-                    <p>Captura de pantalla: Encabezado con información del paciente</p>
-                    <small>Recomendado: 1000x200px - Mostrar el encabezado con datos del paciente y menú lateral</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_patientinfo.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 2: Chief Complaint -->
@@ -729,6 +719,10 @@
                     <li>Síntomas principales que presenta</li>
                     <li>Duración aproximada del problema</li>
                 </ul>
+
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_mot.png') }}" alt="" style="width: 100%;">
+            </div>
 
                 <div class="info-box tip">
                     <div class="info-box-title">
@@ -796,11 +790,9 @@
                     </tbody>
                 </table>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-heartbeat"></i>
-                    <p>Captura de pantalla: Formulario de signos vitales</p>
-                    <small>Recomendado: 800x500px - Mostrar el formulario con los campos de signos vitales</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_vitalsigns.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 4: Physical Exam -->
@@ -813,6 +805,10 @@
                     <li>Utilice las plantillas predefinidas si están configuradas</li>
                     <li>Agregue notas adicionales según sea necesario</li>
                 </ul>
+
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_physicalexam.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 5: Diagnosis -->
@@ -827,11 +823,9 @@
                     <li>Puede agregar múltiples diagnósticos</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search"></i>
-                    <p>Captura de pantalla: Buscador de diagnósticos CIE-10</p>
-                    <small>Recomendado: 700x400px - Mostrar el campo de búsqueda con resultados de diagnósticos</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_diagnostics.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 6: Prescription -->
@@ -862,11 +856,9 @@
                     <p class="mb-0">Siempre verifique las dosis, interacciones y contraindicaciones antes de prescribir. El sistema puede mostrar alertas de interacciones medicamentosas si están configuradas.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-pills"></i>
-                    <p>Captura de pantalla: Formulario de prescripción de medicamentos</p>
-                    <small>Recomendado: 900x600px - Mostrar el formulario con campos de medicamento completados</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_medicines.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 7: Medical Orders -->
@@ -887,11 +879,12 @@
                     <li>Agregue indicaciones especiales si es necesario</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-flask"></i>
-                    <p>Captura de pantalla: Sección de órdenes médicas</p>
-                    <small>Recomendado: 800x500px - Mostrar la interfaz para agregar órdenes de laboratorio/imágenes</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_lab.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_img.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 8: Treatment Plan -->
@@ -944,11 +937,9 @@
                     <p class="mb-0">Todos los documentos se generan en formato PDF con su firma y sello digital (si están configurados). Puede descargarlos, imprimirlos o enviarlos por correo electrónico al paciente.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-file-medical"></i>
-                    <p>Captura de pantalla: Opciones de generación de documentos</p>
-                    <small>Recomendado: 600x400px - Mostrar los botones para generar receta, órdenes y resumen</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_finished.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
