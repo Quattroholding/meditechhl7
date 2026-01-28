@@ -492,10 +492,8 @@
                 <p class="mb-0">Las facturas solo se generan si el médico ha agregado al menos un servicio facturable durante la consulta. Si no se agregan servicios, la consulta se finalizará sin generar factura.</p>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-desktop"></i>
-                <p>Captura de pantalla: Vista general del módulo de facturación</p>
-                <small>Recomendado: 1200x700px - Mostrar el listado de facturas con filtros y opciones</small>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_list.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -515,11 +513,9 @@
                     <li>Esta sección muestra los servicios ya agregados y permite agregar nuevos</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-expand"></i>
-                    <p>Captura de pantalla: Sección de servicios en la consulta</p>
-                    <small>Recomendado: 1000x400px - Mostrar la sección de servicios expandida con el botón "Agregar Servicio"</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_encounteradd.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 2 -->
@@ -549,11 +545,9 @@
                     <p class="mb-0">Algunos sistemas tienen un panel de "Acceso Rápido" con los servicios más utilizados. Esto permite agregar servicios comunes con un solo clic sin necesidad de buscar.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search"></i>
-                    <p>Captura de pantalla: Buscador de servicios</p>
-                    <small>Recomendado: 800x500px - Mostrar el campo de búsqueda con resultados desplegados</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_search.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 3 -->
@@ -608,11 +602,9 @@
                     <li>Puede agregar múltiples servicios repitiendo el proceso</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-list-ul"></i>
-                    <p>Captura de pantalla: Lista de servicios agregados</p>
-                    <small>Recomendado: 900x400px - Mostrar tabla con servicios agregados, cantidades, precios y total</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_modify.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 5 -->
@@ -712,11 +704,9 @@
                     <li><strong>Marcado de Servicios:</strong> Los ChargeItems se marcan como "billed"</li>
                 </ol>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-cogs"></i>
-                    <p>Captura de pantalla: Mensaje de confirmación con factura generada</p>
-                    <small>Recomendado: 700x300px - Mostrar el mensaje de éxito con el número de factura y botón de descarga</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_list.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 3 -->
@@ -739,11 +729,9 @@
                     </li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-file-pdf"></i>
-                    <p>Captura de pantalla: PDF de factura</p>
-                    <small>Recomendado: 600x800px - Mostrar ejemplo de factura en PDF con todos los elementos</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_pdf.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <h3>¿Qué Pasa si No Hay Servicios Facturables?</h3>
@@ -788,11 +776,9 @@
                     </li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-list"></i>
-                    <p>Captura de pantalla: Listado de facturas</p>
-                    <small>Recomendado: 1200x600px - Mostrar tabla con facturas, filtros y opciones de búsqueda</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_list2.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- View Details -->
@@ -813,11 +799,9 @@
                     </li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-file-alt"></i>
-                    <p>Captura de pantalla: Detalle de factura</p>
-                    <small>Recomendado: 1000x800px - Mostrar vista completa del detalle de factura con todas las secciones</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_detail.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Download PDF -->
