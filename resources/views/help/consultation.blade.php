@@ -526,7 +526,7 @@
                     <li>Navegue a <strong>Citas → Calendario</strong></li>
                     <li>Localice la cita del paciente en el calendario</li>
                     <li>Haga clic en la cita para ver los detalles</li>
-                    <li>Presione el botón <strong>"Iniciar Consulta"</strong></li>
+                    <li>Presione el botón <strong>"Iniciar"</strong></li>
                 </ul>
 
             <div>
@@ -539,9 +539,9 @@
                 <h4><span class="step-number">2</span><span class="step-title">Desde el Listado de Citas</span></h4>
                 <p>También puede acceder desde la vista de lista:</p>
                 <ul>
-                    <li>Navegue a <strong>Citas → Listado</strong></li>
+                    <li>Navegue a <strong>Citas → Lista Citas</strong></li>
                     <li>Busque la cita del paciente usando los filtros</li>
-                    <li>En la columna de acciones, haga clic en el ícono de <i class="fas fa-stethoscope text-danger"></i> <strong>"Consultar"</strong></li>
+                    <li>En la columna de acciones, haga clic en </i> <strong>"Iniciar Consulta"</strong></li>
                 </ul>
 
             <div>
@@ -554,7 +554,7 @@
                 <h4><span class="step-number">3</span><span class="step-title">Desde el Perfil del Paciente</span></h4>
                 <p>Si está revisando el perfil de un paciente:</p>
                 <ul>
-                    <li>En el perfil del paciente, vaya a la sección <strong>"Citas Programadas"</strong></li>
+                    <li>En el perfil del paciente, vaya a la pestaña de <strong>"Citas"</strong></li>
                     <li>Localice la cita actual</li>
                     <li>Haga clic en <strong>"Iniciar Consulta"</strong></li>
                 </ul>
@@ -565,7 +565,7 @@
                     <i class="fas fa-exclamation-triangle text-warning"></i>
                     Importante
                 </div>
-                <p class="mb-0">Solo puede iniciar una consulta si la cita está en estado <strong>"Confirmada"</strong> o <strong>"Arrived"</strong>. Si la cita está en otro estado, primero debe actualizarla desde el módulo de citas.</p>
+                <p class="mb-0">Solo puede iniciar una consulta si la cita está en estado <strong>"LLegado"</strong>. Si la cita está en otro estado, primero debe actualizarla, ya sea que tenga que <strong>"Confirmar"</strong> o <strong>"Registrar Llegada"</strong>, todo dependerá del estado que tenga la cita.</p>
             </div>
         </section>
 
@@ -1014,7 +1014,7 @@
                 </div>
             </div>
 
-            <h3 class="mt-4">Atajos de Teclado</h3>
+            <!--<h3 class="mt-4">Atajos de Teclado</h3>
             <table class="field-table">
                 <thead>
                     <tr>
@@ -1036,9 +1036,9 @@
                         <td>Cerrar modal o diálogo abierto</td>
                     </tr>
                 </tbody>
-            </table>
+            </table>-->
 
-            <h3 class="mt-4">Teleconsultas</h3>
+            <!--<h3 class="mt-4">Teleconsultas</h3>
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-video text-primary"></i>
@@ -1052,7 +1052,7 @@
                     <li>Puede compartir pantalla si necesita mostrar algo al paciente</li>
                     <li>La videollamada se desconecta automáticamente al finalizar la consulta</li>
                 </ul>
-            </div>
+            </div> -->
 
             <h3 class="mt-4">Preguntas Frecuentes</h3>
 
