@@ -125,6 +125,11 @@ class ServiceCatalog extends BaseModel
         return $this->hasMany(ChargeItem::class, 'cpt_code', 'cpt_code');
     }
 
+    public function cptCodeInfo(): BelongsTo
+    {
+        return $this->belongsTo(CptCode::class, 'cpt_code', 'code');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -249,11 +254,10 @@ class ServiceCatalog extends BaseModel
     {
         $prefix = strtoupper(substr($this->service_type ?? 'SVC', 0, 3));
 
-
         // Buscar el último número usado para este prefijo (sin scope global)
         $lastCode = static::withoutGlobalScope(ServiceCatalogScope::class)
             ->where('code', 'like', $prefix.'_%')
-            //->where('client_id', $this->client_id ?? auth()->user()?->getCurrentClient()?->id)
+            // ->where('client_id', $this->client_id ?? auth()->user()?->getCurrentClient()?->id)
             ->orderByRaw('CAST(SUBSTRING(code, '.(strlen($prefix) + 2).') AS UNSIGNED) DESC')
             ->value('code');
 

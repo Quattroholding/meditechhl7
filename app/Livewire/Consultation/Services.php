@@ -98,13 +98,20 @@ class Services extends Component
                     ->orWhere('description', 'like', '%'.$this->query.'%')
                     ->orWhere('cpt_code', 'like', '%'.$this->query.'%');
             })
+            ->with('cptCodeInfo')
             ->select('id', 'name', 'description', 'base_price', 'cpt_code', 'service_type', 'duration_minutes')
             ->limit(10)
             ->get()
             ->map(function ($service) {
+                // Si cpt_code no es null, usar code + description_es de la tabla cpt_codes
+                // Si es null, usar el campo name de service_catalog
+                $displayName = $service->cpt_code && $service->cptCodeInfo
+                    ? $service->cptCodeInfo->code.' | '.$service->cptCodeInfo->description_es
+                    : $service->name;
+
                 return [
                     'id' => $service->id,
-                    'name' => $service->name,
+                    'name' => $displayName,
                     'description' => $service->description,
                     'price' => $service->base_price,
                     'cpt_code' => $service->cpt_code,
