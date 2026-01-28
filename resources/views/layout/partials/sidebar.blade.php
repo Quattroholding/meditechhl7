@@ -199,7 +199,7 @@
                     </ul>
                 </li>
                 @endcanany
-                @canany(['settings.create_user_procedures','settings.create_consultation_template','settings.create_rapid_access','settings.create_working_hour_user'])
+                @canany(['settings.create_user_procedures','settings.create_consultation_template','settings.create_rapid_access','settings.create_working_hour_user','settings.invoice_template'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
                             <i class="fa fa-cogs"></i></span>
@@ -216,6 +216,9 @@
                         @endcan
                         @can('settings.create_working_hour_user')
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
+                        @endcan
+                        @can('settings.invoice_template')
+                        <li><a class="{{ Request::is('settings/invoice-template') ? 'active' : '' }}"  href="{{ route('setting.invoice_template') }}">{{ __('Plantilla de Factura') }}</a></li>
                         @endcan
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>

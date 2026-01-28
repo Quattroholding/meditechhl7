@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientPreference;
 use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -69,11 +70,20 @@ class InvoiceController extends Controller
             ];
 
             // Determine which template to use
+            // Priority: 1. Request parameter, 2. Client preference, 3. Default template_1
             $templateNumber = $request->get('template', null);
-            $templateView = 'Invoice.invoice_template'; // default template
 
-            if ($templateNumber && view()->exists("Invoice.templates.template_{$templateNumber}")) {
+            if (! $templateNumber) {
+                // Get client's preferred template
+                $templateName = ClientPreference::getInvoiceTemplate($invoice->client_id, 'template_1');
+                $templateView = "Invoice.templates.{$templateName}";
+            } else {
                 $templateView = "Invoice.templates.template_{$templateNumber}";
+            }
+
+            // Fallback to default if template doesn't exist
+            if (! view()->exists($templateView)) {
+                $templateView = 'Invoice.templates.template_1';
             }
 
             // If HTML preview is requested

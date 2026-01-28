@@ -96,6 +96,11 @@ class Client extends BaseModel
         return $this->hasMany(ClientReferral::class, 'referrer_client_id');
     }
 
+    public function preferences()
+    {
+        return $this->hasMany(ClientPreference::class);
+    }
+
     public function getFullNameAttribute($attr)
     {
         return $attr->name; // Change the format to whichever you desire

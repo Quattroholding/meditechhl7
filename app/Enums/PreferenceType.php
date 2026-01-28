@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Enums;
+
+enum PreferenceType: string
+{
+    case INVOICE_TEMPLATE = 'invoice_template';
+    case EMAIL_SETTINGS = 'email_settings';
+    case NOTIFICATION_SETTINGS = 'notification_settings';
+    case APPOINTMENT_SETTINGS = 'appointment_settings';
+    case BILLING_SETTINGS = 'billing_settings';
+    case DOCUMENT_TEMPLATE = 'document_template';
+    case UI_PREFERENCES = 'ui_preferences';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::INVOICE_TEMPLATE => 'Plantilla de Factura',
+            self::EMAIL_SETTINGS => 'Configuración de Email',
+            self::NOTIFICATION_SETTINGS => 'Configuración de Notificaciones',
+            self::APPOINTMENT_SETTINGS => 'Configuración de Citas',
+            self::BILLING_SETTINGS => 'Configuración de Facturación',
+            self::DOCUMENT_TEMPLATE => 'Plantilla de Documentos',
+            self::UI_PREFERENCES => 'Preferencias de Interfaz',
+        };
+    }
+
+    public function description(): string
+    {
+        return match ($this) {
+            self::INVOICE_TEMPLATE => 'Selecciona el diseño de tus facturas',
+            self::EMAIL_SETTINGS => 'Configura opciones de correo electrónico',
+            self::NOTIFICATION_SETTINGS => 'Configura tus notificaciones',
+            self::APPOINTMENT_SETTINGS => 'Configura opciones de citas',
+            self::BILLING_SETTINGS => 'Configura opciones de facturación',
+            self::DOCUMENT_TEMPLATE => 'Selecciona plantillas para documentos',
+            self::UI_PREFERENCES => 'Personaliza tu interfaz',
+        };
+    }
+}

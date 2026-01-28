@@ -113,6 +113,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'settings.create_rapid_access', 'description' => 'Configurar lista de acceso rapido', 'module' => 'configuracones'],
             ['name' => 'settings.create_working_hour_user', 'description' => 'Configurar horario laboral', 'module' => 'configuracones'],
             ['name' => 'settings.signature_and_seal', 'description' => 'Configurar firma y sello digital de medico', 'module' => 'configuracones'],
+            ['name' => 'settings.invoice_template', 'description' => 'Seleccionar plantilla de facturas', 'module' => 'configuracones'],
 
             // Service Request
             ['name' => 'service_request.view', 'description' => 'Ver lista de Solicitud de Examenes', 'module' => 'examenes'],
@@ -152,13 +153,11 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'suscriptions.payments.verify', 'description' => 'Verificar pago de suscripcion', 'module' => 'suscripciones'],
             ['name' => 'suscriptions.invoices.destroy', 'description' => 'Cancelar pago de suscripcion', 'module' => 'suscripciones'],
 
-
             ['name' => 'tickets.index', 'description' => 'Ver tickets', 'module' => 'tickets'],
             ['name' => 'tickets.create', 'description' => 'Crear Tickets', 'module' => 'tickets'],
             ['name' => 'tickets.comment', 'description' => 'Comentar ticket', 'module' => 'tickets'],
             ['name' => 'tickets.change_status', 'description' => 'Comentar cambiar estauts', 'module' => 'tickets'],
             ['name' => 'tickets.assign', 'description' => 'Asignar ticket', 'module' => 'tickets'],
-
 
         ];
 
@@ -180,7 +179,7 @@ class RolePermissionSeeder extends Seeder
 
         // Create roles and assign permissions
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::whereNotIn('name',['dashboard.doctor','dashboard.patient','dashboard.client','dashboard.assistence','dashboard.accounting'])->get());
+        $adminRole->givePermissionTo(Permission::whereNotIn('name', ['dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting'])->get());
 
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
         $doctorRole->givePermissionTo([
@@ -215,6 +214,7 @@ class RolePermissionSeeder extends Seeder
             'settings.create_rapid_access',
             'settings.create_working_hour_user',
             'settings.signature_and_seal',
+            'settings.invoice_template',
             'service_request.view',
             'service_request.upload_result',
             'branches.view',
@@ -329,6 +329,7 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.download',
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
+            'settings.invoice_template',
             'tickets.index',
             'tickets.create',
             'tickets.comment',

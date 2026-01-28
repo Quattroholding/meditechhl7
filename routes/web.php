@@ -408,6 +408,9 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
 
     Route::get('/theme/{client_id}', [SettingController::class, 'themeManager'])->name('setting.theme_manager');
 
+    Route::get('/invoice-template', [SettingController::class, 'invoiceTemplate'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template');
+    Route::get('/invoice-template/preview/{template}', [SettingController::class, 'invoiceTemplatePreview'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template.preview');
+
 });
 
 // Roles and Permissions Routes
