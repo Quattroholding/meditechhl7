@@ -645,16 +645,16 @@
                                 Signos Vitales
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#examenes">
                                 <i class="fas fa-stethoscope"></i>
                                 Examenes Fisicos
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a href="#medicamentos">
                                 <i class="fas fa-pills"></i>
-                                Medicamentos
+                                Órdenes Médicas
                             </a>
                         </li>
                         <li>
@@ -675,12 +675,12 @@
                                 Agregar Antecedentes
                             </a>
                         </li>
-                        <li>
+                       <!-- <li>
                             <a href="#filtros">
                                 <i class="fas fa-filter"></i>
                                 Filtros y Busqueda
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -844,11 +844,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #1</h5>
-                            <p>Perfil del paciente con el boton/tab "Historia Medica" resaltado</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/menu.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <p class="mt-3">URL directa:</p>
@@ -857,11 +854,8 @@
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients/{id}/medical_history</code>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #2</h5>
-                            <p>Vista principal de la historia medica mostrando el menu lateral de secciones y el area de contenido</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/direct-mh.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -873,11 +867,8 @@
                     <div class="step-content">
                         <p>La seccion de <strong>Vista General</strong> muestra un resumen rapido del estado del paciente:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #3</h5>
-                            <p>Dashboard de Vista General mostrando estadisticas, actividad reciente y alertas</p>
-                            <span class="dimensions">Recomendado: 1200x800px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/general.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Informacion Mostrada:</h5>
@@ -925,11 +916,8 @@
                     <div class="step-content">
                         <p>Los <strong>antecedentes medicos</strong> registran eventos de salud historicos del paciente:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #4</h5>
-                            <p>Lista de antecedentes medicos con categorias, titulos y fechas</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-prev.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Categorias de Antecedentes:</h5>
@@ -981,11 +969,8 @@
                     <div class="step-content">
                         <p>Las <strong>condiciones</strong> son los diagnosticos registrados durante las consultas, codificados con el estandar <strong>ICD-10</strong>:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #5</h5>
-                            <p>Lista de condiciones mostrando codigo ICD-10, descripcion, estado y severidad</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/conditions.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Estados de una Condicion:</h5>
@@ -1032,11 +1017,8 @@
                     <div class="step-content">
                         <p>Los <strong>signos vitales</strong> son las mediciones fisiologicas tomadas durante las consultas:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #6</h5>
-                            <p>Tabla de signos vitales agrupados por encuentro, mostrando todos los valores medidos</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Signos Vitales Soportados:</h5>
@@ -1101,7 +1083,7 @@
                     </div>
                 </section>
 
-                <!-- Examenes Fisicos -->
+                <!-- Examenes Fisicos 
                 <section id="examenes" class="step-card">
                     <div class="step-number">6</div>
                     <h3 class="step-title">Examenes Fisicos</h3>
@@ -1133,26 +1115,22 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> -->
 
                 <!-- Medicamentos -->
                 <section id="medicamentos" class="step-card">
-                    <div class="step-number">7</div>
-                    <h3 class="step-title">Medicamentos</h3>
+                    <div class="step-number">6</div>
+                    <h3 class="step-title">Órdenes Médicas</h3>
                     <div class="step-content">
-                        <p>La seccion de <strong>medicamentos</strong> muestra todas las prescripciones realizadas:</p>
+                        <p>La seccion de <strong>órdenes médicas</strong> muestra todas las prescripciones de medicamentos y solicitudes de imágenes y laboratorio realizadas:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #8</h5>
-                            <p>Lista de medicamentos prescritos con nombre, dosis, frecuencia y duracion</p>
-                            <span class="dimensions">Recomendado: 1200x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-order.png') }}" alt="" style="width: 100%;">
                         </div>
-
-                        <div class="info-box info-note">
-                            <i class="fas fa-pills"></i>
+                        <div class="info-box info-note" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <i class="fas fa-pills" style="color: #059669;"></i>
                             <div>
-                                <strong>Informacion incluida:</strong>
+                                <strong>Informacion incluida en medicamentos:</strong>
                                 <ul class="mb-0 mt-2">
                                     <li>Nombre del medicamento</li>
                                     <li>Dosis y forma de administracion</li>
@@ -1162,27 +1140,36 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-pills"></i>
+                            <div>
+                                <strong>Informacion incluida en solicitudes de imágenes y laboratorios:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Nombre del estudio o servicio</li>
+                                    <li>Código del estudio</li>
+                                    <li>Tipo de estudio</li>
+                                    <li>Cantidad</li>
+                                    <li>Fecha</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Notas Clinicas -->
                 <section id="notas" class="step-card">
-                    <div class="step-number">8</div>
-                    <h3 class="step-title">Notas Clinicas</h3>
+                    <div class="step-number">7</div>
+                    <h3 class="step-title">Notas Clínicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>notas clinicas</strong> son las impresiones diagnosticas y observaciones del medico:</p>
+                        <p>Las <strong>notas clínicas</strong> son las impresiones diagnosticas y observaciones del medico:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #9</h5>
-                            <p>Lista de notas clinicas con fecha, medico y contenido</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-note.png') }}" alt="" style="width: 100%;">
                         </div>
-
                         <div class="row mt-4">
                             <div class="col-md-6">
                                 <div class="sub-step">
-                                    <h6><i class="fas fa-comment-medical me-2"></i>Notas Clinicas</h6>
+                                    <h6><i class="fas fa-comment-medical me-2"></i>Notas Clínicas</h6>
                                     <p class="mb-0">Impresiones diagnosticas formales que forman parte del expediente oficial.</p>
                                 </div>
                             </div>
@@ -1198,22 +1185,19 @@
 
                 <!-- Licencias Medicas -->
                 <section id="licencias" class="step-card">
-                    <div class="step-number">9</div>
-                    <h3 class="step-title">Licencias Medicas</h3>
+                    <div class="step-number">8</div>
+                    <h3 class="step-title">Licencias Médicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>licencias medicas</strong> (incapacidades) emitidas al paciente:</p>
+                        <p>Las <strong>licencias médicas</strong> (incapacidades) emitidas al paciente:</p>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #10</h5>
-                            <p>Lista de licencias medicas con fechas de inicio/fin, diagnostico y duracion</p>
-                            <span class="dimensions">Recomendado: 1200x500px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-license.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
-                                <strong>Descarga:</strong> Las licencias medicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
+                                <strong>Descarga:</strong> Las licencias médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
                             </div>
                         </div>
                     </div>
@@ -1221,15 +1205,15 @@
 
                 <!-- Agregar Antecedentes -->
                 <section id="agregar" class="step-card step-success">
-                    <div class="step-number">10</div>
-                    <h3 class="step-title">Agregar Antecedentes Medicos</h3>
+                    <div class="step-number">9</div>
+                    <h3 class="step-title">Agregar Antecedentes Médicos</h3>
                     <div class="step-content">
-                        <p>Puedes agregar manualmente antecedentes medicos historicos del paciente:</p>
+                        <p>Puedes agregar manualmente antecedentes médicos historicos del paciente:</p>
 
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
-                                <li>En la seccion de "Antecedentes Medicos", haz clic en <strong>"Agregar"</strong></li>
+                                <li>En la seccion de "Antecedentes Médicos", haz clic en <strong>"Agregar"</strong></li>
                                 <li>Selecciona la <strong>categoria</strong> (alergia, cirugia, etc.)</li>
                                 <li>Ingresa el <strong>titulo</strong> descriptivo</li>
                                 <li>Agrega una <strong>descripcion</strong> detallada</li>
@@ -1238,11 +1222,8 @@
                             </ol>
                         </div>
 
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                            <h5>Captura de Pantalla #11</h5>
-                            <p>Modal de agregar antecedente medico con campos de categoria, titulo, descripcion y fecha</p>
-                            <span class="dimensions">Recomendado: 800x600px</span>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/modal-prev.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-warning">
@@ -1254,7 +1235,7 @@
                     </div>
                 </section>
 
-                <!-- Filtros y Busqueda -->
+                <!-- Filtros y Busqueda 
                 <section id="filtros" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Filtros y Busqueda</h3>
@@ -1300,7 +1281,7 @@
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </section>-->
 
                 <!-- Siguientes Pasos -->
                 <section class="step-card step-success">
