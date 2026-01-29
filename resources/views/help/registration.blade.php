@@ -306,7 +306,7 @@
             color: #d32f2f;
         }
 
-        /* Field Table */
+        /* Field Table 
         .field-table {
             width: 100%;
             margin: 20px 0;
@@ -351,7 +351,68 @@
 
         .field-table .optional {
             color: #757575;
+        }*/
+
+        /* Field Table - Desktop & Mobile Responsive */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
         }
+
+        .field-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .field-table th {
+            background: #1a237e;
+            color: #fff;
+            padding: 15px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .field-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .field-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .field-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: #fff;
+        }
+
+        .field-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .field-table tr:last-child td:first-child {
+            border-radius: 0 0 0 10px;
+        }
+
+        .field-table tr:last-child td:last-child {
+            border-radius: 0 0 10px 0;
+        }
+
+        .field-table .required {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .field-table .optional {
+            color: #757575;
+        }
+
 
         /* Pricing Table - Desktop & Mobile Responsive */
         .pricing-table-wrapper {
@@ -787,7 +848,18 @@
             .pricing-table tr.recommended td[data-label="Plan"] strong {
                 color: white;
             }
+
         }
+        /* Tablets 
+        @media screen and (min-width: 481px) and (max-width: 768px) {
+            .field-table td[data-label="Campo"] {
+                font-size: 17px;
+            }
+            
+            .field-table td[data-label="Descripcion"] {
+                font-size: 15px;
+            }
+        }*/
 
         /* Extra small devices */
         @media screen and (max-width: 480px) {
@@ -817,6 +889,82 @@
             body{
                 text-align: center;
             }
+
+                .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: left;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #1a237e;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #0d47a1;
+            }
+            
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Requerido"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Requerido"]:before {
+                content: "Requerido: ";
+                font-weight: 600;
+                color: #1a237e;
+                margin-right: 5px;
+            }
+
         }
 
     </style>
@@ -1206,13 +1354,13 @@
                     <div class="step-content">
                         <p>Una vez hayas seleccionado tu plan desde el landing page, seras redirigido al formulario de registro con tu plan pre-seleccionado:</p>
 
-                        <div class="sub-step">
+                        {{--}}<div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL del Formulario</h6>
                             <div class="code-block">
                                 {{ config('app.url') }}/register/client?package={id}
                             </div>
                             <p class="mt-2 mb-0"><small class="text-muted">Notaras que la URL incluye el parametro <code>package</code> con el ID del plan seleccionado.</small></p>
-                        </div>
+                        </div>{{--}}
 
                         <div class="yappy-img">
                             <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/register_form.png') }}" alt="">
@@ -1241,8 +1389,65 @@
                     <h3 class="step-title">Completar Datos Personales</h3>
                     <div class="step-content">
                         <p>Ingresa tu informacion personal basica:</p>
-
+                    <div class="field-table-wrapper">
                         <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descripcion</th>
+                                    <th>Requerido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Campo"><strong>Tipo de Documento</strong></td>
+                                    <td data-label="Descripcion">Selecciona CC, PA, CE o PT</td>
+                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Numero de Documento</strong></td>
+                                    <td data-label="Descripcion">Tu numero de identificacion</td>
+                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Nombre</strong></td>
+                                    <td data-label="Descripcion">Tu nombre (s)</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Apellido</strong></td>
+                                    <td data-label="Descripcion">Tu apellido (s)</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Correo Electronico</strong></td>
+                                    <td data-label="Descripcion">Email para credenciales y notificaciones</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Telefono</strong></td>
+                                    <td data-label="Descripcion">Con codigo de pais (+507, +1, etc.)</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Contrasena</strong></td>
+                                    <td data-label="Descripcion">Minimo 8 caracteres</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Confirmar Contrasena</strong></td>
+                                    <td data-label="Descripcion">Repetir la contrasena</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Genero</strong></td>
+                                    <td data-label="Descripcion">Masculino o Femenino (para titulo Dr./Dra.)</td>
+                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                        <!--<table class="field-table">
                             <thead>
                                 <tr>
                                     <th>Campo</th>
@@ -1297,7 +1502,7 @@
                                     <td><span class="required">Si*</span></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>-->
 
                         <!--<p class="mt-3"><small class="text-muted">* Requerido solo para planes individuales (1 usuario)</small></p>-->
 

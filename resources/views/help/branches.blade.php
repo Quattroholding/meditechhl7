@@ -288,7 +288,7 @@
             color: #d32f2f;
         }
 
-        /* Field Table */
+        /* Field Table 
         .field-table {
             width: 100%;
             margin: 20px 0;
@@ -333,7 +333,69 @@
 
         .field-table .optional {
             color: #757575;
+        }*/
+
+        /* Field Table - Desktop & Mobile Responsive */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
         }
+
+        .field-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .field-table th {
+            background: #1a237e;
+            color: #fff;
+            padding: 15px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .field-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .field-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .field-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: #fff;
+        }
+
+        .field-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .field-table tr:last-child td:first-child {
+            border-radius: 0 0 0 10px;
+        }
+
+        .field-table tr:last-child td:last-child {
+            border-radius: 0 0 10px 0;
+        }
+
+        .field-table .required {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .field-table .optional {
+            color: #757575;
+        }
+
+
 
         /* Hierarchy Diagram */
         .hierarchy-diagram {
@@ -588,6 +650,144 @@
                 page-break-inside: avoid;
             }
         }
+             /* Extra small devices */
+        @media screen and (max-width: 480px) {
+            .pricing-table td {
+                padding: 10px 12px;
+                padding-left: 45%;
+                font-size: 14px;
+            }
+            
+            .pricing-table td:before {
+                font-size: 13px;
+                width: 40%;
+            }
+            .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+            .info-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .step-card{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid var(--success-color)
+            }
+            .hierarchy-level {
+                margin: 0 auto;
+            }
+            .hierarchy-diagram {
+                padding: 15px;
+            }
+            body{
+                text-align: center;
+            }
+            /*Títulos de pasos*/
+
+            .step-title {
+                padding-left: 0;
+                padding-top: 5%;
+
+            }
+            .step-number {
+                left: 45%;
+            }
+
+                .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: left;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #1b5e20;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #0b6210;
+            }
+            
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Requerido"]:before {
+                content: "Requerido: ";
+                font-weight: 600;
+                color: #1b5e20;
+                margin-right: 5px;
+            }
+
+        }
+
+         @media screen and (max-width: 400px) {
+            .step-number{
+                left: 44%;
+            }
+         }
+        @media screen and (max-width: 350px) {
+            .step-number{
+                left: 43%;
+            }
+         }
+                 @media screen and (max-width: 325px) {
+            .step-number{
+                left: 42%;
+            }
+         }
     </style>
 </head>
 <body>
@@ -606,26 +806,26 @@
 
         <!-- Module Header -->
         <div class="module-header">
-            <h1><i class="fas fa-building me-3"></i>Guia para Crear Sucursales</h1>
-            <p>Aprende a configurar las sucursales de tu clinica o consultorio. Las sucursales representan las ubicaciones fisicas donde atenderas a tus pacientes.</p>
+            <h1><i class="fas fa-building me-3"></i>Guía para Crear Sucursales</h1>
+            <p>Aprende a configurar las sucursales de tu clínica o consultorio. Las sucursales representan las ubicaciones físicas donde atenderas a tus pacientes.</p>
         </div>
 
         <div class="row">
             <!-- Table of Contents -->
             <div class="col-lg-4">
                 <div class="toc-card sticky-top" style="top: 20px;">
-                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guia</h5>
+                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                     <ul class="toc-list">
                         <li>
                             <a href="#concepto">
                                 <i class="fas fa-info-circle"></i>
-                                Que es una Sucursal?
+                                ¿Qué es una Sucursal?
                             </a>
                         </li>
                         <li>
                             <a href="#jerarquia">
                                 <i class="fas fa-sitemap"></i>
-                                Jerarquia del Sistema
+                                Jerarquía del Sistema
                             </a>
                         </li>
                         <li>
@@ -643,7 +843,7 @@
                         <li>
                             <a href="#paso-1">
                                 <i class="fas fa-mouse-pointer"></i>
-                                Paso 1: Acceder al Modulo
+                                Paso 1: Acceder al Módulo
                             </a>
                         </li>
                         <li>
@@ -690,7 +890,7 @@
             <div class="col-lg-8">
                 <!-- Que es una Sucursal -->
                 <section id="concepto" class="step-card step-info">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>Que es una Sucursal?</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>¿Qué es una Sucursal?</h3>
                     <div class="step-content">
                         <p>Una <strong>sucursal</strong> (o branch) representa una <strong>ubicacion fisica</strong> donde tu clinica o consultorio ofrece servicios medicos. Puede ser:</p>
 
@@ -699,21 +899,21 @@
                                 <i class="fas fa-check-circle"></i>
                                 <div>
                                     <strong>Tu consultorio principal</strong><br>
-                                    <small class="text-muted">La ubicacion donde atiendes regularmente</small>
+                                    <small class="text-muted">La ubicación donde atiendes regularmente</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Una clinica o centro medico</strong><br>
-                                    <small class="text-muted">Instalaciones con multiples areas de atencion</small>
+                                    <strong>Una clínica o centro médico</strong><br>
+                                    <small class="text-muted">Instalaciones con múltiples áreas de atención</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
                                     <strong>Sucursales adicionales</strong><br>
-                                    <small class="text-muted">Otras ubicaciones donde tambien brindas servicios</small>
+                                    <small class="text-muted">Otras ubicaciones donde también brindas servicios</small>
                                 </div>
                             </li>
                         </ul>
@@ -721,7 +921,7 @@
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Importante:</strong> Cada sucursal puede contener <strong>multiples consultorios</strong>. Debes crear al menos una sucursal antes de poder crear consultorios.
+                                <strong>Importante:</strong> Cada sucursal puede contener <strong>múltiples consultorios</strong>. Debes crear al menos una sucursal antes de poder crear consultorios.
                             </div>
                         </div>
                     </div>
@@ -729,28 +929,28 @@
 
                 <!-- Jerarquia del Sistema -->
                 <section id="jerarquia" class="step-card step-primary">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-sitemap me-2"></i>Jerarquia del Sistema</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-sitemap me-2"></i>Jerarquía del Sistema</h3>
                     <div class="step-content">
-                        <p>El sistema SAMI utiliza una estructura jerarquica de tres niveles para organizar tu practica medica:</p>
+                        <p>El sistema SAMI utiliza una estructura jerarquica de tres niveles para organizar tu práctica médica:</p>
 
                         <div class="hierarchy-diagram">
                             <div class="hierarchy-level">
                                 <div class="hierarchy-box client">
                                     <i class="fas fa-hospital"></i>
                                     <h6>Cliente</h6>
-                                    <p>Tu Clinica/Organizacion</p>
+                                    <p>Tu Clínica/Organización</p>
                                 </div>
                                 <div class="hierarchy-connector"></div>
                                 <div class="hierarchy-box branch">
                                     <i class="fas fa-building"></i>
                                     <h6>Sucursal</h6>
-                                    <p>Ubicacion Fisica</p>
+                                    <p>Ubicación Física</p>
                                 </div>
                                 <div class="hierarchy-connector"></div>
                                 <div class="hierarchy-box room">
                                     <i class="fas fa-door-open"></i>
                                     <h6>Consultorio</h6>
-                                    <p>Espacio de Atencion</p>
+                                    <p>Espacio de Atención</p>
                                 </div>
                             </div>
                         </div>
@@ -760,14 +960,14 @@
                                 <div class="text-center p-3">
                                     <span class="badge bg-primary fs-6 mb-2">Nivel 1</span>
                                     <h6>Cliente</h6>
-                                    <p class="small text-muted">Se crea automaticamente al registrarte. Representa tu organizacion.</p>
+                                    <p class="small text-muted">Se crea automáticamente al registrarte. Representa tu organización.</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="text-center p-3 bg-light rounded">
                                     <span class="badge bg-success fs-6 mb-2">Nivel 2</span>
                                     <h6>Sucursal</h6>
-                                    <p class="small text-muted"><strong>Estas aqui.</strong> Crea tus ubicaciones fisicas.</p>
+                                    <p class="small text-muted"><strong>Estás aqui.</strong> Crea tus ubicaciones físicas.</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -894,11 +1094,11 @@
                             <img src="{{ asset('images/tutorial/branches/branch.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <p class="mt-3">Tambien puedes acceder directamente via URL:</p>
+                        {{--}}<p class="mt-3">Tambien puedes acceder directamente via URL:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/clients/branch</code>
-                        </div>
+                        </div>{{--}}
                     </div>
                 </section>
 
@@ -934,6 +1134,7 @@
                         </div>
 
                         <h5 class="mt-4 mb-3">Campos del Formulario:</h5>
+                    <div class="field-table-wrapper">
                         <table class="field-table">
                             <thead>
                                 <tr>
@@ -944,13 +1145,13 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Cliente</strong></td>
-                                    <td>Selecciona a que clinica/organizacion pertenece esta sucursal. Si solo tienes una, se selecciona automaticamente.</td>
-                                    <td><span class="required">Si</span></td>
+                                    <!--<td data-label="Campo"><strong>Cliente</strong></td>
+                                    <td data-label="Descripcion">Selecciona a que clinica/organizacion pertenece esta sucursal. Si solo tienes una, se selecciona automaticamente.</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>-->
                                 </tr>
                                 <tr>
-                                    <td><strong>Tipo</strong></td>
-                                    <td>
+                                    <td data-label="Campo"><strong>Tipo</strong></td>
+                                    <td data-label="Descripcion">
                                         Clasificacion del establecimiento:
                                         <ul class="mb-0 mt-1">
                                             <li>Consultorio</li>
@@ -959,36 +1160,36 @@
                                             <li>Hospital</li>
                                         </ul>
                                     </td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Nombre</strong></td>
-                                    <td>Nombre identificativo de la sucursal. Ej: "Sede Central", "Consultorio Norte", "Clinica Las Palmas"</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Nombre</strong></td>
+                                    <td data-label="Descripcion">Nombre identificativo de la sucursal. Ej: "Sede Central", "Consultorio Norte", "Clínica Las Palmas".</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Telefono</strong></td>
-                                    <td>Numero de contacto de la sucursal con codigo de pais (+507, +1, etc.)</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Teléfono</strong></td>
+                                    <td data-label="Descripcion">Número de contacto de la sucursal con código de país (+507, +1, etc).</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Direccion</strong></td>
-                                    <td>Direccion fisica completa de la ubicacion</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Dirección</strong></td>
+                                    <td data-label="Descripcion">Dirección física completa de la ubicación.</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Pais</strong></td>
-                                    <td>Pais donde se encuentra la sucursal</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>País</strong></td>
+                                    <td data-label="Descripcion">País donde se encuentra la sucursal.</td>
+                                    <td data-label="Opcional"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Provincia/Estado</strong></td>
-                                    <td>Division administrativa (se carga automaticamente al seleccionar pais)</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Provincia/Estado</strong></td>
+                                    <td data-label="Descripcion">División administrativa (se carga automáticamente al seleccionar país).</td>
+                                    <td data-label="Opcional"><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
                         </table>
-
+                    </div>
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>

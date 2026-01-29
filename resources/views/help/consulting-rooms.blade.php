@@ -288,7 +288,7 @@
             color: #d32f2f;
         }
 
-        /* Field Table */
+        /* Field Table 
         .field-table {
             width: 100%;
             margin: 20px 0;
@@ -333,7 +333,68 @@
 
         .field-table .optional {
             color: #757575;
+        } */
+
+        /* Field Table - Desktop & Mobile Responsive */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
         }
+
+        .field-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .field-table th {
+            background: #1a237e;
+            color: #fff;
+            padding: 15px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .field-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .field-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .field-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: #fff;
+        }
+
+        .field-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .field-table tr:last-child td:first-child {
+            border-radius: 0 0 0 10px;
+        }
+
+        .field-table tr:last-child td:last-child {
+            border-radius: 0 0 10px 0;
+        }
+
+        .field-table .required {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .field-table .optional {
+            color: #757575;
+        }
+
 
         /* Relationship Diagram */
         .relationship-diagram {
@@ -588,6 +649,151 @@
                 page-break-inside: avoid;
             }
         }
+                     /* Extra small devices */
+        @media screen and (max-width: 480px) {
+            .pricing-table td {
+                padding: 10px 12px;
+                padding-left: 45%;
+                font-size: 14px;
+            }
+            
+            .pricing-table td:before {
+                font-size: 13px;
+                width: 40%;
+            }
+            .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+            .info-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .step-card{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid var(--info-color)
+            }
+            .example-item {
+                flex-direction:column; 
+            }
+            .checklist li {
+                flex-direction: column;
+                align-items: center;
+            }
+            .toc-list a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            body{
+                text-align: center;
+            }
+            /*Títulos de pasos*/
+
+            .step-title {
+                padding-left: 0;
+                padding-top: 5%;
+
+            }
+            .step-number {
+                left: 45%;
+            }
+
+                .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: left;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #1a237e;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #0d47a1;
+            }
+            
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Requerido"]:before {
+                content: "Requerido: ";
+                font-weight: 600;
+                color: #1b5e20;
+                margin-right: 5px;
+            }
+
+        }
+
+         @media screen and (max-width: 400px) {
+            .step-number{
+                left: 44%;
+            }
+         }
+        @media screen and (max-width: 350px) {
+            .step-number{
+                left: 43%;
+            }
+         }
+                 @media screen and (max-width: 325px) {
+            .step-number{
+                left: 42%;
+            }
+         }
+
     </style>
 </head>
 <body>
@@ -875,11 +1081,11 @@
                             <img src="{{ asset('images/tutorial/consulting_rooms/create.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <p class="mt-3">URL directa:</p>
+                        {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/clients/consulting_rooms</code>
-                        </div>
+                        </div>{{--}}
 
                         <div>
                             <img src="{{ asset('images/tutorial/consulting_rooms/index.png') }}" alt="" style="width: 100%;">
@@ -920,6 +1126,7 @@
 
 
                         <h5 class="mt-4 mb-3">Campos del Formulario:</h5>
+                        <div class="field-table-wrapper">
                         <table class="field-table">
                             <thead>
                                 <tr>
@@ -930,31 +1137,29 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Sucursal</strong></td>
-                                    <td>
-                                        Selecciona la sucursal a la que pertenecera este consultorio.
-                                        <br><small class="text-danger">Este campo es crucial - determina donde se ubica fisicamente el consultorio.</small>
-                                    </td>
-                                    <td>"Sede Centro"</td>
+                                    <td data-label="Campo"><strong>Sucursal</strong></td>
+                                    <td data-label="Descripcion">Selecciona la sucursal a la que pertenecera este consultorio.
+                                        <br><small class="text-danger">Este campo es crucial - determina donde se ubica fisicamente el consultorio.</small>.</td>
+                                    <td data-label="Ejemplo">"Sede Centro"</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Nombre</strong></td>
-                                    <td>Nombre descriptivo del consultorio. Puede indicar su uso o especialidad.</td>
-                                    <td>"Consultorio de Cardiologia", "Sala de Procedimientos", "Consultorio 1"</td>
+                                    <td data-label="Campo"><strong>Nombre</strong></td>
+                                    <td data-label="Descripcion">Nombre descriptivo del consultorio. Puede indicar su uso o especialidad.</td>
+                                    <td data-label="Ejemplo">"Consultorio de Cardiologia", "Sala de Procedimientos", "Consultorio 1"</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Numero</strong></td>
-                                    <td>Numero o codigo identificador del consultorio dentro de la sucursal.</td>
-                                    <td>"101", "A-1", "C1"</td>
+                                    <td data-label="Campo"><strong>Numero</strong></td>
+                                    <td data-label="Descripcion">Numero o codigo identificador del consultorio dentro de la sucursal.</td>
+                                    <td data-label="Ejemplo">"101", "A-1", "C1"</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Piso</strong></td>
-                                    <td>Nivel o piso donde se encuentra el consultorio.</td>
-                                    <td>"1", "Planta Baja", "2do Piso"</td>
+                                    <td data-label="Campo"><strong>Piso</strong></td>
+                                    <td data-label="Descripcion">Nivel o piso donde se encuentra el consultorio.</td>
+                                    <td data-label="Ejemplo">"1", "Planta Baja", "2do Piso"</td>
                                 </tr>
                             </tbody>
                         </table>
-
+                        </div>
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
