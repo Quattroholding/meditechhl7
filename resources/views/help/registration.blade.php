@@ -353,6 +353,73 @@
             color: #757575;
         }
 
+        /* Pricing Table - Desktop & Mobile Responsive */
+        .pricing-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .pricing-table th {
+            background: #1a237e;
+            color: #fff;
+            padding: 15px;
+            font-weight: 600;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .pricing-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: #fff;
+        }
+
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pricing-table tr.recommended {
+            background-color: #e8f5e9;
+        }
+
+        .pricing-table tr.recommended td {
+            background-color: #e8f5e9;
+        }
+
+        .badge-recommended {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .text-muted {
+            color: #757575;
+        }
+
+        .text-success {
+            color: #4caf50;
+        }
+
+        .text-danger {
+            color: #d32f2f;
+        }
+
+
         /* Flow Diagram */
         .flow-diagram {
             display: flex;
@@ -657,6 +724,101 @@
             align-items: center;
         }
         .yappy-imgsize{width: 276px; height: 593px; }
+        /* RESPONSIVE - Mobile */
+        @media screen and (max-width: 768px) {
+            .pricing-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .pricing-table thead {
+                display: none;
+            }
+            
+            .pricing-table tbody {
+                display: block;
+            }
+            
+            .pricing-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            .pricing-table td {
+                display: block;
+                text-align: left;
+                padding: 12px 15px;
+                border-bottom: 1px solid #e9ecef;
+                position: relative;
+                padding-left: 50%;
+            }
+            
+            .pricing-table td:last-child {
+                border-bottom: none;
+            }
+            
+            .pricing-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: 45%;
+                font-weight: 600;
+                color: #1a237e;
+            }
+            
+            .pricing-table td[data-label="Plan"] {
+                background: #f5f5f5;
+                font-size: 16px;
+                padding-left: 15px;
+            }
+            
+            .pricing-table td[data-label="Plan"]:before {
+                display: none;
+            }
+            
+            .pricing-table tr.recommended td[data-label="Plan"] {
+                background: #4caf50;
+                color: white;
+            }
+            
+            .pricing-table tr.recommended td[data-label="Plan"] strong {
+                color: white;
+            }
+        }
+
+        /* Extra small devices */
+        @media screen and (max-width: 480px) {
+            .pricing-table td {
+                padding: 10px 12px;
+                padding-left: 45%;
+                font-size: 14px;
+            }
+            
+            .pricing-table td:before {
+                font-size: 13px;
+                width: 40%;
+            }
+            .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+            .info-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .step-card{
+                border-left: none;
+                padding: 25px;
+            }
+            body{
+                text-align: center;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -910,7 +1072,50 @@
                     <div class="step-content">
                         <p>SAMI ofrece tres planes para registro publico (el plan Empresarial solo esta disponible contactando ventas):</p>
 
-                        <table class="field-table">
+                        <div class="pricing-table-wrapper">
+                            <table class="pricing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Plan</th>
+                                        <th>Precio/mes</th>
+                                        <th>Usuarios</th>
+                                        <th>Citas</th>
+                                        <th>SAMI</th>
+                                        <th>Directorio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Plan"><strong>Basico</strong></td>
+                                        <td data-label="Precio/mes">$49.99</td>
+                                        <td data-label="Usuarios">1</td>
+                                        <td data-label="Citas">30/mes</td>
+                                        <td data-label="SAMI"><span class="text-muted">Tentativo</span></td>
+                                        <td data-label="Directorio"><i class="fas fa-times text-danger"></i></td>
+                                    </tr>
+                                    <tr class="recommended">
+                                        <td data-label="Plan">
+                                            <strong>Estandar ⭐</strong><br>
+                                            <small class="badge-recommended">RECOMENDADO</small>
+                                        </td>
+                                        <td data-label="Precio/mes">$74.99</td>
+                                        <td data-label="Usuarios">1</td>
+                                        <td data-label="Citas">Ilimitadas</td>
+                                        <td data-label="SAMI"><i class="fas fa-check text-success"></i> Activo</td>
+                                        <td data-label="Directorio"><i class="fas fa-check text-success"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Plan"><strong>Premium</strong></td>
+                                        <td data-label="Precio/mes">$124.99</td>
+                                        <td data-label="Usuarios">4</td>
+                                        <td data-label="Citas">Ilimitadas</td>
+                                        <td data-label="SAMI"><i class="fas fa-check text-success"></i> Activo</td>
+                                        <td data-label="Directorio"><i class="fas fa-check text-success"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--<table class="field-table">
                             <thead>
                                 <tr>
                                     <th>Plan</th>
@@ -947,7 +1152,7 @@
                                     <td><i class="fas fa-check text-success"></i></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>-->
 
                         <h5 class="mt-4">Diferencias Clave Entre Planes:</h5>
 
@@ -1009,8 +1214,8 @@
                             <p class="mt-2 mb-0"><small class="text-muted">Notaras que la URL incluye el parametro <code>package</code> con el ID del plan seleccionado.</small></p>
                         </div>
 
-                        <div class="screenshot-registerclient">
-                            <img src="{{ asset('images/tutorial/register/register_form.png') }}" alt="" style="margin: 0 auto;">
+                        <div class="yappy-img">
+                            <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/register_form.png') }}" alt="">
                         </div>
 
                         <div class="info-box info-note">
@@ -1116,8 +1321,8 @@
                     <div class="step-content">
                         <p>Selecciona tu especialidad medica de la lista disponible:</p>
 
-                        <div>
-                            <img src="{{ asset('images/tutorial/register/speciality.png') }}" alt="">
+                        <div class="yappy-img">
+                            <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/speciality.png') }}" alt="">
                         </div>
 
                         <div class="info-box info-note">
@@ -1272,8 +1477,8 @@
                     <div class="step-content">
                         <p>Una vez enviado el formulario exitosamente, seras redirigido a la pagina de confirmacion:</p>
 
-                        <div>
-                            <img src="{{ asset('images/tutorial/register/register_completed.png') }}" alt="">
+                        <div class="yappy-img">
+                            <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/register_completed.png') }}" alt="">
                         </div>
 
                         <h5 class="mt-4">Lo que sucede automaticamente:</h5>
@@ -1303,7 +1508,7 @@
                                 <i class="fas fa-file-invoice-dollar text-primary"></i>
                                 <div>
                                     <strong>Factura Generada</strong><br>
-                                    <small class="text-muted">Se genera la primera factura de tu suscripcion</small>
+                                    <small class="text-muted">Se genera la primera factura de tu suscripción</small>
                                 </div>
                             </li>
                             <li>
@@ -1377,7 +1582,7 @@
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
                                     <h6>1. Clic en el Botón de Yappy</h6>
-                                    <p>Puede procesar su pago de esta forma, puede acceder a este botón de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong> <br>2. Debe iniciar sesión, ir a <strong>Suscripción</strong>→<strong>Facturas</strong>→<strong>Detalle</strong>(botón del ojo) y se despliega la pantalla de detalle de factura.</p>
+                                    <p>Puede procesar su pago de esta forma, puede acceder a este botón de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong> <br>2. Debe iniciar sesión, ir a <strong>Suscripción</strong> → <strong>Facturas</strong> → <strong>Detalle</strong>(botón del ojo) y se despliega la pantalla de detalle de factura.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/yappy.png') }}" alt="" style="width: 100%;">
                                     </div>                                    
