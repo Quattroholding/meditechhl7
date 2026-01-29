@@ -42,7 +42,6 @@ require __DIR__.'/auth.php';
 Route::get('/', [LandingController::class, 'index'])->name('welcome');
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
-
 Route::get('/patient', [LandingController::class, 'patientLanding'])->name('patients.landing');
 /*
 Route::get('/register', function () {
@@ -410,6 +409,9 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
 
     Route::get('/invoice-template', [SettingController::class, 'invoiceTemplate'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template');
     Route::get('/invoice-template/preview/{template}', [SettingController::class, 'invoiceTemplatePreview'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template.preview');
+
+    Route::get('/medical-leave-template', [SettingController::class, 'medicalLeaveTemplate'])->name('setting.medical_leave_template');
+    Route::get('/medical-leave-template/preview/{template}', [SettingController::class, 'medicalLeaveTemplatePreview'])->name('setting.medical_leave_template.preview');
 
 });
 

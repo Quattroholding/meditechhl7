@@ -44,6 +44,7 @@ class MedicalLeaveMail extends Mailable
             with: [
                 'medicalLeave' => $this->medicalLeave,
                 'patientName' => $this->medicalLeave->patient_name,
+                'patientIdentifier' => $this->medicalLeave->patient->identifier,
                 'practitionerName' => $this->medicalLeave->practitioner_name,
                 'identifier' => $this->medicalLeave->identifier,
                 'totalDays' => $this->medicalLeave->total_days,

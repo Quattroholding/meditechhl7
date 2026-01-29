@@ -159,7 +159,7 @@ class SettingController extends Controller
         // Sample line items
         $lineItems = collect([
             (object) [
-                'sequence'=>1,
+                'sequence' => 1,
                 'service_code' => 'CONS-001',
                 'service_description' => 'Consulta General',
                 'quantity' => 1,
@@ -167,7 +167,7 @@ class SettingController extends Controller
                 'line_total_gross' => 75.00,
             ],
             (object) [
-                'sequence'=>2,
+                'sequence' => 2,
                 'service_code' => 'LAB-002',
                 'service_description' => 'Análisis de Laboratorio - Hemograma Completo',
                 'quantity' => 1,
@@ -175,7 +175,7 @@ class SettingController extends Controller
                 'line_total_gross' => 45.00,
             ],
             (object) [
-                'sequence'=>3,
+                'sequence' => 3,
                 'service_code' => 'ECG-003',
                 'service_description' => 'Electrocardiograma (ECG)',
                 'quantity' => 1,
@@ -183,7 +183,7 @@ class SettingController extends Controller
                 'line_total_gross' => 65.00,
             ],
             (object) [
-                'sequence'=>4,
+                'sequence' => 4,
                 'service_code' => 'CONS-004',
                 'service_description' => 'Consulta de Seguimiento',
                 'quantity' => 2,
@@ -219,5 +219,118 @@ class SettingController extends Controller
             ->with('total', $total)
             ->with('generateDate', $generateDate)
             ->with('isPreview', true);
+    }
+
+    /**
+     * Selección de plantilla de licencia médica
+     */
+    public function medicalLeaveTemplate()
+    {
+        $client = auth()->user()->getCurrentClient();
+
+        if (! $client) {
+            abort(403, 'No tiene un cliente asociado');
+        }
+
+        return view('settings.medical-leave-template');
+    }
+
+    /**
+     * Vista previa de plantilla de licencia médica
+     */
+    public function medicalLeaveTemplatePreview($template)
+    {
+        // Validate template name
+        if (! preg_match('/^medical_leave_\d+$/', $template)) {
+            abort(404, 'Plantilla no encontrada');
+        }
+
+        $medicalLeave = (object) [
+            'identifier' => 'LM-20260128-JKQPIL',
+            'practitioner_name'=>'Dr Federico Fonseca',
+            'patient_name'=>'Rafael Gasperi',
+            'duration'=>'5',
+            'total_days'=>5,
+            'encounter'=>1,
+            'address' => 'Calle Principal #123, Ciudad de Panamá',
+            'phone' => '+507 123-4567',
+            'email' => 'info@clinicaejemplo.com',
+            'practitioner_license_number'=>'86578'
+        ];
+
+        // Create sample branch
+        $branch = (object) [
+            'name' => 'Clínica Ejemplo S.A.',
+            'address' => 'Calle Principal #123, Ciudad de Panamá',
+            'phone' => '+507 123-4567',
+            'email' => 'info@clinicaejemplo.com',
+        ];
+
+        // Create sample patient with birth_date as Carbon instance
+        $patient = (object) [
+            'full_name' => 'Juan Pérez García',
+            'identifier_value' => '8-123-456',
+            'identifier_type' => 'CEDULA',
+            'birth_date' => \Carbon\Carbon::parse('1985-05-15'),
+            'age' => 38,
+        ];
+
+        // Create sample doctor
+        $doctor = (object) [
+            'full_name' => 'Dra. María González López',
+            'specialty' => 'Medicina General',
+            'license' => 'MED-12345',
+        ];
+
+        // Sample data for medical leave
+        $diagnosis = 'Faringitis aguda con fiebre - J02.9';
+        $startDate = now()->format('d/m/Y');
+        $endDate = now()->addDays(5)->format('d/m/Y');
+        $start_time = now()->format('H:i');
+        $start_day = now()->format('d');
+        $start_month = now()->format('m');
+        $start_year = now()->format('Y');
+        $end_time = now()->addDays(5)->format('H:i');
+        $end_day = now()->addDays(5)->format('d');
+        $end_month = now()->addDays(5)->format('m');
+        $end_year = now()->addDays(5)->format('Y');
+        $days = 5;
+        $city = 'Ciudad de Panamá';
+        $issueDate = now()->format('d/m/Y');
+        $documentNumber = 'LM-2026-0001';
+
+        // Check if template exists
+        $templatePath = "templates.medical_leave.{$template}";
+        if (! view()->exists($templatePath)) {
+            abort(404, 'Plantilla no encontrada');
+        }
+
+        // Return preview view with all required variables
+        return view($templatePath)
+            ->with('medicalLeave', $medicalLeave)
+            ->with('branch', $branch)
+            ->with('patient', $patient)
+            ->with('doctor', $doctor)
+            ->with('diagnosis', $diagnosis)
+            ->with('startDate', $startDate)
+            ->with('endDate', $endDate)
+
+            ->with('start_time', $start_time)
+            ->with('start_day', $start_day)
+            ->with('start_month', $start_month)
+            ->with('start_year', $start_year)
+            ->with('end_time', $end_time)
+            ->with('end_day', $end_day)
+            ->with('end_month', $end_month)
+            ->with('end_year', $end_year)
+
+            ->with('days', $days)
+            ->with('city', $city)
+            ->with('issueDate', $issueDate)
+            ->with('documentNumber', $documentNumber)
+            ->with('isPreview', true)
+            ->with('firma','')
+            ->with('sello','')
+            ->with('logo','');
     }
 }

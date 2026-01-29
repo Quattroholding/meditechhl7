@@ -56,12 +56,12 @@
                                     <strong>${{ number_format($chargeItem->total_price, 2) }}</strong>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $chargeItem->status === 'billable' ? 'success' : ($chargeItem->status === 'billed' ? 'primary' : 'secondary') }}">
-                                        {{ ucfirst($chargeItem->status) }}
+                                    <span class="badge bg-{{ $chargeItem->status->color() }}">
+                                        {{ $chargeItem->status->label() }}
                                     </span>
                                 </td>
                                 <td>
-                                    @if($chargeItem->status !== 'billed')
+                                    @if($chargeItem->status !== \App\Enums\ChargeItemStatus::BILLED)
                                         <button wire:click="removeChargeItem({{ $chargeItem->id }})"
                                                 class="btn btn-danger btn-sm"
                                                 onclick="return confirm('¿Está seguro de eliminar este servicio?')"

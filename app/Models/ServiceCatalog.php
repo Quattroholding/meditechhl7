@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChargeItemStatus;
 use App\Models\Scopes\ServiceCatalogScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -294,19 +295,25 @@ class ServiceCatalog extends BaseModel
     ): ChargeItem {
         $unitPrice = $customPrice ?? $this->effective_price;
 
+        // Si cpt_code no es null, usar code + description_es de la tabla cpt_codes
+        // Si es null, usar el campo name de service_catalog
+        $displayName = $this->cpt_code && $this->cptCodeInfo
+            ? $this->cptCodeInfo->code.' | '.$this->cptCodeInfo->description_es
+            : $this->name;
+
         return ChargeItem::create([
             'fhir_id' => 'charge-'.Str::uuid(),
-            'status' => 'billable',
+            'status' => ChargeItemStatus::BILLABLE,
             'service_catalog_id' => $this->id,
             'code' => [
                 'coding' => [
                     [
                         'system' => 'http://www.ama-assn.org/go/cpt',
                         'code' => $this->cpt_code,
-                        'display' => $this->name,
+                        'display' => $displayName,
                     ],
                 ],
-                'text' => $this->name,
+                'text' => $displayName,
             ],
             'patient_id' => $patientId,
             'encounter_id' => $encounterId,

@@ -5,6 +5,7 @@ namespace App\Enums;
 enum PreferenceType: string
 {
     case INVOICE_TEMPLATE = 'invoice_template';
+    case MEDICAL_LEAVE_TEMPLATE = 'medical_leave_template';
     case EMAIL_SETTINGS = 'email_settings';
     case NOTIFICATION_SETTINGS = 'notification_settings';
     case APPOINTMENT_SETTINGS = 'appointment_settings';
@@ -16,6 +17,7 @@ enum PreferenceType: string
     {
         return match ($this) {
             self::INVOICE_TEMPLATE => 'Plantilla de Factura',
+            self::MEDICAL_LEAVE_TEMPLATE => 'Plantilla de Licencia Médica',
             self::EMAIL_SETTINGS => 'Configuración de Email',
             self::NOTIFICATION_SETTINGS => 'Configuración de Notificaciones',
             self::APPOINTMENT_SETTINGS => 'Configuración de Citas',
@@ -29,6 +31,7 @@ enum PreferenceType: string
     {
         return match ($this) {
             self::INVOICE_TEMPLATE => 'Selecciona el diseño de tus facturas',
+            self::MEDICAL_LEAVE_TEMPLATE => 'Selecciona el diseño de licencias médicas',
             self::EMAIL_SETTINGS => 'Configura opciones de correo electrónico',
             self::NOTIFICATION_SETTINGS => 'Configura tus notificaciones',
             self::APPOINTMENT_SETTINGS => 'Configura opciones de citas',

@@ -220,6 +220,7 @@
                         @can('settings.invoice_template')
                         <li><a class="{{ Request::is('settings/invoice-template') ? 'active' : '' }}"  href="{{ route('setting.invoice_template') }}">{{ __('Plantilla de Factura') }}</a></li>
                         @endcan
+                        <li><a class="{{ Request::is('settings/medical-leave-template') ? 'active' : '' }}"  href="{{ route('setting.medical_leave_template') }}">{{ __('Plantilla de Incapacidad Médica') }}</a></li>
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
                         @endcan
