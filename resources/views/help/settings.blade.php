@@ -619,10 +619,8 @@
                 <li>Seleccione la opcion que desea configurar</li>
             </ol>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-bars"></i>
-                <p>Captura de pantalla: Menu de Configuraciones expandido</p>
-                <small>Recomendado: 400x500px - Mostrar el menu lateral con todas las opciones de configuracion visibles</small>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_index.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box note">
@@ -687,11 +685,10 @@
                     <li>Seleccione de la lista desplegable</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search"></i>
-                    <p>Captura de pantalla: Buscador de codigos CPT con resultados</p>
-                    <small>Recomendado: 600x300px - Mostrar el dropdown con codigos CPT encontrados</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_cpt.png') }}" alt="" style="width: 100%;">
+            </div>
+
             </div>
 
             <div class="step-card">
@@ -838,11 +835,10 @@
                 <span class="complexity-badge complexity-high">Alta</span>
             </p>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-table"></i>
-                <p>Captura de pantalla: Listado de servicios configurados</p>
-                <small>Recomendado: 1000x500px - Mostrar la tabla con varios servicios, filtros y botones de accion</small>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_catalog.png') }}" alt="" style="width: 100%;">
             </div>
+
 
             <h3>Gestionar Servicios Existentes</h3>
             <ul>
@@ -897,11 +893,10 @@
                 <h4><span class="step-number">1</span><span class="step-title">Acceder a la Configuracion</span></h4>
                 <p>Navegue a <strong>Configuraciones → Horario Laboral</strong>. Vera una tabla con los 7 dias de la semana.</p>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-calendar-week"></i>
-                    <p>Captura de pantalla: Vista inicial de configuracion de horarios</p>
-                    <small>Recomendado: 1000x600px - Mostrar la tabla de dias con campos de horario</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_schedule.png') }}" alt="" style="width: 100%;">
+            </div>
+
             </div>
 
             <div class="step-card">
@@ -962,11 +957,9 @@
                     <li>Configure el nuevo turno con diferente sucursal/consultorio/horario</li>
                 </ol>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-plus-circle"></i>
-                    <p>Captura de pantalla: Dia con multiples turnos configurados</p>
-                    <small>Recomendado: 800x400px - Mostrar un dia con dos turnos diferentes</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_schedule2.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
@@ -1065,11 +1058,9 @@
                 <h4><span class="step-number">1</span><span class="step-title">Seleccionar Categoria</span></h4>
                 <p>En la pagina de configuracion, encontrara tres secciones separadas para cada tipo de acceso rapido.</p>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-th-large"></i>
-                    <p>Captura de pantalla: Pagina de configuracion de accesos rapidos</p>
-                    <small>Recomendado: 1000x600px - Mostrar las tres secciones de configuracion</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_raccess.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
@@ -1082,11 +1073,9 @@
                     <li>El item se agregara automaticamente a su lista de accesos rapidos</li>
                 </ol>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search-plus"></i>
-                    <p>Captura de pantalla: Buscador de CPT con resultados de laboratorio</p>
-                    <small>Recomendado: 600x300px - Mostrar el dropdown con examenes de laboratorio</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_racpt.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
@@ -1108,10 +1097,8 @@
                 <li>Los items ya agregados se marcan visualmente</li>
             </ol>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-hand-pointer"></i>
-                <p>Captura de pantalla: Panel de accesos rapidos durante una consulta</p>
-                <small>Recomendado: 400x500px - Mostrar el offcanvas/panel con los accesos rapidos disponibles</small>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_raencounter.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box note">
@@ -1252,11 +1239,9 @@
                     <li>La seccion aparecera inmediatamente en <strong>"Secciones Seleccionadas"</strong></li>
                 </ol>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-exchange-alt"></i>
-                    <p>Captura de pantalla: Interfaz de transferencia de secciones</p>
-                    <small>Recomendado: 1000x500px - Mostrar ambas listas con secciones y botones de transferencia</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_template.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
@@ -1306,10 +1291,11 @@
                 <p class="mb-0">Si es la primera vez que accede, el sistema cargara automaticamente todas las secciones generales como base. Puede personalizar desde ahi.</p>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-file-medical-alt"></i>
-                <p>Captura de pantalla: Vista de consulta con secciones configuradas</p>
-                <small>Recomendado: 1200x700px - Mostrar una consulta con las secciones personalizadas visibles</small>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_templderm.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_enderm.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 

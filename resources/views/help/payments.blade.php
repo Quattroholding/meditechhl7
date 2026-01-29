@@ -451,8 +451,8 @@
                         <li><a href="#registrar"><i class="fas fa-plus-circle"></i> 2. Registrar Pago</a></li>
                         <li><a href="#metodos"><i class="fas fa-money-bill-wave"></i> 3. Métodos de Pago</a></li>
                         <li><a href="#gestion"><i class="fas fa-tasks"></i> 4. Gestión</a></li>
-                        <li><a href="#reportes"><i class="fas fa-chart-line"></i> 5. Reportes</a></li>
-                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 6. Tips</a></li>
+                        <!--<li><a href="#reportes"><i class="fas fa-chart-line"></i> 5. Reportes</a></li> -->
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 5. Tips</a></li>
                     </ul>
                 </div>
             </div>
@@ -500,10 +500,8 @@
                 </div>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-desktop"></i>
-                <p>Captura de pantalla: Vista general del módulo de pagos</p>
-                <small>Recomendado: 1200x700px - Mostrar el listado de pagos con filtros y opciones</small>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_list.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -522,11 +520,9 @@
                     <li><strong>Opción B:</strong> Desde el detalle de una factura, haga clic en <strong>"Registrar Pago"</strong></li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-mouse-pointer"></i>
-                    <p>Captura de pantalla: Botón "Registrar Pago"</p>
-                    <small>Recomendado: 800x400px - Mostrar el botón en el módulo de pagos o en el detalle de factura</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_paybtn.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 2 -->
@@ -604,11 +600,9 @@
                     <p class="mb-0">Puede registrar un pago por un monto menor al total de la factura. El sistema marcará la factura como "Pago Parcial" y permitirá registrar pagos adicionales hasta completar el monto total.</p>
                 </div>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-edit"></i>
-                    <p>Captura de pantalla: Formulario de registro de pago</p>
-                    <small>Recomendado: 800x600px - Mostrar el formulario completo con todos los campos</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_form.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Step 4 -->
@@ -660,11 +654,9 @@
                     <li>Entregue el comprobante al paciente</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-receipt"></i>
-                    <p>Captura de pantalla: Comprobante de pago</p>
-                    <small>Recomendado: 600x800px - Mostrar ejemplo de comprobante de pago en PDF</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_pdf.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
         </section>
 
@@ -757,11 +749,9 @@
                     </li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-list"></i>
-                    <p>Captura de pantalla: Listado de pagos</p>
-                    <small>Recomendado: 1200x600px - Mostrar tabla con pagos, filtros y opciones de búsqueda</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_paid.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- View Details -->
@@ -783,11 +773,9 @@
                     <li>Puede descargar el comprobante de pago</li>
                 </ul>
 
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-file-alt"></i>
-                    <p>Captura de pantalla: Detalle de pago</p>
-                    <small>Recomendado: 900x600px - Mostrar vista completa del detalle de pago</small>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/payments/payment_detail.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <!-- Multiple Payments -->
@@ -815,7 +803,7 @@
             </div>
         </section>
 
-        <!-- Section 5: Reports -->
+        <!-- Section 5: Reports 
         <section id="reportes" class="content-section">
             <h2><i class="fas fa-chart-bar me-2"></i>5. Reportes de Pagos</h2>
 
@@ -857,11 +845,11 @@
                 <p>Captura de pantalla: Reporte de cuentas por cobrar</p>
                 <small>Recomendado: 1000x600px - Mostrar ejemplo de reporte con gráficos y tablas</small>
             </div>
-        </section>
+        </section> -->
 
         <!-- Section 6: Tips and Best Practices -->
         <section id="tips" class="content-section">
-            <h2><i class="fas fa-lightbulb me-2"></i>6. Tips y Mejores Prácticas</h2>
+            <h2><i class="fas fa-lightbulb me-2"></i>5. Tips y Mejores Prácticas</h2>
 
             <div class="row">
                 <div class="col-md-6">

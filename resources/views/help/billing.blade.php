@@ -705,7 +705,7 @@
                 </ol>
 
             <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_list.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/invoices/invoice_encounter.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
 

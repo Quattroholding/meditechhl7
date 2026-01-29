@@ -618,16 +618,16 @@
                                 Paso 7: Documentos
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#paso-8">
                                 <i class="fas fa-users"></i>
                                 Paso 8: Dependientes
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#paso-9">
                                 <i class="fas fa-save"></i>
-                                Paso 9: Guardar
+                                Paso 8: Guardar
                             </a>
                         </li>
                         <li>
@@ -658,21 +658,21 @@
                 <section id="concepto" class="step-card step-info">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>Sobre los Pacientes en SAMI</h3>
                     <div class="step-content">
-                        <p>En SAMI, los <strong>pacientes</strong> son el centro del sistema. Toda la informacion clinica, citas, consultas y documentos estan vinculados a cada paciente.</p>
+                        <p>En SAMI, los <strong>pacientes</strong> son el centro del sistema. Toda la informacion clínica, citas, consultas y documentos estan vinculados a cada paciente.</p>
 
                         <ul class="checklist">
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Identificacion unica</strong><br>
-                                    <small class="text-muted">Cada paciente se identifica por su numero de documento</small>
+                                    <strong>Identificación única</strong><br>
+                                    <small class="text-muted">Cada paciente se identifica por su número de documento</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Multi-clinica</strong><br>
-                                    <small class="text-muted">Un paciente puede ser atendido en multiples clinicas del sistema</small>
+                                    <strong>Multi-clínica</strong><br>
+                                    <small class="text-muted">Un paciente puede ser atendido en múltiples clínicas del sistema</small>
                                 </div>
                             </li>
                             <li>
@@ -686,7 +686,7 @@
                                 <i class="fas fa-check-circle"></i>
                                 <div>
                                     <strong>Cumplimiento FHIR</strong><br>
-                                    <small class="text-muted">Datos compatibles con estandares internacionales de salud</small>
+                                    <small class="text-muted">Datos compatibles con estándares internacionales de salud</small>
                                 </div>
                             </li>
                         </ul>
@@ -694,7 +694,7 @@
                         <div class="info-box info-note">
                             <i class="fas fa-info-circle"></i>
                             <div>
-                                <strong>Pacientes compartidos:</strong> Si un paciente ya existe en el sistema (registrado por otra clinica), puedes asociarlo a tu clinica sin duplicar su informacion.
+                                <strong>Pacientes compartidos:</strong> Si un paciente ya existe en el sistema (registrado por otra clínica), puedes asociarlo a tu clínica sin duplicar su información.
                             </div>
                         </div>
                     </div>
@@ -702,22 +702,22 @@
 
                 <!-- Tipos de Identificacion -->
                 <section id="tipos-id" class="step-card">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-id-card me-2"></i>Tipos de Identificacion</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-id-card me-2"></i>Tipos de Identificación</h3>
                     <div class="step-content">
-                        <p>SAMI soporta diferentes tipos de documentos de identificacion:</p>
+                        <p>SAMI soporta diferentes tipos de documentos de identificación:</p>
 
                         <div class="row mt-4">
                             <div class="col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">CC</div>
-                                    <div class="name">Cedula de Ciudadania</div>
+                                    <div class="name">Cédula de Ciudadanía</div>
                                     <div class="format">8-123-456</div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">CE</div>
-                                    <div class="name">Cedula de Extranjeria</div>
+                                    <div class="name">Cédula de Extranjería</div>
                                     <div class="format">E-8-123456</div>
                                 </div>
                             </div>
@@ -747,7 +747,7 @@
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Formato importante:</strong> Cada tipo de documento tiene un formato especifico. El sistema validara que el numero ingresado coincida con el formato del tipo seleccionado.
+                                <strong>Formato importante:</strong> Cada tipo de documento tiene un formato específico. El sistema validará que el numero ingresado coincida con el formato del tipo seleccionado.
                             </div>
                         </div>
                     </div>
@@ -756,15 +756,15 @@
                 <!-- Paso 1: Acceder al Modulo -->
                 <section id="paso-1" class="step-card">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Acceder al Modulo de Pacientes</h3>
+                    <h3 class="step-title">Acceder al Módulo de Pacientes</h3>
                     <div class="step-content">
-                        <p>Para acceder al modulo de pacientes:</p>
+                        <p>Para acceder al módulo de pacientes:</p>
 
                         <div class="sub-step">
-                            <h6><i class="fas fa-route me-2"></i>Navegacion</h6>
+                            <h6><i class="fas fa-route me-2"></i>Navegación</h6>
                             <ol>
-                                <li>Inicia sesion en tu cuenta SAMI</li>
-                                <li>En el menu lateral, busca <strong>"Pacientes"</strong></li>
+                                <li>Inicia sesión en tu cuenta SAMI</li>
+                                <li>En el menú lateral, busca <strong>"Pacientes"</strong></li>
                                 <li>Haz clic para ver la lista de pacientes</li>
                             </ol>
                         </div>
@@ -790,11 +790,7 @@
                     <div class="step-number">2</div>
                     <h3 class="step-title">Iniciar Registro de Nuevo Paciente</h3>
                     <div class="step-content">
-                        <p>En la lista de pacientes, haz clic en el boton <strong>"Nuevo Paciente"</strong> o <strong>"Agregar"</strong>:</p>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/id-data.png') }}" alt="" style="width: 100%;">
-                        </div>
+                        <p>En la lista de pacientes, haz clic en el botón <strong>"Nuevo(a)"</strong>:</p>
 
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
@@ -808,9 +804,9 @@
                 <!-- Paso 3: Datos de Identificacion -->
                 <section id="paso-3" class="step-card step-important">
                     <div class="step-number">3</div>
-                    <h3 class="step-title">Ingresar Datos de Identificacion</h3>
+                    <h3 class="step-title">Ingresar Datos de Identificación</h3>
                     <div class="step-content">
-                        <p>La primera seccion del formulario es la <strong>identificacion del paciente</strong>:</p>
+                        <p>La primera sección del formulario es la <strong>identificación del paciente</strong>:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/patients/id-data.png') }}" alt="" style="width: 100%;">
@@ -820,7 +816,7 @@
                             <thead>
                                 <tr>
                                     <th>Campo</th>
-                                    <th>Descripcion</th>
+                                    <th>Descripción</th>
                                     <th>Requerido</th>
                                 </tr>
                             </thead>
@@ -831,12 +827,12 @@
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Numero de Documento</strong></td>
-                                    <td>Numero de identificacion (formato segun tipo)</td>
+                                    <td><strong>Número de Documento</strong></td>
+                                    <td>Número de identificacion (formato segun tipo)</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Genero</strong></td>
+                                    <td><strong>Género</strong></td>
                                     <td>Masculino o Femenino</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
@@ -846,7 +842,7 @@
                         <div class="info-box info-note">
                             <i class="fas fa-search"></i>
                             <div>
-                                <strong>Verificacion automatica:</strong> Al ingresar el numero de documento, el sistema verificara automaticamente si el paciente ya existe. Si existe, te dara la opcion de asociarlo a tu clinica.
+                                <strong>Verificación automática:</strong> Al ingresar el número de documento, el sistema verificará automáticamente si el paciente ya existe. Si existe, te dará la opción de asociarlo a tu clínica.
                             </div>
                         </div>
                     </div>
@@ -855,7 +851,7 @@
                 <!-- Paso 4: Informacion Personal -->
                 <section id="paso-4" class="step-card">
                     <div class="step-number">4</div>
-                    <h3 class="step-title">Completar Informacion Personal</h3>
+                    <h3 class="step-title">Completar Información Personal</h3>
                     <div class="step-content">
                         <p>Ingresa los datos personales del paciente:</p>
 
@@ -867,7 +863,7 @@
                             <thead>
                                 <tr>
                                     <th>Campo</th>
-                                    <th>Descripcion</th>
+                                    <th>Descripción</th>
                                     <th>Requerido</th>
                                 </tr>
                             </thead>
@@ -884,17 +880,17 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong></td>
-                                    <td>Correo electronico (unico en el sistema)</td>
+                                    <td>Correo electrónico (único en el sistema)</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Telefono</strong></td>
-                                    <td>Numero de telefono con codigo de pais</td>
+                                    <td><strong>Teléfono</strong></td>
+                                    <td>Número de teléfono con código de país</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Fecha de Nacimiento</strong></td>
-                                    <td>Fecha en formato dia/mes/ano</td>
+                                    <td>Fecha en formato día/mes/año</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
@@ -904,7 +900,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Estado Civil</strong></td>
-                                    <td>Soltero, Casado, Divorciado, Viudo, Union Libre</td>
+                                    <td>Soltero, Casado, Divorciado, Viudo</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                             </tbody>
@@ -913,7 +909,7 @@
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Email unico:</strong> El correo electronico debe ser unico. Si otro paciente ya tiene ese email, deberas usar uno diferente.
+                                <strong>Email único:</strong> El correo electrónico debe ser único. Si otro paciente ya tiene ese email, deberás usar uno diferente.
                             </div>
                         </div>
                     </div>
@@ -922,9 +918,9 @@
                 <!-- Paso 5: Direccion -->
                 <section id="paso-5" class="step-card">
                     <div class="step-number">5</div>
-                    <h3 class="step-title">Ingresar Direccion</h3>
+                    <h3 class="step-title">Ingresar Dirección</h3>
                     <div class="step-content">
-                        <p>Completa la informacion de ubicacion del paciente:</p>
+                        <p>Completa la información de ubicación del paciente:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/patients/address-data.png') }}" alt="" style="width: 100%;">
@@ -934,24 +930,24 @@
                             <thead>
                                 <tr>
                                     <th>Campo</th>
-                                    <th>Descripcion</th>
+                                    <th>Descripción</th>
                                     <th>Requerido</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Direccion Fisica</strong></td>
-                                    <td>Direccion completa de residencia</td>
+                                    <td><strong>Dirección Física</strong></td>
+                                    <td>Dirección completa de residencia</td>
                                     <td><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Pais</strong></td>
-                                    <td>Pais de residencia</td>
+                                    <td><strong>País</strong></td>
+                                    <td>País de residencia</td>
                                     <td><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Provincia/Estado</strong></td>
-                                    <td>Division administrativa (se carga segun el pais)</td>
+                                    <td>División administrativa (se carga segun el país)</td>
                                     <td><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
@@ -964,7 +960,7 @@
                     <div class="step-number">6</div>
                     <h3 class="step-title">Contacto de Emergencia (Opcional)</h3>
                     <div class="step-content">
-                        <p>Puedes agregar informacion de un contacto de emergencia:</p>
+                        <p>Puedes agregar información de un contacto de emergencia:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/patients/emergency-contact.png') }}" alt="" style="width: 100%;">
@@ -974,7 +970,7 @@
                             <thead>
                                 <tr>
                                     <th>Campo</th>
-                                    <th>Descripcion</th>
+                                    <th>Descripción</th>
                                     <th>Requerido</th>
                                 </tr>
                             </thead>
@@ -986,12 +982,12 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Email del Contacto</strong></td>
-                                    <td>Correo electronico del contacto</td>
+                                    <td>Correo electrónico del contacto</td>
                                     <td><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Telefono del Contacto</strong></td>
-                                    <td>Numero de telefono del contacto</td>
+                                    <td><strong>Teléfono del Contacto</strong></td>
+                                    <td>Numero de teléfono del contacto</td>
                                     <td><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
@@ -1000,7 +996,7 @@
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
-                                <strong>Recomendacion:</strong> Aunque es opcional, es muy util tener un contacto de emergencia para casos de urgencia medica.
+                                <strong>Recomendación:</strong> Aunque es opcional, es muy útil tener un contacto de emergencia para casos de urgencia médica.
                             </div>
                         </div>
                     </div>
@@ -1011,7 +1007,7 @@
                     <div class="step-number">7</div>
                     <h3 class="step-title">Subir Documentos (Opcional)</h3>
                     <div class="step-content">
-                        <p>Puedes adjuntar documentos del paciente como identificacion, seguros, examenes previos, etc:</p>
+                        <p>Puedes adjuntar documentos del paciente como identificación, seguros, exámenes previos, etc:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/patients/file-data.png') }}" alt="" style="width: 100%;">
@@ -1035,7 +1031,7 @@
                                 <ul class="checklist">
                                     <li>
                                         <i class="fas fa-file-image text-success"></i>
-                                        <div><strong>JPG/PNG</strong> - Imagenes</div>
+                                        <div><strong>JPG/PNG</strong> - Imágenes</div>
                                     </li>
                                     <li>
                                         <i class="fas fa-weight"></i>
@@ -1106,9 +1102,9 @@
 
                         <ol>
                             <li>Revisa que todos los datos obligatorios esten completos</li>
-                            <li>Verifica que la informacion sea correcta</li>
-                            <li>Haz clic en el boton <strong>"Guardar"</strong></li>
-                            <li>Espera la confirmacion del sistema</li>
+                            <li>Verifica que la información sea correcta</li>
+                            <li>Haz clic en el botón <strong>"Guardar"</strong></li>
+                            <li>Espera la confirmación del sistema</li>
                         </ol>
 
                         <div>
@@ -1122,7 +1118,7 @@
                                 <ul class="mb-0 mt-2">
                                     <li>Ver su perfil completo</li>
                                     <li>Agendar una cita</li>
-                                    <li>Registrar su historia medica</li>
+                                    <li>Registrar su historia médica</li>
                                 </ul>
                             </div>
                         </div>
@@ -1137,15 +1133,15 @@
                 <section id="asociar" class="step-card step-info">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-link me-2"></i>Asociar Paciente Existente</h3>
                     <div class="step-content">
-                        <p>Si el paciente ya existe en el sistema (fue registrado por otra clinica), puedes asociarlo a tu clinica:</p>
+                        <p>Si el paciente ya existe en el sistema (fue registrado por otra clinica), puedes asociarlo a tu clínica:</p>
 
                         <div class="sub-step">
                             <h6><i class="fas fa-search me-2"></i>Proceso de Asociacion</h6>
                             <ol>
                                 <li>Al ingresar el numero de documento, el sistema detectara que ya existe</li>
                                 <li>Aparecera un mensaje indicando que el paciente ya esta registrado</li>
-                                <li>Haz clic en <strong>"Asociar a mi clinica"</strong></li>
-                                <li>El paciente quedara vinculado a tu organizacion</li>
+                                <li>Haz clic en <strong>"Asociar a mi clínica"</strong></li>
+                                <li>El paciente quedará vinculado a tu organización</li>
                             </ol>
                         </div>
 
@@ -1156,7 +1152,7 @@
                         <div class="info-box info-note">
                             <i class="fas fa-info-circle"></i>
                             <div>
-                                <strong>Beneficios de asociar:</strong> Al asociar un paciente existente, tienes acceso a todo su historial medico previo (con las autorizaciones correspondientes), evitando duplicar informacion.
+                                <strong>Beneficios de asociar:</strong> Al asociar un paciente existente, tienes acceso a todo su historial médico previo (con las autorizaciones correspondientes), evitando duplicar información.
                             </div>
                         </div>
                     </div>
@@ -1176,20 +1172,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-section-card">
-                                    <h6><i class="fas fa-user"></i> Informacion Personal</h6>
+                                    <h6><i class="fas fa-user"></i> Información Personal</h6>
                                     <ul>
-                                        <li>Datos de identificacion</li>
-                                        <li>Informacion de contacto</li>
-                                        <li>Direccion</li>
+                                        <li>Datos de identificación</li>
+                                        <li>Información de contacto</li>
+                                        <li>Dirección</li>
                                         <li>Contacto de emergencia</li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-section-card">
-                                    <h6><i class="fas fa-notes-medical"></i> Informacion Clinica</h6>
+                                    <h6><i class="fas fa-notes-medical"></i> Información Clinica</h6>
                                     <ul>
-                                        <li>Historia medica</li>
+                                        <li>Historia médica</li>
                                         <li>Citas programadas</li>
                                         <li>Consultas realizadas</li>
                                         <li>Documentos adjuntos</li>
@@ -1202,19 +1198,19 @@
 
                 <!-- Siguiente Paso -->
                 <section id="siguiente" class="step-card step-success">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-arrow-right me-2"></i>Siguiente Paso: Historia Medica</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-arrow-right me-2"></i>Siguiente Paso: Historia Médica</h3>
                     <div class="step-content">
-                        <p>Ahora que tienes pacientes registrados, el siguiente paso es aprender a gestionar su <strong>historia medica</strong>.</p>
+                        <p>Ahora que tienes pacientes registrados, el siguiente paso es aprender a gestionar su <strong>historia médica</strong>.</p>
 
                         <div class="info-box info-note">
                             <i class="fas fa-notes-medical"></i>
                             <div>
-                                <strong>La historia medica incluye:</strong>
+                                <strong>La historia médica incluye:</strong>
                                 <ul class="mb-0 mt-2">
                                     <li>Antecedentes personales y familiares</li>
                                     <li>Alergias y condiciones</li>
                                     <li>Signos vitales</li>
-                                    <li>Diagnosticos (con codigos ICD-10)</li>
+                                    <li>Diagnósticos (con códigos ICD-10)</li>
                                     <li>Medicamentos y tratamientos</li>
                                 </ul>
                             </div>
@@ -1222,7 +1218,7 @@
 
                         <div class="text-center mt-4">
                             <a href="{{ route('help.medical-history') }}" class="btn btn-lg text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #4a148c 100%);">
-                                <i class="fas fa-notes-medical me-2"></i>Continuar: Historia Medica
+                                <i class="fas fa-notes-medical me-2"></i>Continuar: Historia Médica
                             </a>
                         </div>
                     </div>
@@ -1233,7 +1229,7 @@
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h5 class="mb-2"><i class="fas fa-question-circle me-2" style="color: #6f42c1;"></i>Tienes preguntas sobre el registro de pacientes?</h5>
+                                <h5 class="mb-2"><i class="fas fa-question-circle me-2" style="color: #6f42c1;"></i>¿Tienes preguntas sobre el registro de pacientes?</h5>
                                 <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte.</p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">

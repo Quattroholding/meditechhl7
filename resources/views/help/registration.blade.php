@@ -1003,7 +1003,7 @@
                         </div>
 
                         <div class="screenshot-registerclient">
-                            <img src="{{ asset('images/tutorial/register/registro.png') }}" alt="" style="margin: 0 auto;">
+                            <img src="{{ asset('images/tutorial/register/register_form.png') }}" alt="" style="margin: 0 auto;">
                         </div>
 
                         <div class="info-box info-note">
@@ -1087,7 +1087,7 @@
                             </tbody>
                         </table>
 
-                        <p class="mt-3"><small class="text-muted">* Requerido solo para planes individuales (1 usuario)</small></p>
+                        <!--<p class="mt-3"><small class="text-muted">* Requerido solo para planes individuales (1 usuario)</small></p>-->
 
                         <div>
                             <img src="{{ asset('images/tutorial/register/form.png') }}" alt="" style="width: 100%;">
@@ -1117,6 +1117,13 @@
                             <i class="fas fa-info-circle"></i>
                             <div>
                                 <strong>Nota:</strong> La especialidad seleccionada se asociara a tu perfil de medico. Podras agregar mas especialidades o modificarla posteriormente desde tu panel de control.
+                            </div>
+                        </div>
+
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Importante:</strong> En caso de que la persona que está realizando el registro no sea médico, seleccionar la opción <strong>"Otro"</strong>.
                             </div>
                         </div>
 
@@ -1237,9 +1244,9 @@
                         <div class="sub-step">
                             <h6><i class="fas fa-check-square me-2"></i>Pasos Finales</h6>
                             <ol>
-                                <li>Marca la casilla <strong>"Acepto los terminos y condiciones"</strong></li>
-                                <li>Completa la verificacion CAPTCHA (si aparece)</li>
-                                <li>Haz clic en el boton <strong>"Registrarse"</strong></li>
+                                <li>Marca la casilla <strong>"Estoy de acuerdo con los Términos de Servicios y Políticas de Privacidad"</strong></li>
+                                <!--<li>Completa la verificación CAPTCHA (si aparece)</li>-->
+                                <li>Haz clic en el botón <strong>"Registrarse"</strong></li>
                             </ol>
                         </div>
 
@@ -1259,7 +1266,7 @@
                         <p>Una vez enviado el formulario exitosamente, seras redirigido a la pagina de confirmacion:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/register/registro-completado.png') }}" alt="">
+                            <img src="{{ asset('images/tutorial/register/register_completed.png') }}" alt="">
                         </div>
 
                         <h5 class="mt-4">Lo que sucede automaticamente:</h5>
@@ -1307,7 +1314,7 @@
                 <section id="pago" class="step-card step-important">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-credit-card me-2"></i>Proceso de Pago</h3>
                     <div class="step-content">
-                        <p>Si tu plan no incluye periodo de prueba, deberas completar el pago para activar tu cuenta:</p>
+                        <!--<p>Si tu plan no incluye periodo de prueba, deberas completar el pago para activar tu cuenta:</p>-->
 
                         <div>
                             <img src="{{ asset('images/tutorial/register/pago.png') }}" alt="" style="width: 100%;">
@@ -1315,19 +1322,19 @@
 
                         <h5 class="mt-4">Estados de tu Suscripcion:</h5>
                         <div class="row mt-3">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="p-3 bg-light rounded text-center">
                                     <span class="status-badge status-pending">PENDIENTE DE ACTIVACION</span>
                                     <p class="mt-2 mb-0 small">Esperando pago</p>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <!--<div class="col-md-4 mb-3">
                                 <div class="p-3 bg-light rounded text-center">
                                     <span class="status-badge status-trial">EN PERIODO DE PRUEBA</span>
                                     <p class="mt-2 mb-0 small">Prueba gratuita activa</p>
                                 </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
+                            </div>-->
+                            <div class="col-md-6 mb-3">
                                 <div class="p-3 bg-light rounded text-center">
                                     <span class="status-badge status-active">ACTIVA</span>
                                     <p class="mt-2 mb-0 small">Cuenta completamente activa</p>

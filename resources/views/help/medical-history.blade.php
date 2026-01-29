@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia de Historia Medica - Centro de Ayuda SAMI</title>
+    <title>Guía de Historia Médica - Centro de Ayuda SAMI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -587,26 +587,26 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
                 <li class="breadcrumb-item"><a href="#">Gestion de Pacientes</a></li>
-                <li class="breadcrumb-item active">Historia Medica</li>
+                <li class="breadcrumb-item active">Historia Médica</li>
             </ol>
         </nav>
 
         <!-- Module Header -->
         <div class="module-header">
-            <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Medica</h1>
-            <p>Aprende a visualizar y gestionar la historia medica completa de tus pacientes, incluyendo antecedentes, diagnosticos, signos vitales y mas.</p>
+            <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Médica</h1>
+            <p>Aprende a visualizar y gestionar la historia médica completa de tus pacientes, incluyendo antecedentes, diagnósticos, signos vitales y mas.</p>
         </div>
 
         <div class="row">
             <!-- Table of Contents -->
             <div class="col-lg-4">
                 <div class="toc-card sticky-top" style="top: 20px;">
-                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guia</h5>
+                    <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                     <ul class="toc-list">
                         <li>
                             <a href="#concepto">
                                 <i class="fas fa-info-circle"></i>
-                                Que es la Historia Medica?
+                                ¿Qué es la Historia Médica?
                             </a>
                         </li>
                         <li>
@@ -630,13 +630,13 @@
                         <li>
                             <a href="#antecedentes">
                                 <i class="fas fa-history"></i>
-                                Antecedentes Medicos
+                                Antecedentes Médicos
                             </a>
                         </li>
                         <li>
                             <a href="#condiciones">
                                 <i class="fas fa-diagnoses"></i>
-                                Condiciones/Diagnosticos
+                                Condiciones/Diagnósticos
                             </a>
                         </li>
                         <li>
@@ -660,13 +660,13 @@
                         <li>
                             <a href="#notas">
                                 <i class="fas fa-sticky-note"></i>
-                                Notas Clinicas
+                                Notas Clínicas
                             </a>
                         </li>
                         <li>
                             <a href="#licencias">
                                 <i class="fas fa-file-medical"></i>
-                                Licencias Medicas
+                                Licencias Médicas
                             </a>
                         </li>
                         <li>
@@ -689,23 +689,23 @@
             <div class="col-lg-8">
                 <!-- Que es la Historia Medica -->
                 <section id="concepto" class="step-card step-info">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>Que es la Historia Medica?</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>¿Qué es la Historia Médica?</h3>
                     <div class="step-content">
-                        <p>La <strong>historia medica</strong> (o historial clinico) es el registro completo de toda la informacion de salud de un paciente. En SAMI, la historia medica esta organizada en multiples secciones para facilitar el acceso a la informacion.</p>
+                        <p>La <strong>historia médica</strong> (o historial clínico) es el registro completo de toda la información de salud de un paciente. En SAMI, la historia médica esta organizada en multiples secciones para facilitar el acceso a la información.</p>
 
                         <ul class="checklist">
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Registro cronologico</strong><br>
-                                    <small class="text-muted">Toda la informacion esta ordenada por fecha</small>
+                                    <strong>Registro cronológico</strong><br>
+                                    <small class="text-muted">Toda la información esta ordenada por fecha</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Codigos estandarizados</strong><br>
-                                    <small class="text-muted">Diagnosticos con codigos ICD-10, signos vitales con LOINC</small>
+                                    <strong>Códigos estandarizados</strong><br>
+                                    <small class="text-muted">Diagnósticos con códigos ICD-10, signos vitales con LOINC</small>
                                 </div>
                             </li>
                             <li>
