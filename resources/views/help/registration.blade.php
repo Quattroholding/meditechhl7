@@ -650,6 +650,13 @@
             margin: 0;
             font-size: 0.9rem;
         }
+
+        .yappy-img{
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .yappy-imgsize{width: 276px; height: 593px; }
     </style>
 </head>
 <body>
@@ -752,7 +759,7 @@
                         <li>
                             <a href="#que-sucede">
                                 <i class="fas fa-cogs"></i>
-                                Que Sucede Internamente
+                                Flujo de pago con el botón de Yappy
                             </a>
                         </li>
                         <li>
@@ -1351,15 +1358,10 @@
                                 <li>Tu cuenta se activara automaticamente</li>
                             </ol>
                         </div>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/register/yappy.png') }}" alt="" style="width: 100%;">
-                        </div>
-
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
-                                <strong>Metodos de Pago Alternativos:</strong> Si necesitas pagar con otro metodo (transferencia, tarjeta, etc.), contacta a nuestro equipo de soporte.
+                                <strong>Métodos de Pago Alternativos:</strong> Si necesitas pagar con otro metodo (transferencia, tarjeta, etc.), contacta a nuestro equipo de soporte.
                             </div>
                         </div>
                     </div>
@@ -1367,76 +1369,94 @@
 
                 <!-- Que Sucede Internamente -->
                 <section id="que-sucede" class="step-card">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Que Sucede Internamente</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Flujo de pago con el botón de Yappy</h3>
                     <div class="step-content">
-                        <p>Para los interesados en conocer el proceso tecnico, aqui explicamos que ocurre en el sistema durante el registro:</p>
+                        <!--<p>Para los interesados en conocer el proceso tecnico, aqui explicamos que ocurre en el sistema durante el registro:</p>-->
 
                         <div class="process-timeline">
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>1. Creacion del Cliente (Organizacion)</h6>
-                                    <p>Se crea un registro de Cliente que representa tu clinica o consultorio. El nombre se genera automaticamente como "Dr./Dra. [Nombre] [Apellido]".</p>
+                                    <h6>1. Clic en el Botón de Yappy</h6>
+                                    <p>Puede procesar su pago de esta forma, puede acceder a este botón de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong> <br>2. Debe iniciar sesión, ir a <strong>Suscripción</strong>→<strong>Facturas</strong>→<strong>Detalle</strong>(botón del ojo) y se despliega la pantalla de detalle de factura.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/yappy.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>2. Generacion de Codigo de Referido</h6>
-                                    <p>Se genera un codigo unico de referido asociado a tu cuenta para que puedas compartirlo.</p>
+                                    <h6>2. Iniciar sesión en Banca en Línea</h6>
+                                    <p>Deberá iniciar sesión y entrar a la sección de Yappy, dentro de Yappy, podrá visualizar una notificación que dice <strong>"!Te pidieron un Yappy! →"</strong>.</p>
+                                    <div class="yappy-img">
+                                        <img  class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/notification.jpeg') }}" alt="" >
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>3. Creacion/Actualizacion de Usuario</h6>
-                                    <p>Se crea tu cuenta de usuario con el rol apropiado (admin client o doctor segun el plan).</p>
+                                    <h6>3. Notificación de Yappy</h6>
+                                    <p>Se desplegará la pantalla de notificaciones, para pagar, deberá dar clic en <strong>"Ver más"</strong>.</p>
+                                    <div class="yappy-img">
+                                        <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/notification_detail.jpeg') }}" alt="">
+                                    </div>                                    
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>4. Vinculacion Usuario-Cliente</h6>
-                                    <p>Se establece la relacion entre tu usuario y la organizacion (Cliente) creada.</p>
+                                    <h6>4. Pago de Suscripción</h6>
+                                    <p>Esta pantalla usted procederá a realizar el pago de su suscripción, deberá dar clic en <strong>"Sí, pagar"</strong>.</p>
+                                    <div class="yappy-img">
+                                        <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/pre-confirmation.jpeg') }}" alt="">
+                                    </div>                                    
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>5. Creacion de Practitioner (si aplica)</h6>
-                                    <p>Para planes individuales, se crea tu perfil de medico con tu especialidad y credenciales profesionales.</p>
+                                    <h6>5. Confirmación de Pago</h6>
+                                    <p>Cómo último paso, deberá confirmar la transacción para proceder con el pago de forma satisfactoria, de clic en <strong>"Confirmar"</strong>.</p>
+                                    <div class="yappy-img"> 
+                                        <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/confirmation.jpeg') }}" alt="">
+                                    </div>                
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>6. Creacion de Suscripcion</h6>
-                                    <p>Se registra tu suscripcion al plan seleccionado con el estado correspondiente (pendiente o trial).</p>
+                                    <h6>6. Pago de Suscripción</h6>
+                                    <p>Se desplegará la factura final de Yappy, confirmando que ya se realizó el pago.</p>
+                                    <div class="yappy-img">
+                                        <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/payment.jpeg') }}" alt="">
+                                    </div>                                    
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>7. Generacion de Factura</h6>
-                                    <p>Si no hay periodo de prueba, se genera la primera factura con los calculos de subtotal, impuestos y descuentos.</p>
+                                    <h6>7. Cambio de estado de factura</h6>
+                                    <p>Luego de haber hecho su pago de forma satisfactoria, la factura en nuestro sistema cambia de pendiente a pagada de forma automática.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/yappy/invoice-status.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>8. Aplicacion de Descuento por Referido</h6>
-                                    <p>Si ingresaste un codigo de referido valido, se aplica el descuento a tu factura.</p>
+                                    <h6>8. Notificación de Suscripción</h6>
+                                    <p>Luego de haber hecho su pago de forma satisfactoria, se le notificará mediante un correo que su suscripción fue activada.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/yappy/email.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
                                 </div>
                             </div>
 
-                            <div class="timeline-item">
-                                <div class="timeline-content">
-                                    <h6>9. Envio de Notificaciones</h6>
-                                    <p>Se envian correos con tus credenciales y notificaciones sobre la configuracion inicial requerida.</p>
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="info-box info-note">
+                        <!--<div class="info-box info-note">
                             <i class="fas fa-database"></i>
                             <div>
                                 <strong>Modelos de Datos Creados:</strong>
@@ -1451,7 +1471,7 @@
                                     <li><code>ReferralCode</code> - Tu codigo de referido</li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </section>
 
