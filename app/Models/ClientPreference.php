@@ -110,4 +110,22 @@ class ClientPreference extends Model
             'Plantilla de factura seleccionada por el cliente'
         );
     }
+
+    public static function getMedicalLeaveTemplate(int $clientId, string $default = 'medical_leave_1'): string
+    {
+        $value = static::get($clientId, PreferenceType::MEDICAL_LEAVE_TEMPLATE, 'template_name');
+
+        return $value['template'] ?? $default;
+    }
+
+    public static function setMedicalLeaveTemplate(int $clientId, string $template): self
+    {
+        return static::set(
+            $clientId,
+            PreferenceType::MEDICAL_LEAVE_TEMPLATE,
+            'template_name',
+            ['template' => $template],
+            'Plantilla de licencia médica seleccionada por el cliente'
+        );
+    }
 }

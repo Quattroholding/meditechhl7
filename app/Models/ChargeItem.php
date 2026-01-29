@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChargeItemStatus;
 use App\Models\Scopes\ChargeItemScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,6 +52,7 @@ class ChargeItem extends BaseModel
     ];
 
     protected $casts = [
+        'status' => ChargeItemStatus::class,
         'code' => 'array',
         'occurrence_date_time' => 'datetime',
         'occurrence_period' => 'array',
@@ -140,7 +142,7 @@ class ChargeItem extends BaseModel
 
     public function scopeBillable($query)
     {
-        return $query->where('status', 'billable');
+        return $query->where('status', ChargeItemStatus::BILLABLE);
     }
 
     public function scopeByPatient($query, $patientId)
@@ -166,7 +168,7 @@ class ChargeItem extends BaseModel
     public function scopeUnbilled($query)
     {
         return $query->whereDoesntHave('invoiceLineItems')
-            ->where('status', 'billable');
+            ->where('status', ChargeItemStatus::BILLABLE);
     }
 
     // Accessors & Mutators
@@ -225,17 +227,17 @@ class ChargeItem extends BaseModel
     // Methods
     public function markAsBilled(): bool
     {
-        return $this->update(['status' => 'billed']);
+        return $this->update(['status' => ChargeItemStatus::BILLED]);
     }
 
     public function markAsNotBillable(): bool
     {
-        return $this->update(['status' => 'not-billable']);
+        return $this->update(['status' => ChargeItemStatus::NOT_BILLABLE]);
     }
 
     public function canBeBilled(): bool
     {
-        return $this->status === 'billable' && ! $this->invoiceLineItems()->exists();
+        return $this->status === ChargeItemStatus::BILLABLE && ! $this->invoiceLineItems()->exists();
     }
 
     public function addToCoding(string $system, string $code, ?string $display = null): void
@@ -260,7 +262,7 @@ class ChargeItem extends BaseModel
         return [
             'resourceType' => 'ChargeItem',
             'id' => $this->fhir_id,
-            'status' => $this->status,
+            'status' => $this->status->value,
             'code' => $this->code,
             'subject' => [
                 'reference' => "Patient/{$this->patient->fhir_id}",

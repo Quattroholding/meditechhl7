@@ -26,7 +26,7 @@ return new class extends Migration
 
             // Service/Product details
             $table->json('service_code')->comment('CodeableConcept - CPT, HCPCS, etc.'); // CodeableConcept - CPT, HCPCS, etc.
-            $table->string('service_description');
+            $table->text('service_description');
             $table->json('service_period')->nullable()->comment('When service was provided'); // When service was provided
 
             // Quantity and pricing

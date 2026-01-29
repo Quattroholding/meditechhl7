@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientPreference;
 use App\Models\Encounter;
 use App\Models\MedicalLeave;
 use App\Models\MedicationRequest;
@@ -246,7 +247,7 @@ class MedicalDocumentController extends Controller
     public function downloadMedicalLeavePdf(Request $request, $id)
     {
         try {
-            $medicalLeave = MedicalLeave::with(['patient', 'practitioner', 'condition'])
+            $medicalLeave = MedicalLeave::with(['patient', 'practitioner.specialties', 'condition', 'client'])
                 ->findOrFail($id);
 
             $user = auth()->user();
@@ -256,13 +257,90 @@ class MedicalDocumentController extends Controller
                 abort(403, 'No tiene permisos para descargar esta licencia médica.');
             }
 
-            if ($request->has('view')) {
-                return view('pdf.medical-leave', compact('medicalLeave'));
+            // Obtener el template seleccionado para el cliente
+            $template = ClientPreference::getMedicalLeaveTemplate($medicalLeave->client_id);
+
+            // Preparar datos para el template
+            $branch = (object) [
+                'name' => $medicalLeave->clinic_name ?? $medicalLeave->client->name ?? 'Clínica',
+                'address' => $medicalLeave->clinic_address ?? '',
+                'phone' => $medicalLeave->clinic_phone ?? '',
+                'email' => $medicalLeave->client->email ?? '',
+            ];
+
+            $patient = (object) [
+                'full_name' => $medicalLeave->patient_name ?? $medicalLeave->patient->full_name,
+                'identifier_value' => $medicalLeave->patient->identifier ?? '',
+                'birth_date' => $medicalLeave->patient->birth_date,
+                'age' => $medicalLeave->patient->age ?? null,
+            ];
+
+            // Obtener la primera especialidad del médico si existe
+            $specialty = 'Medicina General';
+            if ($medicalLeave->practitioner && $medicalLeave->practitioner->specialties->isNotEmpty()) {
+                $specialty = $medicalLeave->practitioner->specialties->first()->name;
             }
 
-            $pdf = Pdf::loadView('pdf.medical-leave', [
-                'medicalLeave' => $medicalLeave,
-            ]);
+            $doctor = (object) [
+                'full_name' => $medicalLeave->practitioner_name ?? $medicalLeave->practitioner->full_name,
+                'specialty' => $specialty,
+                'license' => $medicalLeave->practitioner_license_number ?? $medicalLeave->practitioner->license_number ?? '',
+            ];
+
+            $diagnosis = $medicalLeave->diagnosis ?? 'Diagnóstico médico';
+            $startDate = $medicalLeave->start_datetime->format('d/m/Y');
+            $endDate = $medicalLeave->end_datetime->format('d/m/Y');
+            $days = $medicalLeave->total_days;
+            $city = $medicalLeave->client->city ?? 'Ciudad';
+            $issueDate = $medicalLeave->issue_date->format('d/m/Y');
+            $documentNumber = $medicalLeave->identifier;
+            $firma = $medicalLeave->getPractitionerFilePathAttribute('signature') ?? '';
+            $sello = $medicalLeave->getPractitionerFilePathAttribute('seal') ?? '';
+
+            $start_time = $medicalLeave->start_datetime->format('H:i');
+            $start_day = $medicalLeave->start_datetime->format('d');
+            $start_month = $medicalLeave->start_datetime->format('m');
+            $start_year =$medicalLeave->start_datetime->format('Y');
+            $end_time = $medicalLeave->end_datetime->format('H:i');
+            $end_day = $medicalLeave->end_datetime->format('d');
+            $end_month = $medicalLeave->end_datetime->format('m');
+            $end_year = $medicalLeave->end_datetime->format('Y');
+            $logo = $medicalLeave->client->logo;
+
+            $data = [
+                'branch' => $branch,
+                'patient' => $patient,
+                'doctor' => $doctor,
+                'diagnosis' => $diagnosis,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+
+                'start_time' => $start_time,
+                'start_day' => $start_day,
+                'start_month' => $start_month,
+                'start_year' => $start_year,
+                'end_time' => $end_time,
+                'end_day' => $end_day,
+                'end_month' => $end_month,
+                'end_year' => $end_year,
+
+                'days' => $days,
+                'city' => $city,
+                'issueDate' => $issueDate,
+                'documentNumber' => $documentNumber,
+                'medicalLeave' => $medicalLeave, // Mantener por compatibilidad
+                'firma'=>$firma,
+                'sello'=>$sello,
+                'logo'=>$logo,
+            ];
+
+            // Si es solo vista previa
+            if ($request->has('view')) {
+                return view("templates.medical_leave.{$template}", $data);
+            }
+
+            // Generar PDF
+            $pdf = Pdf::loadView("templates.medical_leave.{$template}", $data);
 
             $filename = 'licencia-medica-'.$medicalLeave->identifier.'.pdf';
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Consultation;
 
+use App\Enums\ChargeItemStatus;
 use App\Models\ChargeItem;
 use App\Models\Encounter;
 use App\Models\ServiceCatalog;
@@ -286,7 +287,7 @@ class Services extends Component
         }
 
         // Verificar que no esté facturado
-        if ($chargeItem->status === 'billed') {
+        if ($chargeItem->status === ChargeItemStatus::BILLED) {
             // session()->flash('error', 'No se puede eliminar un servicio que ya ha sido facturado.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
@@ -325,7 +326,7 @@ class Services extends Component
             return;
         }
 
-        if ($chargeItem->status === 'billed') {
+        if ($chargeItem->status === ChargeItemStatus::BILLED) {
             session()->flash('error', 'No se puede modificar un servicio que ya ha sido facturado.');
 
             return;
@@ -352,7 +353,7 @@ class Services extends Component
             return;
         }
 
-        if ($chargeItem->status === 'billed') {
+        if ($chargeItem->status === ChargeItemStatus::BILLED) {
             session()->flash('error', 'No se puede modificar un servicio que ya ha sido facturado.');
 
             return;
