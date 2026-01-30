@@ -359,6 +359,16 @@
             color: white;
             transform: translateY(-3px);
         }
+
+        .yappy-img{
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .yappy-imgsize{
+            width: 276px; 
+            height: 593px; 
+        }
         @media (max-width: 992px) {
             .help-sidebar {
                 width: 100%;
@@ -367,6 +377,16 @@
             }
             .help-content {
                 margin-left: 0;
+            }
+        }
+
+           @media screen and (max-width: 480px) {
+            .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+            .btn-end {
+                align-items: !important center;
             }
         }
     </style>
@@ -630,7 +650,7 @@
                         <ul>
                             <li>Método de pago (ACH)</li>
                             <li>Monto pagado</li>
-                            <li>Número de referencia/transacción</li>
+                            <li>Número de referencia / transacción</li>
                             <li>Fecha del pago</li>
                             <li>Comprobante (imagen/PDF)</li>
                         </ul>
@@ -638,8 +658,8 @@
                     <li>Haga clic en <strong>"Registrar Pago"</strong></li>
                 </ul>
 
-                <div>
-                    <img src="{{ asset('images/tutorial/subscriptions/payment-form.png') }}" alt="">
+                <div class="yappy-img">
+                    <img class="yappy-imgsize" src="{{ asset('images/tutorial/subscriptions/payment-form.png') }}" alt="">
                 </div>
             </div>
 
@@ -790,7 +810,7 @@
                     <i class="fas fa-arrow-left me-2"></i>Anterior: Pagos
                 </a>
             </div>
-            <div class="col-md-6 text-end">
+            <div class="col-md-6  btn-end text-end">
                 <a href="{{ route('help.index') }}" class="btn btn-warning btn-lg">
                     <i class="fas fa-home me-2"></i>Volver al Inicio
                 </a>

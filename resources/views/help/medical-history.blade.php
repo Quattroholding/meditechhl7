@@ -848,11 +848,11 @@
                             <img src="{{ asset('images/tutorial/medical_history/menu.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <p class="mt-3">URL directa:</p>
+                        {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients/{id}/medical_history</code>
-                        </div>
+                        </div>{{--}}
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/direct-mh.png') }}" alt="" style="width: 100%;">
