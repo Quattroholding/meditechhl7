@@ -1085,8 +1085,8 @@
                             <h6><i class="fas fa-route me-2"></i>Navegacion</h6>
                             <ol>
                                 <li>Inicia sesion en tu cuenta SAMI</li>
-                                <li>En el menu lateral, busca <strong>"Clientes"</strong> o <strong>"Configuracion"</strong></li>
-                                <li>Haz clic en <strong>"Sucursales"</strong></li>
+                                <li>En el menu lateral, busca <strong>"Sedes"</strong></li>
+                                <li>Haz clic en <strong>"Lista Sucursales"</strong></li>
                             </ol>
                         </div>
 
@@ -1107,10 +1107,10 @@
                     <div class="step-number">2</div>
                     <h3 class="step-title">Iniciar Creacion de Nueva Sucursal</h3>
                     <div class="step-content">
-                        <p>En la lista de sucursales, haz clic en el boton <strong>"Nuevo(a)"</strong> o <strong>"Agregar"</strong>:</p>
+                        <p>En la lista de sucursales, haz clic en el boton <strong>"Nuevo(a)"</strong>:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/branches/branch.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/branches/nuevo.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1130,7 +1130,7 @@
                         <p>Llena todos los campos del formulario de creacion de sucursal:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/branches/nuevo.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/branches/form-branch.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4 mb-3">Campos del Formulario:</h5>
@@ -1196,10 +1196,6 @@
                                 <strong>Sobre el Telefono:</strong> Ingresa el numero con el formato internacional. El sistema incluye un selector de pais para facilitar el ingreso.
                             </div>
                         </div>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/branches/form-branch.png') }}" alt="" style="width: 100%;">
-                        </div>
                     </div>
                 </section>
 
@@ -1217,7 +1213,7 @@
                         </ol>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/branches/register-branch.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/branches/register.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
