@@ -1417,7 +1417,7 @@
                 </div>
             </div>
 
-            <h3>Atajos de Teclado (Calendario)</h3>
+            <!--<h3>Atajos de Teclado (Calendario)</h3>
             <table class="field-table">
                 <thead>
                     <tr>
@@ -1447,7 +1447,7 @@
                         <td>Cambiar a vista diaria</td>
                     </tr>
                 </tbody>
-            </table>
+            </table>-->
 
             <div class="info-box note mt-4">
                 <div class="info-box-title">
