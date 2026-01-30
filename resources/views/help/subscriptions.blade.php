@@ -426,7 +426,7 @@
                             <li>Facturas automáticas mensuales</li>
                             <li>Registro de pagos Yappy/ACH</li>
                             <li>Historial de pagos</li>
-                            <li>Gestión de médicos adicionales</li>
+                            <!--<li>Gestión de médicos adicionales</li>-->
                             <li>Período de gracia de 7 días</li>
                         </ul>
                     </div>
@@ -437,7 +437,7 @@
                             <i class="fas fa-lightbulb text-primary"></i>
                             Acceso al Módulo
                         </div>
-                        <p class="mb-0">Navegue a <strong>Mi Cuenta → Suscripción</strong> desde el menú principal para acceder al módulo de suscripciones donde podrá ver su plan actual, facturas pendientes y registrar pagos.</p>
+                        <p class="mb-0">Navegue a <strong>Suscripción</strong> desde el menú principal para acceder al módulo de suscripciones donde podrá ver su plan actual, facturas pendientes y registrar pagos.</p>
                     </div>
                 </div>
             </div>
@@ -456,12 +456,12 @@
                 <h4><span class="step-number">1</span><span class="step-title">Información del Plan</span></h4>
                 <p>El sistema muestra:</p>
                 <ul>
-                    <li><strong>Nombre del Plan:</strong> Básico, Profesional, Empresarial, etc.</li>
-                    <li><strong>Precio Mensual:</strong> Monto base + médicos adicionales</li>
-                    <li><strong>Estado:</strong> Activa, Trial, Vencida, etc.</li>
+                    <li><strong>Nombre del Plan:</strong> Básico, Estándar, Premium, Empresarial, etc.</li>
+                    <li><strong>Precio Mensual:</strong> Monto base + ITBMS</li>
+                    <li><strong>Estado:</strong> Pendiente, Activa, Vencida, etc.</li>
                     <li><strong>Fecha de Renovación:</strong> Próxima fecha de facturación</li>
-                    <li><strong>Médicos Incluidos:</strong> Cantidad base del plan</li>
-                    <li><strong>Médicos Adicionales:</strong> Si ha agregado médicos extra</li>
+                    <!--<li><strong>Médicos Incluidos:</strong> Cantidad base del plan</li>
+                    <li><strong>Médicos Adicionales:</strong> Si ha agregado médicos extra</li>-->
                     <li><strong>Características:</strong> Límites y funcionalidades incluidas</li>
                 </ul>
 
@@ -495,11 +495,11 @@
                         <td>Suscripción creada, esperando primer pago</td>
                         <td><span class="status-badge status-pending">Pendiente</span></td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td><strong>Período de Prueba</strong></td>
                         <td>En trial gratuito, funcionalidad completa</td>
                         <td><span class="status-badge status-trial">Trial</span></td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td><strong>Activa</strong></td>
                         <td>Suscripción activa y al día</td>
@@ -520,11 +520,11 @@
                         <td>Suscripción cancelada por el usuario</td>
                         <td><span class="status-badge status-cancelled">Cancelada</span></td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td><strong>Expirada</strong></td>
                         <td>Suscripción expirada por falta de pago prolongada</td>
                         <td><span class="status-badge status-expired">Expirada</span></td>
-                    </tr>
+                    </tr>-->
                 </tbody>
             </table>
 
@@ -536,9 +536,9 @@
                 </div>
                 <ol class="mb-0">
                     <li><strong>Inicio:</strong> PENDIENTE → (pago) → ACTIVA</li>
-                    <li><strong>Con Trial:</strong> TRIAL → (fin trial) → ACTIVA</li>
+                    <!--<li><strong>Con Trial:</strong> TRIAL → (fin trial) → ACTIVA</li>-->
                     <li><strong>Renovación:</strong> ACTIVA → (factura mensual) → ACTIVA</li>
-                    <li><strong>Falta de Pago:</strong> ACTIVA → VENCIDA (7 días gracia) → SUSPENDIDA (30 días) → EXPIRADA</li>
+                    <li><strong>Falta de Pago:</strong> ACTIVA → VENCIDA (7 días gracia) → SUSPENDIDA (30 días)</li>
                     <li><strong>Reactivación:</strong> SUSPENDIDA → (pago) → ACTIVA</li>
                 </ol>
             </div>
@@ -562,8 +562,8 @@
                 <p>El sistema genera facturas automáticamente:</p>
                 <ul>
                     <li>Se crean en la fecha de renovación mensual</li>
-                    <li>Incluyen precio base + médicos adicionales</li>
-                    <li>Se aplican descuentos automáticamente</li>
+                    <li>Incluyen precio base + ITBMS</li>
+                    <li>Se aplican descuentos automáticamente, si usa su código de referidos</li>
                     <li>Estado inicial: Pendiente</li>
                 </ul>
             </div>
@@ -572,10 +572,10 @@
                 <h4><span class="step-number">2</span><span class="step-title">Ver Facturas</span></h4>
                 <p>Para ver sus facturas de suscripción:</p>
                 <ul>
-                    <li>Navegue a <strong>Mi Cuenta → Suscripción → Facturas</strong></li>
+                    <li>Haga clic en el Módulo de <strong>Suscripción → Facturas</strong></li>
                     <li>Verá el listado de todas las facturas mensuales</li>
                     <li>Puede filtrar por estado (Pendiente, Pagada, Vencida)</li>
-                    <li>Descargue el PDF de cada factura</li>
+                    <li>Descargue el PDF de sus facturas desde la columna de acciones</li>
                 </ul>
 
                 <div>
@@ -623,19 +623,19 @@
                 <h4><span class="step-number">2</span><span class="step-title">Registrar en el Sistema</span></h4>
                 <p>Después de realizar el pago:</p>
                 <ul>
-                    <li>Vaya a <strong>Mi Cuenta → Suscripción → Pagos</strong></li>
+                    <li>Vaya a <strong>Suscripción → Pagos</strong></li>
                     <li>Haga clic en <strong>"Registrar Pago"</strong></li>
                     <li>Seleccione la factura a pagar</li>
                     <li>Complete el formulario con:
                         <ul>
-                            <li>Método de pago (Yappy o ACH)</li>
+                            <li>Método de pago (ACH)</li>
                             <li>Monto pagado</li>
                             <li>Número de referencia/transacción</li>
                             <li>Fecha del pago</li>
                             <li>Comprobante (imagen/PDF)</li>
                         </ul>
                     </li>
-                    <li>Haga clic en <strong>"Enviar"</strong></li>
+                    <li>Haga clic en <strong>"Registrar Pago"</strong></li>
                 </ul>
 
                 <div>
@@ -745,7 +745,7 @@
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <!--<div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
                             ¿Cómo agrego médicos adicionales?
@@ -756,7 +756,7 @@
                             Contacte al equipo de soporte para agregar médicos adicionales. El costo adicional se reflejará en su próxima factura mensual. Cada médico adicional tiene un costo mensual que se suma al precio base de su plan.
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -777,7 +777,7 @@
                     <i class="fas fa-question-circle text-success"></i>
                     ¿Necesita Más Ayuda?
                 </div>
-                <p class="mb-0">Para información sobre facturación y pagos de consultas, consulte las guías de <a href="{{ route('help.billing') }}">Facturación</a> y <a href="{{ route('help.payments') }}">Pagos</a>. Si tiene preguntas sobre su suscripción, contacte al equipo de soporte de SAMI.</p>
+                <p class="mb-0">{{--}}Para información sobre facturación y pagos de consultas, consulte las guías de <a href="{{ route('help.billing') }}">Facturación</a> y <a href="{{ route('help.payments') }}">Pagos</a>.{{--}} Si tiene preguntas sobre su suscripción, contacte al equipo de soporte de SAMI.</p>
             </div>
         </section>
 

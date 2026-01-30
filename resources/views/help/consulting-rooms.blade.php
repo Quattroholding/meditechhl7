@@ -1072,8 +1072,8 @@
                             <h6><i class="fas fa-route me-2"></i>Navegacion</h6>
                             <ol>
                                 <li>Inicia sesion en tu cuenta SAMI</li>
-                                <li>En el menu lateral, busca <strong>"Clientes"</strong> o <strong>"Configuracion"</strong></li>
-                                <li>Haz clic en <strong>"Consultorios"</strong></li>
+                                <li>En el menu lateral, busca <strong>"Sedes"</strong></li>
+                                <li>Haz clic en <strong>"Lista Consultorios"</strong></li>
                             </ol>
                         </div>
 
@@ -1098,7 +1098,7 @@
                     <div class="step-number">2</div>
                     <h3 class="step-title">Iniciar Creacion de Nuevo Consultorio</h3>
                     <div class="step-content">
-                        <p>En la lista de consultorios, haz clic en el boton <strong>"Nuevo Consultorio"</strong> o <strong>"Agregar"</strong>:</p>
+                        <p>En la lista de consultorios, haz clic en el boton <strong>"Nuevo(a)"</strong>:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/consulting_rooms/new.png') }}" alt="" style="width: 100%;">
@@ -1189,7 +1189,7 @@
                         <ol>
                             <li>Verifica que todos los datos sean correctos</li>
                             <li>Asegurate de haber seleccionado la sucursal correcta</li>
-                            <li>Haz clic en el boton <strong>"Guardar"</strong></li>
+                            <li>Haz clic en el boton <strong>"Registrar"</strong></li>
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
