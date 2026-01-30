@@ -35,11 +35,13 @@
             padding: 18px;
             font-size: 22px;
             font-weight: bold;
+            background:  linear-gradient(to right,  #00aaa2,#003b8f);
         }
 
         .header-brand {
-            background-color: #00a99d;
+            background-color: #00aaa2;
             color: #ffffff;
+
         }
 
         .header-brand td {
@@ -75,16 +77,19 @@
         }
 
         .code {
-            color: #00a99d;
+            color: #00aaa2;
             font-weight: bold;
         }
 
         .right {
             text-align: right;
+            color: #00aaa2;
         }
 
         .center {
             text-align: center;
+            background: #f4f6f4;
+            color: #00a99d;
         }
 
         .section-title {
@@ -110,7 +115,7 @@
         }
 
         .terms {
-            background-color: #00a99d;
+            background-color: #00aaa2;
             color: #fff;
             padding: 4px 8px;
             font-size: 11px;
@@ -119,13 +124,32 @@
             font-weight: bold;
         }
 
+        .top-footer{
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            background-color: #edefec;
+            padding:12px;
+            width: 100%;
+            max-width: 800px;
+        }
+
         .footer {
-            background-color: #00a99d;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            max-width: 800px;
+            background-color: #00aaa2;
             color: #ffffff;
             text-align: left;
             font-size: 10px;
             padding: 12px;
             margin-top: 20px;
+        }
+
+        .text-black{
+            color: #000000;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -141,14 +165,14 @@
 
 <table class="header-brand">
     <tr>
-        <td>{{ $organization->name ?? 'CLÍNICA MÉDICA' }}</td>
+        <td>{{ strtoupper($organization->name) ?? 'CLÍNICA MÉDICA' }}</td>
     </tr>
 </table>
 
 <!-- INFO -->
 <table class="info">
     <tr>
-        <td width="50%">
+        <td width="65%">
             @if($invoice->encounter?->appointment?->consultingRoom?->branch?->address)
                 {{ $invoice->encounter->appointment->consultingRoom->branch->address }}
             @endif
@@ -156,12 +180,12 @@
                 <br>Tel: {{ $organization->whatsapp }}
             @endif
         </td>
-        <td width="50%">
+        <td width="35%">
             <div class="info-title">INFORMACIÓN DE LA CONSULTA</div>
-            Consulta ID: {{ $encounter->identifier }}<br>
-            Fecha Consulta:{{ $encounter->start ? $encounter->start->format('d/m/Y H:i') : 'N/A' }}<br>
-            Médico:{{ $practitioner->name ?? 'N/A' }}<br>
-            Licencia Médica:  {{ $practitioner->registry }}
+            <b>Consulta ID:</b> {{ $encounter->identifier }}<br>
+            <b>Fecha Consulta:</b>{{ $encounter->start ? $encounter->start->format('d/m/Y H:i') : 'N/A' }}<br>
+            <b>Médico:</b>{{ $practitioner->name ?? 'N/A' }}<br>
+            <b>Licencia Médica:</b>  {{ $practitioner->registry }}
         </td>
     </tr>
 </table>
@@ -208,16 +232,16 @@
         <td width="40%">
             <table class="totals">
                 <tr>
-                    <td class="right">Subtotal:</td>
-                    <td class="right">${{ number_format($subtotal, 2) }}</td>
+                    <td class="right text-black">Subtotal:</td>
+                    <td class="right text-black">${{ number_format($subtotal, 2) }}</td>
                 </tr>
                 <tr>
-                    <td class="right">ITBMS (7%):</td>
-                    <td class="right">${{ number_format($tax, 2) }}</td>
+                    <td class="right text-black">ITBMS (7%):</td>
+                    <td class="right text-black">${{ number_format($tax, 2) }}</td>
                 </tr>
                 <tr>
-                    <td class="right total-final">TOTAL:</td>
-                    <td class="right total-final">${{ number_format($total, 2) }}</td>
+                    <td class="right total-final text-black">TOTAL:</td>
+                    <td class="right total-final text-black">${{ number_format($total, 2) }}</td>
                 </tr>
             </table>
         </td>
@@ -246,6 +270,8 @@
 </table>
 
 <!-- FOOTER -->
+<div class="top-footer">
+</div>
 <div class="footer">
     Factura generada el {{ $generateDate }}<br>
     Este documento es válido como comprobante de servicios médicos prestados.
