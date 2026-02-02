@@ -388,6 +388,99 @@
             .btn-end {
                 align-items: !important center;
             }
+
+             /* Ocultar el thead en móviles */
+            .field-table thead {
+                display: none;
+            }
+
+            /* Convertir tabla en cards */
+            .field-table,
+            .field-table tbody,
+            .field-table tr,
+            .field-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .field-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #e9ecef;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .field-table td {
+                padding: 12px 15px;
+                position: relative;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+
+            /* Resetear border-radius en móvil */
+            .field-table tr:last-child td:first-child,
+            .field-table tr:last-child td:last-child {
+                border-radius: 0;
+            }
+
+            /* Hacer que el primer td (Estado) se vea como header del card */
+            .field-table td:first-child {
+                background: #ff9800;
+                font-weight: 500;
+                text-align: center;
+                font-size: 1.05rem;
+                padding: 15px;
+                color: white;}
+
+            /* Descripción */
+            .field-table td:nth-child(2) {
+                text-align: left;
+                color: #666;
+                font-size: 0.9rem;
+                padding: 12px 15px;
+            }
+
+            /* Badge centrado */
+            .field-table td:nth-child(3) {
+                text-align: center;
+                padding: 15px;
+            }
+
+            .status-badge {
+                display: inline-block;
+                width: auto;
+                min-width: 100px;
+            }
+            .info-box.tip, .info-box.note, .info-box.warning , .step-card{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid;
+            }
+            .info-box.tip {
+                border-bottom-color: #4caf50;
+            }
+            .info-box.note {
+                border-bottom-color: #2196f3;
+            }
+            .step-card, .info-box.warning {
+                border-bottom-color: #ff9800;;
+            }
+            .step-card {
+                border-radius: 8px;
+            }
+            .payment-title, .info-box-title {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
         }
     </style>
 </head>
@@ -473,7 +566,7 @@
             <p>En el módulo de suscripciones puede ver toda la información de su plan activo.</p>
 
             <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Información del Plan</span></h4>
+                <h4 class="payment-title"><span class="step-number">1</span><span class="step-title">Información del Plan</span></h4>
                 <p>El sistema muestra:</p>
                 <ul>
                     <li><strong>Nombre del Plan:</strong> Básico, Estándar, Premium, Empresarial, etc.</li>
@@ -491,17 +584,53 @@
             </div>
 
             <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Días Hasta Renovación</span></h4>
+                <h4 class="payment-title"><span class="step-number">2</span><span class="step-title">Días Hasta Renovación</span></h4>
                 <p>El sistema calcula automáticamente los días restantes hasta la próxima renovación. Esto le ayuda a planificar sus pagos.</p>
             </div>
         </section>
 
         <section id="estados" class="content-section">
-            <h2><i class="fas fa-exchange-alt me-2"></i>3. Estados de Suscripción</h2>
+            <h2 class="payment-title"><i class="fas fa-exchange-alt me-2"></i>3. Estados de Suscripción</h2>
 
             <p>Su suscripción puede tener diferentes estados según el ciclo de pago y actividad:</p>
 
             <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Descripción</th>
+                    <th>Badge</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Pendiente de Activación</strong></td>
+                    <td>Suscripción creada, esperando primer pago</td>
+                    <td><span class="status-badge status-pending">Pendiente</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Activa</strong></td>
+                    <td>Suscripción activa y al día</td>
+                    <td><span class="status-badge status-active">Activa</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Pago Vencido</strong></td>
+                    <td>Factura vencida, en período de gracia (7 días)</td>
+                    <td><span class="status-badge status-past-due">Vencida</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Suspendida</strong></td>
+                    <td>Acceso limitado por falta de pago</td>
+                    <td><span class="status-badge status-suspended">Suspendida</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Cancelada</strong></td>
+                    <td>Suscripción cancelada por el usuario</td>
+                    <td><span class="status-badge status-cancelled">Cancelada</span></td>
+                </tr>
+            </tbody>
+        </table>
+            <!--<table class="field-table">
                 <thead>
                     <tr>
                         <th>Estado</th>
@@ -515,11 +644,11 @@
                         <td>Suscripción creada, esperando primer pago</td>
                         <td><span class="status-badge status-pending">Pendiente</span></td>
                     </tr>
-                    <!--<tr>
+                    <tr>
                         <td><strong>Período de Prueba</strong></td>
                         <td>En trial gratuito, funcionalidad completa</td>
                         <td><span class="status-badge status-trial">Trial</span></td>
-                    </tr>-->
+                    </tr>
                     <tr>
                         <td><strong>Activa</strong></td>
                         <td>Suscripción activa y al día</td>
@@ -540,13 +669,13 @@
                         <td>Suscripción cancelada por el usuario</td>
                         <td><span class="status-badge status-cancelled">Cancelada</span></td>
                     </tr>
-                    <!--<tr>
+                    <tr>
                         <td><strong>Expirada</strong></td>
                         <td>Suscripción expirada por falta de pago prolongada</td>
                         <td><span class="status-badge status-expired">Expirada</span></td>
-                    </tr>-->
+                    </tr>
                 </tbody>
-            </table>
+            </table> -->
 
             <h3>Flujo de Estados</h3>
             <div class="info-box note">
@@ -578,7 +707,7 @@
             <p>Las facturas de suscripción se generan automáticamente cada mes.</p>
 
             <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Generación Automática</span></h4>
+                <h4 class="payment-title"><span class="step-number">1</span><span class="step-title">Generación Automática</span></h4>
                 <p>El sistema genera facturas automáticamente:</p>
                 <ul>
                     <li>Se crean en la fecha de renovación mensual</li>
@@ -589,7 +718,7 @@
             </div>
 
             <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Ver Facturas</span></h4>
+                <h4 class="payment-title"><span class="step-number">2</span><span class="step-title">Ver Facturas</span></h4>
                 <p>Para ver sus facturas de suscripción:</p>
                 <ul>
                     <li>Haga clic en el Módulo de <strong>Suscripción → Facturas</strong></li>
@@ -618,7 +747,7 @@
             <p>Debe registrar manualmente sus pagos de suscripción en el sistema.</p>
 
             <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Realizar el Pago</span></h4>
+                <h4 class="payment-title"><span class="step-number">1</span><span class="step-title">Realizar el Pago</span></h4>
                 <p>Primero, realice el pago mediante uno de los métodos disponibles:</p>
                 
                 <div class="row mt-3">
@@ -640,7 +769,7 @@
             </div>
 
             <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Registrar en el Sistema</span></h4>
+                <h4 class="payment-title"><span class="step-number">2</span><span class="step-title">Registrar en el Sistema</span></h4>
                 <p>Después de realizar el pago:</p>
                 <ul>
                     <li>Vaya a <strong>Suscripción → Pagos</strong></li>
@@ -664,7 +793,7 @@
             </div>
 
             <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Verificación</span></h4>
+                <h4 class="payment-title"><span class="step-number">3</span><span class="step-title">Verificación</span></h4>
                 <p>Una vez registrado el pago:</p>
                 <ul>
                     <li>El estado cambia a "Pendiente de Verificación"</li>
