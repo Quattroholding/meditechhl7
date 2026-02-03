@@ -13,6 +13,17 @@
             color: #000;
         }
 
+        .texto-vertical {
+            transform: rotate(-180deg);
+            transform-origin: left bottom; /* Ajusta el punto de giro si es necesario */
+            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+        }
+
+        .rotated {
+            writing-mode: tb-rl;
+            transform: rotate(-90deg);
+        }
+
         .page-wrapper {
             width: 100%;
             max-width: 800px;
@@ -44,8 +55,7 @@
         .side-date {
             background-color: #2f78ff;
             font-size: 10px;
-            padding: 6px;
-            margin-top: 200px;
+            color: #ffffff;
         }
 
         /* HEADER */
@@ -132,6 +142,8 @@
             font-size: 10px;
             text-align: center;
             padding: 10px;
+            margin-top: 10px;
+            max-width: 800px;
         }
     </style>
 </head>
@@ -147,10 +159,7 @@
                 F<br>A<br>C<br>T<br>U<br>R<br>A
             </div>
 
-            <div class="side-date">
-                Factura generada<br>
-                el  {{ $generateDate }}
-            </div>
+
         </td>
 
         <!-- CONTENIDO -->
@@ -162,7 +171,7 @@
             <!-- INFO -->
             <table class="info">
                 <tr>
-                    <td width="50%">
+                    <td width="50%"  class="green">
                         @if($invoice->encounter?->appointment?->consultingRoom?->branch?->address)
                             {{ $invoice->encounter->appointment->consultingRoom->branch->address }}
                         @endif
@@ -170,7 +179,7 @@
                             <br>Tel: {{ $organization->whatsapp }}
                         @endif
                     </td>
-                    <td width="50%">
+                    <td width="50%" class="green">
                         <div class="section-title">INFORMACIÓN DE LA CONSULTA</div>
                         Consulta ID: :{{ $encounter->identifier }}<br>
                         Fecha Consulta: {{ $encounter->start ? $encounter->start->format('d/m/Y H:i') : 'N/A' }}<br>
@@ -207,7 +216,6 @@
             </table>
 
             <br>
-
             <!-- TERMINOS + TOTALES -->
             <table>
                 <tr>
@@ -219,21 +227,35 @@
                     <td width="50%">
                         <table class="totals">
                             <tr>
-                                <td class="right">Subtotal:</td>
+                                <td class="right green">Subtotal:</td>
                                 <td class="right green">${{ number_format($subtotal, 2) }}</td>
                             </tr>
                             <tr>
-                                <td class="right">ITBMS (7%):</td>
+                                <td class="right green">ITBMS (7%):</td>
                                 <td class="right green">${{ number_format($tax, 2) }}</td>
                             </tr>
-                            <tr>
-                                <td class="right total-final">TOTAL:</td>
+                            <tr style="border-top:1px solid #008000;">
+                                <td class="right total-final green">TOTAL:</td>
                                 <td class="right total-final">${{ number_format($total, 2) }}</td>
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
+
+
+        </td>
+    </tr>
+    <tr>
+
+        <td class="side-date">
+
+                Factura generada  el  {{ $generateDate }}
+
+        </td>
+
+        <td>
+
 
             <br>
 
@@ -258,11 +280,10 @@
                     </td>
                 </tr>
             </table>
-
+            <br/>
             <div class="footer">
                 Este documento es válido como comprobante de servicios médicos prestados.
             </div>
-
         </td>
     </tr>
 </table>

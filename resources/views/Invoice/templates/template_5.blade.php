@@ -34,8 +34,8 @@
         }
 
         .side-pattern{
-            height:100%;
-            width:100%;
+            /*height:100%;
+            width:100%;*/
             background-color:#222;
         }
 
@@ -71,12 +71,12 @@
 
         .brandline{
             background:#ddd;
-            height:6px;
+            height:10px;
         }
 
         /* --- CONSULTA INFO --- */
         .consulta{
-            background:#d9d9d9;
+           /* background:#d9d9d9;*/
             padding:18px 20px;
         }
 
@@ -195,24 +195,21 @@
                         <table>
                             <tr>
                                 <td class="mini-box" width="50%">
-                                    <!-- “icono” simulado -->
-                                    <strong>📍</strong> @if($invoice->encounter?->appointment?->consultingRoom?->branch?->address)
+                                   @if($invoice->encounter?->appointment?->consultingRoom?->branch?->address)
                                         {{ $invoice->encounter->appointment->consultingRoom->branch->address }}
                                     @endif
-                                </td>
-                                <td class="mini-box" width="50%">
-                                    @if($organization->whatsapp ?? false)
-                                        <br>Tel: {{ $organization->whatsapp }}
-                                    @endif
+                                       @if($organization->whatsapp ?? false)
+                                           <br>Tel: {{ $organization->whatsapp }}
+                                       @endif
                                 </td>
                             </tr>
                         </table>
                     </td>
-                    <td class="logo" width="35%">LOGO</td>
+                    <td class="logo" width="35%">  @if(is_file(storage_path('/app/public/'.$organization->logo))) <img src="{{url('/storage/'.$organization->logo)}}"> @else LOGO @endif</td>
                 </tr>
             </table>
 
-            <div class="brandline"></div>
+
 
             <!-- CONSULTA -->
             <div class="consulta">
@@ -222,7 +219,7 @@
                 Médico: {{ $practitioner->name ?? 'N/A' }}<br>
                 Licencia Médica: {{ $practitioner->registry }}
             </div>
-
+            <div class="brandline"></div><br/>
             <!-- SERVICIOS -->
             <table class="services">
                 <thead>

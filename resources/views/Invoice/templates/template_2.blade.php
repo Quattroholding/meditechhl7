@@ -52,8 +52,18 @@ body {
         background-color: #1c8f2e;
     }
 
+    .terms {
+    background-color: #1fb0c9;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 11px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
     .section-title {
-    color: #1c8f2e;
+    color: #1fb0c9;
     font-weight: bold;
         margin-top: 10px;
         margin-bottom: 5px;
@@ -98,9 +108,22 @@ body {
         margin-top: 20px;
     }
 
+    .cyan{
+        font-weight: bold;
+        color: #1fb0c9;
+    }
+
     .green {
     color: #1c8f2e;
     font-weight: bold;
+    }
+
+    .footer{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        font-size: 12px;
+        max-width: 800px;
     }
 </style>
 </head>
@@ -110,7 +133,7 @@ body {
 <!-- HEADER -->
 <table class="header">
     <tr>
-        <td align="left">{{ $organization->name ?? 'CLÍNICA MÉDICA' }}</td>
+        <td align="left">{{ strtoupper($organization->name) ?? 'CLÍNICA MÉDICA' }}</td>
         <td align="right">FACTURA</td>
     </tr>
 </table>
@@ -155,17 +178,17 @@ body {
     <tbody>
     @foreach($lineItems as $item)
         <tr>
-            <td>{{$item->sequence}}</td>
-            <td class="green">{{ $item->service_code ?? 'N/A' }}</td>
-            <td>{{ $item->service_description }}</td>
-            <td class="right">${{ number_format($item->line_total_gross, 2) }}</td>
-            <td class="right">{{$item->quantity}}</td>
-            <td class="right">${{ number_format($item->line_total_gross, 2) }}</td>
+            <td class="cyan">{{$item->sequence}}</td>
+            <td class="cyan">{{ $item->service_code ?? 'N/A' }}</td>
+            <td class="cyan">{{ $item->service_description }}</td>
+            <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>
+            <td class="right cyan">{{$item->quantity}}</td>
+            <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>
         </tr>
     @endforeach
     </tbody>
 </table>
-
+{{--}}
 <!-- TOTALES -->
 <table class="totals">
     <tr>
@@ -208,15 +231,52 @@ body {
         </td>
     </tr>
 </table>
+{{--}}
 
-<br>
-
-<!-- TERMINOS -->
+<!-- PACIENTE + TOTALES -->
 <table>
     <tr>
-        <td width="60%"></td>
+        <td width="60%">
+            <div class="section-title">INFORMACIÓN DEL PACIENTE</div>
+            <span class="green">Nombre:</span>{{ $patient->name }}<br>
+            <span class="green">Identificación:</span> {{ $patient->identifier_type }} {{ $patient->identifier }}<br>
+            <span class="green">Fecha Nacimiento:</span>{{ $patient->birth_date ? \Carbon\Carbon::parse($patient->birth_date)->format('d/m/Y') : 'N/A' }}<br>
+            <span class="green">Teléfono:</span>{{ $patient->phone }}<br>
+            <span class="green">Email:</span> {{ $patient->email }}
+        </td>
         <td width="40%">
-            <div class="section-title">TÉRMINOS DE PAGO</div>
+            <table class="totals">
+                <tr>
+                    <td width="50%" class="right"><b>Subtotal:</b></td>
+                    <td width="50%" class="right"><b>${{ number_format($subtotal, 2) }}</b></td>
+                </tr>
+                <tr>
+                    <td class="right"><b>ITBMS (7%):</b></td>
+                    <td class="right"><b>${{ number_format($tax, 2) }}</b></td>
+                </tr>
+                <tr style="border-top:1px solid #000;">
+                    <td class="right total-final">TOTAL:</td>
+                    <td class="right total-final" >${{ number_format($total, 2) }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+
+<!-- FACTURA + TERMINOS -->
+<table>
+    <tr>
+        <td width="60%">
+            <div class="section-title">INFORMACIÓN DE FACTURA</div>
+            <span class="green">Número:</span>{{ $invoice->invoice_number }}<br>
+            <span class="green">Fecha Emisión:</span>{{ $invoice->issue_date->format('d/m/Y') }}<br>
+            <span class="green">Fecha Vencimiento:</span> {{ $invoice->due_date->format('d/m/Y') }}<br>
+            <span class="green">Estado:</span> {{ $invoice->payment_status->label() }}<br>
+            <span class="green">Moneda:</span> USD
+        </td>
+        <td width="40%">
+            <div class="terms">TÉRMINOS DE PAGO</div><br>
             <span class="green">Condiciones:</span> {{ $invoice->payment_terms ?? '30 días' }}<br>
             <span class="green">Vencimiento:</span> {{ $invoice->due_date->format('d/m/Y') }}
         </td>
@@ -226,6 +286,8 @@ body {
 <div class="footer">
 Factura generada el {{ $generateDate }}<br>
     Este documento es válido como comprobante de servicios médicos prestados.
+    <div class="divider"></div>
+    <div class="divider"></div>
 </div>
 
 </body>
