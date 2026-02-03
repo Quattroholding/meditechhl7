@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
+
+    public function welcome()
+    {
+        return view('welcome');
+    }
     public function index()
     {
         // Obtener todas las especialidades médicas
@@ -55,7 +60,7 @@ class LandingController extends Controller
                     ->exists();
             });
 
-        return view('landing', compact('specialties', 'practitioners'));
+        return view('sami', compact('specialties', 'practitioners'));
     }
 
     public function getPractitioners(Request $request)

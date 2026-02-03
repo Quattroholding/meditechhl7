@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAMI Landing</title>
+    <link rel="stylesheet" href="{{url('styles/sami.css?time'.time())}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+
+<!-- NAV + HERO = MISMA SECCIÓN -->
+<section class="top-hero" id="home">
+    <header class="header">
+        <div class="container header__inner">
+            <a href="#" class="brand">
+                <img src="{{url('images/logoSAMI.jpg')}}" alt="SAMI" class="brand__logo">
+            </a>
+
+            <nav class="nav">
+                <a href="#home">HOME</a>
+                <a href="#quienes">QUIÉNES SOMOS</a>
+                <a href="#como">CÓMO FUNCIONA</a>
+                <a href="#porque">POR QUÉ ELEGIRNOS</a>
+            </nav>
+
+            <div class="header__actions">
+                <a href="{{route('login')}}" class="btn btn--outline btn--small">Ingresar</a>
+            </div>
+
+            <button class="burger" aria-label="Abrir menú" onclick="document.body.classList.toggle('menu-open')">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        <!-- mobile menu -->
+        <div class="nav-mobile">
+            <a href="#home">HOME</a>
+            <a href="#quienes">QUIÉNES SOMOS</a>
+            <a href="#como">CÓMO FUNCIONA</a>
+            <a href="#porque">POR QUÉ ELEGIRNOS</a>
+            <a href="{{route('login')}}">Ingresar</a>
+        </div>
+    </header>
+
+    <div class="container hero">
+        <div class="hero__left">
+            <h1>
+                Innovación <br>
+                tecnológica al <br>
+                servicio de la <br>
+                salud.
+            </h1>
+
+            <div class="hero__buttons">
+                <a href="#quienes" class="btn btn--primary">Conoce más</a>
+                <a href="{{route('login')}}" class="btn btn--outline">Ingresar</a>
+            </div>
+        </div>
+
+        <div class="hero__right">
+            <div class="hero__img">
+                <img src="https://placehold.co/850x520?text=HERO+IMAGE" alt="Hero">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ¿QUÉ ES SAMI? -->
+<section class="sami" id="quienes">
+    <div class="container">
+
+        <div class="sami__title">
+            <span class="badge badge--white">¿Qué es SAMI?</span>
+        </div>
+
+        <div class="sami__intro">
+            <p>
+                SAMI es mucho más que un software médico.
+            </p>
+            <p>
+                Es una plataforma integral diseñada para optimizar la forma en que médicos,<br/>
+                clínicas y hospitales gestionan la información de sus pacientes y se conectan con ellos.
+            </p>
+            <p>
+                Centraliza procesos, mejora la eficiencia y eleva la calidad de atención, permitiendo:
+            </p>
+        </div>
+
+        <!-- ROW 1 -->
+        <div class="sami-row">
+            <div class="sami-row__img">
+                <img src="{{ asset('landing/images/Foto-2.png') }}" alt="">
+            </div>
+            <div class="sami-row__text">
+                <div class="num num--right">1</div>
+            </div>
+            <div class="sami-row__text">
+                <span class="title">Gestionar historias clínicas electrónicas <br/> de forma segura, ágil y actualizada.</span>
+            </div>
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="sami-row sami-row--alt">
+            <div class="sami-row__text">
+                <div class="num num--left">2</div>
+            </div>
+            <div class="sami-row__text">
+                <span class="title"Acceder a la información del paciente <br/>   en cualquier momento y desde cualquier <br/> dispositivo (PC, tablet o smartphone).</span>
+            </div>
+            <div class="sami-row__img">
+                <img src="{{ asset('landing/images/Foto-3.png') }}" alt="">
+            </div>
+        </div>
+
+        <!-- ROW 3 -->
+        <div class="sami-row">
+            <div class="sami-row__img">
+                <img src="{{ asset('landing/images/Foto-1.png') }}" alt="">
+            </div>
+
+            <div class="sami-row__text">
+                <div class="num num--right">3</div>
+            </div>
+            <div class="sami-row__text">
+                <span class="title">Cumplir con regulaciones de privacidad <br/>  y estándares de seguridad internacional.</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ¿A QUIÉN ESTÁ DIRIGIDA? -->
+<section class="audience" id="como">
+    <div class="container">
+
+        <div class="audience__title">¿A quién está dirigida? </div>
+
+        <p class="audience__subtitle">
+            SAMI ha sido desarrollado para atender las necesidades de:
+        </p>
+
+        <div class="audience__grid">
+            <article class="audience__card">
+                <img src="{{ asset('landing/images/Foto-4.png') }}" alt="">
+                <h4>Profesionales de la<br>salud independientes</h4>
+            </article>
+
+            <article class="audience__card">
+                <img src="{{ asset('landing/images/Foto-5.png') }}" alt="">
+                <h4>Clínicas y centros médicos<br>de todos los tamaños</h4>
+            </article>
+
+            <article class="audience__card">
+                <img src="{{ asset('landing/images/Foto-6.png') }}" alt="">
+                <h4>Hospitales y redes de<br>salud corporativas</h4>
+            </article>
+        </div>
+
+    </div>
+</section>
+
+<!-- FUNCIONALIDADES CLAVE -->
+<section class="features">
+    <div class="container">
+        <div class="features__title">
+            <span class="badge badge--white">Funcionalidades clave</span>
+        </div>
+
+        <div class="features__grid">
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                </div>
+                <h3>Historia clínica<br>digital centralizada</h3>
+                <p>Consulta, actualiza y gestiona el historial médico de cada paciente con facilidad y precisión.</p>
+            </div>
+
+            <!-- OMITIDO Directorio Médico Inteligente -->
+
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                </div>
+                <h3>Gestión de citas<br>y personal</h3>
+                <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                </div>
+                <h3>Reportes y métricas</h3>
+                <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                </div>
+                <h3>Multidispositivo</h3>
+                <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PLANES -->
+<section class="plans">
+    <div class="container">
+
+        <div class="plans__title">
+            <span class="badge badge--green">Nuestros Planes de Suscripción</span>
+        </div>
+
+        <p class="plans__subtitle">
+            Elige el plan perfecto para tus necesidades. Todos incluyen soporte técnico y actualizaciones constantes.
+        </p>
+
+        <div class="plans__grid">
+            @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
+             <article class="plan @if($package->id==4) plan--navy @endif">
+                <div class="plan__head">
+                    <h3 style=" @if($package->id==4) color:#fff!important; @endif">{{ $package->name }}</h3>
+                    @if($package->id <>4)
+                    <p class="subtitle">{{ $package->max_users }} {{ $package->max_users == 1 ? 'Usuario' : 'Usuarios' }}</p>
+                    @endif
+                </div>
+
+                <ul class="@if($loop->index==0)   plan--cyan  @elseif($loop->index==1) plan--blue @elseif($loop->index==2) plan--green @elseif($loop->index==3) plan--navy @else plan--light @endif">
+                    @foreach($package->features ?? [] as $feature)
+                        <li><i class="fas fa-check @if($package->id==3) text__white @else text__green @endif"></i> {{ $feature }}</li>
+                    @endforeach
+                </ul>
+                @if($package->id<>4)<div class="plan__price">@isset($package->base_price) ${{ number_format($package->base_price,2) }} <br/> <small class="">al mes</small> @else XXX @endif</div>@endif
+                <a href="{{ route('public.register', ['package' => 1]) }}" class="btn btn--primary btn--full">Suscribirse ahora</a>
+            </article>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- POR QUÉ -->
+<section class="why" id="porque">
+    <div class="container">
+        <div class="why__title">
+            <span class="badge badge--blue">¿Por qué elegir SAMI?</span>
+        </div>
+
+        <p class="why__lead">
+            Porque creemos que la tecnología debe estar al servicio de la salud.
+        </p>
+
+        <p class="why__lead">
+            Con SAMI, tendrás:
+        </p>
+
+        <div class="why__bars">
+            <div class="bar">Mayor control y organización</div>
+            <div class="bar">Datos seguros y siempre disponibles</div>
+            <div class="bar">Menos papeleo = más tiempo para tus pacientes</div>
+            <div class="bar">Una mejor experiencia para tus pacientes y tu equipo</div>
+        </div>
+
+        <div class="why__cta">
+            <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
+            <a href="#" class="btn btn--green">Regístrate aquí</a>
+            <small>Forma parte de la revolución SAMI</small>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container footer__inner">
+        <div class="footer__contact">
+            <span>Contáctanos:</span>
+            <a href="mailto:napellido@solucionesmeditec.com">napellido@solucionesmeditec.com</a>
+            <span class="sep">|</span>
+            <a href="tel:+5071234567">+507 123-4567</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

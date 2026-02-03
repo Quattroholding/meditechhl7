@@ -29,7 +29,7 @@ class FinishedButton extends Component
         return view('livewire.consultation.finished-button');
     }
 
-    #[On('findFinishedButtonStatus')]  
+    #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
         if(auth()->user()->hasRole('asistente medico')){
@@ -48,7 +48,7 @@ class FinishedButton extends Component
             unset($this->messages[1]);
         } else {
             $return = false;
-            $this->messages[1] = '- Queja Principal';
+            $this->messages[1] = '- Motivo de Consulta';
         }
 
         return $return;
