@@ -795,22 +795,6 @@
 
                     </div>
                 </div>
-
-                <script>
-                    document.addEventListener('livewire:initialized', () => {
-                        Livewire.on('showToastr{{$appointment['id']}}', (event) => {
-                            toastr[event.type](event.message, '', {
-                                closeButton: true,
-                                progressBar: true,
-                                positionClass: 'toast-top-right',
-                                timeOut: 5000,
-                                onHidden: function() {
-                                    window.location.href = '{{route('consultation.show',$appointment['id'])}}'; // Replace with your desired URL
-                                }
-                            });
-                        });
-                    });
-                </script>
             @endforeach
         </div>
     @else

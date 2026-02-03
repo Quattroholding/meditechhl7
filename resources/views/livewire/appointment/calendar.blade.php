@@ -230,15 +230,20 @@
         </div>
     @endif
     <script>
-
+        var url = '{{url('/')}}'
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastr', (event) => {
-                event.preventDefault();
+            Livewire.on('showToastrAppointment', (event) => {
+               console.log(event);
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',
                     timeOut: 5000,
+                    onHidden: function() {
+                        if(event.reditect_to_encounter){
+                            window.location.href = url+'/consultation/'+event.appointment_id; // Replace with your desired URL
+                        }
+                    }
                 });
             });
         });
