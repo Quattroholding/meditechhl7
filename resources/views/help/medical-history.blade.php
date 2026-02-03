@@ -461,6 +461,7 @@
             color: #00796b;
         }
 
+
         /* Category Badge */
         .category-badge {
             display: inline-block;
@@ -551,6 +552,20 @@
             transform: translateY(-5px);
         }
 
+/* Responsive: Tablets */
+    @media screen and (max-width: 1024px) and (min-width: 769px) {
+        .vital-signs-table th,
+        .vital-signs-table td {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .vital-signs-table .code {
+            font-size: 0.8rem;
+            padding: 2px 6px;
+        }
+    }        
+
         /* Responsive */
         @media (max-width: 992px) {
             .help-sidebar {
@@ -575,6 +590,113 @@
                 margin-left: 0;
             }
         }
+
+        /* Responsive: Mobile */
+    @media screen and (max-width: 768px) {
+
+    }
+                             /* Extra small devices */
+        @media screen and (max-width: 480px) {
+           .icd-code-box, .info-box {
+            flex-direction: column;
+            align-items: center;
+           }
+            .step-card, .sub-step{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid var(--teal-color);
+            }
+            .sub-step{
+                border-bottom-color: #00897b;;
+            }
+            .step-number {
+                left: 45%;
+            }
+           .icd-example h6, .icd-code-box{
+            text-align: center;
+        }
+            .step-title {
+                padding-left: 0;
+                text-align: center;
+                padding-top: 8%;
+            }
+
+                    /* Ocultar el thead en móviles */
+        .vital-signs-table thead {
+            display: none;
+        }
+
+        /* Convertir tabla en cards */
+        .vital-signs-table,
+        .vital-signs-table tbody,
+        .vital-signs-table tr,
+        .vital-signs-table td {
+            display: block;
+            width: 100%;
+        }
+
+        .vital-signs-table tr {
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .vital-signs-table td {
+            text-align: right;
+            padding: 10px 15px;
+            position: relative;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .vital-signs-table td:last-child {
+            border-bottom: none;
+        }
+
+        /* Resetear border-radius en móvil */
+        .vital-signs-table tr:last-child td:first-child,
+        .vital-signs-table tr:last-child td:last-child {
+            border-radius: 0;
+        }
+
+        /* Agregar labels antes de cada dato */
+        .vital-signs-table td:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: 600;
+            color: #004d40;
+        }
+
+        /* Opcional: hacer que el primer td (Signo Vital) se vea como header */
+        .vital-signs-table td:first-child {
+            background: #004d40;
+            font-weight: 600;
+            color: white;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .vital-signs-table td:first-child:before {
+            display: none;
+        }
+        }
+
+        @media screen and (max-width: 400px) {
+            .step-number{
+                left: 44%;
+            }
+         }
+        @media screen and (max-width: 350px) {
+            .step-number{
+                left: 43%;
+            }
+         }
+        @media screen and (max-width: 325px) {
+            .step-number{
+                left: 42%;
+            }
+         }
     </style>
 </head>
 <body>
@@ -848,11 +970,11 @@
                             <img src="{{ asset('images/tutorial/medical_history/menu.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <p class="mt-3">URL directa:</p>
+                        {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients/{id}/medical_history</code>
-                        </div>
+                        </div>{{--}}
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/direct-mh.png') }}" alt="" style="width: 100%;">
@@ -1032,44 +1154,44 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><i class="fas fa-heart text-danger me-2"></i> Presion Sistolica</td>
-                                    <td><span class="code">8480-6</span></td>
-                                    <td>mmHg</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Sistolica</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8480-6</span></td>
+                                    <td data-label="Unidad">mmHg</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-heart text-danger me-2"></i> Presion Diastolica</td>
-                                    <td><span class="code">8462-4</span></td>
-                                    <td>mmHg</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Diastolica</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8462-4</span></td>
+                                    <td data-label="Unidad">mmHg</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
-                                    <td><span class="code">8867-4</span></td>
-                                    <td>lpm</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8867-4</span></td>
+                                    <td data-label="Unidad">lpm</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
-                                    <td><span class="code">8310-5</span></td>
-                                    <td>°C</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8310-5</span></td>
+                                    <td data-label="Unidad">°C</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
-                                    <td><span class="code">2708-6</span></td>
-                                    <td>%</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
+                                    <td data-label="Codigo LOINC"><span class="code">2708-6</span></td>
+                                    <td data-label="Unidad">%</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-weight text-secondary me-2"></i> Peso</td>
-                                    <td><span class="code">29463-7</span></td>
-                                    <td>kg</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-weight text-secondary me-2"></i> Peso</td>
+                                    <td data-label="Codigo LOINC"><span class="code">29463-7</span></td>
+                                    <td data-label="Unidad">kg</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-ruler-vertical text-secondary me-2"></i> Altura</td>
-                                    <td><span class="code">8302-2</span></td>
-                                    <td>cm</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Altura</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8302-2</span></td>
+                                    <td data-label="Unidad">cm</td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-calculator text-success me-2"></i> IMC</td>
-                                    <td><span class="code">39156-5</span></td>
-                                    <td>kg/m²</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-calculator text-success me-2"></i> IMC</td>
+                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
+                                    <td data-label="Unidad">kg/m²</td>
                                 </tr>
                             </tbody>
                         </table>

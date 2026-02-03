@@ -1061,6 +1061,18 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#loggin">
+                                <i class="fas fa-cogs"></i>
+                                Flujo de Inicio de Sesión
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#assistant">
+                                <i class="fas fa-cogs"></i>
+                                Asistente de Configuración
+                            </a>
+                        </li>
+                        <li>
                             <a href="#pago">
                                 <i class="fas fa-credit-card"></i>
                                 Proceso de Pago
@@ -1726,6 +1738,105 @@
                         </ul>
                     </div>
                 </section>
+
+                <!-- Flujo de Loggin -->
+                <section id="loggin" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Flujo de Inicio de Sesión</h3>
+                    <div class="step-content">
+                        <!--<p>Para los interesados en conocer el proceso tecnico, aqui explicamos que ocurre en el sistema durante el registro:</p>-->
+
+                        <div class="process-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>1. Ir a la pantalla de Login</h6>
+                                    <p>Puede ingresar a la pantalla de inicio de sesión de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong>, haz clic en el botón <strong>"Ir al Login"</strong> <br>2. Desde la pantalla del Landing, haz en clic en <strong>"Ingresar"</strong> que se encuentra en el menú superior.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/registration-login.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>2. Ingresar Credenciales</h6>
+                                    <p>Ingrese su correo y contraseña que proporcinó en el registro.</p>
+                                    <div>
+                                        <img  src="{{ asset('images/tutorial/register/login-form.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>3. Ingreso a la Plataforma</h6>
+                                    <p>Luego de haber ingresado sus credenciales correctamente, podrá entrar al Sistema dónde vera el Dashboard principal, un mensaje en la parte superior que su activación está pendiente y el asistente de configuración.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/logged.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Asistente de Configuración -->
+                <section id="assistant" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Asistente de Configuración</h3>
+                    <div class="step-content">
+                        <p>Si no sabe como configurar lo básico para comenzar a usar nuestro sistema, contamos con un asistente de configurarción que le guiará paso a paso:</p>
+
+                        <div class="process-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>1. Pago de Suscripción</h6>
+                                    <p>Para poder agendar citas y llenar sus consultas, deberá primero hacer el pago de la suscripción del plan que seleccionó, haga clic en <strong>+Ver Facturas</strong> y se desplegará la pantalla de Detalle Factura donde podrá registrar su pago.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/1step.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>2. Configurar Sucursal</h6>
+                                    <p>Luego de registrar su pago, el asistente pasa automáticamente al paso 2 que es la configuración de una sucursal, haz clic en <strong>+Crear Sucursal</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su sucursal.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/2step.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>3. Configurar Consultorio</h6>
+                                    <p>Luego de registrar su primera sucursal, el asistente pasa automáticamente al paso 3 que corresponde a configuración de un consultorio, haz clic en <strong>+Crear Consultorio</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su consultorio.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/3step.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>4. Regisrar Paciente</h6>
+                                    <p>Luego de registrar su primer consultorio, el asistente pasa automáticamente al paso 4 que corresponde al registro de un paciente, haz clic en <strong>+Regisrar Paciente</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su paciente.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/4step.png') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Importante:</strong> Este tutorial cubre las <strong>Configuraciones Básicas</strong>, el <strong>Asistente de Configurción</strong> posee <strong>8 pasos</strong> en total que le recomendamos seguir para poder tener una mejor experiencia y pueda aprovechar al máximo el uso de nuestro sistema.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
 
                 <!-- Proceso de Pago -->
                 <section id="pago" class="step-card step-important">

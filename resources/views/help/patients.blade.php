@@ -536,6 +536,148 @@
                 margin-left: 0;
             }
         }
+
+        /* Extra small devices */
+        @media screen and (max-width: 480px) {
+            .id-cards{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .id-card {
+                width: 100%;
+            }
+                        /*Títulos de pasos*/
+
+            .step-title {
+                padding-left: 0;
+                padding-top: 5%;
+
+            }
+            .step-number {
+                left: 45%;
+            }
+
+
+                .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: left;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #4a148c;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #5913ae;
+            }
+            
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Requerido"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Requerido"]:before {
+                content: "Requerido: ";
+                font-weight: 600;
+                color: #4a148c;
+                margin-right: 5px;
+            }
+
+            .step-card, .sub-step {
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid var(--purple-color);
+            }
+                        .step-title {
+                padding-left: 0;
+                text-align: center;
+                padding-top: 8%;
+            }
+            .info-box, .form-section-card h6 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+
+    /* Ajustar badges en móvil */
+    .required,
+    .optional {
+        min-width: 80px;
+        text-align: center;
+    }
+
+        }
+
+                 @media screen and (max-width: 400px) {
+            .step-number{
+                left: 44%;
+            }
+         }
+        @media screen and (max-width: 350px) {
+            .step-number{
+                left: 43%;
+            }
+         }
+                 @media screen and (max-width: 325px) {
+            .step-number{
+                left: 42%;
+            }
+         }
+        
+        
     </style>
 </head>
 <body>
@@ -706,36 +848,36 @@
                     <div class="step-content">
                         <p>SAMI soporta diferentes tipos de documentos de identificación:</p>
 
-                        <div class="row mt-4">
-                            <div class="col-6 col-md-4 mb-3">
+                        <div class="row mt-4 id-cards">
+                            <div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">CC</div>
                                     <div class="name">Cédula de Ciudadanía</div>
                                     <div class="format">8-123-456</div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4 mb-3">
+                            <div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">CE</div>
                                     <div class="name">Cédula de Extranjería</div>
                                     <div class="format">E-8-123456</div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4 mb-3">
+                            <div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">PA</div>
                                     <div class="name">Pasaporte</div>
                                     <div class="format">PA1234567</div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4 mb-3">
+                            <div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">PT</div>
                                     <div class="name">Permiso Temporal</div>
                                     <div class="format">PT-12345678</div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-4 mb-3">
+                            <div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">SS</div>
                                     <div class="name">Seguro Social</div>
@@ -773,11 +915,11 @@
                             <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <p class="mt-3">URL directa:</p>
+                        {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients</code>
-                        </div>
+                        </div>{{--}}
 
                         <div>
                             <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
@@ -822,19 +964,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Tipo de Documento</strong></td>
-                                    <td>Selecciona el tipo: CC, CE, PA, PT o SS</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Tipo de Documento</strong></td>
+                                    <td data-label="Descripción">Selecciona el tipo: CC, CE, PA, PT o SS</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Número de Documento</strong></td>
-                                    <td>Número de identificacion (formato segun tipo)</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Número de Documento</strong></td>
+                                    <td data-label="Descripción">Número de identificacion (formato segun tipo)</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Género</strong></td>
-                                    <td>Masculino o Femenino</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Género</strong></td>
+                                    <td data-label="Descripción">Masculino o Femenino</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -869,39 +1011,39 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Nombre</strong></td>
-                                    <td>Nombre(s) del paciente</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Nombre</strong></td>
+                                    <td data-label="Descripción">Nombre(s) del paciente</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Apellido</strong></td>
-                                    <td>Apellido(s) del paciente</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Apellido</strong></td>
+                                    <td data-label="Descripción">Apellido(s) del paciente</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Email</strong></td>
-                                    <td>Correo electrónico (único en el sistema)</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Email</strong></td>
+                                    <td data-label="Descripción">Correo electrónico (único en el sistema)</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Teléfono</strong></td>
-                                    <td>Número de teléfono con código de país</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Teléfono</strong></td>
+                                    <td data-label="Descripción">Número de teléfono con código de país</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Fecha de Nacimiento</strong></td>
-                                    <td>Fecha en formato día/mes/año</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Fecha de Nacimiento</strong></td>
+                                    <td data-label="Descripción">Fecha en formato día/mes/año</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Tipo de Sangre</strong></td>
-                                    <td>A+, A-, B+, B-, AB+, AB-, O+, O-</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Tipo de Sangre</strong></td>
+                                    <td data-label="Descripción">A+, A-, B+, B-, AB+, AB-, O+, O-</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Estado Civil</strong></td>
-                                    <td>Soltero, Casado, Divorciado, Viudo</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Estado Civil</strong></td>
+                                    <td data-label="Descripción">Soltero, Casado, Divorciado, Viudo</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -936,19 +1078,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Dirección Física</strong></td>
-                                    <td>Dirección completa de residencia</td>
-                                    <td><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Dirección Física</strong></td>
+                                    <td data-label="Descripción">Dirección completa de residencia</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>País</strong></td>
-                                    <td>País de residencia</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>País</strong></td>
+                                    <td data-label="Descripción">País de residencia</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Provincia/Estado</strong></td>
-                                    <td>División administrativa (se carga segun el país)</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Provincia/Estado</strong></td>
+                                    <td data-label="Descripción">División administrativa (se carga segun el país)</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -976,19 +1118,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Nombre del Contacto</strong></td>
-                                    <td>Nombre completo de la persona de emergencia</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Nombre del Contacto</strong></td>
+                                    <td data-label="Descripción">Nombre completo de la persona de emergencia</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Email del Contacto</strong></td>
-                                    <td>Correo electrónico del contacto</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Email del Contacto</strong></td>
+                                    <td data-label="Descripción">Correo electrónico del contacto</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Teléfono del Contacto</strong></td>
-                                    <td>Numero de teléfono del contacto</td>
-                                    <td><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Teléfono del Contacto</strong></td>
+                                    <td data-label="Descripción">Numero de teléfono del contacto</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
                         </table>
