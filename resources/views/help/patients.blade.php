@@ -742,22 +742,22 @@
                                 Paso 4: Informacion Personal
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#paso-5">
                                 <i class="fas fa-map-marker-alt"></i>
                                 Paso 5: Direccion
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#paso-6">
                                 <i class="fas fa-phone-alt"></i>
-                                Paso 6: Contacto Emergencia
+                                Paso 5: Contacto Emergencia
                             </a>
                         </li>
                         <li>
                             <a href="#paso-7">
                                 <i class="fas fa-file-upload"></i>
-                                Paso 7: Documentos
+                                Paso 6: Documentos
                             </a>
                         </li>
                         <!--<li>
@@ -769,7 +769,7 @@
                         <li>
                             <a href="#paso-9">
                                 <i class="fas fa-save"></i>
-                                Paso 8: Guardar
+                                Paso 7: Guardar
                             </a>
                         </li>
                         <li>
@@ -877,13 +877,13 @@
                                     <div class="format">PT-12345678</div>
                                 </div>
                             </div>
-                            <div class="id-card col-6 col-md-4 mb-3">
+                            <!--<div class="id-card col-6 col-md-4 mb-3">
                                 <div class="id-type-card">
                                     <div class="code">SS</div>
                                     <div class="name">Seguro Social</div>
                                     <div class="format">123-45-6789</div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
 
                         <div class="info-box info-warning">
@@ -921,9 +921,6 @@
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/patients</code>
                         </div>{{--}}
 
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
-                        </div>
                     </div>
                 </section>
 
@@ -934,6 +931,9 @@
                     <div class="step-content">
                         <p>En la lista de pacientes, haz clic en el botón <strong>"Nuevo(a)"</strong>:</p>
 
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
@@ -965,7 +965,7 @@
                             <tbody>
                                 <tr>
                                     <td data-label="Campo"><strong>Tipo de Documento</strong></td>
-                                    <td data-label="Descripción">Selecciona el tipo: CC, CE, PA, PT o SS</td>
+                                    <td data-label="Descripción">Selecciona el tipo: CC, CE, PA O PT</td>
                                     <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
@@ -1026,9 +1026,9 @@
                                     <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Campo"><strong>Teléfono</strong></td>
-                                    <td data-label="Descripción">Número de teléfono con código de país</td>
-                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                    <td data-label="Campo"><strong>Tipo de Sangre</strong></td>
+                                    <td data-label="Descripción">A+, A-, B+, B-, AB+, AB-, O+, O-</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
                                     <td data-label="Campo"><strong>Fecha de Nacimiento</strong></td>
@@ -1036,14 +1036,29 @@
                                     <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Campo"><strong>Tipo de Sangre</strong></td>
-                                    <td data-label="Descripción">A+, A-, B+, B-, AB+, AB-, O+, O-</td>
-                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                                    <td data-label="Campo"><strong>Dirección</strong></td>
+                                    <td data-label="Descripción">Dirección completa de residencia</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Teléfono</strong></td>
+                                    <td data-label="Descripción">Número de teléfono con código de país</td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
                                     <td data-label="Campo"><strong>Estado Civil</strong></td>
                                     <td data-label="Descripción">Soltero, Casado, Divorciado, Viudo</td>
                                     <td data-label="Requerido"><span class="required">Si</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>País</strong></td>
+                                    <td data-label="Descripción">País de residencia</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Campo"><strong>Provincia/Estado</strong></td>
+                                    <td data-label="Descripción">División administrativa (se carga segun el país)</td>
+                                    <td data-label="Requerido"><span class="optional">Opcional</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1058,7 +1073,7 @@
                 </section>
 
                 <!-- Paso 5: Direccion -->
-                <section id="paso-5" class="step-card">
+                {{--}}<section id="paso-5" class="step-card">
                     <div class="step-number">5</div>
                     <h3 class="step-title">Ingresar Dirección</h3>
                     <div class="step-content">
@@ -1095,11 +1110,11 @@
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </section>{{--}}
 
                 <!-- Paso 6: Contacto de Emergencia -->
                 <section id="paso-6" class="step-card">
-                    <div class="step-number">6</div>
+                    <div class="step-number">5</div>
                     <h3 class="step-title">Contacto de Emergencia (Opcional)</h3>
                     <div class="step-content">
                         <p>Puedes agregar información de un contacto de emergencia:</p>
@@ -1146,7 +1161,7 @@
 
                 <!-- Paso 7: Documentos -->
                 <section id="paso-7" class="step-card">
-                    <div class="step-number">7</div>
+                    <div class="step-number">6</div>
                     <h3 class="step-title">Subir Documentos (Opcional)</h3>
                     <div class="step-content">
                         <p>Puedes adjuntar documentos del paciente como identificación, seguros, exámenes previos, etc:</p>
@@ -1237,7 +1252,7 @@
 
                 <!-- Paso 9: Guardar -->
                 <section id="paso-9" class="step-card step-success">
-                    <div class="step-number">8</div>
+                    <div class="step-number">7</div>
                     <h3 class="step-title">Guardar el Paciente</h3>
                     <div class="step-content">
                         <p>Una vez completada toda la informacion:</p>
@@ -1245,7 +1260,7 @@
                         <ol>
                             <li>Revisa que todos los datos obligatorios esten completos</li>
                             <li>Verifica que la información sea correcta</li>
-                            <li>Haz clic en el botón <strong>"Guardar"</strong></li>
+                            <li>Haz clic en el botón <strong>"Registrar"</strong></li>
                             <li>Espera la confirmación del sistema</li>
                         </ol>
 
@@ -1282,7 +1297,7 @@
                             <ol>
                                 <li>Al ingresar el numero de documento, el sistema detectara que ya existe</li>
                                 <li>Aparecera un mensaje indicando que el paciente ya esta registrado</li>
-                                <li>Haz clic en <strong>"Asociar a mi clínica"</strong></li>
+                                <li>Haz clic en <strong>"Asociar"</strong></li>
                                 <li>El paciente quedará vinculado a tu organización</li>
                             </ol>
                         </div>
@@ -1306,6 +1321,9 @@
                     <div class="step-content">
                         <p>Despues de crear o asociar un paciente, puedes ver su perfil completo:</p>
 
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/profile-btn.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <div>
                             <img src="{{ asset('images/tutorial/patients/profile.png') }}" alt="" style="width: 100%;">
                         </div>
