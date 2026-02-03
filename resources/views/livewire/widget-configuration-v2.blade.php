@@ -17,13 +17,7 @@
             </div>
 
             <div class="modal-body-v2">
-                @if (session()->has('message'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="feather-check-circle me-2"></i>
-                        {{ session('message') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+               @include('partials.message')
 
                 <!-- Instructions -->
                 <div class="instructions-banner mb-3">

@@ -280,9 +280,11 @@ class Calendar extends Component
                 }
 
                 if ($newStatus == 'checked-in') {
-                    $this->dispatch('showToastr'.$appointmentId,
+                    $this->dispatch('showToastrAppointment',
                         type: 'success',
-                        message: '¡Espere por favor en unos segundos empezara su consulta!'
+                        message: '¡Espere por favor en unos segundos empezara su consulta!',
+                        appointment_id : $appointmentId,
+                        reditect_to_encounter:true,
                     );
                 }
             }
