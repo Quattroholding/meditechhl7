@@ -300,7 +300,7 @@ class MedicalDocumentController extends Controller
             $start_time = $medicalLeave->start_datetime->format('H:i');
             $start_day = $medicalLeave->start_datetime->format('d');
             $start_month = $medicalLeave->start_datetime->format('m');
-            $start_year =$medicalLeave->start_datetime->format('Y');
+            $start_year = $medicalLeave->start_datetime->format('Y');
             $end_time = $medicalLeave->end_datetime->format('H:i');
             $end_day = $medicalLeave->end_datetime->format('d');
             $end_month = $medicalLeave->end_datetime->format('m');
@@ -329,9 +329,9 @@ class MedicalDocumentController extends Controller
                 'issueDate' => $issueDate,
                 'documentNumber' => $documentNumber,
                 'medicalLeave' => $medicalLeave, // Mantener por compatibilidad
-                'firma'=>$firma,
-                'sello'=>$sello,
-                'logo'=>$logo,
+                'firma' => $firma,
+                'sello' => $sello,
+                'logo' => $logo,
             ];
 
             // Si es solo vista previa
