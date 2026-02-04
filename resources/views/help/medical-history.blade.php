@@ -477,6 +477,8 @@
         .category-social { background: #fff3e0; color: #ef6c00; }
         .category-medication { background: #e8f5e9; color: #2e7d32; }
         .category-condition { background: #e0f7fa; color: #00838f; }
+        .category-inmu { background: #daffe6; color: #008f4f; }
+        .category-other { background: #fdffda; color: #8f8a00; }
 
         /* ICD Code Example */
         .icd-example {
@@ -746,13 +748,13 @@
                         <li>
                             <a href="#resumen">
                                 <i class="fas fa-chart-pie"></i>
-                                Vista General (Resumen)
+                                Resumen General
                             </a>
                         </li>
                         <li>
-                            <a href="#antecedentes">
-                                <i class="fas fa-history"></i>
-                                Antecedentes Médicos
+                            <a href="#consultas">
+                                <i class="fas fa-user-md"></i>
+                                Consultas Médicas
                             </a>
                         </li>
                         <li>
@@ -767,12 +769,12 @@
                                 Signos Vitales
                             </a>
                         </li>
-                        <!-- <li>
-                            <a href="#examenes">
+                        <li>
+                            <a href="#enfermedad">
                                 <i class="fas fa-stethoscope"></i>
-                                Examenes Fisicos
+                                Enfermedad Actual
                             </a>
-                        </li> -->
+                        </li>
                         <li>
                             <a href="#medicamentos">
                                 <i class="fas fa-pills"></i>
@@ -780,15 +782,33 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#antecedentes">
+                                <i class="fas fa-history"></i>
+                                Antecedentes Médicos
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <a href="#examenes">
+                                <i class="fas fa-stethoscope"></i>
+                                Examenes Fisicos
+                            </a>
+                        </li> -->
+                        <li>
                             <a href="#notas">
                                 <i class="fas fa-sticky-note"></i>
-                                Notas Clínicas
+                                Notas Médicas
                             </a>
                         </li>
                         <li>
                             <a href="#licencias">
                                 <i class="fas fa-file-medical"></i>
-                                Licencias Médicas
+                                Incapacidades Médicas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#notas-privadas">
+                                <i class="fas fa-file-text"></i>
+                                Notas Privadas
                             </a>
                         </li>
                         <li>
@@ -849,7 +869,7 @@
                         <div class="info-box info-note">
                             <i class="fas fa-shield-alt"></i>
                             <div>
-                                <strong>Privacidad:</strong> Los medicos solo pueden ver los registros de las consultas que ellos han realizado, a menos que tengan autorizacion especial del paciente o del administrador.
+                                <strong>Privacidad:</strong> Los médicos solo pueden ver los registros de las consultas que ellos han realizado, a menos que tengan autorizacion especial del paciente o del administrador.
                             </div>
                         </div>
                     </div>
@@ -859,7 +879,7 @@
                 <section id="secciones" class="step-card">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-th-large me-2"></i>Secciones de la Historia Medica</h3>
                     <div class="step-content">
-                        <p>La historia medica esta dividida en las siguientes secciones:</p>
+                        <p>La historia médica está dividida en las siguientes secciones:</p>
 
                         <div class="row mt-4">
                             <div class="col-md-4 mb-3">
@@ -872,8 +892,8 @@
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-calendar-check"></i>
-                                    <h6>Encuentros</h6>
-                                    <p>Consultas realizadas</p>
+                                    <h6>Consultas</h6>
+                                    <p>Consultas Médicas realizadas</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -883,18 +903,18 @@
                                     <p>Mediciones vitales</p>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <!--<div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-stethoscope"></i>
                                     <h6>Examenes Fisicos</h6>
                                     <p>Hallazgos de examen</p>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-diagnoses"></i>
-                                    <h6>Condiciones</h6>
-                                    <p>Diagnosticos ICD-10</p>
+                                    <h6>Diagnósticos</h6>
+                                    <p>Diagnósticos ICD-10</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -905,6 +925,13 @@
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
+                                <div class="section-card">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <h6>Órdenes Médicos</h6>
+                                    <p>Prescripciones de medicamentos, Procedimientos, Laboratorios e Imágenes</p>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-pills"></i>
                                     <h6>Medicamentos</h6>
@@ -917,33 +944,33 @@
                                     <h6>Solicitudes</h6>
                                     <p>Labs e imagenes</p>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-history"></i>
                                     <h6>Antecedentes</h6>
-                                    <p>Historial medico</p>
+                                    <p>Historial médico</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-comment-medical"></i>
-                                    <h6>Notas Clinicas</h6>
-                                    <p>Impresiones medicas</p>
+                                    <h6>Notas Médicas</h6>
+                                    <p>Impresiones médicas</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-sticky-note"></i>
                                     <h6>Notas Personales</h6>
-                                    <p>Notas del medico</p>
+                                    <p>Notas del médico</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-file-medical"></i>
-                                    <h6>Licencias Medicas</h6>
-                                    <p>Incapacidades</p>
+                                    <h6>Incapacidades</h6>
+                                    <p>Incapacidades Médicas</p>
                                 </div>
                             </div>
                         </div>
@@ -953,21 +980,22 @@
                 <!-- Como Acceder -->
                 <section id="acceder" class="step-card">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Como Acceder a la Historia Medica</h3>
+                    <h3 class="step-title">¿Cómo acceder a la Historia Médica?</h3>
                     <div class="step-content">
                         <p>Para acceder a la historia medica de un paciente:</p>
 
                         <div class="sub-step">
                             <h6><i class="fas fa-route me-2"></i>Pasos</h6>
                             <ol>
-                                <li>Ve a la lista de pacientes o busca el paciente</li>
+                                <li>Ve a la Sección de Pacientes</li>
+                                <li>Has clic lista pacientes o busca el paciente</li>
                                 <li>Haz clic en el nombre del paciente o en <strong>"Ver Perfil"</strong></li>
                                 <li>En el perfil, haz clic en <strong>"Historia Medica"</strong></li>
                             </ol>
                         </div>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/menu.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         {{--}}<p class="mt-3">URL directa:</p>
@@ -977,7 +1005,7 @@
                         </div>{{--}}
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/direct-mh.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-profile.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -985,21 +1013,21 @@
                 <!-- Vista General -->
                 <section id="resumen" class="step-card">
                     <div class="step-number">2</div>
-                    <h3 class="step-title">Vista General (Resumen)</h3>
+                    <h3 class="step-title">Resumen General</h3>
                     <div class="step-content">
-                        <p>La seccion de <strong>Vista General</strong> muestra un resumen rapido del estado del paciente:</p>
+                        <p>La seccion de <strong>Resumen General</strong> muestra un resumen rápido del estado del paciente:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/general.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <h5 class="mt-4">Informacion Mostrada:</h5>
+                        <h5 class="mt-4">Información Mostrada:</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <ul class="checklist">
                                     <li>
                                         <i class="fas fa-chart-bar"></i>
-                                        <div><strong>Total de encuentros</strong></div>
+                                        <div><strong>Total de consultas médicas</strong></div>
                                     </li>
                                     <li>
                                         <i class="fas fa-diagnoses"></i>
@@ -1007,7 +1035,7 @@
                                     </li>
                                     <li>
                                         <i class="fas fa-calendar"></i>
-                                        <div><strong>Fecha de ultima visita</strong></div>
+                                        <div><strong>Fecha de última visita</strong></div>
                                     </li>
                                 </ul>
                             </div>
@@ -1015,7 +1043,7 @@
                                 <ul class="checklist">
                                     <li>
                                         <i class="fas fa-pills"></i>
-                                        <div><strong>Medicamentos activos</strong></div>
+                                        <div><strong>Ordenes médicas</strong></div>
                                     </li>
                                     <li>
                                         <i class="fas fa-allergies"></i>
@@ -1031,74 +1059,66 @@
                     </div>
                 </section>
 
-                <!-- Antecedentes Medicos -->
-                <section id="antecedentes" class="step-card">
+            <!-- Sección de Consultas -->
+                <section id="consultas" class="step-card">
                     <div class="step-number">3</div>
-                    <h3 class="step-title">Antecedentes Medicos</h3>
+                    <h3 class="step-title">Consultas Médicas</h3>
                     <div class="step-content">
-                        <p>Los <strong>antecedentes medicos</strong> registran eventos de salud historicos del paciente:</p>
+                        <p>La sección de <strong>consultas médicas</strong> contiene el historial de las consultas realizadas al paciente:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-prev.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-encounter.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    <h5 class="mt-4">Información mostrada de cada consulta:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                    <li>
+                                        <i class="fas fa-chart-bar"></i>
+                                        <div><strong>Fecha y hora en que se realizó</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-diagnoses"></i>
+                                        <div><strong>Nombre del Doctor y su especialidad</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-calendar"></i>
+                                        <div><strong>Diagnóstico registrado</strong></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                    <li>
+                                        <i class="fas fa-pills"></i>
+                                        <div><strong>Estado</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-allergies"></i>
+                                        <div><strong>Botón para ver resumen médico</strong></div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <h5 class="mt-4">Categorias de Antecedentes:</h5>
-                        <div class="row mt-3">
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-allergy">Alergia</span>
-                                    <span class="text-muted">Alergias a medicamentos, alimentos, etc.</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-surgery">Cirugia</span>
-                                    <span class="text-muted">Procedimientos quirurgicos previos</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-family">Historia Familiar</span>
-                                    <span class="text-muted">Enfermedades hereditarias</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-social">Historia Social</span>
-                                    <span class="text-muted">Habitos, ocupacion, estilo de vida</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-medication">Medicamentos</span>
-                                    <span class="text-muted">Medicamentos previos relevantes</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-condition">Condicion</span>
-                                    <span class="text-muted">Enfermedades cronicas previas</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
                 <!-- Condiciones/Diagnosticos -->
                 <section id="condiciones" class="step-card step-important">
                     <div class="step-number">4</div>
-                    <h3 class="step-title">Condiciones / Diagnosticos</h3>
+                    <h3 class="step-title">Condiciones / Diagnósticos</h3>
                     <div class="step-content">
-                        <p>Las <strong>condiciones</strong> son los diagnosticos registrados durante las consultas, codificados con el estandar <strong>ICD-10</strong>:</p>
+                        <p>Las <strong>condiciones</strong> son los diagnósticos registrados durante las consultas, codificados con el estandar <strong>ICD-10</strong>:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/conditions.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <h5 class="mt-4">Estados de una Condicion:</h5>
+                        <!--<h5 class="mt-4">Estados de una Condición:</h5>
                         <div class="row mt-3">
                             <div class="col-md-4 mb-2">
-                                <span class="badge bg-danger">Activa</span> - Condicion presente
+                                <span class="badge bg-danger">Activa</span> - Condición presente
                             </div>
                             <div class="col-md-4 mb-2">
                                 <span class="badge bg-warning text-dark">Recurrencia</span> - Ha vuelto a aparecer
@@ -1112,17 +1132,17 @@
                             <div class="col-md-4 mb-2">
                                 <span class="badge bg-secondary">Desconocido</span> - Estado no determinado
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="icd-example mt-4">
                             <h6><i class="fas fa-code me-2"></i>Ejemplos de Codigos ICD-10:</h6>
                             <div class="icd-code-box">
                                 <span class="code">J06.9</span>
-                                <span class="description">Infeccion aguda de las vias respiratorias superiores</span>
+                                <span class="description">Infección aguda de las vías respiratorias superiores</span>
                             </div>
                             <div class="icd-code-box">
                                 <span class="code">I10</span>
-                                <span class="description">Hipertension esencial (primaria)</span>
+                                <span class="description">Hipertensión esencial (primaria)</span>
                             </div>
                             <div class="icd-code-box">
                                 <span class="code">E11.9</span>
@@ -1137,7 +1157,7 @@
                     <div class="step-number">5</div>
                     <h3 class="step-title">Signos Vitales</h3>
                     <div class="step-content">
-                        <p>Los <strong>signos vitales</strong> son las mediciones fisiologicas tomadas durante las consultas:</p>
+                        <p>Los <strong>signos vitales</strong> son las mediciones fisiológicas tomadas durante las consultas:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
@@ -1148,49 +1168,49 @@
                             <thead>
                                 <tr>
                                     <th>Signo Vital</th>
-                                    <th>Codigo LOINC</th>
+                                    <!--<th>Codigo LOINC</th>-->
                                     <th>Unidad</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Sistolica</td>
-                                    <td data-label="Codigo LOINC"><span class="code">8480-6</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8480-6</span></td>-->
                                     <td data-label="Unidad">mmHg</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Diastolica</td>
-                                    <td data-label="Codigo LOINC"><span class="code">8462-4</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8462-4</span></td>-->
                                     <td data-label="Unidad">mmHg</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
-                                    <td data-label="Codigo LOINC"><span class="code">8867-4</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
                                     <td data-label="Unidad">lpm</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
-                                    <td data-label="Codigo LOINC"><span class="code">8310-5</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8310-5</span></td>-->
                                     <td data-label="Unidad">°C</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
-                                    <td data-label="Codigo LOINC"><span class="code">2708-6</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">2708-6</span></td>-->
                                     <td data-label="Unidad">%</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-weight text-secondary me-2"></i> Peso</td>
-                                    <td data-label="Codigo LOINC"><span class="code">29463-7</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">29463-7</span></td>-->
                                     <td data-label="Unidad">kg</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Altura</td>
-                                    <td data-label="Codigo LOINC"><span class="code">8302-2</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8302-2</span></td>-->
                                     <td data-label="Unidad">cm</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-calculator text-success me-2"></i> IMC</td>
-                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
                                     <td data-label="Unidad">kg/m²</td>
                                 </tr>
                             </tbody>
@@ -1204,6 +1224,158 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Enfermedad actual -->
+                <section id="enfermedad" class="step-card step-important">
+                    <div class="step-number">6</div>
+                    <h3 class="step-title">Enfermedad Actual</h3>
+                    <div class="step-content">
+                        <p>La Sección de <strong>Enfermedad Actual</strong> posee los registros detallado de los padecimientos registrados en las citas:</p>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-actillness.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                        <h5 class="mt-4">Información mostrada del padecimiento:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                                                        <li>
+                                        <i class="fas fa-allergies"></i>
+                                        <div><strong>Datos generales de la consulta como: fecha, Doctor, especialidad y estado de la consulta</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chart-bar"></i>
+                                        <div><strong>Descripción</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-diagnoses"></i>
+                                        <div><strong>Duración</strong></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                    <li>
+                                        <i class="fas fa-calendar"></i>
+                                        <div><strong>Localización (lugar donde se presenta la molestia)</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-pills"></i>
+                                        <div><strong>Cronología (Tiempo determinado del día en que se da la molestia)</strong></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </section>
+
+                <!-- Medicamentos -->
+                <section id="medicamentos" class="step-card">
+                    <div class="step-number">7</div>
+                    <h3 class="step-title">Órdenes Médicas</h3>
+                    <div class="step-content">
+                        <p>La seccion de <strong>órdenes médicas</strong> muestra todas las prescripciones de medicamentos, solicitudes de procedimientos, imágenes y laboratorio realizadas:</p>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-order.png') }}" alt="" style="width: 100%;">
+                        </div>
+                        <div class="info-box info-note" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <i class="fas fa-pills" style="color: #059669;"></i>
+                            <div>
+                                <strong>Información incluida en medicamentos:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Nombre del medicamento</li>
+                                    <li>Dosis y forma de administracion</li>
+                                    <li>Frecuencia (cada cuantas horas)</li>
+                                    <li>Duracion del tratamiento</li>
+                                    <li>Indicaciones especiales</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-pills"></i>
+                            <div>
+                                <strong>Información incluida en solicitudes de imágenes y laboratorios:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Nombre del estudio o servicio</li>
+                                    <li>Código del estudio</li>
+                                    <li>Tipo de estudio</li>
+                                    <li>Cantidad</li>
+                                    <li>Fecha</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Antecedentes Medicos -->
+                <section id="antecedentes" class="step-card">
+                    <div class="step-number">8</div>
+                    <h3 class="step-title">Antecedentes Médicos</h3>
+                    <div class="step-content">
+                        <p>Los <strong>antecedentes médicos</strong> registran eventos de salud históricos del paciente:</p>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-prev.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                    <h5 class="mt-4">Categorías de Antecedentes:</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-allergy">Alergia</span>
+                                    <span class="text-muted">Alergias a medicamentos, alimentos, etc.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-surgery">Cirugía</span>
+                                    <span class="text-muted">Procedimientos quirúrgicos previos</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-family">Historia Familiar</span>
+                                    <span class="text-muted">Enfermedades hereditarias</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-social">Historia Social</span>
+                                    <span class="text-muted">Hábitos, ocupación, estilo de vida</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-medication">Medicamentos</span>
+                                    <span class="text-muted">Medicamentos previos relevantes</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-condition">Condición</span>
+                                    <span class="text-muted">Enfermedades crónicas previas</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-inmu">Inmunización</span>
+                                    <span class="text-muted">Vacunación</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-other">Otro</span>
+                                    <!--<span class="text-muted">Vacunación</span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
 
                 <!-- Examenes Fisicos 
                 <section id="examenes" class="step-card">
@@ -1239,51 +1411,12 @@
                     </div>
                 </section> -->
 
-                <!-- Medicamentos -->
-                <section id="medicamentos" class="step-card">
-                    <div class="step-number">6</div>
-                    <h3 class="step-title">Órdenes Médicas</h3>
-                    <div class="step-content">
-                        <p>La seccion de <strong>órdenes médicas</strong> muestra todas las prescripciones de medicamentos y solicitudes de imágenes y laboratorio realizadas:</p>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-order.png') }}" alt="" style="width: 100%;">
-                        </div>
-                        <div class="info-box info-note" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-                            <i class="fas fa-pills" style="color: #059669;"></i>
-                            <div>
-                                <strong>Informacion incluida en medicamentos:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <li>Nombre del medicamento</li>
-                                    <li>Dosis y forma de administracion</li>
-                                    <li>Frecuencia (cada cuantas horas)</li>
-                                    <li>Duracion del tratamiento</li>
-                                    <li>Indicaciones especiales</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="info-box info-note">
-                            <i class="fas fa-pills"></i>
-                            <div>
-                                <strong>Informacion incluida en solicitudes de imágenes y laboratorios:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <li>Nombre del estudio o servicio</li>
-                                    <li>Código del estudio</li>
-                                    <li>Tipo de estudio</li>
-                                    <li>Cantidad</li>
-                                    <li>Fecha</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- Notas Clinicas -->
                 <section id="notas" class="step-card">
-                    <div class="step-number">7</div>
-                    <h3 class="step-title">Notas Clínicas</h3>
+                    <div class="step-number">9</div>
+                    <h3 class="step-title">Notas Médicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>notas clínicas</strong> son las impresiones diagnosticas y observaciones del medico:</p>
+                        <p>Las <strong>notas médicas</strong> son las impresiones diagnósticas y observaciones del médico:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-note.png') }}" alt="" style="width: 100%;">
@@ -1291,13 +1424,13 @@
                         <div class="row mt-4">
                             <div class="col-md-6">
                                 <div class="sub-step">
-                                    <h6><i class="fas fa-comment-medical me-2"></i>Notas Clínicas</h6>
-                                    <p class="mb-0">Impresiones diagnosticas formales que forman parte del expediente oficial.</p>
+                                    <h6><i class="fas fa-comment-medical me-2"></i>Notas Médicas</h6>
+                                    <p class="mb-0">Impresiones diagnósticas formales que forman parte del expediente oficial.</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="sub-step">
-                                    <h6><i class="fas fa-sticky-note me-2"></i>Notas Personales</h6>
+                                    <h6><i class="fas fa-sticky-note me-2"></i>Notas Privadas</h6>
                                     <p class="mb-0">Notas privadas del medico que solo el puede ver.</p>
                                 </div>
                             </div>
@@ -1307,13 +1440,33 @@
 
                 <!-- Licencias Medicas -->
                 <section id="licencias" class="step-card">
-                    <div class="step-number">8</div>
-                    <h3 class="step-title">Licencias Médicas</h3>
+                    <div class="step-number">10</div>
+                    <h3 class="step-title">Incapacidades Médicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>licencias médicas</strong> (incapacidades) emitidas al paciente:</p>
+                        <p>Las <strong>Incapacidades médicas</strong> (incapacidades) emitidas al paciente:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-license.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                        <div class="info-box info-tip">
+                            <i class="fas fa-file-download"></i>
+                            <div>
+                                <strong>Descarga:</strong> Las incapacidades médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <!-- Licencias Medicas -->
+                <section id="notas-privadas" class="step-card">
+                    <div class="step-number">11</div>
+                    <h3 class="step-title">Notas Privadas</h3>
+                    <div class="step-content">
+                        <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo</p>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-privnotes.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <div class="info-box info-tip">
@@ -1327,18 +1480,17 @@
 
                 <!-- Agregar Antecedentes -->
                 <section id="agregar" class="step-card step-success">
-                    <div class="step-number">9</div>
-                    <h3 class="step-title">Agregar Antecedentes Médicos</h3>
+                    <h3 class="step-title" style="padding-left: 0;">Agregar Antecedentes Médicos</h3>
                     <div class="step-content">
-                        <p>Puedes agregar manualmente antecedentes médicos historicos del paciente:</p>
+                        <p>Puedes agregar manualmente antecedentes médicos históricos del paciente:</p>
 
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
                                 <li>En la seccion de "Antecedentes Médicos", haz clic en <strong>"Agregar"</strong></li>
-                                <li>Selecciona la <strong>categoria</strong> (alergia, cirugia, etc.)</li>
-                                <li>Ingresa el <strong>titulo</strong> descriptivo</li>
-                                <li>Agrega una <strong>descripcion</strong> detallada</li>
+                                <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
+                                <li>Ingresa el <strong>título</strong> descriptivo</li>
+                                <li>Agrega una <strong>descripción</strong> detallada</li>
                                 <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
@@ -1351,7 +1503,7 @@
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar informacion precisa.
+                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar información precisa.
                             </div>
                         </div>
                     </div>
@@ -1409,7 +1561,7 @@
                 <section class="step-card step-success">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-arrow-right me-2"></i>Siguientes Pasos</h3>
                     <div class="step-content">
-                        <p>Ahora que conoces la historia medica, puedes continuar aprendiendo sobre:</p>
+                        <p>Ahora que conoces la historia médica, puedes continuar aprendiendo sobre:</p>
 
                         <div class="row mt-4">
                             <div class="col-md-6 mb-4">
@@ -1420,7 +1572,9 @@
                                         </div>
                                         <h5 class="card-title">Agendar Citas</h5>
                                         <p class="card-text text-muted small">Programa citas para tus pacientes</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <a href="{{ route('help.appointments') }}" class="btn text-white" style="background: #e65100;">
+                                            <i class="fas fa-arrow-right me-2"></i>Ver Guía
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1431,8 +1585,10 @@
                                             <i class="fas fa-stethoscope fa-2x text-danger"></i>
                                         </div>
                                         <h5 class="card-title">Realizar Consultas</h5>
-                                        <p class="card-text text-muted small">Documenta consultas medicas</p>
-                                        <span class="badge bg-secondary">Proximamente</span>
+                                        <p class="card-text text-muted small">Documenta consultas médicas</p>
+                                        <a href="{{ route('help.consultation') }}" class="btn btn-danger">
+                                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1447,7 +1603,7 @@
                                     <li><i class="fas fa-check text-success me-1"></i> Creacion de sucursal</li>
                                     <li><i class="fas fa-check text-success me-1"></i> Creacion de consultorio</li>
                                     <li><i class="fas fa-check text-success me-1"></i> Registro de pacientes</li>
-                                    <li><i class="fas fa-check text-success me-1"></i> Historia medica <strong>(Esta guia)</strong></li>
+                                    <li><i class="fas fa-check text-success me-1"></i> Historia médica <strong>(Esta guía)</strong></li>
                                 </ol>
                             </div>
                         </div>
@@ -1459,7 +1615,7 @@
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h5 class="mb-2"><i class="fas fa-question-circle me-2" style="color: #00897b;"></i>Tienes preguntas sobre la historia medica?</h5>
+                                <h5 class="mb-2"><i class="fas fa-question-circle me-2" style="color: #00897b;"></i>¿Tienes preguntas sobre la historia médica?</h5>
                                 <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte.</p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">
