@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SAMI Landing</title>
+    <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/sami.css?time'.time())}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -112,7 +113,7 @@
                 <div class="num num--left">2</div>
             </div>
             <div class="sami-row__text">
-                <span class="title"Acceder a la información del paciente <br/>   en cualquier momento y desde cualquier <br/> dispositivo (PC, tablet o smartphone).</span>
+                <span class="title">Acceder a la información del paciente <br/>   en cualquier momento y desde cualquier <br/> dispositivo (PC, tablet o smartphone).</span>
             </div>
             <div class="sami-row__img">
                 <img src="{{ asset('landing/images/Foto-3.png') }}" alt="">
@@ -225,7 +226,7 @@
 
         <div class="plans__grid">
             @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
-             <article class="plan @if($package->id==4) plan--navy @endif">
+             <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif">
                 <div class="plan__head">
                     <h3 style=" @if($package->id==4) color:#fff!important; @endif">{{ $package->name }}</h3>
                     @if($package->id <>4)
@@ -244,9 +245,11 @@
                 @if($package->id<>4)
                      <div class="plan__price text__cyan">@isset($package->base_price) ${{ number_format($package->base_price,2) }} @else XXX @endif</div>
                      <div class="plan__month_text text__cyan"><span>al mes</span></div>
-                     <a href="{{ route('public.register', ['package' => 1]) }}" class="btn btn--primary btn--full">Suscribirse ahora</a>
+                     <a href="{{ route('public.register', ['package' => $package->id]) }}" class="btn  @if($loop->index==1) btn--navy @else btn--primary @endif">Suscribirse ahora</a>
                 @else
+                     <p>&nbsp;</p>
                      <button onclick="openEnterpriseModal()" class="btn btn--primary btn--full">Contactar ventas</button>
+                     <p>&nbsp;</p>
                 @endif
 
             </article>
