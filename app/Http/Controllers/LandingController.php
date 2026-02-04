@@ -14,6 +14,7 @@ class LandingController extends Controller
     {
         return view('welcome');
     }
+
     public function index()
     {
         // Obtener todas las especialidades médicas
@@ -61,6 +62,11 @@ class LandingController extends Controller
             });
 
         return view('sami', compact('specialties', 'practitioners'));
+    }
+
+    public function recetas()
+    {
+        return view('sami-rx');
     }
 
     public function getPractitioners(Request $request)

@@ -227,28 +227,30 @@ img{ max-width:100%; display:block; }
     color:var(--white);
 }
 
+.text__cyan{
+    color:var(--cyan);
+}
+
 .sami__intro p{ margin:12px 0; font-size:18px;font-weight: bold}
 
 .sami-row{
-    margin-top:18px;
     display:grid;
     grid-template-columns: 1fr .05fr 1fr;
-    gap:18px;
     align-items:center;
+    gap:18px;
 }
 
 .sami-row--alt{
-    margin-top:18px;
     display:grid;
     grid-template-columns: .05fr 1fr 1fr;
-    gap:18px;
     align-items:center;
+    gap:18px;
 }
 
 .sami-row__img img{
     border-radius:999px;
     width:100%;
-    max-width:500px;
+    max-width:400px;
     margin:0 auto;
 }
 
@@ -428,6 +430,20 @@ img{ max-width:100%; display:block; }
     font-size:10px;
 }
 
+.plan .featrues{
+    display: grid;
+    grid-template-columns: .1fr 1fr;
+    gap: 10px;
+    padding:20px 10px;
+}
+
+.plan .featrues i{
+    display: flex;
+    align-items: center;
+    font-size:23px;
+    font-weight:900;
+}
+
 .plan ul{
     margin:0;
     padding:12px 18px 0;
@@ -436,13 +452,26 @@ img{ max-width:100%; display:block; }
     list-style-type: none;
 }
 
-.plan li{ margin-bottom:6px; font-size: 14px}
+.plan li{
+    margin-bottom:6px;
+    font-size: 14px;
+    font-weight: 900;
+    padding: 5px 0;
+    display:inline;
+}
+
 
 .plan__price{
     text-align:center;
-    font-size:20px;
-    font-weight:900;
+    font-size:35px;
     padding:10px 0 0;
+}
+
+.plan__month_text{
+    text-align:center;
+    font-size:18px;
+    padding:10px 0;
+    margin:0 auto;
 }
 
 .plan__meta{
@@ -540,5 +569,91 @@ img{ max-width:100%; display:block; }
     justify-content:center;
     text-align:center;
 }
-.footer__contact{
-    font-size
+.footer__contact {
+    font-size: 14px;
+}
+
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-content h3 {
+    color: #2D1B69;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #2D1B69;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #2D1B69 0%, #1E3A8A 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+}

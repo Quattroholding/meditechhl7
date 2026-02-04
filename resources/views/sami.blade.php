@@ -25,7 +25,9 @@
                 <a href="#home">HOME</a>
                 <a href="#quienes">QUIÉNES SOMOS</a>
                 <a href="#como">CÓMO FUNCIONA</a>
-                <a href="#porque">POR QUÉ ELEGIRNOS</a>
+                <a href="#planes">PLANES</a>
+                <a href="{{route('sami_recetas')}}">SAMI RECETAS</a>
+                <a href="{{route('welcome')}}">SOLUCIONES MEDITEC</a>
             </nav>
 
             <div class="header__actions">
@@ -42,7 +44,7 @@
             <a href="#home">HOME</a>
             <a href="#quienes">QUIÉNES SOMOS</a>
             <a href="#como">CÓMO FUNCIONA</a>
-            <a href="#porque">POR QUÉ ELEGIRNOS</a>
+            <a href="#planes">PLANES</a>
             <a href="{{route('login')}}">Ingresar</a>
         </div>
     </header>
@@ -210,7 +212,7 @@
 </section>
 
 <!-- PLANES -->
-<section class="plans">
+<section class="plans" id="planes">
     <div class="container">
 
         <div class="plans__title">
@@ -228,16 +230,25 @@
                     <h3 style=" @if($package->id==4) color:#fff!important; @endif">{{ $package->name }}</h3>
                     @if($package->id <>4)
                     <p class="subtitle">{{ $package->max_users }} {{ $package->max_users == 1 ? 'Usuario' : 'Usuarios' }}</p>
+                    @else
+                        <p>&nbsp;</p>
                     @endif
                 </div>
-
-                <ul class="@if($loop->index==0)   plan--cyan  @elseif($loop->index==1) plan--blue @elseif($loop->index==2) plan--green @elseif($loop->index==3) plan--navy @else plan--light @endif">
+                <div class="featrues @if($loop->index==0)   plan--cyan  @elseif($loop->index==1) plan--blue @elseif($loop->index==2) plan--green @elseif($loop->index==3) plan--navy @else plan--light @endif">
                     @foreach($package->features ?? [] as $feature)
-                        <li><i class="fas fa-check @if($package->id==3) text__white @else text__green @endif"></i> {{ $feature }}</li>
+                    <i class="fas fa-check @if($package->id==3) text__white @else text__green @endif"></i>
+                    <span>{{ $feature }}</span>
                     @endforeach
-                </ul>
-                @if($package->id<>4)<div class="plan__price">@isset($package->base_price) ${{ number_format($package->base_price,2) }} <br/> <small class="">al mes</small> @else XXX @endif</div>@endif
-                <a href="{{ route('public.register', ['package' => 1]) }}" class="btn btn--primary btn--full">Suscribirse ahora</a>
+                </div>
+
+                @if($package->id<>4)
+                     <div class="plan__price text__cyan">@isset($package->base_price) ${{ number_format($package->base_price,2) }} @else XXX @endif</div>
+                     <div class="plan__month_text text__cyan"><span>al mes</span></div>
+                     <a href="{{ route('public.register', ['package' => 1]) }}" class="btn btn--primary btn--full">Suscribirse ahora</a>
+                @else
+                     <button onclick="openEnterpriseModal()" class="btn btn--primary btn--full">Contactar ventas</button>
+                @endif
+
             </article>
             @endforeach
         </div>
@@ -268,7 +279,7 @@
 
         <div class="why__cta">
             <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
-            <a href="#" class="btn btn--green">Regístrate aquí</a>
+            <a href="{{route('public.register')}}" class="btn btn--green">Regístrate aquí</a>
             <small>Forma parte de la revolución SAMI</small>
         </div>
     </div>
@@ -279,12 +290,86 @@
     <div class="container footer__inner">
         <div class="footer__contact">
             <span>Contáctanos:</span>
-            <a href="mailto:napellido@solucionesmeditec.com">napellido@solucionesmeditec.com</a>
+            <a href="mailto:business@meditecpty.com">business@meditecpty.com</a>
             <span class="sep">|</span>
             <a href="tel:+5071234567">+507 123-4567</a>
         </div>
     </div>
 </footer>
 
+<!-- Modal de Contacto Empresarial -->
+<div id="enterpriseModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeEnterpriseModal()">&times;</button>
+        <h3>Contactar Ventas - Plan Empresarial</h3>
+        <p>Completa el formulario y nos pondremos en contacto para una propuesta personalizada.</p>
+
+        <form id="enterpriseForm" action="{{ route('enterprise.lead.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label>Nombre Completo *</label>
+                <input type="text" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Teléfono *</label>
+                <input type="tel" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre de la Empresa/Clínica *</label>
+                <input type="text" name="company_name" required>
+            </div>
+            <div class="form-group">
+                <label>Cuéntanos sobre tus necesidades</label>
+                <textarea name="message" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Enviar Solicitud</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Funciones para el modal empresarial
+    function openEnterpriseModal() {
+        document.getElementById('enterpriseModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEnterpriseModal() {
+        document.getElementById('enterpriseModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al hacer click fuera
+    document.getElementById('enterpriseModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeEnterpriseModal();
+    });
+
+    // Manejar submit del formulario
+    document.getElementById('enterpriseForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (response.ok) {
+                alert('¡Gracias! Nos pondremos en contacto contigo pronto.');
+                closeEnterpriseModal();
+                this.reset();
+            } else {
+                alert('Hubo un error. Por favor intenta nuevamente.');
+            }
+        } catch (error) {
+            alert('Error de conexión. Por favor intenta más tarde.');
+        }
+    });
+</script>
 </body>
 </html>
