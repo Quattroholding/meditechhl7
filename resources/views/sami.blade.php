@@ -66,8 +66,8 @@
         </div>
 
         <div class="hero__right">
-            <div class="hero__img">
-                <img src="https://placehold.co/850x520?text=HERO+IMAGE" alt="Hero">
+            <div class="hero__img2">
+                <img src="{{ asset('landing/images/hero-sami.png') }}" alt="Hero">
             </div>
         </div>
     </div>
@@ -177,25 +177,36 @@
         <div class="features__grid">
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                    <img src="{{ asset('landing/images/funcion-1.png') }}" alt="">
                 </div>
                 <h3>Historia clínica<br>digital centralizada</h3>
                 <p>Consulta, actualiza y gestiona el historial médico de cada paciente con facilidad y precisión.</p>
             </div>
 
+
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="{{ asset('landing/images/funcion-2.png') }}" alt="">
+                </div>
+                <h3>Directorio médico<br>inteligente</h3>
+                <p>Consulta, y agenda con todos nuestros especialistas.</p>
+            </div>
             <!-- OMITIDO Directorio Médico Inteligente -->
 
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                    <img src="{{ asset('landing/images/funcion-3.png') }}" alt="">
                 </div>
                 <h3>Gestión de citas<br>y personal</h3>
                 <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
             </div>
+        </div>
 
+        <div class="features__grid_alt">
+            <div></div>
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
                 </div>
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
@@ -203,11 +214,12 @@
 
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="https://placehold.co/80x80?text=ICON" alt="">
+                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
                 </div>
                 <h3>Multidispositivo</h3>
                 <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
             </div>
+            <div></div>
         </div>
     </div>
 </section>

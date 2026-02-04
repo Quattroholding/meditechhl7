@@ -40,7 +40,7 @@
 <main id="home" class="hero">
     <div class="hero__bg">
         <!-- placeholder hero -->
-        <img src="https://placehold.co/1400x800?text=HERO+IMAGE" alt="Hero">
+        <img src="{{ asset('landing/images/hero-welcome.jpg') }}" alt="Hero">
     </div>
 
     <div class="container hero__content">
@@ -107,7 +107,7 @@
 
 
         <aside class="mv__right">
-            <img src="https://placehold.co/70x200?text=IMAGE" alt="Imagen sección">
+            <img src="{{ asset('landing/images/lateral-welcome.jpg') }}" alt="Imagen sección">
         </aside>
 
     </div>

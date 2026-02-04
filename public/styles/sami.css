@@ -173,7 +173,7 @@ img{ max-width:100%; display:block; }
 ====================== */
 .badge{
     display:inline-flex;
-    padding:8px 14px;
+    padding:16px 20px;
     border-radius:2px;
     font-weight:900;
     font-size:16px;
@@ -185,7 +185,7 @@ img{ max-width:100%; display:block; }
 }
 
 .badge--green{
-    background:var(--green);
+    background: linear-gradient(90deg, #70b836, #06602e);
     color:#fff;
 }
 
@@ -309,7 +309,7 @@ img{ max-width:100%; display:block; }
     color:var(--green2);
     font-weight:800;
     margin:12px 0 16px;
-    font-size:13px;
+    font-size:18px;
 }
 
 .audience__grid{
@@ -331,7 +331,7 @@ img{ max-width:100%; display:block; }
 
 .audience__card h4{
     margin:0;
-    font-size:12px;
+    font-size:16px;
     color:var(--green2);
     font-weight:900;
 }
@@ -349,7 +349,13 @@ img{ max-width:100%; display:block; }
 
 .features__grid{
     display:grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap:18px;
+}
+
+.features__grid_alt{
+    display:grid;
+    grid-template-columns: .5fr 1fr 1fr .5fr;
     gap:18px;
 }
 
@@ -368,19 +374,19 @@ img{ max-width:100%; display:block; }
 }
 
 .feature__icon img{
-    width:80px;
-    height:80px;
+    width:auto;
+    height:auto;
 }
 
 .feature h3{
     margin:0 0 8px;
-    font-size:13px;
+    font-size:16px;
     font-weight:900;
 }
 
 .feature p{
     margin:0;
-    font-size:11px;
+    font-size:15px;
     line-height:1.5;
     opacity:.95;
 }
