@@ -105,7 +105,7 @@ class ClientSubscription extends BaseModel
     {
         $query->whereIn('status', [SubscriptionStatus::ACTIVE->value, SubscriptionStatus::TRIAL->value])
             ->whereNotNull('next_billing_date')
-            ->where('next_billing_date', '<=', now());
+            ->whereDate('next_billing_date', '<=', today());
     }
 
     /**
