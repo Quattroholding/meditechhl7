@@ -231,11 +231,18 @@ class SubscriptionService
 
                 if ($invoice) {
                     $subscription->updateBillingPeriod();
+
+                    // Cambiar estatus a PAST_DUE cuando se genera la factura
+                    // La suscripción tiene 7 días de gracia para pagar
+                    $subscription->status = SubscriptionStatus::PAST_DUE;
+                    $subscription->save();
+
                     $count++;
 
                     Log::info('Renewal invoice generated', [
                         'subscription_id' => $subscription->id,
                         'invoice_id' => $invoice->id,
+                        'new_status' => 'past_due',
                     ]);
                 }
             } catch (\Exception $e) {

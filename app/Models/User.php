@@ -347,8 +347,10 @@ class User extends Authenticatable
             return true; // No subscription required
         }
 
-        // Check if subscription is active or in trial
-        if (! in_array($subscription->status->value, ['active', 'trial'])) {
+        // Check if subscription allows scheduling
+        // Allowed: active, trial, past_due (during grace period)
+        // Not allowed: pending_activation, suspended, cancelled, expired
+        if (! in_array($subscription->status->value, ['active', 'trial', 'past_due'])) {
             return false;
         }
 
