@@ -279,7 +279,7 @@ class ClientInvoiceService
 
             if ($invoice->subscription) {
                 $subscription = $invoice->subscription;
-                $daysPastDue = now()->diffInDays($invoice->due_date);
+                $daysPastDue = abs($invoice->due_date->diffInDays(now(), false));
 
                 // Si pasó el periodo de gracia (7 días) y está en PAST_DUE, suspender
                 if ($daysPastDue > $gracePeriodDays && $subscription->status->value === 'past_due') {

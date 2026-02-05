@@ -29,7 +29,7 @@ class ClientFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'whatsapp' => fake()->phoneNumber,
             'logo' => fake()->imageUrl(),
-            'package_id' => Package::inRandomOrder()->first()->id,
+            'package_id' => Package::factory(),
         ];
     }
 

@@ -80,7 +80,7 @@ class BaseModel extends Model
         static::created(function ($model) {
             // do some logging
             // override some property like $model->something = transform($something);
-            $user_id = User::first()->id;
+            $user_id = User::first()?->id ?? 1;
             $user_name = 'Administrador Del Sistema';
             if (Auth::check()) {
                 $user_id = Auth::user()->id;

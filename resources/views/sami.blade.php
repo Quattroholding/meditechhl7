@@ -250,8 +250,11 @@
                 </div>
                 <div class="featrues @if($loop->index==0)   plan--cyan  @elseif($loop->index==1) plan--blue @elseif($loop->index==2) plan--green @elseif($loop->index==3) plan--navy @else plan--light @endif">
                     @foreach($package->features ?? [] as $feature)
-                    <i class="fas fa-check @if($package->id==3) text__white @else text__green @endif"></i>
-                    <span>{{ $feature }}</span>
+                        <div  class="grid">
+                            <i class="fas fa-check fa-2x @if($package->id==3) text__white @else text__green @endif"></i>
+                            <span>{{ $feature }}</span>
+                        </div>
+
                     @endforeach
                 </div>
 

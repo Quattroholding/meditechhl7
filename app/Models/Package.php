@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Enums\BillingPeriod;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Package extends BaseModel
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'slug',
@@ -79,6 +82,4 @@ class Package extends BaseModel
     {
         return $this->max_doctors_included + $extraDoctors;
     }
-
-
 }
