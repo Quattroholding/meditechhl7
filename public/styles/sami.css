@@ -180,8 +180,9 @@ img{ max-width:100%; display:block; }
 }
 
 .badge--blue{
-    background:#0B5E86;
-    color:#fff;
+    background:#fff;
+    color:#0B5E86;
+    margin: 20px 0 ;
 }
 
 .badge--green{
@@ -400,9 +401,9 @@ img{ max-width:100%; display:block; }
 }
 
 .plans__subtitle{
-    margin:12px 0 16px;
-    color:var(--muted);
-    font-size:12.5px;
+    margin:20px 0 ;
+    color:var(--green);
+    font-size:20px;
 }
 
 .plans__grid{
@@ -589,8 +590,8 @@ img{ max-width:100%; display:block; }
 }
 
 .bar{
-    background:#0B4D7B;
-    color:#fff;
+    background:#fff;
+    color:#0B4D7B;
     padding:9px 14px;
     border-radius:2px;
     font-weight:800;
@@ -600,7 +601,7 @@ img{ max-width:100%; display:block; }
 .why__cta{
     margin-top:18px;
     text-align:center;
-    color:#0B4D7B;
+    color:#fff;
     font-weight:800;
 }
 .why__cta p{ margin:0 0 10px; }

@@ -283,7 +283,7 @@
 
         <p class="why__lead">
             Porque creemos que la tecnología debe estar al servicio de la salud.
-        </p>
+        </p><br/>
 
         <p class="why__lead">
             Con SAMI, tendrás:
@@ -294,7 +294,7 @@
             <div class="bar">Datos seguros y siempre disponibles</div>
             <div class="bar">Menos papeleo = más tiempo para tus pacientes</div>
             <div class="bar">Una mejor experiencia para tus pacientes y tu equipo</div>
-        </div>
+        </div><br/>
 
         <div class="why__cta">
             <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
