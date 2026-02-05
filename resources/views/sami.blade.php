@@ -239,7 +239,7 @@
 
         <div class="plans__grid">
             @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
-             <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif">
+             <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif" data-plan-index="{{ $loop->index }}">
                 <div class="plan__head">
                     <h3 style=" @if($package->id==4) color:#fff!important; @endif">{{ $package->name }}</h3>
                     @if($package->id <>4)
@@ -384,6 +384,33 @@
             }
         } catch (error) {
             alert('Error de conexión. Por favor intenta más tarde.');
+        }
+    });
+
+    // Efecto hover en planes de suscripción
+    document.addEventListener('DOMContentLoaded', function() {
+        const plans = document.querySelectorAll('.plans__grid .plan');
+
+        plans.forEach(plan => {
+            plan.addEventListener('mouseenter', function() {
+                // Remover la clase featured de todos los planes
+                plans.forEach(p => p.classList.remove('plan--featured'));
+                // Añadir la clase featured al plan actual
+                this.classList.add('plan--featured');
+            });
+        });
+
+        // Restaurar el plan por defecto cuando el mouse sale de todos los planes
+        const plansGrid = document.querySelector('.plans__grid');
+        if (plansGrid) {
+            plansGrid.addEventListener('mouseleave', function() {
+                // Remover featured de todos
+                plans.forEach(p => p.classList.remove('plan--featured'));
+                // Añadir featured al primer plan (índice 0)
+                if (plans[1]) {
+                    plans[1].classList.add('plan--featured');
+                }
+            });
         }
     });
 </script>
