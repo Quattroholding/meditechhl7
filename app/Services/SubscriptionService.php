@@ -254,11 +254,11 @@ class SubscriptionService
         $expirationDays = config('subscriptions.expiration_after_suspension_days', 30);
 
         $expiredTrials = ClientSubscription::where('status', SubscriptionStatus::TRIAL)
-            ->where('trial_ends_at', '<', now()->subDays($gracePeriodDays))
+            ->whereDate('trial_ends_at', '<', today()->subDays($gracePeriodDays))
             ->get();
 
         $suspendedExpired = ClientSubscription::where('status', SubscriptionStatus::SUSPENDED)
-            ->where('updated_at', '<', now()->subDays($expirationDays))
+            ->whereDate('updated_at', '<', today()->subDays($expirationDays))
             ->get();
 
         $count = 0;

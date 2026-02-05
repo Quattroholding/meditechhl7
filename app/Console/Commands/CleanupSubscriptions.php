@@ -23,7 +23,7 @@ class CleanupSubscriptions extends Command
 
         $expiredCodes = ReferralCode::where('is_active', true)
             ->whereNotNull('valid_until')
-            ->where('valid_until', '<', now())
+            ->whereDate('valid_until', '<', today())
             ->get();
 
         foreach ($expiredCodes as $code) {
