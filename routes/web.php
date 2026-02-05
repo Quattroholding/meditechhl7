@@ -52,6 +52,8 @@ Route::domain('samirx.{domain}')->where(['domain' => '.*'])->group(function () {
 });
 
 Route::get('/', [LandingController::class, 'welcome'])->name('welcome');
+Route::get('/sami', [LandingController::class, 'index'])->name('sami');
+Route::get('/sami_recetas', [LandingController::class, 'recetas'])->name('sami_recetas');
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
 Route::get('/pacientes', [LandingController::class, 'patientLanding'])->name('patients.landing');
