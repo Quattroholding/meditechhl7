@@ -39,12 +39,22 @@ use Illuminate\Support\Facades\Route;
 // Incluir el archivo de rutas de autenticación
 require __DIR__.'/auth.php';
 
+// Rutas para el subdominio SAMI (funciona con cualquier dominio base)
+Route::domain('sami.{domain}')->where(['domain' => '.*'])->group(function () {
+    Route::get('/', [LandingController::class, 'index'])->name('sami.home');
+    Route::get('/recetas', [LandingController::class, 'recetas'])->name('sami.recetas');
+    Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('sami.api.practitioners');
+});
+
+// Rutas para el subdominio SAMIRX (funciona con cualquier dominio base)
+Route::domain('samirx.{domain}')->where(['domain' => '.*'])->group(function () {
+    Route::get('/', [LandingController::class, 'recetas'])->name('samirx.home');
+});
+
 Route::get('/', [LandingController::class, 'welcome'])->name('welcome');
-Route::get('/sami', [LandingController::class, 'index'])->name('sami');
-Route::get('/sami_recetas', [LandingController::class, 'recetas'])->name('sami_recetas');
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
-Route::get('/patient', [LandingController::class, 'patientLanding'])->name('patients.landing');
+Route::get('/pacientes', [LandingController::class, 'patientLanding'])->name('patients.landing');
 /*
 Route::get('/register', function () {
     return view('Pages.register');

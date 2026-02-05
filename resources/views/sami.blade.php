@@ -27,8 +27,9 @@
                 <a href="#quienes">QUIÉNES SOMOS</a>
                 <a href="#como">CÓMO FUNCIONA</a>
                 <a href="#planes">PLANES</a>
-                <a href="{{route('sami_recetas')}}">SAMI RECETAS</a>
-                <a href="{{route('welcome')}}">SOLUCIONES MEDITEC</a>
+                <a href="{{route('patients.landing')}}">SOY PACIENTE</a>
+                <a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a>
+                <a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a>
             </nav>
 
             <div class="header__actions">
