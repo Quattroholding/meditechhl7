@@ -402,8 +402,9 @@ img{ max-width:100%; display:block; }
 
 .plans__subtitle{
     margin:20px 0 ;
-    color:var(--green);
-    font-size:20px;
+    color:var(--green2);
+    font-size:18px;
+    font-weight:900;
 }
 
 .plans__grid{

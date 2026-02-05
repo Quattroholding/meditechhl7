@@ -45,7 +45,7 @@ class SetupReminderPanel extends Component
                 if (! $subscription) {
                     return null;
                 }
-
+                $invoice = $subscription->invoices()->whereIn('status', ['pending', 'overdue'])->first();
                 // Verificar estados problemáticos de la suscripción
                 if ($user->hasSubscriptionPendingActivation()) {
                     // Verificar si la factura tiene un pago pendiente registrado
@@ -59,7 +59,7 @@ class SetupReminderPanel extends Component
                         return null;
                     }
 
-                    $invoice = $subscription->invoices()->whereIn('status', ['pending', 'overdue'])->first();
+
 
                     return [
                         'key' => 'subscription',
@@ -90,7 +90,7 @@ class SetupReminderPanel extends Component
                         'key' => 'subscription',
                         'title' => 'Pago Pendiente',
                         'message' => "Tienes facturas vencidas.{$daysText} Realiza el pago para evitar la suspensión del servicio.",
-                        'action_url' => route('suscriptions.invoices.index'),
+                        'action_url' => route('suscriptions.invoices.show', $invoice->id),
                         'action_text' => 'Pagar Facturas',
                         'is_required' => true,
                     ];
