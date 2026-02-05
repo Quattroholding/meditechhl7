@@ -258,7 +258,7 @@ class ClientInvoiceService
     public function processOverdue(): int
     {
         $overdueInvoices = ClientInvoice::whereIn('status', [InvoiceStatus::PENDING->value, InvoiceStatus::PARTIALLY_PAID->value])
-            ->where('due_date', '<', now())
+            ->whereDate('due_date', '<', today())
             ->get();
 
         $count = 0;
