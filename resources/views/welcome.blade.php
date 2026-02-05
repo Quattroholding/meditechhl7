@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Soluciones Meditec</title>
+    <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/welcome.css?time='.time())}}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -38,21 +39,25 @@
 
 <!-- HERO -->
 <main id="home" class="hero">
-    <div class="hero__bg">
-        <!-- placeholder hero -->
-        <img src="{{ asset('landing/images/hero-welcome.jpg') }}" alt="Hero">
-    </div>
 
-    <div class="container hero__content">
-        <div class="hero__line"></div>
 
-        <div class="hero__card">
-            <h1>Conócenos</h1>
-            <p>
-                Somos una empresa de tecnología en salud que integra plataformas digitales diseñadas
-                para optimizar la gestión médica y mejorar la experiencia del paciente.
-            </p>
+    <div class=" hero__content">
+        <div class="hero__bg">
+            <!-- placeholder hero -->
+            <img src="{{ asset('landing/images/hero-welcome.jpg') }}" alt="Hero">
         </div>
+        <div class="container">
+            <div class="hero__line"></div>
+
+            <div class=" hero__card">
+                <h1>Conócenos</h1>
+                <p>
+                    Somos una empresa de tecnología en salud que integra plataformas digitales diseñadas
+                    para optimizar la gestión médica y mejorar la experiencia del paciente.
+                </p>
+            </div>
+        </div>
+
     </div>
 
     <!-- HEXAGON overlay decoration (simulado con gradientes) -->
@@ -60,7 +65,7 @@
 </main>
 
 <!-- BLUE BLOCK -->
-<section class="blueblock">
+<section class="container2 blueblock">
     <div class="container blueblock__inner">
         <p>
             Nuestras plataformas permiten a médicos, hospitales, clínicas y centros de salud administrar agendas,
@@ -74,20 +79,24 @@
 </section>
 
 <!-- BIG TEXT -->
-<section class="bigtext" id="sobre">
-    <div class="container">
+<section class="container bigtext" id="sobre">
+
+    <div class="container2">
         <h2>
             Soluciones Meditec conecta a profesionales y pacientes a través de tecnología confiable,
             contribuyendo a una atención médica más ágil, organizada y centrada en las personas.
         </h2>
     </div>
+
 </section>
 
 <!-- MISION / VISION -->
 <section class="mv">
     <div class=" container mv__grid">
-
+        <div class="green__line"></div>
+        <div class="cyan__line"></div>
         <div class="mv__left">
+
             <div class="mv__block" id="mision">
                 <span class="mv__tag mv__tag--dark">Misión</span>
                 <p class="text-blue">
@@ -104,8 +113,6 @@
                 </p>
             </div>
         </div>
-
-
         <aside class="mv__right">
             <img src="{{ asset('landing/images/lateral-welcome.jpg') }}" alt="Imagen sección">
         </aside>
@@ -282,8 +289,6 @@
         </div>
     </div>
 </section>
-
-
 
 <!-- CONTACT FORM SECTION -->
 <section class="contact-section" id="contacto-form">

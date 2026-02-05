@@ -22,6 +22,11 @@ a{ text-decoration:none; color:inherit; }
     margin-inline:auto;
 }
 
+.container2{
+    width: min(980px, calc(100% - 40px));
+    margin-inline:auto;
+}
+
 /* ============ HEADER ============ */
 .header{
     position:sticky;
@@ -143,23 +148,46 @@ a{ text-decoration:none; color:inherit; }
 }
 
 .hero__line{
-    position:absolute;
-    left:0;
+    margin-left:44px;
+    left:100px;
     top:125px;
-    width:90px;
+    width:120px;
     height:8px;
     background:#4CA3D6;
     border-radius:0;
     opacity:.9;
 }
 
+.green__line{
+    position:relative;
+    display:inline-block;
+    left:0;
+    top:0px;
+    width:20px;
+    height:500px;
+    background:var(--green);
+    opacity:.9;
+}
+
+.cyan__line{
+    position:relative;
+    display:inline-block;
+    left:-5px;
+    top:70px;
+    width:20px;
+    height:430px;
+    background:var(--cyan);
+    opacity:.9;
+}
+
 .hero__card{
-    margin-left:24px;
+    margin-left:44px;
+    margin-top:20px;
     background:rgba(67, 125, 45, .78);
     color:#fff;
-    padding:22px 22px;
-    border-radius:18px;
-    width:min(420px, 92vw);
+    padding:20px 22px;
+    border-radius:38px;
+    width:min(360px, 82vw);
     box-shadow:0 18px 40px rgba(0,0,0,.18);
     backdrop-filter: blur(3px);
 }
@@ -172,7 +200,7 @@ a{ text-decoration:none; color:inherit; }
 
 .hero__card p{
     margin:0 0 14px 0;
-    font-size:13px;
+    font-size:11px;
     line-height:1.5;
     opacity:.95;
 }
@@ -197,6 +225,9 @@ a{ text-decoration:none; color:inherit; }
     background:var(--blue-block);
     color:#fff;
     padding:22px 0;
+    position:relative;
+    margin-top: -90px;
+    z-index: 999;
 }
 
 .blueblock__inner{
@@ -219,10 +250,10 @@ a{ text-decoration:none; color:inherit; }
 .bigtext h2{
     margin:0;
     text-align:center;
-    font-size:22px;
+    font-size:20px;
     line-height:1.6;
     color:var(--title);
-    font-weight:800;
+    font-weight:bolder;
 }
 
 /* ============ PRODUCTOS SECTION ============ */
@@ -483,18 +514,18 @@ a{ text-decoration:none; color:inherit; }
 
 /* ============ MV SECTION ============ */
 .mv{
-    padding:24px 0 40px;
+    /*padding:24px 0 40px;*/
 }
 
 .mv__grid{
     display:grid;
-    grid-template-columns: 1fr .2fr;
-    gap:34px;
+    grid-template-columns: .03fr .05fr 1fr .2fr;
     align-items:start;
 }
 
 .mv__block{
     margin-bottom:26px;
+    padding:20px;
 }
 
 .mv__tag{
