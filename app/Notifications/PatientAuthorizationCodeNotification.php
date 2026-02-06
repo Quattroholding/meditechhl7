@@ -27,11 +27,19 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
 
     public function via($notifiable)
     {
-        return array_filter([
-            'database',
-            $this->getMailChannelIfValid($notifiable->email),
-            \App\Channels\WhatsAppChannel::class,
-        ]);
+        $channels = ['database'];
+
+        // Only add mail channel if email is valid and not reserved
+        if ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
+        // Add WhatsApp channel if user has WhatsApp phone number
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = \App\Channels\WhatsAppN8NChannel::class;
+        }
+
+        return $channels;
     }
 
     public function toMail($notifiable)
@@ -51,7 +59,10 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
             ->salutation('Atentamente, Equipo de '.$clinicName);
     }
 
-    public function toWhatsApp($notifiable)
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
     {
         $clinicName = config('app.name');
         $expiresAt = $this->authorizationCode->expires_at;
@@ -66,9 +77,7 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
         $message .= "Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.\n\n";
         $message .= "Atentamente,\nEquipo de {$clinicName}";
 
-        return [
-            'body' => $message,
-        ];
+        return $message;
     }
 
     /**
