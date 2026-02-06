@@ -135,5 +135,8 @@ class RolesSeeder extends Seeder
             'view medical directory',
         ]);
 
+        $adminClientRole = Role::create(['name' => 'admin client', 'guard_name' => 'web']);
+        $adminClientRole->givePermissionTo(Permission::all());
+
     }
 }

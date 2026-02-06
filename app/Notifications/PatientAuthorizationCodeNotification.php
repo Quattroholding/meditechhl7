@@ -30,6 +30,7 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
         return array_filter([
             'database',
             $this->getMailChannelIfValid($notifiable->email),
+            \App\Channels\WhatsAppChannel::class,
         ]);
     }
 
@@ -48,6 +49,26 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
             ->line('Una vez que el médico ingrese este código correctamente, tendrá acceso permanente a su historial clínico.')
             ->line('Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.')
             ->salutation('Atentamente, Equipo de '.$clinicName);
+    }
+
+    public function toWhatsApp($notifiable)
+    {
+        $clinicName = config('app.name');
+        $expiresAt = $this->authorizationCode->expires_at;
+
+        $message = "🔐 *Código de Autorización de Acceso*\n\n";
+        $message .= "Hola {$notifiable->name},\n\n";
+        $message .= "El Dr. *{$this->practitioner->name}* ha solicitado acceso a su historial clínico completo.\n\n";
+        $message .= "Para autorizar este acceso, proporcione el siguiente código de 4 dígitos al médico:\n\n";
+        $message .= "🔑 *{$this->authorizationCode->code}*\n\n";
+        $message .= "⚠️ Este código expira el {$expiresAt->format('d/m/Y')} a las {$expiresAt->format('H:i')} (válido por 1 hora)\n\n";
+        $message .= "Una vez que el médico ingrese este código correctamente, tendrá acceso permanente a su historial clínico.\n\n";
+        $message .= "Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.\n\n";
+        $message .= "Atentamente,\nEquipo de {$clinicName}";
+
+        return [
+            'body' => $message,
+        ];
     }
 
     /**
