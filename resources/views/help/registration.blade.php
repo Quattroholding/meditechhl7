@@ -698,7 +698,13 @@
             }
 
             .flow-arrow {
-                transform: rotate(90deg);
+        transform: rotate(-90deg);
+        transform-origin: center center; /* Asegura que rote desde el centro */
+        width: 100%; /* Ancho completo */
+        height: 60px; /* Altura fija para la flecha rotada */
+        display: flex;
+        align-items: center;
+        justify-content: center;
             }
         }
 
@@ -882,9 +888,18 @@
                 flex-direction: column;
                 align-items: center;
             }
-            .step-card{
+            .step-number {
+                left: 45%;
+            }
+            .step-title {
+                padding-left: 0;
+                text-align: center;
+                padding-top: 8%;
+            }
+            .step-card, .sub-step{
                 border-left: none;
                 padding: 25px;
+                border-bottom: 5px solid var(--primary-color);
             }
             body{
                 text-align: center;
@@ -966,6 +981,22 @@
             }
 
         }
+
+        @media screen and (max-width: 400px) {
+            .step-number{
+                left: 44%;
+            }
+         }
+        @media screen and (max-width: 350px) {
+            .step-number{
+                left: 43%;
+            }
+         }
+        @media screen and (max-width: 325px) {
+            .step-number{
+                left: 42%;
+            }
+         }
 
     </style>
 </head>
