@@ -19,21 +19,36 @@
     <header class="header">
         <div class="container header__inner">
             <a href="#" class="brand">
-                <img src="{{url('images/logoSAMI.jpg')}}" alt="SAMI" class="brand__logo">
+                <img src="{{url('images/logoSAMI.png')}}" alt="SAMI" class="brand__logo">
             </a>
 
-            <nav class="nav">
-                <a href="#home">HOME</a>
-                <a href="#quienes">QUIÉNES SOMOS</a>
-                <a href="#como">CÓMO FUNCIONA</a>
-                <a href="#planes">PLANES</a>
-                <a href="{{route('patients.landing')}}">SOY PACIENTE</a>
-                <a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a>
-                <a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a>
+            <nav class="nav principal-nav">
+                <ul class="sidebar">
+                    <li onclick="hideSidebar()"><a href="#"><i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <li><a href="#home">HOME</a></li>
+                    <li><a href="#quienes">QUIÉNES SOMOS</a></li>
+                    <li><a href="#como">CÓMO FUNCIONA</a></li>
+                    <li><a href="#planes">PLANES</a></li>
+                    <li><a href="{{route('patients.landing')}}">SOY PACIENTE</a></li>
+                    <li><a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a></li>
+                    <li><a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a></li>
+                </ul>
+                <ul class="mainbar">
+                    <li class="hidden-mobile"><a href="#home">HOME</a></li>
+                    <li class="hidden-mobile"><a href="#quienes">QUIÉNES SOMOS</a></li>
+                    <li class="hidden-mobile"><a href="#como">CÓMO FUNCIONA</a></li>
+                    <li class="hidden-mobile"><a href="#planes">PLANES</a></li>
+                    <li class="hidden-mobile"><a href="{{route('patients.landing')}}">SOY PACIENTE</a></li>
+                    <li class="hidden-mobile"><a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a></li>
+                    <li class="hidden-mobile"><a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a></li>
+                                        <li class="menu-hamburguesa" onclick="showSidebar()">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </li>
+                </ul>
             </nav>
 
             <div class="header__actions">
-                <a href="{{route('login')}}" class="btn btn--outline btn--small">Ingresar</a>
+                <a href="{{route('login')}}" class="btn btn--outline btn--small btn-login">Ingresar</a>
             </div>
 
             <button class="burger" aria-label="Abrir menú" onclick="document.body.classList.toggle('menu-open')">
@@ -73,7 +88,6 @@
         </div>
     </div>
 </section>
-
 <!-- ¿QUÉ ES SAMI? -->
 <section class="sami" id="quienes">
     <div class="container">
@@ -116,7 +130,7 @@
             <div class="sami-row__text">
                 <span class="title">Acceder a la información del paciente <br/>   en cualquier momento y desde cualquier <br/> dispositivo (PC, tablet o smartphone).</span>
             </div>
-            <div class="sami-row__img">
+            <div class="sami-row__img samrow-2">
                 <img src="{{ asset('landing/images/Foto-3.png') }}" alt="">
             </div>
         </div>
@@ -201,10 +215,6 @@
                 <h3>Gestión de citas<br>y personal</h3>
                 <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
             </div>
-        </div>
-
-        <div class="features__grid_alt">
-            <div></div>
             <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
@@ -212,7 +222,13 @@
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
             </div>
-
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
+                </div>
+                <h3>Reportes y métricas</h3>
+                <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
+            </div>
             <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
@@ -220,8 +236,35 @@
                 <h3>Multidispositivo</h3>
                 <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
             </div>
-            <div></div>
+
         </div>
+
+        {{--}}<div class="features__grid_alt">
+            <div></div>
+                        <div class="feature">
+                <div class="feature__icon">
+                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
+                </div>
+                <h3>Reportes y métricas</h3>
+                <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
+            </div>
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
+                </div>
+                <h3>Reportes y métricas</h3>
+                <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
+            </div>
+            <div class="feature">
+                <div class="feature__icon">
+                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
+                </div>
+                <h3>Multidispositivo</h3>
+                <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
+            </div>
+
+            <div></div>
+        </div>{{--}}
     </div>
 </section>
 
@@ -347,6 +390,14 @@
     </div>
 </div>
 <script>
+    //sidebar - responsive menu 
+    const sidebar = document.querySelector('.sidebar')
+    function showSidebar(){
+        sidebar.style.display = 'flex'
+    }
+    function hideSidebar(){
+        sidebar.style.display = 'none'
+    }
     // Funciones para el modal empresarial
     function openEnterpriseModal() {
         document.getElementById('enterpriseModal').style.display = 'flex';
