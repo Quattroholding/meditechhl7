@@ -420,7 +420,7 @@ class User extends Authenticatable
             $invoice = $subscription->currentInvoice;
             if ($invoice) {
                 $gracePeriodDays = config('subscriptions.grace_period_days', 7);
-                $daysPastDue = now()->startOfDay()->diffInDays($invoice->due_date->startOfDay());
+                $daysPastDue = $invoice->due_date->startOfDay()->diffInDays(now()->startOfDay(), false);
 
                 return max(0, $gracePeriodDays - $daysPastDue);
             }
