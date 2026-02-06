@@ -415,14 +415,13 @@ class User extends Authenticatable
             return max(0, $expirationDays - $daysSinceSuspension);
         }
 
-        // If past due, check days until suspension
+        // If past due, check days until suspension (due_date already includes grace period)
         if ($subscription->status->value === 'past_due') {
             $invoice = $subscription->currentInvoice;
             if ($invoice) {
-                $gracePeriodDays = config('subscriptions.grace_period_days', 7);
-                $daysPastDue = $invoice->due_date->startOfDay()->diffInDays(now()->startOfDay(), false);
+                $daysUntilDue = now()->startOfDay()->diffInDays($invoice->due_date->startOfDay(), false);
 
-                return max(0, $gracePeriodDays - $daysPastDue);
+                return max(0, $daysUntilDue);
             }
         }
 
