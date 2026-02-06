@@ -698,13 +698,13 @@
             }
 
             .flow-arrow {
-        transform: rotate(-90deg);
-        transform-origin: center center; /* Asegura que rote desde el centro */
-        width: 100%; /* Ancho completo */
-        height: 60px; /* Altura fija para la flecha rotada */
-        display: flex;
-        align-items: center;
-        justify-content: center;
+                transform: rotate(90deg);
+                transform-origin: center center; /* Asegura que rote desde el centro */
+                width: 100%; /* Ancho completo */
+                height: 60px; /* Altura fija para la flecha rotada */
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
 
@@ -1245,7 +1245,7 @@
                         <div class="sub-step">
                             <h6><i class="fas fa-home me-2"></i>Pasos para Iniciar</h6>
                             <ol>
-                                <li>Visita la pagina principal: <div class="code-block">{{ config('app.url') }}</div></li>
+                                {{--}}<li>Visita la pagina principal: <div class="code-block">{{ config('app.url') }}</div></li>{{--}}
                                 <li>Navega a la seccion <strong>"Planes"</strong> (menu o scroll hacia abajo)</li>
                                 <li>Revisa los planes disponibles y sus caracteristicas</li>
                                 <li>Haz clic en el boton <strong>"Suscribirse Ahora"</strong> del plan que desees</li>
