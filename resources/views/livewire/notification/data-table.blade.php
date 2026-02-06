@@ -31,14 +31,7 @@
                             </div>
                         </div>
                     </div>
-
-                    @if (session()->has('message'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('message') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
+                    @include('partials.message')
                     <!-- Table -->
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0">

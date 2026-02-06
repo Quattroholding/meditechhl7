@@ -43,12 +43,7 @@
 
                     <!-- Body -->
                     <div class="modal-body p-4">
-                        @if(session()->has('message'))
-                            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-                                {!! session('message') !!}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
+                      @include('partials.message')
 
                         @if(!$showCodeInput)
                             <!-- Información Inicial -->

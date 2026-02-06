@@ -410,7 +410,7 @@ class User extends Authenticatable
         // If suspended, check days until expiration
         if ($subscription->status->value === 'suspended') {
             $expirationDays = config('subscriptions.expiration_after_suspension_days', 30);
-            $daysSinceSuspension = now()->diffInDays($subscription->updated_at);
+            $daysSinceSuspension = now()->startOfDay()->diffInDays($subscription->updated_at->startOfDay());
 
             return max(0, $expirationDays - $daysSinceSuspension);
         }
@@ -420,7 +420,7 @@ class User extends Authenticatable
             $invoice = $subscription->currentInvoice;
             if ($invoice) {
                 $gracePeriodDays = config('subscriptions.grace_period_days', 7);
-                $daysPastDue = now()->diffInDays($invoice->due_date);
+                $daysPastDue = now()->startOfDay()->diffInDays($invoice->due_date->startOfDay());
 
                 return max(0, $gracePeriodDays - $daysPastDue);
             }
@@ -428,7 +428,7 @@ class User extends Authenticatable
 
         // If in trial, show days until trial ends
         if ($subscription->status->value === 'trial' && $subscription->trial_ends_at) {
-            return now()->diffInDays($subscription->trial_ends_at, false);
+            return now()->startOfDay()->diffInDays($subscription->trial_ends_at->startOfDay());
         }
 
         return null;
