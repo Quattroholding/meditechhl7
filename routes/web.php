@@ -756,3 +756,42 @@ Route::prefix('help')->name('help.')->group(function () {
 
     // Future help pages can be added here
 });
+
+// Ruta de prueba para testear envío de correos
+Route::get('/test-email', function () {
+    try {
+        $toEmail = request('to', 'rgasperi@smartcarebilling.com');
+
+        \Illuminate\Support\Facades\Mail::raw('Este es un correo de prueba desde Meditech2. Si recibiste este correo, la configuración SMTP está funcionando correctamente.', function ($message) use ($toEmail) {
+            $message->to($toEmail)
+                ->subject('Test de Correo - Meditech2 - '.now()->format('Y-m-d H:i:s'));
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => "Correo de prueba enviado exitosamente a: {$toEmail}",
+            'timestamp' => now()->toDateTimeString(),
+            'config' => [
+                'driver' => config('mail.default'),
+                'host' => config('mail.mailers.smtp.host'),
+                'port' => config('mail.mailers.smtp.port'),
+                'from' => config('mail.from.address'),
+            ],
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al enviar correo',
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'config' => [
+                'driver' => config('mail.default'),
+                'host' => config('mail.mailers.smtp.host'),
+                'port' => config('mail.mailers.smtp.port'),
+                'from' => config('mail.from.address'),
+            ],
+        ], 500);
+    }
+})->name('test.email');
