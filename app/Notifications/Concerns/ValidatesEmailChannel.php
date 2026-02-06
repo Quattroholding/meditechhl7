@@ -23,6 +23,10 @@ trait ValidatesEmailChannel
             return false;
         }
 
+        if (config('app.env') === 'local' || config('mail.testing_mode')) {
+            return true;
+        }
+
         // Reserved domains by RFC 2606 and common test domains
         $reservedDomains = [
             'example.com',
