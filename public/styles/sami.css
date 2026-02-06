@@ -202,8 +202,9 @@ img{ max-width:100%; display:block; }
 }
 
 .badge--blue{
-    background:#0B5E86;
-    color:#fff;
+    background:#fff;
+    color:#0B5E86;
+    margin: 20px 0 ;
 }
 
 .badge--green{
@@ -421,9 +422,10 @@ img{ max-width:100%; display:block; }
 }
 
 .plans__subtitle{
-    margin:12px 0 16px;
-    color:var(--muted);
-    font-size:12.5px;
+    margin:20px 0 ;
+    color:var(--green2);
+    font-size:18px;
+    font-weight:900;
 }
 
 .plans__grid{
@@ -468,12 +470,12 @@ img{ max-width:100%; display:block; }
     letter-spacing:1px;
     box-shadow:0 4px 12px rgba(255,215,0,.5);
     z-index:10;
+    font-weight: 900;
 }
 
 .plan__head{
     padding:10px 12px;
     text-align:center;
-    font-weight:900;
     font-size:20px ;
 }
 
@@ -481,25 +483,38 @@ img{ max-width:100%; display:block; }
     margin:0;
     font-size:40px;
     color:#006838;
+    font-weight:100;
 }
 
 .plan p{
     color:#008cc0;
-    font-size:10px;
+    font-size:15px;
+    margin:4px 0;
 }
 
-.plan .featrues{
+.plan .featrues .grid{
     display: grid;
     grid-template-columns: .1fr 1fr;
     gap: 10px;
-    padding:20px 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.5);
 }
 
 .plan .featrues i{
     display: flex;
     align-items: center;
-    font-size:23px;
+    font-size:22px;
     font-weight:900;
+}
+
+.plan .featrues .grid span{
+    font-size:13px;
+    font-weight:900;
+}
+
+.plan .featrues .separator{
+
+    width:100%;
 }
 
 .plan ul{
@@ -597,8 +612,8 @@ img{ max-width:100%; display:block; }
 }
 
 .bar{
-    background:#0B4D7B;
-    color:#fff;
+    background:#fff;
+    color:#0B4D7B;
     padding:9px 14px;
     border-radius:2px;
     font-weight:800;
@@ -608,7 +623,7 @@ img{ max-width:100%; display:block; }
 .why__cta{
     margin-top:18px;
     text-align:center;
-    color:#0B4D7B;
+    color:#fff;
     font-weight:800;
 }
 .why__cta p{ margin:0 0 10px; }

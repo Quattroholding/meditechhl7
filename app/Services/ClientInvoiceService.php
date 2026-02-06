@@ -235,6 +235,15 @@ class ClientInvoiceService
                     $subscription->activate();
                 } elseif ($subscription->status->value === 'suspended') {
                     $subscription->resume();
+                } elseif ($subscription->status->value === 'past_due') {
+                    // Reactivar suscripción cuando se paga dentro del periodo de gracia
+                    $subscription->status = \App\Enums\SubscriptionStatus::ACTIVE;
+                    $subscription->save();
+
+                    Log::info('Subscription reactivated from past_due', [
+                        'subscription_id' => $subscription->id,
+                        'invoice_id' => $invoice->id,
+                    ]);
                 }
             }
 
@@ -258,7 +267,7 @@ class ClientInvoiceService
     public function processOverdue(): int
     {
         $overdueInvoices = ClientInvoice::whereIn('status', [InvoiceStatus::PENDING->value, InvoiceStatus::PARTIALLY_PAID->value])
-            ->where('due_date', '<', now())
+            ->whereDate('due_date', '<', today())
             ->get();
 
         $count = 0;
@@ -269,15 +278,18 @@ class ClientInvoiceService
             $count++;
 
             if ($invoice->subscription) {
-                $daysPastDue = now()->diffInDays($invoice->due_date);
+                $subscription = $invoice->subscription;
+                $daysPastDue = abs($invoice->due_date->diffInDays(now(), false));
 
-                if ($daysPastDue > $gracePeriodDays) {
-                    $invoice->subscription->suspend();
+                // Si pasó el periodo de gracia (7 días) y está en PAST_DUE, suspender
+                if ($daysPastDue > $gracePeriodDays && $subscription->status->value === 'past_due') {
+                    $subscription->suspend();
 
                     Log::info('Subscription suspended due to overdue invoice', [
                         'invoice_id' => $invoice->id,
-                        'subscription_id' => $invoice->subscription->id,
+                        'subscription_id' => $subscription->id,
                         'days_past_due' => $daysPastDue,
+                        'previous_status' => 'past_due',
                     ]);
                 }
             }

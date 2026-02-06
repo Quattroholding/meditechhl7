@@ -18,7 +18,7 @@ class ProcessExpiredTrials extends Command
         $this->info('Processing expired trials...');
 
         $expiredTrials = ClientSubscription::where('status', SubscriptionStatus::TRIAL->value)
-            ->where('trial_ends_at', '<=', now())
+            ->whereDate('trial_ends_at', '<=', today())
             ->get();
 
         $count = 0;

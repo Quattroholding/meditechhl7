@@ -282,7 +282,7 @@
 
         <div class="plans__grid">
             @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
-             <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif">
+             <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif" data-plan-index="{{ $loop->index }}">
                 <div class="plan__head">
                     <h3 style=" @if($package->id==4) color:#fff!important; @endif">{{ $package->name }}</h3>
                     @if($package->id <>4)
@@ -293,8 +293,11 @@
                 </div>
                 <div class="featrues @if($loop->index==0)   plan--cyan  @elseif($loop->index==1) plan--blue @elseif($loop->index==2) plan--green @elseif($loop->index==3) plan--navy @else plan--light @endif">
                     @foreach($package->features ?? [] as $feature)
-                    <i class="fas fa-check @if($package->id==3) text__white @else text__green @endif"></i>
-                    <span>{{ $feature }}</span>
+                        <div  class="grid">
+                            <i class="fas fa-check fa-2x @if($package->id==3) text__white @else text__green @endif"></i>
+                            <span>{{ $feature }}</span>
+                        </div>
+
                     @endforeach
                 </div>
 
@@ -323,7 +326,7 @@
 
         <p class="why__lead">
             Porque creemos que la tecnología debe estar al servicio de la salud.
-        </p>
+        </p><br/>
 
         <p class="why__lead">
             Con SAMI, tendrás:
@@ -334,7 +337,7 @@
             <div class="bar">Datos seguros y siempre disponibles</div>
             <div class="bar">Menos papeleo = más tiempo para tus pacientes</div>
             <div class="bar">Una mejor experiencia para tus pacientes y tu equipo</div>
-        </div>
+        </div><br/>
 
         <div class="why__cta">
             <p>¿Listo para dar el siguiente paso en la transformación digital de tu práctica médica?</p>
@@ -435,6 +438,33 @@
             }
         } catch (error) {
             alert('Error de conexión. Por favor intenta más tarde.');
+        }
+    });
+
+    // Efecto hover en planes de suscripción
+    document.addEventListener('DOMContentLoaded', function() {
+        const plans = document.querySelectorAll('.plans__grid .plan');
+
+        plans.forEach(plan => {
+            plan.addEventListener('mouseenter', function() {
+                // Remover la clase featured de todos los planes
+                plans.forEach(p => p.classList.remove('plan--featured'));
+                // Añadir la clase featured al plan actual
+                this.classList.add('plan--featured');
+            });
+        });
+
+        // Restaurar el plan por defecto cuando el mouse sale de todos los planes
+        const plansGrid = document.querySelector('.plans__grid');
+        if (plansGrid) {
+            plansGrid.addEventListener('mouseleave', function() {
+                // Remover featured de todos
+                plans.forEach(p => p.classList.remove('plan--featured'));
+                // Añadir featured al primer plan (índice 0)
+                if (plans[1]) {
+                    plans[1].classList.add('plan--featured');
+                }
+            });
         }
     });
 </script>
