@@ -2,7 +2,7 @@
     <aside class="help-sidebar">
         <div class="logo">
               <h4>Centro de Ayuda</h4>
-            <img src="{{ url('images/logoSAMI.jpg') }}" alt="SAMI Logo" onerror="this.style.display='none'">
+            <img src="{{ url('images/logoSAMI.png') }}" alt="SAMI Logo" onerror="this.style.display='none'">
           
         </div>
         
