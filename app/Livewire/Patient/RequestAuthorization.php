@@ -98,12 +98,12 @@ class RequestAuthorization extends Component
             $this->codeSent = true;
             $this->showCodeInput = true;
 
-            $this->dispatch('showToastrPatientRequestAutorization',
+            $this->dispatch('showToastrCodeSent',
                 type: 'success',
                 message: '✅ Se ha enviado un código de autorización al correo del paciente.'
             );
         } catch (\Exception $e) {
-            $this->dispatch('showToastrPatientRequestAutorization',
+            $this->dispatch('showToastrCodeSent',
                 type: 'error',
                 message: '❌ Error al enviar el código: '.$e->getMessage()
             );
