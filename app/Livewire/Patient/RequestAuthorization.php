@@ -98,9 +98,15 @@ class RequestAuthorization extends Component
             $this->codeSent = true;
             $this->showCodeInput = true;
 
-            session()->flash('message', '✅ Se ha enviado un código de autorización al correo del paciente.');
+            $this->dispatch('showToastrPatientRequestAutorization',
+                type: 'success',
+                message: '✅ Se ha enviado un código de autorización al correo del paciente.'
+            );
         } catch (\Exception $e) {
-            session()->flash('error', '❌ Error al enviar el código: '.$e->getMessage());
+            $this->dispatch('showToastrPatientRequestAutorization',
+                type: 'error',
+                message: '❌ Error al enviar el código: '.$e->getMessage()
+            );
         }
     }
 
@@ -155,10 +161,10 @@ class RequestAuthorization extends Component
             type: 'success',
             message: '✅ Autorización concedida. Ahora tiene acceso completo al historial clínico de este paciente. En unos mommentos se recargaran los datos.'
         );
-        //session()->flash('message', '✅ Autorización concedida. Ahora tiene acceso completo al historial clínico de este paciente.');
+        // session()->flash('message', '✅ Autorización concedida. Ahora tiene acceso completo al historial clínico de este paciente.');
 
         // Refrescar la página para mostrar el historial completo
-        //$this->dispatch('authorization-granted');
+        // $this->dispatch('authorization-granted');
     }
 
     public function render()
