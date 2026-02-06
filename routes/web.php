@@ -757,10 +757,11 @@ Route::prefix('help')->name('help.')->group(function () {
     // Future help pages can be added here
 });
 
+/*
 // Ruta de prueba para testear envío de correos
 Route::get('/test-email', function () {
     try {
-        $toEmail = request('to', 'rgasperi@smartcarebilling.com');
+        $toEmail = request('to', 'rgasperimartinez@gmail.com');
 
         \Illuminate\Support\Facades\Mail::raw('Este es un correo de prueba desde Meditech2. Si recibiste este correo, la configuración SMTP está funcionando correctamente.', function ($message) use ($toEmail) {
             $message->to($toEmail)
@@ -795,3 +796,4 @@ Route::get('/test-email', function () {
         ], 500);
     }
 })->name('test.email');
+*/
