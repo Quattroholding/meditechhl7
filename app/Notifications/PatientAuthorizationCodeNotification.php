@@ -36,7 +36,7 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
 
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = \App\Channels\WhatsAppN8NChannel::class;
+            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
         }
 
         return $channels;
