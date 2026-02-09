@@ -43,8 +43,6 @@
 
                     <!-- Body -->
                     <div class="modal-body p-4">
-                      @include('partials.message')
-
                         @if(!$showCodeInput)
                             <!-- Información Inicial -->
                             <div class="text-center py-3">
@@ -199,6 +197,17 @@
             });
         });
         document.addEventListener('livewire:initialized', () => {
+            // Toast para cuando se envía el código (sin reload)
+            Livewire.on('showToastrCodeSent', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000
+                });
+            });
+
+            // Toast para cuando se autoriza (con reload)
             Livewire.on('showToastrPatientRequestAutorization', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
