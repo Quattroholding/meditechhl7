@@ -554,6 +554,64 @@
             transform: translateY(-5px);
         }
 
+               /* Timeline */
+        .process-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .process-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #009655 0%,  var(--teal-color));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 3px solid var(--teal-color);
+            border-radius: 50%;
+        }
+
+        .timeline-item.completed::before {
+            background: var(--teal-color);
+        }
+
+        .timeline-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .timeline-content h6 {
+            color: #004d40;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+
 /* Responsive: Tablets */
     @media screen and (max-width: 1024px) and (min-width: 769px) {
         .vital-signs-table th,
@@ -815,6 +873,12 @@
                             <a href="#agregar">
                                 <i class="fas fa-plus-circle"></i>
                                 Agregar Antecedentes
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#auth-code">
+                                <i class="fas fa-address-book"></i>
+                                Flujo de Solicitud de Historial
                             </a>
                         </li>
                        <!-- <li>
@@ -1509,6 +1573,65 @@
                     </div>
                 </section>
 
+                <!-- Flujo de Loggin -->
+                <section id="auth-code" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Flujo de Solicitud y Habilitación de Historial Médico Completo del Paciente</h3>
+                    <div class="step-content">
+                        <!--<p>Para los interesados en conocer el proceso tecnico, aqui explicamos que ocurre en el sistema durante el registro:</p>-->
+
+                        <div class="process-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>1. Ir al Historial Médico</h6>
+                                    <p>Primero deberá ir a <strong>"Lista Pacientes"</strong>, busca su paciente y haga clic en <strong>"Historial Médico"</strong>, en esta pantalla encontrará un botón que dice <strong>"Solicitar Acceso Completo al Historial"</strong>, haga clic.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/medical_history/info-patient.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>2. Solicitar Código de autorización</h6>
+                                    <p>Haga clic en <strong>"Enviar Código de Autorización"</strong> para que el código de desbloqueo sea enviado al paciente.</p>
+                                    <div>
+                                        <img  src="{{ asset('images/tutorial/medical_history/info-modal.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>3. Correo de Código de Autorización</h6>
+                                    <p>El Sistema enviará un correo con el <strong>Código de Autorización</strong> que deberá ingresar el Médico.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/medical_history/info-email.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>4. Ingreso de Código de Autorización</h6>
+                                    <p>Luego de que el paciente le haya proporcionado el <strong>Código de Autorización</strong> deberá ingresarlo a la plataforma para validarlo.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/medical_history/info-sendcode.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>4. Acceso a Historial Completo</h6>
+                                    <p>Luego de validar <strong>Código de Autorización</strong> podrá visualizar el <strong>Historial Médico</strong> completo del paciente.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/medical_history/info-medhs.jpeg') }}" alt="" style="width: 100%;">
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <!-- Filtros y Busqueda 
                 <section id="filtros" class="step-card">
                     <div class="step-number">11</div>
