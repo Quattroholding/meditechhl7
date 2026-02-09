@@ -907,6 +907,15 @@ a{ text-decoration:none; color:inherit; }
     .mv__grid{ grid-template-columns:1fr; }
     .mv__right{ order:-1; }
 
+    .mv__right img, .green__line, .cyan__line {
+        display: none;
+    }
+
+    .mv__left {
+        width: 85%;
+        margin: 0 auto;
+    }
+
     /* Products responsive */
     .products__grid{
         grid-template-columns:1fr;
@@ -1061,5 +1070,11 @@ a{ text-decoration:none; color:inherit; }
     .submit-btn{
         width:100%;
         justify-content:center;
+    }
+}
+
+@media (max-width: 368px) {
+    .mv__left{
+        text-align: center;
     }
 }
