@@ -265,6 +265,11 @@ centered::before, .centered::after {
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
+.add-pluss{
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
 /* Responsive para contenedores pequeños (offcanvas) */
 @container (max-width: 768px) {
     .data-info {
@@ -296,6 +301,7 @@ centered::before, .centered::after {
         padding: 8px 16px;
         font-size: 12px;
     }
+
 }
 
 /* Para contenedores muy pequeños - reorganizar layout */
@@ -333,6 +339,12 @@ centered::before, .centered::after {
     .data-info {
         display: flex;
         flex-wrap: wrap;
+    }
+
+
+    .add-pluss{
+        width: 91%;
+        margin:20px;
     }
 
 }

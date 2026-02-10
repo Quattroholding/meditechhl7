@@ -1,4 +1,4 @@
-<div style="display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 1px; background: #e9ecef; border-radius: 10px; overflow: hidden; max-height: 600px; overflow-y: auto;">
+<div style="display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 1px; background: #e9ecef; border-radius: 10px; overflow: hidden; max-height: 600px; overflow-y: auto;overflow-x:scroll; ">
     <!-- Encabezado vacío -->
     <div class="day-header"></div>
 
