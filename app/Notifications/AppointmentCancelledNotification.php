@@ -68,7 +68,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             'title' => 'Cita Médica Cancelada',
             'message' => 'Su cita con '.$this->appointment->practitioner->name.' ha sido cancelada.',
             'steps' => array_filter([
-                '📅 Fecha cancelada: '.$this->appointment->start_datetime->format('d/m/Y H:i'),
+                '📅 Fecha cancelada: '.$this->appointment->start->format('d/m/Y H:i'),
                 $this->cancellationReason ? '📝 Motivo: '.$this->cancellationReason : null,
             ]),
             'action' => [
@@ -101,7 +101,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
     public function toWhatsApp(object $notifiable): string
     {
         $practitioner = $this->appointment->practitioner;
-        $appointmentDate = $this->appointment->start_datetime;
+        $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         $message = "❌ *Cita Médica Cancelada*\n\n";
