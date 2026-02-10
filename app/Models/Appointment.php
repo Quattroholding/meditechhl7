@@ -337,6 +337,40 @@ class Appointment extends BaseModel
         return true;
     }
 
+    /**
+     * Send immediate confirmation notification when appointment is booked
+     * Only sends if the appointment is more than 1 day in the future
+     */
+    public function notifyPatientAboutBooking()
+    {
+        // Check if appointment is more than 1 day (24 hours) in the future
+        $hoursUntilAppointment = now()->diffInHours($this->start, false);
+
+        if ($hoursUntilAppointment <= 24) {
+            \Log::info('Appointment booking notification not sent - appointment is within 24 hours', [
+                'appointment_id' => $this->id,
+                'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
+                'hours_until' => $hoursUntilAppointment,
+            ]);
+
+            return false;
+        }
+
+        // Send immediate notification to patient
+        $this->patient->notify(new \App\Notifications\AppointmentBookedNotification($this));
+
+        \Log::info('Appointment booking notification sent successfully', [
+            'appointment_id' => $this->id,
+            'patient_id' => $this->patient_id,
+            'patient_phone' => $this->patient->phone ?? $this->patient->whatsapp_phone,
+            'patient_email' => $this->patient->email,
+            'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'hours_until_appointment' => $hoursUntilAppointment,
+        ]);
+
+        return true;
+    }
+
     // Virtual consultation methods
     public function isVirtual(): bool
     {
