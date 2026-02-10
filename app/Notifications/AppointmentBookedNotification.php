@@ -29,7 +29,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
 
         // Priorizar WhatsApp si está disponible
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = \App\Channels\WhatsAppChannel::class;
+            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
         }
         // Si no tiene WhatsApp, usar email
         elseif ($this->isValidEmail($notifiable->email)) {
