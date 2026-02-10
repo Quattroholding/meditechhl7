@@ -45,7 +45,7 @@
                     <!-- First Name -->
                     <div class="input-block local-forms">
                         <x-input-label for="first_name" :value="__('patient.first_name')" required="true"/>
-                        <x-text-input wire:model="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" />
+                        <x-text-input wire:model="first_name" class="block mt-1 w-full" type="text" name="first_name" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <!-- Last Name -->
                     <div class="input-block local-forms">
                         <x-input-label for="last_name" :value="__('patient.last_name')" required="true"/>
-                        <x-text-input wire:model="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')"/>
+                        <x-text-input wire:model="last_name" class="block mt-1 w-full" type="text" name="last_name" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                     <!-- EMAIL -->
                     <div class="input-block local-forms">
                         <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true"/>
-                        <x-text-input wire:model="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
+                        <x-text-input wire:model="email" class="block mt-1 w-full" type="email" name="email" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
                         <x-input-label for="blood_type" :value="__('patient.blood_type')" class="local-top"/>
-                        <x-select-input wire:model="blood_type" name="blood_type" :options="\App\Models\Lista::bloodTypes()" :selected="[null]" class="block w-full"/>
+                        <x-select-input wire:model="blood_type" name="blood_type" :options="\App\Models\Lista::bloodTypes()" :selected="[null]" class="block w-full" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('blood_type')" class="mt-2" />
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms {{--}}cal-icon{{--}}">
                         <x-input-label for="birthdate" :value="__('patient.birthdate')" required="true"/>
-                        <x-text-input wire:model="birthdate" id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" />
+                        <x-text-input wire:model="birthdate" id="birthdate" type="text" name="birthdate"  type="date" class="block mt-1 w-full" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('birthdate')" class="mt-2" />
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                 <div class=" col-12 col-md-12 col-xl-12">
                     <div class="input-block local-forms">
                         <x-input-label for="physical_address" :value="__('patient.physical_address')" required/>
-                        <x-textarea-input wire:model="physical_address" class="block mt-1 w-full" type="email" name="physical_address"/>
+                        <x-textarea-input wire:model="physical_address" class="block mt-1 w-full" type="email" name="physical_address" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('physical_address')" class="mt-2" />
                     </div>
                 </div>
@@ -99,8 +99,14 @@
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
                         <x-input-label for="phone" :value="__('patient.phone')" required/>
-                        <input   wire:model="phone" id="phone" class="block mt-1 w-full form-control" type="tel" name="phone" value="{{old('phone')}}">
-                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                        <x-phone-input
+                            name="phone"
+                            id="phone"
+                            wireModel="phone"
+                            :error="$errors->get('phone')"
+                            required
+                            class="block mt-1 w-full"
+                        />
                     </div>
                 </div>
                 <div class=" col-12 col-md-6 col-xl-6">
@@ -152,7 +158,7 @@
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
                         <x-input-label for="contact_name" value="Nombre del Contacto"/>
-                        <x-text-input wire:model="contact_name" id="contact_name" class="block mt-1 w-full" type="text" name="contact_name" :value="old('contact_name')"/>
+                        <x-text-input wire:model="contact_name" id="contact_name" class="block mt-1 w-full" type="text" name="contact_name"/>
                         <x-input-error :messages="$errors->get('contact_name')" class="mt-2" />
                     </div>
                 </div>
@@ -160,7 +166,7 @@
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
                         <x-input-label for="contact_email" value="Email del Contacto"/>
-                        <x-text-input wire:model="contact_email" id="contact_email" class="block mt-1 w-full" type="email" name="contact_email" :value="old('contact_email')"/>
+                        <x-text-input wire:model="contact_email" id="contact_email" class="block mt-1 w-full" type="email" name="contact_email"/>
                         <x-input-error :messages="$errors->get('contact_email')" class="mt-2" />
                     </div>
                 </div>
@@ -168,8 +174,13 @@
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
                         <x-input-label for="contact_phone" value="Teléfono del Contacto"/>
-                        <x-text-input wire:model="contact_phone" id="contact_phone" class="block mt-1 w-full" type="tel" name="contact_phone" :value="old('contact_phone')"/>
-                        <x-input-error :messages="$errors->get('contact_phone')" class="mt-2" />
+                        <x-phone-input
+                            name="contact_phone"
+                            id="contact_phone"
+                            wireModel="contact_phone"
+                            :error="$errors->get('contact_phone')"
+                            class="block mt-1 w-full"
+                        />
                     </div>
                 </div>
             </div>

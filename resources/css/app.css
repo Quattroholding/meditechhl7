@@ -91,3 +91,27 @@
     border-color: var(--tertiary-dark) !important;
 }
 
+
+/* Detectar autocomplete del navegador para campos de teléfono */
+@keyframes onAutoFillStart {
+    from { /*dummy*/ }
+    to { /*dummy*/ }
+}
+
+@keyframes onAutoFillCancel {
+    from { /*dummy*/ }
+    to { /*dummy*/ }
+}
+
+input[type="phone"]:-webkit-autofill,
+input[name="phone"]:-webkit-autofill,
+input#phone:-webkit-autofill {
+    animation-name: onAutoFillStart;
+    transition: background-color 50000s ease-in-out 0s;
+}
+
+input[type="phone"]:not(:-webkit-autofill),
+input[name="phone"]:not(:-webkit-autofill),
+input#phone:not(:-webkit-autofill) {
+    animation-name: onAutoFillCancel;
+}

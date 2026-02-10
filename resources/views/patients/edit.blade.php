@@ -71,7 +71,7 @@
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="gender" :value="__('patient.gender')" required="true"/>
-                                            <x-select-input name="gender" :options="\App\Models\Lista::gender()" :selected="[$data->gender]" class="block w-full"/>
+                                            <x-select-input name="gender" :options="\App\Models\Lista::gender()" :selected="[$data->getRawOriginal('gender')]" class="block w-full"/>
                                             <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                                         </div>
                                     </div>
@@ -139,8 +139,13 @@
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('patient.phone')" />
-                                            <input   wire:model="phone" id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{$data->phone}}">
-                                            @error('phone') <span style="color: red; font-size: 12px;">{{ $message }}</span> @enderror
+                                            <x-phone-input
+                                                name="phone"
+                                                id="phone"
+                                                :value="$data->phone"
+                                                :error="$errors->get('phone')"
+                                                class="block mt-1 w-full"
+                                            />
                                         </div>
                                     </div>
                                     <div class=" col-12 col-md-6 col-xl-6">
@@ -179,8 +184,13 @@
                                     <div class="col-12 col-md-4 col-xl-4">
                                         <div class="input-block local-forms">
                                             <x-input-label for="contact_phone" value="Teléfono del Contacto"/>
-                                            <x-text-input id="contact_phone" class="block mt-1 w-full" type="tel" name="contact_phone" :value="$data->contact_phone"/>
-                                            <x-input-error :messages="$errors->get('contact_phone')" class="mt-2" />
+                                            <x-phone-input
+                                                name="contact_phone"
+                                                id="contact_phone"
+                                                :value="$data->contact_phone"
+                                                :error="$errors->get('contact_phone')"
+                                                class="block mt-1 w-full"
+                                            />
                                         </div>
                                     </div>
                                 </div>

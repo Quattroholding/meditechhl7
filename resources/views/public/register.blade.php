@@ -422,11 +422,13 @@
                         </div>
                         <div class="form-field">
                             <label>Teléfono <span class="required">*</span></label>
-
-                            <input id="phone" class="block mt-1 w-full" type="phone" name="phone" value="{{old('phone')}}" autocomplete="off">
-                            @error('phone')
-                            <span class="error">{{ $message }}</span>
-                            @enderror
+                            <x-phone-input
+                                name="phone"
+                                id="phone"
+                                :value="old('phone')"
+                                :error="$errors->get('phone')"
+                                required
+                            />
                         </div>
                     </div>
                     <div class="form-row">
@@ -530,8 +532,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar intl-tel-input
-
             // Mostrar/ocultar campos de practitioner según paquete
             const packageSelect = document.getElementById('package_id');
 
@@ -578,12 +578,6 @@
                 if (this.files && this.files[0]) {
                     logoLabel.innerHTML = '<i class="fas fa-check"></i> ' + this.files[0].name;
                 }
-            });
-
-            // Validar formulario antes de enviar
-            document.getElementById('registrationForm').addEventListener('submit', function(e) {
-                // Actualizar el campo phone con el número completo internacional
-                phoneInput.value = iti.getNumber();
             });
 
             // Escuchar evento del modal cuando se acepta

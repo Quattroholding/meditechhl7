@@ -65,8 +65,14 @@
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block local-forms">
                                             <x-input-label for="phone" :value="__('Teléfono')" required/>
-                                            <input id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{old('phone')}}">
-                                            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                            <x-phone-input
+                                                name="phone"
+                                                id="phone"
+                                                :value="old('phone')"
+                                                :error="$errors->get('phone')"
+                                                required
+                                                class="block mt-1 w-full"
+                                            />
                                         </div>
                                     </div>
                                 </div>

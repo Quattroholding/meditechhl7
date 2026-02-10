@@ -34,7 +34,25 @@ class StoreClientRequest extends FormRequest
             'long_name' => ['required', 'string', 'max:500'],
             'ruc' => ['required', 'string', 'max:50', 'unique:clients,ruc'],
             'dv' => ['required', 'integer', 'min:0', 'max:99'],
-            'phone' => ['required', 'string', 'max:50'],
+            'phone' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^\+[1-9]\d{1,14}$/',
+                function ($attribute, $value, $fail) {
+                    if (! str_starts_with($value, '+')) {
+                        $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
+
+                        return;
+                    }
+
+                    if (strlen($value) < 8) {
+                        $fail('El número de teléfono es demasiado corto.');
+
+                        return;
+                    }
+                },
+            ],
             'email' => [
                 'required',
                 'email',
@@ -135,6 +153,8 @@ class StoreClientRequest extends FormRequest
             'logo.image' => 'El logo debe ser una imagen.',
             'logo.mimes' => 'El logo debe ser de tipo: jpeg, png, jpg, gif, svg.',
             'logo.max' => 'El logo no debe ser mayor a 2MB.',
+            'phone.required' => 'El teléfono es obligatorio.',
+            'phone.regex' => 'El teléfono debe incluir el código de país en formato internacional (ej: +507...).',
             'billing_day.min' => 'El día de facturación debe ser entre 1 y 28.',
             'billing_day.max' => 'El día de facturación debe ser entre 1 y 28.',
             'trial_days.max' => 'Los días de prueba no pueden ser más de 365.',

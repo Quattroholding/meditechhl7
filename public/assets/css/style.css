@@ -6380,7 +6380,7 @@ a.status-grey {
     background: #fff;
     margin-bottom: 0;
     padding: 0px 5px;
-	/*z-index: 99;*/
+	z-index: 99;
 }
 .local-forms .select2-container .select2-selection--single {
 	height: 45px;

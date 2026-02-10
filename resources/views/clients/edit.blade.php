@@ -80,8 +80,13 @@
                             <!-- WHATSAPP -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="whatsapp" :value="__('Telefono')" />
-                                <input  id="whatsapp" class="block mt-1 w-full input-phone" type="tel" name="whatsapp" value="{{$data->whatsapp}}">
-                                <x-input-error :messages="$errors->get('whatsapp')" class="mt-2" />
+                                <x-phone-input
+                                    name="whatsapp"
+                                    id="whatsapp"
+                                    :value="$data->whatsapp"
+                                    :error="$errors->get('whatsapp')"
+                                    class="block mt-1 w-full"
+                                />
                             </div>
                         </div>
                         <!-- IMAGE -->

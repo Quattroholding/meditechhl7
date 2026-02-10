@@ -111,8 +111,14 @@
                             <div class=" col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="phone" :value="__('doctor.phone')" required="true" />
-                                    <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" id ="phone" value="{{$data->phone}}">
-                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                    <x-phone-input
+                                        name="phone"
+                                        id="phone"
+                                        :value="$data->phone"
+                                        :error="$errors->get('phone')"
+                                        required
+                                        class="block mt-1 w-full"
+                                    />
                                 </div>
                             </div>
                         </div>

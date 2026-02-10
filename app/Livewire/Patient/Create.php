@@ -45,11 +45,15 @@ class Create extends Component
 
     public $phone;
 
+    public $full_phone;  // Campo oculto con número completo internacional
+
     public $contact_name;
 
     public $contact_email;
 
     public $contact_phone;
+
+    public $full_contact_phone;  // Campo oculto con número completo internacional
 
     public $blood_type;
 
@@ -114,10 +118,33 @@ class Create extends Component
             'physical_address' => 'required',
             'marital_status' => 'required',
             'email' => 'required|unique:'.Patient::class,
-            'phone' => 'required',
+            'full_phone' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^\+[1-9]\d{1,14}$/',
+                function ($attribute, $value, $fail) {
+                    if (! str_starts_with($value, '+')) {
+                        $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
+
+                        return;
+                    }
+
+                    if (strlen($value) < 8) {
+                        $fail('El número de teléfono es demasiado corto.');
+
+                        return;
+                    }
+                },
+            ],
             'contact_name' => 'nullable|string|max:255',
             'contact_email' => 'nullable|email|max:255',
-            'contact_phone' => 'nullable|string|max:255',
+            'full_contact_phone' => [
+                'nullable',
+                'string',
+                'max:50',
+                'regex:/^\+[1-9]\d{1,14}$/',
+            ],
             'primary_patient_id' => 'required_if:is_dependent,true',
             'relationship_type' => 'required_if:is_dependent,true',
             'archivos.*' => 'nullable|file|max:1024', // 1MB max por archivo
@@ -132,6 +159,9 @@ class Create extends Component
         'first_name.required' => 'El nombre es obligatorio',
         'last_name.required' => 'El apellido es obligatorio',
         'marital_status.required' => 'El estado civil es obligatorio',
+        'full_phone.required' => 'El teléfono es obligatorio',
+        'full_phone.regex' => 'El teléfono debe incluir el código de país en formato internacional (ej: +507...).',
+        'full_contact_phone.regex' => 'El teléfono de contacto debe incluir el código de país en formato internacional (ej: +507...).',
         'primary_patient_id.required_if' => 'Debe seleccionar el paciente principal',
         'relationship_type.required_if' => 'Debe seleccionar el tipo de relación',
     ];
@@ -251,7 +281,7 @@ class Create extends Component
         $model->last_name = $this->last_name;
         $model->email = strtolower($this->email);
         $model->password = $this->password;
-        $model->whatsapp_phone = $this->phone;
+        $model->whatsapp_phone = $this->full_phone;
         $model->save();
 
         // Asignar rol de paciente
@@ -261,11 +291,11 @@ class Create extends Component
         $patient->given_name = $this->first_name;
         $patient->family_name = $this->last_name;
         $patient->email = $model->email;
-        $patient->phone = $this->phone;
-        $patient->whatsapp_phone = $this->phone;
+        $patient->phone = $this->full_phone;  // Usar el campo oculto con formato completo
+        $patient->whatsapp_phone = $this->full_phone;
         $patient->contact_name = $this->contact_name;
         $patient->contact_email = $this->contact_email;
-        $patient->contact_phone = $this->contact_phone;
+        $patient->contact_phone = $this->full_contact_phone;  // Usar el campo oculto con formato completo
         $patient->name = $this->first_name.' '.$this->last_name;
         $patient->user_id = $model->id;
         $patient->gender = $this->gender;

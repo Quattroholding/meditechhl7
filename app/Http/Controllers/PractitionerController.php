@@ -138,11 +138,15 @@ class PractitionerController extends Controller
                 'gender' => 'required',
                 'birth_date' => 'required',
                 'email' => 'required',
-                'phone' => 'required',
+                'full_phone' => [
+                    'required',
+                    'string',
+                    'max:50',
+                    'regex:/^\+[1-9]\d{1,14}$/',
+                ],
                 'registry' => 'required',
                 'licence_code' => 'required',
                 'address' => 'required',
-                // 'full_phone' => 'required',
                 // 'image' => 'required',
                 'clients' => 'required',
             ]);

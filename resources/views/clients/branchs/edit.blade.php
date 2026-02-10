@@ -43,8 +43,14 @@
                                 <!-- PHONE -->
                                 <div class="input-block  local-forms">
                                     <x-input-label for="phone" :value="__('client.branch.phone')" required/>
-                                    <input  id="phone" class="block mt-1 w-full input-phone" type="tel" name="phone" value="{{$data->phone}}">
-                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                                    <x-phone-input
+                                        name="phone"
+                                        id="phone"
+                                        :value="$data->phone"
+                                        :error="$errors->get('phone')"
+                                        required
+                                        class="block mt-1 w-full"
+                                    />
                                 </div>
                                 <!-- ADDRESS -->
                                 <div class="input-block  local-forms">

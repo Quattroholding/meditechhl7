@@ -29,7 +29,7 @@
                         <div class=" col-12 col-md-6 col-xl-12">
                             <div class="input-block local-forms">
                                 <x-input-label for="current_price" :value="__('Precio')" />
-                                <x-text-input wire:model="current_price_cpt" class="block mt-1 w-full" type="number" step="any" name="current_price_cpt" :value="old('current_price_cpt')"/>
+                                <x-text-input wire:model="current_price_cpt" class="block mt-1 w-full" type="number" step="any" name="current_price_cpt"/>
                                 @error('current_price_cpt') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                         <div class=" col-12 col-md-6 col-xl-12">
                             <div class="input-block local-forms">
                                 <x-input-label for="description" :value="__('Descripcion')" />
-                                <x-text-input wire:model="description" class="block mt-1 w-full" type="text" name="description" :value="old('description')"/>
+                                <x-text-input wire:model="description" class="block mt-1 w-full" type="text" name="description"/>
                                 @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                         <div class=" col-12 col-md-6 col-xl-12">
                             <div class="input-block local-forms">
                                 <x-input-label for="current_price" :value="__('Precio')" />
-                                <x-text-input wire:model="current_price" class="block mt-1 w-full" type="number" step="any" name="current_price" :value="old('current_price')"/>
+                                <x-text-input wire:model="current_price" class="block mt-1 w-full" type="number" step="any" name="current_price"/>
                                 @error('current_price') <span class="text-red-500">{{ $message }}</span> @enderror
                             </div>
                         </div>

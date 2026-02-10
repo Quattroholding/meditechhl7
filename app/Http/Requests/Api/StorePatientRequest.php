@@ -27,7 +27,25 @@ class StorePatientRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255', 'unique:patients,email', 'unique:users,email'],
             'identifier' => ['required', 'string', 'max:50', 'unique:patients,identifier'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^\+[1-9]\d{1,14}$/',
+                function ($attribute, $value, $fail) {
+                    if (! str_starts_with($value, '+')) {
+                        $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
+
+                        return;
+                    }
+
+                    if (strlen($value) < 8) {
+                        $fail('El número de teléfono es demasiado corto.');
+
+                        return;
+                    }
+                },
+            ],
             'id_document' => 'nullable|string', // ← Cambio aquí: acepta string (base64)
         ];
     }
@@ -51,7 +69,8 @@ class StorePatientRequest extends FormRequest
             'identifier.unique' => 'Este identificador ya está registrado.',
             'phone.required' => 'El teléfono es obligatorio.',
             'phone.string' => 'El teléfono debe ser una cadena de texto.',
-            'phone.max' => 'El teléfono no puede exceder los 20 caracteres.',
+            'phone.max' => 'El teléfono no puede exceder los 50 caracteres.',
+            'phone.regex' => 'El teléfono debe incluir el código de país en formato internacional (ej: +507...).',
             'id_document.file' => 'El documento de identidad debe ser un archivo.',
             'id_document.mimes' => 'El documento de identidad debe ser un archivo PDF, JPG, JPEG o PNG.',
             'id_document.max' => 'El documento de identidad no puede exceder los 2MB.',

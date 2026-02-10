@@ -59,7 +59,27 @@ class PublicRegistrationRequest extends FormRequest
                 },
             ],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'phone' => ['required', 'string', 'max:50'],
+            'phone' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^\+[1-9]\d{1,14}$/',
+                function ($attribute, $value, $fail) {
+                    // Validar que el número comience con + seguido de código de país
+                    if (! str_starts_with($value, '+')) {
+                        $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
+
+                        return;
+                    }
+
+                    // Validar longitud mínima después del +
+                    if (strlen($value) < 8) {
+                        $fail('El número de teléfono es demasiado corto.');
+
+                        return;
+                    }
+                },
+            ],
 
             // Practitioner (condicional si max_users=1)
             'identifier_type' => [
@@ -172,6 +192,7 @@ class PublicRegistrationRequest extends FormRequest
             'logo.mimes' => 'El logo debe ser de tipo: jpeg, png, jpg.',
             'logo.max' => 'El logo no debe ser mayor a 2MB.',
             'phone.required' => 'El teléfono es obligatorio.',
+            'phone.regex' => 'El teléfono debe incluir el código de país en formato internacional (ej: +507...).',
             'first_name.required' => 'Los nombres son obligatorios.',
             'last_name.required' => 'Los apellidos son obligatorios.',
             'identifier_type.required' => 'El tipo de documento es obligatorio.',

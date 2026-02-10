@@ -104,6 +104,7 @@ class PublicRegistrationController extends Controller
                     $user->first_login_at = now();
                     $user->default_client_id = $client->id;
                     $user->active = true; // Activar usuario
+                    $user->whatsapp_phone = $request->phone;
                     $user->save();
 
                     Log::info('Public registration: Reusing existing user', [
@@ -122,6 +123,7 @@ class PublicRegistrationController extends Controller
                     $user->password = $request->password;
                     $user->first_login_at = now();
                     $user->default_client_id = $client->id;
+                    $user->whatsapp_phone = $request->phone;
                     $user->assignRole('admin client');
                     $user->save();
                 }

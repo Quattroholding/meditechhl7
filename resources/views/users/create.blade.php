@@ -139,8 +139,13 @@
                                     <!-- WHATSAPP -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="whatsapp" :value="__('user.phone')" />
-                                        <input   id="phone" class="block mt-1 w-full input-phone" type="tel" name="whatsapp_phone" value="{{old('phone')}}">
-                                        <x-input-error :messages="$errors->get('whatsapp_phone')" class="mt-2" />
+                                        <x-phone-input
+                                            name="whatsapp_phone"
+                                            id="phone"
+                                            :value="old('whatsapp_phone')"
+                                            :error="$errors->get('whatsapp_phone')"
+                                            class="block mt-1 w-full"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="client_id">
