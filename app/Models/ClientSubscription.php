@@ -215,7 +215,7 @@ class ClientSubscription extends BaseModel
             return false;
         }
 
-        $gracePeriodDays = config('subscriptions.grace_period_days', 7);
+        $gracePeriodDays = (int) config('subscriptions.grace_period_days', 7);
         $gracePeriodEnd = $this->current_period_ends_at->addDays($gracePeriodDays);
 
         return now()->lessThanOrEqualTo($gracePeriodEnd);
