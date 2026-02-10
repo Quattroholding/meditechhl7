@@ -35,7 +35,7 @@ class PatientWelcomeMail extends Mailable
             'address' => '',
             'phone' => $this->client->whatsapp,
             'email' => $this->client->email,
-            'website' => config('app.url'),
+            'website' => config('app.sami_url'),
         ];
     }
 

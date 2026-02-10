@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'sami_url' => env('APP_SAMI_URL', 'http://sami.localhost'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
