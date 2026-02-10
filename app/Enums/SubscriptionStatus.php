@@ -28,7 +28,7 @@ enum SubscriptionStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::PENDING_ACTIVATION => 'warning',
+            self::PENDING_ACTIVATION => 'primary',
             self::TRIAL => 'info',
             self::ACTIVE => 'success',
             self::PAST_DUE => 'warning',
