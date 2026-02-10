@@ -27,10 +27,18 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
 
     public function via($notifiable)
     {
-        return array_filter([
-            'database',
-            $this->getMailChannelIfValid($notifiable->email),
-        ]);
+        $channels = ['database'];
+
+        // Priorizar WhatsApp si está disponible
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+        }
+        // Si no tiene WhatsApp, usar email
+        elseif ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     public function toMail($notifiable)
@@ -58,7 +66,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
         return [
             // Standard notification fields
             'title' => 'Cita Médica Cancelada',
-            'message' => 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido cancelada.',
+            'message' => 'Su cita con '.$this->appointment->practitioner->name.' ha sido cancelada.',
             'steps' => array_filter([
                 '📅 Fecha cancelada: '.$this->appointment->start_datetime->format('d/m/Y H:i'),
                 $this->cancellationReason ? '📝 Motivo: '.$this->cancellationReason : null,
@@ -85,6 +93,40 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
+    {
+        $practitioner = $this->appointment->practitioner;
+        $appointmentDate = $this->appointment->start_datetime;
+        $clinicName = $this->appointment->client->name ?? config('app.name');
+
+        $message = "❌ *Cita Médica Cancelada*\n\n";
+        $message .= "Hola {$notifiable->name},\n\n";
+        $message .= "Lamentamos informarle que su cita médica ha sido cancelada:\n\n";
+
+        $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
+        $message .= "📅 *Fecha cancelada:* {$appointmentDate->format('d/m/Y')}\n";
+        $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
+        $message .= "🏢 *Clínica:* {$clinicName}\n";
+
+        if ($this->appointment->consultingRoom->branch->name ?? null) {
+            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
+        }
+
+        if ($this->cancellationReason) {
+            $message .= "\n📝 *Motivo de la cancelación:*\n{$this->cancellationReason}\n";
+        }
+
+        $message .= "\n💡 Si desea reagendar su cita, puede hacerlo a través de nuestro sistema.\n";
+        $message .= "\nDisculpe las molestias ocasionadas.\n";
+        $message .= "\nAtentamente,\n";
+        $message .= "Equipo de {$clinicName} 🏥";
+
+        return $message;
     }
 
     /**

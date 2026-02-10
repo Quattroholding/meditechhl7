@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Appointment;
 
+use App\Enums\AppointmentCancelledReason;
 use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
@@ -42,6 +43,15 @@ class Calendar extends Component
     public $doctors = [];
 
     public $stats = [];
+
+    // Modal de cancelación
+    public $showCancelModal = false;
+
+    public $cancellingAppointmentId = null;
+
+    public $cancellationReason = '';
+
+    public $customCancellationReason = '';
 
     // NUEVAS PROPIEDADES PARA CONFIGURACIÓN DE TIEMPO
     public $timeBlockMinutes = 30; // Bloques de 30 minutos por defecto
@@ -259,6 +269,12 @@ class Calendar extends Component
 
     public function updateStatus($appointmentId, $newStatus)
     {
+        // Si se intenta cancelar, mostrar modal para solicitar razón
+        if ($newStatus == 'cancelled') {
+            $this->cancellingAppointmentId = $appointmentId;
+            $this->showCancelModal = true;
+            return;
+        }
 
         try {
             $appointment = Appointment::find($appointmentId);
@@ -291,6 +307,57 @@ class Calendar extends Component
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al actualizar el estado :'.$e->getMessage());
         }
+    }
+
+    public function confirmCancellation()
+    {
+        $this->validate([
+            'cancellationReason' => 'required',
+            'customCancellationReason' => 'required_if:cancellationReason,OTHER',
+        ], [
+            'cancellationReason.required' => 'Debe seleccionar una razón de cancelación',
+            'customCancellationReason.required_if' => 'Debe especificar la razón cuando selecciona "Otra razón"',
+        ]);
+
+        try {
+            $appointment = Appointment::find($this->cancellingAppointmentId);
+
+            if ($appointment) {
+                $appointment->status = 'cancelled';
+                $appointment->save();
+
+                // Determinar la razón final a enviar
+                $finalReason = $this->cancellationReason === 'OTHER'
+                    ? $this->customCancellationReason
+                    : AppointmentCancelledReason::{$this->cancellationReason}->value;
+
+                // Enviar notificación con la razón
+                $appointment->notifyPatientAboutCancellation($finalReason);
+
+                //session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
+                $this->loadAppointments();
+
+                $this->dispatch('showToastrAppointment',
+                    type: 'error',
+                    message: '¡Cita cancelada, se envió notificación al paciente!',
+                    appointment_id: $this->cancellingAppointmentId
+                );
+            }
+        } catch (\Exception $e) {
+            session()->flash('message.error', 'Error al cancelar la cita: '.$e->getMessage());
+        }
+
+        // Cerrar modal y limpiar campos
+        $this->closeCancelModal();
+    }
+
+    public function closeCancelModal()
+    {
+        $this->showCancelModal = false;
+        $this->cancellingAppointmentId = null;
+        $this->cancellationReason = '';
+        $this->customCancellationReason = '';
+        $this->resetValidation();
     }
 
     // ===========================================

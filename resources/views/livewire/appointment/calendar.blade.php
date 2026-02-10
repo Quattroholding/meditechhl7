@@ -168,6 +168,13 @@
     <livewire:appointment.modal-save wire:model="showModal"
                                      :title="$modalTitle"/>
 
+    {{-- Modal de Cancelación --}}
+    <x-appointment.cancellation-modal
+        :show="$showCancelModal"
+        :cancellation-reason="$cancellationReason"
+        :custom-cancellation-reason="$customCancellationReason"
+    />
+
     @include('patients.modals.create',['name'=>'create_patient'])
 
     <!-- Modal de Configuración de Tiempo -->

@@ -37,6 +37,14 @@
     @else
         <button type="button" class="badge appointment-status-{{$status}}" >   {{ __('appointment.status.'.$status) }}  </button>
     @endif
+
+    {{-- Modal de Cancelación --}}
+    <x-appointment.cancellation-modal
+        :show="$showCancelModal"
+        :cancellation-reason="$cancellationReason"
+        :custom-cancellation-reason="$customCancellationReason"
+    />
+
     <script>
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('showToastr{{$appointment->id}}', (event) => {
