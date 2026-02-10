@@ -365,10 +365,10 @@ class PatientController extends Controller
                     'username' => $email,
                     'password' => $password,
                 ];
-                if ($request->has('email')) {
+                if ($request->has('email') && !config('mail.testing_mode')) {
                     Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 } else {
-                    Mail::to('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                    Mail::to(config('mail.testing_patient_email'))->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 }
 
             }
