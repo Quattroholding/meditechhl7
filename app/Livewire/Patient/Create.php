@@ -350,7 +350,13 @@ class Create extends Component
                 'password' => $this->password,
             ];
 
-            Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            if(config('mail.testing_mode')){
+                Mail::to(config('mail.testing_patient_email'))->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            }else{
+                Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
+            }
+
+
             //Mail::to($model->email)->bcc('atenorio@smartcarebilling.com')->send(new PatientWelcomeMail($patient,$client,$registrationData));
             //Mail::to('rgasperi@smartcarebilling.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
 

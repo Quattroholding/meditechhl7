@@ -154,6 +154,21 @@
         .btn:hover {
             transform: translateY(-2px);
         }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            display: inline-block;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.3s ease;
+        }
+        .btn-whatsapp:hover {
+            background: #20BA5A;
+            transform: translateY(-2px);
+        }
         @media (max-width: 600px) {
             .info-grid {
                 grid-template-columns: 1fr;
@@ -261,8 +276,9 @@
             </h3>
             <ul>
                 <li>Ingresar a nuestra plataforma con los datos de acceso suministrados</li>
-                <li>Acceder a su historia medica.</li>
-                <li>Agendar citas </li>
+                <li>Acceder a su historia médica</li>
+                <li><strong>💬 Agende sus citas fácilmente por WhatsApp</strong> - Contáctenos al <strong>+507 831-6172</strong> (agente automatizado disponible 24/7)</li>
+                <li>O agende citas directamente desde la plataforma web</li>
             </ul>
         </div>
 
@@ -299,11 +315,17 @@
 
         <!-- Botón de Acción -->
         <div style="text-align: center; margin: 30px 0;">
+            <!-- Botón WhatsApp - Agente Automatizado -->
+            <a href="https://wa.me/5078316172?text=Hola%2C%20deseo%20agendar%20una%20cita%20m%C3%A9dica" class="btn-whatsapp">
+                💬 Agendar por WhatsApp
+            </a>
+           {{--}}
             @if($clinicInfo['phone'])
                 <a href="tel:{{ $clinicInfo['phone'] }}" class="btn">
                     📞 Llamar para Agendar Cita
                 </a>
             @endif
+            {{--}}
             @if($clinicInfo['website'])
                 <a href="{{ $clinicInfo['website'] }}/login?username={{$registrationData['username']}}" class="btn" style="margin-left: 10px;">
                     🌐 Visitar Sitio Web

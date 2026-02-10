@@ -121,7 +121,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
             $message .= "\n📝 *Motivo de la cancelación:*\n{$this->cancellationReason}\n";
         }
 
-        $message .= "\n💡 Si desea reagendar su cita, puede hacerlo a través de nuestro sistema.\n";
+        $message .= "\n💡 Si desea reagendar su cita, puede hacerlo a través del chat de WhatsApp +507 831-6172.\n";
         $message .= "\nDisculpe las molestias ocasionadas.\n";
         $message .= "\nAtentamente,\n";
         $message .= "Equipo de {$clinicName} 🏥";
