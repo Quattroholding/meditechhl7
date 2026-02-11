@@ -10,7 +10,7 @@ class AppointmentStatus extends BaseModel
 
     public function appointment()
     {
-        return $this->belongsTo(Appoinment::class);
+        return $this->belongsTo(Appointment::class);
     }
 
     public function user()

@@ -120,14 +120,14 @@
                                     $appointmentTime = Carbon\Carbon::parse($appointment->start);
                                     $isPast = $appointmentTime->isPast();
                                     $ongoing = now()->isBetween(\Carbon\Carbon::parse($appointment->start),\Carbon\Carbon::parse($appointment->end));
-                                    $status = $appointment->status;
+                                    $status = $appointment->status->value;
                                     @endphp
                                     @if(!$ongoing)
 
-                                    <li class="{{ in_array($appointment->status, ['booked','confirm', 'arrived']) ? 'dropdown ' : ($isPast ? 'past-appointment' : 'stick-line') }}">
-                                        <i class="fas fa-circle me-2 {{ $appointment->status == 'fulfilled' ? 'active-circles' : '' }}"></i>
+                                    <li class="{{ in_array($appointment->status->value, ['booked','confirm', 'arrived']) ? 'dropdown ' : ($isPast ? 'past-appointment' : 'stick-line') }}">
+                                        <i class="fas fa-circle me-2 {{ $appointment->status->value == 'fulfilled' ? 'active-circles' : '' }}"></i>
                                         {{ \Carbon\Carbon::parse($time)->format('h:i') }}
-                                        <a href="" title="{{ !in_array($appointment->status, ['booked','confirm', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
+                                        <a href="" title="{{ !in_array($appointment->status->value, ['booked','confirm', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
                                            @can('patients.medical_history') data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight" @endcan>
                                             {{ $appointment->patient->name }}
                                         </a>
@@ -144,7 +144,7 @@
                                         </div>
                                     </li>
                                     @endif
-                                    @if (in_array($appointment->status, ['booked','confirm', 'arrived','checked-in']))
+                                    @if (in_array($appointment->status->value, ['booked','confirm', 'arrived','checked-in']))
                                         @if($ongoing)
                                         <a id="destino" class="dropdown-toggle active-doctor"  data-bs-toggle="dropdown">
                                             <i class="fas fa-circle me-2 active-circles"></i>
@@ -159,8 +159,8 @@
                                         <ul class="doctor-sub-list dropdown-menu">
                                             <li class="patient-new-list dropdown-item">
                                                 {{__('patient.title')}} : <button >{{ $appointment->patient->name }}</button>
-                                                <a href="javascript:;" class="new-dot badge appointment-status-{{$status}}">
-                                                     {{ __('appointment.status.'.$status) }}
+                                                <a href="javascript:;" class="new-dot {{$appointment->status->badgeClass()}}">
+                                                    {{$appointment->status->label()}}
                                                 </a>
                                             </li>
                                             <li class="dropdown-item">{{__('appointment.reason')}}

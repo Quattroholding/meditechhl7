@@ -41,7 +41,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-2">
                                 <div class="text-center">
-                                    <div class="badge appointment appointment-{{$appointment->status}} p-3 rounded-circle" style="position: relative" title="{{ __('appointment.status.' . $appointment->status) }}">
+                                    <div class="{{$appointment->status->badgeClass()}} p-3 rounded-circle" style="position: relative" title="{{  $appointment->status->label() }}">
                                         <i class="fas fa-calendar-day fa-lg"></i>
                                     </div>
                                     <div class="mt-2">
@@ -75,8 +75,8 @@
                             </div>
 
                             <div class="col-md-2">
-                                <span style="position: relative" class="appointment appointment-{{$appointment->status}} ">
-                                    {{ ucfirst(__('appointment.status.' . $appointment->status)) }}  &nbsp;
+                                <span style="position: relative" class="{{$appointment->status->badgeClass()}} ">
+                                    {{ $appointment->status->label() }}  &nbsp;
                                 </span>
 
                                 @if($appointment->service_type)

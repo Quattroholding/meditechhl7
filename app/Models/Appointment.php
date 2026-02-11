@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AppointmentStatusEnum;
 use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Scopes\AppointmentScope;
 use App\Notifications\AppointmentCancelledNotification;
@@ -36,6 +37,7 @@ class Appointment extends BaseModel
         'virtual_session_started_at' => 'datetime',
         'virtual_session_ended_at' => 'datetime',
         'virtual_session_metadata' => 'array',
+        'status'=>AppointmentStatusEnum::class,
     ];
 
     protected $appends = [
@@ -83,6 +85,11 @@ class Appointment extends BaseModel
     public function consultingRoom()
     {
         return $this->belongsTo(ConsultingRoom::class)->withDefault(['name' => 'N/A']);
+    }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(AppointmentStatus::class)->orderBy('created_at', 'desc');
     }
 
     /**
@@ -150,7 +157,7 @@ class Appointment extends BaseModel
             'no-show' => 'noshow',
         ];
 
-        return $statusMap[$this->status] ?? 'booked';
+        return $statusMap[$this->status->value] ?? 'booked';
     }
 
     // Mutador para calcular tiempos automáticamente

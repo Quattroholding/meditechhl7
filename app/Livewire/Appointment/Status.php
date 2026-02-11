@@ -32,9 +32,7 @@ class Status extends Component
     public function render()
     {
         $this->appointment = Appointment::find($this->appointment_id);
-        $this->status = $this->appointment->status;
-        $this->colors = $this->appointment::statusColors();
-        $this->color = $this->colors[$this->status];
+        $this->status = $this->appointment->status->value;
 
         return view('livewire.appointment.status', [
             'cancellationReasons' => AppointmentCancelledReason::toArray(),
@@ -159,7 +157,6 @@ class Status extends Component
     #[On('appointmentStatusChanged')]
     public function updateStatus($appointment_id, $new_status)
     {
-        dd('aqui');
         if ($appointment_id == $this->appointment_id) {
             $this->appointment = Appointment::find($this->appointment_id);
             $this->status = $new_status;

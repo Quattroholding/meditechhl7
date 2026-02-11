@@ -1,10 +1,10 @@
 <div style="display: inline-block" wire:poll.10s>
-    @if(in_array($appointment->status,['proposed','booked','confirm','arrived','fulfilled','pending','checked-in']) && auth()->user()->can('changeStatus',$appointment))
+    @if(auth()->user()->can('changeStatus',$appointment))
         <div class="btn-group" role="group">
             <button id="btngroupverticaldrop{{$appointment->id}}"
                     type="button" class="dropdown-toggle appointment-status-{{$status}}"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                {{ __('appointment.status.'.$status) }}
+                {{ $appointment->status->label() }}
             </button>
 
             <div class="dropdown-menu" aria-labelledby="btngroupverticaldrop{{$appointment->id}}" style="">
@@ -35,7 +35,7 @@
             </div>
         </div>
     @else
-        <button type="button" class="badge appointment-status-{{$status}}" >   {{ __('appointment.status.'.$status) }}  </button>
+        <button type="button" class="{{$appointment->status->badgeClass()}}" >     {{ $appointment->status->label() }} </button>
     @endif
 
     {{-- Modal de Cancelación --}}
@@ -54,7 +54,7 @@
                 positionClass: 'toast-top-right',
                 timeOut: 5000,
                 onHidden: function() {
-                    @if($appointment->status =='checked-in' && auth()->user()->hasRole('doctor'))
+                    @if($appointment->status->value =='checked-in' && auth()->user()->hasRole('doctor'))
                         window.location.href = '{{route('consultation.show',$appointment->id)}}'; // Replace with your desired URL
                     @endif
                 }

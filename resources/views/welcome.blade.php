@@ -26,7 +26,7 @@
             <a href="#productos">Productos</a>
             <a href="#mision">Misión</a>
             <a href="#vision">Visión</a>
-            <a href="#contacto">Contacto</a>
+            <a href="#contacto-form">Contacto</a>
         </nav>
 
         <a class="btn btn--green" href="#contacto-form">Contáctanos</a>
