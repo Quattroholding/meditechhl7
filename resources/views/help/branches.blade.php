@@ -696,7 +696,7 @@
                 left: 45%;
             }
 
-                .field-table {
+            .field-table {
                 border: 0;
                 box-shadow: none;
             }

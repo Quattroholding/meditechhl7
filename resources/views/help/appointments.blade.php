@@ -19,12 +19,93 @@
             --dark-text: #212529;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-text);
-        }
+ /* ========== SOLUCIÓN COMPLETA - BASADA EN BRANCHES ========== */
 
+html {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark-text);
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
+/* Contenedor principal con límites estrictos */
+.help-content {
+    margin-left: 280px;
+    padding: 30px;
+    min-height: 100vh;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* Corregir Bootstrap rows */
+    .help-content .row {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+    }
+
+    .help-content .row > [class*="col-"] {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Wrapper para tablas (como en Branches) */
+    .field-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin: 20px 0;
+    }
+
+    .field-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        /* QUITAR: display: block; */
+        /* QUITAR: overflow-x: auto; */
+    }
+
+/* Todas las imágenes responsivas */
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .content-section img,
+    .step-card img,
+    .info-box img {
+        max-width: 100%;
+        height: auto;
+    }
+
+/* Back to Top sin causar scroll */
+    .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #cc4700 0%, #e65100 100%);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 9999;
+    }
         /* Sidebar */
         .help-sidebar {
             position: fixed;
@@ -100,6 +181,8 @@
             margin-left: 280px;
             padding: 30px;
             min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100%;
         }
 
          /* Breadcrumb */
@@ -177,6 +260,8 @@
             padding: 30px;
             margin-bottom: 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .content-section h2 {
@@ -202,6 +287,10 @@
             font-weight: 600;
             margin-top: 20px;
             margin-bottom: 10px;
+        }
+        .content-section img {
+            max-width: 100%;
+            height: auto;
         }
 
         /* Table of Contents */
@@ -388,7 +477,9 @@
 
         /* Field Tables */
         .field-table {
-            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            display: block;
             border-collapse: collapse;
             margin: 15px 0;
         }
@@ -555,29 +646,49 @@
             color: #666;
         }
 
-        /* Back to top */
+ /* Back to Top */
         .back-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
             width: 50px;
             height: 50px;
-            background: #e65100;
-            color: white;
+            background: linear-gradient(135deg, #cc4700 0%, #e65100  100%);
+            color: #fff;
+            border: none;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
+            cursor: pointer;
             box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
             transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 9999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         .back-to-top:hover {
-            background: #bf360c;
-            color: white;
-            transform: translateY(-3px);
+            transform: translateY(-5px);
         }
+
+
+        .yappy-img{
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .yappy-imgsize{width: 276px; height: 593px; }
+
+                @media print {
+            .back-to-top {
+                display: none;
+            }}
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -591,6 +702,113 @@
                 margin-left: 0;
             }
         }
+
+        @media (max-width: 768px) {
+            .help-content {
+                padding: 15px;
+            }
+            
+            .back-to-top {
+                right: 15px;
+                bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+        .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+         .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #e65100;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #e65100;
+            }
+            
+            .field-table td[data-label="Estado"] {
+                background: #e65100;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #e65100;
+            }
+
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Requerido"]:before {
+                font-weight: 600;
+                color: #e65100;
+                margin-right: 5px;
+            }
+            .field-table td[data-label="Acciones Disponibles"]:before {
+                content: "Acciones Disponibles: ";
+                font-weight: 600;
+                color: #e65100;
+                margin-right: 5px;
+            }
+
+        }
+
     </style>
 </head>
 <body>
@@ -776,68 +994,69 @@
             <div class="step-card">
                 <h4><span class="step-number">3</span><span class="step-title">Completar Formulario de Cita</span></h4>
                 <p>Se abrirá el modal de creación de cita. Complete los siguientes campos:</p>
-
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                            <th>Requerido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Paciente</strong></td>
-                            <td>Busque y seleccione el paciente por nombre o documento de identidad</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Doctor</strong></td>
-                            <td>Seleccione el profesional de salud que atenderá la cita</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sucursal</strong></td>
-                            <td>Seleccione la sucursal donde se realizará la consulta</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Consultorio</strong></td>
-                            <td>Consultorio específico dentro de la sucursal seleccionada</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Fecha</strong></td>
-                            <td>Fecha programada para la cita</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Hora Inicio</strong></td>
-                            <td>Hora de inicio de la consulta</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Hora Fin</strong></td>
-                            <td>Hora estimada de finalización</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Tipo de Cita</strong></td>
-                            <td>Presencial o Virtual</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Motivo de Consulta</strong></td>
-                            <td>Descripción breve del motivo de la visita</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Notas</strong></td>
-                            <td>Información adicional o instrucciones especiales</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Requerido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Paciente</strong></td>
+                                <td data-label="Descripcion">Busque y seleccione el paciente por nombre o documento de identidad</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Doctor</strong></td>
+                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Sucursal</strong></td>
+                                <td data-label="Descripcion">Seleccione la sucursal donde se realizará la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Consultorio</strong></td>
+                                <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Fecha</strong></td>
+                                <td data-label="Descripcion">Fecha programada para la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Inicio</strong></td>
+                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Fin</strong></td>
+                                <td data-label="Descripcion">Hora estimada de finalización</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Cita</strong></td>
+                                <td data-label="Descripcion">Presencial o Virtual</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Motivo de Consulta</strong></td>
+                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Notas</strong></td>
+                                <td data-label="Descripcion">Información adicional o instrucciones especiales</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
             <div>
                 <img src="{{ asset('images/tutorial/appointments/appointment-modal.png') }}" alt="" style="width: 100%;">
@@ -1101,68 +1320,69 @@
             </div>
 
             <h3>Descripción de Estados</h3>
-
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Estado</th>
-                        <th>Descripción</th>
-                        <th>Acciones Disponibles</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="status-badge status-proposed">Propuesta</span></td>
-                        <td>Cita sugerida, pendiente de aceptación por el paciente</td>
-                        <td>Confirmar, Cancelar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-pending">Pendiente</span></td>
-                        <td>Cita creada, esperando confirmación</td>
-                        <td>Confirmar, Cancelar, Editar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-booked">Reservada</span></td>
-                        <td>Cita reservada en el sistema</td>
-                        <td>Confirmar, Cancelar, Editar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-confirm">Confirmada</span></td>
-                        <td>El paciente ha confirmado su asistencia</td>
-                        <td>Marcar llegada, Cancelar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-arrived">En Sala</span></td>
-                        <td>Paciente está en la sala de espera</td>
-                        <td>Iniciar consulta, No asistió</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-checked-in">En Consulta</span></td>
-                        <td>La consulta está en progreso</td>
-                        <td>Completar consulta</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-fulfilled">Completada</span></td>
-                        <td>La consulta ha finalizado exitosamente</td>
-                        <td>Ver detalles, Ver historia</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-cancelled">Cancelada</span></td>
-                        <td>La cita fue cancelada</td>
-                        <td>Ver motivo, Reagendar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-noshow">No Asistió</span></td>
-                        <td>El paciente no se presentó a la cita</td>
-                        <td>Reagendar, Contactar</td>
-                    </tr>
-                    <tr>
-                        <td><span class="status-badge status-waitlist">Lista de Espera</span></td>
-                        <td>Paciente en espera de disponibilidad</td>
-                        <td>Asignar horario, Cancelar</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Descripción</th>
+                            <th>Acciones Disponibles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-proposed">Propuesta</span></td>
+                            <td data-label="Descripcion">Cita sugerida, pendiente de aceptación por el paciente</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
+                            <td data-label="Descripcion">Cita creada, esperando confirmación</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-booked">Reservada</span></td>
+                            <td data-label="Descripcion">Cita reservada en el sistema</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-confirm">Confirmada</span></td>
+                            <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
+                            <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-arrived">En Sala</span></td>
+                            <td data-label="Descripcion">Paciente está en la sala de espera</td>
+                            <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-checked-in">En Consulta</span></td>
+                            <td data-label="Descripcion">La consulta está en progreso</td>
+                            <td data-label="Acciones Disponibles">Completar consulta</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-fulfilled">Completada</span></td>
+                            <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
+                            <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-cancelled">Cancelada</span></td>
+                            <td data-label="Descripcion">La cita fue cancelada</td>
+                            <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-noshow">No Asistió</span></td>
+                            <td data-label="Descripcion">El paciente no se presentó a la cita</td>
+                            <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="status-badge status-waitlist">Lista de Espera</span></td>
+                            <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
+                            <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
                         <div>
                 <img src="{{ asset('images/tutorial/appointments/appointment-status.png') }}" alt="" style="width: 100%;">
@@ -1294,8 +1514,8 @@
                 <li>El sistema enviará el mensaje al número registrado del paciente</li>
             </ol> -->
 
-            <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-wp.jpeg') }}" alt="" >
+            <div class="yappy-img">
+                <img class="yappy-imgsize" src="{{ asset('images/tutorial/appointments/appointment-wp.jpeg') }}" alt="" >
             </div>
 
             <h3>Mensajes Interactivos</h3>
@@ -1473,9 +1693,9 @@
     </main>
 
     <!-- Back to Top -->
-    <a href="#" class="back-to-top">
+    <button class="back-to-top" id="backToTop">
         <i class="fas fa-arrow-up"></i>
-    </a>
+    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1493,15 +1713,21 @@
             });
         });
 
-        // Back to top visibility
-        window.addEventListener('scroll', function() {
-            const backToTop = document.querySelector('.back-to-top');
+        // Back to Top functionality
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
-                backToTop.style.display = 'flex';
+                backToTop.classList.add('visible');
             } else {
-                backToTop.style.display = 'none';
+                backToTop.classList.remove('visible');
             }
         });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
     </script>
 </body>
 </html>

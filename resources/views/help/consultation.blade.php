@@ -325,6 +325,12 @@
         }
 
         /* Field Tables */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
         .field-table {
             width: 100%;
             border-collapse: collapse;
@@ -423,6 +429,132 @@
 
             .help-content {
                 margin-left: 0;
+            }
+        }
+
+        
+        @media (max-width: 480px) { 
+        .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #d32f2f;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3; 
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800; 
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50; 
+            }
+            
+            .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #d32f2f;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #c42121;
+            }
+            
+
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Unidad"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Unidad"]:before {
+                content: "Unidad: ";
+                font-weight: 600;
+                color: #d32f2f;
+                margin-right: 5px;
+            }
+
+        }
+
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5{
+                text-align: center;
             }
         }
     </style>
@@ -748,44 +880,44 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Presión Arterial</strong></td>
-                            <td>Sistólica / Diastólica</td>
-                            <td>mmHg</td>
+                            <td data-label="Campo"><strong>Presión Arterial</strong></td>
+                            <td data-label="Descripcion">Sistólica / Diastólica</td>
+                            <td data-label="Unidad">mmHg</td>
                         </tr>
                         <tr>
-                            <td><strong>Frecuencia Cardíaca</strong></td>
-                            <td>Pulsaciones por minuto</td>
-                            <td>lpm</td>
+                            <td data-label="Campo"><strong>Frecuencia Cardíaca</strong></td>
+                            <td data-label="Descripcion">Pulsaciones por minuto</td>
+                            <td data-label="Unidad">lpm</td>
                         </tr>
                         <tr>
-                            <td><strong>Temperatura</strong></td>
-                            <td>Temperatura corporal</td>
-                            <td>°C</td>
+                            <td data-label="Campo"><strong>Temperatura</strong></td>
+                            <td data-label="Descripcion">Temperatura corporal</td>
+                            <td data-label="Unidad">°C</td>
                         </tr>
                         <tr>
-                            <td><strong>Frecuencia Respiratoria</strong></td>
-                            <td>Respiraciones por minuto</td>
-                            <td>rpm</td>
+                            <td data-label="Campo"><strong>Frecuencia Respiratoria</strong></td>
+                            <td data-label="Descripcion">Respiraciones por minuto</td>
+                            <td data-label="Unidad">rpm</td>
                         </tr>
                         <tr>
-                            <td><strong>Saturación O₂</strong></td>
-                            <td>Saturación de oxígeno</td>
-                            <td>%</td>
+                            <td data-label="Campo"><strong>Saturación O₂</strong></td>
+                            <td data-label="Descripcion">Saturación de oxígeno</td>
+                            <td data-label="Unidad">%</td>
                         </tr>
                         <tr>
-                            <td><strong>Peso</strong></td>
-                            <td>Peso corporal</td>
-                            <td>kg</td>
+                            <td data-label="Campo"><strong>Peso</strong></td>
+                            <td data-label="Descripcion">Peso corporal</td>
+                            <td data-label="Unidad">kg</td>
                         </tr>
                         <tr>
-                            <td><strong>Talla</strong></td>
-                            <td>Altura</td>
-                            <td>cm</td>
+                            <td data-label="Campo"><strong>Talla</strong></td>
+                            <td data-label="Descripcion">Altura</td>
+                            <td data-label="Unidad">cm</td>
                         </tr>
                         <tr>
-                            <td><strong>IMC</strong></td>
-                            <td>Índice de Masa Corporal (calculado automáticamente)</td>
-                            <td>kg/m²</td>
+                            <td data-label="Campo"><strong>IMC</strong></td>
+                            <td data-label="Descripcion">Índice de Masa Corporal (calculado automáticamente)</td>
+                            <td data-label="Unidad">kg/m²</td>
                         </tr>
                     </tbody>
                 </table>
