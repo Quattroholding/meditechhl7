@@ -210,13 +210,17 @@ class ConsultationController extends Controller
                     $subtotal += $lineTotal;
                     $serviceCatalog = ServiceCatalog::find($chargeItem->service_catalog_id);
 
+                    // Ensure we have a valid service description
+                    $serviceDescription = $serviceCatalog?->description ?? $chargeItem->definition ?? 'Servicio médico';
+                    $serviceCode = $serviceCatalog?->code ?? 'N/A';
+
                     InvoiceLineItem::create([
                         'invoice_id' => $invoice->id,
                         'charge_item_id' => $chargeItem->id,
                         'sequence' => $lineItemNumber++,
-                        'service_description' => $serviceCatalog->description,
+                        'service_description' => $serviceDescription,
                         'cpt_code' => $chargeItem->cpt_code,
-                        'service_code' => $serviceCatalog->code,
+                        'service_code' => $serviceCode,
                         'quantity' => $chargeItem->quantity,
                         'unit_price' => $chargeItem->unit_price_value,
                         'line_total_gross' => $lineTotal,

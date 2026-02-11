@@ -35,6 +35,7 @@ return [
     'onset_date' => 'Fecha',
     'severity' => 'Gravedad',
     'location' => 'Ubicación',
+    'locations' => 'Ubicacion(es)',
     'duration' => 'Duración',
     'timing' => 'Momento',
     'aggravating_factors' => 'Factores agravantes',

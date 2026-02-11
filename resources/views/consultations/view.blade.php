@@ -166,13 +166,13 @@
                                     <div class="card">
                                         <div class="card-body">
                                                 <dl class="dl-horizontal">
-                                                    <dt>{{ __('encounter.location') }}</dt>
+                                                    <dt>{{ __('encounter.locations') }}</dt>
                                                     <dd>
-                                                        @if(isset(json_decode($encounter->presentIllnesses)->location) && json_decode($encounter->presentIllnesses->location))
-                                                            @foreach(json_decode($encounter->presentIllnesses->location) as $v)
-                                                               {{$v[0]}}
+                                                        @if(count($encounter->presentIllnesses->locations)>1)
+                                                            @foreach($encounter->presentIllnesses->locations as $v)
+                                                                    {{__('present_illness.'.$v)}} <br/>
                                                             @endforeach
-                                                        @else
+                                                        @elseif($encounter->presentIllnesses->location)
                                                             {{__('present_illness.'.$encounter->presentIllnesses->location)}}
                                                         @endif
                                                     </dd>
