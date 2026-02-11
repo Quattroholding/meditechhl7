@@ -325,6 +325,11 @@
         }
 
         /* Field Tables */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
         .field-table {
             width: 100%;
             border-collapse: collapse;
@@ -417,6 +422,142 @@
 
             .help-content {
                 margin-left: 0;
+            }
+        }
+
+         @media (max-width: 480px) { 
+            .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #1565c0;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3; 
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800; 
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50; 
+            }
+            .info-box.danger {
+                border-left: none;
+                border-bottom-color: #f44336; 
+            }
+            
+            .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"] {
+                background: #1565c0;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #145cae;
+            }
+            
+
+            .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+           .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"]  {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            ..field-table td[data-label="Requerido"]{
+                font-weight: 600;
+                color: #1565c0
+            }
+            
+            /*.field-table td[data-label="Requerido"]:before {
+                content: "Valor por defecto: ";
+                font-weight: 600;
+                color: #1565c0;
+                margin-right: 5px;
+            }*/
+
+        }
+
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4, .help-header h1{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5, .toc-card h5, .content-section h2{
+                text-align: center;
             }
         }
     </style>
@@ -555,42 +696,44 @@
                 <h4><span class="step-number">3</span><span class="step-title">Completar Información del Pago</span></h4>
                 <p>Complete el formulario de registro de pago:</p>
 
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                            <th>Requerido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Monto</strong></td>
-                            <td>Cantidad pagada por el paciente</td>
-                            <td>Sí</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Método de Pago</strong></td>
-                            <td>Forma en que se recibió el pago (efectivo, tarjeta, etc.)</td>
-                            <td>Sí</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Fecha de Pago</strong></td>
-                            <td>Fecha en que se recibió el pago</td>
-                            <td>Sí</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Número de Referencia</strong></td>
-                            <td>Número de transacción, cheque, autorización, etc.</td>
-                            <td>Opcional</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Notas</strong></td>
-                            <td>Información adicional sobre el pago</td>
-                            <td>Opcional</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Requerido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Monto</strong></td>
+                                <td data-label="Descripcion">Cantidad pagada por el paciente</td>
+                                <td data-label="Requerido">Sí</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Método de Pago</strong></td>
+                                <td data-label="Descripcion">Forma en que se recibió el pago (efectivo, tarjeta, etc.)</td>
+                                <td data-label="Requerido">Sí</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Fecha de Pago</strong></td>
+                                <td data-label="Descripcion">Fecha en que se recibió el pago</td>
+                                <td data-label="Requerido">Sí</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Número de Referencia</strong></td>
+                                <td data-label="Descripcion">Número de transacción, cheque, autorización, etc.</td>
+                                <td data-label="Requerido">Opcional</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Notas</strong></td>
+                                <td data-label="Descripcion">Información adicional sobre el pago</td>
+                                <td data-label="Requerido">Opcional</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="info-box warning">
                     <div class="info-box-title">

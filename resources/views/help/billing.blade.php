@@ -325,6 +325,11 @@
         }
 
         /* Field Tables */
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
         .field-table {
             width: 100%;
             border-collapse: collapse;
@@ -399,6 +404,139 @@
 
             .help-content {
                 margin-left: 0;
+            }
+        }
+
+    @media (max-width: 480px) { 
+        .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #2e7d32;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3; 
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800; 
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50; 
+            }
+            .info-box.danger {
+                border-left: none;
+                border-bottom-color: #f44336; 
+            }
+            
+            .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Estado"],  .field-table td[data-label="Campo"] {
+                background: #2e7d32;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #2e7931;
+            }
+            
+
+            .field-table td[data-label="Estado"] strong,  .field-table td[data-label="Campo"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Badge"], .field-table td[data-label="Valor"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Valor"]:before {
+                content: "Valor por defecto: ";
+                font-weight: 600;
+                color: #2e7d32;
+                margin-right: 5px;
+            }
+
+        }
+
+        
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5{
+                text-align: center;
             }
         }
     </style>
@@ -554,33 +692,34 @@
             <div class="step-card">
                 <h4><span class="step-number">3</span><span class="step-title">Configurar Cantidad y Precio</span></h4>
                 <p>Al seleccionar un servicio, puede personalizar:</p>
-
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                            <th>Valor por Defecto</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Cantidad</strong></td>
-                            <td>Número de unidades del servicio</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Precio Unitario</strong></td>
-                            <td>Precio por unidad (puede modificarse)</td>
-                            <td>Precio base del catálogo</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Notas</strong></td>
-                            <td>Información adicional sobre el servicio</td>
-                            <td>Vacío (opcional)</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Valor por Defecto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Cantidad</strong></td>
+                                <td data-label="Descripcion">Número de unidades del servicio</td>
+                                <td data-label="Valor">1</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Precio Unitario</strong></td>
+                                <td data-label="Descripcion">Precio por unidad (puede modificarse)</td>
+                                <td data-label="Valor">Precio base del catálogo</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Notas</strong></td>
+                                <td data-label="Descripcion">Información adicional sobre el servicio</td>
+                                <td data-label="Valor">Vacío (opcional)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="info-box warning">
                     <div class="info-box-title">
@@ -823,63 +962,65 @@
 
             <h3>Estados de Factura</h3>
             <p>Las facturas pueden tener los siguientes estados:</p>
-
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Estado</th>
-                        <th>Descripción</th>
-                        <th>Badge</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Issued</strong></td>
-                        <td>Factura emitida y activa</td>
-                        <td><span class="status-badge status-issued">Emitida</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Balanced</strong></td>
-                        <td>Factura completamente pagada y balanceada</td>
-                        <td><span class="status-badge status-balanced">Balanceada</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Cancelled</strong></td>
-                        <td>Factura cancelada o anulada</td>
-                        <td><span class="status-badge status-cancelled">Cancelada</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Descripción</th>
+                            <th>Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Estado"><strong>Issued</strong></td>
+                            <td data-label="Descripcion">Factura emitida y activa</td>
+                            <td data-label="Badge"><span class="status-badge status-issued">Emitida</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><strong>Balanced</strong></td>
+                            <td data-label="Descripcion">Factura completamente pagada y balanceada</td>
+                            <td data-label="Badge"><span class="status-badge status-balanced">Balanceada</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><strong>Cancelled</strong></td>
+                            <td data-label="Descripcion">Factura cancelada o anulada</td>
+                            <td data-label="Badge"><span class="status-badge status-cancelled">Cancelada</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <h3 class="mt-4">Estados de Pago</h3>
             <p>Independientemente del estado de la factura, el estado de pago indica cuánto se ha pagado:</p>
-
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Estado de Pago</th>
-                        <th>Descripción</th>
-                        <th>Badge</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Unpaid</strong></td>
-                        <td>No se ha registrado ningún pago</td>
-                        <td><span class="status-badge status-unpaid">No Pagada</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Partially Paid</strong></td>
-                        <td>Se ha pagado parte del monto total</td>
-                        <td><span class="status-badge status-partially-paid">Pago Parcial</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Paid</strong></td>
-                        <td>Monto total pagado completamente</td>
-                        <td><span class="status-badge status-paid">Pagada</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Estado de Pago</th>
+                            <th>Descripción</th>
+                            <th>Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Estado"><strong>Unpaid</strong></td>
+                            <td data-label="Descripcion">No se ha registrado ningún pago</td>
+                            <td data-label="Badge"><span class="status-badge status-unpaid">No Pagada</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><strong>Partially Paid</strong></td>
+                            <td data-label="Descripcion">Se ha pagado parte del monto total</td>
+                            <td data-label="Badge"><span class="status-badge status-partially-paid">Pago Parcial</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><strong>Paid</strong></td>
+                            <td data-label="Descripcion">Monto total pagado completamente</td>
+                            <td data-label="Badge"><span class="status-badge status-paid">Pagada</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="info-box note">
                 <div class="info-box-title">
