@@ -100,15 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('referral.code.pdf');
 });
 
-Route::get('/login', function () {
-
-    if (auth()->check()) {
-        return redirect(route('appointment.calendar'));
-    }
-
-    return view('Pages/login');
-
-})->name('login');
+Route::get('/login', [LoginController::class, 'login'])->name('login');
 
 Route::get('/forgot-password', function () {
     return view('Pages/forgot-password');

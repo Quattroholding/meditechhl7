@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
+
+    public function login(){
+
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            return $this->redirectLoginByRole($user);
+        }
+
+        return view('Pages/login');
+    }
     /**
      * Handle an authentication attempt.
      */
@@ -19,6 +30,9 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        // Obtener el valor del checkbox "remember me"
+        $remember = $request->boolean('remember_me');
 
         // Validar Turnstile solo en producción (excepto cuando viene de force_login)
         if (config('app.env') === 'production' && ! $request->has('force_login')) {
@@ -31,7 +45,7 @@ class LoginController extends Controller
             }
         }
 
-        if (Auth::attempt(array_merge($credentials, ['active' => 1]))) {
+        if (Auth::attempt(array_merge($credentials, ['active' => 1]), $remember)) {
             $user = Auth::user();
 
             // Verificar si el usuario tiene sesiones activas en otros dispositivos
@@ -83,29 +97,8 @@ class LoginController extends Controller
                 return redirect()->route('first-login.show');
             }
 
-            $route = route('admin.dashboard');
-            if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
-                $route = route('doctor.dashboard');
-            }
-            if ($user->hasRole('paciente')) {
-                $route = route('patient.dashboard');
-            }
-            if ($user->hasRole('recepcionista')) {
-                $route = route('assistence.dashboard');
-            }
-            if ($user->hasRole('admin client')) {
-                $route = route('client.dashboard');
-            }
+            return $this->redirectLoginByRole($user);
 
-            if ($user->hasRole('contabilidad')) {
-                $route = route('accounting.dashboard');
-            }
-
-            if ($user->hasRole('validador')) {
-                $route = route('user.pending-validations');
-            }
-
-            return redirect()->intended($route.'?show_salute=true');
         }
 
         // Verificar si el usuario existe pero está inactivo
@@ -201,5 +194,32 @@ class LoginController extends Controller
 
         return redirect()->route('login')
             ->with('info', 'Inicio de sesión cancelado. Por favor, cierre su sesión anterior primero.');
+    }
+
+    public function redirectLoginByRole($user)
+    {
+        $route = route('admin.dashboard');
+        if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
+            $route = route('doctor.dashboard');
+        }
+        if ($user->hasRole('paciente')) {
+            $route = route('patient.dashboard');
+        }
+        if ($user->hasRole('recepcionista')) {
+            $route = route('assistence.dashboard');
+        }
+        if ($user->hasRole('admin client')) {
+            $route = route('client.dashboard');
+        }
+
+        if ($user->hasRole('contabilidad')) {
+            $route = route('accounting.dashboard');
+        }
+
+        if ($user->hasRole('validador')) {
+            $route = route('user.pending-validations');
+        }
+
+        return redirect()->intended($route.'?show_salute=true');
     }
 }
