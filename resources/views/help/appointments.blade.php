@@ -56,7 +56,6 @@ body {
         padding-right: 15px;
     }
 
-    /* Wrapper para tablas (como en Branches) */
     .field-table-wrapper {
         width: 100%;
         overflow-x: auto;
@@ -715,6 +714,29 @@ body {
         }
 
         @media (max-width: 480px) {
+        .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #e65100;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3; 
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800; 
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50; 
+            }
+            .info-box.danger {
+                border-left: none;
+                border-bottom-color: #f44336; 
+            }
         .yappy-imgsize{
                 width: 100%;
                 height: auto;
@@ -754,7 +776,7 @@ body {
             }
             
             /* Campo (título de cada tarjeta) */
-            .field-table td[data-label="Campo"] {
+            .field-table td[data-label="Campo"], .field-table td[data-label="Columna"], .field-table td[data-label="Color"], .field-table td[data-label="Estado"]  {
                 background: #e65100;
                 color: white;
                 font-size: 15px;
@@ -762,15 +784,8 @@ body {
                 border-bottom: 2px solid #e65100;
             }
             
-            .field-table td[data-label="Estado"] {
-                background: #e65100;
-                color: white;
-                font-size: 15px;
-                padding: 12px;
-                border-bottom: 2px solid #e65100;
-            }
 
-            .field-table td[data-label="Campo"] strong {
+            .field-table td[data-label="Campo"] strong,  .field-table td[data-label="Columna"] strong, .field-table td[data-label="Color"] strong {
                 color: white;
             }
             
@@ -808,6 +823,37 @@ body {
             }
 
         }
+        
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5{
+                text-align: center;
+            }
+        }
+        
 
     </style>
 </head>
@@ -1196,36 +1242,38 @@ body {
 
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <table class="field-table">
-                        <thead>
-                            <tr>
-                                <th>Color</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#ffc107;border-radius:4px;"></span></td>
-                                <td>Pendiente</td>
-                            </tr>
-                            <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#2196f3;border-radius:4px;"></span></td>
-                                <td>Reservada</td>
-                            </tr>
-                            <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#4caf50;border-radius:4px;"></span></td>
-                                <td>Confirmada</td>
-                            </tr>
-                            <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#9c27b0;border-radius:4px;"></span></td>
-                                <td>En Sala de Espera</td>
-                            </tr>
-                            <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#00bcd4;border-radius:4px;"></span></td>
-                                <td>En Consulta</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ffc107;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Pendiente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#2196f3;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Reservada</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#4caf50;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Confirmada</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#9c27b0;border-radius:4px;"></span></td>
+                                    <td data-label="Status">En Sala de Espera</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#00bcd4;border-radius:4px;"></span></td>
+                                    <td data-label="Status">En Consulta</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <table class="field-table">
@@ -1237,24 +1285,24 @@ body {
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#8bc34a;border-radius:4px;"></span></td>
-                                <td>Completada</td>
+                                <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#8bc34a;border-radius:4px;"></span></td>
+                                <td data-label="Status">Completada</td>
                             </tr>
                             <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#f44336;border-radius:4px;"></span></td>
-                                <td>Cancelada</td>
+                                <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#f44336;border-radius:4px;"></span></td>
+                                <td data-label="Status">Cancelada</td>
                             </tr>
                             <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#ff5722;border-radius:4px;"></span></td>
-                                <td>No Asistió</td>
+                                <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ff5722;border-radius:4px;"></span></td>
+                                <td data-label="Status">No Asistió</td>
                             </tr>
                             <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#ff9800;border-radius:4px;"></span></td>
-                                <td>Lista de Espera</td>
+                                <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ff9800;border-radius:4px;"></span></td>
+                                <td data-label="Status">Lista de Espera</td>
                             </tr>
                             <tr>
-                                <td><span style="display:inline-block;width:20px;height:20px;background:#9e9e9e;border-radius:4px;"></span></td>
-                                <td>Propuesta</td>
+                                <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#9e9e9e;border-radius:4px;"></span></td>
+                                <td data-label="Status">Propuesta</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1321,67 +1369,69 @@ body {
 
             <h3>Descripción de Estados</h3>
             <div class="field-table-wrapper">
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Estado</th>
-                            <th>Descripción</th>
-                            <th>Acciones Disponibles</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-proposed">Propuesta</span></td>
-                            <td data-label="Descripcion">Cita sugerida, pendiente de aceptación por el paciente</td>
-                            <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
-                            <td data-label="Descripcion">Cita creada, esperando confirmación</td>
-                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-booked">Reservada</span></td>
-                            <td data-label="Descripcion">Cita reservada en el sistema</td>
-                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-confirm">Confirmada</span></td>
-                            <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
-                            <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-arrived">En Sala</span></td>
-                            <td data-label="Descripcion">Paciente está en la sala de espera</td>
-                            <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-checked-in">En Consulta</span></td>
-                            <td data-label="Descripcion">La consulta está en progreso</td>
-                            <td data-label="Acciones Disponibles">Completar consulta</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-fulfilled">Completada</span></td>
-                            <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
-                            <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-cancelled">Cancelada</span></td>
-                            <td data-label="Descripcion">La cita fue cancelada</td>
-                            <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-noshow">No Asistió</span></td>
-                            <td data-label="Descripcion">El paciente no se presentó a la cita</td>
-                            <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Estado"><span class="status-badge status-waitlist">Lista de Espera</span></td>
-                            <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
-                            <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Descripción</th>
+                                <th>Acciones Disponibles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-proposed">Propuesta</span></td>
+                                <td data-label="Descripcion">Cita sugerida, pendiente de aceptación por el paciente</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
+                                <td data-label="Descripcion">Cita creada, esperando confirmación</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-booked">Reservada</span></td>
+                                <td data-label="Descripcion">Cita reservada en el sistema</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-confirm">Confirmada</span></td>
+                                <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
+                                <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-arrived">En Sala</span></td>
+                                <td data-label="Descripcion">Paciente está en la sala de espera</td>
+                                <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-checked-in">En Consulta</span></td>
+                                <td data-label="Descripcion">La consulta está en progreso</td>
+                                <td data-label="Acciones Disponibles">Completar consulta</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-fulfilled">Completada</span></td>
+                                <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
+                                <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-cancelled">Cancelada</span></td>
+                                <td data-label="Descripcion">La cita fue cancelada</td>
+                                <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-noshow">No Asistió</span></td>
+                                <td data-label="Descripcion">El paciente no se presentó a la cita</td>
+                                <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="status-badge status-waitlist">Lista de Espera</span></td>
+                                <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
+                                <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
                         <div>
@@ -1558,44 +1608,46 @@ body {
             </div>
 
             <h3>Columnas del Listado</h3>
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Columna</th>
-                        <th>Descripción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Paciente</strong></td>
-                        <td>Nombre completo y documento del paciente</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Doctor</strong></td>
-                        <td>Profesional asignado a la cita</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Fecha/Hora</strong></td>
-                        <td>Fecha y hora programada</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Sucursal</strong></td>
-                        <td>Ubicación de la consulta</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tipo</strong></td>
-                        <td>Presencial o Virtual</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Estado</strong></td>
-                        <td>Estado actual de la cita</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Acciones</strong></td>
-                        <td>Botones para ver, editar, cambiar estado</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Columna</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Columna"><strong>Paciente</strong></td>
+                            <td data-label="Descripcion">Nombre completo y documento del paciente</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Doctor</strong></td>
+                            <td data-label="Descripcion">Profesional asignado a la cita</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Fecha/Hora</strong></td>
+                            <td data-label="Descripcion">Fecha y hora programada</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Sucursal</strong></td>
+                            <td data-label="Descripcion">Ubicación de la consulta</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Tipo</strong></td>
+                            <td data-label="Descripcion">Presencial o Virtual</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Estado</strong></td>
+                            <td data-label="Descripcion">Estado actual de la cita</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Acciones</strong></td>
+                            <td data-label="Descripcion">Botones para ver, editar, cambiar estado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <!-- Section 9: Tips -->

@@ -492,22 +492,39 @@
             right: 30px;
             width: 50px;
             height: 50px;
-            background: #5e35b1;
+            background: linear-gradient(135deg, #522c9f 0%, #5e35b1  100%);
             color: white;
             border-radius: 50%;
             display: flex;
+            border: none;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(94, 53, 177, 0.4);
             transition: all 0.3s ease;
+            opacity: 0;
+            cursor: pointer;
+            visibility: hidden;
+            z-index: 9999;
         }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
 
         .back-to-top:hover {
             background: #4527a0;
             color: white;
             transform: translateY(-3px);
         }
+
+        
+        @media print {
+            .back-to-top {
+                display: none;
+            }}
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -523,6 +540,151 @@
 
             .transfer-container {
                 flex-direction: column;
+            }
+        }
+
+                @media (max-width: 768px) {
+            .help-content {
+                padding: 15px;
+            }
+            
+            .back-to-top {
+                right: 15px;
+                bottom: 15px;
+            }
+        }
+
+        
+    @media (max-width: 480px) { 
+        .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #5e35b1;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3; 
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800; 
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50; 
+            }
+            .info-box.danger {
+                border-left: none;
+                border-bottom-color: #f44336; 
+            }
+            
+            .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+            
+            .field-table thead {
+                display: none;
+            }
+            
+            .field-table tbody {
+                display: block;
+            }
+            
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+            
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+            
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Seccion"],  .field-table td[data-label="Campo"], .field-table td[data-label="Funcionalidad"] {
+                background: #5e35b1;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #552fa1;
+            }
+            
+
+            .field-table td[data-label="Seccion"] strong,  .field-table td[data-label="Campo"] strong, .field-table td[data-label="Funcionalidad"] strong {
+                color: white;
+            }
+            
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+            
+            /* Requerido */
+            .field-table td[data-label="Validacion"], .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+            
+            .field-table td[data-label="Valor"]:before {
+                content: "Valor por defecto: ";
+                font-weight: 600;
+                color: #5e35b1;
+                margin-right: 5px;
+            }
+
+        }
+
+        
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5{
+                text-align: center;
             }
         }
     </style>
@@ -694,58 +856,59 @@
             <div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Completar Informacion del Servicio</span></h4>
                 <p>Una vez seleccionado el codigo CPT, complete los campos adicionales:</p>
-
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripcion</th>
-                            <th>Requerido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Codigo CPT</strong></td>
-                            <td>Codigo seleccionado del buscador</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Precio</strong></td>
-                            <td>Precio base del servicio en la moneda configurada</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Complejidad</strong></td>
-                            <td>Nivel de complejidad: Baja, Media o Alta</td>
-                            <td><span class="required-badge">Requerido</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Especialidad</strong></td>
-                            <td>Especialidad medica asociada</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Duracion (min)</strong></td>
-                            <td>Tiempo estimado del procedimiento</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Copago</strong></td>
-                            <td>Monto de copago para pacientes con seguro</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Requiere Autorizacion</strong></td>
-                            <td>Indica si requiere autorizacion previa del seguro</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Cubierto por Seguro</strong></td>
-                            <td>Indica si el servicio esta cubierto por seguros</td>
-                            <td><span class="optional-badge">Opcional</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripcion</th>
+                                <th>Requerido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Codigo CPT</strong></td>
+                                <td data-label="Descripcion">Codigo seleccionado del buscador</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Precio</strong></td>
+                                <td data-label="Descripcion">Precio base del servicio en la moneda configurada</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Complejidad</strong></td>
+                                <td data-label="Descripcion">Nivel de complejidad: Baja, Media o Alta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Especialidad</strong></td>
+                                <td data-label="Descripcion">Especialidad medica asociada</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Duracion (min)</strong></td>
+                                <td data-label="Descripcion">Tiempo estimado del procedimiento</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Copago</strong></td>
+                                <td data-label="Descripcion">Monto de copago para pacientes con seguro</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Requiere Autorizacion</strong></td>
+                                <td data-label="Descripcion">Indica si requiere autorizacion previa del seguro</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Cubierto por Seguro</strong></td>
+                                <td data-label="Descripcion">Indica si el servicio esta cubierto por seguros</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="step-card">
@@ -760,48 +923,49 @@
 
             <h3>Crear un Servicio Personalizado</h3>
             <p>Para servicios que no tienen codigo CPT:</p>
-
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Campo</th>
-                        <th>Descripcion</th>
-                        <th>Requerido</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Nombre</strong></td>
-                        <td>Nombre descriptivo del servicio (max 255 caracteres)</td>
-                        <td><span class="required-badge">Requerido</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Descripcion</strong></td>
-                        <td>Descripcion detallada del servicio</td>
-                        <td><span class="optional-badge">Opcional</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tipo de Servicio</strong></td>
-                        <td>Categoria del servicio</td>
-                        <td><span class="required-badge">Requerido</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Precio</strong></td>
-                        <td>Precio base del servicio</td>
-                        <td><span class="required-badge">Requerido</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Complejidad</strong></td>
-                        <td>Nivel: Baja, Media o Alta</td>
-                        <td><span class="required-badge">Requerido</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Codigo de Ingreso</strong></td>
-                        <td>Codigo contable para facturacion</td>
-                        <td><span class="optional-badge">Opcional</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripcion</th>
+                            <th>Requerido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Nombre</strong></td>
+                            <td data-label="Descripcion">Nombre descriptivo del servicio (max 255 caracteres)</td>
+                            <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Descripcion</strong></td>
+                            <td data-label="Descripcion">Descripcion detallada del servicio</td>
+                            <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
+                            <td data-label="Descripcion">Categoria del servicio</td>
+                            <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Precio</strong></td>
+                            <td data-label="Descripcion">Precio base del servicio</td>
+                            <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Complejidad</strong></td>
+                            <td data-label="Descripcion">Nivel: Baja, Media o Alta</td>
+                            <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Codigo de Ingreso</strong></td>
+                            <td data-label="Descripcion">Codigo contable para facturacion</td>
+                            <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <h4>Tipos de Servicio Disponibles</h4>
             <div class="row">
@@ -909,43 +1073,44 @@
                     <li>Defina la <strong>Hora de Inicio</strong> (formato HH:MM)</li>
                     <li>Defina la <strong>Hora de Fin</strong> (debe ser posterior al inicio)</li>
                 </ol>
-
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripcion</th>
-                            <th>Validacion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Habilitar</strong></td>
-                            <td>Activa el horario para este dia</td>
-                            <td>Checkbox</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sucursal</strong></td>
-                            <td>Ubicacion de atencion</td>
-                            <td>Requerido si habilitado</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Consultorio</strong></td>
-                            <td>Consultorio dentro de la sucursal</td>
-                            <td>Requerido si habilitado</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Hora Inicio</strong></td>
-                            <td>Hora de inicio de atencion</td>
-                            <td>Formato HH:MM, default 08:00</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Hora Fin</strong></td>
-                            <td>Hora de fin de atencion</td>
-                            <td>Debe ser mayor que inicio, default 18:00</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripcion</th>
+                                <th>Validacion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Habilitar</strong></td>
+                                <td data-label="Descripcion">Activa el horario para este dia</td>
+                                <td data-label="Validacion">Checkbox</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Sucursal</strong></td>
+                                <td data-label="Descripcion">Ubicacion de atencion</td>
+                                <td data-label="Validacion">Requerido si habilitado</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Consultorio</strong></td>
+                                <td data-label="Descripcion">Consultorio dentro de la sucursal</td>
+                                <td data-label="Validacion">Requerido si habilitado</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Inicio</strong></td>
+                                <td data-label="Descripcion">Hora de inicio de atencion</td>
+                                <td data-label="Validacion">Formato HH:MM, default 08:00</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Fin</strong></td>
+                                <td data-label="Descripcion">Hora de fin de atencion</td>
+                                <td data-label="Validacion">Debe ser mayor que inicio, default 18:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="step-card">
@@ -1129,76 +1294,81 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <table class="field-table">
-                        <thead>
-                            <tr>
-                                <th>Seccion</th>
-                                <th>Descripcion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Signos Vitales</strong></td>
-                                <td>Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Examen Fisico</strong></td>
-                                <td>Hallazgos del examen fisico por sistemas</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Condiciones</strong></td>
-                                <td>Diagnosticos y condiciones del paciente</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Enfermedad Actual</strong></td>
-                                <td>Descripcion de la enfermedad presente</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Prescripciones</strong></td>
-                                <td>Medicamentos recetados</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Ordenes Medicas</strong></td>
-                                <td>Laboratorios, imagenes y procedimientos</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Seccion</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Signos Vitales</strong></td>
+                                    <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Examen Fisico</strong></td>
+                                    <td data-label="Descripcion">Hallazgos del examen fisico por sistemas</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Condiciones</strong></td>
+                                    <td data-label="Descripcion">Diagnosticos y condiciones del paciente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
+                                    <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Prescripciones</strong></td>
+                                    <td data-label="Descripcion">Medicamentos recetados</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Ordenes Medicas</strong></td>
+                                    <td data-label="Descripcion">Laboratorios, imagenes y procedimientos</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
                 <div class="col-md-6">
-                    <table class="field-table">
-                        <thead>
-                            <tr>
-                                <th>Seccion</th>
-                                <th>Descripcion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Antecedentes</strong></td>
-                                <td>Historial medico del paciente</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Notas Medicas</strong></td>
-                                <td>Notas clinicas generales</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Notas Personales</strong></td>
-                                <td>Notas privadas del medico</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Licencias Medicas</strong></td>
-                                <td>Incapacidades y justificantes</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Plan</strong></td>
-                                <td>Plan de tratamiento y seguimiento</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Especialidad</strong></td>
-                                <td>Secciones especificas de su especialidad</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Seccion</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Antecedentes</strong></td>
+                                    <td data-label="Descripcion">Historial medico del paciente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Notas Medicas</strong></td>
+                                    <td data-label="Descripcion">Notas clinicas generales</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Notas Personales</strong></td>
+                                    <td data-label="Descripcion">Notas privadas del medico</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Licencias Medicas</strong></td>
+                                    <td data-label="Descripcion">Incapacidades y justificantes</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Plan</strong></td>
+                                    <td data-label="Descripcion">Plan de tratamiento y seguimiento</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Especialidad</strong></td>
+                                    <td data-label="Descripcion">Secciones especificas de su especialidad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1339,37 +1509,39 @@
             </div>
 
             <h3>Resumen de Permisos</h3>
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Funcionalidad</th>
-                        <th>Permiso Requerido</th>
-                        <th>Descripcion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Catalogo de Servicios</strong></td>
-                        <td><code>settings.create_user_procedures</code></td>
-                        <td>Crear y gestionar servicios</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Horarios Laborales</strong></td>
-                        <td><code>settings.create_working_hour_user</code></td>
-                        <td>Configurar horarios de trabajo</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Accesos Rapidos</strong></td>
-                        <td><code>settings.create_rapid_access</code></td>
-                        <td>Configurar accesos rapidos</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Plantilla de Consulta</strong></td>
-                        <td><code>settings.create_consultation_template</code></td>
-                        <td>Personalizar secciones de consulta</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Funcionalidad</th>
+                            <th>Permiso Requerido</th>
+                            <th>Descripcion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Catalogo de Servicios</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_user_procedures</code></td>-->
+                            <td data-label="Descripcion">Crear y gestionar servicios</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Horarios Laborales</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_working_hour_user</code></td>-->
+                            <td data-label="Descripcion">Configurar horarios de trabajo</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Accesos Rapidos</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_rapid_access</code></td>-->
+                            <td data-label="Descripcion">Configurar accesos rapidos</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Plantilla de Consulta</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_consultation_template</code></td>-->
+                            <td data-label="Descripcion">Personalizar secciones de consulta</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="info-box note mt-4">
                 <div class="info-box-title">
@@ -1395,9 +1567,10 @@
     </main>
 
     <!-- Back to Top -->
-    <a href="#" class="back-to-top">
+    <button class="back-to-top" id="backToTop">
         <i class="fas fa-arrow-up"></i>
-    </a>
+    </button>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1415,15 +1588,21 @@
             });
         });
 
-        // Back to top visibility
-        window.addEventListener('scroll', function() {
-            const backToTop = document.querySelector('.back-to-top');
+        // Back to Top functionality
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
-                backToTop.style.display = 'flex';
+                backToTop.classList.add('visible');
             } else {
-                backToTop.style.display = 'none';
+                backToTop.classList.remove('visible');
             }
         });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
     </script>
 </body>
 </html>
