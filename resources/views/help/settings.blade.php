@@ -325,6 +325,11 @@
         }
 
         /* Field Tables */
+        .field-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin: 20px 0;
+        }
         .field-table {
             width: 100%;
             border-collapse: collapse;
@@ -659,7 +664,7 @@
 
         
         @media (max-width: 365px){
-            .info-box-title, .content-section h4{
+            .info-box-title, .content-section h4, .help-header h1 {
                 display: flex;
                 flex-direction: column;
                 align-items: center;

@@ -84,27 +84,6 @@ body {
         height: auto;
     }
 
-/* Back to Top sin causar scroll */
-    .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #cc4700 0%, #e65100 100%);
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
-        transition: all 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 9999;
-    }
         /* Sidebar */
         .help-sidebar {
             position: fixed;
@@ -1369,7 +1348,6 @@ body {
 
             <h3>Descripción de Estados</h3>
             <div class="field-table-wrapper">
-                <div class="field-table-wrapper">
                     <table class="field-table">
                         <thead>
                             <tr>
@@ -1431,7 +1409,6 @@ body {
                             </tr>
                         </tbody>
                     </table>
-                </div>
             </div>
 
                         <div>
