@@ -13,7 +13,6 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
 <div>
     @if ($paginator->hasPages())
         <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between">
-
             <div class="flex justify-between flex-1 sm:hidden">
                 <span>
                     @if ($paginator->onFirstPage())
@@ -42,15 +41,14 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
 
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm text-gray-700 leading-5 dark:text-gray-400 p-3">
-                        <span>{!! __('pagination.Showing') !!}</span>
-                        <span>{!! __('pagination.to') !!}</span>
+                    <p class="text-sm text-gray-700 leading-5 dark:text-gray-400">
+                        <span>{!! __('Showing') !!}</span>
                         <span class="font-medium">{{ $paginator->firstItem() }}</span>
-                        <span>{!! __('pagination.al') !!}</span>
+                        <span>{!! __('to') !!}</span>
                         <span class="font-medium">{{ $paginator->lastItem() }}</span>
-                        <span>{!! __('pagination.of') !!}</span>
+                        <span>{!! __('of') !!}</span>
                         <span class="font-medium">{{ $paginator->total() }}</span>
-                        <span>{!! __('pagination.results') !!}</span>
+                        <span>{!! __('results') !!}</span>
                     </p>
                 </div>
 

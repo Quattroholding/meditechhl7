@@ -114,6 +114,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'settings.create_working_hour_user', 'description' => 'Configurar horario laboral', 'module' => 'configuracones'],
             ['name' => 'settings.signature_and_seal', 'description' => 'Configurar firma y sello digital de medico', 'module' => 'configuracones'],
             ['name' => 'settings.invoice_template', 'description' => 'Seleccionar plantilla de facturas', 'module' => 'configuracones'],
+            ['name' => 'settings.prescription_template', 'description' => 'Seleccionar plantilla de recetas medicas', 'module' => 'configuracones'],
 
             // Service Request
             ['name' => 'service_request.view', 'description' => 'Ver lista de Solicitud de Examenes', 'module' => 'examenes'],
@@ -215,6 +216,7 @@ class RolePermissionSeeder extends Seeder
             'settings.create_working_hour_user',
             'settings.signature_and_seal',
             'settings.invoice_template',
+            'settings.prescription_template',
             'service_request.view',
             'service_request.upload_result',
             'branches.view',

@@ -24,7 +24,7 @@
     }
 
     // Fallback: if no signature/seal from doctorProfile, try practitioner files
-    if(empty($signatureDataUri) && isset($practitioner) && $practitioner) {
+    if(empty($signatureDataUri) && isset($practitioner) && $practitioner && method_exists($practitioner, 'signature')) {
         // Get signature from practitioner files (table: files, type: signature)
         $signatureFile = $practitioner->signature();
         if($signatureFile && !empty($signatureFile->path)) {
@@ -36,7 +36,7 @@
         }
     }
 
-    if(empty($sealDataUri) && isset($practitioner) && $practitioner) {
+    if(empty($sealDataUri) && isset($practitioner) && $practitioner && method_exists($practitioner, 'seal')) {
         // Get seal from practitioner files (table: files, type: seal)
         $sealFile = $practitioner->seal();
         if($sealFile && !empty($sealFile->path)) {

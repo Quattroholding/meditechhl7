@@ -247,15 +247,15 @@ class SettingController extends Controller
 
         $medicalLeave = (object) [
             'identifier' => 'LM-20260128-JKQPIL',
-            'practitioner_name'=>'Dr Federico Fonseca',
-            'patient_name'=>'Rafael Gasperi',
-            'duration'=>'5',
-            'total_days'=>5,
-            'encounter'=>1,
+            'practitioner_name' => 'Dr Federico Fonseca',
+            'patient_name' => 'Rafael Gasperi',
+            'duration' => '5',
+            'total_days' => 5,
+            'encounter' => 1,
             'address' => 'Calle Principal #123, Ciudad de Panamá',
             'phone' => '+507 123-4567',
             'email' => 'info@clinicaejemplo.com',
-            'practitioner_license_number'=>'86578'
+            'practitioner_license_number' => '86578',
         ];
 
         // Create sample branch
@@ -329,8 +329,223 @@ class SettingController extends Controller
             ->with('issueDate', $issueDate)
             ->with('documentNumber', $documentNumber)
             ->with('isPreview', true)
-            ->with('firma','')
-            ->with('sello','')
-            ->with('logo','');
+            ->with('firma', '')
+            ->with('sello', '')
+            ->with('logo', '');
+    }
+
+    /**
+     * Selección de plantilla de prescripción médica
+     */
+    public function prescriptionTemplate()
+    {
+        $client = auth()->user()->getCurrentClient();
+
+        if (! $client) {
+            abort(403, 'No tiene un cliente asociado');
+        }
+
+        return view('settings.prescription-template');
+    }
+
+    /**
+     * Vista previa de plantilla de prescripción médica
+     */
+    public function prescriptionTemplatePreview($template)
+    {
+        // Validate template name
+        if (! preg_match('/^template_\d+$/', $template)) {
+            abort(404, 'Plantilla no encontrada');
+        }
+
+        // Create sample client
+        $client = (object) [
+            'name' => 'Clínica Ejemplo S.A.',
+            'address' => 'Calle Principal #123, Ciudad de Panamá',
+            'phone' => '+507 123-4567',
+            'email' => 'info@clinicaejemplo.com',
+            'whatsapp' => '+507 6234-5678',
+        ];
+
+        // Create sample branch with address
+        $branch = (object) [
+            'name' => 'Clínica Ejemplo S.A.',
+            'address' => 'Calle Principal #123, Ciudad de Panamá',
+            'phone' => '+507 123-4567',
+            'email' => 'info@clinicaejemplo.com',
+        ];
+
+        // Create sample consulting room
+        $consultingRoom = (object) [
+            'name' => 'Consultorio 1',
+            'branch' => $branch,
+        ];
+
+        // Create sample medical speciality
+        $medicalSpeciality = (object) [
+            'name' => 'Medicina General',
+        ];
+
+        // Create sample appointment
+        $appointment = (object) [
+            'consultingRoom' => $consultingRoom,
+            'client' => $client,
+            'medicalSpeciality' => $medicalSpeciality,
+        ];
+
+        // Create sample encounter
+        $encounter = (object) [
+            'identifier' => 'ENC-2026-0001',
+            'start' => now()->subDays(7),
+            'end' => now()->subDays(7)->addHour(),
+            'appointment' => $appointment,
+            'status' => 'finished',
+            'created_at' => now()->subDays(7),
+        ];
+
+        // Create sample patient
+        $patient = (object) [
+            'name' => 'Juan Pérez García',
+            'identifier' => '8-123-456',
+            'identifier_type' => 'CEDULA',
+            'email' => 'juan.perez@example.com',
+            'phone' => '+507 6234-5678',
+            'address' => 'Avenida Central, Ciudad de Panamá',
+            'birth_date' => '1985-05-15',
+            'age' => 40,
+        ];
+
+        // Create sample practitioner (doctor)
+        $practitioner = (object) [
+            'name' => 'Dr. María González',
+            'license_number' => 'MED-12345',
+            'registry' => 'MED-12345',
+            'specialty' => 'Medicina General',
+            'email' => 'dra.gonzalez@clinicaejemplo.com',
+            'phone' => '+507 123-4567 ext. 101',
+        ];
+
+        // Create sample diagnoses
+        $diagnoses = collect([
+            (object) [
+                'code' => 'J06.9',
+                'display' => 'Infección aguda de las vías respiratorias superiores',
+                'note' => null,
+                'condition' => (object) [
+                    'icd10Code' => (object) [
+                        'code' => 'J06.9',
+                        'description_es' => 'Infección aguda de las vías respiratorias superiores',
+                    ],
+                    'onset_info' => 'Infección aguda de las vías respiratorias superiores',
+                    'clinical_status' => 'active',
+                ],
+            ],
+        ]);
+
+        // Create sample service requests (prescriptions)
+        $serviceRequests = collect([
+            (object) [
+                'code' => 'RX-001',
+                'service_type' => 'medication',
+                'cpt' => [
+                    'description_es' => 'Amoxicilina 500mg - Vía Oral',
+                ],
+                'body_site' => null,
+                'patient_instruction' => 'Tomar 1 cápsula cada 8 horas por 7 días',
+                'note' => 'Tomar con alimentos para evitar molestias gástricas',
+                'reason_code' => 'Infección respiratoria',
+            ],
+            (object) [
+                'code' => 'RX-002',
+                'service_type' => 'medication',
+                'cpt' => [
+                    'description_es' => 'Ibuprofeno 400mg - Vía Oral',
+                ],
+                'body_site' => null,
+                'patient_instruction' => 'Tomar 1 tableta cada 6-8 horas según necesidad',
+                'note' => 'No exceder 4 dosis al día. Suspender si hay molestias gástricas',
+                'reason_code' => 'Dolor y fiebre',
+            ],
+            (object) [
+                'code' => 'RX-003',
+                'service_type' => 'medication',
+                'cpt' => [
+                    'description_es' => 'Loratadina 10mg - Vía Oral',
+                ],
+                'body_site' => null,
+                'patient_instruction' => 'Tomar 1 tableta cada 24 horas',
+                'note' => 'Preferiblemente en la noche',
+                'reason_code' => 'Alergia estacional',
+            ],
+        ]);
+
+        // Create sample medications for prescription template preview
+        $medications = collect([
+            (object) [
+                'medication_id' => null,
+                'medication_id2' => null,
+                'medication' => 'Amoxicilina 500mg',
+                'medicine' => null,
+                'medication2' => null,
+                'quantity' => 21,
+                'dosage_text' => 'Tomar 1 cápsula cada 8 horas por 7 días con alimentos',
+                'dosage_instruction' => 'Cada 8 horas',
+            ],
+            (object) [
+                'medication_id' => null,
+                'medication_id2' => null,
+                'medication' => 'Ibuprofeno 400mg',
+                'medicine' => null,
+                'medication2' => null,
+                'quantity' => 20,
+                'dosage_text' => 'Tomar 1 tableta cada 6-8 horas según necesidad. No exceder 4 dosis al día',
+                'dosage_instruction' => 'Cada 6-8 horas',
+            ],
+            (object) [
+                'medication_id' => null,
+                'medication_id2' => null,
+                'medication' => 'Loratadina 10mg',
+                'medicine' => null,
+                'medication2' => null,
+                'quantity' => 30,
+                'dosage_text' => 'Tomar 1 tableta cada 24 horas, preferiblemente en la noche',
+                'dosage_instruction' => 'Una vez al día',
+            ],
+        ]);
+
+        // Generate order number
+        $orderNumber = 'RX-2026-0001';
+
+        // Create sample doctor profile to avoid calling methods on practitioner
+        $doctorProfile = (object) [
+            'facility' => 'Clínica Ejemplo S.A.',
+            'address' => 'Calle Principal #123, Ciudad de Panamá',
+            'phone' => '+507 123-4567',
+            'signature' => null,
+            'seal' => null,
+            'logo' => null,
+        ];
+
+        // Check if template exists
+        $templatePath = "documents.prescriptions.templates.{$template}";
+        if (! view()->exists($templatePath)) {
+            abort(404, 'Plantilla no encontrada');
+        }
+
+        // Return preview view with all required variables
+        return view($templatePath)
+            ->with('medications', $medications)
+            ->with('prescriptionNumber', $orderNumber)
+            ->with('orderNumber', $orderNumber)
+            ->with('serviceRequests', $serviceRequests)
+            ->with('practitioner', $practitioner)
+            ->with('encounter', $encounter)
+            ->with('patient', $patient)
+            ->with('diagnoses', $diagnoses)
+            ->with('doctorProfile', $doctorProfile)
+            ->with('client', null)
+            ->with('pdfService', null)
+            ->with('serviceType', null)
+            ->with('isPreview', true);
     }
 }

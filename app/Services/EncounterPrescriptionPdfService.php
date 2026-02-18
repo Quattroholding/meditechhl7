@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\ClientPreference;
 use App\Models\ClientTheme;
 use App\Models\Encounter;
 use App\Models\MedicationRequest;
@@ -45,6 +46,9 @@ class EncounterPrescriptionPdfService
         // Get client
         $client = $this->getClientFromEncounter($encounter);
 
+        // Get selected prescription template
+        $template = $this->getPrescriptionTemplate($client);
+
         // Prepare data for the view
         $data = [
             'encounter' => $encounter,
@@ -54,13 +58,15 @@ class EncounterPrescriptionPdfService
             'diagnoses' => $encounter->diagnoses,
             'date' => Carbon::parse($encounter->end ?? now()),
             'prescriptionNumber' => 'RX-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
+            'orderNumber' => 'RX-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
             'clientThemeCSS' => $this->getClientThemeCSS($client),
+            'client' => $client,
             'doctorProfile' => $this->getDoctorProfile($encounter->practitioner),
             'pdfService' => new PrescriptionPdfService,
         ];
 
-        // Generate PDF
-        $pdf = Pdf::loadView('documents.prescription-new', $data);
+        // Generate PDF using selected prescription template
+        $pdf = Pdf::loadView("documents.prescriptions.templates.{$template}", $data);
         $pdf->setPaper('letter', 'portrait');
 
         return $pdf->output();
@@ -112,7 +118,7 @@ class EncounterPrescriptionPdfService
             'serviceType' => $serviceType,
         ];
 
-        // Generate PDF
+        // Generate PDF using generic medical order view
         $pdf = Pdf::loadView('documents.medical-order', $data);
         $pdf->setPaper('letter', 'portrait');
 
@@ -136,6 +142,9 @@ class EncounterPrescriptionPdfService
 
         $client = $this->getClientFromEncounter($encounter);
 
+        // Get selected prescription template
+        $template = $this->getPrescriptionTemplate($client);
+
         $data = [
             'encounter' => $encounter,
             'patient' => $encounter->patient,
@@ -144,12 +153,14 @@ class EncounterPrescriptionPdfService
             'diagnoses' => $encounter->diagnoses,
             'date' => Carbon::parse($encounter->end ?? now()),
             'prescriptionNumber' => 'RX-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
+            'orderNumber' => 'RX-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
             'clientThemeCSS' => $this->getClientThemeCSS($client),
+            'client' => $client,
             'doctorProfile' => $this->getDoctorProfile($encounter->practitioner),
             'pdfService' => new PrescriptionPdfService,
         ];
 
-        $pdf = Pdf::loadView('documents.prescription-new', $data);
+        $pdf = Pdf::loadView("documents.prescriptions.templates.{$template}", $data);
         $pdf->setPaper('letter', 'portrait');
 
         $fileName = 'receta_medica_'.($encounter->patient->identifier ?? $encounter->id).'_'.date('Ymd_His').'.pdf';
@@ -258,6 +269,18 @@ class EncounterPrescriptionPdfService
         }
 
         return $theme->generatePdfCSS();
+    }
+
+    /**
+     * Get selected prescription template for client
+     */
+    public function getPrescriptionTemplate(?Client $client): string
+    {
+        if (! $client) {
+            return 'template_1';
+        }
+
+        return ClientPreference::getPrescriptionTemplate($client->id);
     }
 
     /**

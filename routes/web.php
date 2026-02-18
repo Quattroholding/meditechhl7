@@ -419,6 +419,9 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     Route::get('/medical-leave-template', [SettingController::class, 'medicalLeaveTemplate'])->name('setting.medical_leave_template');
     Route::get('/medical-leave-template/preview/{template}', [SettingController::class, 'medicalLeaveTemplatePreview'])->name('setting.medical_leave_template.preview');
 
+    Route::get('/prescription-template', [SettingController::class, 'prescriptionTemplate'])->name('setting.prescription_template');
+    Route::get('/prescription-template/preview/{template}', [SettingController::class, 'prescriptionTemplatePreview'])->name('setting.prescription_template.preview');
+
 });
 
 // Roles and Permissions Routes

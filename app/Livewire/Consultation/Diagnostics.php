@@ -6,13 +6,11 @@ use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\EncounterDiagnosis;
 use App\Models\Icd10Code;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Diagnostics extends Component
 {
-
     public $query = '';
 
     public $results = [];
@@ -56,12 +54,15 @@ class Diagnostics extends Component
             return;
         }
 
-        $response = Http::get(url('api/diagnostics'), [
-            'dropdown' => true,
-            'q' => $this->query,
-        ]);
-
-        $this->results = $response->json() ?? [];
+        $this->results = Icd10Code::selectRaw("id, code, concat(code,'|',description_es) as name, description_es, description")
+            ->whereRaw('(code LIKE ? or description LIKE ? or description_es LIKE ?)', [
+                "%{$this->query}%",
+                "%{$this->query}%",
+                "%{$this->query}%",
+            ])
+            ->take(10)
+            ->get()
+            ->toArray();
     }
 
     public function selectOption($option)
@@ -72,11 +73,11 @@ class Diagnostics extends Component
             sleep(1);
 
             // Verificar si ya existe ANTES de crear
-            $encounter_diagnosis = $this->encounter->diagnoses()->whereHas('condition',function ($q) use($option){
+            $encounter_diagnosis = $this->encounter->diagnoses()->whereHas('condition', function ($q) use ($option) {
                 $q->where('conditions.code', $option['code']);
-            }) ->first();
+            })->first();
 
-            if(!$encounter_diagnosis){
+            if (! $encounter_diagnosis) {
                 $this->selectedOption = $option;
                 $this->query = $option['name']; // Asigna el nombre seleccionado al input
                 $this->results = []; // Limpia los resultados
@@ -115,15 +116,15 @@ class Diagnostics extends Component
 
                 $this->loadSelectedLists();
 
-            }else{
+            } else {
                 $this->dispatch(
                     'error-'.$key,
-                    '¡Diagnostico ('. $option['name'].') ya está agregado a la consulta!'
+                    '¡Diagnostico ('.$option['name'].') ya está agregado a la consulta!'
                 );
             }
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,'Error al giardar :'.$e->getMessage());
+            $this->dispatch('error-'.$key, 'Error al giardar :'.$e->getMessage());
         }
     }
 

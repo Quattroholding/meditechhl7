@@ -44,14 +44,14 @@ enum AppointmentStatusEnum: string
         return match ($this) {
             self::Proposed => 'dedede',
             self::Pending => 'FFA500',
-            self::Booked => '4CAF50',
-            self::Confirm => '55ce63',
-            self::Arrived => '00BCD4',
-            self::Fulfilled => '2196F3',
-            self::Cancelled => 'F44336',
-            self::NoShow => '9E9E9E',
+            self::Booked => '28a745',
+            self::Confirm => '6aa728',
+            self::Arrived => '007bff',
+            self::Fulfilled => '6c757d',
+            self::Cancelled => 'dc3545',
+            self::NoShow => '6f42c1',
             self::EnteredInError => 'FF5252',
-            self::CheckedIn => '7C4DFF',
+            self::CheckedIn => 'ffc107',
             self::Waitlist => 'FF9800',
         };
     }
@@ -72,6 +72,23 @@ enum AppointmentStatusEnum: string
             self::NoShow => 'badge appointment-status-noshow',
             self::EnteredInError => 'bg-danger',
             self::CheckedIn => 'badge appointment-status-checked-in',
+            self::Waitlist => 'bg-warning',
+        };
+    }
+
+    public function icon() : string{
+
+        return match ($this) {
+            self::Proposed => '🔔',
+            self::Pending => '🕐',
+            self::Booked => '🕐',
+            self::Confirm => 'badge appointment-status-confirm',
+            self::Arrived => '⏱️',
+            self::Fulfilled => '✅ ',
+            self::Cancelled => '❌',
+            self::NoShow => '❌',
+            self::EnteredInError => 'bg-danger',
+            self::CheckedIn =>'🏥'  ,
             self::Waitlist => 'bg-warning',
         };
     }
@@ -127,4 +144,6 @@ enum AppointmentStatusEnum: string
             ->mapWithKeys(fn ($case) => [$case->value => $case->label()])
             ->toArray();
     }
+
+
 }

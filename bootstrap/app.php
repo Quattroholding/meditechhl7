@@ -4,6 +4,7 @@ use App\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // CyberSource Payment Routes
+            Route::middleware('web')
+                ->group(base_path('routes/cybersource.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Force HTTPS in production
@@ -37,15 +43,16 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CheckActiveUserMiddleware::class,
         ]);
 
-        // Exclude Twilio webhook from CSRF verification
+        // Exclude webhooks from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'api/webhooks/twilio/*',
+            'webhooks/cybersource',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })
-     ->withSchedule(function ($schedule) {
+    ->withSchedule(function ($schedule) {
         // === Tareas de Suscripciones ===
         // Generar facturas para suscripciones que deben renovarse
         $schedule->command('subscriptions:generate-invoices')
@@ -83,5 +90,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ->description('Marcar como noshow las citas propuestas, reservadas, pendientes o confirmadas que no se completaron después de 7 días')
             ->emailOutputOnFailure('business@meditecpty.com')
             ->appendOutputTo(storage_path('logs/appointments-noshow.log'));
+
+        $schedule->job(new \App\Jobs\RetryFailedSubscriptionPayments)->hourly();
     })
     ->create();

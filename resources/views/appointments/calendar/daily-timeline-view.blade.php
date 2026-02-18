@@ -633,32 +633,34 @@
                 <span>Próxima Cita</span>
             </div>
             <div class="legend-item">
-                <div class="legend-dot" style="background: #FFA500;"></div>
-                <span>Pendiente</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #ffc107;"></div>
-                <span>En Progreso</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #2E37A4;"></div>
-                <span>En Curso</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #28a745;"></div>
-                <span>Completada</span>
-            </div>
-            <div class="legend-item">
                 <div class="legend-dot" style="background: #6f42c1;"></div>
                 <span>Próximos 15 min</span>
             </div>
             <div class="legend-item">
-                <div class="legend-dot" style="background: #17a2b8;"></div>
-                <span>Programada</span>
-            </div>
-            <div class="legend-item">
                 <div class="legend-dot" style="background: #dc3545;"></div>
                 <span>Retrasada</span>
+            </div>
+            |
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #{{\App\Enums\AppointmentStatusEnum::Pending->color()}}"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Pending->label()}}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #{{\App\Enums\AppointmentStatusEnum::Booked->color()}};"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #{{\App\Enums\AppointmentStatusEnum::Arrived->color()}};"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #{{\App\Enums\AppointmentStatusEnum::CheckedIn->color()}};"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
+            </div>
+
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #{{\App\Enums\AppointmentStatusEnum::Fulfilled->color()}};"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
             </div>
         </div>
     </div>
@@ -690,7 +692,7 @@
                     $appModel = \App\Models\Appointment::find($appointment['id']);
                 @endphp
 
-                <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-pulse' : '' }}" wire:click="editAppointment({{ $appointment['id'] }})">
+                <div class="timeline-item {{ $status }} {{ $isNext ? 'next-appointment-pulse' : '' }}" wire:click="editAppointment({{ $appointment['id'] }})" style="width: 100%">
 
                     <div class="timeline-time">
 
@@ -718,7 +720,7 @@
                             @elseif($status === 'pending') 🕐 PENDIENTE DE CONFIRMACION
                             @elseif($status === 'current') ⏱️ EN PROGRESO
                             @elseif($status === 'checked-in') 🏥 CONSULTA EN CURSO
-                            @elseif($status === 'fulfilled') ✅ COMPLETADA
+                            @elseif($status === 'fulfilled') ✅ {{ $appModel->status->label() }}
                             @elseif($status === 'overdue') ⚠️ RETRASADA
                             @elseif($status === 'upcoming') 🕐 PRÓXIMA (15min)
                             @elseif($status === 'cancelled') ❌ CANCELADA

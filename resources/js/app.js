@@ -154,9 +154,13 @@ function setupPhoneValidation(input) {
     // Validar al enviar el formulario
     if (form) {
         form.addEventListener('submit', (e) => {
-            // Actualizar el campo oculto con el número completo
+            // Update both visible and hidden fields with full international number
+            const fullNumber = iti.getNumber();
+            if (fullNumber) {
+                input.value = fullNumber;
+            }
             if (input.hiddenInput) {
-                input.hiddenInput.value = iti.getNumber();
+                input.hiddenInput.value = fullNumber;
             }
 
             // Validar que el número sea válido

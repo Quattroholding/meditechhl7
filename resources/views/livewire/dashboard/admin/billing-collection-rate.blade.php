@@ -218,12 +218,12 @@
                         series: [
                             {
                                 name: 'Facturado',
-                                type: 'column',
+                                type: 'bar',
                                 data: chartData.billing || []
                             },
                             {
                                 name: 'Cobrado',
-                                type: 'column',
+                                type: 'bar',
                                 data: chartData.collections || []
                             },
                             {
@@ -234,7 +234,7 @@
                         ],
                         chart: {
                             height: 350,
-                            type: 'line',
+                            type: 'bar',
                             stacked: false,
                             toolbar: {
                                 show: true,
