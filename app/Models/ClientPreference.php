@@ -128,4 +128,22 @@ class ClientPreference extends Model
             'Plantilla de licencia médica seleccionada por el cliente'
         );
     }
+
+    public static function getPrescriptionTemplate(int $clientId, string $default = 'template_1'): string
+    {
+        $value = static::get($clientId, PreferenceType::PRESCRIPTION_TEMPLATE, 'template_name');
+
+        return $value['template'] ?? $default;
+    }
+
+    public static function setPrescriptionTemplate(int $clientId, string $template): self
+    {
+        return static::set(
+            $clientId,
+            PreferenceType::PRESCRIPTION_TEMPLATE,
+            'template_name',
+            ['template' => $template],
+            'Plantilla de prescripción médica seleccionada por el cliente'
+        );
+    }
 }
