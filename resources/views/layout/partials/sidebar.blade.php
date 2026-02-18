@@ -218,6 +218,7 @@
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
                         @endcan
                         @can('settings.prescription_template')
+
                             <li><a class="{{ Request::is('settings/prescription-template') ? 'active' : '' }}"  href="{{ route('setting.prescription_template') }}">{{ __('Plantilla Recetas Medicas') }}</a></li>
                         @endcan
                         @can('settings.invoice_template')
