@@ -867,8 +867,8 @@ body {
                     <ul class="toc-list">
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                         {{--}}<li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>{{--}}
-                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 2. Crear Nueva Cita</a></li>
-                        <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 3. Vista Calendario</a></li>
+                        <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 2. Vista Calendario</a></li>
+                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 3. Crear Nueva Cita</a></li>
                         <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 4. Estados de Cita</a></li>
                         <li><a href="#gestion"><i class="fas fa-tasks"></i> 5. Gestión de Citas</a></li>
                         <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 6. Integración WhatsApp</a></li>
@@ -898,7 +898,7 @@ body {
                             <li>Calendario visual interactivo</li>
                             <li>Múltiples vistas (mes, semana, día)</li>
                             <li>Gestión de estados de citas</li>
-                            <li>Soporte para citas presenciales y virtuales</li>
+                            <!--<li>Soporte para citas presenciales y virtuales</li>-->
                             <li>Integración con WhatsApp</li>
                             <li>Notificaciones automáticas</li>
                         </ul>
@@ -980,188 +980,9 @@ body {
             </div>
         </section> -->
 
-        <!-- Section 3: Create Appointment -->
-        <section id="crear-cita" class="content-section">
-            <h2><i class="fas fa-plus-circle me-2"></i>2. Crear Nueva Cita</h2>
-
-            <p>Siga estos pasos para agendar una nueva cita médica en el sistema:</p>
-
-            <!-- Step 1 -->
-            <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Acceder al Módulo de Citas</span></h4>
-                <p>Navegue a <strong>Citas</strong> desde el menú lateral izquierdo. Puede acceder a través de:</p>
-                <ul>
-                    <li><strong>Vista Calendario:</strong> Menú → Citas → Calendario</li>
-                    <!--<li><strong>Vista Lista:</strong> Menú → Citas → Listado</li>-->
-                </ul>
-
-                <div>
-                    <img src="{{ asset('images/tutorial/appointments/appointment-list.png') }}" alt="" style="width: 100%;">
-                </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Iniciar Creación de Cita</span></h4>
-                <p>Hay varias formas de iniciar la creación de una nueva cita:</p>
-                <ul>
-                    <li><strong>Botón "Nueva Cita":</strong> Click en el botón superior derecho</li>
-                    <li><strong>Click en calendario:</strong> Haga click en cualquier espacio disponible del calendario</li>
-                    <li><strong>Arrastrar y soltar:</strong> Arrastre sobre un rango de tiempo para preseleccionar la hora</li>
-                </ul>
-
-            <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-new.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Completar Formulario de Cita</span></h4>
-                <p>Se abrirá el modal de creación de cita. Complete los siguientes campos:</p>
-                <div class="field-table-wrapper">
-                    <table class="field-table">
-                        <thead>
-                            <tr>
-                                <th>Campo</th>
-                                <th>Descripción</th>
-                                <th>Requerido</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="Campo"><strong>Paciente</strong></td>
-                                <td data-label="Descripcion">Busque y seleccione el paciente por nombre o documento de identidad</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Doctor</strong></td>
-                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Sucursal</strong></td>
-                                <td data-label="Descripcion">Seleccione la sucursal donde se realizará la consulta</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Consultorio</strong></td>
-                                <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Fecha</strong></td>
-                                <td data-label="Descripcion">Fecha programada para la cita</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Hora Inicio</strong></td>
-                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Hora Fin</strong></td>
-                                <td data-label="Descripcion">Hora estimada de finalización</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Tipo de Cita</strong></td>
-                                <td data-label="Descripcion">Presencial o Virtual</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Motivo de Consulta</strong></td>
-                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
-                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Notas</strong></td>
-                                <td data-label="Descripcion">Información adicional o instrucciones especiales</td>
-                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-            <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-modal.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
-            <!-- Step 4 -->
-            <div class="step-card">
-                <h4><span class="step-number">4</span><span class="step-title">Búsqueda de Paciente</span></h4>
-                <p>El campo de paciente cuenta con búsqueda inteligente:</p>
-                <ul>
-                    <li>Escriba el nombre del paciente (al menos 2 caracteres)</li>
-                    <li>O escriba el número de documento de identidad</li>
-                    <li>Seleccione el paciente de la lista desplegable</li>
-                </ul>
-
-                <div class="info-box tip">
-                    <div class="info-box-title">
-                        <i class="fas fa-lightbulb text-success"></i>
-                        Consejo
-                    </div>
-                    <p class="mb-0">Si el paciente no existe, puede crear uno nuevo desde el módulo de <a href="{{ route('help.patients') }}">Pacientes</a> y luego regresar a crear la cita.</p>
-                </div>
-
-                <div>
-                    <img src="{{ asset('images/tutorial/appointments/appointment-patient.png') }}" alt="" style="width: 100%;">
-                </div>
-            </div>
-
-            <!-- Step 5 -->
-            <div class="step-card">
-                <h4><span class="step-number">5</span><span class="step-title">Selección de Horario Disponible</span></h4>
-                <p>El sistema valida automáticamente la disponibilidad:</p>
-                <ul>
-                    <li>Se verifican los horarios de trabajo del doctor seleccionado</li>
-                    <li>Se comprueba que no existan conflictos con otras citas</li>
-                    <li>Se valida la disponibilidad del consultorio</li>
-                </ul>
-
-                <div class="info-box warning">
-                    <div class="info-box-title">
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                        Importante
-                    </div>
-                    <p class="mb-0">Si intenta agendar fuera del horario de trabajo del doctor o en un horario ya ocupado, el sistema mostrará un mensaje de error indicando el conflicto.</p>
-                </div>
-
-                <div>
-                    <img src="{{ asset('images/tutorial/appointments/appointment-schedule.png') }}" alt="" style="width: 100%;">
-                </div>
-            </div>
-
-            <!-- Step 6 -->
-            <div class="step-card">
-                <h4><span class="step-number">6</span><span class="step-title">Guardar la Cita</span></h4>
-                <p>Una vez completados todos los campos requeridos:</p>
-                <ol>
-                    <li>Revise que todos los datos sean correctos</li>
-                    <li>Click en el botón <strong>"Guardar"</strong> o <strong>"Crear Cita"</strong></li>
-                    <li>El sistema creará la cita con estado inicial <span class="status-badge status-pending">Pendiente</span></li>
-                    <li>La cita aparecerá inmediatamente en el calendario</li>
-                </ol>
-
-                <div class="info-box note">
-                    <div class="info-box-title">
-                        <i class="fas fa-bell text-primary"></i>
-                        Notificaciones
-                    </div>
-                    <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por WhatsApp o correo electrónico, dependiendo de la configuración del sistema.</p>
-                </div>
-
-            <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-created.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-        </section>
-
-        <!-- Section 4: Calendar View -->
+                <!-- Section 4: Calendar View -->
         <section id="calendario" class="content-section">
-            <h2><i class="fas fa-calendar-alt me-2"></i>3. Vista Calendario</h2>
+            <h2><i class="fas fa-calendar-alt me-2"></i>2. Vista Calendario</h2>
 
             <p>El calendario interactivo es la herramienta principal para visualizar y gestionar las citas. SAMI ofrece tres vistas diferentes:</p>
 
@@ -1196,18 +1017,18 @@ body {
                     <h4><i class="fas fa-filter text-primary me-2"></i>Filtros Disponibles</h4>
                     <ul>
                         <li><strong>Por Doctor:</strong> Ver citas de un médico específico</li>
-                        <li><strong>Por Sucursal:</strong> Filtrar por ubicación</li>
-                        <li><strong>Por Consultorio:</strong> Ver agenda de un consultorio</li>
+                        <!--<li><strong>Por Sucursal:</strong> Filtrar por ubicación</li>
+                        <li><strong>Por Consultorio:</strong> Ver agenda de un consultorio</li>-->
                         <li><strong>Por Estado:</strong> Filtrar por estado de la cita</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
                     <h4><i class="fas fa-mouse-pointer text-primary me-2"></i>Interacciones</h4>
                     <ul>
-                        <li><strong>Click en cita:</strong> Ver detalles y opciones</li>
-                        <li><strong>Arrastrar cita:</strong> Reprogramar fecha/hora</li>
+                        <li><strong>Clic en cita:</strong> Ver detalles y/o modificar cita</li>
+                        <!--<li><strong>Arrastrar cita:</strong> Reprogramar fecha/hora</li>
                         <li><strong>Redimensionar:</strong> Ajustar duración</li>
-                        <li><strong>Doble click:</strong> Editar cita</li>
+                        <li><strong>Doble clic:</strong> Editar cita</li>-->
                     </ul>
                 </div>
             </div>
@@ -1292,6 +1113,201 @@ body {
                 <img src="{{ asset('images/tutorial/appointments/appointment-colors.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
+        <!-- Section 3: Create Appointment -->
+        <section id="crear-cita" class="content-section">
+            <h2><i class="fas fa-plus-circle me-2"></i>3. Crear Nueva Cita</h2>
+
+            <p>Siga estos pasos para agendar una nueva cita médica en el sistema:</p>
+
+            <!-- Step 1 -->
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Acceder al Módulo de Citas</span></h4>
+                <p>Navegue a <strong>Citas</strong> desde el menú lateral izquierdo. Puede acceder a través de:</p>
+                <ul>
+                    <li><strong>Vista Calendario:</strong> Menú → Citas → Calendario</li>
+                    <!--<li><strong>Vista Lista:</strong> Menú → Citas → Listado</li>-->
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-calendar.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Iniciar Creación de Cita</span></h4>
+                <p>Hay varias formas de iniciar la creación de una nueva cita:</p>
+                <ul>
+                    <li><strong>Botón "Nueva Cita":</strong> Clic en el botón superior derecho</li>
+                    <li><strong>Clic en calendario:</strong> Haga clic en cualquier espacio disponible del calendario (Vista Mensual y Semanal)</li>
+                    <!--<li><strong>Arrastrar y soltar:</strong> Arrastre sobre un rango de tiempo para preseleccionar la hora</li>-->
+                </ul>
+
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-new.png') }}" alt="" style="width: 100%;">
+            </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Completar Formulario de Cita</span></h4>
+                <p>Se abrirá el modal de creación de cita. Complete los siguientes campos:</p>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Requerido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Paciente</strong></td>
+                                <td data-label="Descripcion">Busque y seleccione el paciente por nombre o documento de identidad</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Doctor</strong></td>
+                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>en usuarios con ROL Paciente, Asistente y Recepcionista.</small></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Sucursal</strong></td>
+                                <td data-label="Descripcion">Seleccione la sucursal donde se realizará la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Consultorio</strong></td>
+                                <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Fecha</strong></td>
+                                <td data-label="Descripcion">Fecha programada para la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora</strong></td>
+                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <!--<tr>
+                                <td data-label="Campo"><strong>Hora Inicio</strong></td>
+                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Fin</strong></td>
+                                <td data-label="Descripcion">Hora estimada de finalización</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>  
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Cita</strong></td>
+                                <td data-label="Descripcion">Presencial o Virtual</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Motivo de Consulta</strong></td>
+                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>-->
+                            <tr>
+                                <td data-label="Campo"><strong>Duración</strong></td>
+                                <td data-label="Descripcion">Tiempo programado de duración de la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
+                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Nota adicional</strong></td>
+                                <td data-label="Descripcion">Información adicional o instrucciones especiales</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-modal.png') }}" alt="" style="width: 100%;">
+            </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+                <h4><span class="step-number">4</span><span class="step-title">Búsqueda de Paciente</span></h4>
+                <p>El campo de paciente cuenta con búsqueda inteligente:</p>
+                <ul>
+                    <li>Escriba el nombre del paciente (al menos 2 caracteres)</li>
+                    <li>O escriba el número de documento de identidad</li>
+                    <li>Seleccione el paciente de la lista desplegable</li>
+                </ul>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-lightbulb text-success"></i>
+                        Consejo
+                    </div>
+                    <p class="mb-0">Si el paciente no existe, puede crear uno nuevo desde el módulo de <a href="{{ route('help.patients') }}">Pacientes</a> y luego regresar a crear la cita.</p>
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-patient.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card">
+                <h4><span class="step-number">5</span><span class="step-title">Selección de Fecha y Horario Disponible</span></h4>
+                <p>El sistema valida automáticamente la disponibilidad:</p>
+                <ul>
+                    <li>Se verifican los horarios de trabajo del doctor seleccionado</li>
+                    <li>Se comprueba que no existan conflictos con otras citas</li>
+                    <li>Se valida la disponibilidad del consultorio</li>
+                </ul>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Importante
+                    </div>
+                    <p class="mb-0">Si intenta agendar fuera del horario de trabajo del doctor o en un horario ya ocupado, el sistema mostrará un mensaje de error indicando el conflicto.</p>
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-schedule.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step-card">
+                <h4><span class="step-number">6</span><span class="step-title">Guardar la Cita</span></h4>
+                <p>Una vez completados todos los campos requeridos:</p>
+                <ol>
+                    <li>Revise que todos los datos sean correctos</li>
+                    <li>Clic en el botón <strong>"Guardar Cita"</strong></li>
+                    <li>El sistema creará la cita con estado inicial <span class="status-badge status-pending">Pendiente</span></li>
+                    <li>La cita aparecerá inmediatamente en el calendario</li>
+                </ol>
+
+                <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-bell text-primary"></i>
+                        Notificaciones
+                    </div>
+                    <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por WhatsApp o correo electrónico, dependiendo de la configuración del sistema.</p>
+                </div>
+
+            <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-created.png') }}" alt="" style="width: 100%;">
+            </div>
+            </div>
+        </section>
+
+
 
         <!-- Section 5: Appointment States -->
         <section id="estados" class="content-section">
@@ -1421,7 +1437,7 @@ body {
             <h2><i class="fas fa-tasks me-2"></i>5. Gestión de Citas</h2>
 
             <h3>Ver Detalles de una Cita</h3>
-            <p>Al hacer click en una cita del calendario, se muestra un panel con información detallada:</p>
+            <p>Al hacer clic en una cita del calendario, se muestra un panel con información detallada:</p>
 
             <div class="row">
                 <div class="col-md-6">
@@ -1451,10 +1467,10 @@ body {
             <h3>Editar una Cita</h3>
             <p>Para modificar los datos de una cita existente:</p>
             <ol>
-                <li>Haga click en la cita en el calendario o lista</li>
+                <li>Haga clic en la cita en el calendario o lista</li>
                 <li>Seleccione <strong>"Editar"</strong> en el menú de opciones</li>
                 <li>Modifique los campos necesarios</li>
-                <li>Click en <strong>"Guardar cambios"</strong></li>
+                <li>Clic en <strong>"Guardar cambios"</strong></li>
             </ol>
 
             <div class="info-box warning">
@@ -1489,7 +1505,7 @@ body {
             <p>Para cancelar una cita:</p>
             <ol>
                 <li>Seleccione la cita</li>
-                <li>Click en <strong>"Cancelar cita"</strong></li>
+                <li>Clic en <strong>"Cancelar cita"</strong></li>
                 <!--<li>Ingrese el motivo de cancelación (opcional pero recomendado)</li> -->
                 <li>Confirme la cancelación</li>
             </ol>
