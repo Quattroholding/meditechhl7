@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\WhatsAppConversationUsage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -44,6 +45,75 @@ class WhatsAppService
         $payload = $this->buildMediaMessagePayload($to, $mediaUrl, $mediaType, $caption);
 
         return $this->sendToMetaApi($payload);
+    }
+
+    /**
+     * Send a template message via WhatsApp Meta API
+     *
+     * @param  string  $to  Phone number (will be normalized)
+     * @param  string  $templateName  Template name registered in Meta
+     * @param  array  $components  Template components (header, body, buttons)
+     * @param  string  $languageCode  Language code (default: es)
+     * @return array|null Response data with message_id, or null on failure
+     */
+    public function sendTemplate(string $to, string $templateName, array $components = [], string $languageCode = 'es'): ?array
+    {
+        $payload = $this->buildTemplateMessagePayload($to, $templateName, $components, $languageCode);
+
+        $response = $this->sendToMetaApi($payload, true);
+
+        if ($response) {
+            // Track conversation usage
+            $this->trackConversation($to, $response['message_id'] ?? null);
+
+            return $response;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if business-initiated WhatsApp quota is available
+     */
+    public function hasAvailableQuota(): bool
+    {
+        return WhatsAppConversationUsage::hasAvailableQuota();
+    }
+
+    /**
+     * Get remaining quota for current month
+     */
+    public function getRemainingQuota(): int
+    {
+        return WhatsAppConversationUsage::getRemainingQuota();
+    }
+
+    /**
+     * Track a business-initiated conversation
+     */
+    protected function trackConversation(string $phoneNumber, ?string $messageId = null): void
+    {
+        try {
+            WhatsAppConversationUsage::create([
+                'phone_number' => $this->normalizePhoneNumber($phoneNumber),
+                'message_id' => $messageId,
+                'year' => now()->year,
+                'month' => now()->month,
+                'type' => 'business_initiated',
+                'conversation_started_at' => now(),
+            ]);
+
+            Log::info('WhatsApp conversation tracked', [
+                'phone_number' => $phoneNumber,
+                'message_id' => $messageId,
+                'remaining_quota' => $this->getRemainingQuota(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to track WhatsApp conversation', [
+                'phone_number' => $phoneNumber,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -312,9 +382,41 @@ class WhatsAppService
     }
 
     /**
-     * Send payload to Meta WhatsApp Cloud API
+     * Build template message payload for Meta API
      */
-    protected function sendToMetaApi(array $payload): bool
+    protected function buildTemplateMessagePayload(string $to, string $templateName, array $components, string $languageCode): array
+    {
+        // Remove + from phone number as Meta API expects it without
+        $cleanPhone = ltrim($this->normalizePhoneNumber($to) ?? $to, '+');
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => $cleanPhone,
+            'type' => 'template',
+            'template' => [
+                'name' => $templateName,
+                'language' => [
+                    'code' => $languageCode,
+                ],
+            ],
+        ];
+
+        if (! empty($components)) {
+            $payload['template']['components'] = $components;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Send payload to Meta WhatsApp Cloud API
+     *
+     * @param  array  $payload  Message payload
+     * @param  bool  $returnResponse  If true, returns full response array; if false, returns boolean
+     * @return bool|array|null
+     */
+    protected function sendToMetaApi(array $payload, bool $returnResponse = false): bool|array|null
     {
         $phoneNumberId = config('services.meta.whatsapp_phone_number_id');
         $accessToken = config('services.meta.whatsapp_access_token');
@@ -325,7 +427,7 @@ class WhatsAppService
                 'has_token' => ! empty($accessToken),
             ]);
 
-            return false;
+            return $returnResponse ? null : false;
         }
 
         try {
@@ -342,6 +444,13 @@ class WhatsAppService
                     'message_id' => $data['messages'][0]['id'] ?? null,
                 ]);
 
+                if ($returnResponse) {
+                    return [
+                        'message_id' => $data['messages'][0]['id'] ?? null,
+                        'status' => $data['messages'][0]['message_status'] ?? 'sent',
+                    ];
+                }
+
                 return true;
             } else {
                 Log::error('WhatsApp Meta API: Error HTTP', [
@@ -352,7 +461,7 @@ class WhatsAppService
                     'error' => $response->json('error'),
                 ]);
 
-                return false;
+                return $returnResponse ? null : false;
             }
         } catch (\Exception $e) {
             Log::error('WhatsApp Meta API: Excepcion', [
@@ -362,7 +471,7 @@ class WhatsAppService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return false;
+            return $returnResponse ? null : false;
         }
     }
 }

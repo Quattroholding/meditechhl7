@@ -65,6 +65,13 @@ class WhatsAppMetaChannel
      */
     protected function sendComplexMessage(string $phoneNumber, array $message, $notifiable): void
     {
+        // If message should use template (bypasses 24-hour window restriction)
+        if (! empty($message['use_template'])) {
+            $this->sendTemplateMessage($phoneNumber, $message, $notifiable);
+
+            return;
+        }
+
         $messageBody = $message['body'] ?? '';
 
         // If there's a media URL, send as media
@@ -91,6 +98,74 @@ class WhatsAppMetaChannel
         // Otherwise just send text
         else {
             $this->whatsAppService->sendMessage($phoneNumber, $messageBody);
+        }
+    }
+
+    /**
+     * Send template message (for business-initiated conversations)
+     */
+    protected function sendTemplateMessage(string $phoneNumber, array $message, $notifiable): void
+    {
+        $templateName = $message['template_name'] ?? 'prescription_delivery';
+        $documents = $message['documents'] ?? [];
+
+        // Build template components
+        $components = [];
+
+        // Body component with variables (patient name, doctor name)
+        $bodyParameters = [];
+        if (! empty($message['patient_name'])) {
+            $bodyParameters[] = ['type' => 'text', 'text' => $message['patient_name']];
+        }
+        if (! empty($message['practitioner_name'])) {
+            $bodyParameters[] = ['type' => 'text', 'text' => $message['practitioner_name']];
+        }
+
+        if (! empty($bodyParameters)) {
+            $components[] = [
+                'type' => 'body',
+                'parameters' => $bodyParameters,
+            ];
+        }
+
+        // Send template message for each document
+        foreach ($documents as $document) {
+            $documentComponents = $components;
+
+            // Add header component with document
+            $documentComponents[] = [
+                'type' => 'header',
+                'parameters' => [
+                    [
+                        'type' => 'document',
+                        'document' => [
+                            'link' => $document['url'],
+                            'filename' => $document['filename'] ?? 'documento.pdf',
+                        ],
+                    ],
+                ],
+            ];
+
+            // Send template
+            $result = $this->whatsAppService->sendTemplate(
+                $phoneNumber,
+                $templateName,
+                $documentComponents,
+                'es'
+            );
+
+            if ($result) {
+                Log::info('Template message sent successfully', [
+                    'template' => $templateName,
+                    'document_type' => $document['type'] ?? 'unknown',
+                    'message_id' => $result['message_id'] ?? null,
+                ]);
+            } else {
+                Log::error('Failed to send template message', [
+                    'template' => $templateName,
+                    'document_type' => $document['type'] ?? 'unknown',
+                ]);
+            }
         }
     }
 }

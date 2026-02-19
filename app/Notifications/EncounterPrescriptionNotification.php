@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Encounter;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use App\Services\EncounterPrescriptionPdfService;
+use App\Services\WhatsAppService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -56,12 +57,27 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
     {
         $channels = ['database'];
 
-        // Try WhatsApp first
-        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+        $whatsAppService = app(WhatsAppService::class);
+        $hasWhatsAppQuota = $whatsAppService->hasAvailableQuota();
+
+        // Try WhatsApp first ONLY if we have quota available (<1000 this month)
+        if (($notifiable->whatsapp_phone || $notifiable->phone) && $hasWhatsAppQuota) {
             $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+
+            Log::info('WhatsApp channel selected (quota available)', [
+                'remaining_quota' => $whatsAppService->getRemainingQuota(),
+                'patient_id' => $notifiable->id,
+            ]);
+        } else {
+            if (! $hasWhatsAppQuota) {
+                Log::info('WhatsApp quota exhausted, using email fallback', [
+                    'remaining_quota' => 0,
+                    'patient_id' => $notifiable->id,
+                ]);
+            }
         }
 
-        // Add email as fallback
+        // Add email as fallback (or primary if no WhatsApp quota)
         if ($this->getMailChannelIfValid($notifiable->email)) {
             $channels[] = 'mail';
         }
@@ -160,7 +176,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
 
     /**
      * Get the WhatsApp representation of the notification.
-     * Returns array with documents to send
+     * Uses template messages to bypass 24-hour window restriction
      */
     public function toWhatsApp(object $notifiable): ?array
     {
@@ -183,7 +199,8 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
                         $documents[] = [
                             'url' => $url,
                             'filename' => $filename,
-                            'caption' => 'Receta Medica - '.($practitioner->name ?? 'Medico'),
+                            'caption' => 'Receta Medica',
+                            'type' => 'prescription',
                         ];
                     }
                 }
@@ -200,7 +217,8 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
                         $documents[] = [
                             'url' => $url,
                             'filename' => $filename,
-                            'caption' => 'Orden Medica - '.($practitioner->name ?? 'Medico'),
+                            'caption' => 'Orden Medica',
+                            'type' => 'medical_order',
                         ];
                     }
                 }
@@ -215,22 +233,12 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
                 return null;
             }
 
-            // Build message
-            $message = "📄 *Nuevas Recetas Medicas*\n\n";
-            $message .= "Hola {$patient->name},\n\n";
-            $message .= "Ha recibido nuevas recetas medicas del *{$practitioner->name}*.\n\n";
-
-            if ($this->hasMedications) {
-                $message .= "💊 Receta de medicamentos\n";
-            }
-            if ($this->hasServiceRequests) {
-                $message .= "🏥 Ordenes medicas\n";
-            }
-
-            $message .= "\nLos documentos se enviaran a continuacion.";
-
+            // Use template message (bypasses 24-hour restriction)
             return [
-                'body' => $message,
+                'use_template' => true,
+                'template_name' => 'prescription_delivery',
+                'patient_name' => $patient->name,
+                'practitioner_name' => $practitioner->name,
                 'documents' => $documents,
             ];
 
