@@ -75,6 +75,7 @@ return [
         'whatsapp_business_account_id' => env('META_WHATSAPP_BUSINESS_ACCOUNT_ID'),
         'testing_mode' => env('META_TESTING_MODE', false),
         'testing_phone' => env('META_TESTING_PHONE'),
-    ]
+        'webhook_verify_token' => env('META_WEBHOOK_VERIFY_TOKEN', 'meditech_whatsapp_webhook_2026'),
+    ],
 
 ];

@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             // CyberSource Payment Routes
             Route::middleware('web')
                 ->group(base_path('routes/cybersource.php'));
+
+            // Webhook Routes (accessed via webhooks.meditecpty.com subdomain)
+            // No prefix needed since subdomain handles it
+            Route::middleware('api')
+                ->group(base_path('routes/webhooks.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -44,9 +49,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Exclude webhooks from CSRF verification
+        // These are accessed via webhooks.meditecpty.com subdomain
         $middleware->validateCsrfTokens(except: [
             'api/webhooks/twilio/*',
-            'webhooks/cybersource',
+            'cybersource',
+            'cybersource/*',
+            'whatsapp',
+            'whatsapp/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
