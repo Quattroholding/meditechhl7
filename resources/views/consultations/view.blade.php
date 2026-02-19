@@ -444,6 +444,22 @@
                                 <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-primary" target="_blank">
                                     <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
                                 </a>
+
+                                @php
+                                    // Check if there are unsent prescriptions or service requests
+                                    $hasUnsentMedications = $encounter->medicationRequests->whereNull('notification_sent_at')->count() > 0;
+                                    $hasUnsentServiceRequests = $encounter->serviceRequests->whereNull('notification_sent_at')->count() > 0;
+                                    $canResendWhatsApp = $hasUnsentMedications || $hasUnsentServiceRequests;
+                                @endphp
+
+                                @if($canResendWhatsApp && ($encounter->patient->whatsapp_phone || $encounter->patient->phone))
+                                    <form action="{{ route('consultation.resend-whatsapp', $encounter->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de enviar las prescripciones por WhatsApp al paciente?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fab fa-whatsapp"></i> Enviar Recetas por WhatsApp
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     </div>
