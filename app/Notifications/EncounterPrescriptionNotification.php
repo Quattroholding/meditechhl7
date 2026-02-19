@@ -54,10 +54,19 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
 
     public function via($notifiable)
     {
-        return array_filter([
-            'database',
-            $this->getMailChannelIfValid($notifiable->email),
-        ]);
+        $channels = ['database'];
+
+        // Try WhatsApp first
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+        }
+
+        // Add email as fallback
+        if ($this->getMailChannelIfValid($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     /**
@@ -147,6 +156,93 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
             'has_service_requests' => $this->hasServiceRequests,
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     * Returns array with documents to send
+     */
+    public function toWhatsApp(object $notifiable): ?array
+    {
+        try {
+            $practitioner = $this->encounter->practitioner;
+            $patient = $this->encounter->patient;
+            $pdfService = new EncounterPrescriptionPdfService;
+            $whatsAppService = app(\App\Services\WhatsAppService::class);
+
+            $documents = [];
+
+            // Generate and store prescription PDF (medications)
+            if ($this->hasMedications && ! empty($this->medicationRequestIds)) {
+                $prescriptionPdf = $pdfService->generatePrescriptionPdf($this->encounter, $this->medicationRequestIds);
+                if ($prescriptionPdf) {
+                    $filename = $pdfService->generatePrescriptionFilename($this->encounter);
+                    $url = $whatsAppService->storePdfTemporarily($prescriptionPdf, $filename);
+
+                    if ($url) {
+                        $documents[] = [
+                            'url' => $url,
+                            'filename' => $filename,
+                            'caption' => 'Receta Medica - '.($practitioner->name ?? 'Medico'),
+                        ];
+                    }
+                }
+            }
+
+            // Generate and store medical order PDF (service requests)
+            if ($this->hasServiceRequests && ! empty($this->serviceRequestIds)) {
+                $medicalOrderPdf = $pdfService->generateMedicalOrderPdf($this->encounter, $this->serviceRequestIds);
+                if ($medicalOrderPdf) {
+                    $filename = $pdfService->generateMedicalOrderFilename($this->encounter);
+                    $url = $whatsAppService->storePdfTemporarily($medicalOrderPdf, $filename);
+
+                    if ($url) {
+                        $documents[] = [
+                            'url' => $url,
+                            'filename' => $filename,
+                            'caption' => 'Orden Medica - '.($practitioner->name ?? 'Medico'),
+                        ];
+                    }
+                }
+            }
+
+            if (empty($documents)) {
+                Log::warning('No se pudieron generar documentos para WhatsApp', [
+                    'encounter_id' => $this->encounter->id,
+                    'patient_id' => $patient->id,
+                ]);
+
+                return null;
+            }
+
+            // Build message
+            $message = "📄 *Nuevas Recetas Medicas*\n\n";
+            $message .= "Hola {$patient->name},\n\n";
+            $message .= "Ha recibido nuevas recetas medicas del *{$practitioner->name}*.\n\n";
+
+            if ($this->hasMedications) {
+                $message .= "💊 Receta de medicamentos\n";
+            }
+            if ($this->hasServiceRequests) {
+                $message .= "🏥 Ordenes medicas\n";
+            }
+
+            $message .= "\nLos documentos se enviaran a continuacion.";
+
+            return [
+                'body' => $message,
+                'documents' => $documents,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Error al generar mensaje de WhatsApp para recetas', [
+                'encounter_id' => $this->encounter->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return null;
+        }
     }
 
     /**

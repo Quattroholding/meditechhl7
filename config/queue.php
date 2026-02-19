@@ -43,6 +43,15 @@ return [
             'after_commit' => false,
         ],
 
+        'whatsapp' => [
+            'driver' => 'database',
+            'connection' => env('DB_QUEUE_CONNECTION'),
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => 'whatsapp',
+            'retry_after' => 120, // WhatsApp puede necesitar más tiempo
+            'after_commit' => false,
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
