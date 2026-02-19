@@ -15,9 +15,11 @@ class WhatsAppWebhookController extends Controller
      */
     public function verify(Request $request)
     {
-        $mode = $request->query('hub.mode');
-        $token = $request->query('hub.verify_token');
-        $challenge = $request->query('hub.challenge');
+        // PHP converts dots to underscores in query parameter names
+        // So hub.mode becomes hub_mode, hub.verify_token becomes hub_verify_token, etc.
+        $mode = $request->query('hub_mode');
+        $token = $request->query('hub_verify_token');
+        $challenge = $request->query('hub_challenge');
 
         // Verify token matches what we set in Meta dashboard
         $verifyToken = config('services.meta.webhook_verify_token', 'meditech_whatsapp_webhook_2026');
