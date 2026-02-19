@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WhatsAppWebhook extends Model
 {
+    protected $table='whatsapp_webhooks';
     protected $fillable = [
         'event_type',
         'message_id',
