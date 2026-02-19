@@ -52,7 +52,7 @@ enum AppointmentStatusEnum: string
             self::NoShow => '6f42c1',
             self::EnteredInError => 'FF5252',
             self::CheckedIn => 'ffc107',
-            self::Waitlist => 'FF9800',
+            self::Waitlist => 'ffa10b',
         };
     }
 
@@ -72,7 +72,7 @@ enum AppointmentStatusEnum: string
             self::NoShow => 'badge appointment-status-noshow',
             self::EnteredInError => 'bg-danger',
             self::CheckedIn => 'badge appointment-status-checked-in',
-            self::Waitlist => 'bg-warning',
+            self::Waitlist => 'badge appointment-status-waitlist',
         };
     }
 
