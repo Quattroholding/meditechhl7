@@ -1513,8 +1513,8 @@ body {
                     Restricciones de Edición
                 </div>
                 <ul class="mb-0">
-                    <li>Las citas <span class="status-badge status-fulfilled">Completadas</span> no pueden modificarse</li>
-                    <li>Las citas <span class="status-badge status-cancelled">Canceladas</span> no pueden editarse, solo reagendarse</li>
+                    <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span> no pueden modificarse</li>
+                    <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span> no pueden editarse, solo reagendarse</li>
                     <li>No se puede cambiar a un horario que genere conflictos</li>
                 </ul>
             </div>
