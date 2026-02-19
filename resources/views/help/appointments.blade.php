@@ -19,10 +19,11 @@
             --dark-text: #212529;
         }
 
- /* ========== SOLUCIÓN COMPLETA - BASADA EN BRANCHES ========== */
 
 html {
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -31,14 +32,15 @@ body {
     color: var(--dark-text);
     overflow-x: hidden;
     width: 100%;
-    position: relative;
+    margin: 0;        /* ← añade esto */
+    padding: 0;
+    /*position: relative;*/
 }
 
 /* Contenedor principal con límites estrictos */
 .help-content {
     margin-left: 280px;
     padding: 30px;
-    min-height: 100vh;
     max-width: calc(100vw - 280px);
     overflow-x: hidden;
     box-sizing: border-box;
@@ -154,14 +156,14 @@ body {
             font-size: 0.65rem;
         }
 
-        /* Main Content */
+        /* Main Content 
         .help-content {
             margin-left: 280px;
             padding: 30px;
-            min-height: 100vh;
+           min-height: auto;
             overflow-x: hidden;
             max-width: 100%;
-        }
+        }*/
 
          /* Breadcrumb */
         .help-breadcrumb {
@@ -678,6 +680,7 @@ body {
 
             .help-content {
                 margin-left: 0;
+                max-width: 100%;
             }
         }
 
@@ -1033,9 +1036,9 @@ body {
                 </div>
             </div>
 
-             <div>
+             {{--}}<div>
                 <img src="{{ asset('images/tutorial/appointments/appointment-weekly.png') }}" alt="" style="width: 100%;">
-            </div>
+            </div>{{--}}
 
             <h3>Código de Colores</h3>
             <p>Las citas se muestran con diferentes colores según su estado para facilitar la identificación visual:</p>
@@ -1172,11 +1175,11 @@ body {
                                 <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>en usuarios con ROL Paciente, Asistente y Recepcionista.</small></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td data-label="Campo"><strong>Sucursal</strong></td>
                                 <td data-label="Descripcion">Seleccione la sucursal donde se realizará la consulta</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <td data-label="Campo"><strong>Consultorio</strong></td>
                                 <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
@@ -1442,9 +1445,9 @@ body {
             <div class="row">
                 <div class="col-md-6">
                     <ul>
-                        <li>Nombre completo del paciente</li>
-                        <li>Documento de identidad</li>
-                        <li>Teléfono de contacto</li>
+                        <li>Nombre del paciente</li>
+                        <!--<li>Documento de identidad</li>
+                        <li>Teléfono de contacto</li>-->
                         <li>Doctor asignado</li>
                         <li>Fecha y hora programada</li>
                     </ul>
@@ -1452,7 +1455,7 @@ body {
                 <div class="col-md-6">
                     <ul>
                         <li>Sucursal y consultorio</li>
-                        <li>Tipo de cita (presencial/virtual)</li>
+                        <!--<li>Tipo de cita (presencial/virtual)</li>-->
                         <li>Estado actual</li>
                         <li>Motivo de consulta</li>
                         <li>Notas adicionales</li>
@@ -1504,8 +1507,8 @@ body {
             <h3>Cancelar una Cita</h3>
             <p>Para cancelar una cita:</p>
             <ol>
-                <li>Seleccione la cita</li>
-                <li>Clic en <strong>"Cancelar cita"</strong></li>
+                <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
+                <li>Clic en <strong>"Borrar"</strong></li>
                 <!--<li>Ingrese el motivo de cancelación (opcional pero recomendado)</li> -->
                 <li>Confirme la cancelación</li>
             </ol>
@@ -1612,7 +1615,7 @@ body {
                     <tbody>
                         <tr>
                             <td data-label="Columna"><strong>Paciente</strong></td>
-                            <td data-label="Descripcion">Nombre completo y documento del paciente</td>
+                            <td data-label="Descripcion">Nombre</td>
                         </tr>
                         <tr>
                             <td data-label="Columna"><strong>Doctor</strong></td>
