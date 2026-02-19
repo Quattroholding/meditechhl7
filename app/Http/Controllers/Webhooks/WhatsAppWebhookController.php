@@ -22,6 +22,16 @@ class WhatsAppWebhookController extends Controller
         // Verify token matches what we set in Meta dashboard
         $verifyToken = config('services.meta.webhook_verify_token', 'meditech_whatsapp_webhook_2026');
 
+        // Debug logging
+        Log::info('WhatsApp webhook verification attempt', [
+            'mode' => $mode,
+            'token_received' => $token,
+            'token_expected' => $verifyToken,
+            'challenge' => $challenge,
+            'all_query_params' => $request->query(),
+            'url' => $request->fullUrl(),
+        ]);
+
         if ($mode === 'subscribe' && $token === $verifyToken) {
             Log::info('WhatsApp webhook verified successfully', [
                 'mode' => $mode,
@@ -34,8 +44,9 @@ class WhatsAppWebhookController extends Controller
 
         Log::warning('WhatsApp webhook verification failed', [
             'mode' => $mode,
-            'token' => $token,
+            'token_received' => $token,
             'expected_token' => $verifyToken,
+            'match' => $token === $verifyToken,
         ]);
 
         return response('Forbidden', 403);
