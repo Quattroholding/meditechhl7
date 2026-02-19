@@ -18,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Test route without middleware
+Route::get('/test', function () {
+    return response('Webhook endpoint is working!', 200);
+});
+
 // WhatsApp Meta Webhooks
 // URL: webhooks.meditecpty.com/whatsapp
 Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {

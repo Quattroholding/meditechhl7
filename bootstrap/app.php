@@ -18,9 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/cybersource.php'));
 
             // Webhook Routes (accessed via webhooks.meditecpty.com subdomain)
-            // No prefix needed since subdomain handles it
-            Route::middleware('api')
-                ->group(base_path('routes/webhooks.php'));
+            // No middleware - webhooks don't need authentication or session
+            Route::group([], base_path('routes/webhooks.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
