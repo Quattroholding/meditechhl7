@@ -168,12 +168,17 @@
                                                 <dl class="dl-horizontal">
                                                     <dt>{{ __('encounter.locations') }}</dt>
                                                     <dd>
-                                                        @if(count($encounter->presentIllnesses->locations)>1)
+
+                                                        @if(is_array($encounter->presentIllnesses->locations) && count($encounter->presentIllnesses->locations)>1)
                                                             @foreach($encounter->presentIllnesses->locations as $v)
+                                                                @isset($v)
                                                                     {{__('present_illness.'.$v)}} <br/>
+                                                                @endisset
                                                             @endforeach
-                                                        @elseif($encounter->presentIllnesses->location)
+                                                        @elseif($encounter->presentIllnesses->location <> '{"location":null}')
                                                             {{__('present_illness.'.$encounter->presentIllnesses->location)}}
+                                                        @else
+                                                            N/A
                                                         @endif
                                                     </dd>
                                                     <dt>{{ __('encounter.severity') }}</dt>
