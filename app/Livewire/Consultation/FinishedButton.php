@@ -32,9 +32,9 @@ class FinishedButton extends Component
     #[On('findFinishedButtonStatus')]
     public function findFinishedButtonStatus()
     {
-        if(auth()->user()->hasRole('asistente medico')){
+        if (auth()->user()->hasRole('asistente medico')) {
             $this->enabled = $this->validateGeneralNote();
-        }else{
+        } else {
             $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
         }
     }
@@ -66,7 +66,7 @@ class FinishedButton extends Component
             $this->messages[5] = '- Momento';
             $this->messages[6] = '- Descripción';
         } else {
-            if (empty($this->encounter->presentIllnesses->location)) {
+            if (empty($this->encounter->presentIllnesses->locations)) {
                 $this->messages[2] = '- Ubicación';
                 $return = false;
             } else {

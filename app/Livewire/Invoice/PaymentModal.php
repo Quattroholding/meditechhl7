@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Invoice;
 
+use App\Enums\InvoivePatientStatus;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
@@ -129,10 +130,10 @@ class PaymentModal extends Component
 
                 // Update payment status
                 if ($this->invoice->amount_due <= 0.01) {
-                    $this->invoice->payment_status = 'paid';
+                    $this->invoice->payment_status = InvoivePatientStatus::PAID;
                     $this->invoice->payment_date = $this->payment_date;
                 } else {
-                    $this->invoice->payment_status = 'partial';
+                    $this->invoice->payment_status = InvoivePatientStatus::PARTIAL;
                 }
 
                 $this->invoice->updated_by = auth()->id();
