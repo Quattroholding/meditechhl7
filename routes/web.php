@@ -220,6 +220,8 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 
     Route::get('/{encounter_id}/view', [ConsultationController::class, 'view'])->middleware('permission:consultations.view')->name('consultation.view');
 
+    Route::post('/{encounter_id}/resend-whatsapp', [ConsultationController::class, 'resendPrescriptionsWhatsApp'])->middleware('permission:consultations.view')->name('consultation.resend-whatsapp');
+
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->middleware('permission:consultations.create')->name('consultation.show');
 
     Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:consultations.view')->name('consultation.download_resumen');

@@ -411,4 +411,56 @@ class ConsultationController extends Controller
         }
 
     }
+
+    /**
+     * Resend prescriptions via WhatsApp manually
+     */
+    public function resendPrescriptionsWhatsApp($encounter_id)
+    {
+        try {
+            $encounter = Encounter::with([
+                'patient',
+                'practitioner',
+                'medicationRequests',
+                'serviceRequests',
+            ])->findOrFail($encounter_id);
+
+            // Check if there are unsent prescriptions
+            $hasUnsentMedications = $encounter->medicationRequests()
+                ->whereNull('notification_sent_at')
+                ->exists();
+
+            $hasUnsentServiceRequests = $encounter->serviceRequests()
+                ->whereNull('notification_sent_at')
+                ->exists();
+
+            if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
+                return redirect()->back()->with('message.warning', 'No hay recetas pendientes de envío para este encounter.');
+            }
+
+            // Verify patient has phone
+            $patient = $encounter->patient;
+            if (! $patient || ! ($patient->whatsapp_phone || $patient->phone)) {
+                return redirect()->back()->with('message.error', 'El paciente no tiene número de WhatsApp configurado.');
+            }
+
+            // Send notification
+            $patient->notify(new \App\Notifications\EncounterPrescriptionNotification(
+                $encounter,
+                $hasUnsentMedications,
+                $hasUnsentServiceRequests
+            ));
+
+            return redirect()->back()->with('message.success', 'Prescripciones enviadas por WhatsApp exitosamente.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error al reenviar prescripciones por WhatsApp', [
+                'encounter_id' => $encounter_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->with('message.error', 'Error al enviar prescripciones: '.$e->getMessage());
+        }
+    }
 }
