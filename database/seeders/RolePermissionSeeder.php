@@ -216,7 +216,7 @@ class RolePermissionSeeder extends Seeder
             'settings.create_working_hour_user',
             'settings.signature_and_seal',
             'settings.invoice_template',
-            'settings.prescription_template',
+            // 'settings.prescription_template',
             'service_request.view',
             'service_request.upload_result',
             'branches.view',
