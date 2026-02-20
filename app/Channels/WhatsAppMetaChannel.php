@@ -107,9 +107,33 @@ class WhatsAppMetaChannel
     protected function sendTemplateMessage(string $phoneNumber, array $message, $notifiable): void
     {
         $templateName = $message['template_name'] ?? 'prescription_delivery';
+        $languageCode = $message['language_code'] ?? 'es';
         $documents = $message['documents'] ?? [];
 
-        // Build template components
+        // If components are already provided (new format), use them directly
+        if (! empty($message['components'])) {
+            $result = $this->whatsAppService->sendTemplate(
+                $phoneNumber,
+                $templateName,
+                $message['components'],
+                $languageCode
+            );
+
+            if ($result) {
+                Log::info('Template message sent successfully', [
+                    'template' => $templateName,
+                    'message_id' => $result['message_id'] ?? null,
+                ]);
+            } else {
+                Log::error('Failed to send template message', [
+                    'template' => $templateName,
+                ]);
+            }
+
+            return;
+        }
+
+        // Legacy format: Build components from message array
         $components = [];
 
         // Body component with variables (patient name, doctor name)
@@ -151,7 +175,7 @@ class WhatsAppMetaChannel
                 $phoneNumber,
                 $templateName,
                 $documentComponents,
-                'es'
+                $languageCode
             );
 
             if ($result) {

@@ -46,8 +46,8 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
 
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            // Use N8N channel instead of Twilio
-            $channels[] = \App\Channels\WhatsAppN8NChannel::class;
+            // Use WhatsApp Meta channel with template
+            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
         }
 
         return $channels;
@@ -114,27 +114,55 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
 
     /**
      * Get the WhatsApp representation of the notification.
+     *
+     * Returns an array structure to use WhatsApp Business template
+     * Uses Meta's satisfaction_survey template in Spanish
      */
-    public function toWhatsApp(object $notifiable): string
+    public function toWhatsApp(object $notifiable): array
     {
-        $surveyUrl = route('survey.public', $this->surveyResponse->token);
-        $practitionerName = $this->encounter->practitioner->name ?? 'su médico';
+        // Get only the token, not the full URL
+        // The template in Meta already has the base URL configured
+        $surveyToken = $this->surveyResponse->token;
+
+        // Get clinic/branch name or use client name
+        $locationName = $this->encounter->appointment->consultingRoom->branch->name
+            ?? $this->encounter->appointment->client->name
+            ?? config('app.name');
+
+        // Format date in Spanish format
         $encounterDate = $this->encounter->start->format('d/m/Y');
-        $clinicName = $this->encounter->appointment->client->name ?? config('app.name');
 
-        $message = "📋 *Encuesta de Satisfacción*\n\n";
-        $message .= "Hola {$notifiable->name},\n\n";
-        $message .= "Gracias por su visita con *{$practitionerName}* el {$encounterDate}.\n\n";
-        $message .= "Nos gustaría conocer su opinión sobre la atención recibida en *{$clinicName}*.\n\n";
-        $message .= "Su experiencia es muy importante para nosotros y nos ayuda a mejorar continuamente nuestros servicios.\n\n";
-        $message .= "━━━━━━━━━━━━━━━━━━━━\n";
-        $message .= "👉 *Por favor complete nuestra encuesta aquí:*\n\n";
-        $message .= "{$surveyUrl}\n\n";
-        $message .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-        $message .= "⏱️ Solo tomará unos minutos de su tiempo.\n\n";
-        $message .= '¡Gracias por ayudarnos a mejorar! 😊';
+        // Build template components for satisfaction_survey
+        $components = [];
 
-        return $message;
+        // Body component with 2 variables:
+        // {{1}} = Location/clinic name
+        // {{2}} = Date
+        $components[] = [
+            'type' => 'body',
+            'parameters' => [
+                ['type' => 'text', 'text' => $locationName],
+                ['type' => 'text', 'text' => $encounterDate],
+            ],
+        ];
+
+        // Button component with only the dynamic part (token)
+        // The base URL is already configured in Meta template
+        $components[] = [
+            'type' => 'button',
+            'sub_type' => 'url',
+            'index' => '0',
+            'parameters' => [
+                ['type' => 'text', 'text' => $surveyToken],
+            ],
+        ];
+
+        return [
+            'use_template' => true,
+            'template_name' => 'satisfaction_survey',
+            'language_code' => 'es',
+            'components' => $components,
+        ];
     }
 
     /**
