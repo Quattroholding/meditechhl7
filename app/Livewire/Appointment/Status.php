@@ -29,10 +29,19 @@ class Status extends Component
 
     public $customCancellationReason = '';
 
+    public function mount()
+    {
+        $this->appointment = Appointment::find($this->appointment_id);
+        $this->colors = $this->appointment::statusColors();
+        $this->status = $this->appointment->status->value;
+        $this->color = $this->colors[$this->status];
+    }
+
     public function render()
     {
         $this->appointment = Appointment::find($this->appointment_id);
         $this->status = $this->appointment->status->value;
+        $this->colors = $this->appointment::statusColors();
 
         return view('livewire.appointment.status', [
             'cancellationReasons' => AppointmentCancelledReason::toArray(),

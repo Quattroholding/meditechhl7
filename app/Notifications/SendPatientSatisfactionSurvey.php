@@ -39,12 +39,15 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
     {
         $channels = ['database'];
 
+        // Only add mail channel if email is valid and not reserved
+        if ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
             // Use N8N channel instead of Twilio
             $channels[] = \App\Channels\WhatsAppN8NChannel::class;
-        } elseif ($this->isValidEmail($notifiable->email)) {
-            $channels[] = 'mail';
         }
 
         return $channels;
