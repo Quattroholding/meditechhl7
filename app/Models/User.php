@@ -409,8 +409,11 @@ class User extends Authenticatable
 
         // If suspended, check days until expiration
         if ($subscription->status->value === 'suspended') {
-            $expirationDays = config('subscriptions.expiration_after_suspension_days', 30);
-            $daysSinceSuspension = now()->startOfDay()->diffInDays($subscription->updated_at->startOfDay());
+            $expirationDays = (int) config('subscriptions.expiration_after_suspension_days', 30);
+            $updatedAt = $subscription->updated_at instanceof \Carbon\Carbon
+                ? $subscription->updated_at
+                : \Carbon\Carbon::parse($subscription->updated_at);
+            $daysSinceSuspension = now()->startOfDay()->diffInDays($updatedAt->startOfDay());
 
             return max(0, $expirationDays - $daysSinceSuspension);
         }
@@ -419,7 +422,10 @@ class User extends Authenticatable
         if ($subscription->status->value === 'past_due') {
             $invoice = $subscription->currentInvoice;
             if ($invoice) {
-                $daysUntilDue = now()->startOfDay()->diffInDays($invoice->due_date->startOfDay(), false);
+                $dueDate = $invoice->due_date instanceof \Carbon\Carbon
+                    ? $invoice->due_date
+                    : \Carbon\Carbon::parse($invoice->due_date);
+                $daysUntilDue = now()->startOfDay()->diffInDays($dueDate->startOfDay(), false);
 
                 return max(0, $daysUntilDue);
             }

@@ -120,7 +120,9 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
      */
     public function toWhatsApp(object $notifiable): array
     {
-        $surveyUrl = route('survey.public', $this->surveyResponse->token);
+        // Get only the token, not the full URL
+        // The template in Meta already has the base URL configured
+        $surveyToken = $this->surveyResponse->token;
 
         // Get clinic/branch name or use client name
         $locationName = $this->encounter->appointment->consultingRoom->branch->name
@@ -144,13 +146,14 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
             ],
         ];
 
-        // Button component with survey URL
+        // Button component with only the dynamic part (token)
+        // The base URL is already configured in Meta template
         $components[] = [
             'type' => 'button',
             'sub_type' => 'url',
             'index' => '0',
             'parameters' => [
-                ['type' => 'text', 'text' => $surveyUrl],
+                ['type' => 'text', 'text' => $surveyToken],
             ],
         ];
 
