@@ -266,20 +266,51 @@ class ClientInvoiceService
 
     public function processOverdue(): int
     {
-        $overdueInvoices = ClientInvoice::whereIn('status', [InvoiceStatus::PENDING->value, InvoiceStatus::PARTIALLY_PAID->value])
+        $overdueInvoices = ClientInvoice::whereIn('status', [
+            InvoiceStatus::PENDING->value,
+            InvoiceStatus::PARTIALLY_PAID->value,
+            InvoiceStatus::OVERDUE->value,
+        ])
             ->whereDate('due_date', '<', today())
             ->get();
 
         $count = 0;
-        $gracePeriodDays = config('subscriptions.grace_period_days', 7);
+        $gracePeriodDays = (int) config('subscriptions.grace_period_days', 7);
 
         foreach ($overdueInvoices as $invoice) {
-            $invoice->markAsOverdue();
-            $count++;
+            // Mark as overdue only if not already overdue
+            if ($invoice->status !== InvoiceStatus::OVERDUE) {
+                $invoice->markAsOverdue();
+                $count++;
+            }
 
             if ($invoice->subscription) {
                 $subscription = $invoice->subscription;
                 $daysPastDue = abs($invoice->due_date->diffInDays(now(), false));
+
+                // If subscription is active/trial with overdue invoice, mark as past_due
+                if (in_array($subscription->status->value, ['active', 'trial']) && $daysPastDue > 0) {
+                    $subscription->status = \App\Enums\SubscriptionStatus::PAST_DUE;
+                    $subscription->grace_period_ends_at = $invoice->due_date->copy()->addDays($gracePeriodDays);
+                    $subscription->save();
+
+                    Log::info('Subscription marked as past_due', [
+                        'invoice_id' => $invoice->id,
+                        'subscription_id' => $subscription->id,
+                        'grace_period_ends_at' => $subscription->grace_period_ends_at,
+                    ]);
+                }
+
+                // If grace period not set but subscription is past_due, set it now
+                if ($subscription->status->value === 'past_due' && ! $subscription->grace_period_ends_at) {
+                    $subscription->grace_period_ends_at = $invoice->due_date->copy()->addDays($gracePeriodDays);
+                    $subscription->save();
+
+                    Log::info('Grace period set for existing past_due subscription', [
+                        'subscription_id' => $subscription->id,
+                        'grace_period_ends_at' => $subscription->grace_period_ends_at,
+                    ]);
+                }
 
                 // Si pasó el periodo de gracia (7 días) y está en PAST_DUE, suspender
                 if ($daysPastDue > $gracePeriodDays && $subscription->status->value === 'past_due') {
