@@ -71,12 +71,13 @@ class PresentIllness extends Component
         return view('livewire.consultation.present-illness');
     }
 
-    public function create()
+    public function create($initialLocations = [])
     {
         $this->present_illness = $this->encounter->presentIllnesses()->create([
             'fhir_id' => 'condition-'.Str::uuid(),
             'description' => '',
-            'location' => $this->location,
+            'location' => null,
+            'locations' => $initialLocations,
             'severity' => $this->severity,
             'duration' => $this->duration,
             'timing' => $this->timing,
@@ -88,9 +89,6 @@ class PresentIllness extends Component
     public function save($type, $value, $multiple = false)
     {
 
-        if ($type == 'location') {
-            $this->location = $value;
-        }
         if ($type == 'severity') {
             $this->severity = $value;
         }
@@ -102,15 +100,18 @@ class PresentIllness extends Component
         }
 
         if (! isset($this->encounter->presentIllnesses->fhir_id)) {
-            $this->create();
-        } else {
-            $locations = null;
+            // Si es location, crear con el valor inicial en el array locations
             if ($type == 'location') {
-                $locations = $this->encounter->presentIllnesses->addLocationIfMissing($this->location);
+                $this->create([$value]);
+            } else {
+                $this->create();
+            }
+        } else {
+            if ($type == 'location') {
+                $locations = $this->encounter->presentIllnesses->addLocationIfMissing($value);
                 $this->encounter->presentIllnesses->locations = $locations;
             }
 
-            $this->encounter->presentIllnesses->location = $this->location;
             $this->encounter->presentIllnesses->severity = $this->severity;
             $this->encounter->presentIllnesses->duration = $this->duration;
             $this->encounter->presentIllnesses->timing = $this->timing;
@@ -135,6 +136,7 @@ class PresentIllness extends Component
         $this->encounter->presentIllnesses->locations = $locations;
         $this->encounter->presentIllnesses->save();
         $this->loadPressentIllness();
+        $this->dispatch('findFinishedButtonStatus');
     }
 
     public function updatedAggravatingFactors()
@@ -175,7 +177,7 @@ class PresentIllness extends Component
             $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 
@@ -196,7 +198,7 @@ class PresentIllness extends Component
 
             $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 
@@ -216,7 +218,7 @@ class PresentIllness extends Component
 
             $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 
@@ -239,7 +241,7 @@ class PresentIllness extends Component
 
             $this->dispatch('findFinishedButtonStatus');
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 }
