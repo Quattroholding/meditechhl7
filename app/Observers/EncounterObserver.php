@@ -35,7 +35,6 @@ class EncounterObserver
             $practitioner = $encounter->practitioner;
             $patient = $encounter->patient;
 
-
             // Validate practitioner has signature and seal
             if (! $pdfService->practitionerHasSignatureAndSeal($practitioner)) {
                 Log::info('Practitioner no tiene firma y sello configurados, no se envian recetas', [
@@ -163,8 +162,8 @@ class EncounterObserver
                 'status' => 'pending',
             ]);
 
-            // Send survey notification via email, WhatsApp, and database
-            $patient->notify(new SendPatientSatisfactionSurvey($surveyResponse, $encounter, $activeSurvey));
+            // Send survey notification via email, WhatsApp, and database (delayed 15 minutes)
+            $patient->notify((new SendPatientSatisfactionSurvey($surveyResponse, $encounter, $activeSurvey))->delay(now()->addMinutes(15)));
 
             Log::info('Encuesta de satisfacción enviada', [
                 'encounter_id' => $encounter->id,
