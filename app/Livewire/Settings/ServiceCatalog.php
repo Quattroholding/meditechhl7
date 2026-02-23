@@ -210,8 +210,7 @@ class ServiceCatalog extends Component
         while ($attempt < $maxRetries && ! $created) {
             try {
                 DB::transaction(function () use ($cpt, $attempt) {
-                    // Force code regeneration by clearing it before each attempt
-                    $service = new ServiceCatalogModel([
+                    ServiceCatalogModel::create([
                         'name' => $cpt->tpye.' '.$cpt->code,
                         'description' => $cpt->description_es ?? $cpt->description,
                         'cpt_code' => $cpt->code,
@@ -228,11 +227,9 @@ class ServiceCatalog extends Component
                         'client_id' => $this->clientId,
                         'practitioner_id' => $this->practitionerId,
                         'created_by' => auth()->id(),
+                        // Generate code with offset to avoid duplicates on retry
+                        'code' => ServiceCatalogModel::generateServiceCodeWithOffset('procedure', $attempt),
                     ]);
-
-                    // Add attempt offset to force different code generation
-                    $service->code_attempt_offset = $attempt;
-                    $service->save();
                 });
 
                 $created = true;
@@ -303,8 +300,7 @@ class ServiceCatalog extends Component
         while ($attempt < $maxRetries && ! $created) {
             try {
                 DB::transaction(function () use ($attempt) {
-                    // Force code regeneration by clearing it before each attempt
-                    $service = new ServiceCatalogModel([
+                    ServiceCatalogModel::create([
                         'name' => $this->custom_name,
                         'description' => $this->custom_description,
                         'service_type' => $this->custom_service_type,
@@ -321,11 +317,9 @@ class ServiceCatalog extends Component
                         'created_by' => auth()->id(),
                         'client_id' => $this->clientId,
                         'practitioner_id' => $this->practitionerId,
+                        // Generate code with offset to avoid duplicates on retry
+                        'code' => ServiceCatalogModel::generateServiceCodeWithOffset($this->custom_service_type, $attempt),
                     ]);
-
-                    // Add attempt offset to force different code generation
-                    $service->code_attempt_offset = $attempt;
-                    $service->save();
                 });
 
                 $created = true;

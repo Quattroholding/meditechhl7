@@ -251,6 +251,53 @@ class ServiceCatalog extends BaseModel
     }
 
     // Methods
+    public static function generateServiceCodeWithOffset(string $serviceType, int $offset = 0): string
+    {
+        $prefix = strtoupper(substr($serviceType ?? 'SVC', 0, 3));
+
+        // Buscar el último número usado para este prefijo GLOBALMENTE (sin scope global y sin filtro de cliente)
+        // porque el constraint único es global, no por cliente
+        $lastCode = static::withoutGlobalScope(ServiceCatalogScope::class)
+            ->where('code', 'like', $prefix.'_%')
+            ->orderByRaw('CAST(SUBSTRING(code, '.(strlen($prefix) + 2).') AS UNSIGNED) DESC')
+            ->value('code');
+
+        if ($lastCode) {
+            // Extraer el número del último código y sumar 1
+            preg_match('/'.$prefix.'_(\d+)/', $lastCode, $matches);
+            $number = isset($matches[1]) ? (int) $matches[1] + 1 : 1;
+        } else {
+            $number = 1;
+        }
+
+        // Add offset for retry logic
+        $number += $offset;
+
+        // Verificar que el código no exista GLOBALMENTE (por si acaso)
+        // Intentar hasta 100 veces para encontrar un código único
+        $maxAttempts = 100;
+        $attempts = 0;
+
+        do {
+            $code = $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT);
+            $exists = static::withoutGlobalScope(ServiceCatalogScope::class)
+                ->where('code', $code)
+                ->exists();
+            if ($exists) {
+                $number++;
+                $attempts++;
+            }
+
+            if ($attempts >= $maxAttempts) {
+                // Fallback: add random suffix if we can't find a unique code
+                $code = $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT).'_'.substr(md5(uniqid()), 0, 4);
+                break;
+            }
+        } while ($exists);
+
+        return $code;
+    }
+
     public function generateServiceCode(): string
     {
         $prefix = strtoupper(substr($this->service_type ?? 'SVC', 0, 3));
@@ -268,11 +315,6 @@ class ServiceCatalog extends BaseModel
             $number = isset($matches[1]) ? (int) $matches[1] + 1 : 1;
         } else {
             $number = 1;
-        }
-
-        // Add attempt offset if present (for retry logic)
-        if (isset($this->code_attempt_offset)) {
-            $number += $this->code_attempt_offset;
         }
 
         // Verificar que el código no exista GLOBALMENTE (por si acaso)
