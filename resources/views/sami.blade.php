@@ -354,7 +354,7 @@
             <span>Contáctanos:</span>
             <a href="mailto:business@meditecpty.com">business@meditecpty.com</a>
             <span class="sep">|</span>
-            <a href="tel:+5071234567">+507 123-4567</a>
+            <a href="tel:+5078316100">+507 831-6100</a>
         </div>
     </div>
 </footer>

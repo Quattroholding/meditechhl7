@@ -852,6 +852,10 @@
                     <li><strong>Doctor y su especialidad</strong></li>
                 </ul>
 
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_patientinfo.png') }}" alt="" style="width: 100%;">
+                </div>
+
                 <div class="info-box note">
                     <div class="info-box-title">
                         <i class="fas fa-info-circle text-primary"></i>
@@ -860,9 +864,7 @@
                     <p class="mb-0">En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada.</p>
                 </div>
 
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_patientinfo.png') }}" alt="" style="width: 100%;">
-            </div>
+
             </div>
 
             <!-- Step 2: Chief Complaint -->
