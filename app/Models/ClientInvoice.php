@@ -247,9 +247,10 @@ class ClientInvoice extends BaseModel
         $month = now()->format('m');
         $prefix = "SUB-{$year}{$month}-";
 
-        // Buscar el último número de secuencia para este período
-        // Usando max() + regex para extraer solo el número de secuencia
-        $lastInvoice = static::where('invoice_number', 'like', $prefix.'%')
+        // Buscar el último número de secuencia para este período GLOBALMENTE (sin scope)
+        // porque el constraint único es global
+        $lastInvoice = static::withoutGlobalScope('client_filter')
+            ->where('invoice_number', 'like', $prefix.'%')
             ->orderByRaw('CAST(SUBSTRING(invoice_number, '.strlen($prefix).' + 1) AS UNSIGNED) DESC')
             ->first();
 
@@ -262,7 +263,7 @@ class ClientInvoice extends BaseModel
         }
 
         // Intentar generar un número único (retry loop por si hay race condition)
-        $maxAttempts = 10;
+        $maxAttempts = 100;
         $attempt = 0;
 
         do {
@@ -272,8 +273,10 @@ class ClientInvoice extends BaseModel
                 $format
             );
 
-            // Verificar si ya existe
-            $exists = static::where('invoice_number', $invoiceNumber)->exists();
+            // Verificar si ya existe GLOBALMENTE (sin scope)
+            $exists = static::withoutGlobalScope('client_filter')
+                ->where('invoice_number', $invoiceNumber)
+                ->exists();
 
             if (! $exists) {
                 return $invoiceNumber;
@@ -282,7 +285,7 @@ class ClientInvoice extends BaseModel
             $attempt++;
         } while ($attempt < $maxAttempts);
 
-        // Si después de 10 intentos no se puede generar un número único,
+        // Si después de 100 intentos no se puede generar un número único,
         // agregar timestamp para garantizar unicidad
         return str_replace(
             ['{YEAR}', '{MONTH}', '{SEQUENCE}'],
