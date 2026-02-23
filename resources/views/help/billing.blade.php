@@ -661,7 +661,7 @@
                 <h4><span class="step-number">2</span><span class="step-title">Buscar Servicio en el Catálogo</span></h4>
                 <p>Para agregar un servicio:</p>
                 <ul>
-                    <li>Haga clic en el botón <strong>"Agregar Servicio"</strong> o <strong>"Buscar Servicio"</strong></li>
+                    <li>Haga clic en el botón <strong>"Servicios Facturables"</strong></li>
                     <li>Se abrirá un modal o panel de búsqueda</li>
                     <li>Escriba el nombre del servicio, código CPT o descripción</li>
                     <li>El sistema mostrará resultados mientras escribe (búsqueda en tiempo real)</li>
@@ -712,11 +712,11 @@
                                 <td data-label="Descripcion">Precio por unidad (puede modificarse)</td>
                                 <td data-label="Valor">Precio base del catálogo</td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td data-label="Campo"><strong>Notas</strong></td>
                                 <td data-label="Descripcion">Información adicional sobre el servicio</td>
                                 <td data-label="Valor">Vacío (opcional)</td>
-                            </tr>
+                            </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -731,7 +731,7 @@
             </div>
 
             <!-- Step 4 -->
-            <div class="step-card">
+            {{--}}<div class="step-card">
                 <h4><span class="step-number">4</span><span class="step-title">Confirmar y Agregar</span></h4>
                 <p>Para confirmar el servicio:</p>
                 <ul>
@@ -744,17 +744,21 @@
             <div>
                 <img src="{{ asset('images/tutorial/invoices/invoice_modify.png') }}" alt="" style="width: 100%;">
             </div>
-            </div>
+            </div>{{--}}
 
             <!-- Step 5 -->
             <div class="step-card">
-                <h4><span class="step-number">5</span><span class="step-title">Modificar o Eliminar Servicios</span></h4>
+                <h4><span class="step-number">4</span><span class="step-title">Modificar o Eliminar Servicios</span></h4>
                 <p>Antes de finalizar la consulta, puede:</p>
                 <ul>
                     <li><strong>Modificar cantidad:</strong> Cambiar el número de unidades</li>
                     <li><strong>Modificar precio:</strong> Ajustar el precio unitario</li>
-                    <li><strong>Eliminar servicio:</strong> Quitar un servicio de la lista</li>
+                    <li><strong>Eliminar servicio:</strong> haga clic en el ícono rojo del basurero para quitar un servicio de la lista, el sistema mostrará un modal para que confrme la eliminación del mismo.</li>
                 </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/invoices/invoice_modify.png') }}" alt="" style="width: 100%;">
+                </div>
 
                 <div class="info-box danger">
                     <div class="info-box-title">
