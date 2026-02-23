@@ -270,6 +270,11 @@ class ServiceCatalog extends BaseModel
             $number = 1;
         }
 
+        // Add attempt offset if present (for retry logic)
+        if (isset($this->code_attempt_offset)) {
+            $number += $this->code_attempt_offset;
+        }
+
         // Verificar que el código no exista GLOBALMENTE (por si acaso)
         // Intentar hasta 100 veces para encontrar un código único
         $maxAttempts = 100;
