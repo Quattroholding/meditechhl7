@@ -606,6 +606,10 @@
 
             <p>El módulo de <strong>Consultas Médicas</strong> es el corazón del sistema SAMI, donde los profesionales de salud documentan cada encuentro con sus pacientes. Este módulo permite registrar de manera estructurada toda la información clínica relevante.</p>
 
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_view.png') }}" alt="" style="width: 100%;">
+            </div>
+
             <div class="row mt-4">
                 <div class="col-md-6">
                     <div class="info-box tip">
@@ -619,7 +623,7 @@
                             <li>Plantillas personalizables por especialidad</li>
                             <li>Acceso rápido a historia clínica del paciente</li>
                             <li>Generación automática de documentos médicos</li>
-                            <li>Soporte para teleconsultas</li>
+                            <!--<li>Soporte para teleconsultas</li>-->
                         </ul>
                     </div>
                 </div>
@@ -632,15 +636,11 @@
                         <ul class="mb-0">
                             <li>Tener una <a href="{{ route('help.appointments') }}">cita agendada</a> para el paciente</li>
                             <li>El paciente debe estar <a href="{{ route('help.patients') }}">registrado</a> en el sistema</li>
-                            <li>La cita debe estar en estado "Confirmada" o "Arrived"</li>
+                            <li>La cita debe estar en estado "Confirmada" o "LLegó"</li>
                             <li>Tener configuradas las plantillas de consulta (opcional)</li>
                         </ul>
                     </div>
                 </div>
-            </div>
-
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_view.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -673,7 +673,7 @@
                 <ul>
                     <li>Navegue a <strong>Citas → Lista Citas</strong></li>
                     <li>Busque la cita del paciente usando los filtros</li>
-                    <li>En la columna de acciones, haga clic en </i> <strong>"Iniciar Consulta"</strong></li>
+                    <li>En la columna de Estatus, haga clic en </i> <strong>"Registrar Llegada"</strong></li>
                 </ul>
 
             <div>
@@ -690,6 +690,9 @@
                     <li>Localice la cita actual</li>
                     <li>Haga clic en <strong>"Iniciar Consulta"</strong></li>
                 </ul>
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_startenc.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
 
             <div class="info-box warning">
@@ -697,7 +700,7 @@
                     <i class="fas fa-exclamation-triangle text-warning"></i>
                     Importante
                 </div>
-                <p class="mb-0">Solo puede iniciar una consulta si la cita está en estado <strong>"LLegado"</strong>. Si la cita está en otro estado, primero debe actualizarla, ya sea que tenga que <strong>"Confirmar"</strong> o <strong>"Registrar Llegada"</strong>, todo dependerá del estado que tenga la cita.</p>
+                <p class="mb-0">Solo puede iniciar una consulta si la cita está en estado <strong>"LLegó"</strong>. Si la cita está en otro estado, primero debe actualizarla, ya sea que tenga que <strong>"Confirmar"</strong> o <strong>"Registrar Llegada"</strong>, todo dependerá del estado que tenga la cita.</p>
             </div>
         </section>
 
@@ -774,11 +777,30 @@
                             <i class="fas fa-clipboard-list"></i>
                         </div>
                         <h5>Plan de Tratamiento</h5>
-                        <p>Indicaciones médicas, medicamentos prescritos, órdenes de laboratorio, imágenes y recomendaciones generales.</p>
+                        <p>Indicaciones médicas, medicamentos prescritos, órdenes de laboratorio, imágenes, procedimientos y referencia a especialistas.</p>
                     </div>
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <div class="section-card">
+                        <div class="icon-circle">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h5>Servicios Facturables</h5>
+                        <p>Servicios personalizados y Servicios asociados a CPTs.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="section-card">
+                        <div class="icon-circle">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h5>Notas Generales</h5>
+                        <p>Nota General de la consulta.</p>
+                    </div>
+                </div>
+                <!--<div class="col-md-6 mb-3">
                     <div class="section-card">
                         <div class="icon-circle">
                             <i class="fas fa-pills"></i>
@@ -796,7 +818,7 @@
                         <h5>Órdenes Médicas</h5>
                         <p>Solicitudes de exámenes de laboratorio, estudios de imagen, procedimientos y otras órdenes médicas.</p>
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <div>
@@ -820,13 +842,14 @@
 
             <!-- Step 1: Patient Info -->
             <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Revisar Información del Paciente</span></h4>
+                <h4><span class="step-number">1</span><span class="step-title">Revisar Información general del Paciente y de la Cita</span></h4>
                 <p>Al iniciar la consulta, verá un encabezado con la información básica del paciente:</p>
                 <ul>
+                    <li><strong>Información de la cita:</strong> fecha, consultorio y tipo de servicio</li>
                     <li><strong>Nombre completo</strong> del paciente</li>
                     <li><strong>Edad</strong> y fecha de nacimiento</li>
                     <li><strong>Tipo y número de identificación</strong></li>
-                    <li><strong>Información de la cita:</strong> fecha, hora, tipo (presencial/virtual)</li>
+                    <li><strong>Doctor y su especialidad</strong></li>
                 </ul>
 
                 <div class="info-box note">
@@ -849,7 +872,7 @@
                 <ul>
                     <li>La razón principal de la visita en palabras del paciente</li>
                     <li>Síntomas principales que presenta</li>
-                    <li>Duración aproximada del problema</li>
+                    <!--<li>Duración aproximada del problema</li>-->
                 </ul>
 
             <div>
@@ -880,9 +903,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-label="Campo"><strong>Presión Arterial</strong></td>
-                            <td data-label="Descripcion">Sistólica / Diastólica</td>
-                            <td data-label="Unidad">mmHg</td>
+                            <td data-label="Campo"><strong>Temperatura</strong></td>
+                            <td data-label="Descripcion">Temperatura corporal</td>
+                            <td data-label="Unidad">°C</td>
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Frecuencia Cardíaca</strong></td>
@@ -890,9 +913,14 @@
                             <td data-label="Unidad">lpm</td>
                         </tr>
                         <tr>
-                            <td data-label="Campo"><strong>Temperatura</strong></td>
-                            <td data-label="Descripcion">Temperatura corporal</td>
-                            <td data-label="Unidad">°C</td>
+                            <td data-label="Campo"><strong>Presión Arterial</strong></td>
+                            <td data-label="Descripcion">Sistólica</td>
+                            <td data-label="Unidad">mmHg</td>
+                        </tr>
+                                                <tr>
+                            <td data-label="Campo"><strong>Presión Arterial</strong></td>
+                            <td data-label="Descripcion">Diastólica</td>
+                            <td data-label="Unidad">mmHg</td>
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Frecuencia Respiratoria</strong></td>
@@ -918,6 +946,11 @@
                             <td data-label="Campo"><strong>IMC</strong></td>
                             <td data-label="Descripcion">Índice de Masa Corporal (calculado automáticamente)</td>
                             <td data-label="Unidad">kg/m²</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Glicemia Capilar</strong></td>
+                            <td data-label="Descripcion">Medición del nivel de glucosa</td>
+                            <td data-label="Unidad">mg/dL</td>
                         </tr>
                     </tbody>
                 </table>
@@ -948,9 +981,10 @@
                 <h4><span class="step-number">5</span><span class="step-title">Agregar Diagnósticos</span></h4>
                 <p>En la sección de <strong>"Diagnóstico"</strong>:</p>
                 <ul>
-                    <li>Haga clic en <strong>"Agregar Diagnóstico"</strong></li>
+                    <li>Haga clic en <strong>"Escribir Diagnóstico"</strong></li>
                     <li>Busque el diagnóstico por nombre o código CIE-10</li>
-                    <li>Seleccione el tipo: Principal, Secundario, o Presuntivo</li>
+                    <!--<li>Seleccione el tipo: Principal, Secundario, o Presuntivo</li>-->
+                    <li>Seleccione la gavedad (medio, moderado, severo, critico)</li>
                     <li>Agregue notas adicionales si es necesario</li>
                     <li>Puede agregar múltiples diagnósticos</li>
                 </ul>
@@ -965,16 +999,16 @@
                 <h4><span class="step-number">6</span><span class="step-title">Crear Prescripción Médica</span></h4>
                 <p>Para prescribir medicamentos:</p>
                 <ul>
-                    <li>Vaya a la sección <strong>"Prescripción"</strong></li>
-                    <li>Haga clic en <strong>"Agregar Medicamento"</strong></li>
-                    <li>Busque el medicamento por nombre comercial o genérico</li>
+                    <li>Vaya a la sección <strong>"Medicamentos"</strong></li>
+                    <li>Haga clic en <strong>"Buscar Medicamento por nombre, código NDC o nombre genérico"</strong></li>
+                    <li>Busque el medicamento por nombre comercial o genérico, concentración y vía de administración</li>
                     <li>Complete los campos:
                         <ul>
-                            <li><strong>Dosis:</strong> Cantidad por toma</li>
+                            <li><strong>Cantidad:</strong> Cantidad por toma</li>
                             <li><strong>Frecuencia:</strong> Cada cuántas horas</li>
                             <li><strong>Vía:</strong> Oral, intravenosa, tópica, etc.</li>
                             <li><strong>Duración:</strong> Días de tratamiento</li>
-                            <li><strong>Indicaciones:</strong> Instrucciones especiales</li>
+                            <li><strong>Indicaciones:</strong> Instrucciones especiales compleatada automáticamente al llenar los campos previos</li>
                         </ul>
                     </li>
                     <li>Agregue todos los medicamentos necesarios</li>
@@ -995,16 +1029,14 @@
 
             <!-- Step 7: Medical Orders -->
             <div class="step-card">
-                <h4><span class="step-number">7</span><span class="step-title">Generar Órdenes Médicas</span></h4>
-                <p>Si necesita solicitar exámenes o procedimientos:</p>
+                <h4><span class="step-number">7</span><span class="step-title">Generar Imágenes, Laboratorios y Procedimiento</span></h4>
+                <p>Si necesita solicitar exámenes, imágenes o laboratorios:</p>
                 <ul>
-                    <li>Abra la sección <strong>"Órdenes Médicas"</strong></li>
                     <li>Seleccione el tipo de orden:
                         <ul>
-                            <li>Laboratorio</li>
-                            <li>Imágenes diagnósticas</li>
-                            <li>Procedimientos</li>
-                            <li>Interconsultas</li>
+                            <li>En caso de solicitar exámenes, seleccione la sección de <strong>"Laboratorios"</strong></li>
+                            <li>En caso de solicitar imágenes, seleccione la sección de <strong>"Imágenes"</strong></li>
+                            <li>En caso de solicitar/realizar algún procedimiento, seleccione la sección de <strong>"Procedimientos"</strong></li>
                         </ul>
                     </li>
                     <li>Busque y seleccione los estudios requeridos</li>
@@ -1021,7 +1053,7 @@
 
             <!-- Step 8: Treatment Plan -->
             <div class="step-card">
-                <h4><span class="step-number">8</span><span class="step-title">Definir Plan de Tratamiento</span></h4>
+                <h4><span class="step-number">8</span><span class="step-title">Añadir Notas Generales</span></h4>
                 <p>Complete el plan de manejo del paciente:</p>
                 <ul>
                     <li><strong>Indicaciones generales:</strong> Reposo, dieta, actividad física</li>
@@ -1049,6 +1081,14 @@
                     <li>Prescripciones y órdenes generadas</li>
                     <li>Plan de tratamiento definido</li>
                 </ul>
+
+                <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        Validación de Campos Automática
+                    </div>
+                    <p class="mb-0">Si al llenar la consulta, usted deja algún campo obligatorio vacío, el sistema le mostrará qué campos les hace falta llenar en el menú lateral, que se encuentra ubicado en la parte superior derecha de la pantalla.</p>
+                </div>
             </div>
 
             <div class="step-card">
@@ -1072,25 +1112,34 @@
             <div>
                 <img src="{{ asset('images/tutorial/encounters/encounter_finished.png') }}" alt="" style="width: 100%;">
             </div>
+
+            <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        Descarga de Documentos
+                    </div>
+                    <p class="mb-0">Puede descargar los documentos generados en la consulta en la sección de Consultas -> Lista Consultas -> clic en el botón de <strong>"Detalle"</strong>. <br> 
+                        Allí podrá visualizar la historia clínica digital separadas por secciones, así como los botones para descargar los PDF del resumen de consulta, recetas, órdenes, etc.</p>
+                </div>
             </div>
 
             <div class="step-card">
                 <h4><span class="step-number">3</span><span class="step-title">Finalizar Consulta</span></h4>
                 <p>Para cerrar formalmente la consulta:</p>
                 <ul>
-                    <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> en la parte superior o inferior de la página</li>
-                    <li>Confirme que desea finalizar la consulta</li>
-                    <li>El sistema actualizará el estado de la cita a <strong>"Fulfilled"</strong> (Completada)</li>
+                    <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> que se encuentra en la parte inferior del menú lateral</li>
+                    <!--<li>Confirme que desea finalizar la consulta</li>-->
+                    <li>El sistema actualizará el estado de la cita a <strong>"Finalizado"</strong></li>
                     <li>La información quedará guardada en la historia clínica del paciente</li>
                 </ul>
 
-                <div class="info-box warning">
+                <!--<div class="info-box warning">
                     <div class="info-box-title">
                         <i class="fas fa-exclamation-triangle text-warning"></i>
                         Importante
                     </div>
                     <p class="mb-0">Una vez finalizada la consulta, no podrá editar la información. Asegúrese de que todo esté correcto antes de finalizar. Si necesita hacer cambios posteriores, deberá contactar al administrador del sistema.</p>
-                </div>
+                </div>-->
             </div>
 
             <div class="step-card">
