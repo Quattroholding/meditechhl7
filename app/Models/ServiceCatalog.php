@@ -254,13 +254,11 @@ class ServiceCatalog extends BaseModel
     public function generateServiceCode(): string
     {
         $prefix = strtoupper(substr($this->service_type ?? 'SVC', 0, 3));
-        $clientId = $this->client_id ?? auth()->user()?->getCurrentClient()?->id;
 
-        // Buscar el último número usado para este prefijo y cliente (sin scope global)
+        // Buscar el último número usado para este prefijo GLOBALMENTE (sin scope global y sin filtro de cliente)
+        // porque el constraint único es global, no por cliente
         $lastCode = static::withoutGlobalScope(ServiceCatalogScope::class)
             ->where('code', 'like', $prefix.'_%')
-            ->where('client_id', $clientId)
-            ->lockForUpdate() // Add row locking to prevent race conditions
             ->orderByRaw('CAST(SUBSTRING(code, '.(strlen($prefix) + 2).') AS UNSIGNED) DESC')
             ->value('code');
 
@@ -272,7 +270,7 @@ class ServiceCatalog extends BaseModel
             $number = 1;
         }
 
-        // Verificar que el código no exista (por si acaso) - sin scope global
+        // Verificar que el código no exista GLOBALMENTE (por si acaso)
         // Intentar hasta 100 veces para encontrar un código único
         $maxAttempts = 100;
         $attempts = 0;
@@ -281,7 +279,6 @@ class ServiceCatalog extends BaseModel
             $code = $prefix.'_'.str_pad($number, 4, '0', STR_PAD_LEFT);
             $exists = static::withoutGlobalScope(ServiceCatalogScope::class)
                 ->where('code', $code)
-                ->where('client_id', $clientId)
                 ->exists();
             if ($exists) {
                 $number++;

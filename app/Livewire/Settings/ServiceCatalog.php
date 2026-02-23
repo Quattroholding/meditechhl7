@@ -161,12 +161,19 @@ class ServiceCatalog extends Component
             return;
         }
 
-        $response = Http::get(url('api/cpts/procedure'), [
-            'dropdown' => true,
-            'q' => $this->query,
-        ]);
+        try {
+            $response = Http::withOptions([
+                'verify' => config('app.env') === 'production',
+            ])->get(url('api/cpts/procedure'), [
+                'dropdown' => true,
+                'q' => $this->query,
+            ]);
 
-        $this->results = $response->json() ?? [];
+            $this->results = $response->json() ?? [];
+        } catch (\Exception $e) {
+            \Log::error('Error fetching CPT codes: '.$e->getMessage());
+            $this->results = [];
+        }
     }
 
     public function selectOption($option)
@@ -226,16 +233,30 @@ class ServiceCatalog extends Component
                 $created = true;
             } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
                 $attempt++;
+                \Log::error('UniqueConstraintViolationException attempt '.$attempt.': '.$e->getMessage());
+
                 if ($attempt >= $maxRetries) {
                     $this->dispatch('showToastrServiceCatalog',
                         type: 'error',
-                        message: 'Error al guardar el servicio. Por favor, intente nuevamente.',
+                        message: 'Error al guardar el servicio después de '.$maxRetries.' intentos. Código duplicado: '.$e->getMessage(),
                     );
 
                     return;
                 }
                 // Add a small delay before retrying
                 usleep(100000); // 100ms
+            } catch (\Exception $e) {
+                \Log::error('Error general al guardar servicio: '.$e->getMessage(), [
+                    'exception' => get_class($e),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                $this->dispatch('showToastrServiceCatalog',
+                    type: 'error',
+                    message: 'Error al guardar el servicio: '.get_class($e).' - '.$e->getMessage(),
+                );
+
+                return;
             }
         }
 
@@ -300,16 +321,30 @@ class ServiceCatalog extends Component
                 $created = true;
             } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
                 $attempt++;
+                \Log::error('UniqueConstraintViolationException attempt '.$attempt.': '.$e->getMessage());
+
                 if ($attempt >= $maxRetries) {
                     $this->dispatch('showToastrServiceCatalog',
                         type: 'error',
-                        message: 'Error al guardar el servicio. Por favor, intente nuevamente.',
+                        message: 'Error al guardar el servicio después de '.$maxRetries.' intentos. Código duplicado: '.$e->getMessage(),
                     );
 
                     return;
                 }
                 // Add a small delay before retrying
                 usleep(100000); // 100ms
+            } catch (\Exception $e) {
+                \Log::error('Error general al guardar servicio: '.$e->getMessage(), [
+                    'exception' => get_class($e),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                $this->dispatch('showToastrServiceCatalog',
+                    type: 'error',
+                    message: 'Error al guardar el servicio: '.get_class($e).' - '.$e->getMessage(),
+                );
+
+                return;
             }
         }
 
