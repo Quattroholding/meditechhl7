@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\CptCode;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -87,7 +88,7 @@ class ServiceCatalog extends Component
         'cpt_patient_copay' => 'nullable|numeric|min:0',
         'custom_name' => 'required|string|max:500',
         'custom_service_type' => 'required|string',
-        'custom_price' => 'required|numeric|min:0'
+        'custom_price' => 'required|numeric|min:0',
     ];
 
     protected $messages = [
@@ -100,7 +101,7 @@ class ServiceCatalog extends Component
         'custom_price.required' => 'El precio es obligatorio.',
         'custom_price.numeric' => 'El precio debe ser un número.',
         'custom_name.required' => 'El nombre del servicio es obligatorio.',
-        'custom_name.max' => 'El nombre no puede exceder los 500 caracteres.'
+        'custom_name.max' => 'El nombre no puede exceder los 500 caracteres.',
     ];
 
     public function mount()
@@ -194,28 +195,52 @@ class ServiceCatalog extends Component
 
         $cpt = CptCode::whereId($this->cpt_id)->first();
 
-        ServiceCatalogModel::create([
-            'name' => $cpt->tpye.' '.$cpt->code,
-            'description' => $cpt->description_es ?? $cpt->description,
-            'cpt_code' => $cpt->code,
-            'service_type' => 'procedure',
-            'base_price' => $this->cpt_price,
-            'specialty' => $this->cpt_specialty,
-            'complexity' => $this->cpt_complexity,
-            'duration_minutes' => $this->cpt_duration,
-            'requires_authorization' => $this->cpt_requires_auth,
-            'covered_by_insurance' => $this->cpt_covered_insurance,
-            'patient_copay' => $this->cpt_patient_copay ?? 0,
-            'is_active' => true,
-            'effective_date' => now(),
-            'client_id' => $this->clientId,
-            'practitioner_id' => $this->practitionerId,
-            'created_by' => auth()->id(),
-        ]);
+        // Retry logic to handle race condition in code generation
+        $maxRetries = 3;
+        $attempt = 0;
+        $created = false;
+
+        while ($attempt < $maxRetries && ! $created) {
+            try {
+                DB::transaction(function () use ($cpt) {
+                    ServiceCatalogModel::create([
+                        'name' => $cpt->tpye.' '.$cpt->code,
+                        'description' => $cpt->description_es ?? $cpt->description,
+                        'cpt_code' => $cpt->code,
+                        'service_type' => 'procedure',
+                        'base_price' => $this->cpt_price,
+                        'specialty' => $this->cpt_specialty,
+                        'complexity' => $this->cpt_complexity,
+                        'duration_minutes' => $this->cpt_duration,
+                        'requires_authorization' => $this->cpt_requires_auth,
+                        'covered_by_insurance' => $this->cpt_covered_insurance,
+                        'patient_copay' => $this->cpt_patient_copay ?? 0,
+                        'is_active' => true,
+                        'effective_date' => now(),
+                        'client_id' => $this->clientId,
+                        'practitioner_id' => $this->practitionerId,
+                        'created_by' => auth()->id(),
+                    ]);
+                });
+
+                $created = true;
+            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                $attempt++;
+                if ($attempt >= $maxRetries) {
+                    $this->dispatch('showToastrServiceCatalog',
+                        type: 'error',
+                        message: 'Error al guardar el servicio. Por favor, intente nuevamente.',
+                    );
+
+                    return;
+                }
+                // Add a small delay before retrying
+                usleep(100000); // 100ms
+            }
+        }
 
         // Dispatch event to refresh setup reminders
         $this->dispatch('refreshSetupReminders');
-
 
         $this->dispatch('showToastrServiceCatalog',
             type: 'success',
@@ -244,24 +269,49 @@ class ServiceCatalog extends Component
             'custom_price.min' => 'El precio debe ser mayor a 0.',
         ]);
 
-        ServiceCatalogModel::create([
-            'name' => $this->custom_name,
-            'description' => $this->custom_description,
-            'service_type' => $this->custom_service_type,
-            'base_price' => $this->custom_price,
-            'specialty' => $this->custom_specialty,
-            'complexity' => $this->custom_complexity,
-            'duration_minutes' => $this->custom_duration,
-            'requires_authorization' => $this->custom_requires_auth,
-            'covered_by_insurance' => $this->custom_covered_insurance,
-            'patient_copay' => $this->custom_patient_copay ?? 0,
-            'revenue_code' => $this->custom_revenue_code,
-            'is_active' => true,
-            'effective_date' => now(),
-            'created_by' => auth()->id(),
-            'client_id' => $this->clientId,
-            'practitioner_id' => $this->practitionerId,
-        ]);
+        // Retry logic to handle race condition in code generation
+        $maxRetries = 3;
+        $attempt = 0;
+        $created = false;
+
+        while ($attempt < $maxRetries && ! $created) {
+            try {
+                DB::transaction(function () {
+                    ServiceCatalogModel::create([
+                        'name' => $this->custom_name,
+                        'description' => $this->custom_description,
+                        'service_type' => $this->custom_service_type,
+                        'base_price' => $this->custom_price,
+                        'specialty' => $this->custom_specialty,
+                        'complexity' => $this->custom_complexity,
+                        'duration_minutes' => $this->custom_duration,
+                        'requires_authorization' => $this->custom_requires_auth,
+                        'covered_by_insurance' => $this->custom_covered_insurance,
+                        'patient_copay' => $this->custom_patient_copay ?? 0,
+                        'revenue_code' => $this->custom_revenue_code,
+                        'is_active' => true,
+                        'effective_date' => now(),
+                        'created_by' => auth()->id(),
+                        'client_id' => $this->clientId,
+                        'practitioner_id' => $this->practitionerId,
+                    ]);
+                });
+
+                $created = true;
+            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                $attempt++;
+                if ($attempt >= $maxRetries) {
+                    $this->dispatch('showToastrServiceCatalog',
+                        type: 'error',
+                        message: 'Error al guardar el servicio. Por favor, intente nuevamente.',
+                    );
+
+                    return;
+                }
+                // Add a small delay before retrying
+                usleep(100000); // 100ms
+            }
+        }
 
         // Dispatch event to refresh setup reminders
         $this->dispatch('refreshSetupReminders');
@@ -328,7 +378,6 @@ class ServiceCatalog extends Component
             'updated_by' => auth()->id(),
         ]);
 
-
         $this->dispatch('showToastrServiceCatalog',
             type: 'success',
             message: '¡Servicio actualizado exitosamente!',
@@ -357,12 +406,10 @@ class ServiceCatalog extends Component
             'updated_by' => auth()->id(),
         ]);
 
-
         $this->dispatch('showToastrServiceCatalog',
             type: 'info',
             message: $service->is_active ? 'Servicio activado' : 'Servicio desactivado',
         );
-
 
         $this->loadServices();
     }
@@ -376,7 +423,6 @@ class ServiceCatalog extends Component
         }
 
         $service->delete();
-
 
         $this->dispatch('showToastrServiceCatalog',
             type: 'error',

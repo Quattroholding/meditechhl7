@@ -47,6 +47,16 @@ class SurveyResponse extends BaseModel
         return $this->belongsTo(Patient::class);
     }
 
+    public function encounter(): BelongsTo
+    {
+        return $this->belongsTo(Encounter::class);
+    }
+
+    public function practitioner(): BelongsTo
+    {
+        return $this->belongsTo(Practitioner::class);
+    }
+
     public function questionResponses(): HasMany
     {
         return $this->hasMany(SurveyQuestionResponse::class);

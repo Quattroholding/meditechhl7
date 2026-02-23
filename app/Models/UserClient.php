@@ -4,6 +4,11 @@ namespace App\Models;
 
 class UserClient extends BaseModel
 {
+    protected $fillable = [
+        'user_id',
+        'client_id',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
