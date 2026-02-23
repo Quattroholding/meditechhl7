@@ -317,7 +317,7 @@
                     </svg>
                     <div>
                         <strong>Teléfono</strong>
-                        <a href="tel:+5071234567">+507-831-6100</a>
+                        <a href="tel:+5078316100">+507 831-6100</a>
                     </div>
                 </div>
 
