@@ -116,32 +116,32 @@
         @if(in_array($currentView ,['monthly','weekly']))
         <div class="legend">
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #dedede, #ededed);"></div>
-                <span>Pendiente de Confirmación</span>
+                <div class="legend-color " style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Pending->color()}}, #{{\App\Enums\AppointmentStatusEnum::Pending->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Pending->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #28a745, #20c997);"></div>
-                <span>Programada</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Booked->color()}}, #{{\App\Enums\AppointmentStatusEnum::Booked->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #007bff, #6610f2);"></div>
-                <span>Llegada</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Arrived->color()}}, #{{\App\Enums\AppointmentStatusEnum::Arrived->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #ffc107, #fd7e14);"></div>
-                <span>En Progreso</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::CheckedIn->color()}}, #{{\App\Enums\AppointmentStatusEnum::CheckedIn->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #6c757d, #495057);"></div>
-                <span>Completada</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Fulfilled->color()}}, #{{\App\Enums\AppointmentStatusEnum::Fulfilled->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #dc3545, #e83e8c);"></div>
-                <span>Cancelada</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Cancelled->color()}}, #{{\App\Enums\AppointmentStatusEnum::Cancelled->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #6f42c1, #e83e8c);"></div>
-                <span>No Asistió</span>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::NoShow->color()}}, #{{\App\Enums\AppointmentStatusEnum::NoShow->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
             </div>
         </div>
         @endif
