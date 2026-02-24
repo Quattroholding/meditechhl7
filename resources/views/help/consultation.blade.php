@@ -821,9 +821,9 @@
                 </div>-->
             </div>
 
-            <div>
+            {{--}}<div>
                 <img src="{{ asset('images/tutorial/encounters/encounter_tab.png') }}" alt="" style="width: 100%;">
-            </div>
+            </div>{{--}}
 
             <div class="info-box tip">
                 <div class="info-box-title">
@@ -863,22 +863,19 @@
                     </div>
                     <p class="mb-0">En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada.</p>
                 </div>
-
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_sidemenu.png') }}" alt="" style="width: 100%;">
+                </div>
+                <p>Este <strong>Menú Lateral</strong> es un acceso rápido a cada sección de la consulta y una guía que muestra las secciones obligatorias en rojo al final del menú lateral, si estas se encuentran vacías.</p>
 
             </div>
 
-            <!-- Step 2: Chief Complaint -->
+            <!-- Step 2: Servicios Facturables -->
             <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Registrar Motivo de Consulta</span></h4>
-                <p>Expanda la primera sección <strong>"Motivo de Consulta"</strong> y documente:</p>
-                <ul>
-                    <li>La razón principal de la visita en palabras del paciente</li>
-                    <li>Síntomas principales que presenta</li>
-                    <!--<li>Duración aproximada del problema</li>-->
-                </ul>
-
+                <h4><span class="step-number">2</span><span class="step-title">Agregar Servicios Facturables</span></h4>
+                <p>Expanda la primera sección <strong>"Servicios Facturables"</strong> y agregue los servicios previamente registrados en la sección de Configuraciones -> Catálogo de Servicios. </p>
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_mot.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_services.png') }}" alt="" style="width: 100%;">
             </div>
 
                 <div class="info-box tip">
@@ -887,6 +884,21 @@
                         Autoguardado
                     </div>
                     <p class="mb-0">El sistema guarda automáticamente la información mientras escribe. No es necesario presionar un botón de guardar después de cada sección.</p>
+                </div>
+            </div>
+
+            <!-- Step 2: Chief Complaint -->
+            <div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Registrar Motivo de Consulta</span></h4>
+                <p>Expanda la primera sección <strong>"Motivo de Consulta"</strong> y documente:</p>
+                <ul>
+                    <li>La razón principal de la visita en palabras del paciente</li>
+                    <li>Síntomas principales que presenta</li>
+                    <!--<li>Duración aproximada del problema</li>-->
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_mot.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -957,14 +969,52 @@
                     </tbody>
                 </table>
 
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_vitalsigns.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 3: Vital Signs -->
+            <div class="step-card">
+                <h4><span class="step-number">4</span><span class="step-title">Llenar datos de Enfermedad Actual</span></h4>
+                <p>En la sección de <strong>"Signos Vitales"</strong>, complete los campos correspondientes:</p>
+
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Sección</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Ubicación</strong></td>
+                            <td data-label="Descripcion">Seleccione la ubicación del dolor/síntoma que le informe el paciente.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Gravedad</strong></td>
+                            <td data-label="Descripcion">Seleccione la gravedad del dolor que le indicó el paciente.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Duración</strong></td>
+                            <td data-label="Descripcion">Seleccione el tiempo del dolor/síntoma que le informe el paciente.</td>
+
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Momento</strong></td>
+                            <td data-label="Descripcion">Seleccione el momento de dolor/síntoma que le indica el paciente.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_vitalsigns.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_actualIllness.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
 
             <!-- Step 4: Physical Exam -->
             <div class="step-card">
-                <h4><span class="step-number">4</span><span class="step-title">Documentar Examen Físico</span></h4>
+                <h4><span class="step-number">5</span><span class="step-title">Documentar Examen Físico</span></h4>
                 <p>Complete los hallazgos del examen físico en las áreas correspondientes:</p>
                 <ul>
                     <li><strong>Apariencia General:</strong> Estado general del paciente</li>
@@ -974,13 +1024,13 @@
                 </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_physicalexam.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_pe.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
 
             <!-- Step 5: Diagnosis -->
             <div class="step-card">
-                <h4><span class="step-number">5</span><span class="step-title">Agregar Diagnósticos</span></h4>
+                <h4><span class="step-number">6</span><span class="step-title">Agregar Diagnósticos</span></h4>
                 <p>En la sección de <strong>"Diagnóstico"</strong>:</p>
                 <ul>
                     <li>Haga clic en <strong>"Escribir Diagnóstico"</strong></li>
@@ -992,13 +1042,55 @@
                 </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_diagnostics.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_diag.png') }}" alt="" style="width: 100%;">
             </div>
+            </div>
+
+            <!-- Step 7: Medical Orders -->
+            <div class="step-card">
+                <h4><span class="step-number">7</span><span class="step-title">Generar Imágenes, Laboratorios y Procedimiento</span></h4>
+                <p>Si necesita solicitar exámenes, imágenes o laboratorios:</p>
+                <ul>
+                    <li>Seleccione el tipo de orden:
+                        <ul>
+                            <li>En caso de solicitar exámenes, seleccione la sección de <strong>"Laboratorios"</strong></li>
+                            <div>
+                                <img src="{{ asset('images/tutorial/encounters/encounter_labs.png') }}" alt="" style="width: 100%;">
+                            </div>
+                            <li>En caso de solicitar imágenes, seleccione la sección de <strong>"Imágenes"</strong></li>
+                                <div>
+                                    <img src="{{ asset('images/tutorial/encounters/encounter_imgs.png') }}" alt="" style="width: 100%;">
+                                </div>                            
+                            <li>En caso de solicitar/realizar algún procedimiento, seleccione la sección de <strong>"Procedimientos"</strong></li>
+                                <div>
+                                    <img src="{{ asset('images/tutorial/encounters/encounter_proc.png') }}" alt="" style="width: 100%;">
+                                </div>
+                        </ul>
+                    </li>
+                    <li>Busque y seleccione los estudios requeridos</li>
+                    <li>Agregue indicaciones especiales si es necesario</li>
+                </ul>
+
+            </div>
+
+                    <!-- Step 8: Treatment Plan -->
+            <div class="step-card">
+                <h4><span class="step-number">8</span><span class="step-title">Agregar Referencia Especialista</span></h4>
+                <p>En caso de que usted considere que el paciente puede agregar una referencia:</p>
+                <ul>
+                    <li>Escriba la <strong>Especialidad</strong> a la que referirá al paciente</li>
+                    <li>Agregue una <strong>Nota de Referencia</strong></li>
+                    <li>En caso de que desee referir a alguien y que sea usuario de nuestro sistema puede agregarlo a la referencia dando clic a <strong>Ver Directorio Médico</strong></li>
+                </ul>
+
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_refesp.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
 
             <!-- Step 6: Prescription -->
             <div class="step-card">
-                <h4><span class="step-number">6</span><span class="step-title">Crear Prescripción Médica</span></h4>
+                <h4><span class="step-number">9</span><span class="step-title">Crear Prescripción Médica</span></h4>
                 <p>Para prescribir medicamentos:</p>
                 <ul>
                     <li>Vaya a la sección <strong>"Medicamentos"</strong></li>
@@ -1016,6 +1108,10 @@
                     <li>Agregue todos los medicamentos necesarios</li>
                 </ul>
 
+
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_mp.png') }}" alt="" style="width: 100%;">
+            </div>
                 <div class="info-box warning">
                     <div class="info-box-title">
                         <i class="fas fa-exclamation-triangle text-warning"></i>
@@ -1024,38 +1120,11 @@
                     <p class="mb-0">Siempre verifique las dosis, interacciones y contraindicaciones antes de prescribir. El sistema puede mostrar alertas de interacciones medicamentosas si están configuradas.</p>
                 </div>
 
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_medicines.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
 
-            <!-- Step 7: Medical Orders -->
-            <div class="step-card">
-                <h4><span class="step-number">7</span><span class="step-title">Generar Imágenes, Laboratorios y Procedimiento</span></h4>
-                <p>Si necesita solicitar exámenes, imágenes o laboratorios:</p>
-                <ul>
-                    <li>Seleccione el tipo de orden:
-                        <ul>
-                            <li>En caso de solicitar exámenes, seleccione la sección de <strong>"Laboratorios"</strong></li>
-                            <li>En caso de solicitar imágenes, seleccione la sección de <strong>"Imágenes"</strong></li>
-                            <li>En caso de solicitar/realizar algún procedimiento, seleccione la sección de <strong>"Procedimientos"</strong></li>
-                        </ul>
-                    </li>
-                    <li>Busque y seleccione los estudios requeridos</li>
-                    <li>Agregue indicaciones especiales si es necesario</li>
-                </ul>
-
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_lab.png') }}" alt="" style="width: 100%;">
             </div>
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_img.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
             <!-- Step 8: Treatment Plan -->
             <div class="step-card">
-                <h4><span class="step-number">8</span><span class="step-title">Añadir Notas Generales</span></h4>
+                <h4><span class="step-number">10</span><span class="step-title">Añadir Notas Generales</span></h4>
                 <p>Complete el plan de manejo del paciente:</p>
                 <ul>
                     <li><strong>Indicaciones generales:</strong> Reposo, dieta, actividad física</li>
@@ -1063,6 +1132,10 @@
                     <li><strong>Seguimiento:</strong> Cuándo debe regresar a control</li>
                     <li><strong>Educación al paciente:</strong> Información sobre su condición</li>
                 </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_ng.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
         </section>
 
