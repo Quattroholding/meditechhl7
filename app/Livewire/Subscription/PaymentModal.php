@@ -84,10 +84,10 @@ class PaymentModal extends Component
         $this->invoice = ClientInvoice::with(['client', 'subscription.package', 'payments'])->find($invoiceId);
 
         if (! $this->invoice) {
-            $this->dispatch('showToastr', [
-                'type' => 'error',
-                'message' => 'Factura no encontrada.',
-            ]);
+            $this->dispatch('showToastrSubscriptionPaymentModal',
+                type : 'error',
+                message : 'Factura no encontrada.',
+            );
 
             return;
         }
@@ -118,10 +118,10 @@ class PaymentModal extends Component
         $this->validate();
 
         if (! $this->invoice) {
-            $this->dispatch('showToastrPayment', [
-                'type' => 'error',
-                'message' => 'Factura no encontrada.',
-            ]);
+            $this->dispatch('showToastrSubscriptionPaymentModal',
+                type:'error',
+                message : 'Factura no encontrada.',
+            );
 
             session()->flash('message.error', 'Factura no encontrada.');
 
@@ -175,10 +175,10 @@ class PaymentModal extends Component
                 $this->notifyAccountingDepartment($payment);
             }
 
-            $this->dispatch('showToastrPayment', [
-                'type' => 'success',
-                'message' => '¡Pago registrado exitosamente!',
-            ]);
+            $this->dispatch('showToastrSubscriptionPaymentModal',
+                type : 'success',
+                message : '¡Pago registrado exitosamente!',
+            );
 
             session()->flash('message.success', '¡Pago registrado exitosamente!');
             $this->dispatch('paymentSaved');
@@ -186,10 +186,10 @@ class PaymentModal extends Component
             $this->closeModal();
 
         } catch (\Exception $e) {
-            $this->dispatch('showToastrPayment', [
-                'type' => 'error',
-                'message' => 'Error al registrar el pago: '.$e->getMessage(),
-            ]);
+            $this->dispatch('showToastrSubscriptionPaymentModal',
+                type : 'error',
+                message : 'Error al registrar el pago: '.$e->getMessage(),
+            );
             session()->flash('message.error', 'Error al registrar el pago: '.$e->getMessage());
         }
     }

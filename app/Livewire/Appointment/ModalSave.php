@@ -171,7 +171,7 @@ class ModalSave extends Component
 
     public function loadDoctors()
     {
-        if (! auth()->user()->practitioner) {
+        if (! auth()->user()->practitioner or auth()->user()->hasRole('asistente medico')) {
             $this->practitioners = Practitioner::when($this->medical_speciality_id, function ($q) {
                 $q->whereHas('qualifications', function ($q) {
                     $q->where('medical_speciality_id', $this->medical_speciality_id);
@@ -229,8 +229,9 @@ class ModalSave extends Component
     public function updatedMedicalSpecialityId($value)
     {
         \Log::info('updatedMedicalSpecialityId called', ['speciality_id' => $value]);
-        if (! auth()->user()->practitioner) {
+        if (! auth()->user()->practitioner or auth()->user()->hasRole('asistente medico')) {
             // Recargar la lista de doctores filtrados por especialidad
+
             $this->loadDoctors();
             // Limpiar doctor y consultorios seleccionados
             $this->doctor_id = '';
