@@ -311,7 +311,16 @@
                                         <tr>
                                             <td>
                                                 @if($editingId === $service->id)
-                                                    <input type="text" wire:model="editingService.name" class="form-control form-control-sm">
+                                                    @if(!empty($editingService['is_cpt_service']))
+                                                        <div class="font-weight-bold text-muted" title="{{ $editingService['name'] }}">
+                                                            {{ Str::limit($editingService['name'], 30, '...') }}
+                                                        </div>
+                                                        <small class="text-warning">
+                                                            <i class="fa fa-lock"></i> Código CPT no editable
+                                                        </small>
+                                                    @else
+                                                        <input type="text" wire:model="editingService.name" class="form-control form-control-sm">
+                                                    @endif
                                                 @else
                                                     <div class="font-weight-bold" title="{{ $service->name }}">
                                                         {{ Str::limit($service->name, 30, '...') }}
@@ -337,6 +346,11 @@
                                             <td>
                                                 @if($editingId === $service->id)
                                                     <input type="number" step="0.01" wire:model="editingService.base_price" class="form-control form-control-sm">
+                                                    @if(!empty($editingService['is_cpt_service']))
+                                                        <small class="text-info d-block mt-1">
+                                                            Solo precio y complejidad editables
+                                                        </small>
+                                                    @endif
                                                 @else
                                                     <strong>${{ number_format($service->base_price, 2) }}</strong>
                                                     @if($service->patient_copay > 0)

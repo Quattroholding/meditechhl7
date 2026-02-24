@@ -35,9 +35,10 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
         }
 
         // Add WhatsApp channel if user has WhatsApp phone number
-        if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
-        }
+        // Temporarily disabled while waiting for Meta template approval
+        // if ($notifiable->whatsapp_phone || $notifiable->phone) {
+        //     $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+        // }
 
         return $channels;
     }
@@ -61,23 +62,40 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
 
     /**
      * Get the WhatsApp representation of the notification.
+     * Uses WhatsApp UTILITY template for authorization code delivery.
      */
-    public function toWhatsApp(object $notifiable): string
+    public function toWhatsApp(object $notifiable): array
     {
         $clinicName = config('app.name');
         $expiresAt = $this->authorizationCode->expires_at;
+        $expirationText = $expiresAt->format('d/m/Y').' a las '.$expiresAt->format('H:i');
 
-        $message = "🔐 *Código de Autorización de Acceso*\n\n";
-        $message .= "Hola {$notifiable->name},\n\n";
-        $message .= "El Dr. *{$this->practitioner->name}* ha solicitado acceso a su historial clínico completo.\n\n";
-        $message .= "Para autorizar este acceso, proporcione el siguiente código de 4 dígitos al médico:\n\n";
-        $message .= "🔑 *{$this->authorizationCode->code}*\n\n";
-        $message .= "⚠️ Este código expira el {$expiresAt->format('d/m/Y')} a las {$expiresAt->format('H:i')} (válido por 1 hora)\n\n";
-        $message .= "Una vez que el médico ingrese este código correctamente, tendrá acceso permanente a su historial clínico.\n\n";
-        $message .= "Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.\n\n";
-        $message .= "Atentamente,\nEquipo de {$clinicName}";
+        // Build components for utility template
+        $components = [];
 
-        return $message;
+        // Body component with variables
+        // {{1}} = Patient name
+        // {{2}} = Practitioner name
+        // {{3}} = Authorization code
+        // {{4}} = Expiration date/time
+        // {{5}} = Clinic name
+        $components[] = [
+            'type' => 'body',
+            'parameters' => [
+                ['type' => 'text', 'text' => $notifiable->name],
+                ['type' => 'text', 'text' => $this->practitioner->name],
+                ['type' => 'text', 'text' => $this->authorizationCode->code],
+                ['type' => 'text', 'text' => $expirationText],
+                ['type' => 'text', 'text' => $clinicName],
+            ],
+        ];
+
+        return [
+            'use_template' => true,
+            'template_name' => 'authorization_code_delivery',
+            'language_code' => 'es',
+            'components' => $components,
+        ];
     }
 
     /**

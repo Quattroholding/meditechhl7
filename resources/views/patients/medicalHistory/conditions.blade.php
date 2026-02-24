@@ -38,7 +38,6 @@
                             <th style="padding: 15px; font-weight: 600; border: none;">Descripción</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Estado</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Severidad</th>
-                            <th style="padding: 15px; font-weight: 600; border: none;">Categoría</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Fecha Dx</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Acciones</th>
                         </tr>
@@ -109,16 +108,6 @@
                                         </span>
                                     @else
                                         <span style="color: #94a3b8; font-size: 12px;">-</span>
-                                    @endif
-                                </td>
-                                <td style="padding: 15px; vertical-align: middle;">
-                                    <div style="font-size: 13px; color: #475569;">
-                                        {{ $condition->category ?? '-' }}
-                                    </div>
-                                    @if($condition->body_system)
-                                        <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
-                                            {{ $condition->body_system }}
-                                        </div>
                                     @endif
                                 </td>
                                 <td style="padding: 15px; vertical-align: middle; text-align: center;">
