@@ -7,7 +7,7 @@ return [
     'inactive' => 'Inactivo',
     'remission' => 'Remision',
     'resolved' => 'Resuelto',
-    'mild' => 'Medio',
+    'mild' => 'Leve',
     'moderate' => 'Moderado',
     'severe' => 'Severo',
     'critical' => 'Critico',
