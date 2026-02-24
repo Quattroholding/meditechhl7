@@ -384,18 +384,30 @@ class ServiceCatalog extends Component
             'covered_by_insurance' => $service->covered_by_insurance,
             'patient_copay' => $service->patient_copay,
             'revenue_code' => $service->revenue_code,
+            'cpt_code' => $service->cpt_code, // Track if this is a CPT service
+            'is_cpt_service' => ! empty($service->cpt_code), // Flag for CPT services
         ];
     }
 
     public function updateService()
     {
-        $this->validate([
-            'editingService.name' => 'required|string|max:255',
-            'editingService.base_price' => 'required|numeric|min:0',
-            'editingService.complexity' => 'required|in:low,medium,high',
-            'editingService.duration_minutes' => 'nullable|numeric|min:0',
-            'editingService.patient_copay' => 'nullable|numeric|min:0',
-        ]);
+        // For CPT services, only validate price and complexity
+        $isCptService = $this->editingService['is_cpt_service'] ?? false;
+
+        if ($isCptService) {
+            $this->validate([
+                'editingService.base_price' => 'required|numeric|min:0',
+                'editingService.complexity' => 'required|in:low,medium,high',
+            ]);
+        } else {
+            $this->validate([
+                'editingService.name' => 'required|string|max:255',
+                'editingService.base_price' => 'required|numeric|min:0',
+                'editingService.complexity' => 'required|in:low,medium,high',
+                'editingService.duration_minutes' => 'nullable|numeric|min:0',
+                'editingService.patient_copay' => 'nullable|numeric|min:0',
+            ]);
+        }
 
         $service = ServiceCatalogModel::find($this->editingId);
 
@@ -403,19 +415,29 @@ class ServiceCatalog extends Component
             return;
         }
 
-        $service->update([
-            'name' => $this->editingService['name'],
-            'description' => $this->editingService['description'],
-            'base_price' => $this->editingService['base_price'],
-            'specialty' => $this->editingService['specialty'],
-            'complexity' => $this->editingService['complexity'],
-            'duration_minutes' => $this->editingService['duration_minutes'],
-            'requires_authorization' => $this->editingService['requires_authorization'],
-            'covered_by_insurance' => $this->editingService['covered_by_insurance'],
-            'patient_copay' => $this->editingService['patient_copay'] ?? 0,
-            'revenue_code' => $this->editingService['revenue_code'],
-            'updated_by' => auth()->id(),
-        ]);
+        // For CPT services, only update price and complexity
+        if ($isCptService) {
+            $service->update([
+                'base_price' => $this->editingService['base_price'],
+                'complexity' => $this->editingService['complexity'],
+                'updated_by' => auth()->id(),
+            ]);
+        } else {
+            // For custom services, update all editable fields
+            $service->update([
+                'name' => $this->editingService['name'],
+                'description' => $this->editingService['description'],
+                'base_price' => $this->editingService['base_price'],
+                'specialty' => $this->editingService['specialty'],
+                'complexity' => $this->editingService['complexity'],
+                'duration_minutes' => $this->editingService['duration_minutes'],
+                'requires_authorization' => $this->editingService['requires_authorization'],
+                'covered_by_insurance' => $this->editingService['covered_by_insurance'],
+                'patient_copay' => $this->editingService['patient_copay'] ?? 0,
+                'revenue_code' => $this->editingService['revenue_code'],
+                'updated_by' => auth()->id(),
+            ]);
+        }
 
         $this->dispatch('showToastrServiceCatalog',
             type: 'success',

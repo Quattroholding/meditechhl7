@@ -224,7 +224,14 @@ class SetupReminderPanel extends Component
                 return null;
             },
             'service_catalog' => function () {
-                $client = auth()->user()->getCurrentClient();
+                $user = auth()->user();
+
+                // Solo aplica para doctores
+                if (! $user->hasRole('doctor')) {
+                    return null;
+                }
+
+                $client = $user->getCurrentClient();
                 if (! $client) {
                     return null;
                 }
@@ -248,6 +255,12 @@ class SetupReminderPanel extends Component
             },
             'working_hours' => function () {
                 $user = auth()->user();
+
+                // Solo aplica para doctores
+                if (! $user->hasRole('doctor')) {
+                    return null;
+                }
+
                 $hasWorkingHours = $user->workingHours()->exists();
 
                 if (! $hasWorkingHours) {
@@ -299,6 +312,12 @@ class SetupReminderPanel extends Component
             },
             'rapid_access' => function () {
                 $user = auth()->user();
+
+                // Solo aplica para doctores
+                if (! $user->hasRole('doctor')) {
+                    return null;
+                }
+
                 $client = $user->getCurrentClient();
 
                 if (! $client) {
