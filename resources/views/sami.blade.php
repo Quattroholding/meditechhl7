@@ -222,13 +222,13 @@
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
             </div>
-            <div class="feature">
+            {{--}}<div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
                 </div>
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
-            </div>
+            </div>{{--}}
             <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
