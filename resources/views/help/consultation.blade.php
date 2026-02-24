@@ -1150,6 +1150,7 @@
                 <p>Antes de finalizar, revise que toda la información esté completa:</p>
                 <ul>
                     <li>Motivo de consulta documentado</li>
+                    <li>Enfermedad Actual registrada</li>
                     <li>Signos vitales registrados</li>
                     <li>Examen físico completado</li>
                     <li>Diagnósticos agregados</li>
@@ -1167,7 +1168,26 @@
             </div>
 
             <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Generar Documentos</span></h4>
+                <h4><span class="step-number">2</span><span class="step-title">Finalizar Consulta</span></h4>
+                <p>Para cerrar formalmente la consulta:</p>
+                <ul>
+                    <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> que se encuentra en la parte inferior del menú lateral</li>
+                    <!--<li>Confirme que desea finalizar la consulta</li>-->
+                    <li>El sistema actualizará el estado de la cita a <strong>"Finalizado"</strong></li>
+                    <li>La información quedará guardada en la historia clínica del paciente</li>
+                </ul>
+
+                <!--<div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Importante
+                    </div>
+                    <p class="mb-0">Una vez finalizada la consulta, no podrá editar la información. Asegúrese de que todo esté correcto antes de finalizar. Si necesita hacer cambios posteriores, deberá contactar al administrador del sistema.</p>
+                </div>-->
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Generar Documentos</span></h4>
                 <p>El sistema puede generar automáticamente varios documentos:</p>
                 <ul>
                     <li><strong>Resumen de Consulta:</strong> Documento completo con toda la información</li>
@@ -1198,24 +1218,6 @@
                 </div>
             </div>
 
-            <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Finalizar Consulta</span></h4>
-                <p>Para cerrar formalmente la consulta:</p>
-                <ul>
-                    <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> que se encuentra en la parte inferior del menú lateral</li>
-                    <!--<li>Confirme que desea finalizar la consulta</li>-->
-                    <li>El sistema actualizará el estado de la cita a <strong>"Finalizado"</strong></li>
-                    <li>La información quedará guardada en la historia clínica del paciente</li>
-                </ul>
-
-                <!--<div class="info-box warning">
-                    <div class="info-box-title">
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                        Importante
-                    </div>
-                    <p class="mb-0">Una vez finalizada la consulta, no podrá editar la información. Asegúrese de que todo esté correcto antes de finalizar. Si necesita hacer cambios posteriores, deberá contactar al administrador del sistema.</p>
-                </div>-->
-            </div>
 
             <div class="step-card">
                 <h4><span class="step-number">4</span><span class="step-title">Después de Finalizar</span></h4>
