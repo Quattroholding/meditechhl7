@@ -93,10 +93,10 @@ class PaymentModal extends Component
         $this->validate();
 
         if (! $this->invoice) {
-            $this->dispatch('showToastr', [
-                'type' => 'error',
-                'message' => 'Factura no encontrada.',
-            ]);
+            $this->dispatch('showToastrInvoicePaymentModal',
+                type : 'error',
+                message: 'Factura no encontrada.',
+            );
 
             return;
         }
@@ -109,6 +109,7 @@ class PaymentModal extends Component
         }
 
         try {
+
             DB::transaction(function () {
                 // Create payment record
                 $payment = Payment::create([
@@ -140,19 +141,19 @@ class PaymentModal extends Component
                 $this->invoice->save();
             });
 
-            $this->dispatch('showToastr', [
-                'type' => 'success',
-                'message' => '¡Pago registrado exitosamente!',
-            ]);
+            $this->dispatch('showToastrInvoicePaymentModal',
+                type : 'success',
+                message : '¡Pago registrado exitosamente!',
+            );
 
             $this->dispatch('paymentSaved');
             $this->closeModal();
 
         } catch (\Exception $e) {
-            $this->dispatch('showToastr', [
-                'type' => 'error',
-                'message' => 'Error al registrar el pago: '.$e->getMessage(),
-            ]);
+            $this->dispatch('showToastrInvoicePaymentModal',
+                type: 'error',
+                message : 'Error al registrar el pago: '.$e->getMessage(),
+            );
         }
     }
 

@@ -178,7 +178,7 @@
     @endif
     <script>
         document.addEventListener('livewire:initialized', () => {
-            Livewire.on('showToastr', (event) => {
+            Livewire.on('showToastrInvoicePaymentModal', (event) => {
                 toastr[event.type](event.message, '', {
                     closeButton: true,
                     progressBar: true,
