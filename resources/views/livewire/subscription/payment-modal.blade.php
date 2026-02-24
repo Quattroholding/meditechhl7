@@ -265,4 +265,17 @@
             </div>
         </div>
     @endif
+    <script>
+        // Listen for Livewire toastr events
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrSubscriptionPaymentModal', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>

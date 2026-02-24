@@ -6,7 +6,7 @@ enum InvoivePatientStatus: string
 {
     case UNPAID = 'unpaid';
     case PAID = 'paid';
-    case PARTIAL = 'partially_paid';
+    case PARTIAL = 'partial';
     case OVERDUE = 'overdue';
 
     case PENDING = 'pending';

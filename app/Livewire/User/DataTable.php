@@ -62,7 +62,7 @@ class DataTable extends Component
 
     public function render()
     {
-        $data = User::when(auth()->user()->hasRole('admin client') or auth()->user()->hasRole('doctor'), function ($q) {
+        $data = User::when(auth()->user()->hasRole('admin client') or auth()->user()->hasRole('doctor') or auth()->user()->hasRole('asistente medico'), function ($q) {
             $q->whereHas('clients', function ($q2) {
                 $q2->whereIn('user_clients.client_id', auth()->user()->clients()->pluck('client_id'));
             });

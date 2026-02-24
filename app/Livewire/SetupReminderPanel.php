@@ -59,8 +59,6 @@ class SetupReminderPanel extends Component
                         return null;
                     }
 
-
-
                     return [
                         'key' => 'subscription',
                         'title' => 'Activa tu Suscripción',
@@ -180,21 +178,47 @@ class SetupReminderPanel extends Component
                 return null;
             },
             'patient' => function () {
-                $client = auth()->user()->getCurrentClient();
+                $user = auth()->user();
+                $client = $user->getCurrentClient();
+
                 if (! $client) {
                     return null;
                 }
 
-                $hasPatients = PatientClient::where('client_id', $client->id)->exists();
-                if (! $hasPatients) {
-                    return [
-                        'key' => 'patient',
-                        'title' => 'Registra tus pacientes',
-                        'message' => '¡Excelente! Ya tienes tu sucursal y consultorio configurados. Ahora puedes registrar tus pacientes para comenzar a agendar citas.',
-                        'action_url' => route('patient.create'),
-                        'action_text' => 'Registrar Paciente',
-                        'is_required' => true,
-                    ];
+                // Para admins: verificar si hay doctores registrados
+                if ($user->hasRole('admin client')) {
+                    $hasDoctors = $client->users()
+                        ->whereHas('roles', function ($query) {
+                            $query->where('name', 'doctor');
+                        })
+                        ->exists();
+
+                    if (! $hasDoctors) {
+                        return [
+                            'key' => 'patient',
+                            'title' => 'Registra tu primer doctor',
+                            'message' => '¡Excelente! Ya tienes tu sucursal y consultorio configurados. Ahora necesitas registrar al menos un doctor que podrá atender pacientes y agendar citas.',
+                            'action_url' => route('user.create'),
+                            'action_text' => 'Registrar Doctor',
+                            'is_required' => true,
+                        ];
+                    }
+                }
+
+                // Para doctores: verificar si hay pacientes registrados
+                if ($user->hasRole('doctor')) {
+                    $hasPatients = PatientClient::where('client_id', $client->id)->exists();
+
+                    if (! $hasPatients) {
+                        return [
+                            'key' => 'patient',
+                            'title' => 'Registra tus pacientes',
+                            'message' => '¡Excelente! Ya tienes tu sucursal y consultorio configurados. Ahora puedes registrar tus pacientes para comenzar a agendar citas.',
+                            'action_url' => route('patient.create'),
+                            'action_text' => 'Registrar Paciente',
+                            'is_required' => true,
+                        ];
+                    }
                 }
 
                 return null;

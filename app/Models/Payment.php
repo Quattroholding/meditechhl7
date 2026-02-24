@@ -109,8 +109,13 @@ class Payment extends BaseModel
     public function generatePaymentNumber(): string
     {
         $prefix = 'PAY-'.now()->format('Y-');
-        $lastPayment = static::where('payment_number', 'like', $prefix.'%')
+
+        // Use withoutGlobalScopes to ensure we check ALL payments across all clients
+        // Use lockForUpdate to prevent race conditions when generating sequential numbers
+        $lastPayment = static::withoutGlobalScopes()
+            ->where('payment_number', 'like', $prefix.'%')
             ->orderBy('payment_number', 'desc')
+            ->lockForUpdate()
             ->first();
 
         if ($lastPayment) {
