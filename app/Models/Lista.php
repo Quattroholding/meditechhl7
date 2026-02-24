@@ -45,7 +45,7 @@ class Lista extends Model
     {
 
         return [
-            'consultorio' => 'Consultorio Privado',
+            'consultorio' => 'Sucursal Privada',
             'centro de salud' => 'Centro de atención primaria',
             'clinica' => 'Clinica',
             'hospital' => 'Hospital',
