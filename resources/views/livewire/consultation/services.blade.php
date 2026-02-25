@@ -63,8 +63,8 @@
                                 <td>
                                     @if($chargeItem->status !== \App\Enums\ChargeItemStatus::BILLED)
                                         <button wire:click="removeChargeItem({{ $chargeItem->id }})"
+                                                wire:confirm="¿Está seguro de eliminar este servicio?"
                                                 class="btn btn-danger btn-sm"
-                                                onclick="return confirm('¿Está seguro de eliminar este servicio?')"
                                                 title="Eliminar servicio">
                                             <i class="fa fa-trash"></i>
                                         </button>

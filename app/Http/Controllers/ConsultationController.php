@@ -384,7 +384,18 @@ class ConsultationController extends Controller
             $consultation_disabilities = [];
             $lang = 'esp';
             $home_visit = false;
-            $sello = $firma = '';
+
+            // Buscar firma y sello del practitioner
+            $sello = \App\Models\File::where('table_name', 'practitioners')
+                ->where('record_id', $data->practitioner_id)
+                ->where('type', 'seal')
+                ->first()?->path ?? '';
+
+            $firma = \App\Models\File::where('table_name', 'practitioners')
+                ->where('record_id', $data->practitioner_id)
+                ->where('type', 'signature')
+                ->first()?->path ?? '';
+
             $mode = 'full';
             foreach ($data->diagnoses()->get() as $d) {
                 if ($d->condition) {

@@ -1,5 +1,6 @@
 <div class="consultation-report-vital-signs">
     <div style="display: block;">
+    @if($data->vitalSigns()->count()>0)
     @component($table_component, ['title' => trans('consultation.vital_signs')])
         <div style="display: flex; flex-wrap: wrap;">
             @foreach($data->vitalSigns()->get() as $sign)
@@ -10,5 +11,6 @@
             @endforeach
         </div>
     @endcomponent
+    @endif
     </div>
 </div>

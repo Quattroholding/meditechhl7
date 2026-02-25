@@ -122,10 +122,10 @@
         <table width="100%" border="0" cellspacing="">
             <tr>
                 <td align="right">
-                    {!! $sello !!}
+                    <img src="{{storage_path('app/private/'.$sello)}}">
                 </td>
                 <td align="left">
-                    {!! $firma !!}
+                    <img src="{{storage_path('app/private/'.$firma)}}">
                 </td>
             </tr>
         </table>
