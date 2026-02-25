@@ -647,7 +647,7 @@
                 <p>Durante la consulta:</p>
                 <ul>
                     <li>Desplácese hacia abajo en la interfaz de consulta</li>
-                    <li>Localice y expanda la sección <strong>"Servicios"</strong> o <strong>"Cargos Facturables"</strong></li>
+                    <li>Localice y expanda la sección <strong>"Servicios Facturables"</strong></li>
                     <li>Esta sección muestra los servicios ya agregados y permite agregar nuevos</li>
                 </ul>
 
@@ -661,31 +661,31 @@
                 <h4><span class="step-number">2</span><span class="step-title">Buscar Servicio en el Catálogo</span></h4>
                 <p>Para agregar un servicio:</p>
                 <ul>
-                    <li>Haga clic en el botón <strong>"Servicios Facturables"</strong></li>
-                    <li>Se abrirá un modal o panel de búsqueda</li>
+                    <li>Haga clic en el buscador donde dice <strong>"Buscar servicio por nombre o codigo cpt"</strong></li>
+                    <!--<li>Se abrirá un modal o panel de búsqueda</li>-->
                     <li>Escriba el nombre del servicio, código CPT o descripción</li>
                     <li>El sistema mostrará resultados mientras escribe (búsqueda en tiempo real)</li>
                     <li>Los resultados muestran:
                         <ul>
                             <li>Nombre del servicio</li>
                             <li>Código CPT (si aplica)</li>
-                            <li>Precio base</li>
-                            <li>Tipo de servicio</li>
+                            <!--<li>Precio base</li>
+                            <li>Tipo de servicio</li>-->
                         </ul>
                     </li>
                 </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/invoices/invoice_search.png') }}" alt="" style="width: 100%;">
+                </div>
 
                 <div class="info-box tip">
                     <div class="info-box-title">
                         <i class="fas fa-lightbulb text-success"></i>
                         Acceso Rápido
                     </div>
-                    <p class="mb-0">Algunos sistemas tienen un panel de "Acceso Rápido" con los servicios más utilizados. Esto permite agregar servicios comunes con un solo clic sin necesidad de buscar.</p>
+                    <p class="mb-0">Esta sección cuenta con un "Acceso Rápido" con los servicios más utilizados, para acceder a el haga clic en <strong>"Listado de Servicios"</strong>. Esto permite agregar servicios comunes con un sólo clic, sin necesidad de buscar.</p>
                 </div>
-
-            <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_search.png') }}" alt="" style="width: 100%;">
-            </div>
             </div>
 
             <!-- Step 3 -->
@@ -769,12 +769,12 @@
                 </div>
             </div>
 
-            <h3>Visualización del Total</h3>
+            <!--<h3>Visualización del Total</h3>
             <p>Mientras agrega servicios, el sistema muestra:</p>
             <ul>
                 <li><strong>Subtotal:</strong> Suma de todos los servicios (cantidad × precio)</li>
                 <li><strong>Total estimado:</strong> Incluye impuestos (calculados al finalizar)</li>
-            </ul>
+            </ul>-->
 
             <div class="info-box note">
                 <div class="info-box-title">
@@ -799,7 +799,7 @@
                     <li>Complete toda la documentación de la consulta</li>
                     <li>Asegúrese de haber agregado todos los servicios facturables</li>
                     <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong></li>
-                    <li>Confirme la acción cuando se le solicite</li>
+                    <!--<li>Confirme la acción cuando se le solicite</li>-->
                 </ul>
 
                 <div class="info-box warning">
@@ -812,7 +812,7 @@
             </div>
 
             <!-- Step 2 -->
-            <div class="step-card">
+            {{--}}<div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Proceso Automático</span></h4>
                 <p>Al finalizar la consulta, el sistema ejecuta automáticamente:</p>
                 <ol>
@@ -850,11 +850,11 @@
             <div>
                 <img src="{{ asset('images/tutorial/invoices/invoice_encounter.png') }}" alt="" style="width: 100%;">
             </div>
-            </div>
+            </div>{{--}}
 
             <!-- Step 3 -->
             <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Descargar PDF de Factura</span></h4>
+                <h4><span class="step-number">2</span><span class="step-title">Descargar PDF de Factura</span></h4>
                 <p>Una vez generada la factura:</p>
                 <ul>
                     <li>El sistema muestra un mensaje de éxito con el número de factura</li>
@@ -863,8 +863,9 @@
                     <li>El PDF incluye:
                         <ul>
                             <li>Información de la clínica/consultorio</li>
-                            <li>Datos del paciente</li>
-                            <li>Número y fecha de factura</li>
+                            <li>Información del paciente</li>
+                            <li>Información de factura</li>
+                            <li>Información de la consulta</li>
                             <li>Detalle de servicios</li>
                             <li>Subtotal, impuestos y total</li>
                             <li>Términos de pago</li>
@@ -909,12 +910,8 @@
                     <li>Se mostrará el listado de todas las facturas</li>
                     <li>Puede filtrar por:
                         <ul>
-                            <li>Paciente</li>
-                            <li>Fecha de emisión</li>
-                            <li>Estado de factura</li>
-                            <li>Estado de pago</li>
-                            <li>Médico</li>
-                            <li>Sucursal</li>
+                            <li>Nombre del Paciente</li>
+                            <li>ID de Factura</li>
                         </ul>
                     </li>
                 </ul>
@@ -932,12 +929,12 @@
                     <li>En el listado, haga clic en el número de factura o en el ícono de <i class="fas fa-eye text-primary"></i> "Ver"</li>
                     <li>Se mostrará una página con:
                         <ul>
-                            <li><strong>Información General:</strong> Número, fecha, paciente, médico</li>
+                            <li><strong>Información General:</strong> Número de factura, número identificador, estado de emisión, estado de pago, datos del centro clínico, consultorio o médico, datos del paciente, fecha de emisión y de vencimiento, id de consulta y términos de pago.</li>
                             <li><strong>Líneas de Factura:</strong> Detalle de cada servicio</li>
-                            <li><strong>Totales:</strong> Subtotal, impuestos, total</li>
+                            <li><strong>Totales:</strong> Precio unitario, el total de la línea, el subtotal, impuestos y monto total </li>
                             <li><strong>Estado de Pago:</strong> Monto pagado, monto pendiente</li>
                             <li><strong>Historial de Pagos:</strong> Pagos aplicados a esta factura</li>
-                            <li><strong>Acciones:</strong> Descargar PDF, registrar pago, etc.</li>
+                            <li><strong>Acciones:</strong> Descargar PDF, Vista Previa</li>
                         </ul>
                     </li>
                 </ul>
@@ -981,7 +978,7 @@
                             <td data-label="Descripcion">Factura emitida y activa</td>
                             <td data-label="Badge"><span class="status-badge status-issued">Emitida</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Estado"><strong>Balanced</strong></td>
                             <td data-label="Descripcion">Factura completamente pagada y balanceada</td>
                             <td data-label="Badge"><span class="status-badge status-balanced">Balanceada</span></td>
@@ -990,7 +987,7 @@
                             <td data-label="Estado"><strong>Cancelled</strong></td>
                             <td data-label="Descripcion">Factura cancelada o anulada</td>
                             <td data-label="Badge"><span class="status-badge status-cancelled">Cancelada</span></td>
-                        </tr>
+                        </tr>-->
                     </tbody>
                 </table>
             </div>
@@ -1012,11 +1009,11 @@
                             <td data-label="Descripcion">No se ha registrado ningún pago</td>
                             <td data-label="Badge"><span class="status-badge status-unpaid">No Pagada</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Estado"><strong>Partially Paid</strong></td>
                             <td data-label="Descripcion">Se ha pagado parte del monto total</td>
                             <td data-label="Badge"><span class="status-badge status-partially-paid">Pago Parcial</span></td>
-                        </tr>
+                        </tr>-->
                         <tr>
                             <td data-label="Estado"><strong>Paid</strong></td>
                             <td data-label="Descripcion">Monto total pagado completamente</td>
@@ -1067,7 +1064,7 @@
                             <li>Finalizar consulta sin revisar servicios agregados</li>
                             <li>No verificar precios antes de agregar servicios</li>
                             <li>Olvidar agregar servicios realizados</li>
-                            <li>Duplicar servicios por error</li>
+                            <!--<li>Duplicar servicios por error</li>-->
                             <li>No descargar la factura para el paciente</li>
                             <li>Intentar modificar servicios después de facturar</li>
                         </ul>
@@ -1086,7 +1083,7 @@
                     </h2>
                     <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            No, las facturas generadas no pueden modificarse directamente. Esto es por razones de auditoría y cumplimiento legal. Si necesita hacer correcciones, debe cancelar la factura original y generar una nueva, o contactar al administrador del sistema.
+                            No, las facturas generadas no pueden modificarse directamente. Esto es por razones de auditoría y cumplimiento legal. Si necesita hacer correcciones, debe contactar al administrador del sistema.
                         </div>
                     </div>
                 </div>
@@ -1099,7 +1096,7 @@
                     </h2>
                     <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Si ya finalizó la consulta y generó la factura, no puede agregar servicios a esa factura. Tiene dos opciones: 1) Generar una factura complementaria manual (contacte al administrador), o 2) Agregar el servicio en la próxima consulta del paciente.
+                            Si ya finalizó la consulta y generó la factura, puede agregar servicios a esa factura. 1) Primero, deberá entrar a la consulta y agregar el servicio que no pudo adjuntar anteriormente, y 2) Hacer clic en <strong>"finalizar consulta"</strong>, el sistema generará automáticamente una nueva factura para el servicio que acaba de ser agregado.
                         </div>
                     </div>
                 </div>
@@ -1112,7 +1109,7 @@
                     </h2>
                     <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Puede aplicar descuentos modificando el precio unitario del servicio antes de finalizar la consulta. Por ejemplo, si un servicio cuesta $100 y quiere dar 20% de descuento, cambie el precio a $80. Asegúrese de agregar una nota explicando el descuento.
+                            Puede aplicar descuentos modificando el precio unitario del servicio antes de finalizar la consulta. Por ejemplo, si un servicio cuesta $100 y quiere dar 20% de descuento, cambie el precio a $80.
                         </div>
                     </div>
                 </div>
@@ -1125,7 +1122,7 @@
                     </h2>
                     <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            No, la factura no se envía automáticamente por correo. Debe descargar el PDF y entregarlo al paciente en persona, por correo electrónico, o imprimirlo. Algunos sistemas pueden tener configurada la opción de envío automático, consulte con su administrador.
+                            No, la factura no se envía automáticamente por correo. Debe descargar el PDF y entregarlo al paciente en persona, por correo electrónico, o imprimirlo.
                         </div>
                     </div>
                 </div>
