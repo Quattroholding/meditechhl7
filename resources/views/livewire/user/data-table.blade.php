@@ -26,6 +26,11 @@
                                 <th data-column="email" data-priority="3">
                                     <x-table-sort-button title="{{__('user.email')}}" columnName="email" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <th data-column="roles" data-priority="4">
+                                        <x-table-sort-button title="Cliente/Paquete" columnName=""/>
+                                    </th>
+                                @endif
                                 <th data-column="roles" data-priority="4">
                                     <x-table-sort-button title="{{__('user.roles')}}" columnName=""/>
                                 </th>
@@ -57,6 +62,11 @@
                                     <td data-column="email" data-priority="3" data-label="{{__('user.email')}}">
                                         <span class="cell-content">{{ $user->email }}</span>
                                     </td>
+                                    @if(auth()->user()->hasRole('admin'))
+                                        <td data-column="email" data-priority="3" data-label="Cliente/Paquete">
+                                            <span class="cell-content">{{ $user->getCurrentClient()->name }} <br/> {{ $user->getCurrentClient()->package->name }}</span>
+                                        </td>
+                                    @endif
                                     <td data-column="roles" data-priority="4" data-label="{{__('user.roles')}}">
                                         <span class="cell-content">
                                             @foreach($user->roles as $role)
