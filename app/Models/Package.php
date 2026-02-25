@@ -25,6 +25,7 @@ class Package extends BaseModel
         'billing_period_days',
         'agent_available',
         'appointments_limit',
+        'show_on_web',
     ];
 
     protected function casts(): array

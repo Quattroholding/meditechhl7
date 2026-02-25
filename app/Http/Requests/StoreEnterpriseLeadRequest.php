@@ -21,30 +21,43 @@ class StoreEnterpriseLeadRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isUpgradeRequest = $this->input('source') === 'upgrade_request';
+
+        // Validación más flexible del teléfono para upgrade requests
+        $phoneRules = ['required', 'string', 'max:50'];
+
+        if (! $isUpgradeRequest) {
+            // Validación estricta solo para landing page
+            $phoneRules[] = 'regex:/^\+[1-9]\d{1,14}$/';
+            $phoneRules[] = function ($attribute, $value, $fail) {
+                if (! str_starts_with($value, '+')) {
+                    $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
+
+                    return;
+                }
+
+                if (strlen($value) < 8) {
+                    $fail('El número de teléfono es demasiado corto.');
+
+                    return;
+                }
+            };
+        }
+
         return [
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => [
-                'required',
-                'string',
-                'max:50',
-                'regex:/^\+[1-9]\d{1,14}$/',
-                function ($attribute, $value, $fail) {
-                    if (! str_starts_with($value, '+')) {
-                        $fail('El número de teléfono debe incluir el código de país (ej: +507...)');
-
-                        return;
-                    }
-
-                    if (strlen($value) < 8) {
-                        $fail('El número de teléfono es demasiado corto.');
-
-                        return;
-                    }
-                },
-            ],
+            'phone' => $phoneRules,
             'company_name' => ['required', 'string', 'max:255'],
             'message' => ['nullable', 'string', 'max:1000'],
+
+            // Campos opcionales para requests desde usuarios autenticados
+            'source' => ['nullable', 'string', 'in:landing_page,upgrade_request'],
+            'client_id' => ['nullable', 'integer', 'exists:clients,id'],
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'current_subscription_id' => ['nullable', 'integer', 'exists:client_subscriptions,id'],
+            'current_package_id' => ['nullable', 'integer', 'exists:packages,id'],
+            'requested_package_id' => ['nullable', 'integer', 'exists:packages,id'],
         ];
     }
 

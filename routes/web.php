@@ -83,7 +83,7 @@ Route::get('/register/success', [PublicRegistrationController::class, 'success']
 
 // Enterprise Leads (Público)
 Route::post('/enterprise-contact', [EnterpriseLeadController::class, 'store'])
-    ->middleware('throttle:3,60')
+    ->middleware('throttle:enterprise-leads')
     ->name('enterprise.lead.store');
 
 // Enterprise Leads (Admin - Protegido)

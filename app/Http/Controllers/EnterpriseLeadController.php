@@ -4,14 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEnterpriseLeadRequest;
 use App\Models\EnterpriseLead;
+use App\Notifications\NewEnterpriseLeadNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class EnterpriseLeadController extends Controller
 {
     public function store(StoreEnterpriseLeadRequest $request)
     {
         try {
+            // Determinar el source: si viene de un usuario autenticado con cliente es upgrade_request
+            $source = $request->input('source', 'landing_page');
+
+            // Construir metadata base
+            $metadata = [
+                'user_agent' => $request->userAgent(),
+                'ip' => $request->ip(),
+                'referrer' => $request->header('referer'),
+            ];
+
+            // Si es un upgrade request, agregar información adicional del cliente y suscripción
+            if ($source === 'upgrade_request') {
+                $metadata['client_id'] = $request->client_id;
+                $metadata['user_id'] = $request->user_id;
+                $metadata['current_subscription_id'] = $request->current_subscription_id;
+                $metadata['current_package_id'] = $request->current_package_id;
+                $metadata['requested_package_id'] = $request->requested_package_id;
+            }
+
             $lead = EnterpriseLead::create([
                 'full_name' => $request->full_name,
                 'email' => $request->email,
@@ -19,17 +40,20 @@ class EnterpriseLeadController extends Controller
                 'company_name' => $request->company_name,
                 'message' => $request->message,
                 'status' => 'new',
-                'source' => 'landing_page',
-                'metadata' => [
-                    'user_agent' => $request->userAgent(),
-                    'ip' => $request->ip(),
-                    'referrer' => $request->header('referer'),
-                ],
+                'source' => $source,
+                'metadata' => $metadata,
             ]);
+
+            // Enviar notificación por correo a los destinatarios de ventas
+            Notification::route('mail', [
+                'business@meditecpty.com',
+               // 'bpavan@meditecpty.com',
+            ])->notify(new NewEnterpriseLeadNotification($lead));
 
             Log::info('Enterprise lead created', [
                 'lead_id' => $lead->id,
                 'company' => $lead->company_name,
+                'notification_sent_to' => ['business@meditecpty.com', 'bpavan@meditecpty.com'],
             ]);
 
             if ($request->expectsJson()) {

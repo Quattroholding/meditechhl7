@@ -45,6 +45,10 @@ return new class extends Migration
                 $table->integer('appointments_limit')->nullable()->after('agent_available');
             }
 
+            if (! Schema::hasColumn('packages', 'show_on_web')) {
+                $table->boolean('show_on_web')->default(0)->after('appointments_limit');
+            }
+
         });
 
         $packages = DB::table('packages')->get();
