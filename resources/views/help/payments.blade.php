@@ -617,10 +617,10 @@
                         <ul class="mb-0">
                             <li>Registro de pagos contra facturas</li>
                             <li>Múltiples métodos de pago</li>
-                            <li>Pagos parciales y completos</li>
+                            <!--<li>Pagos parciales y completos</li>-->
                             <li>Generación de comprobantes</li>
                             <li>Seguimiento de cuentas por cobrar</li>
-                            <li>Reportes de pagos recibidos</li>
+                            <!--<li>Reportes de pagos recibidos</li>-->
                         </ul>
                     </div>
                 </div>
@@ -655,10 +655,9 @@
             <!-- Step 1 -->
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Acceder al Módulo de Pagos</span></h4>
-                <p>Navegue a <strong>Cuentas → Pagos</strong> desde el menú principal, o acceda desde la factura directamente.</p>
+                <p>Navegue a <strong>Cuentas → Facturas</strong> desde el menú principal.</p>
                 <ul>
-                    <li><strong>Opción A:</strong> Desde el módulo de Pagos, haga clic en <strong>"Registrar Pago"</strong></li>
-                    <li><strong>Opción B:</strong> Desde el detalle de una factura, haga clic en <strong>"Registrar Pago"</strong></li>
+                    <li>Desde el módulo de Pagos, haga clic en el ícono de la tarjeta para<strong>"Registrar Pago"</strong></li>
                 </ul>
 
             <div>
