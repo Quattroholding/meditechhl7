@@ -19,8 +19,9 @@ class PackageSeeder extends Seeder
             'max_doctors_included' => 1,
             'is_active' => true,
             'base_price' => 49.99,
-            'features'=>["Administración y Agendamiento de citas", "Límite de agendamiento de hasta 30 citas  (Tentativo)", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI (Tentativo)"],
+            'features'=>["Administración y Agendamiento de citas", "Límite de agendamiento de hasta 30 citas", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"],
             'appointments_limit'=>30,
+            'show_on_web'=>1,
         ]);
 
         Package::create([
@@ -32,6 +33,7 @@ class PackageSeeder extends Seeder
             'base_price' => 74.99,
             'agent_available' => true,
             'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"],
+            'show_on_web'=>1,
 
         ]);
 
@@ -43,7 +45,8 @@ class PackageSeeder extends Seeder
             'is_active' => true,
             'base_price' => 124.99,
             'agent_available' => true,
-            'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"]
+            'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas SAMI"],
+            'show_on_web'=>1,
         ]);
 
         Package::create([
@@ -54,6 +57,7 @@ class PackageSeeder extends Seeder
             'is_active' => true,
             'base_price' => 999.99,
             'features'=>["Administración y Agendamiento de citas", "Sin Límite de agendamiento", "Gestión de Pacientes", "Historial Clínico Digital", "Creación de Incapacidades Médicas", "Dashboard con Kpis relevantes", "Gestión de cobros de servicios", "Agente automatizado de citas a través de whatsapp personalizado"],
+            'show_on_web'=>1,
         ]);
     }
 }
