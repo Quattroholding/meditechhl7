@@ -4,4 +4,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\BroadcastServiceProvider::class,
     App\Providers\DashboardServiceProvider::class,
+    App\Providers\RateLimitServiceProvider::class,
 ];
