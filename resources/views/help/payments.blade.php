@@ -680,7 +680,7 @@
                         </ul>
                     </li>
                 </ul>
-
+                </div>
                 <!--<div class="info-box note">
                     <div class="info-box-title">
                         <i class="fas fa-info-circle text-primary"></i>
@@ -688,7 +688,7 @@
                     </div>
                     <p class="mb-0">Si accedió desde el detalle de una factura, esta ya estará preseleccionada y verá directamente el formulario de pago.</p>
                 </div>
-            </div>-->
+            -->
 
             <!-- Step 3 -->
             <div class="step-card">
