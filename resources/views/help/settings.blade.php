@@ -810,7 +810,7 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Servicios</strong><br>URL: <code>/settings/create_user_procedures</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Servicios</strong><br><!--URL: <code>/settings/create_user_procedures</code>--></p>
             </div>
 
             <h3>Tipos de Servicios</h3>
@@ -845,10 +845,9 @@
 
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Buscar Codigo CPT</span></h4>
-                <p>En la seccion "Agregar Servicio CPT", utilice el buscador para encontrar el codigo:</p>
+                <p>En la seccion "Agregar Servicio desde CPT", utilice el buscador para encontrar el codigo:</p>
                 <ul>
-                    <li>Escriba el codigo CPT (ej: 99213)</li>
-                    <li>O escriba parte del nombre del procedimiento</li>
+                    <li>Escriba el codigo CPT (ej: 99213) o escriba parte del nombre del procedimiento</li>
                     <li>Seleccione de la lista desplegable</li>
                 </ul>
 
@@ -886,7 +885,7 @@
                                 <td data-label="Descripcion">Nivel de complejidad: Baja, Media o Alta</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td data-label="Campo"><strong>Especialidad</strong></td>
                                 <td data-label="Descripcion">Especialidad medica asociada</td>
                                 <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
@@ -910,7 +909,7 @@
                                 <td data-label="Campo"><strong>Cubierto por Seguro</strong></td>
                                 <td data-label="Descripcion">Indica si el servicio esta cubierto por seguros</td>
                                 <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                            </tr>
+                            </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -918,11 +917,11 @@
 
             <div class="step-card">
                 <h4><span class="step-number">3</span><span class="step-title">Guardar el Servicio</span></h4>
-                <p>Haga click en <strong>"Agregar Servicio"</strong> para guardar. El sistema:</p>
+                <p>Haga click en <strong>"Registrar"</strong> para guardar. El sistema:</p>
                 <ul>
                     <li>Genera automaticamente un codigo de servicio (ej: PROC_0001)</li>
                     <li>Vincula el servicio a su cuenta</li>
-                    <li>Lo hace disponible para facturacion y ordenes</li>
+                    <li>Lo hace disponible para servicios facturables</li>
                 </ul>
             </div>
 
@@ -948,17 +947,17 @@
                             <td data-label="Descripcion">Descripcion detallada del servicio</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
                             <td data-label="Descripcion">Categoria del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                        </tr>
+                        </tr>-->
                         <tr>
                             <td data-label="Campo"><strong>Precio</strong></td>
                             <td data-label="Descripcion">Precio base del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>Complejidad</strong></td>
                             <td data-label="Descripcion">Nivel: Baja, Media o Alta</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
@@ -967,7 +966,7 @@
                             <td data-label="Campo"><strong>Codigo de Ingreso</strong></td>
                             <td data-label="Descripcion">Codigo contable para facturacion</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                        </tr>
+                        </tr>-->
                     </tbody>
                 </table>
             </div>
@@ -978,7 +977,7 @@
                     <ul>
                         <li><strong>Consulta</strong> - Consultas medicas</li>
                         <li><strong>Procedimiento</strong> - Procedimientos menores</li>
-                        <li><strong>Diagnostico</strong> - Estudios diagnosticos</li>
+                        <!--<li><strong>Diagnostico</strong> - Estudios diagnosticos</li>-->
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -997,12 +996,12 @@
                 </div>
             </div>
 
-            <h4>Niveles de Complejidad</h4>
+            <!--<h4>Niveles de Complejidad</h4>
             <p>
                 <span class="complexity-badge complexity-low">Baja</span>
                 <span class="complexity-badge complexity-medium">Media</span>
                 <span class="complexity-badge complexity-high">Alta</span>
-            </p>
+            </p>-->
 
             <div>
                 <img src="{{ asset('images/tutorial/settings/setting_catalog.png') }}" alt="" style="width: 100%;">
@@ -1036,7 +1035,7 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Horario Laboral</strong><br>URL: <code>/settings/create_working_hour_user</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Horario Laboral</strong><br><!--URL: <code>/settings/create_working_hour_user</code>--></p>
             </div>
 
             <h3>Estructura de Horarios</h3>
@@ -1045,7 +1044,7 @@
                 <li><strong>Sucursal:</strong> La ubicacion fisica donde atendera</li>
                 <li><strong>Consultorio:</strong> El consultorio especifico dentro de esa sucursal</li>
                 <li><strong>Dia de la semana:</strong> De lunes a domingo</li>
-                <li><strong>Rango de horas:</strong> Hora de inicio y fin de atencion</li>
+                <li><strong>Rango de horas:</strong> Hora de entrada y hora de salida</li>
             </ul>
 
             <div class="info-box note">
@@ -1053,7 +1052,7 @@
                     <i class="fas fa-info-circle text-primary"></i>
                     Multiples Turnos
                 </div>
-                <p class="mb-0">Puede configurar multiples turnos por dia. Por ejemplo, si atiende en la manana en una sucursal y en la tarde en otra, agregue dos horarios para el mismo dia.</p>
+                <p class="mb-0">Puede configurar multiples turnos por dia. Por ejemplo, si atiende en la mañana en una sucursal y en la tarde en otra, agregue dos horarios para el mismo dia.</p>
             </div>
 
             <h3>Configurar Horarios</h3>
@@ -1075,8 +1074,8 @@
                     <li>Marque la casilla de <strong>"Habilitar"</strong> para activar el dia</li>
                     <li>Seleccione la <strong>Sucursal</strong> donde atendera</li>
                     <li>Seleccione el <strong>Consultorio</strong> (se filtra segun la sucursal)</li>
-                    <li>Defina la <strong>Hora de Inicio</strong> (formato HH:MM)</li>
-                    <li>Defina la <strong>Hora de Fin</strong> (debe ser posterior al inicio)</li>
+                    <li>Defina la <strong>Hora de Entrada</strong> (formato HH:MM)</li>
+                    <li>Defina la <strong>Hora de Salida</strong> (debe ser posterior al inicio)</li>
                 </ol>
                 <div class="field-table-wrapper">
                     <table class="field-table">
@@ -1138,7 +1137,7 @@
                 <ol>
                     <li>Revise el resumen de horarios configurados</li>
                     <li>Los dias con horarios habilitados mostraran una insignia <span class="badge bg-success">Configurado</span></li>
-                    <li>Haga click en <strong>"Guardar"</strong> para aplicar los cambios</li>
+                    <li>Haga clic en <strong>"Registrar"</strong> para aplicar los cambios</li>
                 </ol>
             </div>
 
@@ -1186,7 +1185,7 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Accesos Rapidos</strong><br>URL: <code>/settings/create_rapid_access</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Accesos Rapidos</strong><br><!--URL: <code>/settings/create_rapid_access</code>--></p>
             </div>
 
             <h3>Categorias de Acceso Rapido</h3>
@@ -1237,7 +1236,7 @@
                 <h4><span class="step-number">2</span><span class="step-title">Buscar y Agregar Items</span></h4>
                 <p>En cada seccion:</p>
                 <ol>
-                    <li>Utilice el buscador para encontrar el codigo CPT deseado</li>
+                    <li>Utilice el buscador para encontrar el codigo CPT deseado (La búsqueda puede hacerse por nombre o código del CPT)</li>
                     <li>Escriba al menos 2 caracteres para iniciar la busqueda</li>
                     <li>Seleccione el item de la lista desplegable</li>
                     <li>El item se agregara automaticamente a su lista de accesos rapidos</li>
@@ -1252,7 +1251,7 @@
                 <h4><span class="step-number">3</span><span class="step-title">Gestionar Items</span></h4>
                 <p>Una vez agregados los items:</p>
                 <ul>
-                    <li>Vera la lista de items seleccionados debajo del buscador</li>
+                    <li>Vera la lista de items seleccionados al lado del buscador</li>
                     <li>Use el boton <i class="fas fa-trash text-danger"></i> para eliminar items que ya no necesite</li>
                     <li>Los cambios se guardan automaticamente</li>
                 </ul>
@@ -1261,7 +1260,7 @@
             <h3>Uso Durante la Consulta</h3>
             <p>Durante una consulta medica, los accesos rapidos aparecen en un panel lateral:</p>
             <ol>
-                <li>Abra el panel de <strong>"Accesos Rapidos"</strong> en la consulta</li>
+                <li>Abra el panel de <strong>"Lista de Accesos Rápidos"</strong> en la consulta</li>
                 <li>Vera sus items configurados organizados por categoria</li>
                 <li>Haga click en cualquier item para agregarlo a la orden actual</li>
                 <li>Los items ya agregados se marcan visualmente</li>
@@ -1291,14 +1290,14 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla Consulta</strong><br>URL: <code>/settings/create_consultation_template</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla Consulta</strong><br><!--URL: <code>/settings/create_consultation_template</code>--></p>
             </div>
 
             <h3>Secciones Disponibles</h3>
             <p>SAMI ofrece multiples secciones que puede incluir en sus consultas:</p>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="field-table-wrapper">
                         <table class="field-table">
                             <thead>
@@ -1308,36 +1307,56 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            <tr>
+                                    <td data-label="Seccion"><strong>Servicios Facturables</strong></td>
+                                    <td data-label="Descripcion">Servicios asociados a CPTs, Servicios personalizados, etc.</td>
+                                </tr>
                                 <tr>
                                     <td data-label="Seccion"><strong>Signos Vitales</strong></td>
                                     <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
                                 </tr>
+                                                                <tr>
+                                    <td data-label="Seccion"><strong>Motivo de Consulta</strong></td>
+                                    <td data-label="Descripcion">Descripción detallada de la condición/movito de visita del paciente.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
+                                    <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
+                                </tr>                                
                                 <tr>
                                     <td data-label="Seccion"><strong>Examen Fisico</strong></td>
                                     <td data-label="Descripcion">Hallazgos del examen fisico por sistemas</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Seccion"><strong>Condiciones</strong></td>
+                                    <td data-label="Seccion"><strong>Diagnósticos</strong></td>
                                     <td data-label="Descripcion">Diagnosticos y condiciones del paciente</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
-                                    <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Prescripciones</strong></td>
-                                    <td data-label="Descripcion">Medicamentos recetados</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Seccion"><strong>Ordenes Medicas</strong></td>
                                     <td data-label="Descripcion">Laboratorios, imagenes y procedimientos</td>
+                                </tr>
+                                 <tr>
+                                    <td data-label="Seccion"><strong>Referencia Especialista</strong></td>
+                                    <td data-label="Descripcion">Referir a Médico Especializado</td>
+                                </tr>                               
+                                <tr>
+                                    <td data-label="Seccion"><strong>Medicamentos</strong></td>
+                                    <td data-label="Descripcion">Medicamentos recetados</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Nota General</strong></td>
+                                    <td data-label="Descripcion">Nota General de la Consulta</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Incapacidades Médicas</strong></td>
+                                    <td data-label="Descripcion">Incapacidades y justificantes</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                 </div>
-                <div class="col-md-6">
+                <!--<div class="col-md-6">
                     <div class="field-table-wrapper">
                         <table class="field-table">
                             <thead>
@@ -1374,7 +1393,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <h3>Configurar la Plantilla</h3>
@@ -1504,9 +1523,9 @@
                         <ul class="mb-0">
                             <li>No configurar horarios antes de agendar citas</li>
                             <li>Agregar demasiados accesos rapidos (pierde efectividad)</li>
-                            <li>Dejar servicios sin precio definido</li>
+                            <!--<li>Dejar servicios sin precio definido</li>-->
                             <li>No asociar sucursal/consultorio a los horarios</li>
-                            <li>Remover secciones obligatorias de consulta</li>
+                            <!--<li>Remover secciones obligatorias de consulta</li>-->
                             <li>No guardar los cambios antes de salir</li>
                         </ul>
                     </div>
@@ -1519,7 +1538,7 @@
                     <thead>
                         <tr>
                             <th>Funcionalidad</th>
-                            <th>Permiso Requerido</th>
+                            <!--<th>Permiso Requerido</th>-->
                             <th>Descripcion</th>
                         </tr>
                     </thead>
