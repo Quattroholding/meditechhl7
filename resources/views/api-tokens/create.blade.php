@@ -64,6 +64,28 @@
                                     </div>
 
                                     <div class="mb-4">
+                                        <label for="practitioner_id" class="form-label">
+                                            <i class="fas fa-user-md"></i> Practitioner (Opcional)
+                                        </label>
+                                        <select class="form-control select2 @error('practitioner_id') is-invalid @enderror"
+                                                id="practitioner_id"
+                                                name="practitioner_id">
+                                            <option value="">Ninguno (Token genérico)</option>
+                                            @foreach(\App\Models\Practitioner::withoutGlobalScopes()->orderBy('name')->get() as $practitioner)
+                                                <option value="{{ $practitioner->id }}" {{ old('practitioner_id') == $practitioner->id ? 'selected' : '' }}>
+                                                    {{ $practitioner->name }} - {{ $practitioner->identifier }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('practitioner_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">
+                                            Asociar este token a un practitioner específico (útil para integraciones como HemoScreen)
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-4">
                                         <label for="allowed_ips" class="form-label">
                                             <i class="fas fa-network-wired"></i> IPs Permitidas <span class="text-danger">*</span>
                                         </label>

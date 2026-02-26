@@ -43,11 +43,15 @@ class ApiTokenMiddleware
             $apiToken->updateLastUsed($clientIp);
         })->afterResponse();
 
+        // Load practitioner relationship if exists
+        $apiToken->load('practitioner');
+
         // Add token info to request for potential use in controllers
         $request->merge([
             'api_token' => $apiToken,
             'token_name' => $apiToken->name,
             'token_scopes' => $apiToken->scopes,
+            'authenticated_practitioner' => $apiToken->practitioner,
         ]);
 
         return $next($request);

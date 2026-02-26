@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class ApiToken extends Model
 {
     protected $fillable = [
+        'practitioner_id',
         'name',
         'token',
         'allowed_ips',
@@ -164,10 +166,26 @@ class ApiToken extends Model
     }
 
     /**
+     * Get the practitioner that owns the token
+     */
+    public function practitioner(): BelongsTo
+    {
+        return $this->belongsTo(Practitioner::class);
+    }
+
+    /**
      * Get localhost API token
      */
     public static function local(): ?self
     {
         return static::where('name', 'localhost')->first();
+    }
+
+    /**
+     * Find an active token by token string
+     */
+    public static function findByToken(string $token): ?self
+    {
+        return static::where('token', $token)->active()->first();
     }
 }

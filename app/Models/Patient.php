@@ -22,6 +22,7 @@ class Patient extends BaseModel
         'address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',
         'country_id', 'state_id', 'contact_name', 'contact_email', 'contact_phone','creation_source',
+        'scb_id',
     ];
 
     protected $casts = [

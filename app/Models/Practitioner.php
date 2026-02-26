@@ -78,6 +78,11 @@ class Practitioner extends BaseModel
             ->withTimestamps();
     }
 
+    public function apiTokens(): HasMany
+    {
+        return $this->hasMany(ApiToken::class);
+    }
+
     public function acceptedInsurances()
     {
         return $this->belongsToMany(InsuranceCompany::class, 'practitioner_insurance_company')

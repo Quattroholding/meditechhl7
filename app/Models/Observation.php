@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Observation extends BaseModel
 {
-    protected $fillable = ['patient_id', 'encounter_id', 'practitioner_id', 'identifier', 'status', 'code',
+    protected $fillable = ['fhir_id', 'patient_id', 'encounter_id', 'practitioner_id', 'identifier', 'status', 'code',
         'category', 'value', 'value_string', 'unit', 'interpretation', 'note',
-        'effective_date', 'issued_date', 'extension', 'reference_range', 'component'];
+        'effective_date', 'issued_date', 'extension', 'reference_range', 'component', 'scb_id'];
 
     public function patient(): BelongsTo
     {

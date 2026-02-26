@@ -120,6 +120,20 @@
                                     <dt>Descripción:</dt>
                                     <dd>{{ $apiToken->description }}</dd>
                                 @endif
+
+                                @if($apiToken->practitioner)
+                                    <hr>
+                                    <dt><i class="fas fa-user-md"></i> Practitioner Asociado:</dt>
+                                    <dd>
+                                        <span class="badge bg-info">
+                                            {{ $apiToken->practitioner->name }} ({{ $apiToken->practitioner->identifier }})
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">
+                                            Este token está asociado a un practitioner específico para integraciones como HemoScreen
+                                        </small>
+                                    </dd>
+                                @endif
                             </div>
                         </div>
 
