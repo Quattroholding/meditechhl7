@@ -590,10 +590,10 @@
                     <ul class="toc-list">
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                         <li><a href="#registrar"><i class="fas fa-plus-circle"></i> 2. Registrar Pago</a></li>
-                        <li><a href="#metodos"><i class="fas fa-money-bill-wave"></i> 3. Métodos de Pago</a></li>
-                        <li><a href="#gestion"><i class="fas fa-tasks"></i> 4. Gestión</a></li>
+                        <!--<li><a href="#metodos"><i class="fas fa-money-bill-wave"></i> 3. Métodos de Pago</a></li>-->
+                        <li><a href="#gestion"><i class="fas fa-tasks"></i> 3. Gestión</a></li>
                         <!--<li><a href="#reportes"><i class="fas fa-chart-line"></i> 5. Reportes</a></li> -->
-                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 5. Tips</a></li>
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 4. Tips</a></li>
                     </ul>
                 </div>
             </div>
@@ -870,7 +870,7 @@
 
         <!-- Section 4: Payment Management -->
         <section id="gestion" class="content-section">
-            <h2><i class="fas fa-tasks me-2"></i>4. Gestión de Pagos</h2>
+            <h2><i class="fas fa-tasks me-2"></i>3. Gestión de Pagos</h2>
 
             <p>El módulo de pagos permite ver y gestionar todos los pagos registrados en el sistema.</p>
 
@@ -992,7 +992,7 @@
 
         <!-- Section 6: Tips and Best Practices -->
         <section id="tips" class="content-section">
-            <h2><i class="fas fa-lightbulb me-2"></i>5. Tips y Mejores Prácticas</h2>
+            <h2><i class="fas fa-lightbulb me-2"></i>4. Tips y Mejores Prácticas</h2>
 
             <div class="row">
                 <div class="col-md-6">
