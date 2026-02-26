@@ -681,14 +681,14 @@
                     </li>
                 </ul>
 
-                <div class="info-box note">
+                <!--<div class="info-box note">
                     <div class="info-box-title">
                         <i class="fas fa-info-circle text-primary"></i>
                         Desde el Detalle de Factura
                     </div>
                     <p class="mb-0">Si accedió desde el detalle de una factura, esta ya estará preseleccionada y verá directamente el formulario de pago.</p>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Step 3 -->
             <div class="step-card">
@@ -734,13 +734,13 @@
                     </table>
                 </div>
 
-                <div class="info-box warning">
+                <!--<div class="info-box warning">
                     <div class="info-box-title">
                         <i class="fas fa-exclamation-triangle text-warning"></i>
                         Pagos Parciales
                     </div>
                     <p class="mb-0">Puede registrar un pago por un monto menor al total de la factura. El sistema marcará la factura como "Pago Parcial" y permitirá registrar pagos adicionales hasta completar el monto total.</p>
-                </div>
+                </div>-->
 
             <div>
                 <img src="{{ asset('images/tutorial/payments/payment_form.png') }}" alt="" style="width: 100%;">
@@ -757,7 +757,7 @@
                     <li>La fecha sea la correcta</li>
                     <li>El número de referencia esté completo (si aplica)</li>
                 </ul>
-                <p>Haga clic en <strong>"Registrar Pago"</strong> o <strong>"Guardar"</strong> para confirmar.</p>
+                <p>Haga clic en <strong>"Registrar"</strong>para confirmar.</p>
 
                 <div class="info-box danger">
                     <div class="info-box-title">
@@ -777,12 +777,13 @@
                     <li>Calcula el monto pendiente</li>
                     <li>Actualiza el estado de pago de la factura:
                         <ul>
-                            <li><strong>Partially Paid:</strong> Si aún queda saldo pendiente</li>
-                            <li><strong>Paid:</strong> Si el monto pagado cubre el total</li>
+                            <!--<li><strong>Partially Paid:</strong> Si aún queda saldo pendiente</li>-->
+                            <li><strong>Pagada:</strong> Si el monto pagado cubre el total</li>
                         </ul>
                     </li>
-                    <li>Genera un comprobante de pago</li>
+                    <!--<li>Genera un comprobante de pago</li>-->
                     <li>Registra la transacción en el historial</li>
+                    <li>La factura cambia de estado a <strong>"Pagada"</strong></li>
                 </ol>
             </div>
 
@@ -791,8 +792,8 @@
                 <h4><span class="step-number">6</span><span class="step-title">Descargar Comprobante</span></h4>
                 <p>Después de registrar el pago:</p>
                 <ul>
-                    <li>El sistema muestra un mensaje de confirmación</li>
-                    <li>Puede descargar el comprobante de pago en PDF</li>
+                    <!--<li>El sistema muestra un mensaje de confirmación</li>-->
+                    <li>Puede descargar la factura con el estado actualizado a <strong>"Pagada"</strong> en PDF</li>
                     <li>Entregue el comprobante al paciente</li>
                 </ul>
 
@@ -803,7 +804,7 @@
         </section>
 
         <!-- Section 3: Payment Methods -->
-        <section id="metodos" class="content-section">
+        {{--}}<section id="metodos" class="content-section">
             <h2><i class="fas fa-money-bill-wave me-2"></i>3. Métodos de Pago</h2>
 
             <p>SAMI soporta múltiples métodos de pago para adaptarse a las necesidades de su práctica:</p>
@@ -845,7 +846,7 @@
                     <div class="payment-method-card">
                         <i class="fab fa-cc-paypal"></i>
                         <h5>Pago en Línea</h5>
-                        <p>PayPal, Yappy u otras plataformas de pago digital.</p>
+                        <p>Pago en línea mediante Yappy.</p>
                     </div>
                 </div>
 
@@ -865,7 +866,7 @@
                 </div>
                 <p class="mb-0">Para pagos con tarjeta, transferencia o cheque, siempre registre el número de referencia, autorización o número de cheque. Esto facilita la conciliación bancaria y la auditoría de pagos.</p>
             </div>
-        </section>
+        </section>{{--}}
 
         <!-- Section 4: Payment Management -->
         <section id="gestion" class="content-section">
@@ -885,7 +886,7 @@
                             <li>Fecha de pago</li>
                             <li>Paciente</li>
                             <li>Método de pago</li>
-                            <li>Monto</li>
+                            <!--<li>Monto</li>-->
                             <li>Número de factura</li>
                         </ul>
                     </li>
@@ -908,11 +909,11 @@
                             <li>Factura asociada</li>
                             <li>Paciente</li>
                             <li>Número de referencia</li>
-                            <li>Usuario que registró el pago</li>
-                            <li>Notas adicionales</li>
+                            <!--<li>Usuario que registró el pago</li>
+                            <li>Notas adicionales</li>-->
                         </ul>
                     </li>
-                    <li>Puede descargar el comprobante de pago</li>
+                    <li>Puede descargar la factura</li>
                 </ul>
 
             <div>
@@ -920,7 +921,7 @@
             </div>
             </div>
 
-            <!-- Multiple Payments -->
+            <!-- Multiple Payments 
             <h3>Pagos Parciales y Múltiples Pagos</h3>
             <p>Una factura puede tener múltiples pagos asociados:</p>
             <ul>
@@ -942,7 +943,7 @@
                     <li>Pago 2: $150.00 (tarjeta) → Estado: Pago Parcial, Pendiente: $150.00</li>
                     <li>Pago 3: $150.00 (transferencia) → Estado: Pagada, Pendiente: $0.00</li>
                 </ul>
-            </div>
+            </div>-->
         </section>
 
         <!-- Section 5: Reports 
@@ -1045,7 +1046,7 @@
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <!--<div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                             ¿Qué hago si el paciente paga más del monto de la factura?
@@ -1056,7 +1057,7 @@
                             Si el paciente paga de más, el sistema registrará el pago completo y el excedente quedará como crédito a favor del paciente. Este crédito puede aplicarse a futuras facturas o reembolsarse al paciente. Contacte al administrador para gestionar el crédito.
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
