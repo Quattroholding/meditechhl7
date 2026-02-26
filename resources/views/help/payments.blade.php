@@ -793,13 +793,16 @@
                 <p>Después de registrar el pago:</p>
                 <ul>
                     <!--<li>El sistema muestra un mensaje de confirmación</li>-->
-                    <li>Puede descargar la factura con el estado actualizado a <strong>"Pagada"</strong> en PDF</li>
+                    <li>Puede descargar la factura con el estado actualizado a <strong>"Pagada"</strong> en PDF al buscar la factura darle clic al <strong>ícono de descarga</strong></li>
+                    <div>
+                        <img src="{{ asset('images/tutorial/payments/payment_icond.png') }}" alt="" style="width: 100%;">
+                    </div>
+                    <li>Se abrirá una nueva pestaña con el visualizador de PDF, donde podrá hacer efectiva la descarga del mismo.</li>
+                    <div>
+                        <img src="{{ asset('images/tutorial/payments/payment_pdf.png') }}" alt="" style="width: 100%;">
+                    </div>
                     <li>Entregue el comprobante al paciente</li>
                 </ul>
-
-            <div>
-                <img src="{{ asset('images/tutorial/payments/payment_pdf.png') }}" alt="" style="width: 100%;">
-            </div>
             </div>
         </section>
 
@@ -902,7 +905,7 @@
                 <h4><span class="step-number">2</span><span class="step-title">Ver Detalle de Pago</span></h4>
                 <p>Para ver el detalle completo de un pago:</p>
                 <ul>
-                    <li>Haga clic en el pago en el listado</li>
+                    <li>Dentro de <strong>Cuentas → Pagos</strong>, en la columna de acciones, haga clic en el ícono de detalle</li>
                     <li>Se mostrará:
                         <ul>
                             <li>Información del pago (monto, fecha, método)</li>
