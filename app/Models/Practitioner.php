@@ -354,4 +354,56 @@ class Practitioner extends BaseModel
             'total_surveys' => $completedResponses->count(),
         ];
     }
+
+    /**
+     * Verificar si el practitioner tiene un token HemoScreen activo
+     */
+    public function hasActiveHemoScreen(): bool
+    {
+        return $this->apiTokens()
+            ->active()
+            ->whereJsonContains('scopes', 'hemoscreen')
+            ->exists();
+    }
+
+    /**
+     * Obtener el token HemoScreen activo del practitioner
+     */
+    public function getActiveHemoScreenToken(): ?ApiToken
+    {
+        return $this->apiTokens()
+            ->active()
+            ->whereJsonContains('scopes', 'hemoscreen')
+            ->first();
+    }
+
+    /**
+     * Scope para obtener practitioners con HemoScreen activo
+     */
+    public function scopeWithHemoScreen($query)
+    {
+        return $query->whereHas('apiTokens', function ($q) {
+            $q->active()->whereJsonContains('scopes', 'hemoscreen');
+        });
+    }
+
+    /**
+     * Obtener información del dispositivo HemoScreen del practitioner
+     */
+    public function getHemoScreenInfo(): ?array
+    {
+        $token = $this->getActiveHemoScreenToken();
+
+        if (!$token) {
+            return null;
+        }
+
+        return [
+            'has_hemoscreen' => true,
+            'token_name' => $token->name,
+            'token_created_at' => $token->created_at,
+            'last_used_at' => $token->last_used_at,
+            'message' => 'Este practitioner tiene un dispositivo HemoScreen. Recuerda agregar el estudio CPT 85025 (CBC) a los Service Requests si vas a realizar hemograma.',
+        ];
+    }
 }

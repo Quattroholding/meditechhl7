@@ -38,6 +38,10 @@ class Services extends Component
 
     public $saved = false;
 
+    public $selectedServiceType = null;
+
+    public $availableServiceTypes = [];
+
     protected $rules = [
         'customQuantity' => 'required|numeric|min:0.01',
         'customPrice' => 'nullable|numeric|min:0',
@@ -56,6 +60,30 @@ class Services extends Component
         $this->encounter = Encounter::find($this->encounter_id);
         $this->loadSelectedServices();
         $this->loadRapidAccess();
+        $this->loadAvailableServiceTypes();
+    }
+
+    private function loadAvailableServiceTypes()
+    {
+        // Contar servicios activos por tipo
+        $serviceCounts = ServiceCatalog::active()
+            ->selectRaw('service_type, COUNT(*) as count')
+            ->whereNotNull('service_type')
+            ->groupBy('service_type')
+            ->pluck('count', 'service_type')
+            ->toArray();
+
+        // Contar servicios con CPT
+        $cptCount = ServiceCatalog::active()
+            ->whereNotNull('cpt_code')
+            ->count();
+
+        // Agregar tipo CPT si hay servicios con código CPT
+        if ($cptCount > 0) {
+            $serviceCounts['cpt'] = $cptCount;
+        }
+
+        $this->availableServiceTypes = $serviceCounts;
     }
 
     public function loadSelectedServices()
@@ -106,6 +134,46 @@ class Services extends Component
             ->map(function ($service) {
                 // Si cpt_code no es null, usar code + description_es de la tabla cpt_codes
                 // Si es null, usar el campo name de service_catalog
+                $displayName = $service->cpt_code && $service->cptCodeInfo
+                    ? $service->cptCodeInfo->code.' | '.$service->cptCodeInfo->description_es
+                    : $service->name;
+
+                return [
+                    'id' => $service->id,
+                    'name' => $displayName,
+                    'description' => $service->description,
+                    'price' => $service->base_price,
+                    'cpt_code' => $service->cpt_code,
+                    'service_type' => $service->service_type,
+                    'duration_minutes' => $service->duration_minutes,
+                ];
+            })
+            ->toArray();
+    }
+
+    public function updatedSelectedServiceType()
+    {
+        if (! $this->selectedServiceType) {
+            $this->results = [];
+
+            return;
+        }
+
+        // Cargar servicios según el tipo seleccionado
+        $query = ServiceCatalog::active()->with('cptCodeInfo');
+
+        if ($this->selectedServiceType === 'cpt') {
+            // Mostrar solo servicios que tengan código CPT
+            $query->whereNotNull('cpt_code');
+        } else {
+            // Filtrar por tipo de servicio
+            $query->where('service_type', $this->selectedServiceType);
+        }
+
+        $this->results = $query
+            ->select('id', 'name', 'description', 'base_price', 'cpt_code', 'service_type', 'duration_minutes')
+            ->get()
+            ->map(function ($service) {
                 $displayName = $service->cpt_code && $service->cptCodeInfo
                     ? $service->cptCodeInfo->code.' | '.$service->cptCodeInfo->description_es
                     : $service->name;

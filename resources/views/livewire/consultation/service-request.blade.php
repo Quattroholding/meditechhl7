@@ -1,4 +1,9 @@
 <div>
+    {{-- HemoScreen Reminder - Solo para laboratorio --}}
+    @if($type === 'laboratory' && $encounter && $encounter->practitioner && $encounter->practitioner->hasActiveHemoScreen())
+        <x-hemoscreen-reminder :practitioner="$encounter->practitioner" class="mb-3" />
+    @endif
+
     @if(count($selectedLists)>0)
         <div id="" class="multiple-field-values mb-3">
             <div class="multivalue-item-container">
@@ -71,21 +76,93 @@
 
         {{-- RESULTADOS DE BÚSQUEDA --}}
         @if(!empty($results))
-            <div class="selector-items" style="z-index: 1000">
-                @foreach($results as $result)
-                    <div class="sel-list-item row"
-                        wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
-                        x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'service-{{$type}}-search' }))"
-                    >
-                        <div class="col-md-1 "><strong>{{ $result['code'] }}</strong></div>
-                        <div class="col-md-8">  {{ $result['description_es'] }}</div>
-                        <div class="col-md-3 text-end">
-                            <button type="button"  class="btn btn-sm btn-outline-primary"  wire:click="addToRapidAccess({{ $result['id'] }})"  title="Agregar a accesos rápidos">
+            <div style="position: absolute; z-index: 1000; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+                {{-- Header FIJO - NO forma parte del scroll --}}
+                <div style="background: #ffffff; padding: 8px 12px; border-bottom: 2px solid #0d6efd;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div style="font-size: 0.9rem;">
+                            <i class="fas fa-search text-primary"></i>
+                            <strong>
+                                @if($isCodeSearch)
+                                    Búsqueda por código
+                                @else
+                                    Búsqueda por descripción
+                                @endif
+                            </strong>
+                        </div>
+                        <div class="text-muted" style="font-size: 0.85rem;">
+                            <i class="fas fa-list"></i>
+                            {{ count($results) }} / {{ $totalResults }}
+                            @if($hasMoreResults)
+                                <span class="badge bg-primary ms-1">+{{ $totalResults - count($results) }}</span>
+                            @endif
+                        </div>
+                    </div>
+
+
+                </div>
+
+                {{-- Contenedor con scroll - SOLO los resultados - MÁS ALTO para ver varios --}}
+                <div style="max-height: 320px; min-height: 300px; overflow-y: auto;">
+                    {{-- Resultados SIN agrupación - MÁS COMPACTOS --}}
+                    @foreach($results as $result)
+                        <div
+                            class="sel-list-item"
+                            wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                            x-on:click="window.dispatchEvent(new CustomEvent('autosave-start', { detail: 'service-{{$type}}-search' }))"
+                            style="padding: 6px 10px; cursor: pointer; border-bottom: 1px solid #e9ecef; transition: background 0.15s; display: flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.background='#f0f7ff'"
+                            onmouseout="this.style.background='white'"
+                        >
+                            <span class="badge bg-primary" style="font-size: 0.75rem; padding: 2px 6px; min-width: 60px; text-align: center;">{{ $result['code'] }}</span>
+                            <span style="font-size: 0.85rem; color: #212529; flex: 1;">{{ $result['description_es'] }}</span>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                wire:click.stop="addToRapidAccess({{ $result['id'] }})"
+                                title="Agregar a accesos rápidos"
+                                style="padding: 2px 8px; font-size: 0.75rem;"
+                            >
                                 <i class="fas fa-star"></i>
                             </button>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+
+                    {{-- Botón "Ver más" - MUY VISIBLE --}}
+                    @if($hasMoreResults)
+                        <div
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);width: 99%; padding: 10px; text-align: center; cursor: pointer; border: none; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"
+                            wire:click.prevent="loadMore"
+                            onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.3)'"
+                            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.2)'"
+                        >
+                            <div wire:loading.remove wire:target="loadMore">
+                                <i class="fas fa-chevron-down" style="font-size: 1.2rem;"></i>
+                                <div style="font-size: 1rem; margin-top: 4px;">
+                                    <strong>CARGAR MÁS RESULTADOS</strong>
+                                </div>
+                                <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
+                                    Hay {{ $totalResults - count($results) }} resultados más disponibles
+                                </div>
+                            </div>
+                            <div wire:loading wire:target="loadMore">
+                                <div class="spinner-border text-white" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                                <div style="margin-top: 8px;">Cargando resultados...</div>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Mensaje final --}}
+                    @if(!$hasMoreResults && count($results) > 0)
+                        <div style="padding: 10px 12px; text-align: center; color: #6c757d; font-size: 0.85rem; background: #f8f9fa;">
+                            <i class="fas fa-check-circle text-success"></i>
+                            Todos los resultados mostrados
+                        </div>
+                    @endif
+                </div>
             </div>
         @endif
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ServiceRequest;
 use App\Models\Encounter;
 use App\Models\Observation;
 use App\Models\Patient;
@@ -10,6 +11,7 @@ use App\Models\Practitioner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\DeviceMessage;
+use Illuminate\Support\Str;
 
 class HemoScreenController extends Controller
 {
@@ -84,29 +86,112 @@ class HemoScreenController extends Controller
                 'message_type' => $validated['message_type'],
             ]);
 
-            // 🏥 3. Crear Encounter automáticamente
-            $uuid = \Illuminate\Support\Str::uuid();
-            $encounter = Encounter::create([
-                'fhir_id' => 'encounter-' . $uuid,
-                'identifier' => 'ENC-' . $uuid,
-                'patient_id' => $patient->id,
-                'practitioner_id' => $practitionerId,
-                'start' => now(),
-                'end' => now(),
-                'status' => 'finished',
-                'class' => 'AMB', // FHIR: Ambulatory
-                'type' => 'laboratory',
-                'scb_id' => $clinicId,
-            ]);
+            // 🏥 3. Búsqueda inteligente de Encounter y ServiceRequest
+            $encounter = null;
+            $service_request = null;
+            $foundExistingServiceRequest = false;
 
-            // 🧪 4. Crear Observations
+            // CASO 1: Buscar ServiceRequest existente con CPT 85025/85027 sin message_control_id
+            // Esto indica que el médico solicitó el examen pero aún no se han registrado los resultados
+            // NO filtrar por practitioner_id porque puede ser un médico diferente al del token
+            $service_request = ServiceRequest::where('patient_id', $patient->id)
+                ->where('scb_id', $clinicId)
+                ->whereNull('message_control_id')
+                ->whereIn('code', ['85025', '85027'])
+                ->where('status', '!=', 'completed')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($service_request) {
+                // CASO 1: Usar el encounter del ServiceRequest existente
+                $encounter = $service_request->encounter;
+                $foundExistingServiceRequest = true;
+
+                // Actualizar el ServiceRequest con el message_control_id y marcar como completado
+                $service_request->update([
+                    'message_control_id' => $validated['control_id'],
+                    'status' => 'completed',
+                    'last_updated' => now(),
+                ]);
+            } else {
+                // CASO 2: Buscar un encounter del día de hoy del paciente
+                $encounter = Encounter::where('patient_id', $patient->id)
+                    ->where('scb_id', $clinicId)
+                    ->whereDate('start', today())
+                    ->where('status', '!=', 'cancelled')
+                    ->orderBy('start', 'desc')
+                    ->first();
+
+                if ($encounter) {
+                    // CASO 2: Crear el ServiceRequest en el encounter encontrado
+                    $service_request = ServiceRequest::create([
+                        'fhir_id' => 'servicerequest-' . Str::uuid(),
+                        'encounter_id' => $encounter->id,
+                        'patient_id' => $patient->id,
+                        'practitioner_id' => $encounter->practitioner_id, // Usar practitioner del encounter
+                        'message_control_id' => $validated['control_id'],
+                        'status' => 'completed',
+                        'intent' => 'order',
+                        'priority' => 'routine',
+                        'code' => '85025',
+                        'service_type' => 'laboratory',
+                        'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
+                        'code_display' => 'Complete Blood Count (CBC)',
+                        'quantity' => 1,
+                        'occurrence_start' => now(),
+                        'authored_on' => now(),
+                        'last_updated' => now(),
+                        'scb_id' => $clinicId,
+                    ]);
+                } else {
+                    // CASO 3: No hay nada, crear nuevo encounter
+                    $uuid = Str::uuid();
+                    $encounter = Encounter::create([
+                        'fhir_id' => 'encounter-' . $uuid,
+                        'identifier' => 'ENC-' . $uuid,
+                        'patient_id' => $patient->id,
+                        'practitioner_id' => $practitionerId,
+                        'start' => now(),
+                        'end' => now(),
+                        'status' => 'finished',
+                        'class' => 'AMB', // FHIR: Ambulatory
+                        'type' => 'laboratory',
+                        'scb_id' => $clinicId,
+                    ]);
+
+                    // Crear el ServiceRequest para el nuevo encounter
+                    $service_request = ServiceRequest::create([
+                        'fhir_id' => 'servicerequest-' . Str::uuid(),
+                        'encounter_id' => $encounter->id,
+                        'patient_id' => $patient->id,
+                        'practitioner_id' => $practitionerId,
+                        'message_control_id' => $validated['control_id'],
+                        'status' => 'completed',
+                        'intent' => 'order',
+                        'priority' => 'routine',
+                        'code' => '85025',
+                        'service_type' => 'laboratory',
+                        'code_system' => 'https://www.ama-assn.org/practice-management/cpt',
+                        'code_display' => 'Complete Blood Count (CBC)',
+                        'quantity' => 1,
+                        'occurrence_start' => now(),
+                        'authored_on' => now(),
+                        'last_updated' => now(),
+                        'scb_id' => $clinicId,
+                    ]);
+                }
+            }
+
+
+            // 🧪 4. Crear Observations asociadas al ServiceRequest y Encounter
             $createdObservations = [];
             foreach ($validated['observations'] as $obs) {
                 $observation = Observation::create([
-                    'fhir_id' => 'observation-' . \Illuminate\Support\Str::uuid(),
+                    'fhir_id' => 'observation-' . Str::uuid(),
                     'patient_id' => $patient->id,
                     'encounter_id' => $encounter->id,
-                    'practitioner_id' => $practitionerId,
+                    'practitioner_id' => $encounter->practitioner_id,
+                    'service_request_id' => $service_request->id,
                     'status' => 'final',
                     'category' => 'laboratory',
                     'code' => $obs['loinc'],
@@ -129,10 +214,12 @@ class HemoScreenController extends Controller
                 'message' => 'Observaciones registradas exitosamente',
                 'data' => [
                     'encounter_id' => $encounter->id,
+                    'service_request_id' => $service_request->id,
                     'patient_id' => $patient->id,
-                    'practitioner_id' => $practitionerId,
+                    'practitioner_id' => $encounter->practitioner_id,
                     'observations_count' => count($createdObservations),
                     'observations' => $createdObservations,
+                    'found_existing_service_request' => $foundExistingServiceRequest,
                 ],
             ]);
         });

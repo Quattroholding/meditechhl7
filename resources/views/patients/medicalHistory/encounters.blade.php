@@ -47,7 +47,7 @@
                         <td>{{ $encounter->location->name ?? 'No especificada' }}</td>
                         {{--}}
                         <td>
-                            @if(auth()->user()->can('view',$encounter))
+                            @if(auth()->user()->can('view',$encounter) && $encounter->appointment_id)
                             <a  href="{{route('consultation.download_resumen',$encounter->appointment_id)}}" target="_blank" class="btn" style="background: #3b82f6; color: white; padding: 6px 12px; font-size: 12px;">
                                 👁️ Ver Detalles
                             </a>

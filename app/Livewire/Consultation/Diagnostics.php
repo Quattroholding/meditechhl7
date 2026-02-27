@@ -27,6 +27,16 @@ class Diagnostics extends Component
 
     public $severity = [];
 
+    public $perPage = 50;
+
+    public $totalResults = 0;
+
+    public $hasMoreResults = false;
+
+    public $groupedResults = [];
+
+    public $isCodeSearch = false;
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
@@ -50,19 +60,143 @@ class Diagnostics extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+            $this->perPage = 50;
 
             return;
         }
 
-        $this->results = Icd10Code::selectRaw("id, code, concat(code,'|',description_es) as name, description_es, description")
-            ->whereRaw('(code LIKE ? or description LIKE ? or description_es LIKE ?)', [
-                "%{$this->query}%",
-                "%{$this->query}%",
-                "%{$this->query}%",
+        // Resetear paginación al cambiar query
+        $this->perPage = 50;
+
+        $this->searchDiagnostics();
+    }
+
+    public function loadMore()
+    {
+        $this->perPage += 50;
+        $this->searchDiagnostics();
+    }
+
+    private function searchDiagnostics()
+    {
+        $query = $this->query;
+
+        // Detectar si es búsqueda por código (empieza con letra y contiene números)
+        $this->isCodeSearch = preg_match('/^[A-Z][0-9]/i', $query);
+
+        // Contar total de resultados
+        if ($this->isCodeSearch) {
+            // Búsqueda prioritaria por código
+            $this->totalResults = Icd10Code::whereRaw('code LIKE ?', ["%{$query}%"])->count();
+        } else {
+            // Búsqueda por descripción
+            $this->totalResults = Icd10Code::whereRaw('(code LIKE ? or description LIKE ? or description_es LIKE ?)', [
+                "%{$query}%",
+                "%{$query}%",
+                "%{$query}%",
+            ])->count();
+        }
+
+        // Búsqueda inteligente con ordenamiento por relevancia
+        $queryBuilder = Icd10Code::selectRaw("id, code, concat(code,'|',description_es) as name, description_es, description");
+
+        if ($this->isCodeSearch) {
+            // Búsqueda por código: priorizar coincidencias en código
+            $queryBuilder->whereRaw('code LIKE ?', ["%{$query}%"])
+                ->orderByRaw("
+                    CASE
+                        WHEN code = ? THEN 1
+                        WHEN code LIKE ? THEN 2
+                        ELSE 3
+                    END,
+                    code ASC
+                ", [$query, "{$query}%"]);
+        } else {
+            // Búsqueda por descripción: priorizar coincidencias en descripción
+            $queryBuilder->whereRaw('(code LIKE ? or description LIKE ? or description_es LIKE ?)', [
+                "%{$query}%",
+                "%{$query}%",
+                "%{$query}%",
             ])
-            ->take(10)
-            ->get()
-            ->toArray();
+                ->orderByRaw("
+                    CASE
+                        WHEN code = ? THEN 1
+                        WHEN description_es = ? THEN 2
+                        WHEN description_es LIKE ? THEN 3
+                        WHEN code LIKE ? THEN 4
+                        ELSE 5
+                    END,
+                    code ASC
+                ", [$query, $query, "{$query}%", "{$query}%"]);
+        }
+
+        $results = $queryBuilder->take($this->perPage)->get()->toArray();
+
+        $this->results = $results;
+
+        // Agrupar resultados por categoría (primer carácter del código)
+        $this->groupedResults = $this->groupByCategory($results);
+
+        $this->hasMoreResults = $this->totalResults > $this->perPage;
+    }
+
+    private function groupByCategory($results)
+    {
+        $grouped = [];
+
+        foreach ($results as $result) {
+            $code = $result['code'];
+            $category = $this->getCategoryName($code);
+
+            if (!isset($grouped[$category])) {
+                $grouped[$category] = [
+                    'name' => $category,
+                    'items' => [],
+                ];
+            }
+
+            $grouped[$category]['items'][] = $result;
+        }
+
+        return $grouped;
+    }
+
+    private function getCategoryName($code)
+    {
+        // Obtener categoría basada en el primer carácter del código ICD-10
+        $firstChar = strtoupper(substr($code, 0, 1));
+
+        $categories = [
+            'A' => 'Enfermedades Infecciosas (A00-B99)',
+            'B' => 'Enfermedades Infecciosas (A00-B99)',
+            'C' => 'Neoplasias (C00-D49)',
+            'D' => 'Neoplasias / Sangre (C00-D89)',
+            'E' => 'Enfermedades Endocrinas (E00-E89)',
+            'F' => 'Trastornos Mentales (F01-F99)',
+            'G' => 'Sistema Nervioso (G00-G99)',
+            'H' => 'Ojos y Oídos (H00-H95)',
+            'I' => 'Sistema Circulatorio (I00-I99)',
+            'J' => 'Sistema Respiratorio (J00-J99)',
+            'K' => 'Sistema Digestivo (K00-K95)',
+            'L' => 'Piel (L00-L99)',
+            'M' => 'Sistema Musculoesquelético (M00-M99)',
+            'N' => 'Sistema Genitourinario (N00-N99)',
+            'O' => 'Embarazo y Parto (O00-O9A)',
+            'P' => 'Afecciones Perinatales (P00-P96)',
+            'Q' => 'Malformaciones Congénitas (Q00-Q99)',
+            'R' => 'Síntomas y Signos (R00-R99)',
+            'S' => 'Traumatismos (S00-T88)',
+            'T' => 'Traumatismos / Envenenamientos (S00-T88)',
+            'V' => 'Causas Externas (V00-Y99)',
+            'W' => 'Causas Externas (V00-Y99)',
+            'X' => 'Causas Externas (V00-Y99)',
+            'Y' => 'Causas Externas (V00-Y99)',
+            'Z' => 'Factores de Salud (Z00-Z99)',
+        ];
+
+        return $categories[$firstChar] ?? 'Otros';
     }
 
     public function selectOption($option)
