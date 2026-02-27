@@ -1045,9 +1045,8 @@
                 <li><strong>Código CPT:</strong> Ingrese el código numérico estándar (ej: "99213").</li>
                 <li><strong>Código de Servicio:</strong> Busque por el código interno generado por SAMI (ej: "PROC_0001").</li>
             </ul>
-            <div class="screenshot-placeholder">
-                <i class="fas fa-search"></i>
-                <p>Captura: Barra de Búsqueda del Catálogo</p>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_servicesearch.png') }}" alt="" style="width: 100%;">
             </div>
 
             <h3>Gestionar Servicios Existentes (Columna Acciones)</h3>
@@ -1069,7 +1068,7 @@
                             <td data-label="Funcionalidad">Abre un formulario para modificar el precio, complejidad o nombre (si es personalizado). Los cambios se aplican a futuras facturaciones.</td>
                         </tr>
                         <tr>
-                            <td data-label="Botón" class="text-center"><i class="fas fa-eye text-success"></i> / <i class="fas fa-eye-slash text-muted"></i></td>
+                            <td data-label="Botón" class="text-center"><i class="fas fa fa-pause"></i></td>
                             <td data-label="Acción"><strong>Activar/Desactivar</strong></td>
                             <td data-label="Funcionalidad">Cambia la visibilidad del servicio. Los servicios desactivados no aparecerán como opciones al crear facturas u órdenes, pero se mantienen en el sistema para registros históricos.</td>
                         </tr>
@@ -1082,9 +1081,8 @@
                 </table>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-mouse-pointer"></i>
-                <p>Captura: Columna de Acciones en el Listado</p>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_actionsbtn.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box warning">
