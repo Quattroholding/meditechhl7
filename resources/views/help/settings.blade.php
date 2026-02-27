@@ -722,9 +722,9 @@
                     <ul class="toc-list">
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                         <li><a href="#catalogo-servicios"><i class="fas fa-clipboard-list"></i> 2. Catálogo de Servicios</a></li>
-                        <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 3. Horarios Laborales</a></li>
-                        <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
-                        <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 5. Plantilla de Consulta</a></li>
+                        <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 3. Plantilla de Consulta</a></li>
+                                                <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
+                        <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 5. Horarios Laborales</a></li>
                         <li><a href="#tips"><i class="fas fa-lightbulb"></i> 6. Tips y Mejores Prácticas</a></li>
                     </ul>
                 </div>
@@ -740,7 +740,7 @@
             <p>El modulo de <strong>Configuraciones</strong> permite personalizar SAMI segun las necesidades especificas de su practica medica. Aqui puede definir sus servicios, horarios de atencion, accesos rapidos y la estructura de sus consultas.</p>
 
             <div class="row mt-4">
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
                             <i class="fas fa-clipboard-list" style="color: #4caf50;"></i>
@@ -749,7 +749,7 @@
                         <p>Define los procedimientos y servicios que ofreces</p>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(33, 150, 243, 0.1);">
                             <i class="fas fa-clock" style="color: #2196f3;"></i>
@@ -758,7 +758,7 @@
                         <p>Configura tus dias y horas de atencion</p>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(255, 152, 0, 0.1);">
                             <i class="fas fa-bolt" style="color: #ff9800;"></i>
@@ -767,13 +767,31 @@
                         <p>Procedimientos frecuentes a un click</p>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(156, 39, 176, 0.1);">
                             <i class="fas fa-file-medical" style="color: #9c27b0;"></i>
                         </div>
                         <h5>Plantilla Consulta</h5>
                         <p>Personaliza las secciones de tus consultas</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(156, 39, 176, 0.1);">
+                            <i class="fas fa-file-medical" style="color: #9c27b0;"></i>
+                        </div>
+                        <h5>Plantilla de Factura</h5>
+                        <p>Selecciona tu diseño favorito para tus facturas</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(156, 39, 176, 0.1);">
+                            <i class="fas fa-file-medical" style="color: #9c27b0;"></i>
+                        </div>
+                        <h5>Plantilla de Incapacidad Médica</h5>
+                        <p>Elige una plantilla para las Incapacidades Médicas</p>
                     </div>
                 </div>
             </div>
@@ -810,7 +828,7 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Servicios</strong><br>URL: <code>/settings/create_user_procedures</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Servicios</strong><br><!--URL: <code>/settings/create_user_procedures</code>--></p>
             </div>
 
             <h3>Tipos de Servicios</h3>
@@ -845,10 +863,9 @@
 
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Buscar Codigo CPT</span></h4>
-                <p>En la seccion "Agregar Servicio CPT", utilice el buscador para encontrar el codigo:</p>
+                <p>En la seccion "Agregar Servicio desde CPT", utilice el buscador para encontrar el codigo:</p>
                 <ul>
-                    <li>Escriba el codigo CPT (ej: 99213)</li>
-                    <li>O escriba parte del nombre del procedimiento</li>
+                    <li>Escriba el codigo CPT (ej: 99213) o escriba parte del nombre del procedimiento</li>
                     <li>Seleccione de la lista desplegable</li>
                 </ul>
 
@@ -886,7 +903,7 @@
                                 <td data-label="Descripcion">Nivel de complejidad: Baja, Media o Alta</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td data-label="Campo"><strong>Especialidad</strong></td>
                                 <td data-label="Descripcion">Especialidad medica asociada</td>
                                 <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
@@ -910,7 +927,7 @@
                                 <td data-label="Campo"><strong>Cubierto por Seguro</strong></td>
                                 <td data-label="Descripcion">Indica si el servicio esta cubierto por seguros</td>
                                 <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                            </tr>
+                            </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -918,11 +935,11 @@
 
             <div class="step-card">
                 <h4><span class="step-number">3</span><span class="step-title">Guardar el Servicio</span></h4>
-                <p>Haga click en <strong>"Agregar Servicio"</strong> para guardar. El sistema:</p>
+                <p>Haga click en <strong>"Registrar"</strong> para guardar. El sistema:</p>
                 <ul>
                     <li>Genera automaticamente un codigo de servicio (ej: PROC_0001)</li>
                     <li>Vincula el servicio a su cuenta</li>
-                    <li>Lo hace disponible para facturacion y ordenes</li>
+                    <li>Lo hace disponible para servicios facturables</li>
                 </ul>
             </div>
 
@@ -948,17 +965,17 @@
                             <td data-label="Descripcion">Descripcion detallada del servicio</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
                             <td data-label="Descripcion">Categoria del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                        </tr>
+                        </tr>-->
                         <tr>
                             <td data-label="Campo"><strong>Precio</strong></td>
                             <td data-label="Descripcion">Precio base del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>Complejidad</strong></td>
                             <td data-label="Descripcion">Nivel: Baja, Media o Alta</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
@@ -967,7 +984,7 @@
                             <td data-label="Campo"><strong>Codigo de Ingreso</strong></td>
                             <td data-label="Descripcion">Codigo contable para facturacion</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                        </tr>
+                        </tr>-->
                     </tbody>
                 </table>
             </div>
@@ -978,7 +995,7 @@
                     <ul>
                         <li><strong>Consulta</strong> - Consultas medicas</li>
                         <li><strong>Procedimiento</strong> - Procedimientos menores</li>
-                        <li><strong>Diagnostico</strong> - Estudios diagnosticos</li>
+                        <!--<li><strong>Diagnostico</strong> - Estudios diagnosticos</li>-->
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -997,12 +1014,12 @@
                 </div>
             </div>
 
-            <h4>Niveles de Complejidad</h4>
+            <!--<h4>Niveles de Complejidad</h4>
             <p>
                 <span class="complexity-badge complexity-low">Baja</span>
                 <span class="complexity-badge complexity-medium">Media</span>
                 <span class="complexity-badge complexity-high">Alta</span>
-            </p>
+            </p>-->
 
             <div>
                 <img src="{{ asset('images/tutorial/settings/setting_catalog.png') }}" alt="" style="width: 100%;">
@@ -1025,9 +1042,337 @@
             </div>
         </section>
 
+        <!-- Section 5: Consultation Template -->
+        <section id="plantilla-consulta" class="content-section">
+            <h2><i class="fas fa-file-medical me-2"></i>3. Plantilla de Consulta</h2>
+
+            <p>La <strong>Plantilla de Consulta</strong> le permite personalizar que secciones aparecen durante sus consultas medicas y en que orden. Esto agiliza su flujo de trabajo mostrando solo las secciones relevantes para su especialidad.</p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-route text-success"></i>
+                    Ruta de Acceso
+                </div>
+                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla Consulta</strong><br><!--URL: <code>/settings/create_consultation_template</code>--></p>
+            </div>
+
+            <h3>Secciones Disponibles</h3>
+            <p>SAMI ofrece multiples secciones que puede incluir en sus consultas:</p>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Seccion</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                    <td data-label="Seccion"><strong>Servicios Facturables</strong></td>
+                                    <td data-label="Descripcion">Servicios asociados a CPTs, Servicios personalizados, etc.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Signos Vitales</strong></td>
+                                    <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
+                                </tr>
+                                                                <tr>
+                                    <td data-label="Seccion"><strong>Motivo de Consulta</strong></td>
+                                    <td data-label="Descripcion">Descripción detallada de la condición/movito de visita del paciente.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
+                                    <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
+                                </tr>                                
+                                <tr>
+                                    <td data-label="Seccion"><strong>Examen Fisico</strong></td>
+                                    <td data-label="Descripcion">Hallazgos del examen fisico por sistemas</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Diagnósticos</strong></td>
+                                    <td data-label="Descripcion">Diagnosticos y condiciones del paciente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Ordenes Medicas</strong></td>
+                                    <td data-label="Descripcion">Laboratorios, imagenes y procedimientos</td>
+                                </tr>
+                                 <tr>
+                                    <td data-label="Seccion"><strong>Referencia Especialista</strong></td>
+                                    <td data-label="Descripcion">Referir a Médico Especializado</td>
+                                </tr>                               
+                                <tr>
+                                    <td data-label="Seccion"><strong>Medicamentos</strong></td>
+                                    <td data-label="Descripcion">Medicamentos recetados</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Nota General</strong></td>
+                                    <td data-label="Descripcion">Nota General de la Consulta</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Incapacidades Médicas</strong></td>
+                                    <td data-label="Descripcion">Incapacidades y justificantes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <!--<div class="col-md-6">
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Seccion</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Antecedentes</strong></td>
+                                    <td data-label="Descripcion">Historial medico del paciente</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Notas Medicas</strong></td>
+                                    <td data-label="Descripcion">Notas clinicas generales</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Notas Personales</strong></td>
+                                    <td data-label="Descripcion">Notas privadas del medico</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Licencias Medicas</strong></td>
+                                    <td data-label="Descripcion">Incapacidades y justificantes</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Plan</strong></td>
+                                    <td data-label="Descripcion">Plan de tratamiento y seguimiento</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Especialidad</strong></td>
+                                    <td data-label="Descripcion">Secciones especificas de su especialidad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>-->
+            </div>
+
+            <h3>Configurar la Plantilla</h3>
+
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Entender la Interfaz de Transferencia</span></h4>
+                <p>La configuracion usa una interfaz de doble lista:</p>
+
+                <div class="transfer-container my-4">
+                    <div class="transfer-list available">
+                        <h6><i class="fas fa-list me-2"></i>Secciones Disponibles</h6>
+                        <p class="text-muted small">Secciones que puede agregar a su plantilla</p>
+                        <div class="border rounded p-2 mb-2 bg-white">Seccion A</div>
+                        <div class="border rounded p-2 mb-2 bg-white">Seccion B</div>
+                        <div class="border rounded p-2 bg-white">Seccion C</div>
+                    </div>
+                    <div class="transfer-arrows">
+                        <button title="Agregar"><i class="fas fa-arrow-right"></i></button>
+                        <button title="Quitar"><i class="fas fa-arrow-left"></i></button>
+                    </div>
+                    <div class="transfer-list selected">
+                        <h6><i class="fas fa-check-circle me-2"></i>Secciones Seleccionadas</h6>
+                        <p class="text-muted small">Secciones que apareceran en sus consultas</p>
+                        <div class="border rounded p-2 mb-2 bg-white">Signos Vitales</div>
+                        <div class="border rounded p-2 mb-2 bg-white">Examen Fisico</div>
+                        <div class="border rounded p-2 bg-white">Prescripciones</div>
+                    </div>
+                </div>
+                <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-user-md text-primary"></i>
+                    Primera Configuracion
+                </div>
+                <p class="mb-0">Si es la primera vez que accede, el sistema cargara automaticamente todas las secciones generales como base. Puede personalizar desde ahi.</p>
+            </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Agregar Secciones</span></h4>
+                <p>Para agregar una seccion a su plantilla:</p>
+                <ol>
+                    <li>Busque la seccion deseada en la lista <strong>"Secciones Disponibles"</strong></li>
+                    <li>Haga clic en la flecha de la sección para moverla a la lista de seleccionadas.</li>
+                    <li>La seccion aparecera inmediatamente en <strong>"Secciones Seleccionadas"</strong></li>
+                </ol>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_template.png') }}" alt="" style="width: 100%;">
+            </div>
+            <!--<div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Secciones Disponibles
+                </div>
+                <p class="mb-0">En la mayoría de los casos, por defecto, salen todas las secciones de la consulta en <strong>"Secciones Seleccionadas"</strong>, en los casos de especialidades que poseen secciones orientadas a su especialidad, por ejemplo, Dermatología la sección especializada aparecerá del lado de las <strong>"Secciones Disponibles"</strong>.</p>
+            </div>-->
+            </div>
+
+            <!--<div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Ordenar Secciones</span></h4>
+                <p>Puede cambiar el orden de las secciones arrastrando:</p>
+                <ol>
+                    <li>En la lista de <strong>"Secciones Seleccionadas"</strong></li>
+                    <li>Haga click sostenido en una seccion</li>
+                    <li>Arrastre hacia arriba o abajo para cambiar su posicion</li>
+                    <li>Suelte para confirmar el nuevo orden</li>
+                </ol>
+                <p>El orden define como aparecen las secciones durante la consulta.</p>
+            </div>-->
+
+            <div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Quitar Secciones</span></h4>
+                <p>Para remover una seccion de su plantilla:</p>
+                <ol>
+                    <li>Ubique la seccion en <strong>"Secciones Seleccionadas"</strong></li>
+                    <li>Haga click en el boton para moverla de vuelta a disponibles</li>
+                </ol>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">
+                        <i class="fas fa-lock text-danger"></i>
+                        Secciones Obligatorias
+                    </div>
+                    <p class="mb-0">Algunas secciones son <strong>obligatorias</strong> y no pueden ser removidas. Estas secciones son necesarias para el funcionamiento correcto del sistema y apareceran siempre en sus consultas.</p>
+                </div>
+            </div>
+
+            <h3>Secciones por Especialidad</h3>
+            <p>Dependiendo de su especialidad medica, vera secciones adicionales especificas:</p>
+            <ul>
+                <li><strong>Dermatologia:</strong> Secciones para lesiones de piel, fotografia clinica</li>
+                <li><strong>Urología:</strong> índice Internacional de Síntomas Prostáticos</li>
+                <!--<li><strong>Ginecologia:</strong> Historia ginecologica, examenes especializados</li>
+                <li><strong>Pediatria:</strong> Curvas de crecimiento, desarrollo</li>
+                <li><strong>Cardiologia:</strong> Electrocardiograma, evaluacion cardiovascular</li>
+                <li>Y mas segun su especialidad...</li>-->
+            </ul>
+
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_templderm.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_enderm.png') }}" alt="" style="width: 100%;">
+            </div>
+        </section>
+
+  <!-- Section 4: Rapid Access -->
+        <section id="accesos-rapidos" class="content-section">
+            <h2><i class="fas fa-bolt me-2"></i>4. Accesos Rapidos</h2>
+
+            <p>Los <strong>Accesos Rapidos</strong> le permiten tener a la mano los procedimientos, laboratorios e imagenes que solicita con mayor frecuencia. Durante las consultas, puede agregar estos items con un solo click.</p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-route text-success"></i>
+                    Ruta de Acceso
+                </div>
+                <p class="mb-0"><strong>Menu → Configuraciones → Accesos Rapidos</strong><br><!--URL: <code>/settings/create_rapid_access</code>--></p>
+            </div>
+
+            <h3>Categorias de Acceso Rapido</h3>
+            <p>Los accesos rapidos se organizan en tres categorias:</p>
+
+            <div class="row mt-4 mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
+                            <i class="fas fa-flask" style="color: #4caf50;"></i>
+                        </div>
+                        <h5>Laboratorios</h5>
+                        <p>Examenes de sangre, orina, y otros estudios de laboratorio clinico</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(33, 150, 243, 0.1);">
+                            <i class="fas fa-x-ray" style="color: #2196f3;"></i>
+                        </div>
+                        <h5>Imagenologia</h5>
+                        <p>Rayos X, ultrasonidos, tomografias, resonancias y otros estudios de imagen</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(255, 152, 0, 0.1);">
+                            <i class="fas fa-procedures" style="color: #ff9800;"></i>
+                        </div>
+                        <h5>Procedimientos</h5>
+                        <p>Procedimientos medicos, intervenciones y tratamientos especiales</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Configurar Accesos Rapidos</h3>
+
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Seleccionar Categoria</span></h4>
+                <p>En la pagina de configuracion, encontrara tres secciones separadas para cada tipo de acceso rapido.</p>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_raccess.png') }}" alt="" style="width: 100%;">
+            </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Buscar y Agregar Items</span></h4>
+                <p>En cada seccion:</p>
+                <ol>
+                    <li>Utilice el buscador para encontrar el codigo CPT deseado (La búsqueda puede hacerse por nombre o código del CPT)</li>
+                    <li>Escriba al menos 2 caracteres para iniciar la busqueda</li>
+                    <li>Seleccione el item de la lista desplegable</li>
+                    <li>El item se agregara automaticamente a su lista de accesos rapidos</li>
+                </ol>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_racpt.png') }}" alt="" style="width: 100%;">
+            </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">3</span><span class="step-title">Gestionar Items</span></h4>
+                <p>Una vez agregados los items:</p>
+                <ul>
+                    <li>Vera la lista de items seleccionados al lado del buscador</li>
+                    <li>Use el boton <i class="fas fa-trash text-danger"></i> para eliminar items que ya no necesite</li>
+                    <li>Los cambios se guardan automaticamente</li>
+                </ul>
+            </div>
+
+            <h3>Uso Durante la Consulta</h3>
+            <p>Durante una consulta medica, los accesos rapidos aparecen en un panel lateral:</p>
+            <ol>
+                <li>Abra el panel de <strong>"Lista de Accesos Rápidos"</strong> en la consulta</li>
+                <li>Vera sus items configurados organizados por categoria</li>
+                <li>Haga click en cualquier item para agregarlo a la orden actual</li>
+                <li>Los items ya agregados se marcan visualmente</li>
+            </ol>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_raencounter.png') }}" alt="" style="width: 100%;">
+            </div>
+
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-layer-group text-primary"></i>
+                    Jerarquia de Accesos
+                </div>
+                <p class="mb-0">Si no ha configurado accesos rapidos personales, el sistema mostrara los accesos predeterminados de la organizacion (CLIENT) o del sistema (MASTER).</p>
+            </div>
+        </section>
+       
+
         <!-- Section 3: Working Hours -->
         <section id="horarios-laborales" class="content-section">
-            <h2><i class="fas fa-clock me-2"></i>3. Horarios Laborales</h2>
+            <h2><i class="fas fa-clock me-2"></i>5. Horarios Laborales</h2>
 
             <p>Configure sus <strong>horarios de trabajo</strong> para cada dia de la semana. Estos horarios se utilizan para el sistema de agendamiento de citas y para mostrar su disponibilidad a los pacientes.</p>
 
@@ -1036,7 +1381,7 @@
                     <i class="fas fa-route text-success"></i>
                     Ruta de Acceso
                 </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Horario Laboral</strong><br>URL: <code>/settings/create_working_hour_user</code></p>
+                <p class="mb-0"><strong>Menu → Configuraciones → Horario Laboral</strong><br><!--URL: <code>/settings/create_working_hour_user</code>--></p>
             </div>
 
             <h3>Estructura de Horarios</h3>
@@ -1045,7 +1390,7 @@
                 <li><strong>Sucursal:</strong> La ubicacion fisica donde atendera</li>
                 <li><strong>Consultorio:</strong> El consultorio especifico dentro de esa sucursal</li>
                 <li><strong>Dia de la semana:</strong> De lunes a domingo</li>
-                <li><strong>Rango de horas:</strong> Hora de inicio y fin de atencion</li>
+                <li><strong>Rango de horas:</strong> Hora de entrada y hora de salida</li>
             </ul>
 
             <div class="info-box note">
@@ -1053,7 +1398,7 @@
                     <i class="fas fa-info-circle text-primary"></i>
                     Multiples Turnos
                 </div>
-                <p class="mb-0">Puede configurar multiples turnos por dia. Por ejemplo, si atiende en la manana en una sucursal y en la tarde en otra, agregue dos horarios para el mismo dia.</p>
+                <p class="mb-0">Puede configurar multiples turnos por dia. Por ejemplo, si atiende en la mañana en una sucursal y en la tarde en otra, agregue dos horarios para el mismo dia.</p>
             </div>
 
             <h3>Configurar Horarios</h3>
@@ -1075,8 +1420,8 @@
                     <li>Marque la casilla de <strong>"Habilitar"</strong> para activar el dia</li>
                     <li>Seleccione la <strong>Sucursal</strong> donde atendera</li>
                     <li>Seleccione el <strong>Consultorio</strong> (se filtra segun la sucursal)</li>
-                    <li>Defina la <strong>Hora de Inicio</strong> (formato HH:MM)</li>
-                    <li>Defina la <strong>Hora de Fin</strong> (debe ser posterior al inicio)</li>
+                    <li>Defina la <strong>Hora de Entrada</strong> (formato HH:MM)</li>
+                    <li>Defina la <strong>Hora de Salida</strong> (debe ser posterior al inicio)</li>
                 </ol>
                 <div class="field-table-wrapper">
                     <table class="field-table">
@@ -1138,7 +1483,7 @@
                 <ol>
                     <li>Revise el resumen de horarios configurados</li>
                     <li>Los dias con horarios habilitados mostraran una insignia <span class="badge bg-success">Configurado</span></li>
-                    <li>Haga click en <strong>"Guardar"</strong> para aplicar los cambios</li>
+                    <li>Haga clic en <strong>"Registrar"</strong> para aplicar los cambios</li>
                 </ol>
             </div>
 
@@ -1175,305 +1520,7 @@
             </div>
         </section>
 
-        <!-- Section 4: Rapid Access -->
-        <section id="accesos-rapidos" class="content-section">
-            <h2><i class="fas fa-bolt me-2"></i>4. Accesos Rapidos</h2>
-
-            <p>Los <strong>Accesos Rapidos</strong> le permiten tener a la mano los procedimientos, laboratorios e imagenes que solicita con mayor frecuencia. Durante las consultas, puede agregar estos items con un solo click.</p>
-
-            <div class="info-box tip">
-                <div class="info-box-title">
-                    <i class="fas fa-route text-success"></i>
-                    Ruta de Acceso
-                </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Accesos Rapidos</strong><br>URL: <code>/settings/create_rapid_access</code></p>
-            </div>
-
-            <h3>Categorias de Acceso Rapido</h3>
-            <p>Los accesos rapidos se organizan en tres categorias:</p>
-
-            <div class="row mt-4 mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="feature-card text-center">
-                        <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
-                            <i class="fas fa-flask" style="color: #4caf50;"></i>
-                        </div>
-                        <h5>Laboratorios</h5>
-                        <p>Examenes de sangre, orina, y otros estudios de laboratorio clinico</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="feature-card text-center">
-                        <div class="icon-circle mx-auto" style="background: rgba(33, 150, 243, 0.1);">
-                            <i class="fas fa-x-ray" style="color: #2196f3;"></i>
-                        </div>
-                        <h5>Imagenologia</h5>
-                        <p>Rayos X, ultrasonidos, tomografias, resonancias y otros estudios de imagen</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="feature-card text-center">
-                        <div class="icon-circle mx-auto" style="background: rgba(255, 152, 0, 0.1);">
-                            <i class="fas fa-procedures" style="color: #ff9800;"></i>
-                        </div>
-                        <h5>Procedimientos</h5>
-                        <p>Procedimientos medicos, intervenciones y tratamientos especiales</p>
-                    </div>
-                </div>
-            </div>
-
-            <h3>Configurar Accesos Rapidos</h3>
-
-            <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Seleccionar Categoria</span></h4>
-                <p>En la pagina de configuracion, encontrara tres secciones separadas para cada tipo de acceso rapido.</p>
-
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_raccess.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
-            <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Buscar y Agregar Items</span></h4>
-                <p>En cada seccion:</p>
-                <ol>
-                    <li>Utilice el buscador para encontrar el codigo CPT deseado</li>
-                    <li>Escriba al menos 2 caracteres para iniciar la busqueda</li>
-                    <li>Seleccione el item de la lista desplegable</li>
-                    <li>El item se agregara automaticamente a su lista de accesos rapidos</li>
-                </ol>
-
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_racpt.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
-            <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Gestionar Items</span></h4>
-                <p>Una vez agregados los items:</p>
-                <ul>
-                    <li>Vera la lista de items seleccionados debajo del buscador</li>
-                    <li>Use el boton <i class="fas fa-trash text-danger"></i> para eliminar items que ya no necesite</li>
-                    <li>Los cambios se guardan automaticamente</li>
-                </ul>
-            </div>
-
-            <h3>Uso Durante la Consulta</h3>
-            <p>Durante una consulta medica, los accesos rapidos aparecen en un panel lateral:</p>
-            <ol>
-                <li>Abra el panel de <strong>"Accesos Rapidos"</strong> en la consulta</li>
-                <li>Vera sus items configurados organizados por categoria</li>
-                <li>Haga click en cualquier item para agregarlo a la orden actual</li>
-                <li>Los items ya agregados se marcan visualmente</li>
-            </ol>
-
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_raencounter.png') }}" alt="" style="width: 100%;">
-            </div>
-
-            <div class="info-box note">
-                <div class="info-box-title">
-                    <i class="fas fa-layer-group text-primary"></i>
-                    Jerarquia de Accesos
-                </div>
-                <p class="mb-0">Si no ha configurado accesos rapidos personales, el sistema mostrara los accesos predeterminados de la organizacion (CLIENT) o del sistema (MASTER).</p>
-            </div>
-        </section>
-
-        <!-- Section 5: Consultation Template -->
-        <section id="plantilla-consulta" class="content-section">
-            <h2><i class="fas fa-file-medical me-2"></i>5. Plantilla de Consulta</h2>
-
-            <p>La <strong>Plantilla de Consulta</strong> le permite personalizar que secciones aparecen durante sus consultas medicas y en que orden. Esto agiliza su flujo de trabajo mostrando solo las secciones relevantes para su especialidad.</p>
-
-            <div class="info-box tip">
-                <div class="info-box-title">
-                    <i class="fas fa-route text-success"></i>
-                    Ruta de Acceso
-                </div>
-                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla Consulta</strong><br>URL: <code>/settings/create_consultation_template</code></p>
-            </div>
-
-            <h3>Secciones Disponibles</h3>
-            <p>SAMI ofrece multiples secciones que puede incluir en sus consultas:</p>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="field-table-wrapper">
-                        <table class="field-table">
-                            <thead>
-                                <tr>
-                                    <th>Seccion</th>
-                                    <th>Descripcion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Signos Vitales</strong></td>
-                                    <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Examen Fisico</strong></td>
-                                    <td data-label="Descripcion">Hallazgos del examen fisico por sistemas</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Condiciones</strong></td>
-                                    <td data-label="Descripcion">Diagnosticos y condiciones del paciente</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
-                                    <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Prescripciones</strong></td>
-                                    <td data-label="Descripcion">Medicamentos recetados</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Ordenes Medicas</strong></td>
-                                    <td data-label="Descripcion">Laboratorios, imagenes y procedimientos</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="field-table-wrapper">
-                        <table class="field-table">
-                            <thead>
-                                <tr>
-                                    <th>Seccion</th>
-                                    <th>Descripcion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Antecedentes</strong></td>
-                                    <td data-label="Descripcion">Historial medico del paciente</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Notas Medicas</strong></td>
-                                    <td data-label="Descripcion">Notas clinicas generales</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Notas Personales</strong></td>
-                                    <td data-label="Descripcion">Notas privadas del medico</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Licencias Medicas</strong></td>
-                                    <td data-label="Descripcion">Incapacidades y justificantes</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Plan</strong></td>
-                                    <td data-label="Descripcion">Plan de tratamiento y seguimiento</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Seccion"><strong>Especialidad</strong></td>
-                                    <td data-label="Descripcion">Secciones especificas de su especialidad</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <h3>Configurar la Plantilla</h3>
-
-            <div class="step-card">
-                <h4><span class="step-number">1</span><span class="step-title">Entender la Interfaz de Transferencia</span></h4>
-                <p>La configuracion usa una interfaz de doble lista:</p>
-
-                <div class="transfer-container my-4">
-                    <div class="transfer-list available">
-                        <h6><i class="fas fa-list me-2"></i>Secciones Disponibles</h6>
-                        <p class="text-muted small">Secciones que puede agregar a su plantilla</p>
-                        <div class="border rounded p-2 mb-2 bg-white">Seccion A</div>
-                        <div class="border rounded p-2 mb-2 bg-white">Seccion B</div>
-                        <div class="border rounded p-2 bg-white">Seccion C</div>
-                    </div>
-                    <div class="transfer-arrows">
-                        <button title="Agregar"><i class="fas fa-arrow-right"></i></button>
-                        <button title="Quitar"><i class="fas fa-arrow-left"></i></button>
-                    </div>
-                    <div class="transfer-list selected">
-                        <h6><i class="fas fa-check-circle me-2"></i>Secciones Seleccionadas</h6>
-                        <p class="text-muted small">Secciones que apareceran en sus consultas</p>
-                        <div class="border rounded p-2 mb-2 bg-white">Signos Vitales</div>
-                        <div class="border rounded p-2 mb-2 bg-white">Examen Fisico</div>
-                        <div class="border rounded p-2 bg-white">Prescripciones</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-card">
-                <h4><span class="step-number">2</span><span class="step-title">Agregar Secciones</span></h4>
-                <p>Para agregar una seccion a su plantilla:</p>
-                <ol>
-                    <li>Busque la seccion deseada en la lista <strong>"Secciones Disponibles"</strong></li>
-                    <li>Haga click en el boton para moverla a la lista de seleccionadas</li>
-                    <li>La seccion aparecera inmediatamente en <strong>"Secciones Seleccionadas"</strong></li>
-                </ol>
-
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_template.png') }}" alt="" style="width: 100%;">
-            </div>
-            </div>
-
-            <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Ordenar Secciones</span></h4>
-                <p>Puede cambiar el orden de las secciones arrastrando:</p>
-                <ol>
-                    <li>En la lista de <strong>"Secciones Seleccionadas"</strong></li>
-                    <li>Haga click sostenido en una seccion</li>
-                    <li>Arrastre hacia arriba o abajo para cambiar su posicion</li>
-                    <li>Suelte para confirmar el nuevo orden</li>
-                </ol>
-                <p>El orden define como aparecen las secciones durante la consulta.</p>
-            </div>
-
-            <div class="step-card">
-                <h4><span class="step-number">4</span><span class="step-title">Quitar Secciones</span></h4>
-                <p>Para remover una seccion de su plantilla:</p>
-                <ol>
-                    <li>Ubique la seccion en <strong>"Secciones Seleccionadas"</strong></li>
-                    <li>Haga click en el boton para moverla de vuelta a disponibles</li>
-                </ol>
-
-                <div class="info-box danger">
-                    <div class="info-box-title">
-                        <i class="fas fa-lock text-danger"></i>
-                        Secciones Obligatorias
-                    </div>
-                    <p class="mb-0">Algunas secciones son <strong>obligatorias</strong> y no pueden ser removidas. Estas secciones son necesarias para el funcionamiento correcto del sistema y apareceran siempre en sus consultas.</p>
-                </div>
-            </div>
-
-            <h3>Secciones por Especialidad</h3>
-            <p>Dependiendo de su especialidad medica, vera secciones adicionales especificas:</p>
-            <ul>
-                <li><strong>Dermatologia:</strong> Secciones para lesiones de piel, fotografia clinica</li>
-                <li><strong>Ginecologia:</strong> Historia ginecologica, examenes especializados</li>
-                <li><strong>Pediatria:</strong> Curvas de crecimiento, desarrollo</li>
-                <li><strong>Cardiologia:</strong> Electrocardiograma, evaluacion cardiovascular</li>
-                <li>Y mas segun su especialidad...</li>
-            </ul>
-
-            <div class="info-box note">
-                <div class="info-box-title">
-                    <i class="fas fa-user-md text-primary"></i>
-                    Primera Configuracion
-                </div>
-                <p class="mb-0">Si es la primera vez que accede, el sistema cargara automaticamente todas las secciones generales como base. Puede personalizar desde ahi.</p>
-            </div>
-
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_templderm.png') }}" alt="" style="width: 100%;">
-            </div>
-            <div>
-                <img src="{{ asset('images/tutorial/settings/setting_enderm.png') }}" alt="" style="width: 100%;">
-            </div>
-        </section>
-
+    
         <!-- Section 6: Tips -->
         <section id="tips" class="content-section">
             <h2><i class="fas fa-lightbulb me-2"></i>6. Tips y Mejores Practicas</h2>
@@ -1504,9 +1551,9 @@
                         <ul class="mb-0">
                             <li>No configurar horarios antes de agendar citas</li>
                             <li>Agregar demasiados accesos rapidos (pierde efectividad)</li>
-                            <li>Dejar servicios sin precio definido</li>
+                            <!--<li>Dejar servicios sin precio definido</li>-->
                             <li>No asociar sucursal/consultorio a los horarios</li>
-                            <li>Remover secciones obligatorias de consulta</li>
+                            <!--<li>Remover secciones obligatorias de consulta</li>-->
                             <li>No guardar los cambios antes de salir</li>
                         </ul>
                     </div>
@@ -1519,7 +1566,7 @@
                     <thead>
                         <tr>
                             <th>Funcionalidad</th>
-                            <th>Permiso Requerido</th>
+                            <!--<th>Permiso Requerido</th>-->
                             <th>Descripcion</th>
                         </tr>
                     </thead>
