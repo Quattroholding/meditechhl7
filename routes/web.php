@@ -755,6 +755,14 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.doctor-dashboard');
     })->name('doctor-dashboard');
 
+    Route::get('/profile', function () {
+        return view('help.profile');
+    })->name('profile');
+
+    Route::get('/support', function () {
+        return view('help.support');
+    })->name('support');
+
     // Future help pages can be added here
 });
 

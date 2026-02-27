@@ -1,4 +1,95 @@
- <!-- Sidebar -->
+ <style>
+    /* Sidebar Styles */
+    .help-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+        padding: 20px 0;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+
+    .help-sidebar .logo {
+        text-align: center;
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 20px;
+    }
+
+    .help-sidebar .logo img {
+        max-width: 150px;
+    }
+
+    .help-sidebar .logo h4 {
+        color: #fff;
+        margin-top: 10px;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    .help-sidebar .nav-section {
+        padding: 10px 20px;
+    }
+
+    .help-sidebar .nav-section-title {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        padding-left: 10px;
+        font-weight: bold;
+    }
+
+    .help-sidebar .nav-link {
+        color: rgba(255,255,255,0.8);
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    .help-sidebar .nav-link:hover,
+    .help-sidebar .nav-link.active {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        transform: translateX(5px);
+    }
+
+    .help-sidebar .nav-link i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .help-sidebar .nav-link .badge {
+        margin-left: auto;
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 4px 8px;
+    }
+
+    /* Mobile handling for sidebar */
+    @media (max-width: 992px) {
+        .help-sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            transform: none !important;
+        }
+    }
+</style>
+
+<!-- Sidebar -->
     <aside class="help-sidebar">
         <div class="logo">
               <h4>Centro de Ayuda</h4>
@@ -96,6 +187,21 @@
                 <i class="fas fa-cogs"></i>
                 <span>Configuraciones</span>
                 @if ($active === 'settings')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+            <a href="{{ route('help.profile') }}" class="nav-link {{ $active === 'profile' ? 'active' : '' }}">
+                <i class="fas fa-user-circle"></i>
+                <span>Mi Perfil</span>
+                @if ($active === 'profile')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
+            <a href="{{ route('help.support') }}" class="nav-link {{ $active === 'support' ? 'active' : '' }}">
+                <i class="fas fa-question-circle"></i>
+                <span>Soporte</span>
+                @if ($active === 'support')
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>
