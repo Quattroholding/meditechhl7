@@ -85,6 +85,13 @@
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>
+            <a href="{{ route('help.doctor-dashboard') }}" class="nav-link {{ $active === 'doctor-dashboard' ? 'active' : '' }}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard Médico</span>
+                @if ($active === 'doctor-dashboard')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
             <a href="{{ route('help.settings') }}" class="nav-link {{ $active === 'settings' ? 'active' : '' }}">
                 <i class="fas fa-cogs"></i>
                 <span>Configuraciones</span>

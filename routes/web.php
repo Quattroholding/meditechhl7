@@ -751,6 +751,10 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.subscriptions');
     })->name('subscriptions');
 
+    Route::get('/doctor-dashboard', function () {
+        return view('help.doctor-dashboard');
+    })->name('doctor-dashboard');
+
     // Future help pages can be added here
 });
 

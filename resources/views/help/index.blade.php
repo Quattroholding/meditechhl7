@@ -735,6 +735,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(40, 53, 147, 0.1);">
+                            <i class="fas fa-tachometer-alt fa-2x" style="color: #283593;"></i>
+                        </div>
+                        <h5 class="card-title">Dashboard Médico</h5>
+                        <p class="card-text text-muted">Aprende a usar y personalizar tu panel principal.</p>
+                        <a href="{{ route('help.doctor-dashboard') }}" class="btn text-white" style="background: #283593;">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Contact Support -->
