@@ -98,11 +98,57 @@ class ApiController extends Controller
 
         if ($request->has('ramdom')) {
             $data = $query->inRandomOrder()->take(1)->first();
-        } else {
-            $data = $query->take(10)->get();
+
+            return response()->json($data);
         }
 
-        return response()->json($data);
+        // Soporte para paginación
+        $perPage = $request->get('perPage', 50);
+        $searchQuery = $request->get('q', '');
+
+        // Detectar si es búsqueda por código (empieza con dígito)
+        $isCodeSearch = preg_match('/^[0-9]/', $searchQuery);
+
+        // Contar total de resultados
+        $totalResults = $query->count();
+
+        // Búsqueda inteligente con ordenamiento por relevancia
+        if ($isCodeSearch && strlen($searchQuery) > 0) {
+            // Búsqueda por código: priorizar coincidencias en código
+            $query->orderByRaw('
+                CASE
+                    WHEN code = ? THEN 1
+                    WHEN code LIKE ? THEN 2
+                    ELSE 3
+                END,
+                code ASC
+            ', [$searchQuery, "{$searchQuery}%"]);
+        } elseif (strlen($searchQuery) > 0) {
+            // Búsqueda por descripción: priorizar coincidencias en descripción
+            $query->orderByRaw('
+                CASE
+                    WHEN code = ? THEN 1
+                    WHEN description_es = ? THEN 2
+                    WHEN description_es LIKE ? THEN 3
+                    WHEN code LIKE ? THEN 4
+                    ELSE 5
+                END,
+                code ASC
+            ', [$searchQuery, $searchQuery, "{$searchQuery}%", "{$searchQuery}%"]);
+        } else {
+            // Sin búsqueda, ordenar por código
+            $query->orderBy('code');
+        }
+
+        $data = $query->take($perPage)->get();
+
+        return response()->json([
+            'data' => $data,
+            'total' => $totalResults,
+            'perPage' => $perPage,
+            'hasMore' => $totalResults > $perPage,
+            'isCodeSearch' => $isCodeSearch,
+        ]);
 
     }
 
@@ -121,11 +167,40 @@ class ApiController extends Controller
 
         if ($request->has('ramdom')) {
             $data = $query->inRandomOrder()->take(1)->first();
-        } else {
-            $data = $query->take(10)->get();
+
+            return response()->json($data);
         }
 
-        return response()->json($data);
+        // Soporte para paginación
+        $perPage = $request->get('perPage', 50);
+        $searchQuery = $request->get('q', '');
+
+        // Contar total de resultados
+        $totalResults = $query->count();
+
+        // Búsqueda inteligente con ordenamiento por relevancia
+        if (strlen($searchQuery) > 0) {
+            $query->orderByRaw('
+                CASE
+                    WHEN name = ? THEN 1
+                    WHEN name LIKE ? THEN 2
+                    ELSE 3
+                END,
+                name ASC
+            ', [$searchQuery, "{$searchQuery}%"]);
+        } else {
+            // Sin búsqueda, ordenar por nombre
+            $query->orderBy('name');
+        }
+
+        $data = $query->take($perPage)->get();
+
+        return response()->json([
+            'data' => $data,
+            'total' => $totalResults,
+            'perPage' => $perPage,
+            'hasMore' => $totalResults > $perPage,
+        ]);
 
     }
 
@@ -173,7 +248,7 @@ class ApiController extends Controller
         }
 
         $query = Practitioner::selectRaw($select)
-            ->when($request->has('referral'),function ($q) use ($request) {
+            ->when($request->has('referral'), function ($q) {
                 $q->withoutGlobalScope(PractitionerScope::class);
             })
             ->when($request->has('q'), function ($q) use ($request) {

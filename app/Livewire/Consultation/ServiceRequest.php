@@ -10,7 +10,6 @@ use Livewire\Component;
 
 class ServiceRequest extends Component
 {
-
     public $query = '';
 
     public $results = [];
@@ -28,6 +27,14 @@ class ServiceRequest extends Component
     public $section_id;
 
     public $notes = [];
+
+    public $perPage = 50;
+
+    public $totalResults = 0;
+
+    public $hasMoreResults = false;
+
+    public $isCodeSearch = false;
 
     public function mount()
     {
@@ -50,16 +57,44 @@ class ServiceRequest extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+            $this->perPage = 50;
 
             return;
         }
 
+        // Resetear paginación al cambiar query
+        $this->perPage = 50;
+
+        $this->searchServiceRequests();
+    }
+
+    public function loadMore()
+    {
+        $this->perPage += 50;
+        $this->searchServiceRequests();
+    }
+
+    private function searchServiceRequests()
+    {
         $response = Http::get(url('api/cpts/'.$this->type), [
             'dropdown' => true,
             'q' => $this->query,
+            'perPage' => $this->perPage,
         ]);
 
-        $this->results = $response->json() ?? [];
+        if ($response->successful()) {
+            $data = $response->json();
+            $this->results = $data['data'] ?? [];
+            $this->totalResults = $data['total'] ?? 0;
+            $this->hasMoreResults = $data['hasMore'] ?? false;
+            $this->isCodeSearch = $data['isCodeSearch'] ?? false;
+        } else {
+            $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+        }
     }
 
     #[\Livewire\Attributes\On('selectOption')]
@@ -139,7 +174,7 @@ class ServiceRequest extends Component
 
             $this->loadSelectedLists();
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,'Error al guardar: '.$e->getMessage());
+            $this->dispatch('error-'.$key, 'Error al guardar: '.$e->getMessage());
             /*
             $this->dispatch('showToastrConsultation',
                 type: 'error',
@@ -231,7 +266,7 @@ class ServiceRequest extends Component
             $this->dispatch('saved-'.$id);
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$id,$e->getMessage());
+            $this->dispatch('error-'.$id, $e->getMessage());
         }
     }
 

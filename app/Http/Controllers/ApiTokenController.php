@@ -53,6 +53,7 @@ class ApiTokenController extends Controller
 
             // Create the token
             $apiToken = ApiToken::create([
+                'practitioner_id' => $request->practitioner_id ?: null,
                 'name' => $request->name,
                 'token' => $token,
                 'allowed_ips' => $allowedIps,
@@ -79,6 +80,8 @@ class ApiTokenController extends Controller
      */
     public function show(ApiToken $apiToken)
     {
+        $apiToken->load('practitioner');
+
         return view('api-tokens.show', compact('apiToken'));
     }
 
@@ -112,6 +115,7 @@ class ApiTokenController extends Controller
 
             // Update the token (without changing the actual token string)
             $apiToken->update([
+                'practitioner_id' => $request->practitioner_id ?: null,
                 'name' => $request->name,
                 'allowed_ips' => $allowedIps,
                 'scopes' => $scopes,
@@ -179,6 +183,7 @@ class ApiTokenController extends Controller
     private function validateTokenRequest(Request $request, $tokenId = null)
     {
         return Validator::make($request->all(), [
+            'practitioner_id' => 'nullable|exists:practitioners,id',
             'name' => [
                 'required',
                 'string',
@@ -190,6 +195,7 @@ class ApiTokenController extends Controller
             'expires_at' => 'nullable|date|after:now',
             'description' => 'nullable|string|max:1000',
         ], [
+            'practitioner_id.exists' => 'El practitioner seleccionado no existe',
             'name.required' => 'El nombre del token es obligatorio',
             'name.unique' => 'Ya existe un token con este nombre',
             'allowed_ips.required' => 'Debe especificar al menos una IP permitida',

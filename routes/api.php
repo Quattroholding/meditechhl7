@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
+use App\Http\Controllers\Api\HemoScreenController;
 use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -161,4 +162,8 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/clients/{clientId}/consulting-rooms', [ConsultingRoomController::class, 'getByClient']);
 
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
+
+    // HemoScreen integration - requires specific scope
+    Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen');
+
 });

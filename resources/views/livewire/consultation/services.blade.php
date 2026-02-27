@@ -82,6 +82,123 @@
         @php $id =\Illuminate\Support\Str::uuid();@endphp
         <div class="selector-field selector-field-on">
             <x-autosave-action save-key="catalog-search" />
+
+            {{-- SELECTOR VISUAL POR TIPO DE SERVICIO --}}
+            <div style="padding: 20px;">
+                <h6 class="mb-3"><i class="fas fa-hand-pointer"></i> Seleccione el tipo de servicio:</h6>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                    {{-- CPT Codes --}}
+                    @if(isset($availableServiceTypes['cpt']) && $availableServiceTypes['cpt'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'cpt')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'cpt' ? '#007bff' : 'white' }}; color: {{ $selectedServiceType === 'cpt' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'cpt' ? '#007bff' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'cpt' ? '0 4px 8px rgba(0,123,255,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#007bff'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'cpt') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-file-medical-alt" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Códigos CPT</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['cpt'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Consulta --}}
+                    @if(isset($availableServiceTypes['consultation']) && $availableServiceTypes['consultation'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'consultation')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'consultation' ? '#007bff' : 'white' }}; color: {{ $selectedServiceType === 'consultation' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'consultation' ? '#007bff' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'consultation' ? '0 4px 8px rgba(0,123,255,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#007bff'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'consultation') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-user-md" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Consulta</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['consultation'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Procedimiento --}}
+                    @if(isset($availableServiceTypes['procedure']) && $availableServiceTypes['procedure'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'procedure')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'procedure' ? '#28a745' : 'white' }}; color: {{ $selectedServiceType === 'procedure' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'procedure' ? '#28a745' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'procedure' ? '0 4px 8px rgba(40,167,69,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#28a745'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'procedure') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-procedures" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Procedimiento</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['procedure'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Terapéutico --}}
+                    @if(isset($availableServiceTypes['therapeutic']) && $availableServiceTypes['therapeutic'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'therapeutic')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'therapeutic' ? '#e83e8c' : 'white' }}; color: {{ $selectedServiceType === 'therapeutic' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'therapeutic' ? '#e83e8c' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'therapeutic' ? '0 4px 8px rgba(232,62,140,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#e83e8c'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'therapeutic') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-heartbeat" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Terapéutico</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['therapeutic'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Quirúrgico --}}
+                    @if(isset($availableServiceTypes['surgical']) && $availableServiceTypes['surgical'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'surgical')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'surgical' ? '#dc3545' : 'white' }}; color: {{ $selectedServiceType === 'surgical' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'surgical' ? '#dc3545' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'surgical' ? '0 4px 8px rgba(220,53,69,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#dc3545'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'surgical') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-cut" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Quirúrgico</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['surgical'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Laboratorio --}}
+                    @if(isset($availableServiceTypes['laboratory']) && $availableServiceTypes['laboratory'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'laboratory')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'laboratory' ? '#6f42c1' : 'white' }}; color: {{ $selectedServiceType === 'laboratory' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'laboratory' ? '#6f42c1' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'laboratory' ? '0 4px 8px rgba(111,66,193,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#6f42c1'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'laboratory') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-flask" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Laboratorio</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['laboratory'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Imagenología --}}
+                    @if(isset($availableServiceTypes['imaging']) && $availableServiceTypes['imaging'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'imaging')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'imaging' ? '#17a2b8' : 'white' }}; color: {{ $selectedServiceType === 'imaging' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'imaging' ? '#17a2b8' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'imaging' ? '0 4px 8px rgba(23,162,184,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#17a2b8'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'imaging') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-x-ray" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Imagenología</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['imaging'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Suministro --}}
+                    @if(isset($availableServiceTypes['supply']) && $availableServiceTypes['supply'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'supply')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'supply' ? '#fd7e14' : 'white' }}; color: {{ $selectedServiceType === 'supply' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'supply' ? '#fd7e14' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'supply' ? '0 4px 8px rgba(253,126,20,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#fd7e14'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'supply') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-box" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Suministro</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['supply'] }})</small>
+                    </div>
+                    @endif
+
+                    {{-- Otro --}}
+                    @if(isset($availableServiceTypes['other']) && $availableServiceTypes['other'] > 0)
+                    <div wire:click="$set('selectedServiceType', 'other')"
+                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'other' ? '#6c757d' : 'white' }}; color: {{ $selectedServiceType === 'other' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'other' ? '#6c757d' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'other' ? '0 4px 8px rgba(108,117,125,0.3)' : 'none' }};"
+                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#6c757d'; this.style.transform='translateY(-2px)'; }"
+                         onmouseout="if('{{ $selectedServiceType }}' !== 'other') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
+                        <i class="fas fa-stethoscope" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        <div style="font-weight: 600; font-size: 0.8rem;">Otro</div>
+                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['other'] }})</small>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- VERSIÓN ANTERIOR CON BUSCADOR (COMENTADA) --}}
+            {{--
             <table style="width:100%">
                 <tbody>
                 <tr>
@@ -101,6 +218,7 @@
                 </tr>
                 </tbody>
             </table>
+            --}}
             <div wire:ignore.self class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel" data-bs-backdrop="false" data-bs-scroll="true">
                 <div class="offcanvas-body quick-items-content">
                     <div class="quick-items-close" data-bs-dismiss="offcanvas" aria-label="Cerrar" onclick="closeServicesOffcanvas('offcanvasRight{{$id}}')" style="cursor: pointer;">
@@ -157,7 +275,98 @@
                 </div>
             </div> <!-- end offcanvas-body-->
 
-            {{-- RESULTADOS DE BÚSQUEDA --}}
+            {{-- RESULTADOS DE BÚSQUEDA - VERSIÓN MEJORADA CON ÍCONOS --}}
+
+            @if(!empty($results))
+                <div style="position: absolute; z-index: 1000; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    {{-- Contenedor con scroll --}}
+                    <div style="max-height: 400px; min-height: 200px; overflow-y: auto;">
+                        @foreach($results as $result)
+                            @php
+                                // Definir ícono y color según el tipo de servicio
+                                $iconConfig = match($result['service_type'] ?? 'other') {
+                                    'consultation' => ['icon' => 'fa-user-md', 'color' => '#007bff', 'label' => 'Consulta'],
+                                    'procedure' => ['icon' => 'fa-procedures', 'color' => '#28a745', 'label' => 'Procedimiento'],
+                                    'therapy' => ['icon' => 'fa-heartbeat', 'color' => '#e83e8c', 'label' => 'Terapia'],
+                                    'surgical' => ['icon' => 'fa-cut', 'color' => '#dc3545', 'label' => 'Quirúrgico'],
+                                    'laboratory' => ['icon' => 'fa-flask', 'color' => '#6f42c1', 'label' => 'Laboratorio'],
+                                    'imaging' => ['icon' => 'fa-x-ray', 'color' => '#17a2b8', 'label' => 'Imágenes'],
+                                    'diagnostic' => ['icon' => 'fa-file-medical-alt', 'color' => '#fd7e14', 'label' => 'Diagnóstico'],
+                                    default => ['icon' => 'fa-stethoscope', 'color' => '#6c757d', 'label' => 'Servicio']
+                                };
+                                $hasCpt = !empty($result['cpt_code']);
+                            @endphp
+                            <div
+                                class="sel-list-item"
+                                wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
+                                x-on:click="window.dispatchEvent(new CustomEvent('autosave-start', { detail: 'diagnostic-search' }))"
+                                style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #e9ecef; transition: all 0.2s; display: flex; align-items: start; gap: 12px;"
+                                onmouseover="this.style.background='#f0f7ff'; this.style.borderLeft='4px solid {{ $iconConfig['color'] }}'"
+                                onmouseout="this.style.background='white'; this.style.borderLeft='none'"
+                            >
+                                {{-- Ícono del tipo de servicio --}}
+                                <div style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: {{ $iconConfig['color'] }}15; border-radius: 8px;">
+                                    <i class="fas {{ $iconConfig['icon'] }}" style="font-size: 1.2rem; color: {{ $iconConfig['color'] }};"></i>
+                                </div>
+
+                                {{-- Información del servicio --}}
+                                <div style="flex: 1; min-width: 0;">
+                                    {{-- Nombre del servicio --}}
+                                    <div style="font-size: 0.9rem; color: #212529; font-weight: 600; margin-bottom: 4px; line-height: 1.3;">
+                                        {{ $result['name'] }}
+                                    </div>
+
+                                    {{-- Badges y metadata --}}
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px;">
+                                        {{-- Badge de tipo de servicio --}}
+                                        <span style="display: inline-flex; align-items: center; padding: 2px 8px; background: {{ $iconConfig['color'] }}20; color: {{ $iconConfig['color'] }}; border-radius: 12px; font-size: 0.7rem; font-weight: 500;">
+                                            {{ $iconConfig['label'] }}
+                                        </span>
+
+                                        {{-- Badge CPT si existe --}}
+                                        @if($hasCpt)
+                                            <span class="badge bg-primary" style="font-size: 0.7rem; padding: 2px 8px;">
+                                                CPT: {{ $result['cpt_code'] }}
+                                            </span>
+                                        @endif
+
+                                        {{-- Duración si existe --}}
+                                        @if(!empty($result['duration_minutes']))
+                                            <span style="font-size: 0.75rem; color: #6c757d;">
+                                                <i class="far fa-clock"></i> {{ $result['duration_minutes'] }} min
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    {{-- Descripción si existe y es diferente del nombre --}}
+                                    @if(!empty($result['description']) && $result['description'] !== $result['name'])
+                                        <div style="font-size: 0.75rem; color: #6c757d; line-height: 1.3; margin-top: 2px;">
+                                            {{ Str::limit($result['description'], 80) }}
+                                        </div>
+                                    @endif
+
+                                    {{-- Precio --}}
+                                    <div style="margin-top: 6px;">
+                                        <span style="font-size: 0.85rem; font-weight: 600; color: #28a745;">
+                                            <i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> {{ number_format($result['price'], 2) }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {{-- Botón de acción --}}
+                                <div style="flex-shrink: 0; display: flex; align-items: center;">
+                                    <div style="padding: 6px 12px; background: {{ $iconConfig['color'] }}; color: white; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">
+                                        <i class="fas fa-plus"></i> Agregar
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- VERSIÓN ANTERIOR COMENTADA (lista simple) --}}
+            {{--
             @if(!empty($results))
                 <div class="selector-items" style="z-index: 1000">
                     @foreach($results as $result)
@@ -166,13 +375,12 @@
                             wire:click.debounce.300ms="selectOption({{ json_encode($result) }})"
                             x-on:click=" window.dispatchEvent( new CustomEvent('autosave-start', { detail: 'diagnostic-search' }))"
                         >
-
-                                {{ $result['name'] }}
-                            </div>
+                            {{ $result['name'] }}
                         </div>
                     @endforeach
                 </div>
             @endif
+            --}}
         </div>
     </div>
     <style>

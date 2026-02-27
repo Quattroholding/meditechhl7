@@ -36,6 +36,14 @@ class MedicationRequests extends Component
 
     public $section_id = 11;
 
+    public $perPage = 50;
+
+    public $totalResults = 0;
+
+    public $hasMoreResults = false;
+
+    public $isCodeSearch = false;
+
     protected $listeners = ['copyMedicationsToCurrentRecipe'];
 
     public function mount()
@@ -63,21 +71,78 @@ class MedicationRequests extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+            $this->perPage = 50;
 
             return;
         }
 
+        // Resetear paginación al cambiar query
+        $this->perPage = 50;
+
+        $this->searchMedications();
+    }
+
+    public function loadMore()
+    {
+        $this->perPage += 50;
+        $this->searchMedications();
+    }
+
+    private function searchMedications()
+    {
+        $searchQuery = $this->query;
+
+        // Detectar si es búsqueda por código (empieza con letra o número seguido de otro)
+        $this->isCodeSearch = preg_match('/^[A-Z0-9][A-Z0-9]/i', $searchQuery);
+
         // Query medications table with ingredients
-        $this->results = Medication::query()
+        $query = Medication::query()
             ->with('ingredients')
-            ->where(function ($q) {
-                $q->where('code', 'like', '%'.$this->query.'%')
-                    ->orWhere('home_name', 'like', '%'.$this->query.'%')
-                    ->orWhere('generic_name', 'like', '%'.$this->query.'%')
-                    ->orWhere('display', 'like', '%'.$this->query.'%');
+            ->where(function ($q) use ($searchQuery) {
+                $q->where('code', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('home_name', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('generic_name', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('display', 'like', '%'.$searchQuery.'%');
             })
-            ->where('status', 'active')
-            ->take(10)
+            ->where('status', 'active');
+
+        // Contar total de resultados
+        $this->totalResults = $query->count();
+
+        // Búsqueda inteligente con ordenamiento por relevancia
+        if ($this->isCodeSearch && strlen($searchQuery) > 0) {
+            // Búsqueda por código: priorizar coincidencias en código
+            $query->orderByRaw('
+                CASE
+                    WHEN code = ? THEN 1
+                    WHEN code LIKE ? THEN 2
+                    WHEN home_name LIKE ? THEN 3
+                    ELSE 4
+                END,
+                code ASC
+            ', [$searchQuery, "{$searchQuery}%", "{$searchQuery}%"]);
+        } elseif (strlen($searchQuery) > 0) {
+            // Búsqueda por nombre: priorizar coincidencias en nombres
+            $query->orderByRaw('
+                CASE
+                    WHEN display = ? THEN 1
+                    WHEN generic_name = ? THEN 2
+                    WHEN home_name = ? THEN 3
+                    WHEN display LIKE ? THEN 4
+                    WHEN generic_name LIKE ? THEN 5
+                    WHEN home_name LIKE ? THEN 6
+                    ELSE 7
+                END,
+                display ASC
+            ', [$searchQuery, $searchQuery, $searchQuery, "{$searchQuery}%", "{$searchQuery}%", "{$searchQuery}%"]);
+        } else {
+            // Sin búsqueda, ordenar por display
+            $query->orderBy('display');
+        }
+
+        $this->results = $query->take($this->perPage)
             ->get()
             ->map(function ($med) {
                 $ingredient = $med->ingredients->first();
@@ -86,9 +151,13 @@ class MedicationRequests extends Component
                 return [
                     'id' => $med->id,
                     'name' => $med->display,
+                    'code' => $med->code,
+                    'generic_name' => $med->generic_name,
                 ];
             })
             ->toArray();
+
+        $this->hasMoreResults = $this->totalResults > $this->perPage;
     }
 
     public function selectOption($option)

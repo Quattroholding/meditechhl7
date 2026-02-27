@@ -40,6 +40,12 @@ class Referral extends Component
 
     public $savedEspecialistTimer = [];
 
+    public $perPage = 50;
+
+    public $totalResults = 0;
+
+    public $hasMoreResults = false;
+
     // Nuevas propiedades para el directorio médico
     public $showMedicalDirectory = false;
 
@@ -77,23 +83,50 @@ class Referral extends Component
     {
         if (strlen($this->query) < 2) {
             $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+            $this->perPage = 50;
 
             return;
         }
 
+        // Resetear paginación al cambiar query
+        $this->perPage = 50;
+
+        $this->searchSpecialities();
+    }
+
+    public function loadMore()
+    {
+        $this->perPage += 50;
+        $this->searchSpecialities();
+    }
+
+    private function searchSpecialities()
+    {
         $response = Http::get(url('api/medical_speciality'), [
             'dropdown' => true,
             'q' => $this->query,
+            'perPage' => $this->perPage,
         ]);
 
-        $this->results = $response->json() ?? [];
+        if ($response->successful()) {
+            $data = $response->json();
+            $this->results = $data['data'] ?? [];
+            $this->totalResults = $data['total'] ?? 0;
+            $this->hasMoreResults = $data['hasMore'] ?? false;
+        } else {
+            $this->results = [];
+            $this->totalResults = 0;
+            $this->hasMoreResults = false;
+        }
     }
 
     public function selectOption($option)
     {
         $key = 'speciality-search';
 
-        try{
+        try {
             sleep(1);
 
             $this->saved = false;
@@ -103,7 +136,7 @@ class Referral extends Component
             $referral = \App\Models\Referral::whereEncounterId($this->encounter->id)->whereCode($option)->first();
             $specialty = MedicalSpeciality::whereId($option)->first();
             if (! $referral) {
-                $ref_created= $this->encounter->referrals()->create([
+                $ref_created = $this->encounter->referrals()->create([
                     'fhir_id' => 'servicerequest-'.Str::uuid(),
                     'identifier' => 'REF-'.strtoupper(Str::random(7)),
                     'status' => 'active',
@@ -138,7 +171,7 @@ class Referral extends Component
             // Disparar evento para actualizar el estado del botón de finalizar
             $this->dispatch('findFinishedButtonStatus');
 
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->dispatch(
                 'error-'.$key,
                 $e->getMessage(),
@@ -169,7 +202,7 @@ class Referral extends Component
 
     public function setReason($id)
     {
-        $key='referral_'.$id;
+        $key = 'referral_'.$id;
         try {
             sleep(1);
 
@@ -184,7 +217,7 @@ class Referral extends Component
             // Disparar evento para actualizar el estado del botón de finalizar
             $this->dispatch('findFinishedButtonStatus');
 
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->dispatch(
                 'error-'.$key,
                 $e->getMessage(),
