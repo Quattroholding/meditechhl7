@@ -723,9 +723,12 @@
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                         <li><a href="#catalogo-servicios"><i class="fas fa-clipboard-list"></i> 2. Catálogo de Servicios</a></li>
                         <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 3. Plantilla de Consulta</a></li>
-                                                <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
+                        <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
                         <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 5. Horarios Laborales</a></li>
-                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 6. Tips y Mejores Prácticas</a></li>
+                        <li><a href="#plantilla-factura"><i class="fas fa-file-invoice"></i> 6. Plantilla de Factura</a></li>
+                        <li><a href="#plantilla-incapacidad"><i class="fas fa-file-prescription"></i> 7. Plantilla de Incapacidad Médica</a></li>
+                        <li><a href="#codigo-referidos"><i class="fas fa-user-plus"></i> 8. Código de Referidos</a></li>
+                        <li><a href="#tips"><i class="fas fa-lightbulb"></i> 9. Tips y Mejores Prácticas</a></li>
                     </ul>
                 </div>
             </div>
@@ -779,7 +782,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(156, 39, 176, 0.1);">
-                            <i class="fas fa-file-medical" style="color: #9c27b0;"></i>
+                            <i class="fas fa-file-invoice" style="color: #9c27b0;"></i>
                         </div>
                         <h5>Plantilla de Factura</h5>
                         <p>Selecciona tu diseño favorito para tus facturas</p>
@@ -788,10 +791,19 @@
                 <div class="col-md-4 mb-4">
                     <div class="feature-card text-center">
                         <div class="icon-circle mx-auto" style="background: rgba(156, 39, 176, 0.1);">
-                            <i class="fas fa-file-medical" style="color: #9c27b0;"></i>
+                            <i class="fas fa-file-prescription" style="color: #9c27b0;"></i>
                         </div>
                         <h5>Plantilla de Incapacidad Médica</h5>
                         <p>Elige una plantilla para las Incapacidades Médicas</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
+                            <i class="fas fa-user-plus" style="color: #4caf50;"></i>
+                        </div>
+                        <h5>Código de Referidos</h5>
+                        <p>Genera y gestiona tus códigos de invitación</p>
                     </div>
                 </div>
             </div>
@@ -1026,12 +1038,52 @@
             </div>
 
 
-            <h3>Gestionar Servicios Existentes</h3>
+            <h3>Búsqueda de Servicios</h3>
+            <p>El catálogo cuenta con una potente barra de búsqueda que le permite localizar servicios rápidamente por diferentes criterios:</p>
             <ul>
-                <li><strong>Editar:</strong> Modificar precio, complejidad y otros campos (no el codigo CPT)</li>
-                <li><strong>Activar/Desactivar:</strong> Habilitar o deshabilitar servicios sin eliminarlos</li>
-                <li><strong>Eliminar:</strong> Remover servicios que ya no utiliza</li>
+                <li><strong>Nombre del Servicio:</strong> Escriba parte del nombre (ej: "Sutura") para filtrar los resultados.</li>
+                <li><strong>Código CPT:</strong> Ingrese el código numérico estándar (ej: "99213").</li>
+                <li><strong>Código de Servicio:</strong> Busque por el código interno generado por SAMI (ej: "PROC_0001").</li>
             </ul>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_servicesearch.png') }}" alt="" style="width: 100%;">
+            </div>
+
+            <h3>Gestionar Servicios Existentes (Columna Acciones)</h3>
+            <p>En el listado de servicios, la última columna le permite realizar las siguientes acciones:</p>
+            
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Botón</th>
+                            <th>Acción</th>
+                            <th>Funcionalidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Botón" class="text-center"><i class="fas fa-edit text-primary"></i></td>
+                            <td data-label="Acción"><strong>Editar</strong></td>
+                            <td data-label="Funcionalidad">Abre un formulario para modificar el precio, complejidad o nombre (si es personalizado). Los cambios se aplican a futuras facturaciones.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Botón" class="text-center"><i class="fas fa fa-pause"></i></td>
+                            <td data-label="Acción"><strong>Activar/Desactivar</strong></td>
+                            <td data-label="Funcionalidad">Cambia la visibilidad del servicio. Los servicios desactivados no aparecerán como opciones al crear facturas u órdenes, pero se mantienen en el sistema para registros históricos.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Botón" class="text-center"><i class="fas fa-trash text-danger"></i></td>
+                            <td data-label="Acción"><strong>Eliminar</strong></td>
+                            <td data-label="Funcionalidad">Realiza un borrado lógico del servicio. El servicio dejará de ser accesible en el catálogo, aunque la información se conserva internamente para la integridad de sus registros pasados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_actionsbtn.png') }}" alt="" style="width: 100%;">
+            </div>
 
             <div class="info-box warning">
                 <div class="info-box-title">
@@ -1520,10 +1572,90 @@
             </div>
         </section>
 
-    
-        <!-- Section 6: Tips -->
+        <!-- Section 6: Invoice Template -->
+        <section id="plantilla-factura" class="content-section">
+            <h2><i class="fas fa-file-invoice me-2"></i>6. Plantilla de Factura</h2>
+            <p>SAMI le permite elegir entre diferentes diseños de facturas para que se adapten a la imagen de su práctica. Puede previsualizar y seleccionar el modelo que prefiera.</p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-route text-success"></i>
+                    Ruta de Acceso
+                </div>
+                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla de Factura</strong></p>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Explorar Modelos</span></h4>
+                <p>En el listado, verá los diferentes diseños disponibles (Ej: Modelo Moderno, Clásico, Minimalista). Cada uno muestra una vista previa miniatura.</p>
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-image"></i>
+                    <p>Captura: Listado de Plantillas de Factura</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Previsualizar y Seleccionar</span></h4>
+                <p>Haga clic en el botón de <strong>"Vista Previa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong> o <strong>"Activar"</strong>.</p>
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-search-plus"></i>
+                    <p>Captura: Previsualización de Factura</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Medical Disability Template -->
+        <section id="plantilla-incapacidad" class="content-section">
+            <h2><i class="fas fa-file-prescription me-2"></i>7. Plantilla de Incapacidad Médica</h2>
+            <p>Personalice el formato de los documentos de incapacidad médica y justificantes que entrega a sus pacientes.</p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-route text-success"></i>
+                    Ruta de Acceso
+                </div>
+                <p class="mb-0"><strong>Menu → Configuraciones → Plantilla de Incapacidad Médica</strong></p>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Selección de Formato</span></h4>
+                <p>Al igual que con las facturas, puede elegir entre varios esquemas visuales para las incapacidades. Asegúrese de que el diseño incluya los campos necesarios para su jurisdicción legal.</p>
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-image"></i>
+                    <p>Captura: Selección de Plantilla de Incapacidad</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Referral Code -->
+        <section id="codigo-referidos" class="content-section">
+            <h2><i class="fas fa-user-plus me-2"></i>8. Código de Referidos</h2>
+            <p>El sistema de referidos le permite invitar a otros colegas a unirse a SAMI y gestionar los beneficios asociados a sus invitaciones.</p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-route text-success"></i>
+                    Ruta de Acceso
+                </div>
+                <p class="mb-0"><strong>Menu → Configuraciones → Código de Referidos</strong></p>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Obtener su Código</span></h4>
+                <p>En esta sección encontrará su código alfanumérico único. Puede copiarlo y compartirlo directamente por correo electrónico o redes sociales.</p>
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-copy"></i>
+                    <p>Captura: Panel de Código de Referidos</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Seguimiento de Invitaciones</span></h4>
+                <p>Podrá visualizar el historial de personas que se han registrado utilizando su código y el estado de sus suscripciones.</p>
+            </div>
+        <!-- Section 9: Tips -->
         <section id="tips" class="content-section">
-            <h2><i class="fas fa-lightbulb me-2"></i>6. Tips y Mejores Practicas</h2>
+            <h2><i class="fas fa-lightbulb me-2"></i>9. Tips y Mejores Practicas</h2>
 
             <div class="row">
                 <div class="col-md-6">
@@ -1590,6 +1722,18 @@
                             <td data-label="Funcionalidad"><strong>Plantilla de Consulta</strong></td>
                             <!--<td data-label="Permiso"><code>settings.create_consultation_template</code></td>-->
                             <td data-label="Descripcion">Personalizar secciones de consulta</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Plantilla de Factura</strong></td>
+                            <td data-label="Descripcion">Seleccionar diseño de facturas</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Plantilla de Incapacidad Médica</strong></td>
+                            <td data-label="Descripcion">Seleccionar diseño de incapacidades</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Funcionalidad"><strong>Código de Referidos</strong></td>
+                            <td data-label="Descripcion">Gestionar códigos de invitación</td>
                         </tr>
                     </tbody>
                 </table>

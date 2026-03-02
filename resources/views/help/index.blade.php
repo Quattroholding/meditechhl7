@@ -735,17 +735,57 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(40, 53, 147, 0.1);">
+                            <i class="fas fa-tachometer-alt fa-2x" style="color: #283593;"></i>
+                        </div>
+                        <h5 class="card-title">Dashboard Médico</h5>
+                        <p class="card-text text-muted">Aprende a usar y personalizar tu panel principal.</p>
+                        <a href="{{ route('help.doctor-dashboard') }}" class="btn text-white" style="background: #283593;">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(2, 136, 209, 0.1); color: #0288d1;">
+                            <i class="fas fa-user-circle fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Perfil de Usuario</h5>
+                        <p class="card-text text-muted">Gestiona tu información personal, seguridad y firma digital.</p>
+                        <a href="{{ route('help.profile') }}" class="btn text-white" style="background: #0288d1;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(25, 135, 84, 0.1); color: #198754;">
+                            <i class="fas fa-headset fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Soporte y Contacto</h5>
+                        <p class="card-text text-muted">¿Necesitas ayuda técnica? Contacta con nuestro equipo.</p>
+                        <a href="{{ route('help.support') }}" class="btn text-white" style="background: #198754;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a></a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Contact Support -->
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
                 <div class="row align-items-center">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <h5 class="mb-2"><i class="fas fa-headset me-2 text-primary"></i>Necesitas ayuda adicional?</h5>
-                        <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte con cualquier duda o problema.</p>
+                        <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte con cualquier duda o problema, haz clic en nuestra sección de Soporte y Contacto.</p>
                     </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    {{--}}<div class="col-md-4 text-md-end mt-3 mt-md-0">
                         @auth
                             <button type="button" class="btn btn-primary" onclick="Livewire.dispatch('openTicketModal')">
                                 <i class="fas fa-ticket-alt me-2"></i>Crear Ticket de Soporte
@@ -755,7 +795,7 @@
                                 <i class="fas fa-envelope me-2"></i>Contactar Soporte
                             </a>
                         @endauth
-                    </div>
+                    </div>{{--}}
                 </div>
             </div>
         </div>
