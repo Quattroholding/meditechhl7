@@ -245,9 +245,6 @@ class RolePermissionSeeder extends Seeder
             'suscriptions.payments.download',
             'suscriptions.payments.store',
             'suscriptions.payments.settings',
-            'tickets.index',
-            'tickets.create',
-            'tickets.comment',
         ]);
 
         $assistantRole = Role::firstOrCreate(['name' => 'recepcionista']);

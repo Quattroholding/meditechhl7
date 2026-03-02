@@ -1,5 +1,19 @@
 <div class="encounters-content">
     @if($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : count($sectionData) > 0))
+        <!-- Botón Descargar Historial Completo -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+            <button
+                onclick="requestFullHistory({{ $patient->id }})"
+                id="downloadHistoryBtn"
+                class="btn"
+                style="background: #10b981; color: white; padding: 10px 20px; font-size: 14px; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.3s;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <span id="downloadHistoryText">Descargar Historial Completo</span>
+            </button>
+        </div>
+
         <div class="data-table-container">
             <table class="data-table">
                 <thead>
@@ -121,3 +135,121 @@
         </div>
     @endif
 </div>
+
+<script>
+let historyDownloadId = null;
+let pollingInterval = null;
+
+async function requestFullHistory(patientId) {
+    const btn = document.getElementById('downloadHistoryBtn');
+    const btnText = document.getElementById('downloadHistoryText');
+
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+    btnText.textContent = 'Iniciando generación...';
+
+    try {
+        const response = await fetch(`/patient-history/${patientId}/generate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            historyDownloadId = data.history_download_id;
+            btnText.textContent = 'Generando... 0%';
+            startPolling();
+            showNotification('Generación iniciada. Te notificaremos cuando esté listo.', 'success');
+        } else {
+            throw new Error(data.message || 'Error al iniciar generación');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification(error.message, 'error');
+        resetButton();
+    }
+}
+
+function startPolling() {
+    pollingInterval = setInterval(checkStatus, 3000);
+}
+
+function stopPolling() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+    }
+}
+
+async function checkStatus() {
+    if (!historyDownloadId) return;
+
+    try {
+        const response = await fetch(`/patient-history/${historyDownloadId}/status`);
+        const data = await response.json();
+
+        if (data.success) {
+            const btnText = document.getElementById('downloadHistoryText');
+
+            if (data.status === 'completed') {
+                stopPolling();
+                btnText.textContent = 'Listo - Haz clic para descargar';
+                const btn = document.getElementById('downloadHistoryBtn');
+                btn.style.background = '#10b981';
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.disabled = false;
+                btn.onclick = () => window.location.href = data.download_url;
+                showNotification(`Historial listo (${data.total_encounters} consultas)`, 'success');
+            } else if (data.status === 'failed') {
+                stopPolling();
+                btnText.textContent = 'Error en generación';
+                showNotification(data.error_message || 'Error al generar historial', 'error');
+                setTimeout(resetButton, 3000);
+            } else if (data.status === 'processing') {
+                btnText.textContent = `Generando... ${data.progress}% (${data.processed_encounters}/${data.total_encounters})`;
+            }
+        }
+    } catch (error) {
+        console.error('Error checking status:', error);
+    }
+}
+
+function resetButton() {
+    const btn = document.getElementById('downloadHistoryBtn');
+    const btnText = document.getElementById('downloadHistoryText');
+
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.style.background = '#10b981';
+    btnText.textContent = 'Descargar Historial Completo';
+    btn.onclick = () => requestFullHistory({{ $patient->id }});
+
+    historyDownloadId = null;
+    stopPolling();
+}
+
+function showNotification(message, type = 'info') {
+    const colors = {success: '#10b981', error: '#ef4444', info: '#3b82f6'};
+    const notification = document.createElement('div');
+    notification.style.cssText = `position:fixed;top:20px;right:20px;background:${colors[type]};color:white;padding:16px 24px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:9999;font-size:14px;max-width:400px;animation:slideIn 0.3s ease;`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+const style = document.createElement('style');
+style.textContent = `@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}`;
+document.head.appendChild(style);
+
+window.addEventListener('beforeunload', stopPolling);
+</script>

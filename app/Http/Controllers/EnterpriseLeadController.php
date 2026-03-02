@@ -47,7 +47,7 @@ class EnterpriseLeadController extends Controller
             // Enviar notificación por correo a los destinatarios de ventas
             Notification::route('mail', [
                 'business@meditecpty.com',
-               // 'bpavan@meditecpty.com',
+                'bpavan@meditecpty.com',
             ])->notify(new NewEnterpriseLeadNotification($lead));
 
             Log::info('Enterprise lead created', [

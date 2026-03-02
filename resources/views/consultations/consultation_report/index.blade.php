@@ -226,57 +226,66 @@
     {{--}}
 </div>
 <?php
-function line_if_empty($value = "") {
-    if ($value == "") {
-        return "---";
-    }
+if (!function_exists('line_if_empty')) {
+    function line_if_empty($value = "") {
+        if ($value == "") {
+            return "---";
+        }
 
-    if ($value == "-") {
-        return "---";
-    }
+        if ($value == "-") {
+            return "---";
+        }
 
-    return $value;
-}
-
-function list_array_as_table($array) {
-    $html = '';
-    $a = 0;
-
-    foreach ($array as $item) {
-        $a++;
-
-        $html .= '<tr class="table-contents">';
-        $html .= $item;
-        $html .= '</tr>';
-    }
-
-    return $html;
-}
-
-function list_array($array) {
-    $html = '<ul>';
-    foreach ($array as $item) {
-        $html .= '<li>'.$item."</li>";
-    }
-
-    $html .= '</ul>';
-    return $html;
-}
-
-function get_from_array($list, $id = "") {
-    if ($id == "") {
-        return "";
-    }
-
-    if (isset($list[$id])) {
-        return $list[$id];
-    } else {
-        return "";
+        return $value;
     }
 }
 
-function gen($table, $horizontal = true){
-    ?>
+if (!function_exists('list_array_as_table')) {
+    function list_array_as_table($array) {
+        $html = '';
+        $a = 0;
+
+        foreach ($array as $item) {
+            $a++;
+
+            $html .= '<tr class="table-contents">';
+            $html .= $item;
+            $html .= '</tr>';
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('list_array')) {
+    function list_array($array) {
+        $html = '<ul>';
+        foreach ($array as $item) {
+            $html .= '<li>'.$item."</li>";
+        }
+
+        $html .= '</ul>';
+        return $html;
+    }
+}
+
+if (!function_exists('get_from_array')) {
+    function get_from_array($list, $id = "") {
+        if ($id == "") {
+            return "";
+        }
+
+        if (isset($list[$id])) {
+            return $list[$id];
+        } else {
+            return "";
+        }
+    }
+}
+
+if (!function_exists('gen')) {
+    function gen($table, $horizontal = true){
+        ?>
 
 <table class="table" cellspacing="0" cellpadding="0">
 
@@ -326,6 +335,7 @@ function gen($table, $horizontal = true){
 </table>
 
     <?php
+    }
 }
 ?>
 </body>

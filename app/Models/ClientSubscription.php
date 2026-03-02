@@ -18,6 +18,7 @@ class ClientSubscription extends BaseModel
     protected $fillable = [
         'client_id',
         'package_id',
+        'payment_token_id',
         'status',
         'trial_ends_at',
         'current_period_starts_at',
@@ -26,6 +27,10 @@ class ClientSubscription extends BaseModel
         'cancelled_at',
         'cancellation_reason',
         'paused_at',
+        'grace_period_ends_at',
+        'last_billed_at',
+        'next_retry_at',
+        'retry_count',
         'extra_doctors_count',
         'metadata',
     ];
@@ -40,7 +45,14 @@ class ClientSubscription extends BaseModel
             'next_billing_date' => 'datetime',
             'cancelled_at' => 'datetime',
             'paused_at' => 'datetime',
+            'grace_period_ends_at' => 'datetime',
+            'last_billed_at' => 'datetime',
+            'next_retry_at' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
             'extra_doctors_count' => 'integer',
+            'retry_count' => 'integer',
             'metadata' => 'array',
         ];
     }
@@ -81,6 +93,22 @@ class ClientSubscription extends BaseModel
                 $query->whereNull('valid_until')
                     ->orWhere('valid_until', '>=', now());
             });
+    }
+
+    public function paymentToken()
+    {
+        return $this->belongsTo(PaymentToken::class);
+    }
+
+    public function billingCycles()
+    {
+        return $this->hasMany(SubscriptionBillingCycle::class, 'subscription_id');
+    }
+
+    public function latestInvoice()
+    {
+        return $this->hasOne(ClientInvoice::class)
+            ->latestOfMany();
     }
 
     // Scopes
@@ -170,9 +198,32 @@ class ClientSubscription extends BaseModel
     public function activate(): bool
     {
         $this->status = SubscriptionStatus::ACTIVE;
-        $this->current_period_starts_at = now();
-        $this->current_period_ends_at = $this->calculatePeriodEnd();
-        $this->next_billing_date = $this->current_period_ends_at;
+
+        // Si es una reactivación y no una activación inicial
+        $metadata = $this->metadata ?? [];
+        if (isset($metadata['frozen_next_billing_date'])) {
+            // Restaurar desde metadata y recalcular
+            if ($this->current_period_ends_at) {
+                $this->next_billing_date = $this->current_period_ends_at;
+            } else {
+                $this->current_period_starts_at = now();
+                $this->current_period_ends_at = $this->calculatePeriodEnd();
+                $this->next_billing_date = $this->current_period_ends_at;
+            }
+
+            unset($metadata['frozen_next_billing_date']);
+            $this->metadata = $metadata;
+        } else {
+            // Activación inicial
+            $this->current_period_starts_at = now();
+            $this->current_period_ends_at = $this->calculatePeriodEnd();
+            $this->next_billing_date = $this->current_period_ends_at;
+        }
+
+        // Limpiar retry count y grace period
+        $this->retry_count = 0;
+        $this->next_retry_at = null;
+        $this->grace_period_ends_at = null;
 
         return $this->save();
     }
@@ -194,6 +245,14 @@ class ClientSubscription extends BaseModel
     {
         $this->status = SubscriptionStatus::SUSPENDED;
 
+        // Congelar next_billing_date para que no se generen más facturas
+        if ($this->next_billing_date) {
+            $metadata = $this->metadata ?? [];
+            $metadata['frozen_next_billing_date'] = $this->next_billing_date->toDateTimeString();
+            $this->metadata = $metadata;
+            $this->next_billing_date = null;
+        }
+
         return $this->save();
     }
 
@@ -202,6 +261,24 @@ class ClientSubscription extends BaseModel
         if ($this->status === SubscriptionStatus::SUSPENDED) {
             $this->status = SubscriptionStatus::ACTIVE;
             $this->paused_at = null;
+
+            // Restaurar y recalcular next_billing_date
+            $metadata = $this->metadata ?? [];
+            if (isset($metadata['frozen_next_billing_date'])) {
+                // Recalcular desde el período actual
+                if ($this->current_period_ends_at) {
+                    $this->next_billing_date = $this->current_period_ends_at;
+                } else {
+                    // Si no hay período actual, empezar uno nuevo
+                    $this->current_period_starts_at = now();
+                    $this->current_period_ends_at = $this->calculatePeriodEnd();
+                    $this->next_billing_date = $this->current_period_ends_at;
+                }
+
+                // Limpiar metadata
+                unset($metadata['frozen_next_billing_date']);
+                $this->metadata = $metadata;
+            }
 
             return $this->save();
         }

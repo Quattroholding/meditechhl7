@@ -794,3 +794,11 @@ Route::get('/test-email', function () {
     }
 })->name('test.email');
 */
+
+// Patient History Download Routes
+Route::middleware(['auth'])->prefix('patient-history')->name('patient.history.')->group(function () {
+    Route::post('/{patient}/generate', [\App\Http\Controllers\PatientHistoryController::class, 'generate'])->name('generate');
+    Route::get('/{id}/status', [\App\Http\Controllers\PatientHistoryController::class, 'status'])->name('status');
+    Route::get('/{id}/download', [\App\Http\Controllers\PatientHistoryController::class, 'download'])->name('download');
+    Route::post('/{id}/cancel', [\App\Http\Controllers\PatientHistoryController::class, 'cancel'])->name('cancel');
+});
