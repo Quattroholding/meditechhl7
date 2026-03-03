@@ -6,6 +6,7 @@ use App\Models\CptCode;
 use App\Models\Encounter;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ServiceRequest extends Component
@@ -273,12 +274,42 @@ class ServiceRequest extends Component
     private function loadSelectedLists()
     {
         $this->selectedLists = $this->encounter->serviceRequests()
+            ->with(['cpt', 'observations'])
             ->where('service_type', $this->type)
             ->get();
 
         foreach ($this->selectedLists as $key) {
             $this->notes[$key->id] = $key->note;
         }
+    }
+
+    public function checkForNewResults()
+    {
+        // Método público para polling - refresca los service requests
+        $this->loadSelectedLists();
+    }
+
+    public function hasPendingLabResults()
+    {
+        // Verifica si hay algún service request de CBC sin resultados
+        return $this->selectedLists->contains(function ($sr) {
+            return in_array($sr->code, ['85025', '85027'])
+                && $sr->status !== 'completed'
+                && $sr->observations()->count() === 0;
+        });
+    }
+
+    #[On('lab-results-received')]
+    public function handleLabResultsReceived($data)
+    {
+        // Cuando llegan nuevos resultados, recargar la lista
+        $this->loadSelectedLists();
+
+        // Opcional: mostrar notificación al usuario
+        $this->dispatch('show-toast', [
+            'message' => 'Nuevos resultados de laboratorio disponibles',
+            'type' => 'success',
+        ]);
     }
 
     private function loadRapidAccess()

@@ -1,4 +1,4 @@
-<div>
+<div @if($type === 'laboratory' && $this->hasPendingLabResults()) wire:poll.10s="checkForNewResults" @endif>
     {{-- HemoScreen Reminder - Solo para laboratorio --}}
     @if($type === 'laboratory' && $encounter && $encounter->practitioner && $encounter->practitioner->hasActiveHemoScreen())
         <x-hemoscreen-reminder :practitioner="$encounter->practitioner" class="mb-3" />
@@ -24,7 +24,57 @@
                                 </span>
                                 </td>
                                 <td>
-                                    {{$s->cpt->full_name}}
+                                    <div>{{$s->cpt->full_name}}</div>
+                                    @if(in_array($s->code, ['85025', '85027']) && $encounter && $encounter->practitioner && $encounter->practitioner->hasActiveHemoScreen())
+                                        <div class="alert alert-info d-inline-flex align-items-center mt-2 py-2 px-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-fingerprint me-2" viewBox="0 0 16 16">
+                                                <path d="M8.06 6.5a.5.5 0 0 1 .5.5v.776a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 0 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V7a.5.5 0 0 1 .5-.5Z"/>
+                                                <path d="M6.06 7a2 2 0 1 1 4 0 .5.5 0 1 1-1 0 1 1 0 1 0-2 0v.332q0 .613-.066 1.221A.5.5 0 0 1 6 8.447q.06-.555.06-1.115zm3.509 1a.5.5 0 0 1 .5.5v.67q0 .613-.066 1.221a.5.5 0 1 1-.994-.112q.06-.555.06-1.109V8.5a.5.5 0 0 1 .5-.5"/>
+                                                <path d="M7.507 1.17a.5.5 0 0 1 .986 0v.726a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 1 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V1.17ZM6 4.5a.5.5 0 0 1 .5.5v.776a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 1 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V5a.5.5 0 0 1 .5-.5"/>
+                                            </svg>
+                                            <div>
+                                                <strong class="text-white">Código HemoScreen:</strong>
+                                                <span class="text-white fs-5 fw-bold ms-2 font-monospace" style="letter-spacing: 3px;">{{ $s->hemo_identification }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    {{-- Resultados de Laboratorio --}}
+                                    @if($s->observations()->count() > 0)
+                                        <div class="mt-3" style="background: white; padding: 15px; border-radius: 10px; border: 2px solid #059669; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                                <div style="font-size: 14px; font-weight: 700; color: #065f46;">
+                                                    🧪 Resultados de Laboratorio
+                                                </div>
+                                                <span style="background: #d1fae5; color: #065f46; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
+                                                    {{ $s->observations()->count() }} resultados
+                                                </span>
+                                            </div>
+
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                                                @foreach($s->observations as $observation)
+                                                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
+                                                        <div style="font-size: 10px; color: #059669; font-weight: 600; margin-bottom: 4px;">
+                                                            {{ \App\Enums\LoincCode::getShortLabel($observation->code) }}
+                                                        </div>
+                                                        <div style="font-size: 22px; font-weight: 700; color: #1e293b; margin-bottom: 2px;">
+                                                            {{ $observation->value }}
+                                                            <span style="font-size: 11px; color: #64748b; font-weight: 500;">{{ $observation->unit }}</span>
+                                                        </div>
+                                                        @if($observation->status === 'final')
+                                                            <div style="font-size: 9px; color: #059669;">✓ Final</div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            @if($s->observations->first() && $s->observations->first()->issued_date)
+                                                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #bbf7d0; font-size: 10px; color: #64748b;">
+                                                    <strong>Resultados emitidos:</strong> {{ \Carbon\Carbon::parse($s->observations->first()->issued_date)->format('d/m/Y H:i') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                             </tbody>
@@ -170,6 +220,26 @@
     <div style="height:200px;">&nbsp;</div>
 
     <script>
+        // Escuchar evento de resultados de laboratorio en tiempo real
+        @if($type === 'laboratory' && $encounter_id)
+        document.addEventListener('livewire:init', () => {
+            if (typeof Echo !== 'undefined') {
+                Echo.private('encounter.{{ $encounter_id }}')
+                    .listen('.lab-results-received', (event) => {
+                        console.log('Nuevos resultados de laboratorio recibidos:', event);
+
+                        // Disparar evento de Livewire para refrescar
+                        Livewire.dispatch('lab-results-received', event);
+
+                        // Opcional: Mostrar notificación visual
+                        if (window.showToast) {
+                            window.showToast('Nuevos resultados de laboratorio disponibles', 'success');
+                        }
+                    });
+            }
+        });
+        @endif
+
         // Función global para abrir offcanvas de acceso rápido
         window.openRapidAccessOffcanvas = function(offcanvasId) {
             // Intentar múltiples veces con retrasos incrementales

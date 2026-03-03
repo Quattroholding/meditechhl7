@@ -165,5 +165,6 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
 
     // HemoScreen integration - requires specific scope
     Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen');
+    Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])->middleware('api.token:hemoscreen');
 
 });

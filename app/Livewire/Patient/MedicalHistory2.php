@@ -635,7 +635,7 @@ class MedicalHistory2 extends Component
 
         // Cargar servicios
         $servicesQuery = ServiceRequest::where('patient_id', $this->patientId)
-            ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'cpt'])
+            ->with(['encounter.practitioner', 'encounter.medicalSpeciality', 'practitioner', 'cpt', 'observations'])
             ->orderBy('created_at', 'desc');
 
         // Si es doctor, filtrar solo servicios de sus encounters
@@ -711,7 +711,7 @@ class MedicalHistory2 extends Component
     private function loadServiceRequests()
     {
         $query = ServiceRequest::where('patient_id', $this->patientId)
-            ->with(['encounter', 'practitioner'])
+            ->with(['encounter', 'practitioner', 'observations'])
             ->orderBy('created_at', 'desc');
 
         // $this->serviceRequests = $this->applyFilters($query, 'created_at')->paginate($this->perPage);

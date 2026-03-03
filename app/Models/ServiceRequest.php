@@ -13,7 +13,18 @@ class ServiceRequest extends BaseModel
 
     protected $fillable = ['fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status', 'intent', 'priority', 'do_not_perform', 'code', 'service_type',
         'code_system', 'code_display', 'quantity', 'quantity_unit', 'occurrence_start', 'occurrence_end', 'body_site', 'note', 'patient_instruction',
-        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id', 'notification_sent_at','message_control_id'];
+        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id', 'notification_sent_at', 'message_control_id', 'hemo_identification'];
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($serviceRequest) {
+            if (empty($serviceRequest->hemo_identification)) {
+                $serviceRequest->hemo_identification = self::generateUniqueHemoIdentification();
+            }
+        });
+    }
 
     protected $casts = [
         'body_site' => 'array',
@@ -171,5 +182,26 @@ class ServiceRequest extends BaseModel
     public function getOccrrenceEndAttribute($attr)
     {
         return Carbon::parse($attr)->format('d-m-Y'); // Change the format to whichever you desire
+    }
+
+    /**
+     * Generate a unique 7-digit hemo identification number
+     */
+    public static function generateUniqueHemoIdentification(): string
+    {
+        $maxAttempts = 100;
+        $attempts = 0;
+
+        do {
+            $hemoId = str_pad((string) random_int(1000000, 9999999), 7, '0', STR_PAD_LEFT);
+            $exists = self::where('hemo_identification', $hemoId)->exists();
+            $attempts++;
+        } while ($exists && $attempts < $maxAttempts);
+
+        if ($exists) {
+            throw new \RuntimeException('Unable to generate unique hemo identification after '.$maxAttempts.' attempts');
+        }
+
+        return $hemoId;
     }
 }

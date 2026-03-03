@@ -41,3 +41,21 @@ Broadcast::channel('doctor.{doctorId}', function ($user, $doctorId) {
 
     return $authorized;
 });
+
+// Canal privado para actualizaciones de encuentros (laboratorio en tiempo real)
+Broadcast::channel('encounter.{encounterId}', function ($user, $encounterId) {
+    $encounter = \App\Models\Encounter::find($encounterId);
+
+    if (! $encounter) {
+        return false;
+    }
+
+    // El usuario puede escuchar si:
+    // 1. Es el practitioner del encounter
+    // 2. Pertenece a la misma clínica (scb_id) del encounter
+    return $user->practitioner &&
+           (
+               (int) $encounter->practitioner_id === (int) $user->practitioner->id ||
+               (int) $encounter->scb_id === (int) $user->default_client_id
+           );
+});

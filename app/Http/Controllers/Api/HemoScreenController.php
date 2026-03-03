@@ -3,18 +3,78 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ServiceRequest;
+use App\Models\DeviceMessage;
 use App\Models\Encounter;
 use App\Models\Observation;
 use App\Models\Patient;
 use App\Models\Practitioner;
+use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\DeviceMessage;
 use Illuminate\Support\Str;
 
 class HemoScreenController extends Controller
 {
+    /**
+     * Get ServiceRequest by hemo_identification
+     *
+     * Returns the service_request_id for a given hemo_identification number
+     * This allows the device/operator to look up the correct ServiceRequest
+     * before sending lab results
+     */
+    public function getServiceRequest(Request $request, string $hemo_identification)
+    {
+        $practitioner = $request->authenticated_practitioner;
+
+        if (! $practitioner) {
+            return response()->json([
+                'error' => 'Token sin practitioner',
+                'message' => 'Este endpoint requiere un token asociado a un practitioner',
+            ], 403);
+        }
+
+        $practitioner->load('user');
+
+        if (! $practitioner->user || ! $practitioner->user->default_client_id) {
+            return response()->json([
+                'error' => 'Configuración incompleta',
+                'message' => 'El practitioner no tiene un usuario o cliente por defecto configurado',
+            ], 500);
+        }
+
+        $clinicId = $practitioner->user->default_client_id;
+
+        $serviceRequest = ServiceRequest::where('hemo_identification', $hemo_identification)
+            ->where('practitioner_id', $practitioner->id)
+            ->first();
+
+        if (! $serviceRequest) {
+            return response()->json([
+                'error' => 'ServiceRequest no encontrado',
+                'message' => "No se encontró un ServiceRequest con identificación HemoScreen {$hemo_identification} en la clínica {$clinicId}",
+            ], 404);
+        }
+
+        $patient = Patient::find($serviceRequest->patient_id);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'service_request_id' => $serviceRequest->id,
+                'hemo_identification' => $serviceRequest->hemo_identification,
+                'patient_id' => $serviceRequest->patient_id,
+                'patient_name' => $patient->name,
+                'patient_birth_date' => $patient->birth_date,
+                'patient_gender' => $patient->gender,
+                'patient_identifier' => $serviceRequest->patient->identifier ?? null,
+                'status' => $serviceRequest->status,
+                'code' => $serviceRequest->code,
+                'code_display' => $serviceRequest->code_display,
+                'created_at' => $serviceRequest->created_at,
+            ],
+        ]);
+    }
+
     public function __invoke(Request $request)
     {
         return DB::transaction(function () use ($request) {
@@ -67,16 +127,50 @@ class HemoScreenController extends Controller
                 ]);
             }
 
-            // 🔎 2. Buscar paciente por cédula
-            $patient = Patient::where('identifier', $patientIdentifier)
-                ->where('scb_id', $clinicId)
-                ->first();
+            // 🔎 2. Búsqueda inteligente: primero por hemo_identification, luego por cédula
+            $patient = null;
+            $service_request = null;
+            $foundByHemoId = false;
 
+            // INTENTO 1: Buscar ServiceRequest por hemo_identification
+            // El gateway puede enviar el código HemoScreen en patient_identifier
+            if (strlen($patientIdentifier) === 7 && is_numeric($patientIdentifier)) {
+                $service_request = ServiceRequest::where('hemo_identification', $patientIdentifier)
+                    ->where('practitioner_id', $practitionerId)
+                    ->whereNull('message_control_id')
+                    ->whereIn('code', ['85025', '85027'])
+                    ->where('status', '!=', 'completed')
+                    ->with(['patient', 'encounter'])
+                    ->first();
+
+                if ($service_request) {
+                    $patient = $service_request->patient;
+                    $foundByHemoId = true;
+                }
+            }
+
+            // INTENTO 2: Si no se encontró por hemo_identification, buscar paciente por cédula
             if (! $patient) {
-                return response()->json([
-                    'error' => 'Paciente no encontrado',
-                    'message' => "No se encontró un paciente con identificador {$patientIdentifier} en la clínica {$clinicId}",
-                ], 404);
+                $patient = Patient::where('identifier', $patientIdentifier)
+                    // ->where('scb_id', $clinicId)
+                    ->first();
+
+                if (! $patient) {
+                    return response()->json([
+                        'error' => 'Paciente no encontrado',
+                        'message' => "No se encontró un paciente con identificador {$patientIdentifier} en la clínica {$clinicId}",
+                    ], 404);
+                }
+
+                // Buscar ServiceRequest existente con CPT 85025/85027 sin message_control_id
+                $service_request = ServiceRequest::where('patient_id', $patient->id)
+                    ->where('scb_id', $clinicId)
+                    ->whereNull('message_control_id')
+                    ->whereIn('code', ['85025', '85027'])
+                    ->where('status', '!=', 'completed')
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
             }
 
             DeviceMessage::create([
@@ -86,21 +180,10 @@ class HemoScreenController extends Controller
                 'message_type' => $validated['message_type'],
             ]);
 
-            // 🏥 3. Búsqueda inteligente de Encounter y ServiceRequest
+            // 🏥 3. Procesar ServiceRequest y Encounter
             $encounter = null;
-            $service_request = null;
             $foundExistingServiceRequest = false;
-
-            // CASO 1: Buscar ServiceRequest existente con CPT 85025/85027 sin message_control_id
-            // Esto indica que el médico solicitó el examen pero aún no se han registrado los resultados
-            // NO filtrar por practitioner_id porque puede ser un médico diferente al del token
-            $service_request = ServiceRequest::where('patient_id', $patient->id)
-                ->where('scb_id', $clinicId)
-                ->whereNull('message_control_id')
-                ->whereIn('code', ['85025', '85027'])
-                ->where('status', '!=', 'completed')
-                ->orderBy('created_at', 'desc')
-                ->first();
+            $searchMethod = $foundByHemoId ? 'hemo_identification' : 'patient_identifier';
 
             if ($service_request) {
                 // CASO 1: Usar el encounter del ServiceRequest existente
@@ -125,7 +208,7 @@ class HemoScreenController extends Controller
                 if ($encounter) {
                     // CASO 2: Crear el ServiceRequest en el encounter encontrado
                     $service_request = ServiceRequest::create([
-                        'fhir_id' => 'servicerequest-' . Str::uuid(),
+                        'fhir_id' => 'servicerequest-'.Str::uuid(),
                         'encounter_id' => $encounter->id,
                         'patient_id' => $patient->id,
                         'practitioner_id' => $encounter->practitioner_id, // Usar practitioner del encounter
@@ -147,8 +230,8 @@ class HemoScreenController extends Controller
                     // CASO 3: No hay nada, crear nuevo encounter
                     $uuid = Str::uuid();
                     $encounter = Encounter::create([
-                        'fhir_id' => 'encounter-' . $uuid,
-                        'identifier' => 'ENC-' . $uuid,
+                        'fhir_id' => 'encounter-'.$uuid,
+                        'identifier' => 'ENC-'.$uuid,
                         'patient_id' => $patient->id,
                         'practitioner_id' => $practitionerId,
                         'start' => now(),
@@ -161,7 +244,7 @@ class HemoScreenController extends Controller
 
                     // Crear el ServiceRequest para el nuevo encounter
                     $service_request = ServiceRequest::create([
-                        'fhir_id' => 'servicerequest-' . Str::uuid(),
+                        'fhir_id' => 'servicerequest-'.Str::uuid(),
                         'encounter_id' => $encounter->id,
                         'patient_id' => $patient->id,
                         'practitioner_id' => $practitionerId,
@@ -182,12 +265,11 @@ class HemoScreenController extends Controller
                 }
             }
 
-
             // 🧪 4. Crear Observations asociadas al ServiceRequest y Encounter
             $createdObservations = [];
             foreach ($validated['observations'] as $obs) {
                 $observation = Observation::create([
-                    'fhir_id' => 'observation-' . Str::uuid(),
+                    'fhir_id' => 'observation-'.Str::uuid(),
                     'patient_id' => $patient->id,
                     'encounter_id' => $encounter->id,
                     'practitioner_id' => $encounter->practitioner_id,
@@ -209,6 +291,9 @@ class HemoScreenController extends Controller
                 ];
             }
 
+            // Disparar evento para actualización en tiempo real
+            broadcast(new \App\Events\LabResultsReceived($service_request))->toOthers();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Observaciones registradas exitosamente',
@@ -220,6 +305,7 @@ class HemoScreenController extends Controller
                     'observations_count' => count($createdObservations),
                     'observations' => $createdObservations,
                     'found_existing_service_request' => $foundExistingServiceRequest,
+                    'search_method' => $searchMethod,
                 ],
             ]);
         });
