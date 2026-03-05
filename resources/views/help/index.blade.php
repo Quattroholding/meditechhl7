@@ -781,10 +781,16 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
                 <div class="row align-items-center">
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                         <h5 class="mb-2"><i class="fas fa-headset me-2 text-primary"></i>Necesitas ayuda adicional?</h5>
                         <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte con cualquier duda o problema, haz clic en nuestra sección de Soporte y Contacto.</p>
                     </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a href="https://wa.me/5078316174" target="_blank" class="btn btn-success">
+                            <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
+                        </a>
+                    </div>
+                </div>
                     {{--}}<div class="col-md-4 text-md-end mt-3 mt-md-0">
                         @auth
                             <button type="button" class="btn btn-primary" onclick="Livewire.dispatch('openTicketModal')">
