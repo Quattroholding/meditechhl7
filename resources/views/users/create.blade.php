@@ -45,9 +45,9 @@
                                     <div class="input-block  local-forms">
                                         <x-input-label for="rol" :value="__('user.rol')" required/>
                                         @if(!request()->has('role_id'))
-                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" wire:model="rol" :selected="[old('rol')]"/>
+                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" :selected="[old('rol')]"/>
                                         @else
-                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" wire:model="rol" :selected="[(int)request()->get('role_id')]"/>
+                                            <x-select-input id="rol" name="rol" :options="\App\Models\Rol::pluck('name','id')->toArray()" class="block w-full" :selected="[(int)request()->get('role_id')]"/>
                                         @endif
                                         <x-input-error :messages="$errors->get('rol')" class="mt-2" />
                                     </div>
@@ -307,6 +307,17 @@
 
             changeByType({{old('rol')}})
             changeByType({{request()->get('role_id')}})
+
+            // Forzar submit del formulario evitando interferencia de Livewire
+            $('.submit-form').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                console.log('Forzando submit del formulario...');
+
+                // Usar el método nativo de submit en lugar del de jQuery
+                document.getElementById('form').submit();
+            });
         });
     </script>
     @endpush
