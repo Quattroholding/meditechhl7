@@ -5,7 +5,6 @@ namespace App\Livewire\Settings;
 use App\Models\CptCode;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -162,14 +161,23 @@ class ServiceCatalog extends Component
         }
 
         try {
-            $response = Http::withOptions([
-                'verify' => config('app.env') === 'production',
-            ])->get(url('api/cpts/procedure'), [
-                'dropdown' => true,
-                'q' => $this->query,
-            ]);
-
-            $this->results = $response->json() ?? [];
+            $this->results = CptCode::where('type', 'procedure')
+                ->where(function ($query) {
+                    $query->where('code', 'like', '%'.$this->query.'%')
+                        ->orWhere('description', 'like', '%'.$this->query.'%')
+                        ->orWhere('description_es', 'like', '%'.$this->query.'%');
+                })
+                ->limit(10)
+                ->get()
+                ->map(function ($cpt) {
+                    return [
+                        'id' => $cpt->id,
+                        'code' => $cpt->code,
+                        'name' => $cpt->description_es ?? $cpt->description,
+                        'description' => $cpt->description_es ?? $cpt->description,
+                    ];
+                })
+                ->toArray();
         } catch (\Exception $e) {
             \Log::error('Error fetching CPT codes: '.$e->getMessage());
             $this->results = [];
@@ -178,8 +186,8 @@ class ServiceCatalog extends Component
 
     public function selectOption($option)
     {
-        $this->cpt_id = $option;
-        $this->query = $option['name'];
+        $this->cpt_id = $option['id'];
+        $this->query = $option['code'].' - '.$option['name'];
         $this->results = [];
     }
 
