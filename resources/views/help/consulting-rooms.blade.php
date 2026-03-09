@@ -288,7 +288,7 @@
             color: #d32f2f;
         }
 
-        /* Field Table 
+        /* Field Table
         .field-table {
             width: 100%;
             margin: 20px 0;
@@ -656,7 +656,7 @@
                 padding-left: 45%;
                 font-size: 14px;
             }
-            
+
             .pricing-table td:before {
                 font-size: 13px;
                 width: 40%;
@@ -676,7 +676,7 @@
                 border-bottom: 5px solid var(--info-color)
             }
             .example-item {
-                flex-direction:column; 
+                flex-direction:column;
             }
             .checklist li {
                 flex-direction: column;
@@ -705,15 +705,15 @@
                 border: 0;
                 box-shadow: none;
             }
-            
+
             .field-table thead {
                 display: none;
             }
-            
+
             .field-table tbody {
                 display: block;
             }
-            
+
             .field-table tr {
                 display: block;
                 margin-bottom: 15px;
@@ -722,7 +722,7 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                 background: #fff;
             }
-            
+
             .field-table td {
                 display: block;
                 text-align: left;
@@ -730,11 +730,11 @@
                 font-size: 14px;
                 border-bottom: 1px solid #f0f0f0;
             }
-            
+
             .field-table td:last-child {
                 border-bottom: none;
             }
-            
+
             /* Campo (título de cada tarjeta) */
             .field-table td[data-label="Campo"] {
                 background: #1a237e;
@@ -743,11 +743,11 @@
                 padding: 12px;
                 border-bottom: 2px solid #0d47a1;
             }
-            
+
             .field-table td[data-label="Campo"] strong {
                 color: white;
             }
-            
+
             /* Descripción */
             .field-table td[data-label="Descripcion"] {
                 padding: 15px;
@@ -755,12 +755,12 @@
                 font-size: 13px;
                 line-height: 1.5;
             }
-            
+
             .field-table td[data-label="Descripcion"]:before {
                 content: "📝 ";
                 margin-right: 5px;
             }
-            
+
             /* Requerido */
             .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
                 background: #f5f5f5;
@@ -768,7 +768,7 @@
                 text-align: center;
                 font-weight: 600;
             }
-            
+
             .field-table td[data-label="Requerido"]:before {
                 content: "Requerido: ";
                 font-weight: 600;
@@ -1400,8 +1400,8 @@
                                 <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte.</p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                <a href="mailto:soporte@sami.com" class="btn btn-info text-white">
-                                    <i class="fas fa-envelope me-2"></i>Contactar Soporte
+                                <a href="https://wa.me/5078316174" target="_blank" class="btn btn-success">
+                                    <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
                                 </a>
                             </div>
                         </div>

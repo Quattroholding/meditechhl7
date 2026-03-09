@@ -306,7 +306,7 @@
             color: #d32f2f;
         }
 
-        /* Field Table 
+        /* Field Table
         .field-table {
             width: 100%;
             margin: 20px 0;
@@ -786,8 +786,8 @@
         }
 
         .yappy-img{
-            display: flex; 
-            justify-content: center; 
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
         .yappy-imgsize{width: 276px; height: 593px; }
@@ -797,15 +797,15 @@
                 border: 0;
                 box-shadow: none;
             }
-            
+
             .pricing-table thead {
                 display: none;
             }
-            
+
             .pricing-table tbody {
                 display: block;
             }
-            
+
             .pricing-table tr {
                 display: block;
                 margin-bottom: 15px;
@@ -813,7 +813,7 @@
                 overflow: hidden;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             }
-            
+
             .pricing-table td {
                 display: block;
                 text-align: left;
@@ -822,11 +822,11 @@
                 position: relative;
                 padding-left: 50%;
             }
-            
+
             .pricing-table td:last-child {
                 border-bottom: none;
             }
-            
+
             .pricing-table td:before {
                 content: attr(data-label);
                 position: absolute;
@@ -835,33 +835,33 @@
                 font-weight: 600;
                 color: #1a237e;
             }
-            
+
             .pricing-table td[data-label="Plan"] {
                 background: #f5f5f5;
                 font-size: 16px;
                 padding-left: 15px;
             }
-            
+
             .pricing-table td[data-label="Plan"]:before {
                 display: none;
             }
-            
+
             .pricing-table tr.recommended td[data-label="Plan"] {
                 background: #4caf50;
                 color: white;
             }
-            
+
             .pricing-table tr.recommended td[data-label="Plan"] strong {
                 color: white;
             }
 
         }
-        /* Tablets 
+        /* Tablets
         @media screen and (min-width: 481px) and (max-width: 768px) {
             .field-table td[data-label="Campo"] {
                 font-size: 17px;
             }
-            
+
             .field-table td[data-label="Descripcion"] {
                 font-size: 15px;
             }
@@ -874,7 +874,7 @@
                 padding-left: 45%;
                 font-size: 14px;
             }
-            
+
             .pricing-table td:before {
                 font-size: 13px;
                 width: 40%;
@@ -909,15 +909,15 @@
                 border: 0;
                 box-shadow: none;
             }
-            
+
             .field-table thead {
                 display: none;
             }
-            
+
             .field-table tbody {
                 display: block;
             }
-            
+
             .field-table tr {
                 display: block;
                 margin-bottom: 15px;
@@ -926,7 +926,7 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                 background: #fff;
             }
-            
+
             .field-table td {
                 display: block;
                 text-align: left;
@@ -934,11 +934,11 @@
                 font-size: 14px;
                 border-bottom: 1px solid #f0f0f0;
             }
-            
+
             .field-table td:last-child {
                 border-bottom: none;
             }
-            
+
             /* Campo (título de cada tarjeta) */
             .field-table td[data-label="Campo"] {
                 background: #1a237e;
@@ -947,11 +947,11 @@
                 padding: 12px;
                 border-bottom: 2px solid #0d47a1;
             }
-            
+
             .field-table td[data-label="Campo"] strong {
                 color: white;
             }
-            
+
             /* Descripción */
             .field-table td[data-label="Descripcion"] {
                 padding: 15px;
@@ -959,12 +959,12 @@
                 font-size: 13px;
                 line-height: 1.5;
             }
-            
+
             .field-table td[data-label="Descripcion"]:before {
                 content: "📝 ";
                 margin-right: 5px;
             }
-            
+
             /* Requerido */
             .field-table td[data-label="Requerido"] {
                 background: #f5f5f5;
@@ -972,7 +972,7 @@
                 text-align: center;
                 font-weight: 600;
             }
-            
+
             .field-table td[data-label="Requerido"]:before {
                 content: "Requerido: ";
                 font-weight: 600;
@@ -1783,7 +1783,7 @@
                                     <p>Puede ingresar a la pantalla de inicio de sesión de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong>, haz clic en el botón <strong>"Ir al Login"</strong> <br>2. Desde la pantalla del Landing, haz en clic en <strong>"Ingresar"</strong> que se encuentra en el menú superior.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/registration-login.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1803,7 +1803,7 @@
                                     <p>Luego de haber ingresado sus credenciales correctamente, podrá entrar al Sistema dónde vera el Dashboard principal, un mensaje en la parte superior que su activación está pendiente y el asistente de configuración.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/logged.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1823,7 +1823,7 @@
                                     <p>Para poder agendar citas y llenar sus consultas, deberá primero hacer el pago de la suscripción del plan que seleccionó, haga clic en <strong>+Ver Facturas</strong> y se desplegará la pantalla de Detalle Factura donde podrá registrar su pago.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/1step.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1833,7 +1833,7 @@
                                     <p>Luego de registrar su pago, el asistente pasa automáticamente al paso 2 que es la configuración de una sucursal, haz clic en <strong>+Crear Sucursal</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su sucursal.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/2step.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1843,7 +1843,7 @@
                                     <p>Luego de registrar su primera sucursal, el asistente pasa automáticamente al paso 3 que corresponde a configuración de un consultorio, haz clic en <strong>+Crear Consultorio</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su consultorio.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/3step.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1853,7 +1853,7 @@
                                     <p>Luego de registrar su primer consultorio, el asistente pasa automáticamente al paso 4 que corresponde al registro de un paciente, haz clic en <strong>+Regisrar Paciente</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su paciente.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/4step.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1867,7 +1867,7 @@
                         </div>
                     </div>
                 </section>
-                
+
 
                 <!-- Proceso de Pago -->
                 <section id="pago" class="step-card step-important">
@@ -1932,7 +1932,7 @@
                                     <p>Puede procesar su pago de esta forma, puede acceder a este botón de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong> <br>2. Debe iniciar sesión, ir a <strong>Suscripción</strong> → <strong>Facturas</strong> → <strong>Detalle</strong>(botón del ojo) y se despliega la pantalla de detalle de factura.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/yappy.png') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1952,7 +1952,7 @@
                                     <p>Se desplegará la pantalla de notificaciones, para pagar, deberá dar clic en <strong>"Ver más"</strong>.</p>
                                     <div class="yappy-img">
                                         <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/notification_detail.jpeg') }}" alt="">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1962,7 +1962,7 @@
                                     <p>Esta pantalla usted procederá a realizar el pago de su suscripción, deberá dar clic en <strong>"Sí, pagar"</strong>.</p>
                                     <div class="yappy-img">
                                         <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/pre-confirmation.jpeg') }}" alt="">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1970,9 +1970,9 @@
                                 <div class="timeline-content">
                                     <h6>5. Confirmación de Pago</h6>
                                     <p>Cómo último paso, deberá confirmar la transacción para proceder con el pago de forma satisfactoria, de clic en <strong>"Confirmar"</strong>.</p>
-                                    <div class="yappy-img"> 
+                                    <div class="yappy-img">
                                         <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/confirmation.jpeg') }}" alt="">
-                                    </div>                
+                                    </div>
                                 </div>
                             </div>
 
@@ -1982,7 +1982,7 @@
                                     <p>Se desplegará la factura final de Yappy, confirmando que ya se realizó el pago.</p>
                                     <div class="yappy-img">
                                         <img class="yappy-imgsize" src="{{ asset('images/tutorial/register/yappy/payment.jpeg') }}" alt="">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1992,7 +1992,7 @@
                                     <p>Luego de haber hecho su pago de forma satisfactoria, la factura en nuestro sistema cambia de pendiente a pagada de forma automática.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/yappy/invoice-status.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -2002,7 +2002,7 @@
                                     <p>Luego de haber hecho su pago de forma satisfactoria, se le notificará mediante un correo que su suscripción fue activada.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/yappy/email.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -2111,8 +2111,8 @@
                                 <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte con cualquier duda.</p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                <a href="mailto:soporte@sami.com" class="btn btn-primary">
-                                    <i class="fas fa-envelope me-2"></i>Contactar Soporte
+                                <a href="https://wa.me/5078316174" target="_blank" class="btn btn-success">
+                                    <i class="fab fa-whatsapp me-2"></i>Contactar por WhatsApp
                                 </a>
                             </div>
                         </div>
