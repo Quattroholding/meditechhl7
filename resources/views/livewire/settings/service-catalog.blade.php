@@ -326,10 +326,10 @@
                                                         {{ Str::limit($service->name, 30, '...') }}
                                                     </div>
                                                     @if($service->cpt_code)
-                                                        <small class="text-muted" title="{{ $service->name }}">CPT: {{ $service->cpt_code }}</small>
+                                                        <small class="text-muted" title="{{ $service->description }}">CPT: {{ $service->cpt_code }} | {{ Str::limit($service->description, 25, '...') }}</small>
                                                     @endif
                                                     @if($service->specialty)
-                                                        <br><small class="text-info" title="{{ $service->specialty }}">{{ Str::limit($service->specialty, 20, '...') }}</small>
+                                                        <br><small class="text-info" title="{{ $service->specialty }}">{{ Str::limit($service->specialty, 25, '...') }}</small>
                                                     @endif
                                                 @endif
                                             </td>

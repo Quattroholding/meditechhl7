@@ -161,7 +161,10 @@ class ServiceCatalog extends Component
         }
 
         try {
-            $this->results = CptCode::where('type', 'procedure')
+            $this->results = CptCode::where(function ($query) {
+                $query->where('type', 'procedure')
+                    ->orWhereIn('code', ['85025', '85027']);
+            })
                 ->where(function ($query) {
                     $query->where('code', 'like', '%'.$this->query.'%')
                         ->orWhere('description', 'like', '%'.$this->query.'%')
@@ -210,6 +213,9 @@ class ServiceCatalog extends Component
 
         $cpt = CptCode::whereId($this->cpt_id)->first();
 
+        // Determine service type based on CPT type
+        $serviceType = $cpt->type === 'laboratory' ? 'laboratory' : 'procedure';
+
         // Retry logic to handle race condition in code generation
         $maxRetries = 3;
         $attempt = 0;
@@ -217,12 +223,12 @@ class ServiceCatalog extends Component
 
         while ($attempt < $maxRetries && ! $created) {
             try {
-                DB::transaction(function () use ($cpt, $attempt) {
+                DB::transaction(function () use ($cpt, $serviceType, $attempt) {
                     ServiceCatalogModel::create([
                         'name' => $cpt->tpye.' '.$cpt->code,
                         'description' => $cpt->description_es ?? $cpt->description,
                         'cpt_code' => $cpt->code,
-                        'service_type' => 'procedure',
+                        'service_type' => $serviceType,
                         'base_price' => $this->cpt_price,
                         'specialty' => $this->cpt_specialty,
                         'complexity' => $this->cpt_complexity,
@@ -236,7 +242,7 @@ class ServiceCatalog extends Component
                         'practitioner_id' => $this->practitionerId,
                         'created_by' => auth()->id(),
                         // Generate code with offset to avoid duplicates on retry
-                        'code' => ServiceCatalogModel::generateServiceCodeWithOffset('procedure', $attempt),
+                        'code' => ServiceCatalogModel::generateServiceCodeWithOffset($serviceType, $attempt),
                     ]);
                 });
 
