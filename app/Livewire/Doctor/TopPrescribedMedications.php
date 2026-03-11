@@ -44,10 +44,16 @@ class TopPrescribedMedications extends Component
                 'medicines.id as medicine_id',
                 'medicines.generic_name',
                 'medicines.home_name',
-                'medication_requests.medication',
                 'medicines.type',
                 'medicines.mgs',
                 'medicines.mgs_type',
+                'medicines2.id as medicine_id2',
+                'medicines2.generic_name',
+                'medicines2.home_name',
+                'medicines2.type',
+                'medicines2.mgs',
+                'medicines2.mgs_type',
+                'medication_requests.medication',
                 'medication_requests.frequency',
                 'medication_requests.route',
                 DB::raw('COUNT(*) as prescription_count'),
@@ -57,6 +63,7 @@ class TopPrescribedMedications extends Component
             ])
             ->join('encounters', 'medication_requests.encounter_id', '=', 'encounters.id')
             ->leftJoin('medicines', 'medication_requests.medication_id', '=', 'medicines.id')
+            ->leftJoin('medicines as medicines2', 'medication_requests.medication_id2', '=', 'medicines2.id')
             ->where('medication_requests.practitioner_id', $practitionerId)
             ->where('medication_requests.status', '!=', 'cancelled')
             ->when($days > 0, function ($query) use ($days) {
@@ -66,10 +73,16 @@ class TopPrescribedMedications extends Component
                 'medicines.id',
                 'medicines.generic_name',
                 'medicines.home_name',
-                'medication_requests.medication',
                 'medicines.type',
                 'medicines.mgs',
                 'medicines.mgs_type',
+                'medicines2.id',
+                'medicines2.generic_name',
+                'medicines2.home_name',
+                'medicines2.type',
+                'medicines2.mgs',
+                'medicines2.mgs_type',
+                'medication_requests.medication',
                 'medication_requests.frequency',
                 'medication_requests.route',
             ])
@@ -93,6 +106,7 @@ class TopPrescribedMedications extends Component
                     'percentage' => 0, // Se calculará después
                 ];
             });
+
 
         // Calcular porcentajes
         $totalCount = $this->topMedications->sum('prescription_count');
