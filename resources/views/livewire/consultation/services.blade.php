@@ -87,18 +87,6 @@
             <div style="padding: 20px;">
                 <h6 class="mb-3"><i class="fas fa-hand-pointer"></i> Seleccione el tipo de servicio:</h6>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                    {{-- CPT Codes --}}
-                    @if(isset($availableServiceTypes['cpt']) && $availableServiceTypes['cpt'] > 0)
-                    <div wire:click="$set('selectedServiceType', 'cpt')"
-                         style="cursor: pointer; padding: 15px 10px; background: {{ $selectedServiceType === 'cpt' ? '#007bff' : 'white' }}; color: {{ $selectedServiceType === 'cpt' ? 'white' : '#212529' }}; border: 2px solid {{ $selectedServiceType === 'cpt' ? '#007bff' : '#dee2e6' }}; border-radius: 12px; text-align: center; transition: all 0.2s; box-shadow: {{ $selectedServiceType === 'cpt' ? '0 4px 8px rgba(0,123,255,0.3)' : 'none' }};"
-                         onmouseover="if(this.style.background === 'white') { this.style.background='#f8f9fa'; this.style.borderColor='#007bff'; this.style.transform='translateY(-2px)'; }"
-                         onmouseout="if('{{ $selectedServiceType }}' !== 'cpt') { this.style.background='white'; this.style.borderColor='#dee2e6'; this.style.transform='translateY(0)'; }">
-                        <i class="fas fa-file-medical-alt" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
-                        <div style="font-weight: 600; font-size: 0.8rem;">Códigos CPT</div>
-                        <small style="opacity: 0.8; font-size: 0.7rem;">({{ $availableServiceTypes['cpt'] }})</small>
-                    </div>
-                    @endif
-
                     {{-- Consulta --}}
                     @if(isset($availableServiceTypes['consultation']) && $availableServiceTypes['consultation'] > 0)
                     <div wire:click="$set('selectedServiceType', 'consultation')"

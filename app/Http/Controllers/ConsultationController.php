@@ -250,7 +250,8 @@ class ConsultationController extends Controller
             }
 
             // Update appointment status
-            $appointment->update(['status' => 'fulfilled']);
+            if(auth()->user()->id == $appointment->practitioner->user_id)
+                $appointment->update(['status' => 'fulfilled']);
 
             // Check if prescriptions will be sent (before saving encounter triggers observer)
             $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
