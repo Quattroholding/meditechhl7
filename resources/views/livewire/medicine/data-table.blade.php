@@ -14,7 +14,7 @@
                     @endcomponent
                     <!-- /Table Header -->
 
-                    <livewire:medicine.modal-save wire:model="showModal"/>
+                    <livewire:medicine.modal-save />
 
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">

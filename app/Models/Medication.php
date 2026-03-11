@@ -24,6 +24,10 @@ class Medication extends Model
         'fhir_payload',
     ];
 
+    protected $hidden = [
+        'fhir_resource',
+    ];
+
     protected function casts(): array
     {
         return [

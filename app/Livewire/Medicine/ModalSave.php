@@ -13,7 +13,7 @@ class ModalSave extends Component
     #[Modelable]
     public $showModal;
 
-    public $medication;
+    public $medication_id;
 
     public $title;
 
@@ -95,7 +95,7 @@ class ModalSave extends Component
 
     public function resetForm()
     {
-        $this->medication = null;
+        $this->medication_id = null;
         $this->generic_name = '';
         $this->home_name = '';
         $this->code = '';
@@ -126,20 +126,21 @@ class ModalSave extends Component
                 'is_brand' => ! empty($this->home_name) && $this->home_name !== $this->generic_name,
             ];
 
-            if ($this->medication) {
+            if ($this->medication_id) {
                 // Update existing medication
                 unset($medicationData['fhir_id']);
-                $this->medication->update($medicationData);
+                $medication = Medication::findOrFail($this->medication_id);
+                $medication->update($medicationData);
 
                 // Get existing ingredient IDs
-                $existingIds = $this->medication->ingredients()->pluck('id')->toArray();
+                $existingIds = $medication->ingredients()->pluck('id')->toArray();
                 $updatedIds = [];
 
                 // Update or create ingredients
                 foreach ($this->ingredients as $ingredientData) {
                     if (! empty($ingredientData['id'])) {
                         // Update existing ingredient
-                        $this->medication->ingredients()
+                        $medication->ingredients()
                             ->where('id', $ingredientData['id'])
                             ->update([
                                 'substance_display' => $ingredientData['substance_display'],
@@ -149,7 +150,7 @@ class ModalSave extends Component
                         $updatedIds[] = $ingredientData['id'];
                     } else {
                         // Create new ingredient
-                        $newIngredient = $this->medication->ingredients()->create([
+                        $newIngredient = $medication->ingredients()->create([
                             'substance_display' => $ingredientData['substance_display'],
                             'strength_value' => $ingredientData['strength_value'],
                             'strength_unit' => $ingredientData['strength_unit'],
@@ -161,7 +162,7 @@ class ModalSave extends Component
                 // Delete removed ingredients
                 $toDelete = array_diff($existingIds, $updatedIds);
                 if (! empty($toDelete)) {
-                    $this->medication->ingredients()->whereIn('id', $toDelete)->delete();
+                    $medication->ingredients()->whereIn('id', $toDelete)->delete();
                 }
 
                 $this->dispatch('showToastr',
@@ -201,20 +202,21 @@ class ModalSave extends Component
     #[On('editMedicineModal')]
     public function editMedicine($medication_id)
     {
-        $this->medication = Medication::with('ingredients')->find($medication_id);
+        $medication = Medication::with('ingredients')->find($medication_id);
+        $this->medication_id = $medication_id;
         $this->title = 'Actualizar Medicamento';
         $this->buttonSaveTitle = 'Actualizar Medicamento';
 
-        if ($this->medication) {
-            $this->generic_name = $this->medication->generic_name;
-            $this->home_name = $this->medication->home_name;
-            $this->code = $this->medication->code;
-            $this->form = $this->medication->form;
-            $this->manufacturer = $this->medication->manufacturer;
-            $this->status = $this->medication->status;
+        if ($medication) {
+            $this->generic_name = $medication->generic_name;
+            $this->home_name = $medication->home_name;
+            $this->code = $medication->code;
+            $this->form = $medication->form;
+            $this->manufacturer = $medication->manufacturer;
+            $this->status = $medication->status;
 
             // Load all ingredients
-            $this->ingredients = $this->medication->ingredients->map(function ($ing) {
+            $this->ingredients = $medication->ingredients->map(function ($ing) {
                 return [
                     'id' => $ing->id,
                     'substance_display' => $ing->substance_display,

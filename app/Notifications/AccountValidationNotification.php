@@ -55,7 +55,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
             ->line('Tu cuenta de médico ha sido aprobada exitosamente.')
             ->line('Hemos revisado y validado tus documentos.')
             ->line('Ya puedes iniciar sesión en la aplicación móvil con tus credenciales.')
-            ->action('Descargar la App', url('/#prescription-app-section'))
+            ->action('Descargar la App', 'https://samirx.meditecpty.com/')
             ->line('Si tienes alguna pregunta, no dudes en contactarnos.')
             ->salutation('Saludos, El equipo de Soluciones Meditec');
     }

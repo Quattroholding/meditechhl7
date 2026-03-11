@@ -54,8 +54,8 @@
         <!-- Ingredients Section -->
         <div class="card mt-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 text-whiteahora " >Ingredientes Activos</h5>
-                <button type="button" wire:click="addIngredient" class="btn btn-sm btn-primary">
+                <h5 class="mb-0 text-whiteahora text-white" >Ingredientes Activos</h5>
+                <button type="button" wire:click="addIngredient" class="btn btn-sm btn-secondary">
                     <i class="fa fa-plus"></i> Agregar Ingrediente
                 </button>
             </div>
