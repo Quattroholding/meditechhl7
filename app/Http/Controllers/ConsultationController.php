@@ -257,9 +257,12 @@ class ConsultationController extends Controller
             $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
 
             // Update encounter status
-            $encounter->status = 'finished';
-            $encounter->end = now();
-            $encounter->save();
+            if(auth()->user()->id == $appointment->practitioner->user_id){
+                $encounter->status = 'finished';
+                $encounter->end = now();
+                $encounter->save();
+            }
+
 
             // Build success message
             $messages = ['¡Consulta finalizada con éxito!'];
