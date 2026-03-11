@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('fhir_id')->unique()->comment('FHIR Encounter resource ID');
             $table->foreignId('patient_id')->constrained('patients');
             $table->foreignId('practitioner_id')->constrained('practitioners');
-            $table->foreignId('appointment_id')->nullable()->constrained('appointments');
+            $table->foreignId('appointment_id')->nullable()->unique()->constrained('appointments');
             $table->dateTime('start');
             $table->dateTime('end');
             $table->string('identifier')->unique()->comment('Identificador único del encuentro');

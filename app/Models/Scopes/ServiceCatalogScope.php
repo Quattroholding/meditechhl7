@@ -13,7 +13,7 @@ class ServiceCatalogScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && auth()->user()->hasRole('doctor')) {  // el doctor solo ve los clientes que tiene asociados
+        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('asistente medico'))) {  // el doctor solo ve los clientes que tiene asociados
             $builder->where('practitioner_id', auth()->user()->practitioner->id);
         }
     }
