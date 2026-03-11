@@ -81,7 +81,7 @@ class PractitionerAuthorizationController extends Controller
             ->exists();
 
         $hasSeal = DB::table('recepy_doctor_profiles')
-            ->where('record_id', $practitioner->user_id)
+            ->where('user_id', $practitioner->user_id)
             ->whereNotNull('seal')
             ->exists();
 

@@ -130,7 +130,7 @@
                                                                 <span style="font-size: 20px;">📋</span>
                                                         @endswitch
                                                         <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin: 0;">
-                                                            {{ $service->code_display ?? ($service->cpt->description ?? 'Servicio no especificado') }}
+                                                            {{ $service->code_display ?? ($service->cpt->description_es ?? 'Servicio no especificado') }}
                                                         </h4>
                                                     </div>
                                                     <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 13px; color: #374151; margin-bottom: 10px;">
