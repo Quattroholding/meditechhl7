@@ -13,7 +13,9 @@ class PractitionerScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('admin client') or auth()->user()->hasRole('recepcionista'))) {  // el doctor solo ve los clientes que tiene asociados
+        if (auth()->user() && (auth()->user()->hasRole('admin client')
+                or auth()->user()->hasRole('recepcionista')
+                or auth()->user()->hasRole('asistente medico'))) {  // el doctor solo ve los clientes que tiene asociados
             $builder->whereHas('user', function ($q) {
                 $q->whereHas('clients', function ($q2) {
                     $q2->whereIn('user_clients.client_id', auth()->user()->clients()->pluck('client_id'));
