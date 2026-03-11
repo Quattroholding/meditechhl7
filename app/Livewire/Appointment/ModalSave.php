@@ -247,7 +247,7 @@ class ModalSave extends Component
         $this->clients = auth()->user()->clients()->pluck('client_id')->toArray();
         $esp = MedicalSpeciality::when(auth()->user()->hasRole('doctor'), function ($q) {
             $q->whereIn('id', auth()->user()->practitioner->qualifications->pluck('medical_speciality_id'));
-        })->when(auth()->user()->hasRole('recepcionista'), function ($q) {
+        })->when(auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico'), function ($q) {
             $q->whereHas('practitionerQualifications.practitioner.user.clients', function ($q2) {
                 $q2->whereIn('clients.id', $this->clients);
             });
