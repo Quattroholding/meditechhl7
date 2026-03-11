@@ -64,7 +64,7 @@
         @if( $appointment->practitioner->qualifications()->first())
         <div class="consultation-ficha-item">
             <i class="fas fa-stethoscope consultation-ficha-icon"></i>
-                <b>Especialidad:</b> {{ $appointment->practitioner->qualifications()->first()->display }}
+                <b>Especialidad:</b> {{ $appointment->medicalSpeciality->name }}
         </div>
         @endif
     </div>

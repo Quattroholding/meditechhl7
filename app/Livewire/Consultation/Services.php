@@ -66,24 +66,12 @@ class Services extends Component
     private function loadAvailableServiceTypes()
     {
         // Contar servicios activos por tipo
-        $serviceCounts = ServiceCatalog::active()
+        $this->availableServiceTypes = ServiceCatalog::active()
             ->selectRaw('service_type, COUNT(*) as count')
             ->whereNotNull('service_type')
             ->groupBy('service_type')
             ->pluck('count', 'service_type')
             ->toArray();
-
-        // Contar servicios con CPT
-        $cptCount = ServiceCatalog::active()
-            ->whereNotNull('cpt_code')
-            ->count();
-
-        // Agregar tipo CPT si hay servicios con código CPT
-        if ($cptCount > 0) {
-            $serviceCounts['cpt'] = $cptCount;
-        }
-
-        $this->availableServiceTypes = $serviceCounts;
     }
 
     public function loadSelectedServices()
@@ -160,15 +148,9 @@ class Services extends Component
         }
 
         // Cargar servicios según el tipo seleccionado
-        $query = ServiceCatalog::active()->with('cptCodeInfo');
-
-        if ($this->selectedServiceType === 'cpt') {
-            // Mostrar solo servicios que tengan código CPT
-            $query->whereNotNull('cpt_code');
-        } else {
-            // Filtrar por tipo de servicio
-            $query->where('service_type', $this->selectedServiceType);
-        }
+        $query = ServiceCatalog::active()
+            ->with('cptCodeInfo')
+            ->where('service_type', $this->selectedServiceType);
 
         $this->results = $query
             ->select('id', 'name', 'description', 'base_price', 'cpt_code', 'service_type', 'duration_minutes')
