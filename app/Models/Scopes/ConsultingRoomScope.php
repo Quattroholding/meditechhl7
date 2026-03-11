@@ -13,7 +13,10 @@ class ConsultingRoomScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('admin client'))) {  // el doctor solo ve los clientes que tiene asociados
+        if (auth()->user() && (auth()->user()->hasRole('doctor')
+                or auth()->user()->hasRole('recepcionista')
+                or auth()->user()->hasRole('asistente medico')
+                or auth()->user()->hasRole('admin client'))) {  // el doctor solo ve los clientes que tiene asociados
             $builder->whereHas('branch', function ($q) {
                 $q->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
             });
