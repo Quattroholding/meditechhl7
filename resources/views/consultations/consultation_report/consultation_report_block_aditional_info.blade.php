@@ -1,14 +1,14 @@
-<table class="custom-table">
+<table class="custom-table" >
     <tr>
-        <td><b>{{__('consultation.user_identification')}}:</b> <div class="aditional-info-field">{{ $data->patient->identifier }}</div></td>
-        <td><b>{{__('consultation.fullname')}}:</b> <div class="aditional-info-field">{{ $data->patient->name }}</div></td>
-        <td><b>{{__('consultation.marital_status')}}:</b> <div class="aditional-info-field">{{ $data->patient->marital_status }}</div></td>
-        <td><b>{{__('consultation.occupation')}}:</b> <div class="aditional-info-field">***</div></td>
+        <td style="text-align: center"><b>{{__('consultation.user_identification')}}:</b> <div class="aditional-info-field">{{ $data->patient->identifier }}</div></td>
+        <td style="text-align: center"><b>{{__('consultation.fullname')}}:</b> <div class="aditional-info-field">{{ $data->patient->name }}</div></td>
+        <td style="text-align: center"><b>{{__('consultation.marital_status')}}:</b> <br/><div class="aditional-info-field">{{ $data->patient->marital_status }}</div></td>
+        {{--}}<td><b>{{__('consultation.occupation')}}:</b> <div class="aditional-info-field">***</div></td>{{--}}
     </tr>
     <tr>
-        <td><b>{{__('consultation.address')}}:</b> <div class="aditional-info-field">{{ $data->patient->address }}</div></td>
-        <td><b>{{__('consultation.home_phone')}}:</b> <div class="aditional-info-field">{{ $data->patient->phone }}</div></td>
-        <td><b>{{__('consultation.residence_place')}}:</b> <div class="aditional-info-field">***</div></td>
+        <td style="text-align: center"><b>{{__('consultation.address')}}:</b> <br/><div class="aditional-info-field">{{ $data->patient->address }}</div></td>
+        <td style="text-align: center"><b>{{__('consultation.home_phone')}}:</b> <div class="aditional-info-field">{{ $data->patient->phone }}</div></td>
+        <td style="text-align: center"><b>{{__('consultation.residence_place')}}:</b> <div class="aditional-info-field">{{ $data->patient->countryRelation->name }}</div></td>
         {{--}}
         <td><b>{{__('consultation.companion')}}:</b> <div class="aditional-info-field">{{ $data['consultation']['companion'] }}</div></td>
         {{--}}

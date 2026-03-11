@@ -44,10 +44,22 @@ if (isset($consultation_list[$data['consultation']->timing])) {
 $items = [];
 //$data['consultation']->text='present_illness';
 
-$location = trans('present_illness.'.$data->presentIllnesses->location);
-$severity =  trans('present_illness.'. $data->presentIllnesses->severity);
-$duration =  trans('present_illness.'. $data->presentIllnesses->duration);
-$timing =  trans('present_illness.'. $data->presentIllnesses->timing);
+// Procesar locations como array JSON
+$locations_array = is_string($data->presentIllnesses->locations)
+    ? json_decode($data->presentIllnesses->locations, true)
+    : $data->presentIllnesses->locations;
+
+$location = '';
+if (is_array($locations_array)) {
+    $translated_locations = array_map(function($loc) {
+        return trans('present_illness.'.$loc);
+    }, $locations_array);
+    $location = implode(', ', $translated_locations);
+}
+
+$severity = !empty($data->presentIllnesses->severity) ? trans('present_illness.'. $data->presentIllnesses->severity) : '';
+$duration = !empty($data->presentIllnesses->duration) ? trans('present_illness.'. $data->presentIllnesses->duration) : '';
+$timing = !empty($data->presentIllnesses->timing) ? trans('present_illness.'. $data->presentIllnesses->timing) : '';
 
 
 $items[] = ['label' => trans('consultation.location'), 'value' => $location];
@@ -68,8 +80,8 @@ foreach ($items as $item) {
 }
 
 ?>
-
-@component($table_component,['title'=>trans('consultation.present_illness')])
+@if($data->presentIllnesses->locations || $data->presentIllnesses->severity || $data->presentIllnesses->duration || $data->presentIllnesses->timing)
+    @component($table_component,['title'=>trans('consultation.present_illness')])
 <?php $exit_text = [];
 $exit_text[0] = "";
 ?>
@@ -107,7 +119,7 @@ $exit_text[0] = "";
     @endforeach
 
 @endcomponent
-
+@endif
 
 
 

@@ -414,7 +414,7 @@ class ConsultationController extends Controller
 
             $pdf = Pdf::loadView('consultations.consultation_report.index', compact('data', 'lang', 'home_visit', 'sello', 'firma', 'mode', 'consultation_disabilities'));
 
-            return $pdf->stream('resumen.pdf');
+            return $pdf->stream($data->identifier.'.pdf');
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al descargar el resumen: '.$e->getMessage());
 
