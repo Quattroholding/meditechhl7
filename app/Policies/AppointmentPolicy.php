@@ -23,7 +23,14 @@ class AppointmentPolicy
             return false;
         }
 
-        if ($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id && in_array($appointment->status->value, ['fulfilled', 'checked-in'])) {
+        if ($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id
+            && in_array($appointment->status->value, ['fulfilled', 'checked-in'])) {
+            return true;
+        }
+
+        if ($user->hasRole('asistente medico')
+            && $appointment->practitioner?->user?->default_client_id == $user->default_client_id
+            && in_array($appointment->status->value, ['fulfilled', 'checked-in'])) {
             return true;
         }
 
@@ -42,22 +49,28 @@ class AppointmentPolicy
 
     public function checked_in(User $user, Appointment $appointment): bool
     {
-        return $appointment->status->value == 'arrived' && ($appointment->practitioner->user_id == $user->id or $user->hasRole('recepcionista'));
+        return $appointment->status->value == 'arrived'
+            && ($appointment->practitioner->user_id == $user->id or
+                $appointment->practitioner?->user?->default_client_id == $user->default_client_id);
     }
 
     public function fulfilled(User $user, Appointment $appointment): bool
     {
-        return $appointment->status->value == 'checked-in' && ! $user->hasRole('paciente') && ! $user->hasRole('admin client') && ! $user->hasRole('recepcionista');
+        return $appointment->status->value == 'checked-in' && $appointment->practitioner->user_id == $user->id;
+            /*&& ! $user->hasRole('paciente') && ! $user->hasRole('admin client') && ! $user->hasRole('recepcionista');*/
     }
 
     public function cancelled(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status->value, ['proposed', 'pending', 'booked', 'arrived']) && now()->isBefore(Carbon::parse($appointment->start));
+        return in_array($appointment->status->value, ['proposed', 'pending', 'booked', 'arrived'])
+            && now()->isBefore(Carbon::parse($appointment->start));
     }
 
     public function noshow(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status->value, ['pending', 'booked']) && now()->isAfter(Carbon::parse($appointment->start)) && ! $user->hasRole('admin client');
+        return in_array($appointment->status->value, ['pending', 'booked'])
+            && now()->isAfter(Carbon::parse($appointment->start))
+            && ! $user->hasRole('admin client');
     }
 
     public function changeStatus(User $user, Appointment $appointment): bool

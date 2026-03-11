@@ -13,23 +13,13 @@ class EncouterScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('asistente medico'))) {  // el doctor solo ve sus citas
+        if (auth()->user() && (auth()->user()->hasRole('doctor'))) {  // el doctor solo ve sus citas
             $builder->where('encounters.practitioner_id', auth()->user()->practitioner->id);
             $builder->whereHas('patient', function ($q) {
                 $q->whereHas('clients', function ($q2) {
                     $q2->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
                 });
             });
-            /*$builder->where(function ($query) use ($practitionerId) {
-                // Encounters donde el doctor es el practitioner
-                $query->where('encounters.practitioner_id', $practitionerId)
-                    // O encounters de pacientes que han autorizado al doctor
-                    ->orWhereHas('patient', function ($q) use ($practitionerId) {
-                        $q->whereHas('practitionerAuthorizations', function ($q2) use ($practitionerId) {
-                            $q2->where('practitioner_id', $practitionerId);
-                        });
-                    });
-            });*/
         } elseif (auth()->user() && auth()->user()->hasRole('paciente')) { // el paciente ve sus consultas
             $builder->where('encounters.patient_id', auth()->user()->patient->id);
         } elseif (auth()->user() && auth()->user()->hasRole('recepcionista') ||
