@@ -45,9 +45,9 @@
                                             <!-- Overlay for hover effect -->
                                             <div class="preview-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
                                                  style="background: rgba(0,0,0,0); transition: background 0.3s ease;">
-                                                <button class="btn btn-light btn-sm preview-view-btn" style="opacity: 0; transition: opacity 0.3s ease;">
+                                                <!--<button class="btn btn-light btn-sm preview-view-btn" style="opacity: 0; transition: opacity 0.3s ease;">
                                                     <i class="fas fa-eye me-1"></i>Ver Completo
-                                                </button>
+                                                </button>-->
                                             </div>
                                         </div>
 
