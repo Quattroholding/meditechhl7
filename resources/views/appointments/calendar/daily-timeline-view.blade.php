@@ -702,7 +702,7 @@
                     <div class="appointment-header">
                         <div class="appointment-patient">
                             @php
-                                $patient = \App\Models\Patient::find($appointment['patient']['id']);
+                                $patient = isset($appointment['patient']['id']) ? \App\Models\Patient::find($appointment['patient']['id']) : null;
                             @endphp
                             {!! $patient ? $patient->profile_name : ($appointment['patient']['name'] ?? 'Paciente no encontrado') !!}
 
@@ -731,14 +731,14 @@
                     <div class="appointment-details">
                         <div>
                             <div class="appointment-doctor">
-                                👨‍⚕️ {{ $appointment['practitioner']['name'] }}
+                                👨‍⚕️ {{ $appointment['practitioner']['name'] ?? 'Doctor no asignado' }}
                             </div>
                             <div class="appointment-specialty">
-                                {{ $appointment['medical_speciality']['name'] }}
+                                {{ $appointment['medical_speciality']['name'] ?? 'Especialidad no asignada' }}
                             </div>
                         </div>
                         <div class="appointment-contact">
-                            @if($appointment['patient']['phone'])
+                            @if(isset($appointment['patient']['phone']) && $appointment['patient']['phone'])
                                 <div class="appointment-phone">
                                     📞 {{ $appointment['patient']['phone'] }}
                                 </div>

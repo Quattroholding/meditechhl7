@@ -208,10 +208,10 @@
                                             <div>{{ $request->dosage_text }}</div>
                                         </div>
                                     @endif
-                                    @if($request->dosage_instruction)
+                                    @if($request->dosage_instruction && is_array($request->dosage_instruction))
                                         <div>
-                                            <div style="font-size: 12px; color: #059669; font-weight: 600;">📏 Dosis</div>
-                                            <div>{{ $request->dosage_instruction }}</div>
+                                            <div style="font-size: 12px; color: #059669; font-weight: 600;">📋 Instrucciones de Dosificación</div>
+                                            <div>{{ $request->dosage_instruction['text'] ?? json_encode($request->dosage_instruction) }}</div>
                                         </div>
                                     @endif
                                     @if($request->frequency)
