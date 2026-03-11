@@ -49,7 +49,7 @@ class AppointmentPolicy
 
     public function checked_in(User $user, Appointment $appointment): bool
     {
-        return $appointment->status->value == 'arrived'
+        return $appointment->status->value == 'arrived' && $user->hasRole('doctor','asistente medico',  'recepcionista')
             && ($appointment->practitioner->user_id == $user->id or
                 $appointment->practitioner?->user?->default_client_id == $user->default_client_id);
     }
