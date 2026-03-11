@@ -16,7 +16,7 @@ class InvoiceScope implements Scope
         if (auth()->user() && (auth()->user()->hasRole('doctor'))) {
             // Filter by client_id based on user's associated clients
             $builder->wherePerformerPractitionerId(auth()->user()->practitioner->id);
-        } elseif (auth()->user() && (auth()->user()->hasRole('admin_client') or auth()->user()->hasRole('recepcionista'))) {
+        } elseif (auth()->user() && (auth()->user()->hasRole('admin_client') or auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico'))) {
             // Filter by patient - through the patient relationship
             $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
         } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {
