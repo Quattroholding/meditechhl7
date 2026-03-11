@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>{{ $data->identifier }}</title>
     <?php
 
     $table_component = 'consultations.consultation_report.consultation_report_table';
@@ -24,7 +25,7 @@
     @if(request()->has('html'))
         <img style="max-height:56px" src="{{ url('assets/img/logo.png') }}">
     @else
-        <img style="max-height:56px" src="{{ public_path('images/logoReporte.png') }}">
+        <img style="max-height:56px" src="{{ public_path('images/logoSAMI.png') }}">
     @endif
     {{--}}
     @if($data['appointment']->clinic()->first()->pais != "1")
@@ -117,26 +118,31 @@
 
 </header>
 <footer >
-
+    @if($firma || $sello)
     <div class="tabla_firma"  style="position:absolute;top:20px;">
         <table width="100%" border="0" cellspacing="">
             <tr>
                 <td align="right">
+                    @if($sello)
                     <img src="{{storage_path('app/private/'.$sello)}}">
+                    @endif
                 </td>
                 <td align="left">
+                    @if($firma)
                     <img src="{{storage_path('app/private/'.$firma)}}">
+                    @endif
                 </td>
             </tr>
         </table>
     </div>
-    <div style="position:absolute;float:right;bottom:10px"><b>Page <span class="pagenum"></span></b></div>
+    @endif
+    <div style="position:absolute;float:right;bottom:10px"><b>Página <span class="pagenum"></span></b></div>
     <div style=" padding:8px;margin-top:100px;width:100%">
         <div style="width:100%;height: 3px;background-color:rgba(12, 149, 71, 1);"></div>
     </div>
     <div class=" subtitle-header" style="text-align: center"> Doctor:
         <span>{{ $data->practitioner->name }} {{ $data->practitioner->surrname }}</span>
-        | License Number:
+        | License Number: {{ $data->practitioner->licence_code }}
         <span></span>
         @if($data->practitioner->qualifications()->first())
             <br>{{ $data->practitioner->qualifications()->first()->display }}
