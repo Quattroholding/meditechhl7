@@ -758,6 +758,10 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.profile');
     })->name('profile');
 
+    Route::get('/roles', function () {
+        return view('help.roles');
+    })->name('roles');
+
     Route::get('/support', function () {
         return view('help.support');
     })->name('support');
