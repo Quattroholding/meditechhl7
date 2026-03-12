@@ -79,7 +79,7 @@ class PayInvoiceYappy extends Component
                 'taxes'       => '0.00',
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
-                'ipnUrl'      => 'https://meditecpty.com/subscriptions/payments/yappy-ipn',
+                'ipnUrl'      => 'https://webhooks.meditecpty.com/subscriptions/payments/yappy-ipn',
                 //'aliasYappy'  =>$aliasYappy,
                 'aliasYappy'  => '60800131',
             ];

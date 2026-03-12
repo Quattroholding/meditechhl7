@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
+use App\Http\Controllers\SuscriptionPaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,3 +33,5 @@ Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {
     // POST: Webhook handler (Meta sends webhook data here)
     Route::post('/', [WhatsAppWebhookController::class, 'handle'])->name('handle');
 });
+
+Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');

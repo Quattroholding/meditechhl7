@@ -699,7 +699,6 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
         ->name('login.as');
 });
 
-Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
 
 // Help Center Routes (Public)
 Route::prefix('help')->name('help.')->group(function () {
