@@ -16,15 +16,6 @@ class UserAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::factory()->create([
-            'first_name' => 'Administrador',
-            'last_name' => 'Del Sistema',
-            'email' => 'rgasperi@smartcarebilling.com',
-            'password' => 'Prueba.1',
-            'first_login_at'=>now(),
-        ]);
-
-        $admin->assignRole('admin');
 
         $client = Client::create([
             'name' => 'Soluciones Meditec',
@@ -32,19 +23,18 @@ class UserAdminSeeder extends Seeder
             'dv' => '11',
             'long_name' => 'Soluciones Meditec',
             'email' => 'business@meditecpty.com',
-            'whatsapp' => '0800-555-555',
-            // 'logo' => fake()->imageUrl(),
+            'whatsapp' => '+5078316174',
+            'logo' => url('images/logoFull.png'),
         ]);
-
-        $admin->default_client_id = $client->id;
-        $admin->save();
 
         $branch = Branch::create([
             'client_id' => $client->id,
-            'name' => 'Cuartel Central',
-            'phone' => '0800-555-555',
+            'name' => 'San Francisco',
+            'phone' => '+507 831-6100',
             'address' => 'calle 74 San Francisco edificio Quattroholding',
             'type' => 'hospital',
+            'country_id'=>1,
+            'state_id'=>8,
         ]);
 
         ConsultingRoom::create([
@@ -54,10 +44,26 @@ class UserAdminSeeder extends Seeder
             'floor' => '1',
         ]);
 
-        UserClient::create([
-            'client_id' => $client->id,
-            'user_id' => $admin->id,
-        ]);
+        //CREAR ADMINISTRADORES
+        $administradores = array( 'rgasperi@smartcarebilling.com', 'atenorio@smartcarebilling.com');
 
+        foreach ($administradores as $administrador) {
+            $admin = User::factory()->create([
+                'first_name' => 'Administrador',
+                'last_name' => 'Del Sistema',
+                'email' => $administrador,
+                'password' => 'Prueba.1',
+                'first_login_at'=>now(),
+            ]);
+
+            $admin->assignRole('admin');
+            $admin->default_client_id = $client->id;
+            $admin->save();
+
+            UserClient::create([
+                'client_id' => $client->id,
+                'user_id' => $admin->id,
+            ]);
+        }
     }
 }

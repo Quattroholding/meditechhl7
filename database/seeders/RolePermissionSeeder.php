@@ -409,5 +409,9 @@ class RolePermissionSeeder extends Seeder
             'tickets.create',
             'tickets.comment',
         ]);
+
+        $adminRole = Role::firstOrCreate(['name' => 'soporte']);
+        $adminRole->givePermissionTo(Permission::whereNotIn('name', ['manage-roles','manage-permissions','manage-packages','dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting'])->get());
+
     }
 }
