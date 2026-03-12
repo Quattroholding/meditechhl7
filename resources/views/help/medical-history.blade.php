@@ -1522,23 +1522,32 @@
                     </div>
                 </section>
 
-                                <!-- Licencias Medicas -->
+            <!-- Notas Privadas -->
                 <section id="notas-privadas" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Notas Privadas</h3>
                     <div class="step-content">
-                        <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo</p>
-
+                        <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo.</p>
+                        <div class="sub-step">
+                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
+                            <ol>
+                                <li>En la sección de <strong>"Pacientes"</strong>, haz clic en <strong>"Lista Pacientes"</strong></li>
+                                <li>Elige el paciente al cuál deseas agregarle la nota y dale clic al botón de <strong>Historial Médico</strong> (botón en la columna de acciones de color negro)</li>
+                                <li>En el encabezado, en la parte derecha haz clic en <strong>Agregar Nota Privada</strong></li>
+                                <li>EScriba la información que necesite</li>
+                                <li>Haz clic en <strong>"Guardar"</strong></li>
+                            </ol>
+                        </div>
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-privnotes.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <div class="info-box info-tip">
+                        <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
                                 <strong>Descarga:</strong> Las licencias médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </section>
 
@@ -1551,7 +1560,7 @@
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
-                                <li>En la seccion de "Antecedentes Médicos", haz clic en <strong>"Agregar"</strong></li>
+                                <li>En la seccion de <strong>"Antecedentes Médicos"</strong>, haz clic en <strong>"Agregar"</strong></li>
                                 <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
                                 <li>Ingresa el <strong>título</strong> descriptivo</li>
                                 <li>Agrega una <strong>descripción</strong> detallada</li>
