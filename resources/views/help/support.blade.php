@@ -170,7 +170,7 @@
                         <i class="fas fa-envelope contact-icon" style="color: #ea4335;"></i>
                         <h4>Correo Electrónico</h4>
                         <p>Para solicitudes detalladas, reportes y asuntos administrativos.</p>
-                        <a href="mailto:soporte@meditech.com" class="btn btn-danger btn-sm">Enviar Email</a>
+                        <a href="mailto:business@meditecpty.com" class="btn btn-danger btn-sm">Enviar Email</a>
                     </div>
                 </div>
                 <div class="col-md-4">
