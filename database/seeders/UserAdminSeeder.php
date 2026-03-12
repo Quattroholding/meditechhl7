@@ -27,22 +27,7 @@ class UserAdminSeeder extends Seeder
             'logo' => url('images/logoFull.png'),
         ]);
 
-        $branch = Branch::create([
-            'client_id' => $client->id,
-            'name' => 'San Francisco',
-            'phone' => '+507 831-6100',
-            'address' => 'calle 74 San Francisco edificio Quattroholding',
-            'type' => 'hospital',
-            'country_id'=>1,
-            'state_id'=>8,
-        ]);
 
-        ConsultingRoom::create([
-            'branch_id' => $branch->id,
-            'name' => 'Departamento de IT',
-            'number' => '1',
-            'floor' => '1',
-        ]);
 
         //CREAR ADMINISTRADORES
         $administradores = array( 'rgasperi@smartcarebilling.com', 'atenorio@smartcarebilling.com');
@@ -65,5 +50,22 @@ class UserAdminSeeder extends Seeder
                 'user_id' => $admin->id,
             ]);
         }
+
+        $branch = Branch::create([
+            'client_id' => $client->id,
+            'name' => 'San Francisco',
+            'phone' => '+507 831-6100',
+            'address' => 'calle 74 San Francisco edificio Quattroholding',
+            'type' => 'hospital',
+            'country_id'=>1,
+            'state_id'=>8,
+        ]);
+
+        ConsultingRoom::create([
+            'branch_id' => $branch->id,
+            'name' => 'Departamento de IT',
+            'number' => '1',
+            'floor' => '1',
+        ]);
     }
 }
