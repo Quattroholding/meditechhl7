@@ -180,10 +180,10 @@
                     <span class="role-badge badge-assistant">Asistente Médico</span>
                     <p class="small mb-0 text-muted">Preparación de pacientes (signos vitales) y soporte en la agenda del doctor.</p>
                 </div>
-                <div class="list-group-item border-0">
+                <!--<div class="list-group-item border-0">
                     <span class="role-badge badge-accounting">Contabilidad</span>
                     <p class="small mb-0 text-muted">Acceso exclusivo a facturación, reportes financieros y estados de pago.</p>
-                </div>
+                </div>-->
             </div>
         </div>
 
