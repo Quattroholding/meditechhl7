@@ -1522,7 +1522,7 @@
                     </div>
                 </section>
 
-                                <!-- Licencias Medicas -->
+            <!-- Notas Privadas -->
                 <section id="notas-privadas" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Notas Privadas</h3>
@@ -1542,12 +1542,12 @@
                             <img src="{{ asset('images/tutorial/medical_history/med-privnotes.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <div class="info-box info-tip">
+                        <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
                                 <strong>Descarga:</strong> Las licencias médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </section>
 
