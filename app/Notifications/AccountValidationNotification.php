@@ -51,6 +51,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Cuenta Aprobada - Bienvenido a SAMI Recetas')
+            ->bcc('business@meditecpty.com')
             ->greeting('¡Felicitaciones '.$notifiable->first_name.'!')
             ->line('Tu cuenta de médico ha sido aprobada exitosamente.')
             ->line('Hemos revisado y validado tus documentos.')

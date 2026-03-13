@@ -280,6 +280,20 @@
             Elige el plan perfecto para tus necesidades. Todos incluyen soporte técnico y actualizaciones constantes.
         </p>
 
+        <!-- Banner de Descuento por Referido -->
+        <div style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border-radius: 15px; padding: 25px; margin: 30px auto; max-width: 800px; text-align: center; box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <i class="fas fa-gift" style="font-size: 40px; color: #FFD700;"></i>
+                <div style="color: white; text-align: left;">
+                    <h3 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700;">¡Descuento Especial por Referido!</h3>
+                    <p style="margin: 0; font-size: 16px; opacity: 0.95;">
+                        <i class="fas fa-check-circle" style="color: #FFD700;"></i>
+                        <strong>Obtén $4.99 de descuento</strong> en tu primera factura usando el código de referido de un colega
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="plans__grid">
             @foreach(\App\Models\Package::where('is_active', true)->orderBy('base_price')->get() as $package)
              <article class="plan @if($package->id==4) plan--navy @endif @if($loop->index==1) plan--featured @endif" data-plan-index="{{ $loop->index }}">

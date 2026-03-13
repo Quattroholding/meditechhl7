@@ -87,16 +87,11 @@ class UserController extends Controller
                 }
 
                 if ($request->file('avatar')) {
-                    // SE BUSCA EL REGISTRO PARA ASIGNAR EL NOMBRE DEL LOGO
-                    $user_profile = User::find($model->id);
                     // SE GUARDA EL AVATAR EN LA TABLA DE ARCHIVOS
                     $service = new FileService;
-                    $file = $request->file('avatar');
-                    $data['folder'] = 'users';
-                    $data['type'] = 'img';
-                    $data['name'] = 'user_'.time();
-                    $data['record_id'] = $model->id;
-                    $user_profile->profile_picture = $service->uploadSingleFile($file, 'users', $data['name']);
+                    $filename = 'profile_picture_'.$model->id;
+                    $model->profile_picture = $service->uploadSingleFile($request->file('avatar'), 'users', $filename);
+                    $model->save();
                 }
 
                 //cargar plantilla de consulta

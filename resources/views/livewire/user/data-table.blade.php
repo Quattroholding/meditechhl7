@@ -70,7 +70,11 @@
                                     <td data-column="roles" data-priority="4" data-label="{{__('user.roles')}}">
                                         <span class="cell-content">
                                             @foreach($user->roles as $role)
-                                                <span class="badge me-1  @if($role->id==2) bg-primary @elseif($role->id==3) bg-success @elseif($role->id==4) bg-info @elseif($role->id==5) bg-warning @elseif($role->id==6) bg-danger @elseif($role->id==7) bg-purple-light @endif">
+                                                @php
+                                                    $roleBadge = \App\Enums\RoleBadge::fromId($role->id);
+                                                    $badgeClass = $roleBadge?->badgeClass() ?? 'bg-secondary';
+                                                @endphp
+                                                <span class="badge me-1 {{ $badgeClass }}">
                                                     {{ $role->name }}
                                                 </span>
                                             @endforeach

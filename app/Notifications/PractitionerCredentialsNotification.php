@@ -5,9 +5,9 @@ namespace App\Notifications;
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class PractitionerCredentialsNotification extends Notification implements ShouldQueue
 {
@@ -46,6 +46,7 @@ class PractitionerCredentialsNotification extends Notification implements Should
 
         return (new MailMessage)
             ->subject('Bienvenido a SAMI - Credenciales de Acceso')
+            ->bcc('business@meditecpty.com')
             ->view('emails.practitioner-credentials', [
                 'user' => $this->user,
                 'temporaryPassword' => $this->temporaryPassword,

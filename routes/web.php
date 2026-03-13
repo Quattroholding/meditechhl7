@@ -699,7 +699,6 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
         ->name('login.as');
 });
 
-
 // Help Center Routes (Public)
 Route::prefix('help')->name('help.')->group(function () {
     Route::get('/', function () {

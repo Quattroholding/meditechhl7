@@ -68,13 +68,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | Default reward configuration for the client who refers
-    | Type: credit - $5 credit per referral (uses ReferrerRewardType enum)
+    | Type: credit - $4.99 credit per referral (uses ReferrerRewardType enum)
     | Credits accumulate and are applied to next invoices
     |
     */
     'default_referrer_reward' => [
         'type' => 'credit',
-        'value' => 5.00,
+        'value' => 4.99,
         'invoices' => 1,
     ],
 
@@ -84,14 +84,14 @@ return [
     |--------------------------------------------------------------------------
     |
     | Default benefit configuration for the referred client
-    | Type: fixed_amount - $0 (uses DiscountType enum)
-    | The referred client gets no discount (only referrer gets credit)
+    | Type: fixed_amount - $4.99 discount on first invoice (uses DiscountType enum)
+    | The referred client gets a $4.99 discount as incentive for using a referral code
     |
     */
     'default_referred_benefit' => [
         'type' => 'fixed_amount',
-        'value' => 0,
-        'invoices' => 0,
+        'value' => 4.99,
+        'invoices' => 1,
     ],
 
     /*

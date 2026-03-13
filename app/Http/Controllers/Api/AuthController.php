@@ -387,7 +387,7 @@ class AuthController extends Controller
         $adminsAndValidators = User::where('active', true)
             ->where(function ($query) {
                 $query->whereHas('roles', function ($q) {
-                    $q->whereIn('name', ['admin', 'validador']);
+                    $q->whereIn('name', ['validador','soporte']);
                 });
             })
             ->get();
