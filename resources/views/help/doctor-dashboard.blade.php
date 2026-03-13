@@ -312,7 +312,7 @@
             
             <h3 class="mt-4"><i class="fas fa-calendar-check me-2 text-primary"></i>Gestión de Citas</h3>
             
-            <div class="step-card">
+            <!--<div class="step-card">
                 <div class="step-title">Citas Recientes</div>
                 <div class="step-content">
                     <p>Muestra un listado de los pacientes con citas próximas a la hora actual. Permite visualizar rápidamente el nombre del paciente, la hora de la cita y el tipo de consulta. Incluye botones de acceso directo para iniciar o retomar la consulta médica de manera eficiente.</p>
@@ -321,7 +321,7 @@
                     <i class="fas fa-image"></i>
                     <p>Captura: Widget de Citas Recientes</p>
                 </div>
-            </div>
+            </div-->
 
             <div class="step-card">
                 <div class="step-title">Consultas en Progreso</div>

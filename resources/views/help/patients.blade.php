@@ -1393,7 +1393,7 @@
                                 <p class="text-muted mb-0">Nuestro equipo de soporte esta disponible para ayudarte.</p>
                             </div>
                             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                <a href="mailto:soporte@sami.com" class="btn text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #4a148c 100%);">
+                                <a href="mailto:business@meditecpty.com" class="btn text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #4a148c 100%);">
                                     <i class="fas fa-envelope me-2"></i>Contactar Soporte
                                 </a>
                             </div>

@@ -162,7 +162,7 @@
                         <i class="fab fa-whatsapp contact-icon" style="color: #25d366;"></i>
                         <h4>WhatsApp</h4>
                         <p>Atención rápida para dudas puntuales y emergencias menores.</p>
-                        <a href="#" class="btn btn-success btn-sm">Chatea ahora</a>
+                        <a href="https://wa.me/5078316174" class="btn btn-success btn-sm">Chatea ahora</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -170,7 +170,7 @@
                         <i class="fas fa-envelope contact-icon" style="color: #ea4335;"></i>
                         <h4>Correo Electrónico</h4>
                         <p>Para solicitudes detalladas, reportes y asuntos administrativos.</p>
-                        <a href="mailto:soporte@meditech.com" class="btn btn-danger btn-sm">Enviar Email</a>
+                        <a href="mailto:business@meditecpty.com" class="btn btn-danger btn-sm">Enviar Email</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -178,7 +178,7 @@
                         <i class="fas fa-phone-alt contact-icon" style="color: #34a853;"></i>
                         <h4>Llamada Técnica</h4>
                         <p>Asistencia directa y guiada por nuestros especialistas.</p>
-                        <a href="tel:+123456789" class="btn btn-success btn-sm">Llamar</a>
+                        <a href="tel:831-6100" class="btn btn-success btn-sm">Llamar</a>
                     </div>
                 </div>
             </div>

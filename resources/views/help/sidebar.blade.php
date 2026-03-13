@@ -198,6 +198,14 @@
                 @endif
             </a>
 
+            <a href="{{ route('help.roles') }}" class="nav-link {{ $active === 'roles' ? 'active' : '' }}">
+                <i class="fas fa-user-shield"></i>
+                <span>Roles y Permisos</span>
+                @if ($active === 'roles')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.support') }}" class="nav-link {{ $active === 'support' ? 'active' : '' }}">
                 <i class="fas fa-question-circle"></i>
                 <span>Soporte</span>
