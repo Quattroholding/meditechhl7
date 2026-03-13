@@ -164,7 +164,7 @@ class PublicRegistrationController extends Controller
                     if ($existingPractitioner) {
                         // Actualizar practitioner existente con datos del formulario
                         $existingPractitioner->update([
-                            'name' =>  $prefix.' '.$request->first_name.' '.$request->last_name,
+                            'name' => $prefix.' '.$request->first_name.' '.$request->last_name,
                             'given_name' => $request->first_name,
                             'family_name' => $request->last_name,
                             'phone' => $request->phone,
@@ -215,15 +215,8 @@ class PublicRegistrationController extends Controller
                     $user->notify(new PractitionerSetupRequiredNotification);
                 }
 
-                // 7. Crear suscripción (SIN trial, SIN descuentos)
-                $subscription = $subscriptionService->create($client, $package, [
-                    'trial_days' => 0,
-                    'free_months' => 0,
-                    'extra_doctors' => 0,
-                    'billing_day' => now()->day,
-                ]);
-
-                // 7b. Aplicar código de referido si se proporcionó
+                // 7. Aplicar código de referido ANTES de crear la suscripción
+                // Esto permite que el descuento esté disponible cuando se genere la primera factura
                 if ($request->filled('referral_code')) {
                     $referral = $referralService->applyReferralCode($client, $request->referral_code);
 
@@ -236,6 +229,14 @@ class PublicRegistrationController extends Controller
                         ]);
                     }
                 }
+
+                // 8. Crear suscripción (la factura se generará con el descuento ya aplicado)
+                $subscription = $subscriptionService->create($client, $package, [
+                    'trial_days' => 0,
+                    'free_months' => 0,
+                    'extra_doctors' => 0,
+                    'billing_day' => now()->day,
+                ]);
                 // Enviar notificación con credenciales temporales
                 $delay = now()->plus(minutes: 1);
                 $user->notify((new PractitionerCredentialsNotification($user, $request->password, false))->delay($delay));

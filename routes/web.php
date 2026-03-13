@@ -76,7 +76,7 @@ Route::get('/terms-of-service', function () {
 Route::get('/register/client', [PublicRegistrationController::class, 'showForm'])
     ->name('public.register');
 Route::post('/register/client', [PublicRegistrationController::class, 'store'])
-    ->middleware('throttle:5,60')
+    ->middleware('throttle:15,60')
     ->name('public.register.store');
 Route::get('/register/success', [PublicRegistrationController::class, 'success'])
     ->name('public.register.success');
