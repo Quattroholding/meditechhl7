@@ -489,7 +489,10 @@
                             <h3><i class="fas fa-gift"></i> Código de Referido (Opcional)</h3>
                             <label for="referral_code">¿Tienes un código de referido?</label><br/>
                             <input class="form-control" type="text" id="referral_code" name="referral_code" value="{{ old('referral_code', request('ref')) }}" placeholder="Ej: REF-ABC12345"><br/>
-                            <small class="form-help">Si alguien te refirió, ingresa su código aquí</small>
+                            <small class="form-help">
+                                <i class="fas fa-tag" style="color: #4CAF50;"></i> <strong style="color: #2D1B69;">¡Obtén $4.99 de descuento en tu primera factura!</strong><br/>
+                                Al usar un código de referido, recibirás un descuento instantáneo y ayudarás a otro médico.
+                            </small>
                             @error('referral_code')
                                 <span class="error">{{ $message }}</span>
                             @enderror

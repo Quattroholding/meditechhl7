@@ -76,7 +76,7 @@ Route::get('/terms-of-service', function () {
 Route::get('/register/client', [PublicRegistrationController::class, 'showForm'])
     ->name('public.register');
 Route::post('/register/client', [PublicRegistrationController::class, 'store'])
-    ->middleware('throttle:15,60')
+    ->middleware('throttle:5,60')
     ->name('public.register.store');
 Route::get('/register/success', [PublicRegistrationController::class, 'success'])
     ->name('public.register.success');
@@ -698,7 +698,6 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
     Route::post('/login/{user}', [\App\Http\Controllers\DebugLoginController::class, 'loginAs'])
         ->name('login.as');
 });
-
 
 // Help Center Routes (Public)
 Route::prefix('help')->name('help.')->group(function () {

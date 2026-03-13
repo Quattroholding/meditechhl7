@@ -41,6 +41,7 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Nuevo Ticket de Soporte Creado - '.$clinicName)
+            ->bcc('business@meditecpty.com')
             ->greeting('¡Hola '.$notifiable->full_name.'!')
             ->line('Se ha creado un nuevo ticket de soporte que requiere su atención.')
             ->line('**Código:** '.$this->ticket->identifier)
