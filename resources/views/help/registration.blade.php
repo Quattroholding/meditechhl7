@@ -1228,12 +1228,12 @@
                             </li>
                         </ul>
 
-                        <div class="info-box info-tip">
+                        <!--<div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
                                 <strong>Consejo:</strong> Si tienes un codigo de referido de otro usuario SAMI, tenlo listo para obtener un descuento en tu suscripcion.
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </section>
 
@@ -1245,7 +1245,7 @@
                         <div class="sub-step">
                             <h6><i class="fas fa-home me-2"></i>Pasos para Iniciar</h6>
                             <ol>
-                                {{--}}<li>Visita la pagina principal: <div class="code-block">{{ config('app.url') }}</div></li>{{--}}
+                                <li>Visita la pagina principal: <div class="code-block">https://sami.meditecpty.com</div></li>
                                 <li>Navega a la seccion <strong>"Planes"</strong> (menu o scroll hacia abajo)</li>
                                 <li>Revisa los planes disponibles y sus caracteristicas</li>
                                 <li>Haz clic en el boton <strong>"Suscribirse Ahora"</strong> del plan que desees</li>
@@ -1281,8 +1281,8 @@
                                         <td data-label="Precio/mes">$49.99</td>
                                         <td data-label="Usuarios">1</td>
                                         <td data-label="Citas">30/mes</td>
-                                        <td data-label="SAMI"><span class="text-muted">Tentativo</span></td>
-                                        <td data-label="Directorio"><i class="fas fa-times text-danger"></i></td>
+                                        <td data-label="SAMI"><i class="fas fa-check text-success"></i> Activo</td>
+                                        <td data-label="Directorio"><i class="fas fa-check text-success"></i></td>
                                     </tr>
                                     <tr class="recommended">
                                         <td data-label="Plan">
@@ -1351,8 +1351,8 @@
                             <h6><i class="fas fa-balance-scale me-2"></i>Basico vs Estandar</h6>
                             <p><strong>UNICA DIFERENCIA:</strong></p>
                             <ul>
-                                <li><strong>Basico:</strong> Limite de 30 citas por mes, SAMI no activo</li>
-                                <li><strong>Estandar:</strong> Citas ilimitadas + SAMI activo + Directorio Medico</li>
+                                <li><strong>Basico:</strong> Límite de 30 citas por mes</li>
+                                <li><strong>Estandar:</strong> Citas ilimitadas</li>
                             </ul>
                             <p><strong>Todo lo demas es EXACTAMENTE IGUAL</strong> (gestion de pacientes, historia clinica, dashboard, etc.)</p>
                         </div>
@@ -1367,7 +1367,7 @@
                             <p><strong>Todo lo demas es EXACTAMENTE IGUAL</strong> (citas ilimitadas, SAMI activo, todas las funcionalidades)</p>
                         </div>
 
-                        <div class="info-box info-tip">
+                        <!--<div class="info-box info-tip">
                             <i class="fas fa-star"></i>
                             <div>
                                 <strong>Por que el Estandar es recomendado?</strong>
@@ -1378,7 +1378,7 @@
                                     <li>Potencial ilimitado de crecimiento sin restricciones</li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
                         {{--}}
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1445,12 +1445,12 @@
                                 <tr>
                                     <td data-label="Campo"><strong>Tipo de Documento</strong></td>
                                     <td data-label="Descripcion">Selecciona CC, PA, CE o PT</td>
-                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
                                     <td data-label="Campo"><strong>Numero de Documento</strong></td>
                                     <td data-label="Descripcion">Tu numero de identificacion</td>
-                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                                 <tr>
                                     <td data-label="Campo"><strong>Nombre</strong></td>
@@ -1485,7 +1485,7 @@
                                 <tr>
                                     <td data-label="Campo"><strong>Genero</strong></td>
                                     <td data-label="Descripcion">Masculino o Femenino (para titulo Dr./Dra.)</td>
-                                    <td data-label="Requerido"><span class="required">Si*</span></td>
+                                    <td data-label="Requerido"><span class="required">Si</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1745,13 +1745,13 @@
                                     <small class="text-muted">Si seleccionaste un plan individual, se crea tu perfil de practitioner</small>
                                 </div>
                             </li>
-                            <li>
+                            <!--<li>
                                 <i class="fas fa-building text-primary"></i>
                                 <div>
                                     <strong>Clinica/Consultorio Creado</strong><br>
                                     <small class="text-muted">Se crea tu organizacion en el sistema</small>
                                 </div>
-                            </li>
+                            </li>-->
                             <li>
                                 <i class="fas fa-file-invoice-dollar text-primary"></i>
                                 <div>
@@ -1782,7 +1782,7 @@
                                     <h6>1. Ir a la pantalla de Login</h6>
                                     <p>Puede ingresar a la pantalla de inicio de sesión de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong>, haz clic en el botón <strong>"Ir al Login"</strong> <br>2. Desde la pantalla del Landing, haz en clic en <strong>"Ingresar"</strong> que se encuentra en el menú superior.</p>
                                     <div>
-                                        <img src="{{ asset('images/tutorial/register/registration-login.png') }}" alt="" style="width: 100%;">
+                                        <img src="{{ asset('images/tutorial/register/sami_landing    .png') }}" alt="" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>

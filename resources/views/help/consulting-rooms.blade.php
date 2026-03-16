@@ -1031,8 +1031,8 @@
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Tener permisos de administrador</strong><br>
-                                    <small class="text-muted">Permiso "rooms.create" para crear consultorios</small>
+                                    <strong>Tener permisos de configuración</strong><br>
+                                    <small class="text-muted">Tener rol de Admin client o Doctor</small>
                                 </div>
                             </li>
                         </ul>
@@ -1081,15 +1081,21 @@
                             <img src="{{ asset('images/tutorial/consulting_rooms/create.png') }}" alt="" style="width: 100%;">
                         </div>
 
+                        <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Puede acceder desde el asistente de configuración (cuadro en la esquina inferior derecha) para crear un consultorio.
+                            </div>
+                        </div>
                         {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
                             <code class="d-block p-2 bg-dark text-light rounded">{{ config('app.url') }}/clients/consulting_rooms</code>
                         </div>{{--}}
 
-                        <div>
+                        {{--}}<div>
                             <img src="{{ asset('images/tutorial/consulting_rooms/index.png') }}" alt="" style="width: 100%;">
-                        </div>
+                        </div>{{--}}
                     </div>
                 </section>
 
@@ -1103,11 +1109,17 @@
                         <div>
                             <img src="{{ asset('images/tutorial/consulting_rooms/new.png') }}" alt="" style="width: 100%;">
                         </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Si está desde el asistente de configuración <strong>omitir</strong> este paso.
+                            </div>
+                        </div>
 
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Sin sucursales?</strong> Si el sistema te muestra un mensaje de error o no puedes seleccionar una sucursal, significa que no tienes sucursales creadas. Primero <a href="{{ route('help.branches') }}">crea una sucursal</a>.
+                                <strong>¿Sin sucursales?</strong> Si el sistema te muestra un mensaje de error o no puedes seleccionar una sucursal, significa que no tienes sucursales creadas. Primero <a href="{{ route('help.branches') }}">crea una sucursal</a>.
                             </div>
                         </div>
                     </div>
@@ -1201,7 +1213,7 @@
                         <div class="info-box info-tip">
                             <i class="fas fa-check-circle"></i>
                             <div>
-                                <strong>Exito!</strong> Tu consultorio ha sido creado y ahora aparece en la lista. Ya puedes asignar citas a este consultorio.
+                                <strong>¡Éxito!</strong> Tu consultorio ha sido creado y ahora aparece en la lista. Ya puedes asignar citas a este consultorio.
                             </div>
                         </div>
 
@@ -1382,9 +1394,9 @@
                             <div>
                                 <strong>Resumen de lo Completado:</strong>
                                 <ol class="mb-0 mt-2">
-                                    <li><i class="fas fa-check text-success me-1"></i> Registro de cuenta <a href="{{ route('help.registration') }}">(Ver guia)</a></li>
-                                    <li><i class="fas fa-check text-success me-1"></i> Creacion de sucursal <a href="{{ route('help.branches') }}">(Ver guia)</a></li>
-                                    <li><i class="fas fa-check text-success me-1"></i> Creacion de consultorio <strong>(Esta guia)</strong></li>
+                                    <li><i class="fas fa-check text-success me-1"></i> Registro de cuenta <a href="{{ route('help.registration') }}">(Ver guía)</a></li>
+                                    <li><i class="fas fa-check text-success me-1"></i> Creacion de sucursal <a href="{{ route('help.branches') }}">(Ver guía)</a></li>
+                                    <li><i class="fas fa-check text-success me-1"></i> Creacion de consultorio <strong>(Esta guía)</strong></li>
                                 </ol>
                             </div>
                         </div>

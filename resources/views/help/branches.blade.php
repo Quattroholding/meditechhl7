@@ -998,25 +998,25 @@
                             <div class="col-md-6 col-lg-3 mb-4">
                                 <div class="branch-type-card">
                                     <i class="fas fa-user-md"></i>
-                                    <h5>Consultorio</h5>
-                                    <p class="text-muted small mb-3">Practica individual o pequena</p>
-                                    <span class="rooms-count">1 consultorio</span>
+                                    <h5>Sucursal Privada</h5>
+                                    <p class="text-muted small mb-3">Práctica individual o pequeña</p>
+                                    <!--<span class="rooms-count">1 consultorio</span>-->
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-3 mb-4">
                                 <div class="branch-type-card">
                                     <i class="fas fa-clinic-medical"></i>
-                                    <h5>Centro de Salud</h5>
+                                    <h5>Centro de Atención Primaria</h5>
                                     <p class="text-muted small mb-3">Atencion primaria</p>
-                                    <span class="rooms-count">2 consultorios</span>
+                                    <!--<span class="rooms-count">2 consultorios</span>-->
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-3 mb-4">
                                 <div class="branch-type-card">
                                     <i class="fas fa-hospital-alt"></i>
-                                    <h5>Clinica</h5>
-                                    <p class="text-muted small mb-3">Multiples especialidades</p>
-                                    <span class="rooms-count">5 consultorios</span>
+                                    <h5>Clínica</h5>
+                                    <p class="text-muted small mb-3">Múltiples especialidades</p>
+                                    <!--<span class="rooms-count">5 consultorios</span>-->
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-3 mb-4">
@@ -1024,7 +1024,7 @@
                                     <i class="fas fa-hospital"></i>
                                     <h5>Hospital</h5>
                                     <p class="text-muted small mb-3">Gran infraestructura</p>
-                                    <span class="rooms-count">10+ consultorios</span>
+                                    <!--<span class="rooms-count">10+ consultorios</span>-->
                                 </div>
                             </div>
                         </div>
@@ -1093,7 +1093,12 @@
                         <div>
                             <img src="{{ asset('images/tutorial/branches/branch.png') }}" alt="" style="width: 100%;">
                         </div>
-
+                        <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Puede acceder desde el asistente de configuración (cuadro en la esquina inferior derecha) para crear una sucursal.
+                            </div>
+                        </div>
                         {{--}}<p class="mt-3">Tambien puedes acceder directamente via URL:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
@@ -1107,12 +1112,17 @@
                     <div class="step-number">2</div>
                     <h3 class="step-title">Iniciar Creacion de Nueva Sucursal</h3>
                     <div class="step-content">
-                        <p>En la lista de sucursales, haz clic en el boton <strong>"Nuevo(a)"</strong>:</p>
+                        <p>En la lista de sucursales, haz clic en el botón <strong>"Nuevo(a)"</strong>:</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/branches/nuevo.png') }}" alt="" style="width: 100%;">
                         </div>
-
+                        <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Si está desde el asistente de configuración <strong>omitir</strong> este paso.
+                            </div>
+                        </div>
                         <div class="info-box info-tip">
                             <i class="fas fa-lightbulb"></i>
                             <div>
@@ -1154,8 +1164,8 @@
                                     <td data-label="Descripcion">
                                         Clasificacion del establecimiento:
                                         <ul class="mb-0 mt-1">
-                                            <li>Consultorio</li>
-                                            <li>Centro de Salud</li>
+                                            <li>Sucursal Privada</li>
+                                            <li>Centro de Atención Primaria</li>
                                             <li>Clinica</li>
                                             <li>Hospital</li>
                                         </ul>
@@ -1175,7 +1185,7 @@
                                 <tr>
                                     <td data-label="Campo"><strong>Dirección</strong></td>
                                     <td data-label="Descripcion">Dirección física completa de la ubicación.</td>
-                                    <td data-label="Requerido"><span class="required">Si</span></td>
+                                    <td data-label="Opcional"><span class="optional">Opcional</span></td>
                                 </tr>
                                 <tr>
                                     <td data-label="Campo"><strong>País</strong></td>
@@ -1208,7 +1218,7 @@
 
                         <ol>
                             <li>Revisa que toda la informacion sea correcta</li>
-                            <li>Haz clic en el boton <strong>"Registrar"</li>
+                            <li>Haz clic en el botón <strong>"Registrar"</li>
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
@@ -1238,7 +1248,7 @@
                         <ol>
                             <li>Ve a la lista de sucursales</li>
                             <li>Encuentra la sucursal que deseas editar</li>
-                            <li>Haz clic en el boton de <strong>editar</strong> (icono de lapiz) en la columna de acciones</li>
+                            <li>Haz clic en el botón de <strong>editar</strong> (icono de lapiz) en la columna de acciones</li>
                             <li>Modifica los campos necesarios</li>
                             <li>Haz clic en <strong>"Actualizar"</strong></li>
                         </ol>
@@ -1258,7 +1268,7 @@
                         <ol>
                             <li>Ve a la lista de sucursales</li>
                             <li>Encuentra la sucursal que deseas eliminar</li>
-                            <li>Haz clic en el boton de <strong>eliminar</strong> (icono de papelera)</li>
+                            <li>Haz clic en el botón de <strong>eliminar</strong> (ícono de papelera)</li>
                             <li>Confirma la eliminacion en el dialogo</li>
                         </ol>
 
