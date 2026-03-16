@@ -1218,7 +1218,7 @@
 
                         <ol>
                             <li>Revisa que toda la informacion sea correcta</li>
-                            <li>Haz clic en el boton <strong>"Registrar"</li>
+                            <li>Haz clic en el botón <strong>"Registrar"</li>
                             <li>Espera la confirmacion del sistema</li>
                         </ol>
 
@@ -1248,7 +1248,7 @@
                         <ol>
                             <li>Ve a la lista de sucursales</li>
                             <li>Encuentra la sucursal que deseas editar</li>
-                            <li>Haz clic en el boton de <strong>editar</strong> (icono de lapiz) en la columna de acciones</li>
+                            <li>Haz clic en el botón de <strong>editar</strong> (icono de lapiz) en la columna de acciones</li>
                             <li>Modifica los campos necesarios</li>
                             <li>Haz clic en <strong>"Actualizar"</strong></li>
                         </ol>
@@ -1268,7 +1268,7 @@
                         <ol>
                             <li>Ve a la lista de sucursales</li>
                             <li>Encuentra la sucursal que deseas eliminar</li>
-                            <li>Haz clic en el boton de <strong>eliminar</strong> (icono de papelera)</li>
+                            <li>Haz clic en el botón de <strong>eliminar</strong> (ícono de papelera)</li>
                             <li>Confirma la eliminacion en el dialogo</li>
                         </ol>
 
