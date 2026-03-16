@@ -11,6 +11,10 @@ class FirstLoginController extends Controller
     {
         $user = auth()->user();
 
+        if ($user->hasRole('hemoscreen')) {
+            return route('hemoscreen.dashboard');
+        }
+
         // Redirect if user has already completed first login
         if (! is_null($user->first_login_at)) {
             return redirect()->route('dashboard');

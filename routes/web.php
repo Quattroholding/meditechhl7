@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationController;
@@ -815,4 +816,13 @@ Route::middleware(['auth'])->prefix('patient-history')->name('patient.history.')
     Route::get('/{id}/status', [\App\Http\Controllers\PatientHistoryController::class, 'status'])->name('status');
     Route::get('/{id}/download', [\App\Http\Controllers\PatientHistoryController::class, 'download'])->name('download');
     Route::post('/{id}/cancel', [\App\Http\Controllers\PatientHistoryController::class, 'cancel'])->name('cancel');
+});
+
+// HemoScreen Standalone Routes
+Route::middleware(['auth', 'role:hemoscreen'])->prefix('hemoscreen')->name('hemoscreen.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\HemoScreenStandaloneWebController::class, 'index'])->name('dashboard');
+    Route::get('/results/{resultId}', [\App\Http\Controllers\HemoScreenStandaloneWebController::class, 'show'])->name('results.show');
+    Route::get('/export-pdf', [\App\Http\Controllers\HemoScreenExportController::class, 'exportPdf'])->name('export-pdf');
+    Route::get('/export-single-pdf/{result}', [\App\Http\Controllers\HemoScreenExportController::class, 'exportSinglePdf'])->name('export-single-pdf');
+    Route::get('/export-csv', [\App\Http\Controllers\HemoScreenExportController::class, 'exportCsv'])->name('export-csv');
 });

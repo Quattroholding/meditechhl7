@@ -23,6 +23,7 @@ class Client extends Model
         'subscription_billing_day',
         'referred_by_client_id',
         'referral_code_used',
+        'hemoscreen_only',
     ];
 
     public static function boot()
@@ -115,5 +116,21 @@ class Client extends Model
         }
 
         return '<div class="profile-image"><img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">'.$this->name.'</div>';
+    }
+
+    /**
+     * Scope to filter only HemoScreen-only clients
+     */
+    public function scopeHemoscreenOnly($query)
+    {
+        return $query->where('hemoscreen_only', true);
+    }
+
+    /**
+     * Scope to filter full SAMI clients (not HemoScreen-only)
+     */
+    public function scopeFullSami($query)
+    {
+        return $query->where('hemoscreen_only', false);
     }
 }

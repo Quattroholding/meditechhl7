@@ -58,11 +58,26 @@ class PublicRegistrationController extends Controller
                 // Verificar si es un usuario existente que puede completar registro:
                 // 1. Usuario de SAMI Recetas (sin client asociado)
                 // 2. Usuario de la app (active=0, registrado pero sin plan)
+                // 3. Usuario standalone de HemoScreen (migrando a full SAMI)
                 $existingUser = User::where('email', $request->email)->first();
                 $isExistingUserWithoutClient = $existingUser
                     && ! $existingUser->default_client_id
                     && ! $existingUser->clients()->exists();
                 $isInactiveAppUser = $existingUser && ! $existingUser->active;
+
+                // Check if this is a standalone HemoScreen user migrating to full SAMI
+                $isStandaloneMigration = $existingUser
+                    && $existingUser->practitioner
+                    && $existingUser->practitioner->is_standalone;
+
+                if ($isStandaloneMigration) {
+                    Log::info('Public registration: Detected standalone HemoScreen user migration', [
+                        'user_id' => $existingUser->id,
+                        'email' => $existingUser->email,
+                        'practitioner_id' => $existingUser->practitioner->id,
+                        'old_client_id' => $existingUser->default_client_id,
+                    ]);
+                }
 
                 // 1. Crear el cliente con valores por defecto
                 $client = new Client;
@@ -95,16 +110,27 @@ class PublicRegistrationController extends Controller
                 $package = Package::findOrFail($request->package_id);
 
                 // 3. Crear o reutilizar usuario
-                if ($isExistingUserWithoutClient || $isInactiveAppUser) {
-                    // Usuario existente (SAMI Recetas o app con active=0) - actualizar y reutilizar
+                if ($isExistingUserWithoutClient || $isInactiveAppUser || $isStandaloneMigration) {
+                    // Usuario existente (SAMI Recetas, app con active=0, o standalone HemoScreen) - actualizar y reutilizar
                     $user = $existingUser;
                     $user->first_name = $request->first_name;
                     $user->last_name = $request->last_name;
                     $user->password = $request->password;
-                    $user->first_login_at = now();
+                    $user->first_login_at = $user->first_login_at ?? now();
                     $user->default_client_id = $client->id;
                     $user->active = true; // Activar usuario
                     $user->whatsapp_phone = $request->phone;
+
+                    // Remove 'hemoscreen' role if migrating from standalone
+                    if ($isStandaloneMigration && $user->hasRole('hemoscreen')) {
+                        $user->removeRole('hemoscreen');
+                    }
+
+                    // Ensure admin client role
+                    if (! $user->hasRole('admin client')) {
+                        $user->assignRole('admin client');
+                    }
+
                     $user->save();
 
                     Log::info('Public registration: Reusing existing user', [
@@ -113,6 +139,7 @@ class PublicRegistrationController extends Controller
                         'client_id' => $client->id,
                         'was_inactive_app_user' => $isInactiveAppUser,
                         'was_sami_recetas_user' => $isExistingUserWithoutClient && ! $isInactiveAppUser,
+                        'was_standalone_hemoscreen' => $isStandaloneMigration,
                     ]);
                 } else {
                     // Nuevo usuario
@@ -137,10 +164,27 @@ class PublicRegistrationController extends Controller
                     ]);
                 }
 
-                $userClient = new UserClient;
-                $userClient->user_id = $user->id;
-                $userClient->client_id = $client->id;
-                $userClient->save();
+                // For standalone migration, keep the old client relationship but add the new one
+                if (! $isStandaloneMigration) {
+                    $userClient = new UserClient;
+                    $userClient->user_id = $user->id;
+                    $userClient->client_id = $client->id;
+                    $userClient->save();
+                } else {
+                    // Add new client relationship while keeping old standalone client
+                    if (! $user->clients()->where('client_id', $client->id)->exists()) {
+                        $userClient = new UserClient;
+                        $userClient->user_id = $user->id;
+                        $userClient->client_id = $client->id;
+                        $userClient->save();
+
+                        Log::info('Public registration: Added new client relationship for standalone migration', [
+                            'user_id' => $user->id,
+                            'new_client_id' => $client->id,
+                            'old_client_id' => $user->practitioner->scb_id ?? null,
+                        ]);
+                    }
+                }
 
                 // 5. Subir logo si existe
                 if ($request->hasFile('logo')) {
@@ -158,12 +202,12 @@ class PublicRegistrationController extends Controller
                 // 6. Crear o actualizar Practitioner si paquete max_users=1
                 $practitionerCreated = false;
                 if ($package->max_users === 1 && $request->filled('identifier')) {
-                    // Verificar si ya tiene practitioner (usuario existente de SAMI Recetas o app)
-                    $existingPractitioner = ($isExistingUserWithoutClient || $isInactiveAppUser) ? $user->practitioner : null;
+                    // Verificar si ya tiene practitioner (usuario existente de SAMI Recetas, app, o standalone)
+                    $existingPractitioner = ($isExistingUserWithoutClient || $isInactiveAppUser || $isStandaloneMigration) ? $user->practitioner : null;
 
                     if ($existingPractitioner) {
                         // Actualizar practitioner existente con datos del formulario
-                        $existingPractitioner->update([
+                        $updateData = [
                             'name' => $prefix.' '.$request->first_name.' '.$request->last_name,
                             'given_name' => $request->first_name,
                             'family_name' => $request->last_name,
@@ -171,7 +215,21 @@ class PublicRegistrationController extends Controller
                             'email' => $request->email,
                             'gender' => $request->gender,
                             'identifier_type' => $request->identifier_type,
-                        ]);
+                        ];
+
+                        // If migrating from standalone, enable full SAMI features
+                        if ($isStandaloneMigration) {
+                            $updateData['is_standalone'] = false;
+
+                            Log::info('Public registration: Migrating standalone HemoScreen practitioner to full SAMI', [
+                                'practitioner_id' => $existingPractitioner->id,
+                                'old_client_id' => $existingPractitioner->scb_id,
+                                'new_client_id' => $client->id,
+                                'standalone_results_count' => $existingPractitioner->standaloneResults()->count(),
+                            ]);
+                        }
+
+                        $existingPractitioner->update($updateData);
 
                         // Actualizar especialidad si es diferente
                         if ($request->medical_speciality) {
@@ -190,6 +248,7 @@ class PublicRegistrationController extends Controller
                         Log::info('Public registration: Updated existing practitioner', [
                             'client_id' => $client->id,
                             'practitioner_id' => $practitioner->id,
+                            'was_standalone_migration' => $isStandaloneMigration ?? false,
                         ]);
                     } else {
                         // Crear nuevo practitioner

@@ -199,6 +199,11 @@ class LoginController extends Controller
     public function redirectLoginByRole($user)
     {
         $route = route('admin.dashboard');
+
+        if ($user->hasRole('hemoscreen')) {
+            $route = route('hemoscreen.dashboard');
+        }
+
         if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
             $route = route('doctor.dashboard');
         }

@@ -16,8 +16,9 @@ class ApiTokenMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      * @param  string|null  $scope  Optional scope to check
+     * @param  string|null  $requiredMode  Optional mode to check (integrated or standalone)
      */
-    public function handle(Request $request, Closure $next, ?string $scope = null): Response
+    public function handle(Request $request, Closure $next, ?string $scope = null, ?string $requiredMode = null): Response
     {
         // Get token from header
         $token = $this->extractTokenFromRequest($request);
@@ -30,12 +31,12 @@ class ApiTokenMiddleware
         $clientIp = $this->getClientIp($request);
 
         // Validate token (with caching for performance)
-        $apiToken = $this->validateToken($token, $clientIp, $scope);
+        $apiToken = $this->validateToken($token, $clientIp, $scope, $requiredMode);
 
         if (! $apiToken) {
-            $this->logUnauthorizedAttempt($token, $clientIp, $scope);
+            $this->logUnauthorizedAttempt($token, $clientIp, $scope, $requiredMode);
 
-            return $this->unauthorizedResponse('Token inválido o IP no autorizada');
+            return $this->unauthorizedResponse('Token inválido, IP no autorizada, o modo incorrecto');
         }
 
         // Update last used information (async to avoid slowing down requests)
@@ -99,10 +100,10 @@ class ApiTokenMiddleware
     /**
      * Validate token with caching
      */
-    private function validateToken(string $token, string $clientIp, ?string $scope = null): ?ApiToken
+    private function validateToken(string $token, string $clientIp, ?string $scope = null, ?string $requiredMode = null): ?ApiToken
     {
         // Cache key for token validation
-        $cacheKey = "api_token_validation:{$token}:{$clientIp}:".($scope ?? 'no_scope');
+        $cacheKey = "api_token_validation:{$token}:{$clientIp}:".($scope ?? 'no_scope').':'.($requiredMode ?? 'no_mode');
 
         // Try to get from cache first (5 minutes cache)
         $cachedResult = Cache::get($cacheKey);
@@ -134,6 +135,13 @@ class ApiTokenMiddleware
             return null;
         }
 
+        // Check mode if specified
+        if ($requiredMode && $apiToken->mode !== $requiredMode) {
+            Cache::put($cacheKey, false, 300);
+
+            return null;
+        }
+
         // Cache positive result for 5 minutes
         Cache::put($cacheKey, $apiToken, 300);
 
@@ -143,12 +151,13 @@ class ApiTokenMiddleware
     /**
      * Log unauthorized attempt
      */
-    private function logUnauthorizedAttempt(string $token, string $ip, ?string $scope = null): void
+    private function logUnauthorizedAttempt(string $token, string $ip, ?string $scope = null, ?string $requiredMode = null): void
     {
         Log::warning('Unauthorized API token attempt', [
             'token_prefix' => substr($token, 0, 10).'...',
             'ip' => $ip,
             'scope' => $scope,
+            'required_mode' => $requiredMode,
             'user_agent' => request()->header('User-Agent'),
             'url' => request()->url(),
             'timestamp' => now(),

@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ConsultingRoomController;
+use App\Http\Controllers\Api\HemoScreenController;
+use App\Http\Controllers\Api\HemoScreenStandaloneController;
 use App\Http\Controllers\Api\MedicalSpecialityController;
 use App\Http\Controllers\Api\MedicationRequestController;
 use App\Http\Controllers\Api\MedicineController;
@@ -15,7 +17,6 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
-use App\Http\Controllers\Api\HemoScreenController;
 use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -163,8 +164,11 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
 
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
 
-    // HemoScreen integration - requires specific scope
-    Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen');
-    Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])->middleware('api.token:hemoscreen');
+    // HemoScreen integration - requires specific scope and integrated mode
+    Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen,integrated');
+    Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])->middleware('api.token:hemoscreen,integrated');
+
+    // HemoScreen Standalone - requires standalone mode
+    Route::post('/lab/hemoscreen-standlone', HemoScreenStandaloneController::class)->middleware('api.token:hemoscreen-standalone,standalone');
 
 });

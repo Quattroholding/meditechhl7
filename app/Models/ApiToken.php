@@ -15,6 +15,7 @@ class ApiToken extends Model
         'token',
         'allowed_ips',
         'scopes',
+        'mode',
         'last_used_at',
         'last_used_ip',
         'expires_at',
@@ -26,6 +27,7 @@ class ApiToken extends Model
     protected $attributes = [
         'scopes' => '["*"]',
         'allowed_ips' => '["*"]',
+        'mode' => 'integrated',
     ];
 
     protected function casts(): array
@@ -187,5 +189,37 @@ class ApiToken extends Model
     public static function findByToken(string $token): ?self
     {
         return static::where('token', $token)->active()->first();
+    }
+
+    /**
+     * Check if token is in standalone mode
+     */
+    public function isStandaloneMode(): bool
+    {
+        return $this->mode === 'standalone';
+    }
+
+    /**
+     * Check if token is in integrated mode
+     */
+    public function isIntegratedMode(): bool
+    {
+        return $this->mode === 'integrated';
+    }
+
+    /**
+     * Scope to filter standalone tokens
+     */
+    public function scopeStandalone($query)
+    {
+        return $query->where('mode', 'standalone');
+    }
+
+    /**
+     * Scope to filter integrated tokens
+     */
+    public function scopeIntegrated($query)
+    {
+        return $query->where('mode', 'integrated');
     }
 }

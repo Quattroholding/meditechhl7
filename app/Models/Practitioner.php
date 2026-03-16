@@ -14,13 +14,14 @@ class Practitioner extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
-        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'registry', 'licence_code', 'identifier_type',
+        'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'is_standalone', 'registry', 'licence_code', 'identifier_type',
         'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
         'active' => 'boolean',
+        'is_standalone' => 'boolean',
         'prescription_authorization' => 'boolean',
         'prescription_authorization_date' => 'datetime',
     ];
@@ -394,7 +395,7 @@ class Practitioner extends BaseModel
     {
         $token = $this->getActiveHemoScreenToken();
 
-        if (!$token) {
+        if (! $token) {
             return null;
         }
 
@@ -405,5 +406,45 @@ class Practitioner extends BaseModel
             'last_used_at' => $token->last_used_at,
             'message' => 'Este practitioner tiene un dispositivo HemoScreen. Recuerda agregar el estudio CPT 85025 (CBC) a los Service Requests si vas a realizar hemograma.',
         ];
+    }
+
+    /**
+     * Check if practitioner is in standalone mode
+     */
+    public function isStandalone(): bool
+    {
+        return (bool) $this->is_standalone;
+    }
+
+    /**
+     * Check if practitioner can access integrated SAMI features
+     */
+    public function canAccessIntegratedFeatures(): bool
+    {
+        return ! $this->is_standalone;
+    }
+
+    /**
+     * Get standalone HemoScreen results for this practitioner
+     */
+    public function standaloneResults()
+    {
+        return $this->hasMany(HemoScreenStandaloneResult::class);
+    }
+
+    /**
+     * Scope to filter only standalone practitioners
+     */
+    public function scopeStandalone($query)
+    {
+        return $query->where('is_standalone', true);
+    }
+
+    /**
+     * Scope to filter only integrated (non-standalone) practitioners
+     */
+    public function scopeIntegrated($query)
+    {
+        return $query->where('is_standalone', false);
     }
 }
