@@ -12,7 +12,7 @@ class FirstLoginController extends Controller
         $user = auth()->user();
 
         if ($user->hasRole('hemoscreen')) {
-            return route('hemoscreen.dashboard');
+            return redirect(route('hemoscreen.dashboard'));
         }
 
         // Redirect if user has already completed first login
