@@ -58,6 +58,9 @@ Route::get('/sami_recetas', [LandingController::class, 'recetas'])->name('sami_r
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 
 Route::get('/pacientes', [LandingController::class, 'patientLanding'])->name('patients.landing');
+
+// HemoScreen Landing Page
+Route::get('/hemoscreen', [LandingController::class, 'hemoscreen'])->name('hemoscreen.landing');
 /*
 Route::get('/register', function () {
     return view('Pages.register');

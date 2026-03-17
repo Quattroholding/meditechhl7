@@ -125,4 +125,9 @@ class LandingController extends Controller
 
         return view('patients-landing', compact('specialties', 'practitioners', 'whatsappNumber', 'whatsappMessage'));
     }
+
+    public function hemoscreen()
+    {
+        return view('sami-hemoscreen');
+    }
 }

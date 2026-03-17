@@ -2,72 +2,88 @@
     <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-sm-6 col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <div class="dash-widget-header">
-                    <span class="dash-widget-icon bg-primary">
-                        <i class="fas fa-vial"></i>
-                    </span>
-                        <div class="dash-count">
-                            <h3>{{ $totalResults }}</h3>
+                    <div class="d-flex align-items-center">
+                        <!-- Icon Left -->
+                        <div class="flex-shrink-0">
+                            <div class="avatar avatar-lg bg-primary-subtle rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-vial fa-2x text-primary"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dash-widget-info">
-                        <h6 class="text-muted">Total de Pruebas</h6>
+                        <!-- Vertical Separator -->
+                        <div class="vr mx-3" style="height: 60px; opacity: 0.2;"></div>
+                        <!-- Count & Description -->
+                        <div class="flex-grow-1">
+                            <h2 class="mb-1 fw-bold text-primary">{{ number_format($totalResults) }}</h2>
+                            <p class="text-muted mb-0 small">Total de Pruebas</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6 col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <div class="dash-widget-header">
-                    <span class="dash-widget-icon bg-success">
-                        <i class="fas fa-check-circle"></i>
-                    </span>
-                        <div class="dash-count">
-                            <h3>{{ $results->total() }}</h3>
+                    <div class="d-flex align-items-center">
+                        <!-- Icon Left -->
+                        <div class="flex-shrink-0">
+                            <div class="avatar avatar-lg bg-success-subtle rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dash-widget-info">
-                        <h6 class="text-muted">Resultados Actuales</h6>
+                        <!-- Vertical Separator -->
+                        <div class="vr mx-3" style="height: 60px; opacity: 0.2;"></div>
+                        <!-- Count & Description -->
+                        <div class="flex-grow-1">
+                            <h2 class="mb-1 fw-bold text-success">{{ number_format($results->total()) }}</h2>
+                            <p class="text-muted mb-0 small">Resultados Actuales</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6 col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <div class="dash-widget-header">
-                    <span class="dash-widget-icon bg-info">
-                        <i class="fas fa-microscope"></i>
-                    </span>
-                        <div class="dash-count">
-                            <h3>{{ $availableDevices->count() }}</h3>
+                    <div class="d-flex align-items-center">
+                        <!-- Icon Left -->
+                        <div class="flex-shrink-0">
+                            <div class="avatar avatar-lg bg-info-subtle rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-microscope fa-2x text-info"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dash-widget-info">
-                        <h6 class="text-muted">Dispositivos</h6>
+                        <!-- Vertical Separator -->
+                        <div class="vr mx-3" style="height: 60px; opacity: 0.2;"></div>
+                        <!-- Count & Description -->
+                        <div class="flex-grow-1">
+                            <h2 class="mb-1 fw-bold text-info">{{ $availableDevices->count() }}</h2>
+                            <p class="text-muted mb-0 small">Dispositivos</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6 col-12">
-            <div class="card">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <div class="dash-widget-header">
-                    <span class="dash-widget-icon bg-warning">
-                        <i class="fas fa-calendar"></i>
-                    </span>
-                        <div class="dash-count">
-                            <h3>{{ $chartDays }}</h3>
+                    <div class="d-flex align-items-center">
+                        <!-- Icon Left -->
+                        <div class="flex-shrink-0">
+                            <div class="avatar avatar-lg bg-warning-subtle rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-calendar fa-2x text-warning"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dash-widget-info">
-                        <h6 class="text-muted">Días de Historial</h6>
+                        <!-- Vertical Separator -->
+                        <div class="vr mx-3" style="height: 60px; opacity: 0.2;"></div>
+                        <!-- Count & Description -->
+                        <div class="flex-grow-1">
+                            <h2 class="mb-1 fw-bold text-warning">{{ $chartDays }}</h2>
+                            <p class="text-muted mb-0 small">Días de Historial</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -234,6 +250,29 @@
     </div>
     <!-- /Results Table -->
 
+    <!-- Export Actions -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <button wire:click="exportToPdf" class="btn btn-primary me-2"
+                            @if(empty($selectedResults)) disabled @endif>
+                        <i class="fas fa-file-pdf me-1"></i>Exportar Seleccionados a PDF
+                    </button>
+                    <button wire:click="exportToCsv" class="btn btn-success">
+                        <i class="fas fa-file-csv me-1"></i>Exportar Todo a CSV
+                    </button>
+                    @if(!empty($selectedResults))
+                        <span class="ms-3 text-muted">
+                        ({{ count($selectedResults) }} seleccionados)
+                    </span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Export Actions -->
+
     <!-- Chart Section -->
     <div class="card mb-4">
         <div class="card-header">
@@ -265,34 +304,13 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" wire:ignore>
             <canvas id="trendChart" height="80"></canvas>
         </div>
     </div>
     <!-- /Chart Section -->
 
-    <!-- Export Actions -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <button wire:click="exportToPdf" class="btn btn-primary me-2"
-                            @if(empty($selectedResults)) disabled @endif>
-                        <i class="fas fa-file-pdf me-1"></i>Exportar Seleccionados a PDF
-                    </button>
-                    <button wire:click="exportToCsv" class="btn btn-success">
-                        <i class="fas fa-file-csv me-1"></i>Exportar Todo a CSV
-                    </button>
-                    @if(!empty($selectedResults))
-                        <span class="ms-3 text-muted">
-                        ({{ count($selectedResults) }} seleccionados)
-                    </span>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /Export Actions -->
+
 
     <p>&nbsp;</p>
 
@@ -303,8 +321,10 @@
             document.addEventListener('livewire:init', () => {
                 let chart = null;
 
-                function renderChart() {
-                    const chartData = @json($chartData);
+                // Chart parameter names mapping
+                const parameterNames = @json($chartParameters);
+
+                function renderChart(chartData, currentParameter) {
                     const ctx = document.getElementById('trendChart');
 
                     if (!ctx) return;
@@ -314,13 +334,16 @@
                         chart.destroy();
                     }
 
+                    // Get parameter name
+                    const parameterLabel = parameterNames[currentParameter] || 'Valor';
+
                     // Create new chart
                     chart = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: chartData.labels,
                             datasets: [{
-                                label: '{{ $chartParameters[$chartParameter] ?? "Valor" }}',
+                                label: parameterLabel,
                                 data: chartData.values,
                                 borderColor: 'rgb(75, 192, 192)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -376,17 +399,14 @@
                 }
 
                 // Initial render
-                renderChart();
+                renderChart(@json($chartData), @json($chartParameter));
 
-                // Re-render on Livewire updates
-                Livewire.on('chartUpdated', () => {
-                    renderChart();
-                });
-
-                // Watch for parameter changes
-                Livewire.hook('message.processed', (message, component) => {
-                    if (component.id === @this.__instance.id) {
-                        renderChart();
+                // Listen for chart updates from Livewire
+                Livewire.on('chartUpdated', (event) => {
+                    console.log('Chart update event received:', event);
+                    const data = event[0] || event; // Handle both event formats
+                    if (data.chartData && data.chartParameter) {
+                        renderChart(data.chartData, data.chartParameter);
                     }
                 });
             });

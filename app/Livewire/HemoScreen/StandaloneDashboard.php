@@ -75,6 +75,22 @@ class StandaloneDashboard extends Component
         $this->resetPage();
     }
 
+    public function updatedChartParameter()
+    {
+        $this->dispatch('chartUpdated', [
+            'chartData' => $this->chartData,
+            'chartParameter' => $this->chartParameter,
+        ]);
+    }
+
+    public function updatedChartDays()
+    {
+        $this->dispatch('chartUpdated', [
+            'chartData' => $this->chartData,
+            'chartParameter' => $this->chartParameter,
+        ]);
+    }
+
     public function resetFilters()
     {
         $this->dateFrom = now()->subDays(30)->format('Y-m-d');
