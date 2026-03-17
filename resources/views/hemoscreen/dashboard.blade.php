@@ -13,7 +13,7 @@
             <!-- /Page Header -->
 
 
-            @livewire('hemo-screen.standalone-dashboard')
+            @livewire(\App\Livewire\HemoScreen\StandaloneDashboard::class)
         </div>
     </div>
 </x-app-layout>
