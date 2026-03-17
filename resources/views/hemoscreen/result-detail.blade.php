@@ -15,7 +15,7 @@
             @endcomponent
             <!-- /Page Header -->
 
-            <livewire:hemo-screen.standalone-result-detail :result="$result->id"/>
+            @livewire(\App\Livewire\HemoScreen\StandaloneResultDetail::class, ['resultId' => $result->id])
 
         </div>
     </div>
