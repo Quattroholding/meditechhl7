@@ -16,6 +16,7 @@
             <!-- /Page Header -->
 
             @livewire('hemo-screen.standalone-result-detail', ['resultId' => $result->id])
+
         </div>
     </div>
 </x-app-layout>
