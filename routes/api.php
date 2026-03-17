@@ -164,11 +164,12 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
 
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
 
-    // HemoScreen integration - requires specific scope and integrated mode
-    Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen,integrated');
-    Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])->middleware('api.token:hemoscreen,integrated');
+    // HemoScreen routes moved to routes/webhooks.php (webhooks.meditecpty.com subdomain)
+    // Moved on 2026-03-16 due to Cloudflare IP restrictions
+    // See: routes/webhooks.php for HemoScreen API endpoints
 
-    // HemoScreen Standalone - requires standalone mode
-    Route::post('/lab/hemoscreen-standlone', HemoScreenStandaloneController::class)->middleware('api.token:hemoscreen-standalone,standalone');
+    // Route::post('/lab/hemoscreen', HemoScreenController::class)->middleware('api.token:hemoscreen,integrated');
+    // Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])->middleware('api.token:hemoscreen,integrated');
+    // Route::post('/lab/hemoscreen-standlone', HemoScreenStandaloneController::class)->middleware('api.token:hemoscreen-standalone,standalone');
 
 });

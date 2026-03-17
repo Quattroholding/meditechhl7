@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\HemoScreenController;
+use App\Http\Controllers\Api\HemoScreenStandaloneController;
 use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
 use App\Http\Controllers\SuscriptionPaymentController;
 use Illuminate\Support\Facades\Route;
@@ -35,3 +37,26 @@ Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {
 });
 
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
+
+// HemoScreen API (Integrated & Standalone)
+// All HemoScreen endpoints are now accessed via webhooks.meditecpty.com
+Route::prefix('api/v1')->middleware('api.token')->group(function () {
+
+    // HemoScreen Integrated - Used during consultations with ServiceRequest
+    // URL: webhooks.meditecpty.com/api/v1/lab/hemoscreen
+    Route::post('/lab/hemoscreen', HemoScreenController::class)
+        ->middleware('api.token:hemoscreen,integrated')
+        ->name('webhooks.hemoscreen.integrated');
+
+    // HemoScreen Service Request Lookup - Get ServiceRequest by hemo_identification
+    // URL: webhooks.meditecpty.com/api/v1/lab/hemoscreen/service-request/{hemo_identification}
+    Route::get('/lab/hemoscreen/service-request/{hemo_identification}', [HemoScreenController::class, 'getServiceRequest'])
+        ->middleware('api.token:hemoscreen,integrated')
+        ->name('webhooks.hemoscreen.service-request');
+
+    // HemoScreen Standalone - For standalone users (no clinic management)
+    // URL: webhooks.meditecpty.com/api/v1/lab/hemoscreen-standlone
+    Route::post('/lab/hemoscreen-standlone', HemoScreenStandaloneController::class)
+        ->middleware('api.token:hemoscreen-standalone,standalone')
+        ->name('webhooks.hemoscreen.standalone');
+});

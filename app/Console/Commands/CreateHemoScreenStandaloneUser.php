@@ -174,7 +174,7 @@ class CreateHemoScreenStandaloneUser extends Command
             $this->newLine();
             $this->info('Next Steps:');
             $this->info('1. Configure HemoScreen gateway device with the token above');
-            $this->info('2. Set API endpoint: '.url('/api/v1/lab/hemoscreen-standalone'));
+            $this->info('2. Set API endpoint: https://webhooks.meditecpty.com/api/v1/lab/hemoscreen-standlone');
             $this->info('3. User can log in at: '.url('/login'));
             $this->info('4. Dashboard available at: '.url('/hemoscreen/dashboard'));
 
