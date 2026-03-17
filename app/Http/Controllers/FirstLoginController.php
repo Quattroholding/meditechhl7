@@ -10,11 +10,6 @@ class FirstLoginController extends Controller
     public function show()
     {
         $user = auth()->user();
-
-        if ($user->hasRole('hemoscreen')) {
-            return redirect(route('hemoscreen.dashboard'));
-        }
-
         // Redirect if user has already completed first login
         if (! is_null($user->first_login_at)) {
             return redirect()->route('dashboard');
@@ -26,10 +21,11 @@ class FirstLoginController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
-
-        // Validate if user hasn't completed first login
         $route = route('profile.edit', $user->id);
-        if ($user->practitioner) {
+        // Validate if user hasn't completed first login
+        if ($user->hasRole('hemoscreen')) {
+            $route = route('hemoscreen.dashboard');
+        }else if ($user->practitioner) {
             $route = route('practitioner.profile', $user->practitioner->id);
         }else if($user->patient){
             $route = route('patient.profile', $user->patient->id);
@@ -37,6 +33,7 @@ class FirstLoginController extends Controller
         if (! is_null($user->first_login_at)) {
             return redirect($route);
         }
+
 
         $request->validate([
             'current_password' => 'required',
