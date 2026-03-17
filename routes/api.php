@@ -152,8 +152,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroyV1']); // Keep original destroy method
     Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailabilityV1']);
 
-    Route::apiResource('medicines', MedicineController::class);
-    Route::get('/clients/{clientId}/medicines', [MedicineController::class, 'getByClient']);
+    // Medicines routes removed - duplicated on line 65-66
 
     Route::apiResource('branches', BranchController::class);
     Route::get('/clients/{clientId}/branches', [BranchController::class, 'getByClient']);
