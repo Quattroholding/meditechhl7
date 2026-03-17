@@ -24,9 +24,16 @@ class PayInvoiceYappy extends Component
         ]);
 
         try {
+            $baseUrl = config('services.yappy_test.base_url');
+            $merchantId = config('services.yappy_test.merchant_id');
+            $aliasYappy = '60800131';
             // Log configuración
-            $baseUrl = config('services.yappy.base_url');
-            $merchantId = config('services.yappy.merchant_id');
+            if(env('app_env') == 'production') {
+                $baseUrl = config('services.yappy.base_url');
+                $merchantId = config('services.yappy.merchant_id');
+                $aliasYappy =  preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
+            }
+
             $appUrl = config('app.url');
 
             \Log::info('YAPPY Config', [
@@ -69,19 +76,18 @@ class PayInvoiceYappy extends Component
                 'token_length' => strlen($token ?? ''),
             ]);
 
-            $aliasYappy =  preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
+
             $config = [
                 'merchantId'  => $merchantId,
                 'orderId'     => $this->invoice->id,
                 'domain'      => 'https://meditecpty.com',
                 'paymentDate' => time(),
-                'subtotal'    => number_format($this->invoice->total ?? 0, 2, '.', ''),
-                'taxes'       => '0.00',
+                'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
+                'taxes'       => number_format($this->invoice->tax_amount ?? 0, 2, '.', ''),
                 'discount'    => '0.00',
                 'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
                 'ipnUrl'      => 'https://webhooks.meditecpty.com/subscriptions/payments/yappy-ipn',
-                //'aliasYappy'  =>$aliasYappy,
-                'aliasYappy'  => '60800131',
+                'aliasYappy'  =>$aliasYappy,
             ];
 
             // 2️⃣ Crear orden

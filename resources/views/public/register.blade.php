@@ -566,11 +566,11 @@
                 }
             }
 
-            packageSelect.addEventListener('change', toggleSamiInfo);
+            //packageSelect.addEventListener('change', toggleSamiInfo);
 
             // Ejecutar al cargar si hay paquete seleccionado
             if (packageSelect.value) {
-                toggleSamiInfo();
+                //toggleSamiInfo();
             }
 
             // Actualizar nombre de archivo seleccionado

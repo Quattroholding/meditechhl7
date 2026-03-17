@@ -64,11 +64,14 @@ return [
         'app_secret' => env('JITSI_APP_SECRET'),
         'key_id' => env('JITSI_KEY_ID'),
     ],
-    'yappy' => [
+    'yappy_test' => [
         'merchant_id' => env('YAPPY_MERCHANT_ID', 'meet.yappy.com'),
         'base_url' => env('YAPPY_API_BASE', 'https://api.yappy.com'),
     ],
-
+    'yappy' => [
+        'merchant_id' => env('YAPPY_MERCHANT_ID_PROD', 'meet.yappy.com'),
+        'base_url' => env('YAPPY_API_BASE_PROD', 'https://api.yappy.com'),
+    ],
     'meta' => [
         'whatsapp_phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
         'whatsapp_access_token' => env('META_WHATSAPP_ACCESS_TOKEN'),
