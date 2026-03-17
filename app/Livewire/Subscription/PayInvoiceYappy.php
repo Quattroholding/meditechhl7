@@ -28,7 +28,7 @@ class PayInvoiceYappy extends Component
             $merchantId = config('services.yappy_test.merchant_id');
             $aliasYappy = '60800131';
             // Log configuración
-            if(env('app_env') == 'production') {
+            if(env('APP_ENV') == 'production') {
                 $baseUrl = config('services.yappy.base_url');
                 $merchantId = config('services.yappy.merchant_id');
                 $aliasYappy =  preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
