@@ -48,6 +48,10 @@ Route::domain('sami.{domain}')->where(['domain' => '.*'])->group(function () {
 });
 
 // Rutas para el subdominio SAMIRX (funciona con cualquier dominio base)
+Route::domain('hemoscreen.{domain}')->where(['domain' => '.*'])->group(function () {
+    Route::get('/', [LandingController::class, 'hemoscreen'])->name('hemoscreen.landing');
+});
+
 Route::domain('samirx.{domain}')->where(['domain' => '.*'])->group(function () {
     Route::get('/', [LandingController::class, 'recetas'])->name('samirx.home');
 });
@@ -59,8 +63,6 @@ Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])
 
 Route::get('/pacientes', [LandingController::class, 'patientLanding'])->name('patients.landing');
 
-// HemoScreen Landing Page
-Route::get('/hemoscreen', [LandingController::class, 'hemoscreen'])->name('hemoscreen.landing');
 /*
 Route::get('/register', function () {
     return view('Pages.register');
