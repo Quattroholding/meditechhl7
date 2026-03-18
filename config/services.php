@@ -67,10 +67,12 @@ return [
     'yappy_test' => [
         'merchant_id' => env('YAPPY_MERCHANT_ID', 'meet.yappy.com'),
         'base_url' => env('YAPPY_API_BASE', 'https://api.yappy.com'),
+        'secret_key' => env('YAPPY_SECRET_KEY'),
     ],
     'yappy' => [
         'merchant_id' => env('YAPPY_MERCHANT_ID_PROD', 'meet.yappy.com'),
         'base_url' => env('YAPPY_API_BASE_PROD', 'https://api.yappy.com'),
+        'secret_key' => env('YAPPY_SECRET_KEY_PROD'),
     ],
     'meta' => [
         'whatsapp_phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),

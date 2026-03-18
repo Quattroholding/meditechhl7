@@ -8,7 +8,9 @@ use App\Models\Client;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class SuscriptionPaymentController extends Controller
@@ -71,7 +73,7 @@ class SuscriptionPaymentController extends Controller
 
         // Only allow verification of pending payments
         if ($payment->status->value !== 'pending') {
-            session()->flash('message.error','Solo se pueden verificar pagos pendientes.');
+            session()->flash('message.error', 'Solo se pueden verificar pagos pendientes.');
 
             return redirect()
                 ->back()
@@ -80,7 +82,7 @@ class SuscriptionPaymentController extends Controller
 
         $payment->markAsCompleted(auth()->id());
 
-        session()->flash('message.success','Pago verificado y aprobado exitosamente.');
+        session()->flash('message.success', 'Pago verificado y aprobado exitosamente.');
 
         return redirect()
             ->route('suscriptions.payments.index')
@@ -158,22 +160,23 @@ class SuscriptionPaymentController extends Controller
             ->with('success', 'Pago eliminado exitosamente.');
     }
 
-    public function yappyIPN(Request $request){
+    public function yappyIPN(Request $request)
+    {
         // Yappy enviará: orderId, hash, status, domain
 
         $orderId = $request->query('orderId');
-        $status  = $request->query('status');
-        $hash    = $request->query('hash');
-        $domain =  $request->query('domain');
+        $status = $request->query('status');
+        $hash = $request->query('hash');
+        $domain = $request->query('domain');
         $invoice = ClientInvoice::find($orderId);
 
         // TODO: validar hash con tu clave secreta
-        \Log::info("Yappy IPN: {$invoice->id} => {$status}");
+        Log::info("Yappy IPN: {$invoice->id} => {$status}");
 
         if (isset($orderId) && isset($status) && isset($domain) && isset($hash)) {
             header('Content-Type: application/json');
-            $success = $this->validateHash($orderId,$status,$hash,$domain);
-            if ($success && $status=='E' && $invoice) {
+            $success = $this->validateHash($orderId, $status, $hash, $domain);
+            if ($success && $status == 'E' && $invoice) {
                 // LÓGICA DE NEGOCIOS
                 // Actualizar modelo de factura según el estado
                 // E = Ejecuto, R = Rechazado, C = Cancelado, X = Expirado
@@ -188,12 +191,12 @@ class SuscriptionPaymentController extends Controller
                     'status' => $statusPayment,
                 ]);
 
-                \Log::info("Payment creado con exito :".$payment->id);
+                Log::info('Payment creado con exito :'.$payment->id);
 
                 // Update invoice payment status
                 $invoice->updatePaymentStatus();
-            }else{
-                \Log::error("validate hash invalido");
+            } else {
+                Log::error('validate hash invalido');
             }
 
             return response()->json(['success' => true]);
@@ -201,20 +204,47 @@ class SuscriptionPaymentController extends Controller
 
     }
 
-
-    function validateHash($orderId,$status,$hash,$domain)
+    public function validateHash($orderId, $status, $hash, $domain)
     {
         try {
-            $secretKey = env('YAPPY_SECRET_KEY');
+            // Determine environment and get appropriate secret key
+            $environment = config('app.env');
+            $configKey = $environment === 'production' ? 'yappy' : 'yappy_test';
+            $secretKey = config('services.'.$configKey.'.secret_key');
+
+            if (empty($secretKey)) {
+                throw new Exception('YAPPY secret key not configured');
+            }
+
             $values = base64_decode($secretKey);
             $secrete = explode('.', $values);
-            $signature = hash_hmac('sha256', $orderId . $status . $domain, $secrete[0]);
+            $signature = hash_hmac('sha256', $orderId.$status.$domain, $secrete[0]);
             $success = strcmp($hash, $signature) === 0;
+
+            if (! $success) {
+                Log::warning('YAPPY Hash validation failed', [
+                    'order_id' => $orderId,
+                    'status' => $status,
+                    'domain' => $domain,
+                    'received_hash' => $hash,
+                    'expected_hash' => $signature,
+                    'environment' => $environment,
+                    'config_key' => $configKey,
+                ]);
+            }
         } catch (\Throwable $th) {
+            Log::error('YAPPY Hash validation exception', [
+                'order_id' => $orderId,
+                'status' => $status,
+                'domain' => $domain,
+                'hash' => $hash,
+                'error' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
             $success = false;
         }
+
         return $success;
     }
-
-
 }
