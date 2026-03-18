@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ClientInvoicePayment extends Model
+class ClientInvoicePayment extends BaseModel
 {
     public static function boot()
     {
