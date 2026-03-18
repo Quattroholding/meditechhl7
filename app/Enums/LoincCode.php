@@ -17,14 +17,14 @@ enum LoincCode: string
     case MPV = '32623-1';
 
     // Differential - Absolute counts (Recuento absoluto)
-    case NEUTROPHILS_ABS = '751-8';
+    case NEUTROPHILS_ABS = '770-8';
     case LYMPHOCYTES_ABS = '731-0';
     case MONOCYTES_ABS = '742-7';
     case EOSINOPHILS_ABS = '711-2';
     case BASOPHILS_ABS = '704-7';
 
     // Differential - Percentages (Porcentajes)
-    case NEUTROPHILS_PCT = '770-8';
+    case NEUTROPHILS_PCT = '751-8';
     case LYMPHOCYTES_PCT = '736-9';
     case MONOCYTES_PCT = '5905-5';
     case EOSINOPHILS_PCT = '713-8';

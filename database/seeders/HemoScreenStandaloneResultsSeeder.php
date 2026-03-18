@@ -20,6 +20,7 @@ class HemoScreenStandaloneResultsSeeder extends Seeder
 
         if ($practitioners->isEmpty()) {
             $this->command->warn('No standalone practitioners found. Run: php artisan hemoscreen:create-standalone-user first');
+
             return;
         }
 
@@ -68,7 +69,7 @@ class HemoScreenStandaloneResultsSeeder extends Seeder
                 'scb_id' => $practitioner->user->default_client_id,
                 'device_serial' => $devices[array_rand($devices)],
                 'patient_identifier' => $patients[array_rand($patients)],
-                'message_control_id' => 'SEED-' . $testDate->format('YmdHis') . '-' . $i,
+                'message_control_id' => 'SEED-'.$testDate->format('YmdHis').'-'.$i,
                 'message_type' => 'OBS.R01',
                 'panel_code' => rand(0, 100) > 20 ? '85025' : '85027', // 80% CBC, 20% CBC with diff
                 'panel_name' => 'Complete Blood Count',
@@ -105,11 +106,18 @@ class HemoScreenStandaloneResultsSeeder extends Seeder
             '785-6' => ['name' => 'MCH', 'min' => 27.0, 'max' => 32.0, 'unit' => 'pg'],
             '786-4' => ['name' => 'MCHC', 'min' => 32.0, 'max' => 36.0, 'unit' => 'g/dL'],
             '777-3' => ['name' => 'Platelets', 'min' => 150.0, 'max' => 400.0, 'unit' => '10^9/L'],
-            '751-8' => ['name' => 'Neutrophils', 'min' => 40.0, 'max' => 70.0, 'unit' => '%'],
-            '736-9' => ['name' => 'Lymphocytes', 'min' => 20.0, 'max' => 40.0, 'unit' => '%'],
-            '5905-5' => ['name' => 'Monocytes', 'min' => 4.0, 'max' => 8.0, 'unit' => '%'],
-            '713-8' => ['name' => 'Eosinophils', 'min' => 1.0, 'max' => 4.0, 'unit' => '%'],
-            '706-2' => ['name' => 'Basophils', 'min' => 0.0, 'max' => 1.0, 'unit' => '%'],
+            // Differential - Absolute counts (as sent by HemoScreen device)
+            '751-8' => ['name' => 'Neutrophils Absolute', 'min' => 2.0, 'max' => 7.0, 'unit' => '10^9/L'],
+            '731-0' => ['name' => 'Lymphocytes Absolute', 'min' => 1.0, 'max' => 4.0, 'unit' => '10^9/L'],
+            '742-7' => ['name' => 'Monocytes Absolute', 'min' => 0.2, 'max' => 1.0, 'unit' => '10^9/L'],
+            '711-2' => ['name' => 'Eosinophils Absolute', 'min' => 0.0, 'max' => 0.5, 'unit' => '10^9/L'],
+            '704-7' => ['name' => 'Basophils Absolute', 'min' => 0.0, 'max' => 0.2, 'unit' => '10^9/L'],
+            // Differential - Percentages (as sent by HemoScreen device)
+            '770-8' => ['name' => 'Neutrophils Percent', 'min' => 40.0, 'max' => 70.0, 'unit' => '%'],
+            '736-9' => ['name' => 'Lymphocytes Percent', 'min' => 20.0, 'max' => 40.0, 'unit' => '%'],
+            '5905-5' => ['name' => 'Monocytes Percent', 'min' => 4.0, 'max' => 8.0, 'unit' => '%'],
+            '713-8' => ['name' => 'Eosinophils Percent', 'min' => 1.0, 'max' => 4.0, 'unit' => '%'],
+            '706-2' => ['name' => 'Basophils Percent', 'min' => 0.0, 'max' => 1.0, 'unit' => '%'],
         ];
 
         foreach ($params as $code => $param) {

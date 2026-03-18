@@ -119,11 +119,18 @@ class HemoScreenPdfExportService
             '785-6' => ['min' => 27.0, 'max' => 32.0, 'unit' => 'pg', 'name' => 'MCH'],
             '786-4' => ['min' => 32.0, 'max' => 36.0, 'unit' => 'g/dL', 'name' => 'MCHC'],
             '777-3' => ['min' => 150.0, 'max' => 400.0, 'unit' => '10^9/L', 'name' => 'Platelets'],
-            '751-8' => ['min' => 40.0, 'max' => 70.0, 'unit' => '%', 'name' => 'Neutrophils'],
-            '736-9' => ['min' => 20.0, 'max' => 40.0, 'unit' => '%', 'name' => 'Lymphocytes'],
-            '5905-5' => ['min' => 4.0, 'max' => 8.0, 'unit' => '%', 'name' => 'Monocytes'],
-            '713-8' => ['min' => 1.0, 'max' => 4.0, 'unit' => '%', 'name' => 'Eosinophils'],
-            '706-2' => ['min' => 0.0, 'max' => 1.0, 'unit' => '%', 'name' => 'Basophils'],
+            // Differential - Absolute counts (as sent by HemoScreen device)
+            '751-8' => ['min' => 2.0, 'max' => 7.0, 'unit' => '10^9/L', 'name' => 'Neutrophils Absolute'],
+            '731-0' => ['min' => 1.0, 'max' => 4.0, 'unit' => '10^9/L', 'name' => 'Lymphocytes Absolute'],
+            '742-7' => ['min' => 0.2, 'max' => 1.0, 'unit' => '10^9/L', 'name' => 'Monocytes Absolute'],
+            '711-2' => ['min' => 0.0, 'max' => 0.5, 'unit' => '10^9/L', 'name' => 'Eosinophils Absolute'],
+            '704-7' => ['min' => 0.0, 'max' => 0.2, 'unit' => '10^9/L', 'name' => 'Basophils Absolute'],
+            // Differential - Percentages (as sent by HemoScreen device)
+            '770-8' => ['min' => 40.0, 'max' => 70.0, 'unit' => '%', 'name' => 'Neutrophils Percent'],
+            '736-9' => ['min' => 20.0, 'max' => 40.0, 'unit' => '%', 'name' => 'Lymphocytes Percent'],
+            '5905-5' => ['min' => 4.0, 'max' => 8.0, 'unit' => '%', 'name' => 'Monocytes Percent'],
+            '713-8' => ['min' => 1.0, 'max' => 4.0, 'unit' => '%', 'name' => 'Eosinophils Percent'],
+            '706-2' => ['min' => 0.0, 'max' => 1.0, 'unit' => '%', 'name' => 'Basophils Percent'],
         ];
     }
 
