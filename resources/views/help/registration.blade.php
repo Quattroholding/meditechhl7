@@ -1782,7 +1782,7 @@
                                     <h6>1. Ir a la pantalla de Login</h6>
                                     <p>Puede ingresar a la pantalla de inicio de sesión de dos formas: <br> 1. Luego de haber completado su registro, en la pantalla de <strong>"Registro Exitoso"</strong>, haz clic en el botón <strong>"Ir al Login"</strong> <br>2. Desde la pantalla del Landing, haz en clic en <strong>"Ingresar"</strong> que se encuentra en el menú superior.</p>
                                     <div>
-                                        <img src="{{ asset('images/tutorial/register/sami_landing    .png') }}" alt="" style="width: 100%;">
+                                        <img src="{{ asset('images/tutorial/register/sami_landing.png') }}" alt="" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
