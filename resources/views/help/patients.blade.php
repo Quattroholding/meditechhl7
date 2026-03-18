@@ -512,6 +512,63 @@
             transform: translateY(-5px);
         }
 
+         /* Timeline */
+        .process-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .process-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+        }
+
+        .timeline-item.completed::before {
+            background: #667eea;
+        }
+
+        .timeline-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .timeline-content h6 {
+            color: #1a237e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
         /* Responsive */
         @media (max-width: 992px) {
             .help-sidebar {
@@ -770,6 +827,12 @@
                             <a href="#paso-9">
                                 <i class="fas fa-save"></i>
                                 Paso 7: Guardar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#sami">
+                                <i class="fas fa-cogs"></i>
+                                Registro del Paciente en el Sistema
                             </a>
                         </li>
                         <li>
@@ -1280,8 +1343,46 @@
                             </div>
                         </div>
 
-                        <div>
+                        {{--}}<div>
                             <img src="{{ asset('images/tutorial/patients/saved-patient.png') }}" alt="" style="width: 100%;">
+                        </div>{{--}}
+                    </div>
+                </section>
+
+                <!-- Ingreso de pacientes a Sami -->
+                <section id="sami" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Registro del Paciente en el Sistema</h3>
+                    <div class="step-content">
+                        <p>Este flujo comprende el proceso de registro del paciente en Sami:</p>
+
+                        <div class="process-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>1. Guardar Paciente</h6>
+                                    <p>Luego de que haya registrado el paciente exitosamente Sami crea automáticamente un usuario para el paciente.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/patients/saved-patient.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>2. Envío de Credenciales</h6>
+                                    <p>Sami envía un correo al paciente con sus credenciales (correo y contraseña) con el correo que ingresó en el registro, para que pueda iniciar sesión en SAMI y pueda agendar citas.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/patients/patient_credentials.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Importante:</strong> Valide que el correo que ingresa al registrar el paciente sea el correcto, ya que ese será el que el SAMI usará para enviar las credenciales al paciente.
+                                <br><br> En caso del que paciente se haya asociado anteriormente con otra clínica omita esta información. 
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -1290,7 +1391,7 @@
                 <section id="asociar" class="step-card step-info">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-link me-2"></i>Asociar Paciente Existente</h3>
                     <div class="step-content">
-                        <p>Si el paciente ya existe en el sistema (fue registrado por otra clinica), puedes asociarlo a tu clínica:</p>
+                        <p>Si el paciente ya existe en el sistema (fue registrado por otra clínica), puedes asociarlo a tu clínica:</p>
 
                         <div class="sub-step">
                             <h6><i class="fas fa-search me-2"></i>Proceso de Asociacion</h6>
