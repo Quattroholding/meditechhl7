@@ -13,10 +13,17 @@ class ClientScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && auth()->user()->hasRole('doctor') && auth()->user()->practitioner) {  // el doctor solo ve los clientes que tiene asociados
-            $builder->whereIn('id', auth()->user()->clients()->pluck('client_id'));
-        } elseif (auth()->user() && auth()->user()->hasRole('admin client')) {
-            $builder->whereIn('id', auth()->user()->clients()->pluck('client_id'));
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole('doctor') && $user->practitioner) {  // el doctor solo ve los clientes que tiene asociados
+            $builder->whereIn('id', $user->clients()->pluck('client_id'));
+        } elseif ($user->hasRole('admin client')) {
+            $builder->whereIn('id', $user->clients()->pluck('client_id'));
         }
     }
 }

@@ -13,11 +13,16 @@ class MedicineScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->check()) {
-            $builder->where(function ($query) {
-                $query->whereNull('user_id')
-                    ->orWhere('user_id', auth()->id());
-            });
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
         }
+
+        $builder->where(function ($query) use ($user) {
+            $query->whereNull('user_id')
+                ->orWhere('user_id', $user->id);
+        });
     }
 }

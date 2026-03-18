@@ -16,15 +16,14 @@ class RolScope implements Scope
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
-
-      
 
         // Caso DOCTOR
         if ($user->hasRole('doctor') && $user->practitioner) {
             $builder->whereIn('id', [3, 6]);
+
             return;
         }
 
@@ -56,6 +55,7 @@ class RolScope implements Scope
             // Si no queda ningún rol disponible, devolvemos vacío
             if (empty($availableRoles)) {
                 $builder->whereIn('id', []);
+
                 return;
             }
 

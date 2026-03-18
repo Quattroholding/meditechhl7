@@ -13,13 +13,20 @@ class ChargeItemScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') || auth()->user()->hasRole('recepcionista'))) {
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole('doctor') || $user->hasRole('recepcionista')) {
             // Filter by client_id based on user's associated clients
-            $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
-        } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {
+            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
+        } elseif ($user->hasRole('paciente')) {
             // Filter by patient - through the patient relationship
-            $builder->whereHas('patient', function ($q) {
-                $q->where('user_id', auth()->user()->id);
+            $builder->whereHas('patient', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
             });
         }
     }

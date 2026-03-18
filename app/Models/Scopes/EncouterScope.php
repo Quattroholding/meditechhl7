@@ -13,22 +13,28 @@ class EncouterScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor'))) {  // el doctor solo ve sus citas
-            $builder->where('encounters.practitioner_id', auth()->user()->practitioner->id);
-            $builder->whereHas('patient', function ($q) {
-                $q->whereHas('clients', function ($q2) {
-                    $q2->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole('doctor')) {  // el doctor solo ve sus citas
+            $builder->where('encounters.practitioner_id', $user->practitioner->id);
+            $builder->whereHas('patient', function ($q) use ($user) {
+                $q->whereHas('clients', function ($q2) use ($user) {
+                    $q2->whereIn('client_id', $user->clients()->pluck('client_id'));
                 });
             });
-        } elseif (auth()->user() && auth()->user()->hasRole('paciente')) { // el paciente ve sus consultas
-            $builder->where('encounters.patient_id', auth()->user()->patient->id);
-        } elseif (auth()->user() && auth()->user()->hasRole('recepcionista') ||
-            auth()->user() && auth()->user()->hasRole('admin client') ||
-            auth()->user() && auth()->user()->hasRole('asistente medico')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
-            $builder->whereHas('appointment', function ($q) {
-                $q->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
+        } elseif ($user->hasRole('paciente')) { // el paciente ve sus consultas
+            $builder->where('encounters.patient_id', $user->patient->id);
+        } elseif ($user->hasRole('recepcionista') ||
+            $user->hasRole('admin client') ||
+            $user->hasRole('asistente medico')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
+            $builder->whereHas('appointment', function ($q) use ($user) {
+                $q->whereIn('client_id', $user->clients()->pluck('client_id'));
             });
-
         }
     }
 }

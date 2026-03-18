@@ -13,14 +13,20 @@ class ServiceCatalogScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor'))) {  // el doctor solo ve los clientes que tiene asociados
-            $builder->where('practitioner_id', auth()->user()->practitioner->id);
-        }else  if (auth()->user()->hasRole('recepcionista')
-                or auth()->user()->hasRole('asistente medico')
-                or auth()->user()->hasRole('admin client')) {  // el doctor solo ve los clientes que tiene asociados
+        $user = auth()->user();
 
-            $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
 
+        if ($user->hasRole('doctor')) {
+            $builder->where('practitioner_id', $user->practitioner->id);
+        } elseif ($user->hasRole('recepcionista')
+                or $user->hasRole('asistente medico')
+                or $user->hasRole('admin client')) {
+
+            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
         }
     }
 }

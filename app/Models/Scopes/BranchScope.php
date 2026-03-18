@@ -13,14 +13,19 @@ class BranchScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
+        $user = auth()->user();
 
-        if (auth()->user() && (auth()->user()->hasRole('doctor')
-                or auth()->user()->hasRole('recepcionista')
-                or auth()->user()->hasRole('asistente medico')
-                or auth()->user()->hasRole('admin client'))) {  // el doctor solo ve los clientes que tiene asociados
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
 
-            $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
+        if ($user->hasRole('doctor')
+                or $user->hasRole('recepcionista')
+                or $user->hasRole('asistente medico')
+                or $user->hasRole('admin client')) {  // el doctor solo ve los clientes que tiene asociados
 
+            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
         }
     }
 }

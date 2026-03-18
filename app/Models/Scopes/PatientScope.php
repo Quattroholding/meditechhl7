@@ -13,13 +13,20 @@ class PatientScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor') or auth()->user()->hasRole('recepcionista')
-            or auth()->user()->hasRole('admin client') or auth()->user()->hasRole('asistente medico'))) {
-            $builder->whereHas('clients', function ($q) {
-                $q->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole('doctor') or $user->hasRole('recepcionista')
+            or $user->hasRole('admin client') or $user->hasRole('asistente medico')) {
+            $builder->whereHas('clients', function ($q) use ($user) {
+                $q->whereIn('client_id', $user->clients()->pluck('client_id'));
             });
-        } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {
-            $builder->where('user_id', auth()->user()->id);
+        } elseif ($user->hasRole('paciente')) {
+            $builder->where('user_id', $user->id);
         }
     }
 }

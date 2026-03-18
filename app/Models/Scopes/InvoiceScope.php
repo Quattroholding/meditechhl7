@@ -13,16 +13,23 @@ class InvoiceScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user() && (auth()->user()->hasRole('doctor'))) {
+        $user = auth()->user();
+
+        // Skip scope if no authenticated user (e.g., webhooks, API calls)
+        if (! $user) {
+            return;
+        }
+
+        if ($user->hasRole('doctor')) {
             // Filter by client_id based on user's associated clients
-            $builder->wherePerformerPractitionerId(auth()->user()->practitioner->id);
-        } elseif (auth()->user() && (auth()->user()->hasRole('admin_client') or auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico'))) {
+            $builder->wherePerformerPractitionerId($user->practitioner->id);
+        } elseif ($user->hasRole('admin_client') or $user->hasRole('recepcionista') or $user->hasRole('asistente medico')) {
             // Filter by patient - through the patient relationship
-            $builder->whereIn('client_id', auth()->user()->clients()->pluck('client_id'));
-        } elseif (auth()->user() && auth()->user()->hasRole('paciente')) {
+            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
+        } elseif ($user->hasRole('paciente')) {
             // Filter by patient - through the patient relationship
-            $builder->whereHas('patient', function ($q) {
-                $q->where('user_id', auth()->user()->id);
+            $builder->whereHas('patient', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
             });
         }
     }
