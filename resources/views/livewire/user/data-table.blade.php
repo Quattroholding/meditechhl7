@@ -64,7 +64,7 @@
                                     </td>
                                     @if(auth()->user()->hasRole('admin'))
                                         <td data-column="email" data-priority="3" data-label="Cliente/Paquete">
-                                            <span class="cell-content">{{ $user->getCurrentClient()->name }} <br/> {{ $user->getCurrentClient()->package->name }}</span>
+                                            <span class="cell-content">{{ $user->getCurrentClient()?->name }} <br/> {{ $user->getCurrentClient()?->package->name }}</span>
                                         </td>
                                     @endif
                                     <td data-column="roles" data-priority="4" data-label="{{__('user.roles')}}">
