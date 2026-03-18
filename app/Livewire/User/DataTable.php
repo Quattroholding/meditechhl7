@@ -25,8 +25,11 @@ class DataTable extends Component
 
     public $modalTitle = 'Usuario';
 
+    public $statusFilter = 'active'; // all, active, inactive
+
     protected $queryString = [
         'search' => ['except' => ''],
+        'statusFilter' => ['except' => 'all'],
     ];
 
     public function sortBy($field)
@@ -42,6 +45,11 @@ class DataTable extends Component
     }
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter()
     {
         $this->resetPage();
     }
@@ -75,6 +83,9 @@ class DataTable extends Component
                     $q->orWhere('last_name', 'like', '%'.$this->search.'%');
                     $q->orWhere('email', 'like', '%'.$this->search.'%');
                 });
+            })
+            ->when($this->statusFilter !== 'all', function (Builder $query) {
+                $query->where('active', $this->statusFilter === 'active' ? 1 : 0);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);

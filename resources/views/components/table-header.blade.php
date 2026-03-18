@@ -17,7 +17,7 @@ if(!isset($show_create)) $show_create=true;
                                 </form>
                             </div>
                             @if($show_create)
-                                <a href="{{ $li_1 }}" class="btn btn-primary submit-form add-pluss py-2" title="{{__('generic.new')}}">
+                                <a href="{{ $li_1 }}" class="btn btn-primary submit-form add-pluss py-2" title="{{__('generic.new')}}" style="display: inline-block">
                                     {{--}} <i class="fa fa-plus" alt="{{__('generic.new')}}"></i> {{__('generic.new')}} {{--}}
                                     <i class="fa fa-plus me-1"></i>
                                     <span class="d-md-inline">{{__('generic.new')}}</span>

@@ -4,15 +4,20 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',array('show_create'=>$show_create))
-                        @slot('title')
-
-                        @endslot
-                        @slot('li_1')
-                            {{ route('user.create') }}
+                    @component('components.table-header',array('show_create'=>$show_create,'title'=>'','li_1'=>route('user.create')))
+                        @slot('filters')
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-block local-forms">
+                                        <label>{{__('Estatus')}}</label>
+                                        <x-select-input  wire:model.live="statusFilter" id="statusFilter" name="metodo" :options="['active'=>'Activos','inactive'=>'Inactivos']" :selected="[]" class="form-select d-inline-block"/>
+                                    </div>
+                                </div>
+                            </div>
                         @endslot
                     @endcomponent
                     <!-- /Table Header -->
+
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
