@@ -27,18 +27,53 @@ class ClientInvoiceService
             $periodStart = $subscription->current_period_ends_at ?? now();
             $periodEnd = $periodStart->copy()->addDays($subscription->package->billing_period_days);
 
-            $invoice = new ClientInvoice;
-            $invoice->client_id = $subscription->client_id;
-            $invoice->subscription_id = $subscription->id;
-            $invoice->period_start = $periodStart;
-            $invoice->period_end = $periodEnd;
-            $invoice->due_date = $periodStart->copy()->addDays(7);
-            $invoice->status = InvoiceStatus::PENDING;
-            $invoice->subtotal = 0;
-            $invoice->tax_rate = 0.07; // 7% ITBMS Panama
-            $invoice->tax_amount = 0;
-            $invoice->total = 0;
-            $invoice->save();
+            // Retry logic to handle race conditions with invoice number generation
+            $maxAttempts = 5;
+            $attempt = 0;
+            $invoice = null;
+
+            while ($attempt < $maxAttempts) {
+                try {
+                    $invoice = new ClientInvoice;
+                    $invoice->client_id = $subscription->client_id;
+                    $invoice->subscription_id = $subscription->id;
+                    $invoice->period_start = $periodStart;
+                    $invoice->period_end = $periodEnd;
+                    $invoice->due_date = $periodStart->copy()->addDays(7);
+                    $invoice->status = InvoiceStatus::PENDING;
+                    $invoice->subtotal = 0;
+                    $invoice->tax_rate = 0.07; // 7% ITBMS Panama
+                    $invoice->tax_amount = 0;
+                    $invoice->total = 0;
+                    $invoice->save();
+
+                    break;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'invoice_number_unique')) {
+                        $attempt++;
+
+                        if ($attempt >= $maxAttempts) {
+                            Log::error('Failed to generate unique invoice number after max attempts', [
+                                'subscription_id' => $subscription->id,
+                                'attempts' => $attempt,
+                                'error' => $e->getMessage(),
+                            ]);
+                            throw $e;
+                        }
+
+                        Log::warning('Duplicate invoice number detected, retrying', [
+                            'subscription_id' => $subscription->id,
+                            'attempt' => $attempt,
+                        ]);
+
+                        usleep(100000 * $attempt);
+
+                        continue;
+                    }
+
+                    throw $e;
+                }
+            }
 
             $this->calculateItems($invoice, $subscription);
 
@@ -75,18 +110,53 @@ class ClientInvoiceService
     public function generateForPeriod(ClientSubscription $subscription, Carbon $startDate, Carbon $endDate): ClientInvoice
     {
         return DB::transaction(function () use ($subscription, $startDate, $endDate) {
-            $invoice = new ClientInvoice;
-            $invoice->client_id = $subscription->client_id;
-            $invoice->subscription_id = $subscription->id;
-            $invoice->period_start = $startDate;
-            $invoice->period_end = $endDate;
-            $invoice->due_date = $startDate->copy()->addDays(7);
-            $invoice->status = InvoiceStatus::PENDING;
-            $invoice->subtotal = 0;
-            $invoice->tax_rate = 0.07; // 7% ITBMS Panama
-            $invoice->tax_amount = 0;
-            $invoice->total = 0;
-            $invoice->save();
+            // Retry logic to handle race conditions with invoice number generation
+            $maxAttempts = 5;
+            $attempt = 0;
+            $invoice = null;
+
+            while ($attempt < $maxAttempts) {
+                try {
+                    $invoice = new ClientInvoice;
+                    $invoice->client_id = $subscription->client_id;
+                    $invoice->subscription_id = $subscription->id;
+                    $invoice->period_start = $startDate;
+                    $invoice->period_end = $endDate;
+                    $invoice->due_date = $startDate->copy()->addDays(7);
+                    $invoice->status = InvoiceStatus::PENDING;
+                    $invoice->subtotal = 0;
+                    $invoice->tax_rate = 0.07; // 7% ITBMS Panama
+                    $invoice->tax_amount = 0;
+                    $invoice->total = 0;
+                    $invoice->save();
+
+                    break;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'invoice_number_unique')) {
+                        $attempt++;
+
+                        if ($attempt >= $maxAttempts) {
+                            Log::error('Failed to generate unique invoice number after max attempts', [
+                                'subscription_id' => $subscription->id,
+                                'attempts' => $attempt,
+                                'error' => $e->getMessage(),
+                            ]);
+                            throw $e;
+                        }
+
+                        Log::warning('Duplicate invoice number detected, retrying', [
+                            'subscription_id' => $subscription->id,
+                            'attempt' => $attempt,
+                        ]);
+
+                        usleep(100000 * $attempt);
+
+                        continue;
+                    }
+
+                    throw $e;
+                }
+            }
 
             $this->calculateItems($invoice, $subscription);
 

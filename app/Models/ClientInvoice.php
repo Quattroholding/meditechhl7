@@ -247,11 +247,16 @@ class ClientInvoice extends BaseModel
         $month = now()->format('m');
         $prefix = "SUB-{$year}{$month}-";
 
+        // Add small random delay to reduce race condition likelihood
+        usleep(random_int(1000, 5000));
+
         // Buscar el último número de secuencia para este período GLOBALMENTE (sin scope)
         // porque el constraint único es global
+        // Use FOR UPDATE to lock the row and prevent race conditions
         $lastInvoice = static::withoutGlobalScope('client_filter')
             ->where('invoice_number', 'like', $prefix.'%')
             ->orderByRaw('CAST(SUBSTRING(invoice_number, '.strlen($prefix).' + 1) AS UNSIGNED) DESC')
+            ->lockForUpdate()
             ->first();
 
         if ($lastInvoice) {
@@ -262,14 +267,19 @@ class ClientInvoice extends BaseModel
             $sequence = 1;
         }
 
+        // Add random offset to reduce collision probability in high-concurrency scenarios
+        $randomOffset = random_int(0, 2);
+        $sequence += $randomOffset;
+
         // Intentar generar un número único (retry loop por si hay race condition)
         $maxAttempts = 100;
         $attempt = 0;
 
         do {
+            $currentSequence = $sequence + $attempt;
             $invoiceNumber = str_replace(
                 ['{YEAR}', '{MONTH}', '{SEQUENCE}'],
-                [$year, $month, str_pad($sequence + $attempt, 4, '0', STR_PAD_LEFT)],
+                [$year, $month, str_pad($currentSequence, 4, '0', STR_PAD_LEFT)],
                 $format
             );
 
