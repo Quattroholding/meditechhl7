@@ -103,10 +103,9 @@
                             name="phone"
                             id="phone"
                             wireModel="phone"
-                            :error="$errors->get('phone')"
-                            required
                             class="block mt-1 w-full"
                         />
+                        <x-input-error :messages="$errors->get('full_phone')" class="mt-2" />
                     </div>
                 </div>
                 <div class=" col-12 col-md-6 col-xl-6">
@@ -178,9 +177,9 @@
                             name="contact_phone"
                             id="contact_phone"
                             wireModel="contact_phone"
-                            :error="$errors->get('contact_phone')"
                             class="block mt-1 w-full"
                         />
+                        <x-input-error :messages="$errors->get('full_contact_phone')" class="mt-2" />
                     </div>
                 </div>
             </div>

@@ -5,12 +5,11 @@
     'required' => false,
     'disabled' => false,
     'wireModel' => null,
-    'error' => null,
+    'error' => null, // Mantenido por compatibilidad, usar x-input-error en su lugar
 ])
 
 @php
     $inputId = $id ?? $name;
-    $hasError = $error && (is_string($error) || (is_array($error) && count($error) > 0));
 @endphp
 
 <div class="phone-input-wrapper">
@@ -26,17 +25,6 @@
         @if($disabled) disabled @endif
         {{ $attributes->merge(['class' => 'form-control']) }}
     >
-
-    <!-- Mensaje de error -->
-    @if($hasError)
-        <span class="error phone-error-message" style="color: #e74c3c; font-size: 12px; margin-top: 5px; display: block;">
-            @if(is_array($error))
-                {{ $error[0] }}
-            @else
-                {{ $error }}
-            @endif
-        </span>
-    @endif
 </div>
 
 <style>

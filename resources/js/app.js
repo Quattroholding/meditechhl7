@@ -154,6 +154,25 @@ function setupPhoneValidation(input) {
     // Validar al enviar el formulario
     if (form) {
         form.addEventListener('submit', (e) => {
+            const currentValue = input.value ? String(input.value).trim() : '';
+            const isRequired = input.hasAttribute('required');
+
+            // Si el campo está vacío y es opcional, no validar
+            if (!currentValue && !isRequired) {
+                // Limpiar el campo oculto también
+                if (input.hiddenInput) {
+                    input.hiddenInput.value = '';
+                }
+
+                // Limpiar cualquier error existente
+                const existingError = input.parentElement.querySelector('.phone-error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                input.style.borderColor = '';
+                return;
+            }
+
             // Update both visible and hidden fields with full international number
             const fullNumber = iti.getNumber();
             if (fullNumber) {
@@ -163,8 +182,8 @@ function setupPhoneValidation(input) {
                 input.hiddenInput.value = fullNumber;
             }
 
-            // Validar que el número sea válido
-            if (!iti.isValidNumber()) {
+            // Solo validar si hay un valor o es requerido
+            if (currentValue && !iti.isValidNumber()) {
                 e.preventDefault();
 
                 let errorMessage = 'Número de teléfono inválido. ';
@@ -198,7 +217,7 @@ function setupPhoneValidation(input) {
                 return false;
             }
 
-            // Limpiar errores si el número es válido
+            // Limpiar errores si el número es válido o está vacío
             const existingError = input.parentElement.querySelector('.phone-error-message');
             if (existingError) {
                 existingError.remove();
@@ -217,13 +236,21 @@ function setupPhoneValidation(input) {
         // Primero limpiar valores corruptos
         cleanCorruptValue(input);
 
+        const currentValue = input.value ? String(input.value).trim() : '';
+
         // Actualizar el campo oculto con el número completo en formato internacional
         if (iti && input.hiddenInput) {
-            const fullNumber = iti.getNumber();
-            if (fullNumber) {
-                input.hiddenInput.value = fullNumber;
+            if (currentValue) {
+                const fullNumber = iti.getNumber();
+                if (fullNumber) {
+                    input.hiddenInput.value = fullNumber;
 
-                // Disparar evento para que Livewire detecte el cambio en el hidden input
+                    // Disparar evento para que Livewire detecte el cambio en el hidden input
+                    input.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            } else {
+                // Si el campo está vacío, limpiar el campo oculto también
+                input.hiddenInput.value = '';
                 input.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
