@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    <!-- Google Tag Manager - Data Layer -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            @auth
+                'user_id': '{{ auth()->id() }}',
+                'user_email_hash': '{{ md5(strtolower(trim(auth()->user()->email))) }}', // Hash para privacidad
+                'user_role': '{{ auth()->user()->getRoleNames()->first() ?? "sin_rol" }}',
+                'user_type': '{{ auth()->user()->getRoleNames()->first() ?? "sin_rol" }}',
+                'login_status': 'logged_in',
+                @if(auth()->user()->getCurrentClient())
+                    'client_id': '{{ auth()->user()->getCurrentClient()->id }}',
+                    'client_name': '{{ auth()->user()->getCurrentClient()->name }}',
+                @endif
+                @if(auth()->user()->branch_id)
+                    'branch_id': '{{ auth()->user()->branch_id }}',
+                @endif
+            @else
+                'login_status': 'logged_out',
+            @endauth
+            'page_type': '{{ Route::currentRouteName() }}',
+            'environment': '{{ app()->environment() }}'
+        });
+    </script>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
