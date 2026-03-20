@@ -319,21 +319,32 @@
                         position: 'top'
                     },
                     tooltip: {
-                        enabled: true
+                        enabled: true,
+                        callbacks: {
+                            title: function(context) {
+                                return 'Edad: ' + context[0].parsed.x + ' meses';
+                            }
+                        }
                     }
                 },
                 scales: {
                     x: {
+                        type: 'linear',  // Importante: usar escala lineal para coordenadas numéricas
                         title: {
                             display: true,
                             text: 'Edad (meses)'
+                        },
+                        min: 0,
+                        ticks: {
+                            stepSize: 6  // Mostrar ticks cada 6 meses
                         }
                     },
                     y: {
                         title: {
                             display: true,
                             text: 'Valor'
-                        }
+                        },
+                        beginAtZero: false
                     }
                 }
             }
@@ -363,6 +374,8 @@
 
         console.log('  - WHO curves ages:', whoCurves.ages?.length || 0);
         console.log('  - Patient data points:', patientData.ages?.length || 0);
+        console.log('  - Patient ages:', patientData.ages);
+        console.log('  - Patient values:', patientData.values);
 
         const chartTypeLabels = {
             'weight_for_age': 'Peso (kg)',
@@ -371,86 +384,108 @@
             'head_circumference_for_age': 'Circunferencia Cefálica (cm)'
         };
 
-        window.growthChartInstance.data.labels = whoCurves.ages || [];
+        // Función helper para convertir a formato {x, y}
+        const convertToXY = (ages, values) => {
+            if (!ages || !values) return [];
+            return ages.map((age, i) => ({x: parseFloat(age), y: parseFloat(values[i])}));
+        };
+
+        // NO usar labels cuando el eje X es linear
+        window.growthChartInstance.data.labels = [];
+
         window.growthChartInstance.data.datasets = [
             {
                 label: 'P3',
-                data: whoCurves.p3 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p3),
                 borderColor: 'rgba(220, 53, 69, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P10',
-                data: whoCurves.p10 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p10),
                 borderColor: 'rgba(255, 193, 7, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P25',
-                data: whoCurves.p25 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p25),
                 borderColor: 'rgba(108, 117, 125, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P50 (Mediana)',
-                data: whoCurves.p50 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p50),
                 borderColor: 'rgba(25, 135, 84, 0.7)',
                 backgroundColor: 'transparent',
                 borderWidth: 2,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P75',
-                data: whoCurves.p75 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p75),
                 borderColor: 'rgba(108, 117, 125, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P90',
-                data: whoCurves.p90 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p90),
                 borderColor: 'rgba(255, 193, 7, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'P97',
-                data: whoCurves.p97 || [],
+                data: convertToXY(whoCurves.ages, whoCurves.p97),
                 borderColor: 'rgba(220, 53, 69, 0.5)',
                 backgroundColor: 'transparent',
                 borderWidth: 1,
                 pointRadius: 0,
-                tension: 0.4
+                tension: 0.4,
+                parsing: false
             },
             {
                 label: 'Paciente',
                 data: patientData.ages && patientData.values ?
-                    patientData.ages.map((age, i) => ({x: age, y: patientData.values[i]})) : [],
+                    patientData.ages.map((age, i) => ({
+                        x: parseFloat(age),
+                        y: parseFloat(patientData.values[i])
+                    })) : [],
                 borderColor: 'rgba(13, 110, 253, 1)',
                 backgroundColor: 'rgba(13, 110, 253, 0.5)',
                 borderWidth: 3,
                 pointRadius: 5,
                 pointHoverRadius: 7,
-                tension: 0.1
+                tension: 0.1,
+                parsing: false
             }
         ];
 
         window.growthChartInstance.options.scales.y.title.text = chartTypeLabels[chartData.chart_type] || 'Valor';
         window.growthChartInstance.update();
+
+        console.log('✅ Gráfico actualizado con', window.growthChartInstance.data.datasets.length, 'datasets');
+        console.log('  - Datos del paciente:', window.growthChartInstance.data.datasets[7].data);
     }
 
     // No inicializar automáticamente - esperar a que la sección del acordeón se abra
