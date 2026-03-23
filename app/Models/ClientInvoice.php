@@ -323,10 +323,12 @@ class ClientInvoice extends BaseModel
         if ($totalPaid >= $this->total) {
             $result = $this->markAsPaid();
 
-            // Activate subscription if it's pending activation
+            // Reactivate/activate subscription based on current status
             if ($result && $this->subscription) {
-                if ($this->subscription->status === \App\Enums\SubscriptionStatus::PENDING_ACTIVATION) {
-                    $this->subscription->activate();
+                $subscription = $this->subscription;
+
+                if ($subscription->status === \App\Enums\SubscriptionStatus::PENDING_ACTIVATION) {
+                    $subscription->activate();
 
                     // Confirmar referral si el cliente fue referido y es su primera factura pagada
                     $this->confirmReferralIfApplicable();
@@ -334,8 +336,28 @@ class ClientInvoice extends BaseModel
                     // Enviar notificación de agradecimiento al cliente
                     $notifiableUser = \App\Notifications\InvoiceGeneratedNotification::getNotifiableUser($this);
                     if ($notifiableUser) {
-                        $notifiableUser->notify(new \App\Notifications\SubscriptionActivatedNotification($this->subscription));
+                        $notifiableUser->notify(new \App\Notifications\SubscriptionActivatedNotification($subscription));
                     }
+                } elseif ($subscription->status === \App\Enums\SubscriptionStatus::SUSPENDED) {
+                    // Reactivate from suspended status
+                    $subscription->resume();
+
+                    \Log::info('Subscription resumed from suspended', [
+                        'subscription_id' => $subscription->id,
+                        'invoice_id' => $this->id,
+                    ]);
+                } elseif ($subscription->status === \App\Enums\SubscriptionStatus::PAST_DUE) {
+                    // Reactivate from past_due status
+                    $subscription->status = \App\Enums\SubscriptionStatus::ACTIVE;
+                    $subscription->grace_period_ends_at = null;
+                    $subscription->retry_count = 0;
+                    $subscription->next_retry_at = null;
+                    $subscription->save();
+
+                    \Log::info('Subscription reactivated from past_due', [
+                        'subscription_id' => $subscription->id,
+                        'invoice_id' => $this->id,
+                    ]);
                 }
             }
 
