@@ -7,6 +7,7 @@
         window.dataLayer.push({
             @auth
                 'user_id': '{{ auth()->id() }}',
+                'user_name': '{{ auth()->full_name }}',
                 'user_email_hash': '{{ md5(strtolower(trim(auth()->user()->email))) }}', // Hash para privacidad
                 'user_role': '{{ auth()->user()->getRoleNames()->first() ?? "sin_rol" }}',
                 'user_type': '{{ auth()->user()->getRoleNames()->first() ?? "sin_rol" }}',
