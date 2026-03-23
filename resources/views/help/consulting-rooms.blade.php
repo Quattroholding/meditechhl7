@@ -896,29 +896,29 @@
             <div class="col-lg-8">
                 <!-- Que es un Consultorio -->
                 <section id="concepto" class="step-card step-info">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>Que es un Consultorio?</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>¿Qué es un Consultorio?</h3>
                     <div class="step-content">
-                        <p>Un <strong>consultorio</strong> (o consulting room) es el <strong>espacio fisico</strong> dentro de una sucursal donde se realizan las consultas medicas. Es donde el medico atiende directamente a sus pacientes.</p>
+                        <p>Un <strong>consultorio</strong> (o consulting room) es el <strong>espacio físico</strong> dentro de una sucursal donde se realizan las consultas médicas. Es donde el medico atiende directamente a sus pacientes.</p>
 
                         <ul class="checklist">
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Espacio de atencion</strong><br>
+                                    <strong>Espacio de atención</strong><br>
                                     <small class="text-muted">Donde se realizan las consultas y examenes</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Identificacion unica</strong><br>
-                                    <small class="text-muted">Cada consultorio tiene nombre, numero y piso</small>
+                                    <strong>Identificación única</strong><br>
+                                    <small class="text-muted">Cada consultorio tiene nombre, número y piso</small>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle"></i>
                                 <div>
-                                    <strong>Asignacion de citas</strong><br>
+                                    <strong>Asignación de citas</strong><br>
                                     <small class="text-muted">Las citas se agendan en un consultorio especifico</small>
                                 </div>
                             </li>
@@ -976,7 +976,7 @@
                                     <div>
                                         <strong>Una sucursal puede tener:</strong>
                                         <ul class="mb-0 mt-2">
-                                            <li>Multiples consultorios</li>
+                                            <li>Múltiples consultorios</li>
                                             <li>Consultorios en diferentes pisos</li>
                                             <li>Sin limite de cantidad</li>
                                         </ul>

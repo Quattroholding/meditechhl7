@@ -7,18 +7,14 @@
 
             @endslot
             @slot('filters')
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="input-block local-forms">
-                        <label>{{__('Estatus')}}</label>
-                        <x-select-input  wire:model.live="statusFilter" name="estatus" :options="\App\Enums\PaymentStatus::cases()" :selected="[]" class="form-select d-inline-block"/>
-                    </div>
+            <div class="d-flex flex-wrap gap-2">
+                <div class="input-block local-forms mb-0">
+                    <label>{{__('Estatus')}}</label>
+                    <x-select-input wire:model.live="statusFilter" name="estatus" :options="\App\Enums\PaymentStatus::cases()" :selected="[]" class="form-select"/>
                 </div>
-                <div class="col-md-3">
-                    <div class="input-block local-forms">
-                        <label>{{__('Metodo de pago')}}</label>
-                        <x-select-input  wire:model.live="methodFilter" name="metodo" :options="\App\Enums\PaymentMethod::cases()" :selected="[]" class="form-select d-inline-block"/>
-                    </div>
+                <div class="input-block local-forms mb-0">
+                    <label>{{__('Metodo de pago')}}</label>
+                    <x-select-input wire:model.live="methodFilter" name="metodo" :options="\App\Enums\PaymentMethod::cases()" :selected="[]" class="form-select"/>
                 </div>
             </div>
             @endslot

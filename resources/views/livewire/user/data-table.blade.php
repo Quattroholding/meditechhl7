@@ -6,12 +6,10 @@
                     <!-- Table Header -->
                     @component('components.table-header',array('show_create'=>$show_create,'title'=>'','li_1'=>route('user.create')))
                         @slot('filters')
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="input-block local-forms">
-                                        <label>{{__('Estatus')}}</label>
-                                        <x-select-input  wire:model.live="statusFilter" id="statusFilter" name="metodo" :options="['active'=>'Activos','inactive'=>'Inactivos']" :selected="[]" class="form-select d-inline-block"/>
-                                    </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{__('Estatus')}}</label>
+                                    <x-select-input wire:model.live="statusFilter" id="statusFilter" name="metodo" :options="['active'=>'Activos','inactive'=>'Inactivos']" :selected="[]" class="form-select"/>
                                 </div>
                             </div>
                         @endslot
