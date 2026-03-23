@@ -9,31 +9,27 @@
 
                         @endslot
                             @slot('filters')
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <select class="form-control" wire:model.live="statusFilter">
-                                                <option value="">Todos los estados</option>
-                                                <option value="pending_activation">Pendiente de Activación</option>
-                                                <option value="trial">Período de Prueba</option>
-                                                <option value="active">Activa</option>
-                                                <option value="past_due">Pago Vencido</option>
-                                                <option value="suspended">Suspendida</option>
-                                                <option value="cancelled">Cancelada</option>
-                                                <option value="expired">Expirada</option>
-                                            </select>
-                                        </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="form-group mb-0">
+                                        <select class="form-control" wire:model.live="statusFilter">
+                                            <option value="">Todos los estados</option>
+                                            <option value="pending_activation">Pendiente de Activación</option>
+                                            <option value="trial">Período de Prueba</option>
+                                            <option value="active">Activa</option>
+                                            <option value="past_due">Pago Vencido</option>
+                                            <option value="suspended">Suspendida</option>
+                                            <option value="cancelled">Cancelada</option>
+                                            <option value="expired">Expirada</option>
+                                        </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <select class="form-control" wire:model.live="pagination">
-                                                <option value="10">10 por página</option>
-                                                <option value="15">15 por página</option>
-                                                <option value="25">25 por página</option>
-                                                <option value="50">50 por página</option>
-                                                <option value="100">100 por página</option>
-                                            </select>
-                                        </div>
+                                    <div class="form-group mb-0">
+                                        <select class="form-control" wire:model.live="pagination">
+                                            <option value="10">10 por página</option>
+                                            <option value="15">15 por página</option>
+                                            <option value="25">25 por página</option>
+                                            <option value="50">50 por página</option>
+                                            <option value="100">100 por página</option>
+                                        </select>
                                     </div>
                                 </div>
                             @endslot

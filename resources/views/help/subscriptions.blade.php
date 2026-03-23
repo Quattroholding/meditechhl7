@@ -677,7 +677,7 @@
                 </tbody>
             </table> -->
 
-            <h3>Flujo de Estados</h3>
+            <!--<h3>Flujo de Estados</h3>
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-route text-primary"></i>
@@ -685,12 +685,12 @@
                 </div>
                 <ol class="mb-0">
                     <li><strong>Inicio:</strong> PENDIENTE → (pago) → ACTIVA</li>
-                    <!--<li><strong>Con Trial:</strong> TRIAL → (fin trial) → ACTIVA</li>-->
+                    <li><strong>Con Trial:</strong> TRIAL → (fin trial) → ACTIVA</li>
                     <li><strong>Renovación:</strong> ACTIVA → (factura mensual) → ACTIVA</li>
                     <li><strong>Falta de Pago:</strong> ACTIVA → VENCIDA (7 días gracia) → SUSPENDIDA (30 días)</li>
                     <li><strong>Reactivación:</strong> SUSPENDIDA → (pago) → ACTIVA</li>
                 </ol>
-            </div>
+            </div>-->
 
             <div class="info-box warning">
                 <div class="info-box-title">
@@ -772,15 +772,16 @@
                 <h4 class="payment-title"><span class="step-number">2</span><span class="step-title">Registrar en el Sistema</span></h4>
                 <p>Después de realizar el pago:</p>
                 <ul>
-                    <li>Vaya a <strong>Suscripción → Pagos</strong></li>
-                    <li>Haga clic en <strong>"Registrar Pago"</strong></li>
+                    <li>Vaya a <strong>Suscripción → Facturas</strong></li>
+                    <li>Haga clic en <strong>"Pagar ahora"</strong></li>
                     <li>Seleccione la factura a pagar</li>
                     <li>Complete el formulario con:
                         <ul>
-                            <li>Método de pago (ACH)</li>
                             <li>Monto pagado</li>
-                            <li>Número de referencia / transacción</li>
                             <li>Fecha del pago</li>
+                            <li>Método de pago (ACH)</li>
+                            <li>Número de referencia / transacción</li>
+                            <li>Notas</li>
                             <li>Comprobante (imagen/PDF)</li>
                         </ul>
                     </li>
@@ -881,7 +882,7 @@
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <!--<div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
                             ¿Puedo cambiar de plan?
@@ -892,7 +893,7 @@
                             Sí, puede cambiar de plan en cualquier momento. Contacte al equipo de soporte para solicitar el cambio. Si cambia a un plan superior, se aplicará un prorrateo por los días restantes del mes.
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <!--<div class="accordion-item">
                     <h2 class="accordion-header">

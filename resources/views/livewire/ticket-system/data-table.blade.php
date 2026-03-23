@@ -76,8 +76,8 @@
 
                         @slot('filters')
                             <!-- Filtros -->
-                            <div class="row mb-3">
-                                <div class="col-md-3">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div class="">
                                     <select class="form-select" wire:model.live="filterStatus">
                                         <option value="">Todos los Estados</option>
                                         <option value="open">Abierto</option>
@@ -87,7 +87,7 @@
                                         <option value="closed">Cerrado</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="">
                                     <select class="form-select" wire:model.live="filterPriority">
                                         <option value="">Todas las Prioridades</option>
                                         <option value="low">Baja</option>
@@ -96,7 +96,7 @@
                                         <option value="critical">Crítica</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="">
                                     <select class="form-select" wire:model.live="filterCategory">
                                         <option value="">Todas las Categorías</option>
                                         <option value="bug">Error</option>
@@ -108,7 +108,7 @@
                                     </select>
                                 </div>
                                 @if(auth()->user()->hasRole(['admin', 'admin client']))
-                                    <div class="col-md-3">
+                                    <div class="">
                                         <select class="form-select" wire:model.live="filterAssigned">
                                             <option value="">Todos</option>
                                             <option value="me">Asignados a mí</option>
