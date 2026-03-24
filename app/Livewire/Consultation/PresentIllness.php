@@ -167,7 +167,7 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses) {
+            if (! $this->encounter->presentIllnesses->id) {
                 $this->create();
             } else {
                 $this->present_illness->aggravating_factors = $this->aggravating_factors;
@@ -189,7 +189,7 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses) {
+            if (! $this->encounter->presentIllnesses->id) {
                 $this->create();
             } else {
                 $this->present_illness->alleviating_factors = $this->alleviating_factors;
@@ -209,7 +209,7 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses) {
+            if (! $this->encounter->presentIllnesses->id) {
                 $this->create();
             } else {
                 $this->present_illness->associated_symptoms = $this->associated_symptoms;
@@ -230,7 +230,7 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses) {
+            if (! $this->encounter->presentIllnesses->id) {
                 $this->create();
             } else {
                 $this->present_illness->description = $this->description;
