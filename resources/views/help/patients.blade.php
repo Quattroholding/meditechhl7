@@ -830,9 +830,15 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#acciones">
+                                <i class="fas fa-hand-pointer"></i>
+                                Acciones Disponibles
+                            </a>
+                        </li>
+                        <li>
                             <a href="#sami">
                                 <i class="fas fa-cogs"></i>
-                                Registro del Paciente en el Sistema
+                                Accesso del Paciente en el Sistema
                             </a>
                         </li>
                         <li>
@@ -978,6 +984,12 @@
                             <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
+                        <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Puede acceder desde el asistente de configuración (cuadro en la esquina inferior derecha) para registrar un paciente.
+                            </div>
+                        </div>
                         {{--}}<p class="mt-3">URL directa:</p>
                         <div class="sub-step">
                             <h6><i class="fas fa-link me-2"></i>URL Directa</h6>
@@ -1349,9 +1361,67 @@
                     </div>
                 </section>
 
+                <!-- Acciones Disponibles -->
+                <section id="acciones" class="step-card">
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-hand-pointer me-2"></i>Acciones Disponibles</h3>
+                    <div class="step-content">
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/action-col.png') }}" alt="" style="width: 100%;">
+                        </div>
+                        <p>En la tabla principal de pacientes, encontrarás en la columna derecha una serie de botones para gestionar a cada paciente. A continuación, se detalla la función de cada uno:</p>
+
+                        <div class="row mt-4 id-cards">
+                            <div class="id-card col-12 col-md-6 mb-3">
+                                <div class="id-type-card text-start d-flex align-items-center">
+                                    <div class="code me-3" style="font-size: 1.5rem; min-width: 40px; text-align: center;">
+                                        <button class="btn btn-info btn-sm" style="pointer-events: none;"><i class="fa-solid fa-eye text-white"></i></button>
+                                    </div>
+                                    <div>
+                                        <div class="name mb-1" style="font-weight: 600; font-size: 1rem; color: #4a148c;">Ver Detalles</div>
+                                        <div class="name mb-0" style="font-size: 0.85rem; color: #555;">Visualiza la información del paciente sin poder modificarla.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-card col-12 col-md-6 mb-3">
+                                <div class="id-type-card text-start d-flex align-items-center">
+                                    <div class="code me-3" style="font-size: 1.5rem; min-width: 40px; text-align: center;">
+                                        <button class="btn btn-primary btn-sm" style="pointer-events: none;"><i class="fa-solid fa-pen-to-square text-white"></i></button>
+                                    </div>
+                                    <div>
+                                        <div class="name mb-1" style="font-weight: 600; font-size: 1rem; color: #4a148c;">Editar Paciente</div>
+                                        <div class="name mb-0" style="font-size: 0.85rem; color: #555;">Permite modificar los datos personales y de contacto registrados.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-card col-12 col-md-6 mb-3">
+                                <div class="id-type-card text-start d-flex align-items-center">
+                                    <div class="code me-3" style="font-size: 1.5rem; min-width: 40px; text-align: center;">
+                                        <button class="btn btn-dark btn-sm" style="pointer-events: none;"><i class="fa-solid fa-file-lines text-white"></i></button>
+                                    </div>
+                                    <div>
+                                        <div class="name mb-1" style="font-weight: 600; font-size: 1rem; color: #4a148c;">Historia Médica</div>
+                                        <div class="name mb-0" style="font-size: 0.85rem; color: #555;">Acceso al registro clínico completo, consultas y antecedentes médicos.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-card col-12 col-md-6 mb-3">
+                                <div class="id-type-card text-start d-flex align-items-center">
+                                    <div class="code me-3" style="font-size: 1.5rem; min-width: 40px; text-align: center;">
+                                        <button class="btn btn-success btn-sm" style="pointer-events: none;"><i class="fa-solid fa-shield-halved text-white"></i></button>
+                                    </div>
+                                    <div>
+                                        <div class="name mb-1" style="font-weight: 600; font-size: 1rem; color: #4a148c;">Gestionar Seguros</div>
+                                        <div class="name mb-0" style="font-size: 0.85rem; color: #555;">Permite añadir o actualizar las pólizas de seguro médico del paciente.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Ingreso de pacientes a Sami -->
                 <section id="sami" class="step-card">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Registro del Paciente en el Sistema</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Acceso del Paciente en el Sistema</h3>
                     <div class="step-content">
                         <p>Este flujo comprende el proceso de registro del paciente en Sami:</p>
 
@@ -1418,17 +1488,18 @@
 
                 <!-- Ver Perfil del Paciente -->
                 <section id="perfil" class="step-card">
-                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-address-card me-2"></i>Ver Perfil del Paciente</h3>
+                    <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-address-card me-2"></i>Ver Información del Paciente</h3>
                     <div class="step-content">
                         <p>Despues de crear o asociar un paciente, puedes ver su perfil completo:</p>
-
+                        <ol>
+                            <li>Diríjase a <strong>Lista Pacientes</strong></li>
+                            <li>Elija el paciente y en la columna de acciones da clic en el botón de detalle →                               
+                                        <button class="btn btn-info btn-sm" style="pointer-events: none;"><i class="fa-solid fa-eye text-white"></i></button>
+                            </li>
+                        </ol>
                         <div>
-                            <img src="{{ asset('images/tutorial/patients/profile-btn.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/patients/patient_detailbtn.png') }}" alt="" style="width: 100%;">
                         </div>
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/profile.png') }}" alt="" style="width: 100%;">
-                        </div>
-
                         <h5 class="mt-4">El perfil incluye:</h5>
                         <div class="row">
                             <div class="col-md-6">
@@ -1453,6 +1524,10 @@
                                     </ul>
                                 </div>
                             </div>
+                        </div>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/patient_detail.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>

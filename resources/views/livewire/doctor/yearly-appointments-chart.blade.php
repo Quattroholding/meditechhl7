@@ -3,7 +3,7 @@
         <h4 class="card-title mb-0">
             <i class="fas fa-calendar"></i> {{ __('Citas del Año ') . date('Y') }}
         </h4>
-        <p class="text-muted small" style="color: #fff !important;">Citas registradas de Enero a {{ now()->format('F') }}</p>
+        <p class="text-muted small" style="color: #fff !important;">Citas registradas de Enero a {{ now()->translatedFormat('F') }}</p>
     </div>
 
     <div class="card-body">
