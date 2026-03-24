@@ -134,7 +134,7 @@
                         <tr>
                             <td colspan="2">
                                 <div class="input-block local-forms">
-                                    <x-input-label for="dosage_text" :value="__('Indicciones')"/>
+                                    <x-input-label for="dosage_text" :value="__('Indicaciones')"/>
                                     <x-autosave-input
                                         type="textarea"
                                         :value="$dosage_texts[$m->id]"
