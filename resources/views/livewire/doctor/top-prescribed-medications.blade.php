@@ -57,7 +57,7 @@
                                           style="background-color: {{ $this->getColorForMedication($index) }};">
                                         {{ $index + 1 }}
                                     </span>
-                                    <i class="{{ $this->getMedicationIcon($medication['type']) }} me-2"
+                                    <i class="{{ $this->getMedicationIcon($medication['form']) }} me-2"
                                        style="color: {{ $this->getColorForMedication($index) }};"></i>
                                     <div>
                                         <span class="medication-name">{{ $medication['home_name'] ?? $medication['medication'] }}</span>
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="medication-details">
                                     <span class="badge bg-light text-dark me-1">{{ $medication['concentration'] }}</span>
-                                    <span class="badge bg-light text-dark me-1">{{ ucfirst($medication['type']) }}</span>
+                                    <span class="badge bg-light text-dark me-1">{{ ucfirst($medication['form']) }}</span>
                                     <span class="badge bg-light text-dark">{{ $medication['route'] }}</span>
                                 </div>
                             </div>

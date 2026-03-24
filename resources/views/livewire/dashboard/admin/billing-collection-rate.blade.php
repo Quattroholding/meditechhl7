@@ -266,16 +266,42 @@
                         },
                         xaxis: {
                             categories: chartData.categories || [],
+                            labels: {
+                                show: true,
+                                style: {
+                                    fontSize: '12px',
+                                    colors: '#6b7280'
+                                }
+                            },
+                            axisBorder: {
+                                show: true,
+                                color: '#e7e7e7'
+                            },
+                            axisTicks: {
+                                show: true,
+                                color: '#e7e7e7'
+                            },
                             title: {
                                 text: 'Mes',
                                 style: {
                                     fontSize: '12px',
-                                    fontWeight: 600
+                                    fontWeight: 600,
+                                    color: '#6b7280'
                                 }
                             }
                         },
                         yaxis: [
                             {
+                                show: true,
+                                seriesName: 'Facturado',
+                                axisBorder: {
+                                    show: true,
+                                    color: '#008FFB'
+                                },
+                                axisTicks: {
+                                    show: true,
+                                    color: '#008FFB'
+                                },
                                 title: {
                                     text: 'Monto ($USD)',
                                     style: {
@@ -285,8 +311,10 @@
                                     }
                                 },
                                 labels: {
+                                    show: true,
                                     style: {
-                                        colors: '#008FFB'
+                                        colors: '#008FFB',
+                                        fontSize: '11px'
                                     },
                                     formatter: function(value) {
                                         if (value === null || value === undefined) return '$0';
@@ -299,7 +327,17 @@
                                 show: false
                             },
                             {
+                                show: true,
                                 opposite: true,
+                                seriesName: 'Tasa de Cobro (%)',
+                                axisBorder: {
+                                    show: true,
+                                    color: '#FEB019'
+                                },
+                                axisTicks: {
+                                    show: true,
+                                    color: '#FEB019'
+                                },
                                 title: {
                                     text: 'Tasa de Cobro (%)',
                                     style: {
@@ -309,8 +347,10 @@
                                     }
                                 },
                                 labels: {
+                                    show: true,
                                     style: {
-                                        colors: '#FEB019'
+                                        colors: '#FEB019',
+                                        fontSize: '11px'
                                     },
                                     formatter: function(value) {
                                         if (value === null || value === undefined) return '0%';
