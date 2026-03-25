@@ -182,7 +182,7 @@ Route::get('/dash', function () {
     return redirect($route);
 })->name('dash')->middleware(['auth', 'verified', 'first.login']);
 
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 
 Route::get('/login/concurrent-session', [LoginController::class, 'showConcurrentSession'])->name('login.concurrent-session');
 
