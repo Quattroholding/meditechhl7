@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdministrationRouteController;
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BranchController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\Api\PractitionerAuthorizationController;
 use App\Http\Controllers\Api\PractitionerController;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
-use App\Http\Controllers\Api\AdministrationRouteController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
@@ -157,13 +157,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/appointments/{appointment}/availability', [AppointmentController::class, 'checkAvailabilityV1']);
 
     // Medicines routes removed - duplicated on line 65-66
-
-    Route::apiResource('branches', BranchController::class);
-    Route::get('/clients/{clientId}/branches', [BranchController::class, 'getByClient']);
-
-    Route::apiResource('consulting-rooms', ConsultingRoomController::class);
-    Route::get('/branches/{branchId}/consulting-rooms', [ConsultingRoomController::class, 'getByBranch']);
-    Route::get('/clients/{clientId}/consulting-rooms', [ConsultingRoomController::class, 'getByClient']);
+    // Branches and consulting-rooms routes removed - duplicated on lines 70-76
 
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
     Route::get('/administration-routes', [AdministrationRouteController::class, 'index']);
