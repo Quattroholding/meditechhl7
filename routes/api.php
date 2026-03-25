@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PractitionerAuthorizationController;
 use App\Http\Controllers\Api\PractitionerController;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
+use App\Http\Controllers\Api\AdministrationRouteController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
@@ -126,6 +127,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Medication Types
         Route::get('medication-types', [RecepyMedicationTypeController::class, 'index']);
     });
+
+    // Administration Routes
+    Route::get('/administration-routes', [AdministrationRouteController::class, 'index']);
 });
 
 // API Token routes - Full access with IP restrictions
@@ -162,6 +166,7 @@ Route::middleware('api.token')->prefix('v1')->group(function () {
     Route::get('/clients/{clientId}/consulting-rooms', [ConsultingRoomController::class, 'getByClient']);
 
     Route::get('/medical-specialities', [MedicalSpecialityController::class, 'index']);
+    Route::get('/administration-routes', [AdministrationRouteController::class, 'index']);
 
     // HemoScreen routes moved to routes/webhooks.php (webhooks.meditecpty.com subdomain)
     // Moved on 2026-03-16 due to Cloudflare IP restrictions
