@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('snomed_code')->nullable(); // SNOMED CT code
 
             // Service details
-            $table->string('name',500); // Service name
+            $table->string('name', 500); // Service name
             $table->text('description')->nullable();
             $table->enum('service_type', [
                 'consultation',

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Client;
+use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -83,7 +84,7 @@ class PractitionerAuthTest extends TestCase
 
         $user->assignRole('paciente');
 
-        $patient = \App\Models\Patient::factory()->create([
+        $patient = Patient::factory()->create([
             'user_id' => $user->id,
             'email' => $user->email,
             'name' => 'John Patient',
@@ -294,7 +295,7 @@ class PractitionerAuthTest extends TestCase
         // Create both patient and practitioner
         $patientUser = User::factory()->create(['email' => 'patient@test.com']);
         $patientUser->assignRole('paciente');
-        \App\Models\Patient::factory()->create(['user_id' => $patientUser->id]);
+        Patient::factory()->create(['user_id' => $patientUser->id]);
 
         $practitionerUser = User::factory()->create(['email' => 'doctor@test.com']);
         $practitionerUser->assignRole('doctor');
@@ -453,7 +454,7 @@ class PractitionerAuthTest extends TestCase
 
         $user->assignRole('paciente');
 
-        $patient = \App\Models\Patient::factory()->create([
+        $patient = Patient::factory()->create([
             'user_id' => $user->id,
             'email' => $user->email,
         ]);

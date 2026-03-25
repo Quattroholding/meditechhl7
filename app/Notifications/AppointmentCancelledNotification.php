@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppMetaChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
@@ -31,7 +32,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
 
         // Priorizar WhatsApp si está disponible
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+            $channels[] = WhatsAppMetaChannel::class;
         }
         // Si no tiene WhatsApp, usar email
         elseif ($this->isValidEmail($notifiable->email)) {

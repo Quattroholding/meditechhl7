@@ -4,6 +4,7 @@ namespace App\Livewire\Subscription;
 
 use App\Models\ClientInvoice;
 use App\Notifications\InvoiceGeneratedNotification;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -125,7 +126,7 @@ class InvoiceDataTable extends Component
             \Log::error('Subscription Invoice DataTable Error: '.$e->getMessage());
 
             return view('livewire.subscription.invoice-data-table', [
-                'invoices' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
+                'invoices' => new LengthAwarePaginator([], 0, 10),
             ]);
         }
     }

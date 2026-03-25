@@ -3,16 +3,19 @@
 namespace App\Livewire\Dashboard\Tiles;
 
 use App\Models\Appointment;
-use App\Models\Patient;
 use App\Models\Encounter;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Livewire\Component;
 
 class RealtimeStats extends Component
 {
     public $appointments_today;
+
     public $new_patients_today;
+
     public $active_encounters;
+
     public $pending_appointments;
 
     public function mount()

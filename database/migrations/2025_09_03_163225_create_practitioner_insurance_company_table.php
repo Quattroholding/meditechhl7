@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('custom_copay_amount', 10, 2)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['practitioner_id', 'insurance_company_id'], 'practitioner_insurance_unique');
         });
     }

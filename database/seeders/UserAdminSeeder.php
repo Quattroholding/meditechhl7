@@ -27,10 +27,8 @@ class UserAdminSeeder extends Seeder
             'logo' => url('images/logoFull.png'),
         ]);
 
-
-
-        //CREAR ADMINISTRADORES
-        $administradores = array( 'rgasperi@smartcarebilling.com', 'atenorio@smartcarebilling.com');
+        // CREAR ADMINISTRADORES
+        $administradores = ['rgasperi@smartcarebilling.com', 'atenorio@smartcarebilling.com'];
 
         foreach ($administradores as $administrador) {
             $admin = User::factory()->create([
@@ -38,7 +36,7 @@ class UserAdminSeeder extends Seeder
                 'last_name' => 'Del Sistema',
                 'email' => $administrador,
                 'password' => 'Prueba.1',
-                'first_login_at'=>now(),
+                'first_login_at' => now(),
             ]);
 
             $admin->assignRole('admin');
@@ -57,8 +55,8 @@ class UserAdminSeeder extends Seeder
             'phone' => '+507 831-6100',
             'address' => 'calle 74 San Francisco edificio Quattroholding',
             'type' => 'hospital',
-            'country_id'=>1,
-            'state_id'=>8,
+            'country_id' => 1,
+            'state_id' => 8,
         ]);
 
         ConsultingRoom::create([

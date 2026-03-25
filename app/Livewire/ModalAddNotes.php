@@ -22,7 +22,7 @@ class ModalAddNotes extends Component
 
     public $encounter_id;
 
-    public $type='private';
+    public $type = 'private';
 
     public function render()
     {
@@ -30,19 +30,19 @@ class ModalAddNotes extends Component
     }
 
     #[On('openModal')]
-    public function openModal($patient_id = null, $practitioner_id = null,$type='private', $encounter_id = null)
+    public function openModal($patient_id = null, $practitioner_id = null, $type = 'private', $encounter_id = null)
     {
         $this->note = '';
         $this->patient_id = $patient_id;
         $this->practitioner_id = $practitioner_id;
         $this->encounter_id = $encounter_id;
-        $this->type=$type;
+        $this->type = $type;
         $this->showModal = true;
     }
 
     public function saveNote()
     {
-        if($this->type=='private'){
+        if ($this->type == 'private') {
             Note::create([
                 'user_id' => auth()->user()->id,
                 'practitioner_id' => $this->practitioner_id,
@@ -53,10 +53,10 @@ class ModalAddNotes extends Component
 
             // Dispatch event to reload personal notes
             $this->dispatch('noteAdded', type: 'personal', patientId: $this->patient_id);
-        }else if($this->type=='medical'){
+        } elseif ($this->type == 'medical') {
             ClinicalImpression::create([
                 'patient_id' => $this->patient_id,
-                'practitioner_id' =>  $this->practitioner_id,
+                'practitioner_id' => $this->practitioner_id,
                 'description' => $this->note,
                 'encounter_id' => $this->encounter_id,
                 'fhir_id' => 'clinicalimpresion-'.Str::uuid(),

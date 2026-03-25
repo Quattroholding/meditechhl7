@@ -4,10 +4,10 @@ if (! function_exists('line_if_empty')) {
     /**
      * Retorna "---" si el valor está vacío o es "-"
      */
-    function line_if_empty($value = "")
+    function line_if_empty($value = '')
     {
-        if ($value == "" || $value == "-") {
-            return "---";
+        if ($value == '' || $value == '-') {
+            return '---';
         }
 
         return $value;
@@ -54,16 +54,16 @@ if (! function_exists('get_from_array')) {
     /**
      * Obtiene un valor de un array por su ID
      */
-    function get_from_array($list, $id = "")
+    function get_from_array($list, $id = '')
     {
-        if ($id == "") {
-            return "";
+        if ($id == '') {
+            return '';
         }
 
         if (isset($list[$id])) {
             return $list[$id];
         } else {
-            return "";
+            return '';
         }
     }
 }
@@ -89,7 +89,7 @@ if (! function_exists('gen')) {
         <tr>
                 <?php
             foreach ($table as $key => $item) {
-                if ($key != "t-title") { ?>
+                if ($key != 't-title') { ?>
 
             <td class="table-title">
 
@@ -105,7 +105,7 @@ if (! function_exists('gen')) {
         <tr>
                 <?php
             foreach ($table as $key => $item) {
-                if ($key != "t-title") { ?>
+                if ($key != 't-title') { ?>
 
             <td class="table-value">
                 {!! $item !!}

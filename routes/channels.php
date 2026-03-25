@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Encounter;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -19,7 +20,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 // Canal privado para notificaciones del doctor
 Broadcast::channel('doctor.{doctorId}', function ($user, $doctorId) {
-    \Log::info('Broadcasting channel authorization attempt', [
+    Log::info('Broadcasting channel authorization attempt', [
         'channel' => 'doctor.'.$doctorId,
         'user_id' => $user->id,
         'user_email' => $user->email,
@@ -34,7 +35,7 @@ Broadcast::channel('doctor.{doctorId}', function ($user, $doctorId) {
                   $user->practitioner &&
                   (int) $user->practitioner->id === (int) $doctorId;
 
-    \Log::info('Broadcasting channel authorization result', [
+    Log::info('Broadcasting channel authorization result', [
         'channel' => 'doctor.'.$doctorId,
         'authorized' => $authorized,
     ]);
@@ -44,7 +45,7 @@ Broadcast::channel('doctor.{doctorId}', function ($user, $doctorId) {
 
 // Canal privado para actualizaciones de encuentros (laboratorio en tiempo real)
 Broadcast::channel('encounter.{encounterId}', function ($user, $encounterId) {
-    $encounter = \App\Models\Encounter::find($encounterId);
+    $encounter = Encounter::find($encounterId);
 
     if (! $encounter) {
         return false;

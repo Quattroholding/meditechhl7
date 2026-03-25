@@ -29,7 +29,7 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->references('id')->on('clients')->nullable()->onDelete('cascade')->comment('Client Owner if source CLIENT');
             $table->foreignId('user_id')->nullable()->references('id')->on('users')->nullable()->onDelete('cascade')->comment('User Owner if type USER');
             $table->boolean('active')->default(1);
-            $table->string('labeler_name',150)->nullable();
+            $table->string('labeler_name', 150)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

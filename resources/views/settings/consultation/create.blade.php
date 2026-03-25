@@ -35,7 +35,7 @@
                                             animation: 150,
                                             onEnd: function () {
                                                 let orderedIds = [...el.children].map(li => li.getAttribute('data-id'));
-                                                Livewire.emit('updateOrder', orderedIds);
+                                                Livewire.dispatch('updateOrder', { orderedIds });
                                             }
                                         });
 

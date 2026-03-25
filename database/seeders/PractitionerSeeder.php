@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\MedicalSpeciality;
+use App\Models\Practitioner;
 use Illuminate\Database\Seeder;
 
 class PractitionerSeeder extends Seeder
@@ -15,7 +16,7 @@ class PractitionerSeeder extends Seeder
         $especialidades = MedicalSpeciality::get();
 
         foreach ($especialidades as $e) {
-            $doctor = \App\Models\Practitioner::factory()
+            $doctor = Practitioner::factory()
                 ->specialist($e->name, $e->id)
                 ->create();
 

@@ -4,6 +4,11 @@ namespace App\Models;
 
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\ReferralStatus;
+use App\Enums\SubscriptionStatus;
+use App\Notifications\InvoiceGeneratedNotification;
+use App\Notifications\SubscriptionActivatedNotification;
+use App\Services\ReferralService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -327,18 +332,18 @@ class ClientInvoice extends BaseModel
             if ($result && $this->subscription) {
                 $subscription = $this->subscription;
 
-                if ($subscription->status === \App\Enums\SubscriptionStatus::PENDING_ACTIVATION) {
+                if ($subscription->status === SubscriptionStatus::PENDING_ACTIVATION) {
                     $subscription->activate();
 
                     // Confirmar referral si el cliente fue referido y es su primera factura pagada
                     $this->confirmReferralIfApplicable();
 
                     // Enviar notificación de agradecimiento al cliente
-                    $notifiableUser = \App\Notifications\InvoiceGeneratedNotification::getNotifiableUser($this);
+                    $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($this);
                     if ($notifiableUser) {
-                        $notifiableUser->notify(new \App\Notifications\SubscriptionActivatedNotification($subscription));
+                        $notifiableUser->notify(new SubscriptionActivatedNotification($subscription));
                     }
-                } elseif ($subscription->status === \App\Enums\SubscriptionStatus::SUSPENDED) {
+                } elseif ($subscription->status === SubscriptionStatus::SUSPENDED) {
                     // Reactivate from suspended status
                     $subscription->resume();
 
@@ -346,9 +351,9 @@ class ClientInvoice extends BaseModel
                         'subscription_id' => $subscription->id,
                         'invoice_id' => $this->id,
                     ]);
-                } elseif ($subscription->status === \App\Enums\SubscriptionStatus::PAST_DUE) {
+                } elseif ($subscription->status === SubscriptionStatus::PAST_DUE) {
                     // Reactivate from past_due status
-                    $subscription->status = \App\Enums\SubscriptionStatus::ACTIVE;
+                    $subscription->status = SubscriptionStatus::ACTIVE;
                     $subscription->grace_period_ends_at = null;
                     $subscription->retry_count = 0;
                     $subscription->next_retry_at = null;
@@ -385,7 +390,7 @@ class ClientInvoice extends BaseModel
 
         // Buscar el referral pendiente
         $referral = ClientReferral::where('referred_client_id', $client->id)
-            ->where('status', \App\Enums\ReferralStatus::PENDING)
+            ->where('status', ReferralStatus::PENDING)
             ->first();
 
         if (! $referral) {
@@ -393,7 +398,7 @@ class ClientInvoice extends BaseModel
         }
 
         // Confirmar el referral (esto aplicará automáticamente la recompensa al referrer)
-        $referralService = app(\App\Services\ReferralService::class);
+        $referralService = app(ReferralService::class);
         $confirmed = $referralService->confirmReferral($referral);
 
         if ($confirmed) {

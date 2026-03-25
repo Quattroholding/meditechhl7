@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
+use App\Models\InsuranceCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InsuranceCompany>
+ * @extends Factory<InsuranceCompany>
  */
 class InsuranceCompanyFactory extends Factory
 {
@@ -37,7 +39,7 @@ class InsuranceCompanyFactory extends Factory
         $code = strtoupper(substr(str_replace([' ', '.', '(', ')'], '', $companyName), 0, 6));
 
         return [
-            'client_id' => \App\Models\Client::factory(),
+            'client_id' => Client::factory(),
             'name' => $companyName,
             'code' => $code.'-'.$this->faker->unique()->numberBetween(100, 999),
             'email' => $this->faker->unique()->companyEmail(),

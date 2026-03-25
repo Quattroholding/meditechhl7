@@ -11,6 +11,7 @@ use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PractitionerController extends Controller
 {
@@ -148,7 +149,7 @@ class PractitionerController extends Controller
             }
 
             // Validate request parameters
-            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'date' => 'nullable|date|after_or_equal:today',
                 'duration' => 'nullable|integer|min:15|max:480',
                 'days' => 'nullable|integer|min:1|max:14', // Number of days to check
@@ -498,7 +499,7 @@ class PractitionerController extends Controller
             }
 
             // Validate request parameters
-            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'duration' => 'nullable|integer|min:15|max:480',
                 'max_slots' => 'nullable|integer|min:1|max:20',
                 'max_days' => 'nullable|integer|min:1|max:30',

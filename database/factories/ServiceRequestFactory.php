@@ -6,7 +6,7 @@ use App\Models\CptCode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ServiceRequest>
+ * @extends Factory<\App\Models\ServiceRequest>
  */
 class ServiceRequestFactory extends Factory
 {

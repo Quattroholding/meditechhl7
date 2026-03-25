@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class HemoScreenStandaloneRoleSeeder extends Seeder
 {
@@ -11,10 +14,10 @@ class HemoScreenStandaloneRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create hemoscreen role with minimal permissions
-        $hemoscreenRole = \Spatie\Permission\Models\Role::create([
+        $hemoscreenRole = Role::create([
             'name' => 'hemoscreen',
             'guard_name' => 'web',
         ]);
@@ -26,7 +29,7 @@ class HemoScreenStandaloneRoleSeeder extends Seeder
         ];
 
         foreach ($permissions as $permissionName) {
-            $permission = \Spatie\Permission\Models\Permission::firstOrCreate([
+            $permission = Permission::firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'web',
             ]);

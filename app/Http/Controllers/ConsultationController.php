@@ -6,14 +6,18 @@ use App\Models\Account;
 use App\Models\Appointment;
 use App\Models\ChargeItem;
 use App\Models\Encounter;
+use App\Models\File;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
 use App\Models\Patient;
 use App\Models\PatientPractitionerAuthorization;
+use App\Models\Practitioner;
 use App\Models\PresentIllnesType;
 use App\Models\Scopes\EncouterScope;
 use App\Models\ServiceCatalog;
+use App\Notifications\EncounterPrescriptionNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -29,7 +33,13 @@ class ConsultationController extends Controller
     {
 
         $template = [];
-        $client_id = auth()->user()->clients()->first()->id;
+        $client = auth()->user()->clients()->first();
+
+        if (! $client) {
+            abort(403, 'Usuario no tiene acceso a ningún cliente.');
+        }
+
+        $client_id = $client->id;
         $appointment = Appointment::findOrFail($appointment_id);
         $patient = Patient::findOrFail($appointment->patient_id);
 
@@ -153,7 +163,7 @@ class ConsultationController extends Controller
                 $identifier = 'INV-'.now()->format('Ymd').'-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT);
 
                 // Verify all foreign keys exist before creating invoice
-                $practitioner = \App\Models\Practitioner::find($appointment->practitioner_id);
+                $practitioner = Practitioner::find($appointment->practitioner_id);
                 if (! $practitioner) {
                     throw new \Exception("Practitioner {$appointment->practitioner_id} not found");
                 }
@@ -189,7 +199,7 @@ class ConsultationController extends Controller
                         'created_by' => auth()->id(),
                         // Let the model generate invoice_number automatically
                     ]);
-                } catch (\Illuminate\Database\QueryException $e) {
+                } catch (QueryException $e) {
                     \Log::error('Failed to create invoice', [
                         'error' => $e->getMessage(),
                         'account_id' => $account->id,
@@ -250,19 +260,19 @@ class ConsultationController extends Controller
             }
 
             // Update appointment status
-            if(auth()->user()->id == $appointment->practitioner->user_id)
+            if (auth()->user()->id == $appointment->practitioner->user_id) {
                 $appointment->update(['status' => 'fulfilled']);
+            }
 
             // Check if prescriptions will be sent (before saving encounter triggers observer)
             $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
 
             // Update encounter status
-            if(auth()->user()->id == $appointment->practitioner->user_id){
+            if (auth()->user()->id == $appointment->practitioner->user_id) {
                 $encounter->status = 'finished';
                 $encounter->end = now();
                 $encounter->save();
             }
-
 
             // Build success message
             $messages = ['¡Consulta finalizada con éxito!'];
@@ -390,12 +400,12 @@ class ConsultationController extends Controller
             $home_visit = false;
 
             // Buscar firma y sello del practitioner
-            $sello = \App\Models\File::where('table_name', 'practitioners')
+            $sello = File::where('table_name', 'practitioners')
                 ->where('record_id', $data->practitioner_id)
                 ->where('type', 'seal')
                 ->first()?->path ?? '';
 
-            $firma = \App\Models\File::where('table_name', 'practitioners')
+            $firma = File::where('table_name', 'practitioners')
                 ->where('record_id', $data->practitioner_id)
                 ->where('type', 'signature')
                 ->first()?->path ?? '';
@@ -460,7 +470,7 @@ class ConsultationController extends Controller
             }
 
             // Send notification
-            $patient->notify(new \App\Notifications\EncounterPrescriptionNotification(
+            $patient->notify(new EncounterPrescriptionNotification(
                 $encounter,
                 $hasUnsentMedications,
                 $hasUnsentServiceRequests

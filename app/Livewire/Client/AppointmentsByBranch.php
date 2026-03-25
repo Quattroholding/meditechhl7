@@ -10,17 +10,18 @@ class AppointmentsByBranch extends Component
 {
     public $appointments;
 
-    public function mount(){
+    public function mount()
+    {
         $this->loadData();
     }
 
-
-    public function loadData(){
-        $this->appointments = Appointment::select(            
+    public function loadData()
+    {
+        $this->appointments = Appointment::select(
             'branches.id',
             'branches.name',
             'branches.address',
-            'branches.type', 
+            'branches.type',
             DB::raw('COUNT(appointments.id) as total_appointments'))
             ->join('consulting_rooms', 'appointments.consulting_room_id', '=', 'consulting_rooms.id')
             ->join('branches', 'consulting_rooms.branch_id', '=', 'branches.id')

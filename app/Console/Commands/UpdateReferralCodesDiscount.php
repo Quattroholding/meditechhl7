@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Client;
 use App\Models\ReferralCode;
 use App\Models\SubscriptionDiscount;
 use Illuminate\Console\Command;
@@ -48,7 +49,7 @@ class UpdateReferralCodesDiscount extends Command
             $this->info("\nClients with updated discounts who have pending invoices:");
 
             foreach ($affectedClients as $clientId) {
-                $client = \App\Models\Client::find($clientId);
+                $client = Client::find($clientId);
                 if ($client) {
                     $pendingInvoices = $client->invoices()
                         ->where('status', 'pending')

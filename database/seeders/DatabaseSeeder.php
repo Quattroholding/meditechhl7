@@ -27,11 +27,11 @@ class DatabaseSeeder extends Seeder
         $this->call(EncounterQuestionsSeeder::class);
         $this->call(RapidAccessSeeder::class);
         $this->call(SetupReminderConfigSeeder::class);
-        //$this->call(ClientSeeder::class);
+        // $this->call(ClientSeeder::class);
         $this->call(InsuranceCompanySeeder::class);
         // $this->call(UserSeeder::class);
         // $this->call(ServiceCatalogSeeder::class);
-        //$this->call(UserWidgetPreferenceSeeder::class);
+        // $this->call(UserWidgetPreferenceSeeder::class);
         $this->call(SnomedBodySiteSeeder::class);
         $this->call(PatientSatisfactionSurveySeeder::class);
         $this->call(DiagnosticSeeder::class);

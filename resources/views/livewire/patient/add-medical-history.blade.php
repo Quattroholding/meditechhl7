@@ -10,26 +10,26 @@
                 </div>
                 <div class="input-block  local-forms">
                     <x-input-label for="categoria" :value="__('patient.category')" required="true"/>
-                    <x-select-input wire:model.defer="category" :options="\App\Models\Lista::medicalHistoryCategory()" :selected="['allergy']" name="category" class="block mt-1 w-full"/>
+                    <x-select-input wire:model="category" :options="\App\Models\Lista::medicalHistoryCategory()" :selected="['allergy']" name="category" class="block mt-1 w-full"/>
                     <x-input-error :messages="$errors->get('category')"/>
                 </div>
                 <div class="input-block local-forms">
                     <div class="form-group local-forms">
                         <x-input-label for="titulo" :value="__('patient.history_title')" required="true"/>
-                        <x-text-input wire:model.defer="title" class="block mt-1 w-full datetimepicker" type="text" name="title" placeholder="Ejemplo : Mariscos,Apendicitis,Tabquismo,etc."/>
+                        <x-text-input wire:model="title" class="block mt-1 w-full datetimepicker" type="text" name="title" placeholder="Ejemplo : Mariscos,Apendicitis,Tabquismo,etc."/>
                         <x-input-error :messages="$errors->get('title')"/>
                     </div>
                 </div>
                 <div class="input-block local-forms">
                     <div class="form-group local-forms">
                         <x-input-label for="fecha_occurencia" :value="__('patient.date')" required="true"/>
-                        <x-text-input wire:model.defer="occurrence_date" class="block mt-1 w-full datetimepicker" type="date" name="occurrence_date"/>
+                        <x-text-input wire:model="occurrence_date" class="block mt-1 w-full datetimepicker" type="date" name="occurrence_date"/>
                         <x-input-error :messages="$errors->get('occurrence_date')"/>
                     </div>
                 </div>
                 <div class="input-block local-forms">
                     <x-input-label for="descripcion" :value="__('patient.description')" />
-                    <x-textarea-input wire:model.defer="description" class="block mt-1 w-full" name="description"/>
+                    <x-textarea-input wire:model="description" class="block mt-1 w-full" name="description"/>
                     <x-input-error :messages="$errors->get('description')"/>
                 </div>
                 <div style="margin-top: 20px; display: flex; gap: 15px;">

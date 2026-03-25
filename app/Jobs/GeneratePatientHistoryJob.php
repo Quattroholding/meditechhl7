@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Encounter;
+use App\Models\File;
 use App\Models\HistoryDownload;
 use App\Models\Patient;
 use App\Models\PatientPractitionerAuthorization;
@@ -54,7 +55,7 @@ class GeneratePatientHistoryJob implements ShouldQueue
             // IMPORTANTE: Los scopes globales no funcionan en Jobs (no hay auth()->user())
             // Por eso aplicamos el filtro manualmente según el rol
             $encounters = Encounter::withoutGlobalScope(EncouterScope::class)
-                ->when($this->requestedBy->hasRole('doctor') && $this->requestedBy->practitioner && !$hasFullAuth, function ($query) {
+                ->when($this->requestedBy->hasRole('doctor') && $this->requestedBy->practitioner && ! $hasFullAuth, function ($query) {
                     // Doctor sin autorización completa: solo sus propios encounters
                     $query->where('practitioner_id', $this->requestedBy->practitioner->id);
                 })
@@ -180,12 +181,12 @@ class GeneratePatientHistoryJob implements ShouldQueue
         $home_visit = false;
 
         // Buscar firma y sello del practitioner
-        $sello = \App\Models\File::where('table_name', 'practitioners')
+        $sello = File::where('table_name', 'practitioners')
             ->where('record_id', $data->practitioner_id)
             ->where('type', 'seal')
             ->first()?->path ?? '';
 
-        $firma = \App\Models\File::where('table_name', 'practitioners')
+        $firma = File::where('table_name', 'practitioners')
             ->where('record_id', $data->practitioner_id)
             ->where('type', 'signature')
             ->first()?->path ?? '';

@@ -16,5 +16,5 @@ return [
     // Permitir configurar IPs adicionales desde .env
     'additional_ips' => array_filter(explode(',', env('DEBUG_TRUSTED_IPS', ''))),
 
-    'ip_oficina_san_francisco'=>  '200.12.208.98',
+    'ip_oficina_san_francisco' => '200.12.208.98',
 ];

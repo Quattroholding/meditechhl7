@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class RecepyPrescriptionController extends Controller
 {
@@ -23,7 +24,9 @@ class RecepyPrescriptionController extends Controller
             return false;
         }
 
-        if(auth()->user()->hasRole('admin')) return true;
+        if (auth()->user()->hasRole('admin')) {
+            return true;
+        }
 
         return RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
             ->where('user_id', auth()->id())
@@ -380,7 +383,7 @@ class RecepyPrescriptionController extends Controller
         }
 
         // Find user by token (Sanctum personal access token)
-        $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+        $personalAccessToken = PersonalAccessToken::findToken($token);
 
         if (! $personalAccessToken) {
             return response()->json([
@@ -399,27 +402,26 @@ class RecepyPrescriptionController extends Controller
         }
 
         $doctorProfile = $prescription->doctorProfile;
-        if($request->has('doctor_profile_id')) {
-            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id)
+        if ($request->has('doctor_profile_id')) {
+            $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)
                 ->where('user_id', $user->id)
                 ->where('is_active', true)
                 ->first();
-        } else{
+        } else {
             $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
                 ->where('user_id', $user->id)
                 ->where('is_active', true)
                 ->first();
         }
 
-
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
                 'message' => 'Perfil del usuario no encontrado',
             ], 403);
         }
 
-        $prescription = RecepyPrescription::where('id',$id)->whereHas('doctorProfile',function ($q) use($user){
+        $prescription = RecepyPrescription::where('id', $id)->whereHas('doctorProfile', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })->first();
 
@@ -435,13 +437,13 @@ class RecepyPrescriptionController extends Controller
             if ($request->has('view')) {
                 return view('pdf.prescription', [
                     'doctorProfile' => $doctorProfile,
-                    'colors' =>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
+                    'colors' => $this->getProfileThemeColors($doctorProfile->recepy_background_color),
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);
             }
 
-            return $pdfService->unstreamPdf($prescription,$doctorProfile);
+            return $pdfService->unstreamPdf($prescription, $doctorProfile);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -720,18 +722,18 @@ class RecepyPrescriptionController extends Controller
         }
 
         $doctorProfile = $prescription->doctorProfile;
-        if($request->has('doctor_profile_id')) {
-            $doctorProfile = RecepyDoctorProfile::where('id',$request->doctor_profile_id) ->where('user_id', auth()->user()->id)
+        if ($request->has('doctor_profile_id')) {
+            $doctorProfile = RecepyDoctorProfile::where('id', $request->doctor_profile_id)->where('user_id', auth()->user()->id)
                 ->where('is_active', true)
                 ->first();
-        } else{
+        } else {
             $doctorProfile = RecepyDoctorProfile::where('id', $prescription->doctor_profile_id)
-                ->where('user_id',  auth()->user()->id)
+                ->where('user_id', auth()->user()->id)
                 ->where('is_active', true)
                 ->first();
         }
 
-        if (!$doctorProfile) {
+        if (! $doctorProfile) {
             return response()->json([
                 'success' => false,
                 'message' => 'Perfil del usuario no encontrado',
@@ -742,14 +744,14 @@ class RecepyPrescriptionController extends Controller
             if ($request->has('view')) {
 
                 return view('pdf.prescription', [
-                    'doctorProfile' =>$doctorProfile,
-                    'colors' =>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
+                    'doctorProfile' => $doctorProfile,
+                    'colors' => $this->getProfileThemeColors($doctorProfile->recepy_background_color),
                     'prescription' => $prescription,
                     'pdfService' => $pdfService,
                 ]);
             }
 
-            return $pdfService->unstreamPdf($prescription,$doctorProfile);
+            return $pdfService->unstreamPdf($prescription, $doctorProfile);
         } catch (\Exception $e) {
             abort(500, 'Error al generar PDF: '.$e->getMessage());
         }
@@ -800,6 +802,4 @@ class RecepyPrescriptionController extends Controller
             ->header('Content-Disposition', 'inline; filename="'.$filename.'"')
             ->header('Cache-Control', 'private, max-age=3600');
     }
-
-
 }

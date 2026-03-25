@@ -49,10 +49,10 @@ class PackageController extends Controller
         }
 
         // Convert features from textarea (line by line) to array
-        if (!empty($validated['features'])) {
+        if (! empty($validated['features'])) {
             $featuresArray = array_filter(
                 array_map('trim', explode("\n", $validated['features'])),
-                fn($feature) => !empty($feature)
+                fn ($feature) => ! empty($feature)
             );
             $validated['features'] = $featuresArray;
         } else {
@@ -111,10 +111,10 @@ class PackageController extends Controller
             }
 
             // Convert features from textarea (line by line) to array
-            if (!empty($validated['features'])) {
+            if (! empty($validated['features'])) {
                 $featuresArray = array_filter(
                     array_map('trim', explode("\n", $validated['features'])),
-                    fn($feature) => !empty($feature)
+                    fn ($feature) => ! empty($feature)
                 );
                 $validated['features'] = $featuresArray;
             } else {

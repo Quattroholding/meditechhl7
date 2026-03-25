@@ -307,8 +307,9 @@ class ModalSave extends Component
         if ($workingHours->isEmpty()) {
             // Si no tiene horarios configurados, mostrar todos los consultorios
             $this->consultorios = ConsultingRoom::whereHas('branch', function ($q2) use ($practitioner) {
-                if($practitioner->user)
+                if ($practitioner->user) {
                     $q2->whereIn('client_id', $practitioner->user->clients->pluck('id'));
+                }
             })->get()->pluck('full_name_branch', 'id')->toArray();
 
             \Log::info('Sin horarios configurados, todos los consultorios', [
@@ -590,7 +591,7 @@ class ModalSave extends Component
                 $q->whereClientId($clientId);
             })->pluck('name', 'id')->toArray();
 
-            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
+            $this->especialidades = MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
 
             $this->practitioners = Practitioner::whereHas('qualifications', function ($q) {
                 $q->where('medical_speciality_id', $this->appointment->medical_speciality_id);

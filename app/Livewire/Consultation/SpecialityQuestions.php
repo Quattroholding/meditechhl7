@@ -2,22 +2,28 @@
 
 namespace App\Livewire\Consultation;
 
-use Livewire\Component;
 use App\Models\Encounter;
 use App\Models\EncounterSpecialityQuestion;
 use App\Models\EncounterSpecialityQuestionAnswer;
+use Livewire\Component;
 
 class SpecialityQuestions extends Component
 {
     public $encounter_id;
+
     public $medical_specialty_id;
+
     public $questions = [];
+
     public $answers = [];
+
     public $quality_of_life;
+
     public $savedQualityOfLife = false;
+
     public $ipss_score = 0;
 
-        public function mount($encounter_id, $medical_specialty_id)
+    public function mount($encounter_id, $medical_specialty_id)
     {
         $this->encounter_id = $encounter_id;
         $this->medical_specialty_id = $medical_specialty_id;
@@ -37,7 +43,7 @@ class SpecialityQuestions extends Component
                 'Urgencia',
                 'Flujo Débil',
                 'Tirante',
-                'Nocturno'
+                'Nocturno',
             ])
             ->orderBy('id')
             ->get();
@@ -63,7 +69,7 @@ class SpecialityQuestions extends Component
             $qolAnswer = EncounterSpecialityQuestionAnswer::where('encounter_id', $this->encounter_id)
                 ->where('encounter_speciality_question_id', $qolQuestion->id)
                 ->first();
-            
+
             $this->quality_of_life = $qolAnswer?->answer;
         }
     }
@@ -71,7 +77,7 @@ class SpecialityQuestions extends Component
     public function saveAnswer($questionId, $value)
     {
         $this->answers[$questionId] = $value;
-        //dd(Encounter::findOrFail($this->encounter_id)->appointment_id);
+        // dd(Encounter::findOrFail($this->encounter_id)->appointment_id);
         EncounterSpecialityQuestionAnswer::updateOrCreate(
             [
                 'encounter_id' => $this->encounter_id,
@@ -108,7 +114,7 @@ class SpecialityQuestions extends Component
 
         $this->savedQualityOfLife = true;
         $this->dispatch('saved');
-        
+
         // Reset el indicador después de 2 segundos
         $this->js('setTimeout(() => { $wire.savedQualityOfLife = false }, 2000)');
     }
@@ -116,12 +122,12 @@ class SpecialityQuestions extends Component
     public function calculateScore()
     {
         $this->ipss_score = 0;
-        
+
         foreach ($this->answers as $questionId => $answer) {
             if ($answer !== null) {
                 // Parsear el valor numérico del JSON
                 $options = json_decode($this->questions->firstWhere('id', $questionId)->options_esp, true);
-                
+
                 // Encontrar el índice de la opción seleccionada
                 $index = array_search($answer, $options);
                 if ($index !== false) {
@@ -141,7 +147,6 @@ class SpecialityQuestions extends Component
             return ['level' => 'Severe', 'color' => 'bg-red-500'];
         }
     }
-
 
     public function render()
     {

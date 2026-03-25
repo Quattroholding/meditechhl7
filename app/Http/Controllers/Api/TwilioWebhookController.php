@@ -260,7 +260,9 @@ class TwilioWebhookController extends Controller
             return false;
         }
 
-        if($phoneNumber ==  config('services.twilio.testing_patient_whatsapp')) return true;
+        if ($phoneNumber == config('services.twilio.testing_patient_whatsapp')) {
+            return true;
+        }
 
         // Normalize both phone numbers for comparison
         $normalizedInput = $this->normalizePhoneForComparison($phoneNumber);

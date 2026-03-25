@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class LoginController extends Controller
 {
-
-    public function login(){
+    public function login()
+    {
 
         if (auth()->check()) {
             $user = auth()->user();
@@ -21,6 +23,7 @@ class LoginController extends Controller
 
         return view('Pages/login');
     }
+
     /**
      * Handle an authentication attempt.
      */
@@ -102,7 +105,7 @@ class LoginController extends Controller
         }
 
         // Verificar si el usuario existe pero está inactivo
-        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $credentials['email'])->first();
         /*if ($user && ! $user->active) {
             return back()->withErrors([
                 'email' => 'Tu cuenta está desactivada. Por favor, contacta al administrador.',
@@ -119,7 +122,7 @@ class LoginController extends Controller
      */
     private function validateTurnstile(string $token): bool
     {
-        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => config('services.turnstile.secret_key'),
             'response' => $token,
         ]);

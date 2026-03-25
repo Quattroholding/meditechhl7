@@ -6,12 +6,14 @@ use App\Enums\InvoiceItemType;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\SubscriptionStatus;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoiceItem;
 use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
 use App\Notifications\InvoiceGeneratedNotification;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -48,7 +50,7 @@ class ClientInvoiceService
                     $invoice->save();
 
                     break;
-                } catch (\Illuminate\Database\QueryException $e) {
+                } catch (QueryException $e) {
                     if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'invoice_number_unique')) {
                         $attempt++;
 
@@ -131,7 +133,7 @@ class ClientInvoiceService
                     $invoice->save();
 
                     break;
-                } catch (\Illuminate\Database\QueryException $e) {
+                } catch (QueryException $e) {
                     if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'invoice_number_unique')) {
                         $attempt++;
 
@@ -307,7 +309,7 @@ class ClientInvoiceService
                     $subscription->resume();
                 } elseif ($subscription->status->value === 'past_due') {
                     // Reactivar suscripción cuando se paga dentro del periodo de gracia
-                    $subscription->status = \App\Enums\SubscriptionStatus::ACTIVE;
+                    $subscription->status = SubscriptionStatus::ACTIVE;
                     $subscription->save();
 
                     Log::info('Subscription reactivated from past_due', [
@@ -360,7 +362,7 @@ class ClientInvoiceService
 
                 // If subscription is active/trial with overdue invoice, mark as past_due
                 if (in_array($subscription->status->value, ['active', 'trial']) && $daysPastDue > 0) {
-                    $subscription->status = \App\Enums\SubscriptionStatus::PAST_DUE;
+                    $subscription->status = SubscriptionStatus::PAST_DUE;
                     $subscription->grace_period_ends_at = $invoice->due_date->copy()->addDays($gracePeriodDays);
                     $subscription->save();
 

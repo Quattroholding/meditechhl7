@@ -8,7 +8,7 @@ return [
     'save' => 'Guardar',
     'cancel' => 'Cancelar',
     'back' => 'Atras',
-    'show'=>'Detalle',
+    'show' => 'Detalle',
     'detail' => 'Detalle',
     'new' => 'Nuevo(a)',
     'refresh' => 'Refrescar',

@@ -170,7 +170,7 @@ class InvoicesPaymentsReport extends BaseReport
                 'label' => 'Paciente',
                 'model' => 'Patient',
                 'required' => false,
-                'options' => Patient::pluck('name', 'id')->toArray()
+                'options' => Patient::pluck('name', 'id')->toArray(),
             ];
 
             $filters['patient_id'] = [
@@ -185,7 +185,7 @@ class InvoicesPaymentsReport extends BaseReport
                 'label' => 'Sede',
                 'model' => 'Branch',
                 'required' => false,
-                'options' => Branch::pluck('name', 'id')->toArray()
+                'options' => Branch::pluck('name', 'id')->toArray(),
             ];
         }
 

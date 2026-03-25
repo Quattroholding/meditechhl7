@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Client;
 use App\Models\ClientTheme;
+use App\Models\File;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -217,7 +218,7 @@ class ThemeManager extends Component
             $files = $fileService->guardarArchivos([$this->logo_file], $data);
 
             if (! empty($files)) {
-                $file = \App\Models\File::find($files[0]);
+                $file = File::find($files[0]);
                 $this->theme->update(['logo_url' => $file->path]);
             }
 
@@ -257,7 +258,7 @@ class ThemeManager extends Component
             $files = $fileService->guardarArchivos([$this->favicon_file], $data);
 
             if (! empty($files)) {
-                $file = \App\Models\File::find($files[0]);
+                $file = File::find($files[0]);
                 $this->theme->update(['favicon_url' => $file->path]);
             }
 

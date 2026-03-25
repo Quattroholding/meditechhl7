@@ -6,6 +6,7 @@ use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\Recepy\RecepyPrescription;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class PrescriptionPdfService
 {
@@ -36,7 +37,7 @@ class PrescriptionPdfService
         return $pdf->output();
     }
 
-    public function downloadPdf(RecepyPrescription $prescription): \Symfony\Component\HttpFoundation\Response
+    public function downloadPdf(RecepyPrescription $prescription): Response
     {
         // Load prescription with all relationships
         $prescription->load([
@@ -66,7 +67,7 @@ class PrescriptionPdfService
         return $pdf->download($filename);
     }
 
-    public function unstreamPdf(RecepyPrescription $prescription,$doctorProfile): \Symfony\Component\HttpFoundation\Response
+    public function unstreamPdf(RecepyPrescription $prescription, $doctorProfile): Response
     {
         // Load prescription with all relationships
         $prescription->load([
@@ -78,7 +79,7 @@ class PrescriptionPdfService
         $pdf = Pdf::loadView('pdf.prescription', [
             'prescription' => $prescription,
             'doctorProfile' => $doctorProfile,
-            'colors'=>$this->getProfileThemeColors($doctorProfile->recepy_background_color),
+            'colors' => $this->getProfileThemeColors($doctorProfile->recepy_background_color),
             'pdfService' => $this,
         ]);
 
@@ -313,7 +314,7 @@ class PrescriptionPdfService
         return $pdf->output();
     }
 
-    public function downloadPdfWithProfile(RecepyPrescription $prescription, int $doctorProfileId): \Symfony\Component\HttpFoundation\Response
+    public function downloadPdfWithProfile(RecepyPrescription $prescription, int $doctorProfileId): Response
     {
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
@@ -344,7 +345,7 @@ class PrescriptionPdfService
         return $pdf->download($filename);
     }
 
-    public function streamPdfWithProfile(RecepyPrescription $prescription, int $doctorProfileId): \Symfony\Component\HttpFoundation\Response
+    public function streamPdfWithProfile(RecepyPrescription $prescription, int $doctorProfileId): Response
     {
         // Override the doctor profile with the specified one
         $doctorProfile = RecepyDoctorProfile::with('user')->findOrFail($doctorProfileId);
@@ -415,40 +416,38 @@ class PrescriptionPdfService
 
     private function getProfileThemeColors($themeColor)
     {
-        switch ($themeColor){
-            case "F8F9FA":  //SoftGray
-                $outBorderColor = "#57bd69";
-                $innerBorderColor ="#244185";
-                $linesColor = "#244185";
-                $fontColor="#244185";
+        switch ($themeColor) {
+            case 'F8F9FA':  // SoftGray
+                $outBorderColor = '#57bd69';
+                $innerBorderColor = '#244185';
+                $linesColor = '#244185';
+                $fontColor = '#244185';
                 break;
-            case "E3F2FD"://Light Blue
-                $outBorderColor = "#57bd69";
-                $innerBorderColor ="#244185";
-                $linesColor = "#244185";
-                $fontColor="#244185";
+            case 'E3F2FD':// Light Blue
+                $outBorderColor = '#57bd69';
+                $innerBorderColor = '#244185';
+                $linesColor = '#244185';
+                $fontColor = '#244185';
                 break;
-            case "E8F5E9"://Mint Fresh
-                $outBorderColor = "#57bd69";
-                $innerBorderColor ="#244185";
-                $linesColor = "#244185";
-                $fontColor="#244185";
+            case 'E8F5E9':// Mint Fresh
+                $outBorderColor = '#57bd69';
+                $innerBorderColor = '#244185';
+                $linesColor = '#244185';
+                $fontColor = '#244185';
                 break;
-            case "FFF3E0"://Warm Cream
-                $outBorderColor = "#57bd69";
-                $innerBorderColor ="#244185";
-                $linesColor = "#244185";
-                $fontColor="#244185";
+            case 'FFF3E0':// Warm Cream
+                $outBorderColor = '#57bd69';
+                $innerBorderColor = '#244185';
+                $linesColor = '#244185';
+                $fontColor = '#244185';
                 break;
-            default :
-                $outBorderColor = "#000";
-                $innerBorderColor ="#000";
-                $linesColor = "#000";
-                $fontColor="#000";
+            default:
+                $outBorderColor = '#000';
+                $innerBorderColor = '#000';
+                $linesColor = '#000';
+                $fontColor = '#000';
         }
 
-
-
-        return ['outBorderColor'=>$outBorderColor,'innerBorderColor'=>$innerBorderColor,'linesColor'=>$linesColor,'fontColor'=>$fontColor];
+        return ['outBorderColor' => $outBorderColor, 'innerBorderColor' => $innerBorderColor, 'linesColor' => $linesColor, 'fontColor' => $fontColor];
     }
 }

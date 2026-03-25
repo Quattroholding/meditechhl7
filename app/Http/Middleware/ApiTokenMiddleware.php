@@ -14,7 +14,7 @@ class ApiTokenMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      * @param  string|null  $scope  Optional scope to check
      * @param  string|null  $requiredMode  Optional mode to check (integrated or standalone)
      */

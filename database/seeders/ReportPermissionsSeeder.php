@@ -21,9 +21,9 @@ class ReportPermissionsSeeder extends Seeder
 
         foreach ($reports as $reportName => $roles) {
             // Crear permisos para el reporte
-            Permission::firstOrCreate(['name' => "reports.{$reportName}.view",'module'=>'reportes']);
-            Permission::firstOrCreate(['name' => "reports.{$reportName}.excel",'module'=>'reportes']);
-            Permission::firstOrCreate(['name' => "reports.{$reportName}.pdf",'module'=>'reportes']);
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.view", 'module' => 'reportes']);
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.excel", 'module' => 'reportes']);
+            Permission::firstOrCreate(['name' => "reports.{$reportName}.pdf", 'module' => 'reportes']);
 
             // Asignar a roles correspondientes
             foreach ($roles as $roleName) {

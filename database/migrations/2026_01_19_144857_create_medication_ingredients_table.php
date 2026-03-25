@@ -25,7 +25,6 @@ return new class extends Migration
 
             $table->timestamps();
 
-
             // Índices
             $table->index('substance_code');
         });

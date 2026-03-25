@@ -5,6 +5,7 @@ namespace App\Livewire\Patient;
 use App\Models\ClinicalImpression;
 use App\Models\Condition;
 use App\Models\Encounter;
+use App\Models\MedicalHistory;
 use App\Models\MedicalLeave;
 use App\Models\MedicationRequest;
 use App\Models\Note;
@@ -132,10 +133,10 @@ class MedicalHistory2 extends Component
         'page' => ['except' => 1],
     ];
 
-    public function mount($patientId)
+    public function mount($patient_id)
     {
-        $this->patientId = $patientId;
-        $this->patient = Patient::findOrFail($patientId);
+        $this->patientId = $patient_id;
+        $this->patient = Patient::findOrFail($patient_id);
         if (auth()->user()->hasRole('doctor')) {
             $this->completeAutorization = PatientPractitionerAuthorization::wherePatientId($this->patientId)
                 ->wherePractitionerId(auth()->user()->practitioner->id)->first();
@@ -182,7 +183,7 @@ class MedicalHistory2 extends Component
         }
 
         // Cargar historiales médicos por categoría - convertir a arrays
-        $medicalHistories = \App\Models\MedicalHistory::where('patient_id', $this->patientId)
+        $medicalHistories = MedicalHistory::where('patient_id', $this->patientId)
             ->where('category', '<>', 'allergy')
             ->orderBy('recorded_date', 'desc')
             ->get()
@@ -721,7 +722,7 @@ class MedicalHistory2 extends Component
 
     private function loadMedicalHistories()
     {
-        $query = \App\Models\MedicalHistory::where('patient_id', $this->patientId)->orderBy('recorded_date', 'desc');
+        $query = MedicalHistory::where('patient_id', $this->patientId)->orderBy('recorded_date', 'desc');
 
         // $this->medicalHistories = $this->applyFilters($query, 'recorded_date')->paginate($this->perPage);
 
@@ -730,7 +731,7 @@ class MedicalHistory2 extends Component
 
     private function loadMedicalNotes()
     {
-        $query = \App\Models\ClinicalImpression::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
+        $query = ClinicalImpression::where('patient_id', $this->patientId)->orderBy('created_at', 'desc');
         // $this->medicalHistories = $this->applyFilters($query, 'recorded_date')->paginate($this->perPage);
 
         $this->medicalNotes = $this->applyFilters($query, 'created_at')->get();

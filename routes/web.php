@@ -1,31 +1,40 @@
 <?php
 
+use App\Events\AppointmentCheckedIn;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ApiTokenController;
+use App\Http\Controllers\AppointmentActionController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DebugLoginController;
 use App\Http\Controllers\DermatologyController;
 use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FirstLoginController;
+use App\Http\Controllers\HemoScreenExportController;
+use App\Http\Controllers\HemoScreenStandaloneWebController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MedicalDocumentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientHistoryController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicRegistrationController;
+use App\Http\Controllers\ReferralCodeController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\SettingController;
@@ -34,6 +43,7 @@ use App\Http\Controllers\SuscriptionController;
 use App\Http\Controllers\SuscriptionInvoiceController;
 use App\Http\Controllers\SuscriptionPaymentController;
 use App\Http\Controllers\UserController;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -102,7 +112,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin/leads')->group(function (
 
 // Referral Code PDF Download (Protegido)
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/referral-code/{client}/pdf', [\App\Http\Controllers\ReferralCodeController::class, 'downloadPdf'])
+    Route::get('/referral-code/{client}/pdf', [ReferralCodeController::class, 'downloadPdf'])
         ->name('referral.code.pdf');
 });
 
@@ -209,10 +219,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     })->name('user.profile');
 
     // Notifications Routes
-    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
-    Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
 
     // Ticket System Routes
     Route::get('/tickets', function () {
@@ -434,21 +444,21 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
 
 // Roles and Permissions Routes
 Route::group(['prefix' => 'roles', 'middleware' => ['auth', 'verified', 'first.login', 'permission:manage-roles']], function () {
-    Route::get('/', [\App\Http\Controllers\RoleController::class, 'index'])->name('role.index');
-    Route::get('/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('role.create');
-    Route::post('/store', [\App\Http\Controllers\RoleController::class, 'store'])->name('role.store');
-    Route::get('/{id}/edit', [\App\Http\Controllers\RoleController::class, 'edit'])->name('role.edit');
-    Route::post('/{id}/update', [\App\Http\Controllers\RoleController::class, 'update'])->name('role.update');
-    Route::delete('/{id}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('role.destroy');
+    Route::get('/', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/create', [RoleController::class, 'create'])->name('role.create');
+    Route::post('/store', [RoleController::class, 'store'])->name('role.store');
+    Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
+    Route::post('/{id}/update', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
 });
 
 Route::group(['prefix' => 'permissions', 'middleware' => ['auth', 'verified', 'first.login', 'permission:manage-permissions']], function () {
-    Route::get('/', [\App\Http\Controllers\PermissionController::class, 'index'])->name('permission.index');
-    Route::get('/create', [\App\Http\Controllers\PermissionController::class, 'create'])->name('permission.create');
-    Route::post('/store', [\App\Http\Controllers\PermissionController::class, 'store'])->name('permission.store');
-    Route::get('/{id}/edit', [\App\Http\Controllers\PermissionController::class, 'edit'])->name('permission.edit');
-    Route::post('/{id}/update', [\App\Http\Controllers\PermissionController::class, 'update'])->name('permission.update');
-    Route::delete('/{id}', [\App\Http\Controllers\PermissionController::class, 'destroy'])->name('permission.destroy');
+    Route::get('/', [PermissionController::class, 'index'])->name('permission.index');
+    Route::get('/create', [PermissionController::class, 'create'])->name('permission.create');
+    Route::post('/store', [PermissionController::class, 'store'])->name('permission.store');
+    Route::get('/{id}/edit', [PermissionController::class, 'edit'])->name('permission.edit');
+    Route::post('/{id}/update', [PermissionController::class, 'update'])->name('permission.update');
+    Route::delete('/{id}', [PermissionController::class, 'destroy'])->name('permission.destroy');
 });
 
 Route::group(['prefix' => 'practitioners', 'middleware' => ['auth', 'verified', 'first.login']], function () {
@@ -604,9 +614,9 @@ Route::middleware(['auth', 'first.login', 'role:admin'])->group(function () {
 
 // Test route for broadcast
 Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
-    $appointment = \App\Models\Appointment::find($appointment_id);
+    $appointment = Appointment::find($appointment_id);
     if ($appointment) {
-        broadcast(new \App\Events\AppointmentCheckedIn($appointment));
+        broadcast(new AppointmentCheckedIn($appointment));
 
         return 'Broadcast sent for appointment '.$appointment_id.' to doctor '.$appointment->practitioner_id;
     }
@@ -616,12 +626,12 @@ Route::get('/test-broadcast/{appointment_id}', function ($appointment_id) {
 
 // Appointment WhatsApp Actions (Public routes with token validation)
 Route::prefix('appointment-action')->name('appointment.action.')->group(function () {
-    Route::get('/{appointmentId}/confirm/{token}', [App\Http\Controllers\AppointmentActionController::class, 'confirm'])->name('confirm');
-    Route::get('/{appointmentId}/cancel/{token}', [App\Http\Controllers\AppointmentActionController::class, 'cancel'])->name('cancel');
+    Route::get('/{appointmentId}/confirm/{token}', [AppointmentActionController::class, 'confirm'])->name('confirm');
+    Route::get('/{appointmentId}/cancel/{token}', [AppointmentActionController::class, 'cancel'])->name('cancel');
 });
 
 // Virtual Consultation Room - Public Patient Access (with token)
-Route::get('/join-consultation/{appointment}/{token}', function (\App\Models\Appointment $appointment, string $token) {
+Route::get('/join-consultation/{appointment}/{token}', function (Appointment $appointment, string $token) {
     // Verify appointment is virtual
     if (! $appointment->isVirtual()) {
         abort(404, 'Esta cita no es una teleconsulta');
@@ -698,10 +708,10 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
 
 // Debug Login Routes - Solo accesible desde IPs autorizadas
 Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function () {
-    Route::get('/login', [\App\Http\Controllers\DebugLoginController::class, 'index'])
+    Route::get('/login', [DebugLoginController::class, 'index'])
         ->name('login');
 
-    Route::post('/login/{user}', [\App\Http\Controllers\DebugLoginController::class, 'loginAs'])
+    Route::post('/login/{user}', [DebugLoginController::class, 'loginAs'])
         ->name('login.as');
 });
 
@@ -817,17 +827,17 @@ Route::get('/test-email', function () {
 
 // Patient History Download Routes
 Route::middleware(['auth'])->prefix('patient-history')->name('patient.history.')->group(function () {
-    Route::post('/{patient}/generate', [\App\Http\Controllers\PatientHistoryController::class, 'generate'])->name('generate');
-    Route::get('/{id}/status', [\App\Http\Controllers\PatientHistoryController::class, 'status'])->name('status');
-    Route::get('/{id}/download', [\App\Http\Controllers\PatientHistoryController::class, 'download'])->name('download');
-    Route::post('/{id}/cancel', [\App\Http\Controllers\PatientHistoryController::class, 'cancel'])->name('cancel');
+    Route::post('/{patient}/generate', [PatientHistoryController::class, 'generate'])->name('generate');
+    Route::get('/{id}/status', [PatientHistoryController::class, 'status'])->name('status');
+    Route::get('/{id}/download', [PatientHistoryController::class, 'download'])->name('download');
+    Route::post('/{id}/cancel', [PatientHistoryController::class, 'cancel'])->name('cancel');
 });
 
 // HemoScreen Standalone Routes
 Route::middleware(['auth', 'role:hemoscreen'])->prefix('hemoscreen')->name('hemoscreen.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\HemoScreenStandaloneWebController::class, 'index'])->name('dashboard');
-    Route::get('/results/{resultId}', [\App\Http\Controllers\HemoScreenStandaloneWebController::class, 'show'])->name('results.show');
-    Route::get('/export-pdf', [\App\Http\Controllers\HemoScreenExportController::class, 'exportPdf'])->name('export-pdf');
-    Route::get('/export-single-pdf/{result}', [\App\Http\Controllers\HemoScreenExportController::class, 'exportSinglePdf'])->name('export-single-pdf');
-    Route::get('/export-csv', [\App\Http\Controllers\HemoScreenExportController::class, 'exportCsv'])->name('export-csv');
+    Route::get('/dashboard', [HemoScreenStandaloneWebController::class, 'index'])->name('dashboard');
+    Route::get('/results/{resultId}', [HemoScreenStandaloneWebController::class, 'show'])->name('results.show');
+    Route::get('/export-pdf', [HemoScreenExportController::class, 'exportPdf'])->name('export-pdf');
+    Route::get('/export-single-pdf/{result}', [HemoScreenExportController::class, 'exportSinglePdf'])->name('export-single-pdf');
+    Route::get('/export-csv', [HemoScreenExportController::class, 'exportCsv'])->name('export-csv');
 });

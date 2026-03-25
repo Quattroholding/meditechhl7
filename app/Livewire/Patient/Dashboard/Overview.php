@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\Invoice;
+use App\Models\VitalSign;
 use Livewire\Component;
 
 class Overview extends Component
@@ -91,7 +92,7 @@ class Overview extends Component
         }
 
         // Get most recent vital signs with observation types
-        $vitalSigns = \App\Models\VitalSign::where('patient_id', $this->patient->id)
+        $vitalSigns = VitalSign::where('patient_id', $this->patient->id)
             ->with('observationType')
             ->orderBy('effective_date', 'desc')
             ->limit(4)

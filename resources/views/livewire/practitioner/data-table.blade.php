@@ -122,7 +122,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea wire:model.defer="note" rows="5" class="w-full border p-2 rounded mb-4"></textarea>
+                        <textarea wire:model="note" rows="5" class="w-full border p-2 rounded mb-4"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button  wire:click="$set('showModal', false)" type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('generic.cancel') }}</button>

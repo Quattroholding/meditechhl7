@@ -8,15 +8,15 @@ use Livewire\Component;
 
 class DiagnosticsBySpecialties extends Component
 {
+    public $top_specialties;
 
-     public $top_specialties;
-
-    public function mount(){
+    public function mount()
+    {
         $this->loadData();
     }
 
-
-    public function loadData(){
+    public function loadData()
+    {
         $this->top_specialties = EncounterDiagnosis::with(['condition', 'encounter.appointment.medicalSpecialty'])
             ->selectRaw('
         conditions.onset_info,
@@ -43,7 +43,6 @@ class DiagnosticsBySpecialties extends Component
             ->groupBy('conditions.onset_info', 'medical_specialties.name', 'specialties_total.total_specialty')
             ->limit(5)
             ->get();
-
 
     }
 

@@ -2,9 +2,13 @@
 
 namespace App\Livewire\Consultation;
 
+use App\Jobs\SendMedicalLeaveEmail;
+use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\MedicalLeave;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -103,7 +107,7 @@ class MedicalLeaveButton extends Component
         // Validar formulario
         try {
             $this->validate();
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             \Log::error('Validación falló', ['errors' => $e->errors()]);
             // La validación falló - Livewire muestra los errores automáticamente
             session()->flash('error', 'Por favor corrija los errores en el formulario');
@@ -120,12 +124,12 @@ class MedicalLeaveButton extends Component
             $client = $branch?->client;
 
             // Calcular días totales
-            $start = \Carbon\Carbon::parse($this->start_datetime);
-            $end = \Carbon\Carbon::parse($this->end_datetime);
+            $start = Carbon::parse($this->start_datetime);
+            $end = Carbon::parse($this->end_datetime);
             $totalDays = $start->diffInDays($end) + 1; // +1 para incluir el día final
 
             // Obtener el diagnóstico seleccionado
-            $condition = \App\Models\Condition::findOrFail($this->selected_condition_id);
+            $condition = Condition::findOrFail($this->selected_condition_id);
 
             $medicalLeave = MedicalLeave::create([
                 'fhir_id' => 'medical-leave-'.Str::uuid(),
@@ -166,7 +170,7 @@ class MedicalLeaveButton extends Component
                 $medicalLeave->refresh();
 
                 // Despachar el Job después del commit de la transacción
-                \App\Jobs\SendMedicalLeaveEmail::dispatch($medicalLeave, $email)
+                SendMedicalLeaveEmail::dispatch($medicalLeave, $email)
                     ->afterCommit();
 
                 $this->dispatch('showToastrConsultation',

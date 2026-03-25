@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Package;
+use App\Models\Practitioner;
+use App\Models\ReferralCode;
 use App\Models\User;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -20,7 +24,7 @@ class PublicRegistrationRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -95,7 +99,7 @@ class PublicRegistrationRequest extends FormRequest
                         return;
                     }
 
-                    $existingPractitioner = \App\Models\Practitioner::withoutGlobalScopes()
+                    $existingPractitioner = Practitioner::withoutGlobalScopes()
                         ->where('identifier', $value)
                         ->first();
 
@@ -138,7 +142,7 @@ class PublicRegistrationRequest extends FormRequest
                         return;
                     }
 
-                    $referralCode = \App\Models\ReferralCode::where('code', $value)->first();
+                    $referralCode = ReferralCode::where('code', $value)->first();
 
                     if (! $referralCode) {
                         $fail('El código de referido no existe.');
@@ -168,7 +172,7 @@ class PublicRegistrationRequest extends FormRequest
             return null;
         }
 
-        return \App\Models\Package::find($this->input('package_id'));
+        return Package::find($this->input('package_id'));
     }
 
     /**

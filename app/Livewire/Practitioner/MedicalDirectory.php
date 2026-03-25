@@ -4,6 +4,7 @@ namespace App\Livewire\Practitioner;
 
 use App\Models\Appointment;
 use App\Models\ConsultingRoom;
+use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\PractitionerQualification;
 use App\Models\Scopes\PractitionerScope;
@@ -144,7 +145,7 @@ class MedicalDirectory extends Component
         $this->doctor_id = $practitioner_id;
         $practitioner = Practitioner::find($this->doctor_id);
         $this->doctor_name = $practitioner->name;
-        $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
+        $this->especialidades = MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
 
         $this->consultorios = ConsultingRoom::whereHas('branch', function ($q) use ($practitioner) {
             $q->whereIn('client_id', $practitioner->user->clients->pluck('id'));

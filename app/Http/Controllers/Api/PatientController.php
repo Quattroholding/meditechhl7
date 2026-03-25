@@ -169,7 +169,7 @@ class PatientController extends Controller
                 $normalizedLast = $this->normalizeForEmail($lastName);
 
                 // Create base email from normalized names
-                $baseEmail = strtolower(substr($normalizedFirst,0,1).'.'.$normalizedLast);
+                $baseEmail = strtolower(substr($normalizedFirst, 0, 1).'.'.$normalizedLast);
 
                 // Ensure uniqueness by adding a random suffix if email exists
                 $email = $baseEmail.'@example.com';
@@ -189,7 +189,7 @@ class PatientController extends Controller
                 $model->email = $email;
                 $model->password = $password;
                 $model->whatsapp_phone = $request->phone;
-                $model->register_source ='whatsapp';
+                $model->register_source = 'whatsapp';
                 $model->save();
             }
 
@@ -202,10 +202,14 @@ class PatientController extends Controller
             }
 
             $gender = 'unknown';
-            if($request->has('gender') && !empty($request->gender)){
+            if ($request->has('gender') && ! empty($request->gender)) {
                 $gender = 'male';
-                if($request->gender == 'M'){ $gender = 'male'; }
-                if($request->gender == 'F'){ $gender = 'female'; }
+                if ($request->gender == 'M') {
+                    $gender = 'male';
+                }
+                if ($request->gender == 'F') {
+                    $gender = 'female';
+                }
             }
 
             // Create patient record
@@ -220,10 +224,10 @@ class PatientController extends Controller
                 'identifier_type' => $identification_type,
                 'phone' => $request->phone,
                 'whatsapp_phone' => $request->phone,
-                'birth_date'=>$request->birth_date,
-                'gender'=>$gender,
+                'birth_date' => $request->birth_date,
+                'gender' => $gender,
                 'active' => true,
-                'creation_source'=>'whatsapp',
+                'creation_source' => 'whatsapp',
             ]);
 
             if ($patient->save()) {
@@ -365,7 +369,7 @@ class PatientController extends Controller
                     'username' => $email,
                     'password' => $password,
                 ];
-                if ($request->has('email') && !config('mail.testing_mode')) {
+                if ($request->has('email') && ! config('mail.testing_mode')) {
                     Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 } else {
                     Mail::to(config('mail.testing_patient_email'))->send(new PatientWelcomeMail($patient, $client, $registrationData));

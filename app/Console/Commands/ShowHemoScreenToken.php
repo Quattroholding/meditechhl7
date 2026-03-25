@@ -21,6 +21,7 @@ class ShowHemoScreenToken extends Command
 
         if (! $practitioner) {
             $this->error("Practitioner with ID {$practitionerId} not found.");
+
             return self::FAILURE;
         }
 
@@ -30,7 +31,8 @@ class ShowHemoScreenToken extends Command
             ->get();
 
         if ($tokens->isEmpty()) {
-            $this->warn("No standalone tokens found for this practitioner.");
+            $this->warn('No standalone tokens found for this practitioner.');
+
             return self::FAILURE;
         }
 

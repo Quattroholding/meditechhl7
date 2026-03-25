@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Country;
+use App\Models\State;
 use Illuminate\Http\Request;
 
 class BranchController extends Controller
@@ -16,7 +18,7 @@ class BranchController extends Controller
 
     public function create()
     {
-        $countries = \App\Models\Country::all();
+        $countries = Country::all();
 
         return view('clients.branchs.create', compact('countries'));
     }
@@ -27,7 +29,7 @@ class BranchController extends Controller
         $validated = $request->validate([
             'client_id' => 'required',
             'name' => 'required',
-            //'phone' => 'required',
+            // 'phone' => 'required',
             'full_phone' => 'required',
             'address' => 'required',
             'type' => 'required',
@@ -57,8 +59,8 @@ class BranchController extends Controller
     public function edit($id)
     {
         $data = Branch::findOrFail($id);
-        $countries = \App\Models\Country::all();
-        $states = $data->country_id ? \App\Models\State::where('country_id', $data->country_id)->get() : collect();
+        $countries = Country::all();
+        $states = $data->country_id ? State::where('country_id', $data->country_id)->get() : collect();
 
         return view('clients.branchs.edit', compact('data', 'countries', 'states'));
     }

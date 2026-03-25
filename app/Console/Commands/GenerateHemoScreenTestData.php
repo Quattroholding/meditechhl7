@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\HemoScreenStandaloneResult;
 use App\Models\Practitioner;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 
 class GenerateHemoScreenTestData extends Command
 {
@@ -102,7 +103,7 @@ class GenerateHemoScreenTestData extends Command
     /**
      * Get practitioners based on options
      */
-    private function getPractitioners(?string $practitionerId): \Illuminate\Support\Collection
+    private function getPractitioners(?string $practitionerId): Collection
     {
         $query = Practitioner::where('is_standalone', true)->with('user');
 

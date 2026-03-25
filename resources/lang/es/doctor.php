@@ -53,5 +53,5 @@ return [
     'registry' => 'Número de registro',
     'licence_code' => 'Código de licencia',
     'signature-manager' => 'Subir firma y sello digital',
-    'last_login'=>'Último ingreso',
+    'last_login' => 'Último ingreso',
 ];

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\GeneratePatientHistoryJob;
+use App\Models\Encounter;
 use App\Models\HistoryDownload;
 use App\Models\Patient;
-use Illuminate\Support\Facades\Storage;
+use App\Models\PatientPractitionerAuthorization;
 
 class PatientHistoryController extends Controller
 {
@@ -18,7 +19,6 @@ class PatientHistoryController extends Controller
             // Verificar que el usuario tenga acceso al paciente
             $user = auth()->user();
 
-
             // Admins siempre tienen acceso
             if (! $user->hasRole('admin')) {
                 // Para doctores, verificar que tengan consultas o autorización con este paciente
@@ -27,12 +27,12 @@ class PatientHistoryController extends Controller
                     $practitionerId = $user->practitioner->id;
 
                     // Verificar si tiene consultas con el paciente
-                    $hasEncounters = \App\Models\Encounter::where('patient_id', $patient->id)
+                    $hasEncounters = Encounter::where('patient_id', $patient->id)
                         ->where('practitioner_id', $practitionerId)
                         ->exists();
 
                     // Verificar si tiene autorización explícita del paciente
-                    $hasAuthorization = \App\Models\PatientPractitionerAuthorization::where('patient_id', $patient->id)
+                    $hasAuthorization = PatientPractitionerAuthorization::where('patient_id', $patient->id)
                         ->where('practitioner_id', $practitionerId)
                         ->exists();
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\LabResultsReceived;
 use App\Http\Controllers\Controller;
 use App\Models\DeviceMessage;
 use App\Models\Encounter;
@@ -292,7 +293,7 @@ class HemoScreenController extends Controller
             }
 
             // Disparar evento para actualización en tiempo real
-            broadcast(new \App\Events\LabResultsReceived($service_request))->toOthers();
+            broadcast(new LabResultsReceived($service_request))->toOthers();
 
             return response()->json([
                 'success' => true,

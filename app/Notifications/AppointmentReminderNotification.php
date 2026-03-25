@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppN8NChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Carbon\Carbon;
@@ -41,7 +42,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
             // Use N8N channel instead of Twilio
-            $channels[] = \App\Channels\WhatsAppN8NChannel::class;
+            $channels[] = WhatsAppN8NChannel::class;
         }
 
         return $channels;

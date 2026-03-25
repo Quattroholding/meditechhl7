@@ -4,6 +4,7 @@ namespace App\Livewire\Appointment;
 
 use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -101,7 +102,7 @@ class DataTable extends Component
 
             // Return an empty collection to prevent infinite loading
             return view('livewire.appointment.data-table', [
-                'invoices' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
+                'invoices' => new LengthAwarePaginator([], 0, 10),
             ]);
         }
     }
@@ -109,6 +110,6 @@ class DataTable extends Component
     public function editAppointment($appointmentId)
     {
         $this->modalTitle = 'Actualizar Cita';
-        $this->dispatch('editAppointmentModal',$appointmentId);
+        $this->dispatch('editAppointmentModal', $appointmentId);
     }
 }

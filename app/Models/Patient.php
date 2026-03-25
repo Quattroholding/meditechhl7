@@ -17,11 +17,11 @@ class Patient extends BaseModel
     use HasFactory,Notifiable;
 
     protected $fillable = [
-        'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name','user_id',
+        'fhir_id', 'identifier', 'identifier_type', 'name', 'given_name', 'user_id',
         'family_name', 'gender', 'birth_date', 'deceased', 'deceased_date',
         'address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',
-        'country_id', 'state_id', 'contact_name', 'contact_email', 'contact_phone','creation_source',
+        'country_id', 'state_id', 'contact_name', 'contact_email', 'contact_phone', 'creation_source',
         'scb_id',
     ];
 
@@ -275,7 +275,7 @@ class Patient extends BaseModel
             $path = url('storage/'.$this->avatar()->path);
         }
 
-        if (auth()->user() &&  auth()->user()->hasRole('doctor')) {
+        if (auth()->user() && auth()->user()->hasRole('doctor')) {
             $title = 'Ver historial medico';
             $route = route('patient.medical_history', $this->id);
         }

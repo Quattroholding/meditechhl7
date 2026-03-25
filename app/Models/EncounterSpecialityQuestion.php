@@ -8,5 +8,4 @@ class EncounterSpecialityQuestion extends Model
 {
     //
     protected $table = 'encounter_speciality_questions';
-
 }

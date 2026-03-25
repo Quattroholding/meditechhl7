@@ -52,12 +52,12 @@ class UserWidgetPreference extends Model
                 'diagnostics-by-age-groups' => ['name' => 'Diagnostics by Age Groups', 'order' => 19, 'description' => 'Diagnósticos más frecuentes por  grupo etario', 'width' => 'col-lg-12', 'position' => 'a8:l8'],
             ],
             'recepcionist' => [
-                'monthly-appointments' => ['name' => 'Monthly Appointments', 'order' => 4, 'description' => 'Citas del Mes', 'width' => 'col-lg-3','position'=>'a1:f2'],
-                'consultas-en-progreso' => ['name' => 'Consultas en Progreso', 'order' => 5, 'description' => 'Consultas en Progreso', 'width' => 'col-lg-3','position'=>'g1:l2'],
-                'yearly-appointments-chart' => ['name' => 'Yearly Appointments Chart', 'order' => 8, 'description' => 'Gráfico de Citas del Año', 'width' => 'col-lg-6','position'=>'a3:f3'],
-                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 9, 'description' => 'Citas para hoy', 'width' => 'col-lg-6','position'=>'g3:l3'],
-                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 14, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6','position'=>'a4:f4'],
-                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 15, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6','position'=>'g4:l4'],
+                'monthly-appointments' => ['name' => 'Monthly Appointments', 'order' => 4, 'description' => 'Citas del Mes', 'width' => 'col-lg-3', 'position' => 'a1:f2'],
+                'consultas-en-progreso' => ['name' => 'Consultas en Progreso', 'order' => 5, 'description' => 'Consultas en Progreso', 'width' => 'col-lg-3', 'position' => 'g1:l2'],
+                'yearly-appointments-chart' => ['name' => 'Yearly Appointments Chart', 'order' => 8, 'description' => 'Gráfico de Citas del Año', 'width' => 'col-lg-6', 'position' => 'a3:f3'],
+                'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 9, 'description' => 'Citas para hoy', 'width' => 'col-lg-6', 'position' => 'g3:l3'],
+                'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 14, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6', 'position' => 'a4:f4'],
+                'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 15, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6', 'position' => 'g4:l4'],
             ],
             'patient' => [
                 'overview' => ['name' => 'Health Overview', 'order' => 1, 'description' => 'General', 'width' => 'col-lg-12'],

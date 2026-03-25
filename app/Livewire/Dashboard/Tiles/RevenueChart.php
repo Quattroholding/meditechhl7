@@ -9,7 +9,9 @@ use Livewire\Component;
 class RevenueChart extends Component
 {
     public $labels = [];
+
     public $data = [];
+
     public $total_week = 0;
 
     public function mount()

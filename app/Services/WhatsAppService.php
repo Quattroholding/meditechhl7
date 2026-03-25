@@ -414,7 +414,6 @@ class WhatsAppService
      *
      * @param  array  $payload  Message payload
      * @param  bool  $returnResponse  If true, returns full response array; if false, returns boolean
-     * @return bool|array|null
      */
     protected function sendToMetaApi(array $payload, bool $returnResponse = false): bool|array|null
     {

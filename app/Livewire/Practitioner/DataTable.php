@@ -71,10 +71,10 @@ class DataTable extends Component
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->where('birth_date', 'like', '%'.$this->search.'%')
-                      ->orWhere('identifier', 'like', '%'.$this->search.'%')
-                      ->orWhere('email', 'like', '%'.$this->search.'%')
-                      ->orWhere('name', 'like', '%'.$this->search.'%');
-                      //->orWhereRaw("(SELECT display FROM practitioner_qualifications pq WHERE pq.practitioner_id = practitioners.id AND pq.default = 1) LIKE ?", ['%'.$this->search.'%']);
+                        ->orWhere('identifier', 'like', '%'.$this->search.'%')
+                        ->orWhere('email', 'like', '%'.$this->search.'%')
+                        ->orWhere('name', 'like', '%'.$this->search.'%');
+                    // ->orWhereRaw("(SELECT display FROM practitioner_qualifications pq WHERE pq.practitioner_id = practitioners.id AND pq.default = 1) LIKE ?", ['%'.$this->search.'%']);
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)

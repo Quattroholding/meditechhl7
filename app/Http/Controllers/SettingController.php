@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentStatus;
 use App\Models\Client;
+use Carbon\Carbon;
 
 class SettingController extends Controller
 {
@@ -271,7 +272,7 @@ class SettingController extends Controller
             'full_name' => 'Juan Pérez García',
             'identifier_value' => '8-123-456',
             'identifier_type' => 'CEDULA',
-            'birth_date' => \Carbon\Carbon::parse('1985-05-15'),
+            'birth_date' => Carbon::parse('1985-05-15'),
             'age' => 38,
         ];
 

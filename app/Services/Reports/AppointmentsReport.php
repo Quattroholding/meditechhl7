@@ -2,6 +2,7 @@
 
 namespace App\Services\Reports;
 
+use App\Enums\AppointmentStatusEnum;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Models\Practitioner;
@@ -234,7 +235,9 @@ class AppointmentsReport extends BaseReport
             $appointment->practitioner->name ?? 'N/A',
             $appointment->medicalSpeciality->name ?? 'N/A',
             $appointment->consultingRoom->name ?? 'N/A',
-            $this->getStatusLabel($appointment->status),
+            $appointment->status instanceof AppointmentStatusEnum
+                ? $appointment->status->label()
+                : $this->getStatusLabel($appointment->status),
             $appointment->minutes_duration ?? 'N/A',
             $appointment->description ?? 'N/A',
 

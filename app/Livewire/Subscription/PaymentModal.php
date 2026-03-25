@@ -119,7 +119,7 @@ class PaymentModal extends Component
 
         if (! $this->invoice) {
             $this->dispatch('showToastrSubscriptionPaymentModal',
-                type:'error',
+                type: 'error',
                 message : 'Factura no encontrada.',
             );
 

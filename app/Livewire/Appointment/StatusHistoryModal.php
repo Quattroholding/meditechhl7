@@ -53,7 +53,6 @@ class StatusHistoryModal extends Component
         $this->reset(['appointmentId', 'statusHistory']);
     }
 
-
     public function render()
     {
         return view('livewire.appointment.status-history-modal');

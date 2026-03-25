@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Client;
 use App\Models\Practitioner;
 use App\Models\ServiceCatalog;
 use App\Models\User;
@@ -412,7 +413,7 @@ class ServiceCatalogSeeder extends Seeder
         $this->command->info('🏥 Creating common services...');
 
         // Get the first client to associate common services
-        $client = \App\Models\Client::first();
+        $client = Client::first();
         if (! $client) {
             $this->command->warn('⚠️  No clients found. Skipping common services.');
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AppointmentStatusEnum;
 use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Scopes\AppointmentScope;
+use App\Notifications\AppointmentBookedNotification;
 use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
@@ -25,7 +26,7 @@ class Appointment extends BaseModel
         'service_type', 'description', 'start', 'end', 'minutes_duration', 'medical_speciality_id', 'consulting_room_id',
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
         'consultation_type', 'virtual_room_id', 'virtual_room_url',
-        'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata','source_creation',
+        'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata', 'source_creation',
     ];
 
     protected $casts = [
@@ -37,7 +38,7 @@ class Appointment extends BaseModel
         'virtual_session_started_at' => 'datetime',
         'virtual_session_ended_at' => 'datetime',
         'virtual_session_metadata' => 'array',
-        'status'=>AppointmentStatusEnum::class,
+        'status' => AppointmentStatusEnum::class,
     ];
 
     protected $appends = [
@@ -364,7 +365,7 @@ class Appointment extends BaseModel
         }
 
         // Send immediate notification to patient
-        $this->patient->notify(new \App\Notifications\AppointmentBookedNotification($this));
+        $this->patient->notify(new AppointmentBookedNotification($this));
 
         \Log::info('Appointment booking notification sent successfully', [
             'appointment_id' => $this->id,

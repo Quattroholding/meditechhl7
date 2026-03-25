@@ -141,8 +141,9 @@ class PatientController extends Controller
             // Mail::to($model)->send(new PatientWelcomeMail($patient,$client,$registrationData));
             $client = Client::find(1);
             $email = $patient->email;
-            if(config('mail.testing_mode')) $email = config('mail.testing_patient_email');
-
+            if (config('mail.testing_mode')) {
+                $email = config('mail.testing_patient_email');
+            }
 
             Mail::to($email)->send(new PatientWelcomeMail($patient, $client, $registrationData, 'patient'));
 

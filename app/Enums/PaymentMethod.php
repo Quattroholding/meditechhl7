@@ -36,11 +36,11 @@ enum PaymentMethod: string
         return in_array($this, [self::ACH, self::YAPPY]);
     }
 
-    public function info() : array
+    public function info(): array
     {
         return match ($this) {
-            self::ACH => ['Banco'=>'Banco General','Cuenta'=>'04-99-99-999999-9','Tipo'=>'Cuenta Corriente','Beneficiario'=>'Soluciones Meditec S.A'],
-            self::YAPPY => ['Teléfono'=>'50712345678','Directorio'=>'Soluciones Meditec'],
+            self::ACH => ['Banco' => 'Banco General', 'Cuenta' => '04-99-99-999999-9', 'Tipo' => 'Cuenta Corriente', 'Beneficiario' => 'Soluciones Meditec S.A'],
+            self::YAPPY => ['Teléfono' => '50712345678', 'Directorio' => 'Soluciones Meditec'],
         };
     }
 }

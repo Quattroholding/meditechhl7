@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Client;
 use App\Models\ClientInvoice;
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
@@ -44,7 +45,7 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
         // Generate PDF
         $pdf = Pdf::loadView('subscriptions.invoices.pdf.invoice', [
             'invoice' => $this->invoice,
-            'company' => \App\Models\Client::find(1), // Soluciones Meditec
+            'company' => Client::find(1), // Soluciones Meditec
         ]);
         $pdf->setPaper('letter', 'portrait');
 

@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -39,7 +40,7 @@ class RecentAppointmentList extends Component
     #[On('loadAppointments')]
     public function loadAppointments()
     {
-        $today = \Carbon\Carbon::today();
+        $today = Carbon::today();
 
         $this->appointments = Appointment::whereDate('start', $today)
             ->orderBy('start')
@@ -70,7 +71,7 @@ class RecentAppointmentList extends Component
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
 
-                if ($current_status == 'proposed' && in_array($newStatus,['booked','confirm'])) {
+                if ($current_status == 'proposed' && in_array($newStatus, ['booked', 'confirm'])) {
                     $appointment->notifyPatientAboutConfirmation();
                 }
 
@@ -88,6 +89,6 @@ class RecentAppointmentList extends Component
 
     public function openModal($date = null, $time = null, $modalTitle = 'Nueva Cita')
     {
-        $this->dispatch('openAppointmentModal', $modalTitle,$date,$time);
+        $this->dispatch('openAppointmentModal', $modalTitle, $date, $time);
     }
 }

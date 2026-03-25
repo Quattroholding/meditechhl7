@@ -8,7 +8,7 @@ use App\Models\SkinLesion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BodySiteMarking>
+ * @extends Factory<BodySiteMarking>
  */
 class BodySiteMarkingFactory extends Factory
 {

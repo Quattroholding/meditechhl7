@@ -17,9 +17,9 @@ class ConsultationPolicy
 
     public function view(User $user, Encounter $encounter)
     {
-        if($user->hasRole('admin','asistente medico')){
+        if ($user->hasRole('admin', 'asistente medico')) {
             return true;
-        }elseif($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
+        } elseif ($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
             return true;
         }
 
@@ -28,9 +28,9 @@ class ConsultationPolicy
 
     public function edit(User $user, Encounter $encounter)
     {
-        if($user->hasRole('admin','asistente medico')){
+        if ($user->hasRole('admin', 'asistente medico')) {
             return true;
-        }elseif($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
+        } elseif ($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
             return true;
         }
 

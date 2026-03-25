@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ApiToken;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
 
@@ -52,7 +53,7 @@ class GenerateApiToken extends Command
                 'token' => $token,
                 'allowed_ips' => $ips,
                 'scopes' => $scopes,
-                'expires_at' => $expires ? \Carbon\Carbon::parse($expires) : null,
+                'expires_at' => $expires ? Carbon::parse($expires) : null,
                 'description' => $description,
                 'created_by' => 'console',
                 'active' => true,

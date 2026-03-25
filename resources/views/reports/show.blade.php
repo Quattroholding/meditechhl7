@@ -95,7 +95,7 @@
 
     @push('scripts')
         <script>
-            const api_tokenl = '{{\App\Models\ApiToken::local()->token}}';
+            const api_tokenl = '{{ \App\Models\ApiToken::local()?->token ?? "" }}';
             function exportReport(format) {
                 const form = document.getElementById('reportForm');
                 const formData = new FormData(form);
