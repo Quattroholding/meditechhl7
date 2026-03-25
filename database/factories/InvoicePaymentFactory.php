@@ -2,10 +2,15 @@
 
 namespace Database\Factories;
 
+use App\Models\InsuranceClaim;
+use App\Models\Invoice;
+use App\Models\InvoicePayment;
+use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InvoicePayment>
+ * @extends Factory<InvoicePayment>
  */
 class InvoicePaymentFactory extends Factory
 {
@@ -22,10 +27,10 @@ class InvoicePaymentFactory extends Factory
         $amount = $this->faker->randomFloat(2, 100, 25000);
 
         return [
-            'invoice_id' => \App\Models\Invoice::factory(),
-            'patient_id' => \App\Models\Patient::factory(),
+            'invoice_id' => Invoice::factory(),
+            'patient_id' => Patient::factory(),
             'insurance_claim_id' => $paymentSource === 'insurance'
-                ? \App\Models\InsuranceClaim::factory()
+                ? InsuranceClaim::factory()
                 : null,
             'payment_reference' => 'PAY-'.$this->faker->unique()->regexify('[0-9]{8}'),
             'amount' => $amount,
@@ -39,7 +44,7 @@ class InvoicePaymentFactory extends Factory
             'authorization_code' => $this->faker->optional()->regexify('[A-Z0-9]{8}'),
             'status' => $this->faker->randomElement(['pending', 'processed', 'cleared', 'failed', 'refunded', 'voided']),
             'notes' => $this->faker->optional()->sentence(),
-            'created_by' => \App\Models\User::factory(),
+            'created_by' => User::factory(),
         ];
     }
 

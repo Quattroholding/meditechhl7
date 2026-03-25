@@ -25,15 +25,14 @@ class FirstLoginController extends Controller
         // Validate if user hasn't completed first login
         if ($user->hasRole('hemoscreen')) {
             $route = route('hemoscreen.dashboard');
-        }else if ($user->practitioner) {
+        } elseif ($user->practitioner) {
             $route = route('practitioner.profile', $user->practitioner->id);
-        }else if($user->patient){
+        } elseif ($user->patient) {
             $route = route('patient.profile', $user->patient->id);
         }
         if (! is_null($user->first_login_at)) {
             return redirect($route);
         }
-
 
         $request->validate([
             'current_password' => 'required',

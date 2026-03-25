@@ -5,6 +5,7 @@ namespace App\Livewire\Consultation;
 use App\Models\Encounter;
 use App\Models\Medication;
 use App\Models\MedicationRequest;
+use App\Models\RapidAccess;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -440,7 +441,7 @@ class MedicationRequests extends Component
 
     private function loadRapidAccess()
     {
-        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
+        $this->rapidAccess = RapidAccess::whereUserId(auth()->id())
             ->whereType('CLIENT')
             ->whereEncounterSectionId($this->section_id)
             ->with('medication')
@@ -448,7 +449,7 @@ class MedicationRequests extends Component
             ->take(10);
 
         if ($this->rapidAccess->count() == 0) {
-            $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
+            $this->rapidAccess = RapidAccess::whereType('MASTER')
                 ->whereEncounterSectionId($this->section_id)
                 ->with('medication')
                 ->get()
@@ -465,14 +466,14 @@ class MedicationRequests extends Component
     public function addToRapidAccess($medicationId)
     {
         try {
-            $existing = \App\Models\RapidAccess::whereUserId(auth()->id())
+            $existing = RapidAccess::whereUserId(auth()->id())
                 ->whereType('CLIENT')
                 ->whereEncounterSectionId($this->section_id)
                 ->where('medication_id', $medicationId)
                 ->first();
 
             if (! $existing) {
-                \App\Models\RapidAccess::create([
+                RapidAccess::create([
                     'user_id' => auth()->id(),
                     'type' => 'CLIENT',
                     'encounter_section_id' => $this->section_id,

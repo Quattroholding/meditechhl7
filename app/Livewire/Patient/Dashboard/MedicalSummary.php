@@ -5,6 +5,7 @@ namespace App\Livewire\Patient\Dashboard;
 use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\MedicalHistory;
+use App\Models\VitalSign;
 use Livewire\Component;
 
 class MedicalSummary extends Component
@@ -100,7 +101,7 @@ class MedicalSummary extends Component
             return;
         }
 
-        $vitalSigns = \App\Models\VitalSign::where('patient_id', $this->patient->id)
+        $vitalSigns = VitalSign::where('patient_id', $this->patient->id)
             ->with('observationType')
             ->orderBy('effective_date', 'desc')
             ->limit(4)

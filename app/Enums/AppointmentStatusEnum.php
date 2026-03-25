@@ -76,7 +76,8 @@ enum AppointmentStatusEnum: string
         };
     }
 
-    public function icon() : string{
+    public function icon(): string
+    {
 
         return match ($this) {
             self::Proposed => '🔔',
@@ -88,7 +89,7 @@ enum AppointmentStatusEnum: string
             self::Cancelled => '❌',
             self::NoShow => '❌',
             self::EnteredInError => 'bg-danger',
-            self::CheckedIn =>'🏥'  ,
+            self::CheckedIn => '🏥'  ,
             self::Waitlist => 'bg-warning',
         };
     }
@@ -144,6 +145,4 @@ enum AppointmentStatusEnum: string
             ->mapWithKeys(fn ($case) => [$case->value => $case->label()])
             ->toArray();
     }
-
-
 }

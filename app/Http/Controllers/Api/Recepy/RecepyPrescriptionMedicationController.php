@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Recepy;
 
 use App\Http\Controllers\Controller;
-use App\Models\Recepy\RecepyPrescriptionMedication;
 use App\Models\Recepy\RecepyPrescription;
-use Illuminate\Http\Request;
+use App\Models\Recepy\RecepyPrescriptionMedication;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class RecepyPrescriptionMedicationController extends Controller
@@ -15,10 +15,10 @@ class RecepyPrescriptionMedicationController extends Controller
     {
         $prescription = RecepyPrescription::find($prescriptionId);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -28,7 +28,7 @@ class RecepyPrescriptionMedicationController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $medications
+            'data' => $medications,
         ]);
     }
 
@@ -39,16 +39,16 @@ class RecepyPrescriptionMedicationController extends Controller
             ->with('prescription')
             ->first();
 
-        if (!$medication) {
+        if (! $medication) {
             return response()->json([
                 'success' => false,
-                'message' => 'Medicamento no encontrado'
+                'message' => 'Medicamento no encontrado',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $medication
+            'data' => $medication,
         ]);
     }
 
@@ -56,10 +56,10 @@ class RecepyPrescriptionMedicationController extends Controller
     {
         $prescription = RecepyPrescription::find($prescriptionId);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -79,7 +79,7 @@ class RecepyPrescriptionMedicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -87,7 +87,7 @@ class RecepyPrescriptionMedicationController extends Controller
         $data['prescription_id'] = $prescriptionId;
 
         // If no line_order provided, set it as the next available
-        if (!isset($data['line_order'])) {
+        if (! isset($data['line_order'])) {
             $lastOrder = $prescription->medications()->max('line_order') ?? 0;
             $data['line_order'] = $lastOrder + 1;
         }
@@ -97,7 +97,7 @@ class RecepyPrescriptionMedicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Medicamento agregado exitosamente',
-            'data' => $medication
+            'data' => $medication,
         ], 201);
     }
 
@@ -107,10 +107,10 @@ class RecepyPrescriptionMedicationController extends Controller
             ->where('id', $medicationId)
             ->first();
 
-        if (!$medication) {
+        if (! $medication) {
             return response()->json([
                 'success' => false,
-                'message' => 'Medicamento no encontrado'
+                'message' => 'Medicamento no encontrado',
             ], 404);
         }
 
@@ -131,7 +131,7 @@ class RecepyPrescriptionMedicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -140,7 +140,7 @@ class RecepyPrescriptionMedicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Medicamento actualizado exitosamente',
-            'data' => $medication
+            'data' => $medication,
         ]);
     }
 
@@ -150,10 +150,10 @@ class RecepyPrescriptionMedicationController extends Controller
             ->where('id', $medicationId)
             ->first();
 
-        if (!$medication) {
+        if (! $medication) {
             return response()->json([
                 'success' => false,
-                'message' => 'Medicamento no encontrado'
+                'message' => 'Medicamento no encontrado',
             ], 404);
         }
 
@@ -161,7 +161,7 @@ class RecepyPrescriptionMedicationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Medicamento eliminado exitosamente'
+            'message' => 'Medicamento eliminado exitosamente',
         ]);
     }
 
@@ -169,10 +169,10 @@ class RecepyPrescriptionMedicationController extends Controller
     {
         $prescription = RecepyPrescription::find($prescriptionId);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -186,7 +186,7 @@ class RecepyPrescriptionMedicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -203,7 +203,7 @@ class RecepyPrescriptionMedicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Orden de medicamentos actualizado exitosamente',
-            'data' => $updatedMedications
+            'data' => $updatedMedications,
         ]);
     }
 
@@ -213,19 +213,19 @@ class RecepyPrescriptionMedicationController extends Controller
             ->where('id', $medicationId)
             ->first();
 
-        if (!$medication) {
+        if (! $medication) {
             return response()->json([
                 'success' => false,
-                'message' => 'Medicamento no encontrado'
+                'message' => 'Medicamento no encontrado',
             ], 404);
         }
 
-        $medication->update(['is_active' => !$medication->is_active]);
+        $medication->update(['is_active' => ! $medication->is_active]);
 
         return response()->json([
             'success' => true,
             'message' => 'Estado del medicamento actualizado exitosamente',
-            'data' => $medication
+            'data' => $medication,
         ]);
     }
 
@@ -233,10 +233,10 @@ class RecepyPrescriptionMedicationController extends Controller
     {
         $prescription = RecepyPrescription::find($prescriptionId);
 
-        if (!$prescription) {
+        if (! $prescription) {
             return response()->json([
                 'success' => false,
-                'message' => 'Receta no encontrada'
+                'message' => 'Receta no encontrada',
             ], 404);
         }
 
@@ -259,13 +259,13 @@ class RecepyPrescriptionMedicationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         // Delete existing medications not in the update
         $existingIds = array_filter(array_column($request->medications, 'id'));
-        if (!empty($existingIds)) {
+        if (! empty($existingIds)) {
             $prescription->medications()
                 ->whereNotIn('id', $existingIds)
                 ->delete();
@@ -276,7 +276,7 @@ class RecepyPrescriptionMedicationController extends Controller
         // Update or create medications
         foreach ($request->medications as $medicationData) {
             $medicationData['prescription_id'] = $prescriptionId;
-            
+
             if (isset($medicationData['id'])) {
                 RecepyPrescriptionMedication::updateOrCreate(
                     ['id' => $medicationData['id'], 'prescription_id' => $prescriptionId],
@@ -294,7 +294,7 @@ class RecepyPrescriptionMedicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Medicamentos actualizados exitosamente',
-            'data' => $updatedMedications
+            'data' => $updatedMedications,
         ]);
     }
 }

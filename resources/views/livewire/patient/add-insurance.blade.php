@@ -141,14 +141,14 @@
                     <div class="col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="policy_number" :value="__('Número de Póliza')" required="true"/>
-                            <x-text-input wire:model.defer="policy_number" class="block mt-1 w-full" type="text" name="policy_number" placeholder="Ej: ABC123456"/>
+                            <x-text-input wire:model="policy_number" class="block mt-1 w-full" type="text" name="policy_number" placeholder="Ej: ABC123456"/>
                             <x-input-error :messages="$errors->get('policy_number')"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="group_number" :value="__('Número de Grupo')"/>
-                            <x-text-input wire:model.defer="group_number" class="block mt-1 w-full" type="text" name="group_number" placeholder="Ej: GRP001"/>
+                            <x-text-input wire:model="group_number" class="block mt-1 w-full" type="text" name="group_number" placeholder="Ej: GRP001"/>
                             <x-input-error :messages="$errors->get('group_number')"/>
                         </div>
                     </div>
@@ -159,14 +159,14 @@
                     <div class="col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="subscriber_id" :value="__('ID del Titular')" required="true"/>
-                            <x-text-input wire:model.defer="subscriber_id" class="block mt-1 w-full" type="text" name="subscriber_id" placeholder="Ej: 8-123-456"/>
+                            <x-text-input wire:model="subscriber_id" class="block mt-1 w-full" type="text" name="subscriber_id" placeholder="Ej: 8-123-456"/>
                             <x-input-error :messages="$errors->get('subscriber_id')"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="input-block local-forms">
                             <x-input-label for="subscriber_name" :value="__('Nombre del Titular')" required="true"/>
-                            <x-text-input wire:model.defer="subscriber_name" class="block mt-1 w-full" type="text" name="subscriber_name" placeholder="Nombre completo del titular"/>
+                            <x-text-input wire:model="subscriber_name" class="block mt-1 w-full" type="text" name="subscriber_name" placeholder="Nombre completo del titular"/>
                             <x-input-error :messages="$errors->get('subscriber_name')"/>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                     <div class="col-md-4">
                         <div class="input-block local-forms">
                             <x-input-label for="relationship_to_subscriber" :value="__('Relación')" required="true"/>
-                            <select wire:model.defer="relationship_to_subscriber" class="form-control" name="relationship_to_subscriber">
+                            <select wire:model="relationship_to_subscriber" class="form-control" name="relationship_to_subscriber">
                                 @foreach($this->getRelationshipOptions() as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
@@ -188,14 +188,14 @@
                     <div class="col-md-4">
                         <div class="input-block local-forms">
                             <x-input-label for="effective_date" :value="__('Fecha de Inicio')" required="true"/>
-                            <x-text-input wire:model.defer="effective_date" class="block mt-1 w-full" type="date" name="effective_date"/>
+                            <x-text-input wire:model="effective_date" class="block mt-1 w-full" type="date" name="effective_date"/>
                             <x-input-error :messages="$errors->get('effective_date')"/>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="input-block local-forms">
                             <x-input-label for="expiration_date" :value="__('Fecha de Vencimiento')"/>
-                            <x-text-input wire:model.defer="expiration_date" class="block mt-1 w-full" type="date" name="expiration_date"/>
+                            <x-text-input wire:model="expiration_date" class="block mt-1 w-full" type="date" name="expiration_date"/>
                             <x-input-error :messages="$errors->get('expiration_date')"/>
                         </div>
                     </div>
@@ -206,28 +206,28 @@
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <x-input-label for="coverage_percentage" :value="__('Cobertura %')"/>
-                            <x-text-input wire:model.defer="coverage_percentage" class="block mt-1 w-full" type="number" name="coverage_percentage" min="0" max="100" placeholder="80"/>
+                            <x-text-input wire:model="coverage_percentage" class="block mt-1 w-full" type="number" name="coverage_percentage" min="0" max="100" placeholder="80"/>
                             <x-input-error :messages="$errors->get('coverage_percentage')"/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <x-input-label for="copay_amount" :value="__('Copago')"/>
-                            <x-text-input wire:model.defer="copay_amount" class="block mt-1 w-full" type="number" name="copay_amount" min="0" step="0.01" placeholder="25.00"/>
+                            <x-text-input wire:model="copay_amount" class="block mt-1 w-full" type="number" name="copay_amount" min="0" step="0.01" placeholder="25.00"/>
                             <x-input-error :messages="$errors->get('copay_amount')"/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <x-input-label for="deductible_amount" :value="__('Deducible')"/>
-                            <x-text-input wire:model.defer="deductible_amount" class="block mt-1 w-full" type="number" name="deductible_amount" min="0" step="0.01" placeholder="500.00"/>
+                            <x-text-input wire:model="deductible_amount" class="block mt-1 w-full" type="number" name="deductible_amount" min="0" step="0.01" placeholder="500.00"/>
                             <x-input-error :messages="$errors->get('deductible_amount')"/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <x-input-label for="out_of_pocket_max" :value="__('Máx. de Bolsillo')"/>
-                            <x-text-input wire:model.defer="out_of_pocket_max" class="block mt-1 w-full" type="number" name="out_of_pocket_max" min="0" step="0.01" placeholder="2000.00"/>
+                            <x-text-input wire:model="out_of_pocket_max" class="block mt-1 w-full" type="number" name="out_of_pocket_max" min="0" step="0.01" placeholder="2000.00"/>
                             <x-input-error :messages="$errors->get('out_of_pocket_max')"/>
                         </div>
                     </div>
@@ -238,7 +238,7 @@
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <div class="form-check">
-                                <input wire:model.defer="is_active" class="form-check-input" type="checkbox" id="is_active">
+                                <input wire:model="is_active" class="form-check-input" type="checkbox" id="is_active">
                                 <label class="form-check-label" for="is_active">
                                     Seguro Activo
                                 </label>
@@ -248,7 +248,7 @@
                     <div class="col-md-9">
                         <div class="input-block local-forms">
                             <x-input-label for="notes" :value="__('Notas')"/>
-                            <x-textarea-input wire:model.defer="notes" class="block mt-1 w-full" name="notes" rows="2" placeholder="Notas adicionales sobre el seguro..."/>
+                            <x-textarea-input wire:model="notes" class="block mt-1 w-full" name="notes" rows="2" placeholder="Notas adicionales sobre el seguro..."/>
                             <x-input-error :messages="$errors->get('notes')"/>
                         </div>
                         </div>

@@ -102,7 +102,7 @@ class Encounter extends BaseModel
         return $this->belongsTo(MedicalSpeciality::class)->withDefault(['name' => 'N/A']);
     }
 
-    public function invoice(): hasOne
+    public function invoice(): HasOne
     {
         return $this->hasOne(Invoice::class);
     }

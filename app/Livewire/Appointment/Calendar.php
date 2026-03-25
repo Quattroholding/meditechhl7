@@ -120,7 +120,7 @@ class Calendar extends Component
                 $q->whereClientId($clientId);
             })->pluck('name', 'id')->toArray();
 
-            $this->especialidades = \App\Models\MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
+            $this->especialidades = MedicalSpeciality::whereIn('id', $practitioner->qualifications->pluck('medical_speciality_id'))->pluck('name', 'id')->toArray();
         }
 
         return view('livewire.appointment.calendar', [
@@ -273,6 +273,7 @@ class Calendar extends Component
         if ($newStatus == 'cancelled') {
             $this->cancellingAppointmentId = $appointmentId;
             $this->showCancelModal = true;
+
             return;
         }
 
@@ -300,7 +301,7 @@ class Calendar extends Component
                         type: 'success',
                         message: '¡Espere por favor en unos segundos empezara su consulta!',
                         appointment_id : $appointmentId,
-                        reditect_to_encounter:true,
+                        reditect_to_encounter: true,
                     );
                 }
             }
@@ -334,7 +335,7 @@ class Calendar extends Component
                 // Enviar notificación con la razón
                 $appointment->notifyPatientAboutCancellation($finalReason);
 
-                //session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
+                // session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
                 $this->loadAppointments();
 
                 $this->dispatch('showToastrAppointment',

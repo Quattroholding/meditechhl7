@@ -4,7 +4,6 @@ namespace App\Livewire\Settings;
 
 use App\Models\ClientPreference;
 use Illuminate\Support\Facades\File;
-use Livewire\Attributes\Modelable;
 use Livewire\Component;
 
 class InvoiceTemplateSelector extends Component
@@ -14,7 +13,9 @@ class InvoiceTemplateSelector extends Component
     public $availableTemplates = [];
 
     public $showPreviewModal = false;
+
     public $previewUrl = '';
+
     public $previewTitle = '';
 
     public function mount()
@@ -75,7 +76,7 @@ class InvoiceTemplateSelector extends Component
     public function openPreviewModal($templateName, $templateLabel)
     {
         $this->previewUrl = route('setting.invoice_template.preview', $templateName);
-        $this->previewTitle = 'Vista Previa - ' . $templateLabel;
+        $this->previewTitle = 'Vista Previa - '.$templateLabel;
         $this->showPreviewModal = true;
     }
 

@@ -94,19 +94,19 @@ class UserController extends Controller
                     $model->save();
                 }
 
-                //cargar plantilla de consulta
+                // cargar plantilla de consulta
                 $encounter_sections = EncounterSection::whereNull('medical_speciality_id');
 
-                if($rol->name == 'asistente medico'){
-                    $encounter_sections->where('available_for_medical_assistant',true);
+                if ($rol->name == 'asistente medico') {
+                    $encounter_sections->where('available_for_medical_assistant', true);
                 }
 
-                foreach ($encounter_sections->get() as $es){
+                foreach ($encounter_sections->get() as $es) {
                     EncounterTemplate::firstOrCreate([
-                        'type'=>'client',
-                        'client_id'=>$model->default_client_id,
-                        'user_id'=>$model->id,
-                        'encounter_section_id'=>$es->id,
+                        'type' => 'client',
+                        'client_id' => $model->default_client_id,
+                        'user_id' => $model->id,
+                        'encounter_section_id' => $es->id,
                     ]);
                 }
 

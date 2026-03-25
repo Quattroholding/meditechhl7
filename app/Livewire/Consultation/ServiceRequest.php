@@ -4,6 +4,7 @@ namespace App\Livewire\Consultation;
 
 use App\Models\CptCode;
 use App\Models\Encounter;
+use App\Models\RapidAccess;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -98,7 +99,7 @@ class ServiceRequest extends Component
         }
     }
 
-    #[\Livewire\Attributes\On('selectOption')]
+    #[On('selectOption')]
     public function selectOption($option)
     {
         $key = 'service-'.$this->type.'-search';
@@ -314,13 +315,13 @@ class ServiceRequest extends Component
 
     private function loadRapidAccess()
     {
-        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
+        $this->rapidAccess = RapidAccess::whereUserId(auth()->id())
             ->whereType('CLIENT')
             ->whereEncounterSectionId($this->section_id)
             ->get();
 
         if ($this->rapidAccess->count() == 0) {
-            $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
+            $this->rapidAccess = RapidAccess::whereType('MASTER')
                 ->whereEncounterSectionId($this->section_id)
                 ->get();
         }
@@ -351,14 +352,14 @@ class ServiceRequest extends Component
     {
 
         try {
-            $existing = \App\Models\RapidAccess::whereUserId(auth()->id())
+            $existing = RapidAccess::whereUserId(auth()->id())
                 ->whereType('CLIENT')
                 ->whereEncounterSectionId($this->section_id)
                 ->where('cpt_id', $cptId)
                 ->first();
 
             if (! $existing) {
-                \App\Models\RapidAccess::create([
+                RapidAccess::create([
                     'user_id' => auth()->id(),
                     'type' => 'CLIENT',
                     'encounter_section_id' => $this->section_id,

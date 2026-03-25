@@ -1,10 +1,21 @@
 <?php
 
+use App\Http\Middleware\ApiTokenMiddleware;
+use App\Http\Middleware\CheckActiveUserMiddleware;
+use App\Http\Middleware\DebugIpRestriction;
+use App\Http\Middleware\DetectConcurrentSession;
+use App\Http\Middleware\FirstLoginMiddleware;
 use App\Http\Middleware\TrustProxies;
+use App\Jobs\RetryFailedSubscriptionPayments;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,22 +40,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         $middleware->alias([
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-            'first.login' => \App\Http\Middleware\FirstLoginMiddleware::class,
-            'custom.permission' => \App\Http\Middleware\PermissionMiddleware::class,
-            'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
-            'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
-            'api.token' => \App\Http\Middleware\ApiTokenMiddleware::class,
-            'concurrent.session' => \App\Http\Middleware\DetectConcurrentSession::class,
-            'debug.ip' => \App\Http\Middleware\DebugIpRestriction::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'first.login' => FirstLoginMiddleware::class,
+            'custom.permission' => App\Http\Middleware\PermissionMiddleware::class,
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+            'api.token' => ApiTokenMiddleware::class,
+            'concurrent.session' => DetectConcurrentSession::class,
+            'debug.ip' => DebugIpRestriction::class,
 
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
         $middleware->web(append: [
-            \App\Http\Middleware\CheckActiveUserMiddleware::class,
+            CheckActiveUserMiddleware::class,
         ]);
 
         // Exclude webhooks from CSRF verification
@@ -99,6 +110,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ->emailOutputOnFailure('business@meditecpty.com')
             ->appendOutputTo(storage_path('logs/appointments-noshow.log'));
 
-        $schedule->job(new \App\Jobs\RetryFailedSubscriptionPayments)->hourly();
+        $schedule->job(new RetryFailedSubscriptionPayments)->hourly();
     })
     ->create();

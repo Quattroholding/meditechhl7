@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Channels\WhatsAppN8NChannel;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Notifications\AppointmentReminderNotification;
@@ -31,8 +32,6 @@ class TestWhatsAppNotification extends Command
         $phone = $this->option('phone');
         $patientId = $this->option('patient-id');
 
-
-
         try {
             // Find or create a test patient
             if ($patientId) {
@@ -50,8 +49,10 @@ class TestWhatsAppNotification extends Command
                     return 1;
                 }
             }
-            if(empty($phone)) $phone = $patient->phone;
-                // Update patient's WhatsApp phone
+            if (empty($phone)) {
+                $phone = $patient->phone;
+            }
+            // Update patient's WhatsApp phone
             $patient->update(['whatsapp_phone' => $phone]);
             $this->info("Updated patient {$patient->name} WhatsApp phone to: {$phone}");
 
@@ -78,8 +79,8 @@ class TestWhatsAppNotification extends Command
             $this->newLine();
 
             // Send via WhatsApp channel directly
-            if (in_array(\App\Channels\WhatsAppN8NChannel::class, $channels)) {
-                $whatsappChannel = app(\App\Channels\WhatsAppN8NChannel::class);
+            if (in_array(WhatsAppN8NChannel::class, $channels)) {
+                $whatsappChannel = app(WhatsAppN8NChannel::class);
                 $whatsappChannel->send($patient, $notification);
 
                 $this->info('✅ WhatsApp notification sent successfully!');

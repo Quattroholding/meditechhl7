@@ -91,8 +91,7 @@ class MedicalLeave extends BaseModel
      * Obtiene la firma o el sello digital del médico como data URI para PDFs
      * Prioriza Files table, luego recepy_doctor_profiles
      */
-
-    public function getPractitionerFilePathAttribute($type='signature')
+    public function getPractitionerFilePathAttribute($type = 'signature')
     {
         // Obtener el user_id del practitioner
         $userId = $this->practitioner->user_id ?? null;

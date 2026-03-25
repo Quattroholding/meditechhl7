@@ -22,7 +22,7 @@ class MedicalHistorySeeder extends Seeder
             ->state(['category' => 'family-history'])
             ->create();
 
-        \App\Models\MedicalHistory::factory()
+        MedicalHistory::factory()
             ->count(3)
             ->state(['category' => 'allergy'])
             ->create();

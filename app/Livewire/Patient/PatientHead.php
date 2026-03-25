@@ -17,7 +17,7 @@ class PatientHead extends Component
 
     public $showModal;
 
-    public $typeNote='medical';
+    public $typeNote = 'medical';
 
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
@@ -31,8 +31,9 @@ class PatientHead extends Component
     {
         $this->data = Patient::find($patient_id);
 
-        if(Route::currentRouteName()<>'consultation.show')
-            $this->typeNote='private';
+        if (Route::currentRouteName() != 'consultation.show') {
+            $this->typeNote = 'private';
+        }
     }
 
     public function updatedAvatar()
@@ -47,13 +48,13 @@ class PatientHead extends Component
         $this->data->user->save();
     }
 
-    public function openModalNote($patientId,$type='private')
+    public function openModalNote($patientId, $type = 'private')
     {
         $practitioner_id = null;
         if (auth()->user()->hasRole('doctor')) {
             $practitioner_id = auth()->user()->practitioner->id;
         }
 
-        $this->dispatch('openModal', $patientId, $practitioner_id,$type);
+        $this->dispatch('openModal', $patientId, $practitioner_id, $type);
     }
 }

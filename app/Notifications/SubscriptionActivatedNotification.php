@@ -3,6 +3,9 @@
 namespace App\Notifications;
 
 use App\Models\ClientSubscription;
+use App\Models\ConsultingRoom;
+use App\Models\ServiceCatalog;
+use App\Models\UserWorkingHour;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -77,21 +80,21 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
         }
 
         // 2. Registrar consultorio (obligatorio)
-        //if ($client->branches()->exists()) {
-            $hasConsultingRoom = \App\Models\ConsultingRoom::whereHas('branch', function ($query) use ($client) {
-                $query->where('client_id', $client->id);
-            })->exists();
+        // if ($client->branches()->exists()) {
+        $hasConsultingRoom = ConsultingRoom::whereHas('branch', function ($query) use ($client) {
+            $query->where('client_id', $client->id);
+        })->exists();
 
-            if (! $hasConsultingRoom) {
-                $steps[] = [
-                    'title' => 'Registrar al menos un consultorio',
-                    'description' => 'Agregue consultorios en sus sucursales para agendar citas',
-                    'route' => 'client.room.create',
-                    'icon' => '🏥',
-                    'required' => true,
-                ];
-            }
-        //}
+        if (! $hasConsultingRoom) {
+            $steps[] = [
+                'title' => 'Registrar al menos un consultorio',
+                'description' => 'Agregue consultorios en sus sucursales para agendar citas',
+                'route' => 'client.room.create',
+                'icon' => '🏥',
+                'required' => true,
+            ];
+        }
+        // }
 
         // 3. Registrar paciente (obligatorio)
         if (! $client->patients()->exists()) {
@@ -105,7 +108,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
         }
 
         // 4. Catálogo de servicios (recomendado)
-        $hasServices = \App\Models\ServiceCatalog::where('client_id', $client->id)->exists();
+        $hasServices = ServiceCatalog::where('client_id', $client->id)->exists();
         if (! $hasServices) {
             $steps[] = [
                 'title' => 'Configurar catálogo de servicios',
@@ -117,21 +120,21 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
         }
 
         // 5. Horarios de trabajo (recomendado)
-        //if ($client->branches()->exists()) {
-            $hasWorkingHours = \App\Models\UserWorkingHour::whereHas('branch', function ($query) use ($client) {
-                $query->where('client_id', $client->id);
-            })->exists();
+        // if ($client->branches()->exists()) {
+        $hasWorkingHours = UserWorkingHour::whereHas('branch', function ($query) use ($client) {
+            $query->where('client_id', $client->id);
+        })->exists();
 
-            if (! $hasWorkingHours) {
-                $steps[] = [
-                    'title' => 'Configurar horarios de trabajo',
-                    'description' => 'Defina los horarios de atención en cada sucursal para optimizar control del agendamiento',
-                    'route' => 'setting.create_working_hour_user',
-                    'icon' => '⏰',
-                    'required' => false,
-                ];
-            }
-        //}
+        if (! $hasWorkingHours) {
+            $steps[] = [
+                'title' => 'Configurar horarios de trabajo',
+                'description' => 'Defina los horarios de atención en cada sucursal para optimizar control del agendamiento',
+                'route' => 'setting.create_working_hour_user',
+                'icon' => '⏰',
+                'required' => false,
+            ];
+        }
+        // }
 
         return $steps;
     }

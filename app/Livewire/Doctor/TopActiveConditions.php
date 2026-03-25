@@ -64,17 +64,16 @@ class TopActiveConditions extends Component
                 // Obtener la descripción de la condición
                 $icde10 = Icd10Code::where('code', $item->code)->first();
                 $condition = Condition::where('code', $item->code)->first();
-                $condition_description='';
-                if($icde10){
+                $condition_description = '';
+                if ($icde10) {
                     $condition_description = $icde10->description_es;
-                }elseif($condition){
-                    $condition_description=$condition->onset_info;
+                } elseif ($condition) {
+                    $condition_description = $condition->onset_info;
                 }
-
 
                 return [
                     'code' => $item->code,
-                    'description' =>$condition_description,
+                    'description' => $condition_description,
                     'category' => $item->category,
                     'count' => $item->count,
                     'encounter_count' => $item->encounter_count,

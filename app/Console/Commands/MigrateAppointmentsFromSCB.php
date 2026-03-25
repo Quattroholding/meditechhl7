@@ -13,6 +13,7 @@ use App\Models\MedicationRequest;
 use App\Models\Patient;
 use App\Models\Practitioner;
 use App\Models\PresentIllnesType;
+use App\Models\Referral;
 use App\Models\ServiceRequestResult;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -518,7 +519,7 @@ class MigrateAppointmentsFromSCB extends Command
         $timing = PresentIllnesType::whereScbId($appSCB->timing)->first();
         $severidad = 'unknown';
 
-        if($severity && in_array($severity->value,['mild','moderate','severe','disabling','unknown'])){
+        if ($severity && in_array($severity->value, ['mild', 'moderate', 'severe', 'disabling', 'unknown'])) {
             $severidad = $severity->value;
         }
 
@@ -529,7 +530,7 @@ class MigrateAppointmentsFromSCB extends Command
             'aggravating_factors' => strtolower($appSCB->modifying_factor),
             'locations' => array_values($location),
             'location' => count($location) > 0 ? $location[0] : null,
-            'severity' =>$severidad,
+            'severity' => $severidad,
             'duration' => $duration ? $duration->value : 'unknown',
             'timing' => $timing ? $timing->value : 'unknown',
             'patient_id' => $encounter->patient_id,
@@ -715,7 +716,7 @@ class MigrateAppointmentsFromSCB extends Command
                 $specialty = MedicalSpeciality::whereName($referral->name)->first();
 
                 if ($specialty) {
-                    $referralss = \App\Models\Referral::whereEncounterId($encounter->id)->whereCode($specialty->id)->first();
+                    $referralss = Referral::whereEncounterId($encounter->id)->whereCode($specialty->id)->first();
 
                     if (! $referralss) {
                         $encounter->referrals()->create([

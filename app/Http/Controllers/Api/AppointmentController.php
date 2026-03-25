@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class AppointmentController extends Controller
@@ -571,7 +572,7 @@ class AppointmentController extends Controller
     public function storeV1(Request $request)
     {
         // Validate required fields
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'patient_id' => 'required|exists:patients,id',
             'practitioner_id' => 'required|exists:practitioners,id',
             'start' => 'required|date|after:now',
@@ -711,7 +712,7 @@ class AppointmentController extends Controller
         }
 
         // Validate fields
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'patient_id' => 'sometimes|exists:patients,id',
             'practitioner_id' => 'sometimes|exists:practitioners,id',
             'start' => 'sometimes|date|after:now',
@@ -883,7 +884,7 @@ class AppointmentController extends Controller
         }
 
         // Validate request parameters
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'date' => 'required|date|after_or_equal:today',
             'duration' => 'nullable|integer|min:15|max:480',
             'days' => 'nullable|integer|min:1|max:14', // Number of days to check

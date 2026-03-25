@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
@@ -34,7 +35,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
 
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = \App\Channels\WhatsAppChannel::class;
+            $channels[] = WhatsAppChannel::class;
         }
 
         return $channels;

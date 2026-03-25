@@ -2,10 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Encounter;
+use App\Models\InsuranceClaim;
+use App\Models\Invoice;
+use App\Models\PatientInsurancePolicy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\InsuranceClaim>
+ * @extends Factory<InsuranceClaim>
  */
 class InsuranceClaimFactory extends Factory
 {
@@ -25,9 +29,9 @@ class InsuranceClaimFactory extends Factory
         $status = $this->faker->randomElement(['pending', 'submitted', 'processing', 'approved', 'partially_paid', 'paid', 'denied', 'rejected']);
 
         return [
-            'patient_insurance_policy_id' => \App\Models\PatientInsurancePolicy::factory(),
-            'invoice_id' => \App\Models\Invoice::factory(),
-            'encounter_id' => \App\Models\Encounter::factory(),
+            'patient_insurance_policy_id' => PatientInsurancePolicy::factory(),
+            'invoice_id' => Invoice::factory(),
+            'encounter_id' => Encounter::factory(),
             'claim_number' => 'CLM-'.$this->faker->unique()->regexify('[0-9]{8}'),
             'claim_date' => $claimDate,
             'service_date' => $serviceDate,

@@ -4,6 +4,7 @@ namespace App\Livewire\Subscription;
 
 use App\Models\ClientInvoicePayment;
 use App\Notifications\PaymentRejectedNotification;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -234,7 +235,7 @@ class PaymentDataTable extends Component
             \Log::error('Subscription Payment DataTable Error: '.$e->getMessage());
 
             return view('livewire.subscription.payment-data-table', [
-                'payments' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
+                'payments' => new LengthAwarePaginator([], 0, 10),
             ]);
         }
     }

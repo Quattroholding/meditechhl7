@@ -2,7 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Models\Client;
 use App\Models\EnterpriseLead;
+use App\Models\Package;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -61,8 +63,8 @@ class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
 
         // Información adicional para upgrade requests
         if ($isUpgradeRequest && isset($this->lead->metadata['current_package_id'])) {
-            $currentPackage = \App\Models\Package::find($this->lead->metadata['current_package_id']);
-            $requestedPackage = \App\Models\Package::find($this->lead->metadata['requested_package_id']);
+            $currentPackage = Package::find($this->lead->metadata['current_package_id']);
+            $requestedPackage = Package::find($this->lead->metadata['requested_package_id']);
 
             $message->line('')
                 ->line('**Información de Suscripción:**')
@@ -70,7 +72,7 @@ class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
                 ->line('🎯 **Plan Solicitado:** '.$requestedPackage?->name.' ($'.number_format($requestedPackage?->base_price ?? 0, 2).')');
 
             if (isset($this->lead->metadata['client_id'])) {
-                $client = \App\Models\Client::find($this->lead->metadata['client_id']);
+                $client = Client::find($this->lead->metadata['client_id']);
                 $message->line('🆔 **Cliente ID:** '.$client?->id.' - '.$client?->name);
             }
         }

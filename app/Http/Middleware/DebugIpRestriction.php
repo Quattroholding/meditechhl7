@@ -19,7 +19,6 @@ class DebugIpRestriction
             config('debug.additional_ips', [])
         );
 
-
         $clientIp = $request->ip();
 
         if (! in_array($clientIp, $trustedIps)) {

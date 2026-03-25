@@ -14,11 +14,13 @@ class ManageInsurances extends Component
     public $practitioner;
 
     public $showInsuranceModal = false;
-    public $showBigButton=true;
-    public $showSmallButton=false;
+
+    public $showBigButton = true;
+
+    public $showSmallButton = false;
 
     public $existingInsurances = [];
-    
+
     public $isEditing = false;
 
     // Insurance form fields
@@ -105,7 +107,7 @@ class ManageInsurances extends Component
         if ($this->isEditing) {
             return;
         }
-        
+
         if ($this->insurance_company_id) {
             $company = InsuranceCompany::find($this->insurance_company_id);
             if ($company) {

@@ -59,6 +59,7 @@ class Status extends Component
         // Si se intenta cancelar, mostrar modal para solicitar razón
         if ($newStatus == 'cancelled') {
             $this->showCancelModal = true;
+
             return;
         }
 

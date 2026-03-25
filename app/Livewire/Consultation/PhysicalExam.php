@@ -111,7 +111,7 @@ class PhysicalExam extends Component
             $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 

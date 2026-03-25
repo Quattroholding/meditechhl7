@@ -8,7 +8,7 @@ use App\Models\Patient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BodyStructure>
+ * @extends Factory<BodyStructure>
  */
 class BodyStructureFactory extends Factory
 {

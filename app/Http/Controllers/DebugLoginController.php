@@ -6,6 +6,7 @@ use App\Models\Package;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class DebugLoginController extends Controller
 {
@@ -35,7 +36,7 @@ class DebugLoginController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('clients', function ($q2) use ($search) {
-                    $q2->where('clients.name', 'like', '%' . $search . '%');
+                    $q2->where('clients.name', 'like', '%'.$search.'%');
                 });
                 $q->orWhere('email', 'like', "%{$search}%")
                     ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
@@ -48,13 +49,11 @@ class DebugLoginController extends Controller
             ->paginate(20);
 
         // Obtener roles disponibles
-        $roles = \Spatie\Permission\Models\Role::all();
+        $roles = Role::all();
         // Obtener paquetes disponibles
         $packages = Package::all();
 
-
-
-        return view('debug.login', compact('users', 'roles', 'role','packages','package', 'search'));
+        return view('debug.login', compact('users', 'roles', 'role', 'packages', 'package', 'search'));
     }
 
     /**
@@ -85,8 +84,8 @@ class DebugLoginController extends Controller
             $route = route('accounting.dashboard');
         } elseif ($user->hasRole('admin client')) {
             $route = route('client.dashboard');
-        } else if ($user->hasRole('validador')) {
-            $route =  route('user.pending-validations');
+        } elseif ($user->hasRole('validador')) {
+            $route = route('user.pending-validations');
         }
 
         return redirect($route.'?show_salute=true')

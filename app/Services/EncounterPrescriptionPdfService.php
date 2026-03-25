@@ -12,6 +12,7 @@ use App\Models\Recepy\RecepyDoctorProfile;
 use App\Models\ServiceRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -128,7 +129,7 @@ class EncounterPrescriptionPdfService
     /**
      * Stream prescription PDF (for controller response)
      */
-    public function streamPrescriptionPdf(Encounter $encounter, $medications = null): \Illuminate\Http\Response
+    public function streamPrescriptionPdf(Encounter $encounter, $medications = null): Response
     {
         $encounter = $this->loadEncounterWithRelations($encounter, 'prescription');
 
@@ -171,7 +172,7 @@ class EncounterPrescriptionPdfService
     /**
      * Stream medical order PDF (for controller response)
      */
-    public function streamMedicalOrderPdf(Encounter $encounter, $serviceRequests = null, ?string $serviceType = null): \Illuminate\Http\Response
+    public function streamMedicalOrderPdf(Encounter $encounter, $serviceRequests = null, ?string $serviceType = null): Response
     {
         $encounter = $this->loadEncounterWithRelations($encounter, 'medical-order');
 

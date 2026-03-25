@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class RecepyPrescription extends Model
 {
@@ -27,13 +26,13 @@ class RecepyPrescription extends Model
         'additional_notes',
         'prescription_date',
         'prescription_number',
-        'status'
+        'status',
     ];
 
     protected $casts = [
         'patient_birth_date' => 'date',
         'prescription_date' => 'date',
-        'patient_age'=>'integer',
+        'patient_age' => 'integer',
     ];
 
     public function doctorProfile(): BelongsTo
@@ -44,14 +43,14 @@ class RecepyPrescription extends Model
     public function medications(): HasMany
     {
         return $this->hasMany(RecepyPrescriptionMedication::class, 'prescription_id')
-                    ->orderBy('line_order');
+            ->orderBy('line_order');
     }
 
     public function activeMedications(): HasMany
     {
         return $this->hasMany(RecepyPrescriptionMedication::class, 'prescription_id')
-                    ->where('is_active', true)
-                    ->orderBy('line_order');
+            ->where('is_active', true)
+            ->orderBy('line_order');
     }
 
     protected static function boot()
@@ -60,7 +59,7 @@ class RecepyPrescription extends Model
 
         static::creating(function ($prescription) {
             if (empty($prescription->prescription_number)) {
-                $prescription->prescription_number = 'RX-' . date('Y') . '-' . str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+                $prescription->prescription_number = 'RX-'.date('Y').'-'.str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
             }
         });
     }

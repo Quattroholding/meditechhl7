@@ -8,6 +8,7 @@ use App\Models\MedicalLeave;
 use App\Models\MedicationRequest;
 use App\Models\ServiceRequest;
 use App\Services\EncounterPrescriptionPdfService;
+use App\Services\PrescriptionPdfService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -188,7 +189,7 @@ class MedicalDocumentController extends Controller
                 'prescriptionNumber' => 'RX-'.str_pad($encounterId, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
                 'clientThemeCSS' => $this->pdfService->getClientThemeCSS($client),
                 'doctorProfile' => $this->pdfService->getDoctorProfile($encounter->practitioner),
-                'pdfService' => app(\App\Services\PrescriptionPdfService::class),
+                'pdfService' => app(PrescriptionPdfService::class),
             ];
 
             return view('documents.prescription-new', $data);
@@ -230,7 +231,7 @@ class MedicalDocumentController extends Controller
                 'clientThemeCSS' => $this->pdfService->getClientThemeCSS($client),
                 'client' => $client,
                 'doctorProfile' => $this->pdfService->getDoctorProfile($encounter->practitioner),
-                'pdfService' => app(\App\Services\PrescriptionPdfService::class),
+                'pdfService' => app(PrescriptionPdfService::class),
                 'serviceType' => null,
             ];
 

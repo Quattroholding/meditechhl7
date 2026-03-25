@@ -105,14 +105,14 @@ class Diagnostics extends Component
         if ($this->isCodeSearch) {
             // Búsqueda por código: priorizar coincidencias en código
             $queryBuilder->whereRaw('code LIKE ?', ["%{$query}%"])
-                ->orderByRaw("
+                ->orderByRaw('
                     CASE
                         WHEN code = ? THEN 1
                         WHEN code LIKE ? THEN 2
                         ELSE 3
                     END,
                     code ASC
-                ", [$query, "{$query}%"]);
+                ', [$query, "{$query}%"]);
         } else {
             // Búsqueda por descripción: priorizar coincidencias en descripción
             $queryBuilder->whereRaw('(code LIKE ? or description LIKE ? or description_es LIKE ?)', [
@@ -120,7 +120,7 @@ class Diagnostics extends Component
                 "%{$query}%",
                 "%{$query}%",
             ])
-                ->orderByRaw("
+                ->orderByRaw('
                     CASE
                         WHEN code = ? THEN 1
                         WHEN description_es = ? THEN 2
@@ -129,7 +129,7 @@ class Diagnostics extends Component
                         ELSE 5
                     END,
                     code ASC
-                ", [$query, $query, "{$query}%", "{$query}%"]);
+                ', [$query, $query, "{$query}%", "{$query}%"]);
         }
 
         $results = $queryBuilder->take($this->perPage)->get()->toArray();
@@ -150,7 +150,7 @@ class Diagnostics extends Component
             $code = $result['code'];
             $category = $this->getCategoryName($code);
 
-            if (!isset($grouped[$category])) {
+            if (! isset($grouped[$category])) {
                 $grouped[$category] = [
                     'name' => $category,
                     'items' => [],

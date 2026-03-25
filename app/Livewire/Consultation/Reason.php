@@ -34,7 +34,6 @@ class Reason extends Component
         $this->save();
     }
 
-
     public function save()
     {
         $key = 'reason';
@@ -50,7 +49,7 @@ class Reason extends Component
             // Emitir evento al componente padre para calcular si el button finished se debe habilitar
             $this->dispatch('findFinishedButtonStatus');
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$key,$e->getMessage());
+            $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
 }

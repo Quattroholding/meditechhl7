@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\DiscountSource;
 use App\Enums\ReferralStatus;
+use App\Enums\ReferrerRewardType;
 use App\Models\Client;
 use App\Models\ClientReferral;
 use App\Models\ReferralCode;
@@ -153,13 +154,13 @@ class ReferralService
     /**
      * Mapear ReferrerRewardType a DiscountType
      */
-    protected function mapReferrerRewardTypeToDiscountType(\App\Enums\ReferrerRewardType $type): string
+    protected function mapReferrerRewardTypeToDiscountType(ReferrerRewardType $type): string
     {
         return match ($type) {
-            \App\Enums\ReferrerRewardType::CREDIT => 'fixed_amount',
-            \App\Enums\ReferrerRewardType::FIXED_DISCOUNT => 'fixed_amount',
-            \App\Enums\ReferrerRewardType::PERCENTAGE_DISCOUNT => 'percentage',
-            \App\Enums\ReferrerRewardType::FREE_MONTHS => 'free_months',
+            ReferrerRewardType::CREDIT => 'fixed_amount',
+            ReferrerRewardType::FIXED_DISCOUNT => 'fixed_amount',
+            ReferrerRewardType::PERCENTAGE_DISCOUNT => 'percentage',
+            ReferrerRewardType::FREE_MONTHS => 'free_months',
         };
     }
 

@@ -11,7 +11,6 @@ enum TicketStatus: string
     case resolved = 'resolved';
     case closed = 'closed';
 
-
     public function label(): string
     {
         return match ($this) {
@@ -33,5 +32,4 @@ enum TicketStatus: string
             self::closed => 'danger',
         };
     }
-
 }

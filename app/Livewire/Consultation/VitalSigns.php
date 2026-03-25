@@ -9,7 +9,6 @@ use Livewire\Component;
 
 class VitalSigns extends Component
 {
-
     public $reason;
 
     public $encounter_id;
@@ -19,7 +18,6 @@ class VitalSigns extends Component
     public $items;
 
     public $values = [];
-
 
     public function mount()
     {
@@ -72,11 +70,11 @@ class VitalSigns extends Component
             }
 
             // Actualizar el valor original después de guardar exitosamente
-           // $this->originalValues[$code] = $this->values[$code];
+            // $this->originalValues[$code] = $this->values[$code];
             $this->dispatch('saved-'.$code);
 
         } catch (\Exception $e) {
-            $this->dispatch('error-'.$code,$e->getMessage());
+            $this->dispatch('error-'.$code, $e->getMessage());
         }
     }
 

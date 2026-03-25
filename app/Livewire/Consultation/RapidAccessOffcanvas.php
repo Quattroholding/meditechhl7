@@ -2,14 +2,18 @@
 
 namespace App\Livewire\Consultation;
 
+use App\Models\Encounter;
+use App\Models\RapidAccess;
 use Livewire\Component;
-use Livewire\Attributes\On;
 
 class RapidAccessOffcanvas extends Component
 {
     public $section_id;
+
     public $rapidAccess = [];
+
     public $offcanvasId;
+
     public $encounterId;
 
     public function mount($sectionId, $offcanvasId, $encounterId)
@@ -22,7 +26,7 @@ class RapidAccessOffcanvas extends Component
 
     public function loadRapidAccess()
     {
-        $encounter = \App\Models\Encounter::find($this->encounterId);
+        $encounter = Encounter::find($this->encounterId);
 
         // Determinar el tipo de servicio según la sección
         $serviceType = 'procedure';
@@ -38,21 +42,23 @@ class RapidAccessOffcanvas extends Component
             ->pluck('code')
             ->toArray();
 
-        $this->rapidAccess = \App\Models\RapidAccess::whereUserId(auth()->id())
+        $this->rapidAccess = RapidAccess::whereUserId(auth()->id())
             ->whereType('CLIENT')
             ->whereEncounterSectionId($this->section_id)
             ->get()
-            ->map(function($item) use ($selectedCodes) {
+            ->map(function ($item) use ($selectedCodes) {
                 $item->is_selected = in_array($item->cpt->code, $selectedCodes);
+
                 return $item;
             });
 
         if ($this->rapidAccess->count() == 0) {
-            $this->rapidAccess = \App\Models\RapidAccess::whereType('MASTER')
+            $this->rapidAccess = RapidAccess::whereType('MASTER')
                 ->whereEncounterSectionId($this->section_id)
                 ->get()
-                ->map(function($item) use ($selectedCodes) {
+                ->map(function ($item) use ($selectedCodes) {
                     $item->is_selected = in_array($item->cpt->code, $selectedCodes);
+
                     return $item;
                 });
         }
@@ -61,7 +67,7 @@ class RapidAccessOffcanvas extends Component
     public function selectItem($cptId)
     {
         // Disparar evento ÚNICO al componente padre usando el ID del encuentro y sección
-        $this->dispatch('rapid-access-item-selected-' . $this->encounterId . '-' . $this->section_id, cptId: $cptId);
+        $this->dispatch('rapid-access-item-selected-'.$this->encounterId.'-'.$this->section_id, cptId: $cptId);
 
         // Recargar la lista para actualizar el indicador visual
         $this->loadRapidAccess();
@@ -70,7 +76,7 @@ class RapidAccessOffcanvas extends Component
     public function getListeners()
     {
         return [
-            'rapid-access-list-updated-' . $this->encounterId . '-' . $this->section_id => 'loadRapidAccess',
+            'rapid-access-list-updated-'.$this->encounterId.'-'.$this->section_id => 'loadRapidAccess',
         ];
     }
 

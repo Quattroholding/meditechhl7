@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceRequest extends BaseModel
 {
@@ -138,7 +139,7 @@ class ServiceRequest extends BaseModel
             'new_value' => $newStatus,
             'reason' => $reason,
             'change_type' => $changeType,
-            'user_id' => $userId ?: \Illuminate\Support\Facades\Auth::id(),
+            'user_id' => $userId ?: Auth::id(),
             'changed_at' => now(),
         ]);
 

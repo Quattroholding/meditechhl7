@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\CptCode;
 use App\Models\ServiceCatalog as ServiceCatalogModel;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -247,7 +248,7 @@ class ServiceCatalog extends Component
                 });
 
                 $created = true;
-            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException $e) {
                 $attempt++;
                 \Log::error('UniqueConstraintViolationException attempt '.$attempt.': '.$e->getMessage());
 
@@ -337,7 +338,7 @@ class ServiceCatalog extends Component
                 });
 
                 $created = true;
-            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException $e) {
                 $attempt++;
                 \Log::error('UniqueConstraintViolationException attempt '.$attempt.': '.$e->getMessage());
 

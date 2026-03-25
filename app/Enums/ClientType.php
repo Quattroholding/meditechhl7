@@ -9,7 +9,7 @@ enum ClientType
     case CENTRO_ATENCION_PRIMARIO;
     case CLINICA;
     case HOSPITAL;
-    case OTHER ;
+    case OTHER;
 
     public function label(): string
     {

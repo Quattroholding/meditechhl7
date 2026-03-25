@@ -7,6 +7,7 @@ use App\Models\BodyStructure;
 use App\Models\Encounter;
 use App\Models\Media;
 use App\Models\Patient;
+use App\Models\Practitioner;
 use App\Models\SkinLesion;
 use App\Models\SnomedBodySite;
 use Illuminate\Support\Facades\Auth;
@@ -168,7 +169,7 @@ class Dermatology extends Component
 
             // If user doesn't have a practitioner, use the first available one as fallback
             if (! $practitionerId) {
-                $practitionerId = \App\Models\Practitioner::first()?->id;
+                $practitionerId = Practitioner::first()?->id;
             }
 
             // If still no practitioner found, throw exception

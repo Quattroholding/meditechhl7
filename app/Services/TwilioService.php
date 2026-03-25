@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Twilio\Rest\Api\V2010\Account\MessageInstance;
 use Twilio\Rest\Client;
 
 class TwilioService
@@ -26,7 +27,7 @@ class TwilioService
      * @param  string  $to  The recipient's phone number (e.g., +50760016054)
      * @param  string  $message  The message body
      */
-    public function sendWhatsAppMessage(string $to, string $message): \Twilio\Rest\Api\V2010\Account\MessageInstance
+    public function sendWhatsAppMessage(string $to, string $message): MessageInstance
     {
         // Ensure the recipient number is in WhatsApp format
         $toWhatsApp = str_starts_with($to, 'whatsapp:') ? $to : 'whatsapp:'.$to;
@@ -47,7 +48,7 @@ class TwilioService
      * @param  string  $contentSid  The Content SID from Twilio
      * @param  array  $contentVariables  Variables to replace in the template
      */
-    public function sendWhatsAppTemplate(string $to, string $contentSid, array $contentVariables = []): \Twilio\Rest\Api\V2010\Account\MessageInstance
+    public function sendWhatsAppTemplate(string $to, string $contentSid, array $contentVariables = []): MessageInstance
     {
         // Ensure the recipient number is in WhatsApp format
         $toWhatsApp = str_starts_with($to, 'whatsapp:') ? $to : 'whatsapp:'.$to;

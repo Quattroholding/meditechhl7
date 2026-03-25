@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use App\Models\Client;
 use App\Models\ReferralCode;
+use App\Services\ReferralService;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -23,7 +24,7 @@ class ReferralCodeDisplay extends Component
         $this->referralCode = $client->referralCode;
 
         if (! $this->referralCode) {
-            $referralService = app(\App\Services\ReferralService::class);
+            $referralService = app(ReferralService::class);
             $this->referralCode = $referralService->generateCode($client);
         }
 

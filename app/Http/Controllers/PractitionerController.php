@@ -63,7 +63,7 @@ class PractitionerController extends Controller
             'birth_date' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            //'full_phone' => 'required',
+            // 'full_phone' => 'required',
             // 'image' => 'required',
             'clients' => 'required',
         ]);
@@ -96,8 +96,6 @@ class PractitionerController extends Controller
                 }
                 $model->clients()->sync($sync);
                 $model->assignRole('doctor');
-
-
 
                 // Crear practitioner usando el servicio centralizado
                 $practitioner = $practitionerService->createOrUpdatePractitioner(

@@ -35,8 +35,9 @@ class AddScbPatientToMeditecClient extends Command
 
         // Validar que el client_id existe
         $clientExists = Client::where('id', $clientId)->exists();
-        if (!$clientExists) {
+        if (! $clientExists) {
             $this->error("El cliente con ID {$clientId} no existe.");
+
             return 1;
         }
 
@@ -46,6 +47,7 @@ class AddScbPatientToMeditecClient extends Command
 
         if ($totalPatients === 0) {
             $this->warn('No se encontraron pacientes con SCB ID.');
+
             return 0;
         }
 

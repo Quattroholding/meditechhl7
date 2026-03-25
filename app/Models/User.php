@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
@@ -410,9 +412,9 @@ class User extends Authenticatable
         // If suspended, check days until expiration
         if ($subscription->status->value === 'suspended') {
             $expirationDays = (int) config('subscriptions.expiration_after_suspension_days', 30);
-            $updatedAt = $subscription->updated_at instanceof \Carbon\Carbon
+            $updatedAt = $subscription->updated_at instanceof Carbon
                 ? $subscription->updated_at
-                : \Carbon\Carbon::parse($subscription->updated_at);
+                : Carbon::parse($subscription->updated_at);
             $daysSinceSuspension = now()->startOfDay()->diffInDays($updatedAt->startOfDay());
 
             return max(0, $expirationDays - $daysSinceSuspension);
@@ -422,9 +424,9 @@ class User extends Authenticatable
         if ($subscription->status->value === 'past_due') {
             $invoice = $subscription->currentInvoice;
             if ($invoice) {
-                $dueDate = $invoice->due_date instanceof \Carbon\Carbon
+                $dueDate = $invoice->due_date instanceof Carbon
                     ? $invoice->due_date
-                    : \Carbon\Carbon::parse($invoice->due_date);
+                    : Carbon::parse($invoice->due_date);
                 $daysUntilDue = now()->startOfDay()->diffInDays($dueDate->startOfDay(), false);
 
                 return max(0, $daysUntilDue);
@@ -485,7 +487,7 @@ class User extends Authenticatable
         }
 
         // Count appointments created in the current subscription period
-        return \App\Models\Appointment::where('client_id', $client->id)
+        return Appointment::where('client_id', $client->id)
             ->whereBetween('created_at', [
                 $subscription->current_period_starts_at ?? now()->startOfMonth(),
                 $subscription->current_period_ends_at ?? now()->endOfMonth(),

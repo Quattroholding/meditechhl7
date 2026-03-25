@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\TwilioService;
 use Illuminate\Console\Command;
+use Twilio\Exceptions\RestException;
 
 class TestTwilioConnection extends Command
 {
@@ -49,7 +50,7 @@ class TestTwilioConnection extends Command
             }
 
             return 0;
-        } catch (\Twilio\Exceptions\RestException $e) {
+        } catch (RestException $e) {
             $this->newLine();
             $this->error('❌ Twilio API Error:');
             $this->error('Code: '.$e->getCode());

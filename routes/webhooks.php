@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Api\HemoScreenController;
 use App\Http\Controllers\Api\HemoScreenStandaloneController;
-use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
 use App\Http\Controllers\SuscriptionPaymentController;
+use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*

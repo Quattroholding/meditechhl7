@@ -2,16 +2,21 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use Illuminate\Http\Request;
+use Livewire\Component;
 
 class WelcomeSalute extends Component
 {
     public $userName;
+
     public $greetingMessage;
+
     public $welcomeMessage;
+
     public $backgroundImage;
+
     public $duration;
+
     public $showSalute = false;
 
     public function mount(

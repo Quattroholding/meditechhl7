@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppMetaChannel;
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
@@ -47,7 +48,7 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
         // Add WhatsApp channel if user has WhatsApp phone number
         if ($notifiable->whatsapp_phone || $notifiable->phone) {
             // Use WhatsApp Meta channel with template
-            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+            $channels[] = WhatsAppMetaChannel::class;
         }
 
         return $channels;

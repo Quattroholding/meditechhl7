@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Patient;
 use App\Models\PatientRelationship;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PatientRelationship>
+ * @extends Factory<PatientRelationship>
  */
 class PatientRelationshipFactory extends Factory
 {
@@ -42,7 +43,7 @@ class PatientRelationshipFactory extends Factory
 
         return [
             'fhir_id' => 'related-person-'.Str::uuid(),
-            'patient_id' => \App\Models\Patient::factory(),
+            'patient_id' => Patient::factory(),
             'related_patient_id' => null, // Will be set when creating actual patient relationships
             'identifier' => $this->faker->unique()->regexify('[0-9]{8}-[0-9]{4}'),
             'identifier_type' => $this->faker->randomElement(['CC', 'CE', 'PA']),

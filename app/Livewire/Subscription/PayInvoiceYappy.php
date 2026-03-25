@@ -2,12 +2,11 @@
 
 namespace App\Livewire\Subscription;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Livewire\Component;
 
 class PayInvoiceYappy extends Component
 {
-
     public $invoice;
 
     public function mount($invoice)
@@ -28,10 +27,10 @@ class PayInvoiceYappy extends Component
             $merchantId = config('services.yappy_test.merchant_id');
             $aliasYappy = '60800131';
             // Log configuración
-            if(env('APP_ENV') == 'production') {
+            if (env('APP_ENV') == 'production') {
                 $baseUrl = config('services.yappy.base_url');
                 $merchantId = config('services.yappy.merchant_id');
-                $aliasYappy =  preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
+                $aliasYappy = preg_replace('/^\+?507/', '', $this->invoice->client->whatsapp ?? '');
             }
 
             $appUrl = config('app.url');
@@ -43,10 +42,10 @@ class PayInvoiceYappy extends Component
             ]);
 
             // 1️⃣ Validar comercio
-            $validateUrl = $baseUrl . '/payments/validate/merchant';
+            $validateUrl = $baseUrl.'/payments/validate/merchant';
             $validatePayload = [
                 'merchantId' => $merchantId,
-                'urlDomain'  => $appUrl,
+                'urlDomain' => $appUrl,
             ];
 
             \Log::info('YAPPY Step 1: Validate Merchant REQUEST', [
@@ -65,36 +64,35 @@ class PayInvoiceYappy extends Component
                 'raw_body' => $validate->body(),
             ]);
 
-            if (!$validate->successful()) {
-                throw new \Exception('Error validando comercio Yappy: ' . $validate->body());
+            if (! $validate->successful()) {
+                throw new \Exception('Error validando comercio Yappy: '.$validate->body());
             }
 
             $token = data_get($validate->json(), 'body.token');
 
             \Log::info('YAPPY Token received', [
-                //'token' => $token,
+                // 'token' => $token,
                 'token_length' => strlen($token ?? ''),
             ]);
 
-
             $config = [
-                'merchantId'  => $merchantId,
-                'orderId'     => $this->invoice->id,
-                'domain'      => 'https://meditecpty.com',
+                'merchantId' => $merchantId,
+                'orderId' => $this->invoice->id,
+                'domain' => 'https://meditecpty.com',
                 'paymentDate' => time(),
-                'subtotal'    => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
-                'taxes'       => number_format($this->invoice->tax_amount ?? 0, 2, '.', ''),
-                'discount'    => '0.00',
-                'total'       => number_format($this->invoice->total ?? 0, 2, '.', ''),
-                'ipnUrl'      => 'https://webhooks.meditecpty.com/subscriptions/payments/yappy-ipn',
-                'aliasYappy'  =>$aliasYappy,
+                'subtotal' => number_format($this->invoice->subtotal ?? 0, 2, '.', ''),
+                'taxes' => number_format($this->invoice->tax_amount ?? 0, 2, '.', ''),
+                'discount' => '0.00',
+                'total' => number_format($this->invoice->total ?? 0, 2, '.', ''),
+                'ipnUrl' => 'https://webhooks.meditecpty.com/subscriptions/payments/yappy-ipn',
+                'aliasYappy' => $aliasYappy,
             ];
 
             // 2️⃣ Crear orden
-            $orderUrl = $baseUrl . '/payments/payment-wc';
+            $orderUrl = $baseUrl.'/payments/payment-wc';
             $orderHeaders = [
                 'Authorization' => $token,
-                'Content-Type'  => 'application/json',
+                'Content-Type' => 'application/json',
             ];
 
             \Log::info('YAPPY Step 2: Create Order REQUEST', [
@@ -114,11 +112,11 @@ class PayInvoiceYappy extends Component
                 'raw_body' => $order->body(),
             ]);
 
-            if (!$order->successful()) {
+            if (! $order->successful()) {
                 \Log::error('YAPPY response error', [
                     'status' => $order->status(),
-                    'body'   => $order->json(),
-                    'raw'    => $order->body(),
+                    'body' => $order->json(),
+                    'raw' => $order->body(),
                 ]);
 
                 throw new \Exception(
@@ -131,7 +129,7 @@ class PayInvoiceYappy extends Component
 
             \Log::info('YAPPY orden creada exitosamente', [
                 'transactionId' => $body['transactionId'] ?? null,
-               // 'token' => $body['token'] ?? null,
+                // 'token' => $body['token'] ?? null,
                 'documentName' => $body['documentName'] ?? null,
                 'full_body' => $body,
             ]);

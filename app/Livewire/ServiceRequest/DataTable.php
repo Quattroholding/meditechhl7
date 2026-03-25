@@ -2,6 +2,7 @@
 
 namespace App\Livewire\ServiceRequest;
 
+use App\Models\Encounter;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -39,7 +40,7 @@ class DataTable extends Component
     public function render()
     {
         // Agrupar ServiceRequests por Encounter
-        $encountersQuery = \App\Models\Encounter::query()
+        $encountersQuery = Encounter::query()
             ->with([
                 'patient',
                 'practitioner',
@@ -59,18 +60,18 @@ class DataTable extends Component
                             $q->where('name', 'like', '%'.$this->search.'%');
                         })
                         ->orWhereRaw("DATE_FORMAT(encounters.start, '%d/%m/%Y') LIKE ?", ['%'.$this->search.'%']);
-                        /*
-                        ->orWhereHas('diagnoses.condition', function ($q) {
-                            $q->where('onset_info', 'like', '%'.$this->search.'%');
-                        })
-                        ->orWhereHas('serviceRequests', function ($q) {
-                            $q->where('code', 'like', '%'.$this->search.'%')
-                                ->orWhere('service_type', 'like', '%'.$this->search.'%')
-                                ->orWhereHas('cpt', function ($cptQuery) {
-                                    $cptQuery->where('description_es', 'like', '%'.$this->search.'%')
-                                        ->orWhere('description', 'like', '%'.$this->search.'%');
-                                });
-                        });*/
+                    /*
+                    ->orWhereHas('diagnoses.condition', function ($q) {
+                        $q->where('onset_info', 'like', '%'.$this->search.'%');
+                    })
+                    ->orWhereHas('serviceRequests', function ($q) {
+                        $q->where('code', 'like', '%'.$this->search.'%')
+                            ->orWhere('service_type', 'like', '%'.$this->search.'%')
+                            ->orWhereHas('cpt', function ($cptQuery) {
+                                $cptQuery->where('description_es', 'like', '%'.$this->search.'%')
+                                    ->orWhere('description', 'like', '%'.$this->search.'%');
+                            });
+                    });*/
                 });
             })
             ->when(auth()->user()->hasRole('doctor'), function (Builder $query) {

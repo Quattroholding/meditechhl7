@@ -12,44 +12,46 @@ class ActiveUsers extends Component
 
     public $visibility = '';
 
-        public function activateUser($userId)
+    public function activateUser($userId)
     {
-        if (!Gate::allows('create', auth()->user())) {
+        if (! Gate::allows('create', auth()->user())) {
             $this->showError('Superó el límite de usuarios de su plan');
+
             return;
         }
 
         try {
             $user = User::findOrFail($userId);
             $userRole = $user->roles->first()->name ?? null;
-            //dd($userRole);
-            
+            // dd($userRole);
+
             // Validar si ya existe usuario activo con ese rol
             $singleUserRoles = ['doctor', 'recepcionista', 'asistente medico'];
             if ($userRole && in_array($userRole, $singleUserRoles)) {
-                //dd(auth()->user()->getCurrentClient()->users()->active()->role($userRole)->where('users.id', '!=', $userId)->get());
+                // dd(auth()->user()->getCurrentClient()->users()->active()->role($userRole)->where('users.id', '!=', $userId)->get());
                 $existingCount = auth()->user()->getCurrentClient()
                     ->users()
                     ->active()
                     ->role($userRole)
                     ->where('users.id', '!=', $userId) // Excluir el usuario actual
                     ->count();
-                //dd($existingCount);
+                // dd($existingCount);
                 if ($existingCount > 0) {
                     $this->showError("Ya existe un usuario activo con el rol '{$userRole}'");
+
                     return;
                 }
             }
-            
+
             $user->active = true;
             $user->save();
-            
+
             $this->visibility = 'display: none;';
             $this->dispatch('showToastr'.$this->user_id, [
                 'type' => 'success',
                 'message' => '¡Usuario reactivado con éxito!',
             ]);
-            
+
         } catch (\Exception $e) {
             $this->showError('Error al activar el usuario');
         }

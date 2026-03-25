@@ -48,7 +48,10 @@ class SearchCptDropdown extends Component
             return;
         }
 
-        $response = Http::get($this->path, [
+        // Para desarrollo local, desactivar verificación SSL
+        $http = config('app.env') === 'local' ? Http::withoutVerifying() : Http::timeout(30);
+
+        $response = $http->get($this->path, [
             'dropdown' => true,
             'q' => $this->query,
         ]);

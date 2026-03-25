@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppMetaChannel;
 use App\Models\Encounter;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use App\Services\EncounterPrescriptionPdfService;
@@ -62,7 +63,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
 
         // Try WhatsApp first ONLY if we have quota available (<1000 this month)
         if (($notifiable->whatsapp_phone || $notifiable->phone) && $hasWhatsAppQuota) {
-            $channels[] = \App\Channels\WhatsAppMetaChannel::class;
+            $channels[] = WhatsAppMetaChannel::class;
 
             Log::info('WhatsApp channel selected (quota available)', [
                 'remaining_quota' => $whatsAppService->getRemainingQuota(),
@@ -184,7 +185,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
             $practitioner = $this->encounter->practitioner;
             $patient = $this->encounter->patient;
             $pdfService = new EncounterPrescriptionPdfService;
-            $whatsAppService = app(\App\Services\WhatsAppService::class);
+            $whatsAppService = app(WhatsAppService::class);
 
             $documents = [];
 

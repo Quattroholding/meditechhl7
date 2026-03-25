@@ -6,6 +6,7 @@ use App\Actions\CreatePractitionerUserAction;
 use App\Models\Client;
 use App\Models\Practitioner;
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -23,7 +24,7 @@ class CreatePractitionerUserActionTest extends TestCase
         $this->action = new CreatePractitionerUserAction;
 
         // Seed roles and permissions
-        $this->seed(\Database\Seeders\RolePermissionSeeder::class);
+        $this->seed(RolePermissionSeeder::class);
     }
 
     public function test_creates_user_for_practitioner_successfully(): void

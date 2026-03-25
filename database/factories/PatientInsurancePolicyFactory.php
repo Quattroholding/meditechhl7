@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\InsuranceCompany;
+use App\Models\Patient;
+use App\Models\PatientInsurancePolicy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PatientInsurancePolicy>
+ * @extends Factory<PatientInsurancePolicy>
  */
 class PatientInsurancePolicyFactory extends Factory
 {
@@ -20,8 +23,8 @@ class PatientInsurancePolicyFactory extends Factory
         $expirationDate = $this->faker->dateTimeBetween($effectiveDate, '+1 year');
 
         return [
-            'patient_id' => \App\Models\Patient::factory(),
-            'insurance_company_id' => \App\Models\InsuranceCompany::factory(),
+            'patient_id' => Patient::factory(),
+            'insurance_company_id' => InsuranceCompany::factory(),
             'policy_number' => $this->faker->unique()->regexify('[A-Z]{3}[0-9]{6}'),
             'group_number' => $this->faker->optional()->regexify('[0-9]{4}[A-Z]{2}'),
             'subscriber_id' => $this->faker->regexify('[0-9]{9}'),

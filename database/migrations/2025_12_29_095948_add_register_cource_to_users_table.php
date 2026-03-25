@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('register_source',60)->default('web')->after('email');
+            $table->string('register_source', 60)->default('web')->after('email');
         });
     }
 

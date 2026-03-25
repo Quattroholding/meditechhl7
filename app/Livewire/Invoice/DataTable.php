@@ -3,6 +3,7 @@
 namespace App\Livewire\Invoice;
 
 use App\Models\Invoice;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -117,7 +118,7 @@ class DataTable extends Component
 
             // Return an empty collection to prevent infinite loading
             return view('livewire.invoice.data-table', [
-                'invoices' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10),
+                'invoices' => new LengthAwarePaginator([], 0, 10),
             ]);
         }
     }

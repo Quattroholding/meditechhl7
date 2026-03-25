@@ -9,7 +9,7 @@ use App\Models\ServiceRequestResult;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ServiceRequestResult>
+ * @extends Factory<ServiceRequestResult>
  */
 class ServiceRequestResultFactory extends Factory
 {

@@ -37,7 +37,7 @@ class WhatsAppN8NChannel
 
             $webHoorUrl = config('services.n8n.webhook_test_url');
 
-            if(env('APP_ENV') === 'production') {
+            if (env('APP_ENV') === 'production') {
                 $webHoorUrl = config('services.n8n.webhook_url');
             }
 

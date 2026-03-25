@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InvoiceStatus;
 use App\Http\Requests\PublicRegistrationRequest;
 use App\Models\Client;
+use App\Models\MedicalSpeciality;
 use App\Models\Package;
 use App\Models\User;
 use App\Models\UserClient;
@@ -15,6 +17,7 @@ use App\Services\ReferralService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PublicRegistrationController extends Controller
@@ -233,7 +236,7 @@ class PublicRegistrationController extends Controller
 
                         // Actualizar especialidad si es diferente
                         if ($request->medical_speciality) {
-                            $medicalSpeciality = \App\Models\MedicalSpeciality::find($request->medical_speciality);
+                            $medicalSpeciality = MedicalSpeciality::find($request->medical_speciality);
                             $existingPractitioner->qualifications()->delete();
                             $existingPractitioner->qualifications()->create([
                                 'medical_speciality_id' => $request->medical_speciality,
@@ -342,7 +345,7 @@ class PublicRegistrationController extends Controller
             $client = Client::find($clientId);
             if ($client) {
                 $pendingInvoice = $client->invoices()
-                    ->where('status', \App\Enums\InvoiceStatus::PENDING->value)
+                    ->where('status', InvoiceStatus::PENDING->value)
                     ->orderBy('created_at', 'desc')
                     ->first();
             }
@@ -353,7 +356,7 @@ class PublicRegistrationController extends Controller
 
     private function validateTurnstile(string $token): bool
     {
-        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => config('services.turnstile.secret_key'),
             'response' => $token,
         ]);

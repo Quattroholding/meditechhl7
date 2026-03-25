@@ -10,17 +10,18 @@ class InvoicesByBranch extends Component
 {
     public $invoices;
 
-    public function mount(){
+    public function mount()
+    {
         $this->loadData();
     }
 
-
-    public function loadData(){
-        $this->invoices = Invoice::select(            
+    public function loadData()
+    {
+        $this->invoices = Invoice::select(
             'branches.id',
             'branches.name',
             'branches.address',
-            'branches.type', 
+            'branches.type',
             DB::raw('SUM(invoices.total_amount) as total_invoices'))
             ->join('branches', 'invoices.branch_id', '=', 'branches.id')
             ->groupBy('branches.id', 'branches.name', 'branches.address', 'branches.type') // agregar todos los campos no agregados del SELECT
@@ -28,6 +29,7 @@ class InvoicesByBranch extends Component
             ->limit(5)
             ->get();
     }
+
     public function render()
     {
         return view('livewire.client.invoices-by-branch');

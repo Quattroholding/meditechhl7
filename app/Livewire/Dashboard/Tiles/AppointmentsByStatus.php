@@ -9,11 +9,17 @@ use Livewire\Component;
 class AppointmentsByStatus extends Component
 {
     public $pending;
+
     public $booked;
+
     public $confirmed;
+
     public $arrived;
+
     public $fulfilled;
+
     public $cancelled;
+
     public $total;
 
     public function mount()
