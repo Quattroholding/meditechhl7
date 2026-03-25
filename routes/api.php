@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\AdministrationRouteController;
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BranchController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\Api\MedicineController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PractitionerAuthorizationController;
 use App\Http\Controllers\Api\PractitionerController;
+use App\Http\Controllers\Api\Recepy\AdministrationRouteController;
 use App\Http\Controllers\Api\Recepy\RecepyDoctorProfileController;
 use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;

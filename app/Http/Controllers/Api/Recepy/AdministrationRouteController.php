@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Recepy;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdministrationRoute;
@@ -15,7 +15,11 @@ class AdministrationRouteController extends Controller
      */
     public function index(): JsonResponse
     {
-        $routes = AdministrationRoute::all();
-        return response()->json($routes);
+        $routes = AdministrationRoute::orderBy('name')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $routes,
+        ]);
     }
 }
