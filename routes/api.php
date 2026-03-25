@@ -126,10 +126,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Medication Types
         Route::get('medication-types', [RecepyMedicationTypeController::class, 'index']);
-    });
 
-    // Administration Routes
-    Route::get('/administration-routes', [AdministrationRouteController::class, 'index']);
+        // Administration Routes
+        Route::get('administration-routes', [AdministrationRouteController::class, 'index']);
+    });
 });
 
 // API Token routes - Full access with IP restrictions
