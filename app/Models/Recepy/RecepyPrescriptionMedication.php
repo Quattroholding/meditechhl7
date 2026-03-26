@@ -24,6 +24,7 @@ class RecepyPrescriptionMedication extends Model
         'quantity',
         'line_order',
         'is_active',
+        'administration_route',
     ];
 
     protected $casts = [
