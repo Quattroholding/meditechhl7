@@ -73,6 +73,7 @@ class RecepyPrescriptionMedicationController extends Controller
             'instructions' => 'required|string',
             'quantity' => 'nullable|integer|min:1',
             'line_order' => 'nullable|integer|min:1',
+            'administration_route' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -125,6 +126,7 @@ class RecepyPrescriptionMedicationController extends Controller
             'quantity' => 'nullable|integer|min:1',
             'line_order' => 'sometimes|integer|min:1',
             'is_active' => 'boolean',
+            'administration_route' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
