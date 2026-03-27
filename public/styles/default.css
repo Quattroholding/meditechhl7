@@ -192,6 +192,7 @@ centered::before, .centered::after {
     overflow: hidden;
 }
 
+
 .data-header::before {
     content: '';
     position: absolute;
@@ -269,6 +270,10 @@ centered::before, .centered::after {
 .add-pluss{
     margin-left: 10px;
     margin-top: 15px;
+}
+
+.data-table-container{
+    overflow: scroll;
 }
 
 /* Responsive para contenedores pequeños (offcanvas) */
