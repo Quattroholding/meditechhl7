@@ -29,10 +29,10 @@
 
     @if($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : count($sectionData) > 0))
         <!-- Tabla de Condiciones -->
-        <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div class="table-responsive">
-                <table class="table table-hover" style="margin-bottom: 0;">
-                    <thead style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white;">
+
+        <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
                         <tr>
                             <th style="padding: 15px; font-weight: 600; border: none;">Código</th>
                             <th style="padding: 15px; font-weight: 600; border: none;">Descripción</th>
@@ -223,7 +223,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+
 
         <!-- Pagination Controls -->
         @if(isset($sectionData['last_page']) && $sectionData['last_page'] > 1)

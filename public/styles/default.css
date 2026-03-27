@@ -273,7 +273,7 @@ centered::before, .centered::after {
 }
 
 .data-table-container{
-    overflow: scroll;
+    overflow-x: auto;
 }
 
 /* Responsive para contenedores pequeños (offcanvas) */
