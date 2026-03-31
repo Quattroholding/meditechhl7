@@ -477,6 +477,7 @@
         .category-social { background: #fff3e0; color: #ef6c00; }
         .category-medication { background: #e8f5e9; color: #2e7d32; }
         .category-condition { background: #e0f7fa; color: #00838f; }
+        .category-hospitalization { background: #fae0f7; color: #cf0091; }
         .category-inmu { background: #daffe6; color: #008f4f; }
         .category-other { background: #fdffda; color: #8f8a00; }
 
@@ -876,6 +877,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#seguros">
+                                <i class="fas fa-shield-alt"></i>
+                                Gestión de Seguros
+                            </a>
+                        </li>
+                        <li>
                             <a href="#auth-code">
                                 <i class="fas fa-address-book"></i>
                                 Flujo de Solicitud de Historial
@@ -976,16 +983,16 @@
                             </div>-->
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-diagnoses"></i>
-                                    <h6>Diagnósticos</h6>
-                                    <p>Diagnósticos ICD-10</p>
+                                    <i class="fas fa-notes-medical"></i>
+                                    <h6>Enfermedades Actuales</h6>
+                                    <p>Motivo de consulta</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-notes-medical"></i>
-                                    <h6>Enfermedades Actuales</h6>
-                                    <p>Motivo de consulta</p>
+                                    <i class="fas fa-diagnoses"></i>
+                                    <h6>Diagnósticos</h6>
+                                    <p>Diagnósticos ICD-10</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1018,6 +1025,13 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <h6>Notas Privadas</h6>
+                                    <p>Notas del médico</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="section-card">
                                     <i class="fas fa-comment-medical"></i>
                                     <h6>Notas Médicas</h6>
                                     <p>Impresiones médicas</p>
@@ -1025,16 +1039,16 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-sticky-note"></i>
-                                    <h6>Notas Personales</h6>
-                                    <p>Notas del médico</p>
+                                    <i class="fas fa-file-medical"></i>
+                                    <h6>Incapacidades</h6>
+                                    <p>Incapacidades Médicas</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-file-medical"></i>
-                                    <h6>Incapacidades</h6>
-                                    <p>Incapacidades Médicas</p>
+                                    <i class="fas fa-shield-alt"></i>
+                                    <h6>Seguros</h6>
+                                    <p>Gestión de pólizas médicas</p>
                                 </div>
                             </div>
                         </div>
@@ -1047,19 +1061,17 @@
                     <h3 class="step-title">¿Cómo acceder a la Historia Médica?</h3>
                     <div class="step-content">
                         <p>Para acceder a la historia medica de un paciente:</p>
-
+                        
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-patient.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <div class="sub-step">
                             <h6><i class="fas fa-route me-2"></i>Pasos</h6>
                             <ol>
                                 <li>Ve a la Sección de Pacientes</li>
-                                <li>Has clic lista pacientes o busca el paciente</li>
-                                <li>Haz clic en el nombre del paciente o en <strong>"Ver Perfil"</strong></li>
-                                <li>En el perfil, haz clic en <strong>"Historia Medica"</strong></li>
+                                <li>Haz clic lista pacientes y busca el paciente</li>
+                                <li>Haz clic en el nombre del paciente o en <strong>"Historial Médico"</strong></li>
                             </ol>
-                        </div>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-patient.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         {{--}}<p class="mt-3">URL directa:</p>
@@ -1097,9 +1109,13 @@
                                         <i class="fas fa-diagnoses"></i>
                                         <div><strong>Condiciones activas</strong></div>
                                     </li>
-                                    <li>
+                                    <!--<li>
                                         <i class="fas fa-calendar"></i>
                                         <div><strong>Fecha de última visita</strong></div>
+                                    </li>-->
+                                    <li>
+                                        <i class="fas fa-clock"></i>
+                                        <div><strong>Actividad reciente</strong></div>
                                     </li>
                                 </ul>
                             </div>
@@ -1112,10 +1128,10 @@
                                     <li>
                                         <i class="fas fa-allergies"></i>
                                         <div><strong>Alergias conocidas</strong></div>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-clock"></i>
-                                        <div><strong>Actividad reciente</strong></div>
+                                    </li> 
+                                    <li>                               
+                                        <i class="fas fa-heartbeat"></i>
+                                        <div><strong>Signos Vitales</strong></div>
                                     </li>
                                 </ul>
                             </div>
@@ -1165,6 +1181,24 @@
                             </div>
                         </div>
 
+                        <div class="sub-step mt-4">
+                            <h6><i class="fas fa-file-pdf me-2"></i>Resumen Médico</h6>
+                            <p>El <strong>Resumen Médico</strong> es un documento consolidado que resume toda la información relevante de una consulta específica. Para acceder a él, diríjase a la columna de <strong>"Acciones"</strong> en la tabla de consultas y haga clic en el botón <strong>"Ver Detalles"</strong>.</p>
+                            
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pdf.png') }}" alt="" style="width: 100%;">
+                        </div>
+                            <p>Este documento incluye:</p>
+                            <ul class="checklist">
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Datos del Paciente:</strong> Nombre completo, edad y número de identificación.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora y nombre del médico que atendió.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Motivo de Consulta y Enfermedad Actual:</strong> Descripción detallada de los síntomas y motivo de la visita.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Signos Vitales:</strong> Registro de las mediciones tomadas durante la consulta.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Diagnósticos:</strong> Conclusiones médicas codificadas bajo ICD-10.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Órdenes Médicas:</strong> Medicamentos recetados con sus dosis e instrucciones, y estudios solicitados.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Notas Médicas:</strong> Recomendaciones y observaciones adicionales del profesional de salud.</div></li>
+                            </ul>
+                        </div>
                     </div>
                 </section>
 
@@ -1179,24 +1213,45 @@
                             <img src="{{ asset('images/tutorial/medical_history/conditions.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <!--<h5 class="mt-4">Estados de una Condición:</h5>
-                        <div class="row mt-3">
-                            <div class="col-md-4 mb-2">
-                                <span class="badge bg-danger">Activa</span> - Condición presente
+                        <h5 class="mt-4">Detalle de la Tabla de Condiciones:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                    <li>
+                                        <i class="fas fa-barcode"></i>
+                                        <div><strong>Código:</strong> Código alfanumérico estandarizado bajo el sistema ICD-10 para la identificación precisa del diagnóstico.</div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-file-medical"></i>
+                                        <div><strong>Descripción:</strong> Nombre o descripción clínica del diagnóstico registrado.</div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-info-circle"></i>
+                                        <div><strong>Estado:</strong> Indica la situación actual de la condición (ej. <strong>Activa</strong>, Resuelta, etc.).</div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <div><strong>Severidad:</strong> Nivel de gravedad del diagnóstico (ej. Leve, Moderado, Severo).</div>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-md-4 mb-2">
-                                <span class="badge bg-warning text-dark">Recurrencia</span> - Ha vuelto a aparecer
+                            <div class="col-md-6">
+                                <ul class="checklist">
+                                    <li>
+                                        <i class="fas fa-tags"></i>
+                                        <div><strong>Categoría:</strong> Clasificación adicional para agrupar diagnósticos similares.</div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <div><strong>Fecha Dx:</strong> Fecha exacta en la que el profesional de salud registró el diagnóstico.</div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-mouse-pointer"></i>
+                                        <div><strong>Acciones:</strong> Botón de <strong>"Ver Detalles"</strong> (ícono de ojo) para consultar información extendida del registro.</div>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-md-4 mb-2">
-                                <span class="badge bg-info">Remision</span> - Mejorando
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <span class="badge bg-success">Resuelta</span> - Ya no esta presente
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <span class="badge bg-secondary">Desconocido</span> - Estado no determinado
-                            </div>
-                        </div>-->
+                        </div>
 
                         <div class="icd-example mt-4">
                             <h6><i class="fas fa-code me-2"></i>Ejemplos de Codigos ICD-10:</h6>
@@ -1227,11 +1282,11 @@
                             <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <h5 class="mt-4">Signos Vitales Soportados:</h5>
+                        <h5 class="mt-4">Campos de la Sección de Signos Vitales:</h5>
                         <table class="vital-signs-table">
                             <thead>
                                 <tr>
-                                    <th>Signo Vital</th>
+                                    <th>Campo</th>
                                     <!--<th>Codigo LOINC</th>-->
                                     <th>Unidad</th>
                                 </tr>
@@ -1306,27 +1361,31 @@
                                 <ul class="checklist">
                                                                         <li>
                                         <i class="fas fa-allergies"></i>
-                                        <div><strong>Datos generales de la consulta como: fecha, Doctor, especialidad y estado de la consulta</strong></div>
+                                        <div><strong>Datos generales de la consulta como: fecha, Doctor, especialidad, diagnósticos y estado de la consulta</strong></div>
                                     </li>
                                     <li>
                                         <i class="fas fa-chart-bar"></i>
                                         <div><strong>Descripción</strong></div>
                                     </li>
                                     <li>
-                                        <i class="fas fa-diagnoses"></i>
-                                        <div><strong>Duración</strong></div>
+                                        <i class="fas fa-medkit"></i>
+                                        <div><strong>Factores agravantes y síntomas asociados</strong></div>
                                     </li>
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul class="checklist">
-                                    <li>
+                                    <!--<li>
                                         <i class="fas fa-calendar"></i>
                                         <div><strong>Localización (lugar donde se presenta la molestia)</strong></div>
-                                    </li>
+                                    </li>-->
                                     <li>
                                         <i class="fas fa-pills"></i>
                                         <div><strong>Cronología (Tiempo determinado del día en que se da la molestia)</strong></div>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-diagnoses"></i>
+                                        <div><strong>Duración</strong></div>
                                     </li>
                                 </ul>
                             </div>
@@ -1359,8 +1418,8 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="info-box info-note">
-                            <i class="fas fa-pills"></i>
+                        <div class="info-box info-note" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <i class="fas fa-pills" style="color: #059669;"></i>
                             <div>
                                 <strong>Información incluida en solicitudes de imágenes y laboratorios:</strong>
                                 <ul class="mb-0 mt-2">
@@ -1371,6 +1430,10 @@
                                     <li>Fecha</li>
                                 </ul>
                             </div>
+                        </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Nota:</strong> Desde esta sección podrá visualizar y descargar las órdenes médicas y recetas del paciente.
                         </div>
                     </div>
                 </section>
@@ -1420,8 +1483,14 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="category-badge category-condition">Condición</span>
+                                    <span class="category-badge category-condition">Enfermedad Crónica</span>
                                     <span class="text-muted">Enfermedades crónicas previas</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="category-badge category-hospitalization">Hospitalización</span>
+                                    <span class="text-muted">Por emergencia, cirugía, etc</span>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -1486,18 +1555,18 @@
                             <img src="{{ asset('images/tutorial/medical_history/med-note.png') }}" alt="" style="width: 100%;">
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="sub-step">
                                     <h6><i class="fas fa-comment-medical me-2"></i>Notas Médicas</h6>
-                                    <p class="mb-0">Impresiones diagnósticas formales que forman parte del expediente oficial.</p>
+                                    <p class="mb-0">Notas que el médico describe para tenerlo presente en sus siguientes consultas y que también, puede ser vista por otros médicos de la red y por el mismo paciente.</p>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <!--<div class="col-md-6">
                                 <div class="sub-step">
                                     <h6><i class="fas fa-sticky-note me-2"></i>Notas Privadas</h6>
                                     <p class="mb-0">Notas privadas del medico que solo el puede ver.</p>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </section>
@@ -1512,7 +1581,49 @@
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-license.png') }}" alt="" style="width: 100%;">
                         </div>
-
+                        <h5 class="mt-4">Detalle de la Tabla de Incapacidades:</h5>
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <ul class="checklist">
+                                     <li>
+                                         <i class="fas fa-id-card"></i>
+                                         <div><strong>Número del Seguro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-calendar-alt"></i>
+                                         <div><strong>Fecha emisión:</strong> Corresponde a la fecha en que se generó oficialmente la incapacidad.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-calendar-day"></i>
+                                         <div><strong>Periodo de incapacidad:</strong> Rango de fechas en el que se establece que el paciente no podrá ejercer sus labores.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-clock"></i>
+                                         <div><strong>Días:</strong> Cantidad total de días por los cuales el paciente se encuentra incapacitado.</div>
+                                     </li>
+                                 </ul>
+                             </div>
+                             <div class="col-md-6">
+                                 <ul class="checklist">
+                                     <li>
+                                         <i class="fas fa-diagnoses"></i>
+                                         <div><strong>Diagnóstico:</strong> Motivo médico por el cual el profesional de salud solicitó la incapacidad.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-user-md"></i>
+                                         <div><strong>Médico:</strong> Profesional encargado de realizar el análisis clínico y emitir el documento.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-info-circle"></i>
+                                         <div><strong>Estado:</strong> Indica la situación actual en que se encuentra la incapacidad registrada.</div>
+                                     </li>
+                                     <li>
+                                         <i class="fas fa-download"></i>
+                                         <div><strong>Acciones:</strong> Opción para <strong>descargar</strong> la incapacidad oficial en formato PDF.</div>
+                                     </li>
+                                 </ul>
+                             </div>
+                         </div>
                         <div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
@@ -1528,6 +1639,9 @@
                     <h3 class="step-title">Notas Privadas</h3>
                     <div class="step-content">
                         <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pvnote.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
@@ -1538,10 +1652,6 @@
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
                         </div>
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-privnotes.png') }}" alt="" style="width: 100%;">
-                        </div>
-
                         <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
@@ -1560,6 +1670,8 @@
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
+                                <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
+                                <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
                                 <li>En la seccion de <strong>"Antecedentes Médicos"</strong>, haz clic en <strong>"Agregar"</strong></li>
                                 <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
                                 <li>Ingresa el <strong>título</strong> descriptivo</li>
@@ -1582,11 +1694,54 @@
                     </div>
                 </section>
 
+
+                <!-- Gestión de Seguros -->
+                <section id="seguros" class="step-card step-primary">
+                    <div class="step-number">12</div>
+                    <h3 class="step-title">Gestión de Seguros Médicos</h3>
+                    <div class="step-content">
+                        <p>SAMI permite gestionar las pólizas de seguro médico del paciente directamente desde su historial:</p>
+
+                        <div class="sub-step">
+                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Gestionar</h6>
+                            <ol>
+                                <li>En la sección de <strong>"Pacientes"</strong>, haz clic en <strong>"Lista Pacientes"</strong>.</li>
+                                <li>Busca al paciente y haz clic en su nombre o en el botón de <strong>"Historial Médico"</strong>.</li>
+                                <li>En el encabezado del historial, haz clic en el botón 🛡️ <strong>"Gestionar Seguros"</strong>.</li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-insurance.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                        <h5 class="mt-4">Acciones Disponibles:</h5>
+                        <ul class="checklist">
+                            <li>
+                                <i class="fas fa-eye"></i>
+                                <div><strong>Visualización:</strong> Ve el listado de seguros actuales, incluyendo prioridad (Primario, Secundario, Terciario), número de póliza y vigencia.</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-plus-circle"></i>
+                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura y fechas de vigencia.</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-toggle-on"></i>
+                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de estado para habilitar o inhabilitar una póliza sin eliminarla.</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-trash-alt"></i>
+                                <div><strong>Eliminar:</strong> Remueve definitivamente un registro de seguro si ya no es necesario.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
                 <!-- Flujo de Loggin -->
                 <section id="auth-code" class="step-card">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Flujo de Solicitud y Habilitación de Historial Médico Completo del Paciente</h3>
                     <div class="step-content">
-                        <!--<p>Para los interesados en conocer el proceso tecnico, aqui explicamos que ocurre en el sistema durante el registro:</p>-->
+                        <p>En caso de que usted como Médico necesite conocer más Información acerca del historial médico del paciente, deberá solicitar el consentimiento del mismo para poder accerder al historial médico completo del paciente, en caso de que el paciente tenga historial médico, con otros clientes.</p>
 
                         <div class="process-timeline">
                             <div class="timeline-item completed">
