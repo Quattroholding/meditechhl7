@@ -57,6 +57,9 @@ class RecepyPrescriptionMedication extends Model
     {
         $parts = [];
 
+        if ($this->administration_route) {
+            $parts[] = $this->administration_route;
+        }
         if ($this->dosage) {
             $parts[] = $this->dosage;
         }
