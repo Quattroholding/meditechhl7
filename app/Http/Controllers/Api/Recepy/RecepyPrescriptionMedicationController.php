@@ -7,6 +7,7 @@ use App\Models\Recepy\RecepyPrescription;
 use App\Models\Recepy\RecepyPrescriptionMedication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RecepyPrescriptionMedicationController extends Controller
@@ -92,6 +93,8 @@ class RecepyPrescriptionMedicationController extends Controller
             $lastOrder = $prescription->medications()->max('line_order') ?? 0;
             $data['line_order'] = $lastOrder + 1;
         }
+
+        Log::info($data);
 
         $medication = RecepyPrescriptionMedication::create($data);
 
