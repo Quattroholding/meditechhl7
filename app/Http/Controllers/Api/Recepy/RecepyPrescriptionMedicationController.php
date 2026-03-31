@@ -94,7 +94,11 @@ class RecepyPrescriptionMedicationController extends Controller
             $data['line_order'] = $lastOrder + 1;
         }
 
-        Log::info($data);
+        Log::info('RecepyPrescriptionMedication Store Request', [
+            'prescription_id' => $prescriptionId,
+            'request_all' => $request->all(),
+            'validated_data' => $data,
+        ]);
 
         $medication = RecepyPrescriptionMedication::create($data);
 
