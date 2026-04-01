@@ -158,7 +158,7 @@
             background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
             padding: 0 5px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 17px;
         }
 
         .dx-content {
