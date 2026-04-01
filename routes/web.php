@@ -178,6 +178,9 @@ Route::get('/dash', function () {
     if (auth()->user()->hasRole('contabilidad')) {
         $route = route('accounting.dashboard');
     }
+    if (auth()->user()->hasRole('hemoscreen')) {
+        $route = route('hemoscreen.dashboard');
+    }
 
     return redirect($route);
 })->name('dash')->middleware(['auth', 'verified', 'first.login']);
