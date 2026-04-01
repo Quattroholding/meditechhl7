@@ -129,7 +129,7 @@
 
         .medication-item {
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .medication-name {
@@ -165,7 +165,7 @@
         .dx-content {
           padding-left: 35px;
           padding-top: 25px;
-          font-size: 11px;
+          font-size: 13px;
         }
 
         /* Footer Styles */
