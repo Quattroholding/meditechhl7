@@ -9,6 +9,7 @@ use App\Services\PrescriptionPdfService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -136,6 +137,10 @@ class RecepyPrescriptionController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        Log::info('RecepyPrescription Store Request', [
+            'request' => $request->all(),
+        ]);
+
         $validator = Validator::make($request->all(), [
             'doctor_profile_id' => 'required|exists:recepy_doctor_profiles,id',
             'patient_name' => 'required|string|max:255',
@@ -158,6 +163,7 @@ class RecepyPrescriptionController extends Controller
             'medications.*.duration' => 'nullable|string',
             'medications.*.instructions' => 'required|string',
             'medications.*.quantity' => 'nullable|integer|min:1',
+            'medications.*.administration_route' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -196,6 +202,9 @@ class RecepyPrescriptionController extends Controller
                 $medicationData['prescription_id'] = $prescription->id;
                 $medicationData['line_order'] = $index + 1;
                 $prescription->medications()->create($medicationData);
+                Log::info('Medication', [
+                    'medicationData' => $medicationData,
+                ]);
             }
 
             DB::commit();
