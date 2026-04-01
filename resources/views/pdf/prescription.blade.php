@@ -159,6 +159,7 @@
             padding: 0 5px;
             font-weight: bold;
             font-size: 17px;
+            margin-bottom: 5px;
         }
 
         .dx-content {
@@ -344,7 +345,7 @@
                             {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{$medication->medication_name.'     '.$medication->dosage.'    #'.$medication->quantity.' '.$medication->presentation}}
                         </div>
                         <div class="medication-details">
-                            <strong>Sg:</strong> {{ $medication->frequency.' '.$medication->administration_route ?? ''.' por '.$medication->duration }}
+                            <strong>Sg:</strong> {{ $medication->frequency.' '.($medication->administration_route ?? '').' por '.$medication->duration }}
                         </div>
                         @if($medication->instructions && $medication->instructions<>'Según indicación médica')
                             <div class="medication-details">
