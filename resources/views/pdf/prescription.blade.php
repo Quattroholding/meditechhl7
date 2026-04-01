@@ -65,7 +65,7 @@
             text-align: center;
             vertical-align: middle;
             padding: 10px;
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .facility-info {
@@ -119,7 +119,7 @@
             background: {{ '#' . ($doctorProfile->recepy_background_color ?? 'ffffff') }};
             padding: 0 5px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 17px;
         }
 
         .rx-content {
@@ -129,7 +129,7 @@
 
         .medication-item {
             margin-bottom: 15px;
-            font-size: 11px;
+            font-size: 14px;
         }
 
         .medication-name {
@@ -344,7 +344,7 @@
                             {{ ($pageIndex * $medicationsPerPage) + $index + 1 }}. {{$medication->medication_name.'     '.$medication->dosage.'    #'.$medication->quantity.' '.$medication->presentation}}
                         </div>
                         <div class="medication-details">
-                            <strong>Sg:</strong> {{ $medication->frequency.' por '.$medication->duration }}
+                            <strong>Sg:</strong> {{ $medication->frequency.' '.$medication->administration_route ?? ''.' por '.$medication->duration }}
                         </div>
                         @if($medication->instructions && $medication->instructions<>'Según indicación médica')
                             <div class="medication-details">
