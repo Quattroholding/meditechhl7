@@ -25,10 +25,11 @@ class AdministrationRouteSeeder extends Seeder
             ['name' => 'Ótica', 'abbreviation' => 'OT'],
             ['name' => 'Nasal', 'abbreviation' => 'NAS'],
             ['name' => 'Transdérmica', 'abbreviation' => 'TD'],
+            ['name' => 'Vía Oral', 'abbreviation' => 'VO'],
         ];
 
         foreach ($routes as $route) {
-            \App\Models\AdministrationRoute::create($route);
+            \App\Models\AdministrationRoute::updateOrCreate($route);
         }
     }
 }
