@@ -197,6 +197,7 @@ class Calendar extends Component
             $endOfWeek = $this->currentDate->copy()->endOfWeek(Carbon::SUNDAY);
             $query->whereBetween('start', [$startOfWeek, $endOfWeek]);
         } elseif ($this->currentView === 'daily') {
+            $query->whereNotIn('status',['proposed']);
             $query->whereDate('start', $this->currentDate->format('Y-m-d'));
         }
 
