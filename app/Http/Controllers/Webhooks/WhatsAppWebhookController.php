@@ -77,6 +77,10 @@ class WhatsAppWebhookController extends Controller
                 'phone_number_id' => $phoneNumberId
             ]);
 
+            Log::info('Webhook value', [
+                'value' => data_get($payload,'entry.0.changes.0.value')
+            ]);
+
             /**
              * ROUTING CONFIG
              *
