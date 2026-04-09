@@ -128,7 +128,7 @@
                                             <x-input-label for="package_id" :value="__('Paquete')" required/>
                                             <select required name="package_id" id="package_id" class="form-control block w-full" onchange="updatePackageInfo()">
                                                 <option value="">Seleccione un paquete</option>
-                                                @foreach(\App\Models\Package::where('is_active', 1)->get() as $package)
+                                                @foreach(\App\Models\Package::get() as $package)
                                                     <option value="{{ $package->id }}"
                                                         data-price="{{ $package->base_price }}"
                                                         data-doctors="{{ $package->max_doctors_included }}"
