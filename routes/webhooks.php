@@ -36,6 +36,7 @@ Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {
     Route::post('/', [WhatsAppWebhookController::class, 'handle'])->name('handle');
 });
 
+
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
 
 // HemoScreen API (Integrated & Standalone)
