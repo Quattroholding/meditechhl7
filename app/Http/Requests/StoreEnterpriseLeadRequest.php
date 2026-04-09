@@ -50,6 +50,10 @@ class StoreEnterpriseLeadRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'phone' => $phoneRules,
             'company_name' => ['required', 'string', 'max:255'],
+            'number_of_doctors' => ['nullable', 'integer', 'min:1', 'max:10000'],
+            'agent_preference' => ['nullable', 'string', 'in:sami,personalized'],
+            'number_of_branches' => ['nullable', 'integer', 'min:1', 'max:1000'],
+            'current_system' => ['nullable', 'string', 'max:255'],
             'message' => ['nullable', 'string', 'max:1000'],
 
             // Campos opcionales para requests desde usuarios autenticados
@@ -76,6 +80,14 @@ class StoreEnterpriseLeadRequest extends FormRequest
             'phone.required' => 'El teléfono es obligatorio.',
             'phone.regex' => 'El teléfono debe incluir el código de país en formato internacional (ej: +507...).',
             'company_name.required' => 'El nombre de la empresa/clínica es obligatorio.',
+            'number_of_doctors.integer' => 'El número de médicos debe ser un valor numérico.',
+            'number_of_doctors.min' => 'El número de médicos debe ser al menos 1.',
+            'number_of_doctors.max' => 'El número de médicos no puede exceder 10,000.',
+            'agent_preference.in' => 'La preferencia de agente debe ser "Agente SAMI" o "Agente Personalizado".',
+            'number_of_branches.integer' => 'El número de sucursales debe ser un valor numérico.',
+            'number_of_branches.min' => 'El número de sucursales debe ser al menos 1.',
+            'number_of_branches.max' => 'El número de sucursales no puede exceder 1,000.',
+            'current_system.max' => 'El nombre del sistema actual no debe exceder 255 caracteres.',
             'message.max' => 'El mensaje no debe exceder 1000 caracteres.',
         ];
     }
@@ -92,6 +104,10 @@ class StoreEnterpriseLeadRequest extends FormRequest
             'email' => 'correo electrónico',
             'phone' => 'teléfono',
             'company_name' => 'nombre de la empresa',
+            'number_of_doctors' => 'número de médicos',
+            'agent_preference' => 'preferencia de agente',
+            'number_of_branches' => 'número de sucursales',
+            'current_system' => 'sistema actual',
             'message' => 'mensaje',
         ];
     }

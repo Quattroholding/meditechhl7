@@ -224,17 +224,46 @@
                     <label style="display: block; margin-bottom: 5px; font-weight: 600;">Nombre Completo *</label>
                     <input type="text" name="full_name" value="{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email *</label>
-                    <input type="email" name="email" value="{{ auth()->user()->email }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email *</label>
+                        <input type="email" name="email" value="{{ auth()->user()->email }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Teléfono *</label>
+                        <input type="tel" name="phone" value="{{ $subscription->client->whatsapp ?? auth()->user()->phone }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Nombre de la Empresa/Clínica *</label>
+                        <input type="text" name="company_name" value="{{ $subscription->client->long_name ?? $subscription->client->name }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">¿Cuántos médicos tiene?</label>
+                        <input type="number" name="number_of_doctors" min="1" max="10000" placeholder="Ej: 5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Teléfono *</label>
-                    <input type="tel" name="phone" value="{{ $subscription->client->whatsapp ?? auth()->user()->phone }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">¿Quieren usar el Agente SAMI o un agente personalizado?</label>
+                    <div style="display: flex; gap: 20px; margin-top: 8px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; font-weight: 400; margin: 0;">
+                            <input type="radio" name="agent_preference" value="sami" style="margin-right: 8px; cursor: pointer; width: auto;">
+                            <span>Agente SAMI</span>
+                        </label>
+                        <label style="display: flex; align-items: center; cursor: pointer; font-weight: 400; margin: 0;">
+                            <input type="radio" name="agent_preference" value="personalized" style="margin-right: 8px; cursor: pointer; width: auto;">
+                            <span>Agente Personalizado</span>
+                        </label>
+                    </div>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Nombre de la Empresa/Clínica *</label>
-                    <input type="text" name="company_name" value="{{ $subscription->client->long_name ?? $subscription->client->name }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">¿Cuántas sucursales quiere registrar?</label>
+                    <input type="number" name="number_of_branches" min="1" max="1000" placeholder="Ej: 3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">¿Qué sistema usa actualmente para la gestión de su clínica?</label>
+                    <input type="text" name="current_system" maxlength="255" placeholder="Ej: Microsoft Excel, MediSoft, etc." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
 
                 {{-- Información del plan actual --}}

@@ -480,17 +480,46 @@
                     <label>Nombre Completo *</label>
                     <input type="text" name="full_name" required>
                 </div>
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" name="email" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono *</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre de la Empresa/Clínica *</label>
+                        <input type="text" name="company_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Cuántos médicos tiene?</label>
+                        <input type="number" name="number_of_doctors" min="1" max="10000" placeholder="Ej: 5">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Teléfono *</label>
-                    <input type="tel" name="phone" required>
+                    <label>¿Quieren usar el Agente SAMI o un agente personalizado?</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="agent_preference" value="sami">
+                            <span>Agente SAMI</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="agent_preference" value="personalized">
+                            <span>Agente Personalizado</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Nombre de la Empresa/Clínica *</label>
-                    <input type="text" name="company_name" required>
+                    <label>¿Cuántas sucursales quiere registrar?</label>
+                    <input type="number" name="number_of_branches" min="1" max="1000" placeholder="Ej: 3">
+                </div>
+                <div class="form-group">
+                    <label>¿Qué sistema usa actualmente para la gestión de su clínica?</label>
+                    <input type="text" name="current_system" maxlength="255" placeholder="Ej: Microsoft Excel, MediSoft, etc.">
                 </div>
                 <div class="form-group">
                     <label>Cuéntanos sobre tus necesidades</label>

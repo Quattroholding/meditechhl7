@@ -54,6 +54,21 @@ class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
             ->line('📱 **Teléfono:** '.$this->lead->phone)
             ->line('🏢 **Empresa/Clínica:** '.$this->lead->company_name);
 
+        // Información adicional de la empresa
+        if ($this->lead->number_of_doctors) {
+            $message->line('👨‍⚕️ **Número de Médicos:** '.$this->lead->number_of_doctors);
+        }
+        if ($this->lead->agent_preference) {
+            $agentText = $this->lead->agent_preference === 'sami' ? 'Agente SAMI' : 'Agente Personalizado';
+            $message->line('🤖 **Preferencia de Agente:** '.$agentText);
+        }
+        if ($this->lead->number_of_branches) {
+            $message->line('🏢 **Número de Sucursales:** '.$this->lead->number_of_branches);
+        }
+        if ($this->lead->current_system) {
+            $message->line('💻 **Sistema Actual:** '.$this->lead->current_system);
+        }
+
         // Si hay mensaje, mostrarlo
         if ($this->lead->message) {
             $message->line('')
