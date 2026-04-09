@@ -5,105 +5,139 @@ namespace App\Http\Controllers\Webhooks;
 use App\Http\Controllers\Controller;
 use App\Models\WhatsAppWebhook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\WhatsAppAgent;
 
 class WhatsAppWebhookController extends Controller
 {
+
     /**
      * Verify webhook (Meta requires this for initial setup)
-     * GET request from Meta to verify the webhook URL
      */
     public function verify(Request $request)
     {
-        // PHP converts dots to underscores in query parameter names
-        // So hub.mode becomes hub_mode, hub.verify_token becomes hub_verify_token, etc.
+
         $mode = $request->query('hub_mode');
         $token = $request->query('hub_verify_token');
         $challenge = $request->query('hub_challenge');
 
-        // Verify token matches what we set in Meta dashboard
         $verifyToken = config('services.meta.webhook_verify_token', 'meditech_whatsapp_webhook_2026');
 
-        // Debug logging
         Log::info('WhatsApp webhook verification attempt', [
             'mode' => $mode,
             'token_received' => $token,
             'token_expected' => $verifyToken,
             'challenge' => $challenge,
             'all_query_params' => $request->query(),
-            'url' => $request->fullUrl(),
         ]);
 
         if ($mode === 'subscribe' && $token === $verifyToken) {
-            Log::info('WhatsApp webhook verified successfully', [
-                'mode' => $mode,
-                'token' => $token,
-            ]);
 
-            // Meta expects the challenge back as plain text
-            return response($challenge, 200)->header('Content-Type', 'text/plain');
+            Log::info('WhatsApp webhook verified successfully');
+
+            return response($challenge, 200)
+                ->header('Content-Type', 'text/plain');
         }
-
-        Log::warning('WhatsApp webhook verification failed', [
-            'mode' => $mode,
-            'token_received' => $token,
-            'expected_token' => $verifyToken,
-            'match' => $token === $verifyToken,
-        ]);
 
         return response('Forbidden', 403);
     }
 
     /**
-     * Handle incoming webhooks from Meta
-     * POST request with webhook data
+     * Handle incoming webhook POST from Meta
      */
     public function handle(Request $request)
     {
+
         try {
+
             $payload = $request->all();
 
             Log::info('WhatsApp webhook received', [
-                'payload' => $payload,
-                'headers' => $request->headers->all(),
+                'payload' => $payload
             ]);
 
-            // Save raw webhook
+            // Guardar webhook para debugging
             $this->storeWebhook($payload);
 
-            // Process webhook data
-            $this->processWebhook($payload);
+            // Obtener phone_number_id
+            $phoneNumberId = data_get(
+                $payload,
+                'entry.0.changes.0.value.metadata.phone_number_id'
+            );
 
-            // Meta expects a 200 OK response
+            if (!$phoneNumberId) {
+
+                Log::warning('phone_number_id not found in webhook');
+
+                return response()->json(['status' => 'ok']);
+            }
+
+            Log::info('Webhook phone_number_id detected', [
+                'phone_number_id' => $phoneNumberId
+            ]);
+
+            /**
+             * ROUTING CONFIG
+             *
+             * Aquí decides qué números van a n8n
+             * y cuáles procesa Laravel
+             */
+
+            $agent = WhatsAppAgent::where('phone_number_id', $phoneNumberId)
+                ->where('active', true)
+                ->first();
+
+            if (!$agent) {
+
+                Log::warning('No agent configured for phone_number_id', [
+                    'phone_number_id' => $phoneNumberId
+                ]);
+
+                return response()->json(['status' => 'ok']);
+            }
+
+            if ($agent->type === 'n8n') {
+
+                Http::timeout(10)->post(
+                    $agent->webhook_url,
+                    $payload
+                );
+            }
+
+            if ($agent->type === 'laravel') {
+
+                $this->processWebhook($payload);
+            }
+
             return response()->json(['status' => 'ok'], 200);
 
         } catch (\Exception $e) {
+
             Log::error('Error processing WhatsApp webhook', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'payload' => $request->all(),
+                'trace' => $e->getTraceAsString()
             ]);
 
-            // Still return 200 to prevent Meta from retrying
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 200);
+            return response()->json(['status' => 'error'], 200);
         }
     }
+
 
     /**
      * Store webhook in database for debugging
      */
     protected function storeWebhook(array $payload): void
     {
+
         try {
-            // Extract relevant data from Meta webhook structure
+
             $entry = $payload['entry'][0] ?? null;
             $changes = $entry['changes'][0] ?? null;
             $value = $changes['value'] ?? null;
 
-            // Determine event type
             $eventType = $this->determineEventType($value);
 
-            // Extract message/status data
             $messageData = $this->extractMessageData($value);
 
             WhatsAppWebhook::create([
@@ -120,27 +154,28 @@ class WhatsAppWebhookController extends Controller
             ]);
 
         } catch (\Exception $e) {
+
             Log::error('Error storing webhook', [
-                'error' => $e->getMessage(),
-                'payload' => $payload,
+                'error' => $e->getMessage()
             ]);
         }
     }
 
+
     /**
-     * Process webhook and take actions
+     * Process webhook for Laravel logic
      */
     protected function processWebhook(array $payload): void
     {
+
         $entry = $payload['entry'][0] ?? null;
         $changes = $entry['changes'][0] ?? null;
         $value = $changes['value'] ?? null;
 
-        if (! $value) {
+        if (!$value) {
             return;
         }
 
-        // Handle different webhook types
         if (isset($value['statuses'])) {
             $this->handleStatusUpdate($value['statuses']);
         }
@@ -154,126 +189,72 @@ class WhatsAppWebhookController extends Controller
         }
     }
 
-    /**
-     * Handle message status updates (sent, delivered, read, failed)
-     */
+
     protected function handleStatusUpdate(array $statuses): void
     {
+
         foreach ($statuses as $status) {
+
             Log::info('WhatsApp message status update', [
                 'message_id' => $status['id'] ?? null,
-                'status' => $status['status'] ?? null,
-                'recipient' => $status['recipient_id'] ?? null,
-                'timestamp' => $status['timestamp'] ?? null,
-                'errors' => $status['errors'] ?? null,
+                'status' => $status['status'] ?? null
             ]);
-
-            // If status is failed, log the error
-            if (($status['status'] ?? null) === 'failed') {
-                $errors = $status['errors'] ?? [];
-                foreach ($errors as $error) {
-                    Log::error('WhatsApp message failed', [
-                        'message_id' => $status['id'] ?? null,
-                        'error_code' => $error['code'] ?? null,
-                        'error_title' => $error['title'] ?? null,
-                        'error_message' => $error['message'] ?? null,
-                        'error_details' => $error['error_data']['details'] ?? null,
-                    ]);
-                }
-            }
         }
     }
 
-    /**
-     * Handle incoming messages (if needed in future)
-     */
+
     protected function handleIncomingMessage(array $messages): void
     {
-        foreach ($messages as $message) {
-            Log::info('WhatsApp incoming message', [
-                'message_id' => $message['id'] ?? null,
-                'from' => $message['from'] ?? null,
-                'type' => $message['type'] ?? null,
-                'text' => $message['text']['body'] ?? null,
-            ]);
 
-            // Here you could implement auto-responses or ticket creation
+        foreach ($messages as $message) {
+
+            Log::info('Incoming WhatsApp message (Laravel)', [
+                'from' => $message['from'] ?? null,
+                'text' => $message['text']['body'] ?? null
+            ]);
         }
     }
 
-    /**
-     * Handle errors
-     */
+
     protected function handleError(array $errors): void
     {
+
         foreach ($errors as $error) {
+
             Log::error('WhatsApp webhook error', [
-                'error_code' => $error['code'] ?? null,
-                'error_title' => $error['title'] ?? null,
-                'error_message' => $error['message'] ?? null,
-                'error_details' => $error,
+                'code' => $error['code'] ?? null,
+                'message' => $error['message'] ?? null
             ]);
         }
     }
 
-    /**
-     * Determine event type from webhook value
-     */
+
     protected function determineEventType(?array $value): string
     {
-        if (! $value) {
-            return 'unknown';
-        }
 
-        if (isset($value['statuses'])) {
-            return 'status';
-        }
+        if (!$value) return 'unknown';
 
-        if (isset($value['messages'])) {
-            return 'message';
-        }
+        if (isset($value['statuses'])) return 'status';
 
-        if (isset($value['errors'])) {
-            return 'error';
-        }
+        if (isset($value['messages'])) return 'message';
+
+        if (isset($value['errors'])) return 'error';
 
         return 'other';
     }
 
-    /**
-     * Extract message data from webhook value
-     */
+
     protected function extractMessageData(?array $value): array
     {
-        if (! $value) {
-            return [];
-        }
+
+        if (!$value) return [];
 
         $data = [];
 
-        // Extract from status updates
-        if (isset($value['statuses'][0])) {
-            $status = $value['statuses'][0];
-            $data['message_id'] = $status['id'] ?? null;
-            $data['status'] = $status['status'] ?? null;
-            $data['to'] = $status['recipient_id'] ?? null;
-
-            // Extract error if failed
-            if (($status['status'] ?? null) === 'failed' && isset($status['errors'][0])) {
-                $error = $status['errors'][0];
-                $data['error_message'] = ($error['title'] ?? '').' - '.($error['message'] ?? '');
-            }
-
-            $data['metadata'] = [
-                'timestamp' => $status['timestamp'] ?? null,
-                'conversation' => $status['conversation'] ?? null,
-                'pricing' => $status['pricing'] ?? null,
-            ];
-        }
-
-        // Extract from incoming messages
         if (isset($value['messages'][0])) {
+
             $message = $value['messages'][0];
+
             $data['message_id'] = $message['id'] ?? null;
             $data['from'] = $message['from'] ?? null;
             $data['status'] = 'received';
@@ -287,4 +268,5 @@ class WhatsAppWebhookController extends Controller
 
         return $data;
     }
+
 }
