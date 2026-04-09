@@ -6,7 +6,9 @@ use App\Enums\DiscountType;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -18,6 +20,19 @@ class StoreClientRequest extends FormRequest
     public function authorize(): bool
     {
         return true; // Authorization is handled in the controller/middleware
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        Log::error('Validation failed for StoreClientRequest', [
+            'errors' => $validator->errors()->toArray(),
+            'input' => $this->except(['password', 'password_confirmation']),
+        ]);
+
+        parent::failedValidation($validator);
     }
 
     /**

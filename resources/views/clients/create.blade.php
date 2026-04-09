@@ -58,7 +58,7 @@
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
                                             <x-input-label for="ruc" :value="__('Ruc')" required/>
-                                            <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="old('ruc')"/>
+                                            <x-text-input id="ruc" class="block mt-1 w-full" type="text" name="ruc" :value="old('ruc')"/>
                                             <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                                         </div>
                                     </div>
@@ -87,16 +87,16 @@
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="update_password_password" :value="__('Contraseña')" required/>
-                                            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+                                            <x-input-label for="password" :value="__('Contraseña')" required/>
+                                            <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" required/>
-                                            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+                                            <x-input-label for="password_confirmation" :value="__('user.confirm_password')" required/>
+                                            <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                         </div>
                                     </div>
                                 </div>
@@ -106,9 +106,10 @@
                                         <div class="form-group local-top-form">
                                             <label class="local-top">Logo</label>
                                             <div class="settings-btn upload-files-avator">
-                                                <input type="file" accept="image/*" name="logo" id="file" onchange="loadFile(event)" class="hide-input">
+                                                <input type="file" accept="image/*" name="logo" id="file" onchange="loadFile(event); document.getElementById('preview').style.display='block';" class="hide-input">
                                                 <label for="file" class="upload">{{__('Escoger archivo')}}</label>
                                             </div>
+                                            <img id="preview" style="max-width: 200px; margin-top: 10px; display: none;"/>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +233,7 @@
                                         <div class="col-12 col-md-6 col-xl-6">
                                             <div class="input-block local-forms">
                                                 <x-input-label for="practitioner_gender" value="Género"/>
-                                                <x-select-input name="gender" :options="\App\Models\Lista::gender()" :selected="[old('gender')]" class="block w-full"/>
+                                                <x-select-input id="practitioner_gender" name="gender" :options="\App\Models\Lista::gender()" :selected="[old('gender')]" class="block w-full"/>
                                                 <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                                             </div>
                                             <!-- SPECIALTY -->
@@ -398,25 +399,37 @@
             document.getElementById('package-details').style.display = 'block';
 
             // Mostrar/ocultar campos de practitioner si max_doctors=1
-            console.log("MAx User :"+usersIncluded);
-            if (usersIncluded === 1) {
+            console.log("Max doctors included: "+doctorsIncluded);
+            if (doctorsIncluded === 1) {
                 document.getElementById('practitioner-section').style.display = 'block';
                 document.getElementById('practitioner-fields').style.display = 'block';
                 // Hacer los campos requeridos
-                document.getElementById('practitioner_identifier_type').required = true;
-                document.getElementById('practitioner_identifier').required = true;
-                document.getElementById('practitioner_given_name').required = true;
-                document.getElementById('practitioner_family_name').required = true;
-                document.getElementById('practitioner_gender').required = true;
+                const identifierTypeEl = document.getElementById('practitioner_identifier_type');
+                const identifierEl = document.getElementById('practitioner_identifier');
+                const givenNameEl = document.getElementById('practitioner_given_name');
+                const familyNameEl = document.getElementById('practitioner_family_name');
+                const genderEl = document.getElementById('practitioner_gender');
+
+                if (identifierTypeEl) identifierTypeEl.required = true;
+                if (identifierEl) identifierEl.required = true;
+                if (givenNameEl) givenNameEl.required = true;
+                if (familyNameEl) familyNameEl.required = true;
+                if (genderEl) genderEl.required = true;
             } else {
                 document.getElementById('practitioner-section').style.display = 'none';
                 document.getElementById('practitioner-fields').style.display = 'none';
                 // Remover requerimiento de los campos
-                document.getElementById('practitioner_identifier_type').required = false;
-                document.getElementById('practitioner_identifier').required = false;
-                document.getElementById('practitioner_given_name').required = false;
-                document.getElementById('practitioner_family_name').required = false;
-                document.getElementById('practitioner_gender').required = false;
+                const identifierTypeEl = document.getElementById('practitioner_identifier_type');
+                const identifierEl = document.getElementById('practitioner_identifier');
+                const givenNameEl = document.getElementById('practitioner_given_name');
+                const familyNameEl = document.getElementById('practitioner_family_name');
+                const genderEl = document.getElementById('practitioner_gender');
+
+                if (identifierTypeEl) identifierTypeEl.required = false;
+                if (identifierEl) identifierEl.required = false;
+                if (givenNameEl) givenNameEl.required = false;
+                if (familyNameEl) familyNameEl.required = false;
+                if (genderEl) genderEl.required = false;
             }
 
             updatePaymentInfo();

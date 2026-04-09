@@ -84,7 +84,7 @@ class ClientController extends Controller
                 }
 
                 // Crear Practitioner si el paquete tiene max_doctors=1
-                if ($package->max_users === 1 && $request->filled('identifier')) {
+                if ($package->max_doctors_included === 1 && $request->filled('identifier')) {
                     // Crear practitioner usando el servicio centralizado
                     $practitioner = $practitionerService->createOrUpdatePractitioner(
                         $user,
