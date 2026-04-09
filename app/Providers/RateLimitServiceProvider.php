@@ -29,7 +29,7 @@ class RateLimitServiceProvider extends ServiceProvider
             }
 
             // Para usuarios no autenticados, usar IP y límite más bajo
-            return Limit::perHour(3)->by($request->ip());
+            return Limit::perHour(7)->by($request->ip());
         });
     }
 }

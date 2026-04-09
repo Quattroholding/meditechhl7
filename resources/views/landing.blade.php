@@ -658,17 +658,34 @@
             const response = await fetch(this.action, {
                 method: 'POST',
                 body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             });
+
+            const data = await response.json();
 
             if (response.ok) {
                 alert('¡Gracias! Nos pondremos en contacto contigo pronto.');
                 closeEnterpriseModal();
                 this.reset();
+            } else if (response.status === 422) {
+                // Errores de validación
+                let errorMessage = 'Por favor corrige los siguientes errores:\n\n';
+                if (data.errors) {
+                    for (const [field, messages] of Object.entries(data.errors)) {
+                        errorMessage += '• ' + messages.join('\n• ') + '\n';
+                    }
+                } else {
+                    errorMessage = data.message || 'Hubo un error de validación.';
+                }
+                alert(errorMessage);
             } else {
-                alert('Hubo un error. Por favor intenta nuevamente.');
+                alert(data.message || 'Hubo un error. Por favor intenta nuevamente.');
             }
         } catch (error) {
+            console.error('Error:', error);
             alert('Error de conexión. Por favor intenta más tarde.');
         }
     });
