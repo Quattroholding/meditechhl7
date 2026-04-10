@@ -634,9 +634,9 @@
                             Requisitos Previos
                         </div>
                         <ul class="mb-0">
-                            <li>Tener una <a href="{{ route('help.appointments') }}">cita agendada</a> para el paciente</li>
                             <li>El paciente debe estar <a href="{{ route('help.patients') }}">registrado</a> en el sistema</li>
-                            <li>La cita debe estar en estado "Confirmada" o "LLegó"</li>
+                            <li>Tener una <a href="{{ route('help.appointments') }}">cita agendada</a> para el paciente</li>
+                            <li>La cita debe estar en estado "LLegó"</li>
                             <li>Tener configuradas las plantillas de consulta (opcional)</li>
                         </ul>
                     </div>
@@ -656,9 +656,10 @@
                 <p>Esta es la forma más común de acceder a una consulta:</p>
                 <ul>
                     <li>Navegue a <strong>Citas → Calendario</strong></li>
-                    <li>Localice la cita del paciente en el calendario</li>
-                    <li>Haga clic en la cita para ver los detalles</li>
-                    <li>Presione el botón <strong>"Iniciar"</strong></li>
+                    <li>Estando en la vista hoy, localice la cita del paciente en el calendario</li>
+                    <li>Registre la llegada del paciente en el botón que dice "Registrar llegada"</li>
+                    <li>Luego de que la cita se haya actualizado, haga clic en el botón <strong>"Iniciar"</strong></li>
+                    <li>Se desplegará la plantilla de consulta, para que pueda comenzar a llenar la información correspondiente</li>
                 </ul>
 
             <div>
@@ -673,7 +674,10 @@
                 <ul>
                     <li>Navegue a <strong>Citas → Lista Citas</strong></li>
                     <li>Busque la cita del paciente usando los filtros</li>
-                    <li>En la columna de Estatus, haga clic en </i> <strong>"Registrar Llegada"</strong></li>
+                    <li>En la columna de Estatus, haga clic en <strong>"Registrar Llegada"</strong></li>
+                    <li>Nuevamente, en la columna de Estatus, haga clic en <strong>"Iniciar Consulta"</strong></li>
+                    <li>Le saldrá una ventana emergente indicando que el paciente está listo para consulta, haga clic en el botón <strong>"Iniciar Consulta"</strong></li>
+                    <li>Se desplegará la plantilla de consulta, para que pueda comenzar a llenar la información correspondiente</li>
                 </ul>
 
             <div>
@@ -688,7 +692,10 @@
                 <ul>
                     <li>En el perfil del paciente, vaya a la pestaña de <strong>"Citas"</strong></li>
                     <li>Localice la cita actual</li>
-                    <li>Haga clic en <strong>"Iniciar Consulta"</strong></li>
+                    <li>En la columna de Estado, haga clic en </i> <strong>"Registrar Llegada"</strong></li>
+                    <li>Nuevamente, en la columna de Estatus, haga clic en </i> <strong>"Iniciar Consulta"</strong></li>
+                    <li>Le saldrá una ventana emergente indicando que el paciente está listo para consulta, haga clic en el botón <strong>"Iniciar Consulta"</strong></li>
+                    <li>Se desplegará la plantilla de consulta, para que pueda comenzar a llenar la información correspondiente</li>
                 </ul>
                 <div>
                     <img src="{{ asset('images/tutorial/encounters/encounter_startenc.png') }}" alt="" style="width: 100%;">
@@ -843,13 +850,11 @@
             <!-- Step 1: Patient Info -->
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Revisar Información general del Paciente y de la Cita</span></h4>
-                <p>Al iniciar la consulta, verá un encabezado con la información básica del paciente:</p>
+                <p>Al iniciar la consulta, verá un encabezado con la información básica del paciente y de la cita:</p>
                 <ul>
-                    <li><strong>Información de la cita:</strong> fecha, consultorio y tipo de servicio</li>
-                    <li><strong>Nombre completo</strong> del paciente</li>
-                    <li><strong>Edad</strong> y fecha de nacimiento</li>
-                    <li><strong>Tipo y número de identificación</strong></li>
-                    <li><strong>Doctor y su especialidad</strong></li>
+                    <li><strong>Información de la cita:</strong> fecha, consultorio, # de consulta y tipo de servicio</li>
+                    <li><strong>Información del paciente:</strong> nombre, edad, género, tipo y número de identificación</li>
+                    <li><strong>Información del médico:</strong><strong>nombre y especialidad</strong></li>
                 </ul>
 
                 <div>
@@ -861,30 +866,31 @@
                         <i class="fas fa-info-circle text-primary"></i>
                         Menú Lateral
                     </div>
-                    <p class="mb-0">En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada.</p>
+                    <p class="mb-0">
+                        En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada. Además, encontrará una guía, ubicada al final de este menú, que muestra las secciones en rojo,si las secciones que son requeridas para poder finalizar la consulta, se encuentran vacías.</p>
                 </div>
                 <div>
                     <img src="{{ asset('images/tutorial/encounters/encounter_sidemenu.png') }}" alt="" style="width: 100%;">
                 </div>
-                <p>Este <strong>Menú Lateral</strong> es un acceso rápido a cada sección de la consulta y una guía que muestra las secciones obligatorias en rojo al final del menú lateral, si estas se encuentran vacías.</p>
 
             </div>
 
             <!-- Step 2: Servicios Facturables -->
             <div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Agregar Servicios Facturables</span></h4>
-                <p>Expanda la primera sección <strong>"Servicios Facturables"</strong> y agregue los servicios previamente registrados en la sección de Configuraciones -> Catálogo de Servicios. </p>
+                <p>Expanda la primera sección <strong>"Servicios Facturables"</strong>, elija la categoría y agregue los servicios necesarios que fueron previamente registrados en la sección de Configuraciones -> Catálogo de Servicios. </p>
             <div>
                 <img src="{{ asset('images/tutorial/encounters/encounter_services.png') }}" alt="" style="width: 100%;">
             </div>
 
-                <div class="info-box tip">
-                    <div class="info-box-title">
-                        <i class="fas fa-save text-success"></i>
-                        Autoguardado
-                    </div>
-                    <p class="mb-0">El sistema guarda automáticamente la información mientras escribe. No es necesario presionar un botón de guardar después de cada sección.</p>
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                        Servicios Facturables
                 </div>
+                <p class="mb-0">Estos son los servicios que serán cargados en la factura al finalizar la consulta, esta factura se le cobrará al paciente.</p>
+            </div>
+
             </div>
 
             <!-- Step 2: Chief Complaint -->
@@ -899,6 +905,14 @@
 
                 <div>
                     <img src="{{ asset('images/tutorial/encounters/encounter_mot.png') }}" alt="" style="width: 100%;">
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-save text-success"></i>
+                        Autoguardado
+                    </div>
+                    <p class="mb-0">El sistema guarda automáticamente la información mientras escribe. No es necesario presionar un botón de guardar después de cada sección.</p>
                 </div>
             </div>
 
@@ -977,7 +991,7 @@
             <!-- Step 3: Vital Signs -->
             <div class="step-card">
                 <h4><span class="step-number">4</span><span class="step-title">Llenar datos de Enfermedad Actual</span></h4>
-                <p>En la sección de <strong>"Signos Vitales"</strong>, complete los campos correspondientes:</p>
+                <p>En la sección de <strong>"Enfermedad Actual"</strong>, complete los campos correspondientes:</p>
 
                 <table class="field-table">
                     <thead>
@@ -989,26 +1003,54 @@
                     <tbody>
                         <tr>
                             <td data-label="Campo"><strong>Ubicación</strong></td>
-                            <td data-label="Descripcion">Seleccione la ubicación del dolor/síntoma que le informe el paciente.</td>
+                            <td data-label="Descripcion">Seleccione el área anatómica relacionada con el (los) síntoma(s) que le informe el paciente.</td>
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Gravedad</strong></td>
-                            <td data-label="Descripcion">Seleccione la gravedad del dolor que le indicó el paciente.</td>
+                            <td data-label="Descripcion">Indique la severidad del(los) síntoma(s).</td>
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Duración</strong></td>
-                            <td data-label="Descripcion">Seleccione el tiempo del dolor/síntoma que le informe el paciente.</td>
+                            <td data-label="Descripcion">Indique desde hace cuánto tiempo aproximadamente presenta el(los) síntoma(s).</td>
 
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Momento</strong></td>
-                            <td data-label="Descripcion">Seleccione el momento de dolor/síntoma que le indica el paciente.</td>
+                            <td data-label="Descripcion">Indique el predominio horario en el que se presenta el(los) síntoma(s).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Factores Agravantes</strong></td>
+                            <td data-label="Descripcion">Indique los factores, actividades o situaciones que empeoran los síntomas.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Atenuantes</strong></td>
+                            <td data-label="Descripcion">Indique los factores o medidas que alivian o disminuyen la intensidad de los síntomas.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Síntomas Asociados</strong></td>
+                            <td data-label="Descripcion">Registre otros síntomas que se presentan de forma conjunta con el síntoma principal.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Descripción</strong></td>
+                            <td data-label="Descripcion">Detalle narrativo adicional sobre la evolución y características de la enfermedad actual.</td>
                         </tr>
                     </tbody>
                 </table>
 
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_actualIllness.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_ai11.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_ai12.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_ai13.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_ai.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/encounters/encounter_ai2.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
 
@@ -1019,7 +1061,7 @@
                 <ul>
                     <li><strong>Apariencia General:</strong> Estado general del paciente</li>
                     <li><strong>Examen por Sistemas:</strong> Hallazgos específicos por cada sistema</li>
-                    <li>Utilice las plantillas predefinidas si están configuradas</li>
+                    <li>Utilice las sugerencias cuando quiera indicar que el aparato o sistema evaluado está “normal” </li>
                     <li>Agregue notas adicionales según sea necesario</li>
                 </ul>
 
@@ -1048,10 +1090,8 @@
 
             <!-- Step 7: Medical Orders -->
             <div class="step-card">
-                <h4><span class="step-number">7</span><span class="step-title">Generar Imágenes, Laboratorios y Procedimiento</span></h4>
-                <p>Si necesita solicitar exámenes, imágenes o laboratorios:</p>
-                <ul>
-                    <li>Seleccione el tipo de orden:
+                <h4><span class="step-number">7</span><span class="step-title">Solicitar Imágenes, Laboratorios y Procedimiento</span></h4>
+                <p>Tipos de órdenes médicas:</p>
                         <ul>
                             <li>En caso de solicitar exámenes, seleccione la sección de <strong>"Laboratorios"</strong></li>
                             <div>
@@ -1061,22 +1101,36 @@
                                 <div>
                                     <img src="{{ asset('images/tutorial/encounters/encounter_imgs.png') }}" alt="" style="width: 100%;">
                                 </div>                            
-                            <li>En caso de solicitar/realizar algún procedimiento, seleccione la sección de <strong>"Procedimientos"</strong></li>
+                            <li>En caso de solicitar algún procedimiento, seleccione la sección de <strong>"Procedimientos"</strong></li>
                                 <div>
                                     <img src="{{ asset('images/tutorial/encounters/encounter_proc.png') }}" alt="" style="width: 100%;">
                                 </div>
                         </ul>
-                    </li>
-                    <li>Busque y seleccione los estudios requeridos</li>
-                    <li>Agregue indicaciones especiales si es necesario</li>
-                </ul>
+                <p>En caso de solicitar algún tipo de orden médica:</p>
+                <ol>
+                    <li>Seleccione el estudio requerido buscando por descripción, código CPT o buscándolo desde el listado de acceso rápido.</li>
+                    <li>Agregue instrucciones adicionales (si se requiere).</li>
+                    <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro del estudio.</li>
+                </ol>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-bolt text-success"></i>
+                        Listado de Acceso Rápido
+                    </div>
+                    <p class="mb-0">
+                        Para agilizar la solicitud de estudios frecuentes, puede utilizar el botón <strong>"Listado de Acceso Rápido"</strong>. 
+                        Este listado le permite seleccionar rápidamente estudios previamente marcados como favoritos. 
+                        Puede configurar sus propios accesos rápidos en la sección de <a href="{{ route('help.settings') }}">Configuraciones → Accesos Rápidos</a>.
+                    </p>
+                </div>
 
             </div>
 
                     <!-- Step 8: Treatment Plan -->
             <div class="step-card">
                 <h4><span class="step-number">8</span><span class="step-title">Agregar Referencia Especialista</span></h4>
-                <p>En caso de que usted considere que el paciente puede agregar una referencia:</p>
+                <p>En caso de que usted considere que el paciente debe ser evaluado o referido a algún especialista, puede agregar una referencia especialista:</p>
                 <ul>
                     <li>Escriba la <strong>Especialidad</strong> a la que referirá al paciente</li>
                     <li>Agregue una <strong>Nota de Referencia</strong></li>
@@ -1088,39 +1142,69 @@
                 </div>
             </div>
 
-            <!-- Step 6: Prescription -->
+            <!-- Step 9: Prescription -->
             <div class="step-card">
                 <h4><span class="step-number">9</span><span class="step-title">Crear Prescripción Médica</span></h4>
-                <p>Para prescribir medicamentos:</p>
+                <p>Para prescribir medicamentos, siga estos pasos:</p>
+                <ol>
+                    <li>Vaya a la sección <strong>"Medicamentos"</strong>.</li>
+                    <li>Haga clic en el campo de búsqueda <strong>"Buscar Medicamento por nombre, código NDC o nombre genérico"</strong>.</li>
+                    <li>Busque el medicamento por nombre comercial o genérico y selecciónelo de la lista desplegable.</li>
+                    <li>Complete los campos del formulario de prescripción detallados en la tabla a continuación.</li>
+                    <li>Haga clic en <strong>"Guardar"</strong> o el botón correspondiente para incluir el medicamento en la receta.</li>
+                    <li>Repita el proceso para todos los medicamentos adicionales que requiera el paciente.</li>
+                </ol>
+
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Cantidad</strong></td>
+                                <td data-label="Descripcion">Indique la cantidad o dosis por cada toma (ej: 1 tableta, 5ml).</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Frecuencia</strong></td>
+                                <td data-label="Descripcion">Establezca el intervalo de tiempo entre cada dosis (ej: cada 8 horas).</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Vía</strong></td>
+                                <td data-label="Descripcion">Seleccione la vía de administración (Oral, Intravenosa, Tópica, etc.).</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Duración</strong></td>
+                                <td data-label="Descripcion">Indique el número total de días que durará el tratamiento médico.</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Indicaciones</strong></td>
+                                <td data-label="Descripcion">Prescripción completada automáticamente al llenar los campos previos específicas al paciente.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_mp.png') }}" alt="" style="width: 100%;">
+                </div>
+
+                <h3>Uso del Historial de Medicamentos</h3>
+                <p>Esta potente herramienta permite agilizar el proceso de prescripción al permitirle consultar y reutilizar tratamientos previos del paciente:</p>
                 <ul>
-                    <li>Vaya a la sección <strong>"Medicamentos"</strong></li>
-                    <li>Haga clic en <strong>"Buscar Medicamento por nombre, código NDC o nombre genérico"</strong></li>
-                    <li>Busque el medicamento por nombre comercial o genérico, concentración y vía de administración</li>
-                    <li>Complete los campos:
-                        <ul>
-                            <li><strong>Cantidad:</strong> Cantidad por toma</li>
-                            <li><strong>Frecuencia:</strong> Cada cuántas horas</li>
-                            <li><strong>Vía:</strong> Oral, intravenosa, tópica, etc.</li>
-                            <li><strong>Duración:</strong> Días de tratamiento</li>
-                            <li><strong>Indicaciones:</strong> Instrucciones especiales compleatada automáticamente al llenar los campos previos</li>
-                        </ul>
-                    </li>
-                    <li>Agregue todos los medicamentos necesarios</li>
+                    <li><strong>Acceso:</strong> Presione el botón <strong>"Historial de Medicamentos"</strong> ubicado al final de la sección de prescripción.</li>
+                    <li><strong>Visualización:</strong> Se desplegará un panel lateral con el registro cronológico de todas las recetas emitidas previamente. Cada entrada muestra la fecha y el médico tratante.</li>
+                    <li><strong>Selección Inteligente:</strong> Puede marcar medicamentos individuales de diferentes fechas o seleccionar una receta completa mediante la opción <strong>"Seleccionar Receta"</strong>.</li>
+                    <li><strong>Acción de Copiado:</strong> El botón superior <strong>"Copiar Seleccionados"</strong> indica cuántos medicamentos ha marcado. Al presionarlo, el sistema importará automáticamente estos medicamentos a su prescripción actual, incluyendo dosis, frecuencia e indicaciones.</li>
                 </ul>
 
 
-            <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_mp.png') }}" alt="" style="width: 100%;">
-            </div>
-                <div class="info-box warning">
-                    <div class="info-box-title">
-                        <i class="fas fa-exclamation-triangle text-warning"></i>
-                        Verificación de Medicamentos
-                    </div>
-                    <p class="mb-0">Siempre verifique las dosis, interacciones y contraindicaciones antes de prescribir. El sistema puede mostrar alertas de interacciones medicamentosas si están configuradas.</p>
+                <div>
+                    <img src="{{ asset('images/tutorial/encounters/encounter_medhis.png') }}" alt="" style="width: 100%;">
                 </div>
-
-
             </div>
             <!-- Step 8: Treatment Plan -->
             <div class="step-card">
@@ -1247,7 +1331,7 @@
                             <li><strong>Sea específico:</strong> Documente de manera clara y detallada</li>
                             <li><strong>Use plantillas:</strong> Configure plantillas para agilizar el proceso</li>
                             <li><strong>Revise la historia:</strong> Consulte encuentros previos antes de iniciar</li>
-                            <li><strong>Actualice diagnósticos:</strong> Use códigos CIE-10 actualizados</li>
+                            <!--<li><strong>Actualice diagnósticos:</strong> Use códigos CIE-10 actualizados</li>-->
                             <li><strong>Verifique medicamentos:</strong> Confirme dosis y contraindicaciones</li>
                             <li><strong>Documente todo:</strong> Incluya hallazgos negativos relevantes</li>
                         </ul>
@@ -1264,7 +1348,7 @@
                             <li>No documentar signos vitales</li>
                             <li>Omitir el examen físico</li>
                             <li>No especificar diagnósticos con CIE-10</li>
-                            <li>Prescribir sin indicar dosis o duración</li>
+                            <!--<li>Prescribir sin indicar dosis o duración</li>-->
                             <li>Finalizar sin revisar la información</li>
                             <li>No generar los documentos para el paciente</li>
                         </ul>
@@ -1323,12 +1407,12 @@
                     </h2>
                     <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            No se preocupe, toda la información se guarda automáticamente. Puede volver a abrir la consulta más tarde y continuará donde la dejó. Sin embargo, la cita permanecerá en estado "En Consulta" hasta que la finalice formalmente.
+                            No se preocupe, toda la información se guarda automáticamente. Puede volver a abrir la consulta más tarde y continuará donde la dejó. Sin embargo, la cita permanecerá en estado "En Progreso" hasta que la finalice formalmente.
                         </div>
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <!--<div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                             ¿Puedo editar una consulta después de finalizarla?
@@ -1339,7 +1423,7 @@
                             Por razones de auditoría médica y legal, las consultas finalizadas no pueden editarse directamente. Si necesita hacer correcciones, debe contactar al administrador del sistema o crear una nota de enmienda en el siguiente encuentro.
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
