@@ -335,6 +335,7 @@ class PractitionerController extends Controller
             ]);
         }
 
+
         // Obtener todos los consultorios de todas las sucursales de todos los clientes
         $consultingRooms = collect();
 
