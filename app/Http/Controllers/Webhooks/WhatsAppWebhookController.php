@@ -103,10 +103,15 @@ class WhatsAppWebhookController extends Controller
 
             if ($agent->type === 'n8n') {
 
-                Http::timeout(10)->post(
+                /*Http::timeout(10)->post(
                     $agent->webhook_url,
                     $payload
-                );
+                );*/
+
+                Http::post($agent->webhook_url, [
+                    'phone_number_id' => $phoneNumberId,
+                    'payload' => $payload,   // opcional: todo el payload original
+                ]);
             }
 
             if ($agent->type === 'laravel') {

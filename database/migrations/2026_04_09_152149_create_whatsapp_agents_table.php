@@ -32,6 +32,7 @@ return new class extends Migration
 
             // activo / inactivo
             $table->boolean('active')->default(true);
+            $table->integer('client_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
