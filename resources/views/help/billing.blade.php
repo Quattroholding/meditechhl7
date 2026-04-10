@@ -652,7 +652,15 @@
                 </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_encounteradd.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/invoices/invoice_cs.png') }}" alt="" style="width: 100%;">
+            </div>
+            
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Creación de nuevos Servicios
+                </div>
+                <p class="mb-0">Para poder crear nuevos servicios facturables, deberá ir a la sección de <a href="{{ route('help.settings') }}">Configuraciones → Servicios</a> y crear los servicios que necesite para poder generar las facturas a los pacientes.</p>
             </div>
             </div>
 
@@ -661,10 +669,10 @@
                 <h4><span class="step-number">2</span><span class="step-title">Buscar Servicio en el Catálogo</span></h4>
                 <p>Para agregar un servicio:</p>
                 <ul>
-                    <li>Haga clic en el buscador donde dice <strong>"Buscar servicio por nombre o codigo cpt"</strong></li>
+                    <li>Seleccione la categoría de Servicio</li>
                     <!--<li>Se abrirá un modal o panel de búsqueda</li>-->
-                    <li>Escriba el nombre del servicio, código CPT o descripción</li>
-                    <li>El sistema mostrará resultados mientras escribe (búsqueda en tiempo real)</li>
+                    <li>Busque y seleccione el Servicio a facturar en la consulta</li>
+                    <li>Haga clic en <strong>"Agregar"</strong></li>
                     <li>Los resultados muestran:
                         <ul>
                             <li>Nombre del servicio</li>
@@ -676,7 +684,7 @@
                 </ul>
 
                 <div>
-                    <img src="{{ asset('images/tutorial/invoices/invoice_search.png') }}" alt="" style="width: 100%;">
+                    <img src="{{ asset('images/tutorial/invoices/invoice_add.png') }}" alt="" style="width: 100%;">
                 </div>
 
                 <div class="info-box tip">
@@ -757,7 +765,7 @@
                 </ul>
 
                 <div>
-                    <img src="{{ asset('images/tutorial/invoices/invoice_modify.png') }}" alt="" style="width: 100%;">
+                    <img src="{{ asset('images/tutorial/invoices/invoice_edit.png') }}" alt="" style="width: 100%;">
                 </div>
 
                 <div class="info-box danger">
@@ -874,9 +882,19 @@
                 </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_pdf.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/invoices/invoice_pdf1.png') }}" alt="" style="width: 100%;">
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_pdf2.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
+            <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-lightbulb text-success"></i>
+                        Plantillas de Facturación
+                    </div>
+                    <p class="mb-0">En la sección de <a href="{{ route('help.settings') }}">Configuraciones → Plantilla de Factura</a> podrá elegir el diseño que más le guste para las facturas de sus clientes.</p>
+                </div>
 
             <h3>¿Qué Pasa si No Hay Servicios Facturables?</h3>
             <div class="info-box note">
@@ -889,7 +907,7 @@
                     <li>La consulta se finalizará normalmente</li>
                     <li><strong>NO se generará factura</strong></li>
                     <li>El sistema mostrará un mensaje: "(Sin servicios facturables)"</li>
-                    <li>La cita cambiará a estado "Fulfilled" (Completada)</li>
+                    <li>La cita cambiará a estado "Finalizado"</li>
                     <li>Esto es normal para consultas de seguimiento sin costo o consultas cubiertas por seguro</li>
                 </ul>
             </div>
@@ -1028,7 +1046,7 @@
                     <i class="fas fa-info-circle text-primary"></i>
                     Relación entre Estados
                 </div>
-                <p class="mb-0">Una factura en estado "Issued" puede tener cualquier estado de pago (Unpaid, Partially Paid, Paid). Cuando una factura está completamente pagada, puede cambiar a estado "Balanced". Las facturas canceladas no aceptan pagos.</p>
+                <p class="mb-0">Una factura en estado "Issued" puede tener cualquier estado de pago (Unpaid, <!--Partially Paid,--> Paid).<!-- Cuando una factura está completamente pagada, puede cambiar a estado "Balanced". Las facturas canceladas no aceptan pagos.--></p>
             </div>
         </section>
 
