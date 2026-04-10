@@ -197,7 +197,7 @@ class Calendar extends Component
             $endOfWeek = $this->currentDate->copy()->endOfWeek(Carbon::SUNDAY);
             $query->whereBetween('start', [$startOfWeek, $endOfWeek]);
         } elseif ($this->currentView === 'daily') {
-            $query->whereNotIn('status',['proposed']);
+            //$query->whereNotIn('status',['proposed']);
             $query->whereDate('start', $this->currentDate->format('Y-m-d'));
         }
 
@@ -222,7 +222,7 @@ class Calendar extends Component
         }
 
         if ($this->currentView == 'daily') {
-            $query->whereNotIn('status', ['pending', 'whaitlist', 'noshow', 'cancelled']);
+            $query->whereNotIn('status', ['pending', 'proposed', 'whaitlist', 'noshow', 'cancelled']);
         }
 
         // Convertir a array manualmente para preservar la zona horaria local

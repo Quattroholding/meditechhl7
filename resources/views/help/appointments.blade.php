@@ -882,8 +882,8 @@ body {
                         <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                         {{--}}<li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>{{--}}
                         <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 2. Vista Calendario</a></li>
-                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 3. Crear Nueva Cita</a></li>
-                        <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 4. Estados de Cita</a></li>
+                        <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 3. Estados de Cita</a></li>
+                        <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 4. Crear Nueva Cita</a></li>
                         <li><a href="#gestion"><i class="fas fa-tasks"></i> 5. Gestión de Citas</a></li>
                         <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 6. Integración WhatsApp</a></li>
                         <li><a href="#listado"><i class="fas fa-table"></i> 7. Listado de Citas</a></li>
@@ -936,7 +936,7 @@ body {
 
             
             <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-btn.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/appointments/appointment_btn.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -1034,6 +1034,7 @@ body {
                         <!--<li><strong>Por Sucursal:</strong> Filtrar por ubicación</li>
                         <li><strong>Por Consultorio:</strong> Ver agenda de un consultorio</li>-->
                         <li><strong>Por Estado:</strong> Filtrar por estado de la cita</li>
+                        <li><strong>Por Paciente:</strong> Ver cites de un paciente específico</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
@@ -1052,7 +1053,7 @@ body {
             </div>{{--}}
 
             <h3>Código de Colores</h3>
-            <p>Las citas se muestran con diferentes colores según su estado para facilitar la identificación visual:</p>
+            <p>Las citas se muestran con diferentes colores según su estado para facilitar la identificación visual y estos estados pueden variar según el tipo de vista:</p>
 
             <div class="row mt-3">
                 <div class="col-md-6">
@@ -1062,6 +1063,7 @@ body {
                                 <tr>
                                     <th>Color</th>
                                     <th>Estado</th>
+                                    <th>Vista</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1072,38 +1074,47 @@ body {
                                 <tr>
                                     <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Booked->color()}};border-radius:4px;"></span></td>
                                     <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                                    
                                 </tr>
-                                <tr>
+                                {{--}}<tr>
                                     <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Confirm->color()}};border-radius:4px;"></span></td>
                                     <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</td>
-                                </tr>
+                                </tr>{{--}}
                                 <tr>
                                     <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Arrived->color()}};border-radius:4px;"></span></td>
                                     <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::CheckedIn->color()}};border-radius:4px;"></span></td>
                                     <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
                                 </tr>
-                                                            <tr>
+                            <tr>
                                 <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Fulfilled->color()}};border-radius:4px;"></span></td>
                                 <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</td>
+                                <td data-label="Vista">Mensual, Semanal y Hoy</td>
                             </tr>
                             <tr>
                                 <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Cancelled->color()}};border-radius:4px;"></span></td>
                                 <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</td>
+                                <td data-label="Vista">Mensual y Semanal</td>
                             </tr>
                             <tr>
                                 <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::NoShow->color()}};border-radius:4px;"></span></td>
                                 <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</td>
+                                <td data-label="Vista">Mensual y Semanal</td>
                             </tr>
-                            <tr>
+                            {{--}}<tr>
                                 <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Waitlist->color()}};border-radius:4px;"></span></td>
                                 <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</td>
-                            </tr>
+                                <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                            </tr>{{--}}
                             <tr>
                                 <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Proposed->color()}};border-radius:4px;"></span></td>
                                 <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</td>
+                                <td data-label="Vista">Mensual y Semanal</td>
                             </tr>
                             </tbody>
                         </table>
@@ -1147,9 +1158,133 @@ body {
                 <img src="{{ asset('images/tutorial/appointments/appointment-colors.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
+
+                <!-- Section 5: Appointment States -->
+        <section id="estados" class="content-section">
+            <h2><i class="fas fa-exchange-alt me-2"></i>3. Estados de Cita</h2>
+
+            <p>Las citas en SAMI siguen un flujo de trabajo definido. Cada estado representa una etapa en el proceso de atención:</p>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Estados Disponibles</h4>
+                    <div class="mb-4">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>
+                        <!--<span class="status-badge status-pending">Pendiente</span>-->
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
+                        <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
+                        {{--}}<span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span>{{--}}
+                    </div>
+                </div>
+            </div>
+
+            <h3>Flujo Típico de una Cita</h3>
+
+            <div class="workflow-container">
+                <div class="workflow-step">
+                    <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
+                    <small class="d-block mt-1">Cita creada</small>
+                </div>
+                <i class="fas fa-arrow-right workflow-arrow"></i>
+                <div class="workflow-step">
+                    <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
+                    <small class="d-block mt-1">Paciente confirma</small>
+                </div>
+                <i class="fas fa-arrow-right workflow-arrow"></i>
+                <div class="workflow-step">
+                    <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
+                    <small class="d-block mt-1">Paciente llega</small>
+                </div>
+                <i class="fas fa-arrow-right workflow-arrow"></i>
+                <div class="workflow-step">
+                    <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
+                    <small class="d-block mt-1">Inicia atención</small>
+                </div>
+                <i class="fas fa-arrow-right workflow-arrow"></i>
+                <div class="workflow-step">
+                    <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
+                    <small class="d-block mt-1">Finaliza consulta</small>
+                </div>
+            </div>
+
+            <h3>Descripción de Estados</h3>
+            <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Descripción</th>
+                                <th>Acciones Disponibles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span></td>
+                                <td data-label="Descripcion">Cita sugerida, pendiente de a la confirmación del médico</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
+                            </tr>
+                            <!--<tr>
+                                <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
+                                <td data-label="Descripcion">Cita creada, esperando confirmación</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                            </tr>-->
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></td>
+                                <td data-label="Descripcion">Cita reservada en el sistema</td>
+                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></td>
+                                <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
+                                <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span></td>
+                                <td data-label="Descripcion">Paciente está en la sala de espera</td>
+                                <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span></td>
+                                <td data-label="Descripcion">La consulta está en progreso</td>
+                                <td data-label="Acciones Disponibles">Completar consulta</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span></td>
+                                <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
+                                <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></td>
+                                <td data-label="Descripcion">La cita fue cancelada</td>
+                                <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span></td>
+                                <td data-label="Descripcion">El paciente no se presentó a la cita</td>
+                                <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
+                            </tr>
+                            {{--}}<tr>
+                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span></td>
+                                <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
+                                <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
+                            </tr>{{--}}
+                        </tbody>
+                    </table>
+            </div>
+
+                        <div>
+                <img src="{{ asset('images/tutorial/appointments/appointment-status.png') }}" alt="" style="width: 100%;">
+            </div>
+        </section>
+
         <!-- Section 3: Create Appointment -->
         <section id="crear-cita" class="content-section">
-            <h2><i class="fas fa-plus-circle me-2"></i>3. Crear Nueva Cita</h2>
+            <h2><i class="fas fa-plus-circle me-2"></i>4. Crear Nueva Cita</h2>
 
             <p>Siga estos pasos para agendar una nueva cita médica en el sistema:</p>
 
@@ -1202,9 +1337,19 @@ body {
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>
                             <tr>
+                                <td data-label="Campo"><strong>Especialidad</strong></td>
+                                <td data-label="Descripcion">Busque y seleccione la especialidad requerida para la cita.</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br><small>en usuarios con ROL Paciente, Asistente, Recepcionista y Médico con más de 1 una especialidad.</small></td>
+                            </tr>
+                            <tr>
                                 <td data-label="Campo"><strong>Doctor</strong></td>
                                 <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>en usuarios con ROL Paciente, Asistente y Recepcionista.</small></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Fecha</strong></td>
+                                <td data-label="Descripcion">Fecha programada para la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>
                             <!--<tr>
                                 <td data-label="Campo"><strong>Sucursal</strong></td>
@@ -1212,18 +1357,13 @@ body {
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>-->
                             <tr>
+                                <td data-label="Campo"><strong>Duración</strong></td>
+                                <td data-label="Descripcion">Tiempo programado de duración de la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
                                 <td data-label="Campo"><strong>Consultorio</strong></td>
                                 <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Fecha</strong></td>
-                                <td data-label="Descripcion">Fecha programada para la cita</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
-                                <td data-label="Campo"><strong>Hora</strong></td>
-                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                             </tr>
                             <!--<tr>
@@ -1247,11 +1387,6 @@ body {
                                 <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
                             </tr>-->
                             <tr>
-                                <td data-label="Campo"><strong>Duración</strong></td>
-                                <td data-label="Descripcion">Tiempo programado de duración de la cita</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
-                            <tr>
                                 <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
                                 <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
@@ -1274,11 +1409,10 @@ body {
             <div class="step-card">
                 <h4><span class="step-number">4</span><span class="step-title">Búsqueda de Paciente</span></h4>
                 <p>El campo de paciente cuenta con búsqueda inteligente:</p>
-                <ul>
-                    <li>Escriba el nombre del paciente (al menos 2 caracteres)</li>
-                    <li>O escriba el número de documento de identidad</li>
-                    <li>Seleccione el paciente de la lista desplegable</li>
-                </ul>
+                <ol>
+                    <li>Escriba el nombre del paciente (al menos 2 caracteres) o escriba el número de documento de identidad.</li>
+                    <li>Seleccione el paciente de la lista desplegable.</li>
+                </ol>
 
                 <div class="info-box tip">
                     <div class="info-box-title">
@@ -1318,7 +1452,65 @@ body {
 
             <!-- Step 6 -->
             <div class="step-card">
-                <h4><span class="step-number">6</span><span class="step-title">Guardar la Cita</span></h4>
+                <h4><span class="step-number">6</span><span class="step-title">Duración de la Cita</span></h4>
+                <p>Seleccione el tiempo estimado para la atención del paciente:</p>
+                <ul>
+                    <li>El tiempo se define en minutos (ej. 15, 30, 45, 60 min).</li>
+                    <li>Este valor determinará el espacio que ocupará la cita en el calendario.</li>
+                    <li>Asegúrese de que el doctor tenga disponibilidad suficiente para la duración seleccionada.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-duration.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step-card">
+                <h4><span class="step-number">7</span><span class="step-title">Selección de Consultorio</span></h4>
+                <p>Asigne el espacio físico donde se llevará a cabo la consulta:</p>
+                <ul>
+                    <li>Seleccione uno de los consultorios disponibles en la sucursal.</li>
+                    <li>El sistema validará que el consultorio no esté ocupado por otro profesional al mismo tiempo.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-branch.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="step-card">
+                <h4><span class="step-number">8</span><span class="step-title">Tipo de Servicio</span></h4>
+                <p>Indique el propósito o servicio específico de la cita:</p>
+                <ul>
+                    <li>Seleccione de la lista de servicios configurados (ej. Consulta General, Control, Procedimiento).</li>
+                    <li>Este campo ayuda a categorizar la cita y preparar cualquier material necesario previo a la atención.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-st.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 9 -->
+            <div class="step-card">
+                <h4><span class="step-number">9</span><span class="step-title">Nota Adicional (Opcional)</span></h4>
+                <p>Utilice este campo para añadir información relevante para el médico o el equipo de recepción:</p>
+                <ul>
+                    <li>Motivo específico de la consulta si requiere aclaración extra.</li>
+                    <li>Observaciones sobre requerimientos especiales del paciente.</li>
+                    <li>Instrucciones internas o recordatorios para la llegada.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-an.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 10 -->
+            <div class="step-card">
+                <h4><span class="step-number">10</span><span class="step-title">Guardar la Cita</span></h4>
                 <p>Una vez completados todos los campos requeridos:</p>
                 <ol>
                     <li>Revise que todos los datos sean correctos</li>
@@ -1341,131 +1533,6 @@ body {
             </div>
         </section>
 
-
-
-        <!-- Section 5: Appointment States -->
-        <section id="estados" class="content-section">
-            <h2><i class="fas fa-exchange-alt me-2"></i>4. Estados de Cita</h2>
-
-            <p>Las citas en SAMI siguen un flujo de trabajo definido. Cada estado representa una etapa en el proceso de atención:</p>
-
-            <div class="row mt-4">
-                <div class="col-12">
-                    <h4>Estados Disponibles</h4>
-                    <div class="mb-4">
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>
-                        <!--<span class="status-badge status-pending">Pendiente</span>-->
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span>
-                    </div>
-                </div>
-            </div>
-
-            <h3>Flujo Típico de una Cita</h3>
-
-            <div class="workflow-container">
-                <div class="workflow-step">
-                    <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
-                    <small class="d-block mt-1">Cita creada</small>
-                </div>
-                <i class="fas fa-arrow-right workflow-arrow"></i>
-                <div class="workflow-step">
-                    <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
-                    <small class="d-block mt-1">Paciente confirma</small>
-                </div>
-                <i class="fas fa-arrow-right workflow-arrow"></i>
-                <div class="workflow-step">
-                    <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
-                    <small class="d-block mt-1">Paciente llega</small>
-                </div>
-                <i class="fas fa-arrow-right workflow-arrow"></i>
-                <div class="workflow-step">
-                    <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
-                    <small class="d-block mt-1">Inicia atención</small>
-                </div>
-                <i class="fas fa-arrow-right workflow-arrow"></i>
-                <div class="workflow-step">
-                    <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
-                    <small class="d-block mt-1">Finaliza consulta</small>
-                </div>
-            </div>
-
-            <h3>Descripción de Estados</h3>
-            <div class="field-table-wrapper">
-                    <table class="field-table">
-                        <thead>
-                            <tr>
-                                <th>Estado</th>
-                                <th>Descripción</th>
-                                <th>Acciones Disponibles</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span></td>
-                                <td data-label="Descripcion">Cita sugerida, pendiente de aceptación por el paciente</td>
-                                <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
-                            </tr>
-                            <!--<tr>
-                                <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
-                                <td data-label="Descripcion">Cita creada, esperando confirmación</td>
-                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
-                            </tr>-->
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></td>
-                                <td data-label="Descripcion">Cita reservada en el sistema</td>
-                                <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></td>
-                                <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
-                                <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span></td>
-                                <td data-label="Descripcion">Paciente está en la sala de espera</td>
-                                <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span></td>
-                                <td data-label="Descripcion">La consulta está en progreso</td>
-                                <td data-label="Acciones Disponibles">Completar consulta</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span></td>
-                                <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
-                                <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></td>
-                                <td data-label="Descripcion">La cita fue cancelada</td>
-                                <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span></td>
-                                <td data-label="Descripcion">El paciente no se presentó a la cita</td>
-                                <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span></td>
-                                <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
-                                <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
-                            </tr>
-                        </tbody>
-                    </table>
-            </div>
-
-                        <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-status.png') }}" alt="" style="width: 100%;">
-            </div>
-        </section>
-
         <!-- Section 6: Appointment Management -->
         <section id="gestion" class="content-section">
             <h2><i class="fas fa-tasks me-2"></i>5. Detalles y modificaciones de Citas</h2>
@@ -1479,7 +1546,9 @@ body {
                         <li>Nombre del paciente</li>
                         <!--<li>Documento de identidad</li>
                         <li>Teléfono de contacto</li>-->
-                        <li>Doctor asignado</li>
+                        <li>Tiempo en que dura la cita</li>
+                        <li>Tipo de servicio</li>
+                        <li>Doctor asignado (visible en usuarios con rol paciente, asistente y recepcionista)</li>
                         <li>Fecha y hora programada</li>
                     </ul>
                 </div>
@@ -1513,8 +1582,8 @@ body {
                     Restricciones de Edición
                 </div>
                 <ul class="mb-0">
-                    <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span> no pueden modificarse</li>
-                    <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span> no pueden editarse, solo reagendarse</li>
+                    <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span> no pueden modificarse</li>
+                    {{--}}<li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span> no pueden editarse, solo reagendarse</li>{{--}}
                     <li>No se puede cambiar a un horario que genere conflictos</li>
                 </ul>
             </div>
@@ -1535,7 +1604,7 @@ body {
                 <small>Recomendado: 800x500px - Mostrar el efecto visual de arrastrar una cita en el calendario</small>
             </div> -->
 
-            <h3>Eliminar una Cita</h3>
+            {{--}}<h3>Eliminar una Cita</h3>
             <p>Para eliminar una cita:</p>
             <ol>
                 <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
@@ -1551,7 +1620,7 @@ body {
                     Advertencia
                 </div>
                 <p class="mb-0">La cancelación de citas es una acción que queda registrada en el historial. Si el paciente necesita otra cita, deberá crear una nueva.</p>
-            </div>
+            </div>{{--}}
         </section>
 
         <!-- Section 7: WhatsApp Integration -->
@@ -1719,7 +1788,7 @@ body {
                             <li>No registrar el motivo de consulta</li>
                             <!--<li>Agendar fuera del horario del doctor</li>
                             <li>No enviar recordatorios a los pacientes</li>-->
-                            <li>Dejar citas en estado "Pendiente" indefinidamente</li>
+                            <li>Dejar citas en estado "Reservado" indefinidamente</li>
                         </ul>
                     </div>
                 </div>

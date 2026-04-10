@@ -140,8 +140,12 @@
                 <span>{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::NoShow->color()}}, #{{\App\Enums\AppointmentStatusEnum::NoShow->color()}});"></div>
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::NoShow->color()}}, #{{\App\Enums\AppointmentStatusEnum::Cancelled->color()}});"></div>
                 <span>{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #{{\App\Enums\AppointmentStatusEnum::Proposed->color()}}, #{{\App\Enums\AppointmentStatusEnum::Proposed->color()}});"></div>
+                <span>{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>
             </div>
         </div>
         @endif
