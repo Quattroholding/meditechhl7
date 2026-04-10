@@ -1190,11 +1190,11 @@ body {
                     <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
                     <small class="d-block mt-1">Cita creada</small>
                 </div>
-                <i class="fas fa-arrow-right workflow-arrow"></i>
+                {{--}}<i class="fas fa-arrow-right workflow-arrow"></i>
                 <div class="workflow-step">
                     <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
                     <small class="d-block mt-1">Paciente confirma</small>
-                </div>
+                </div>{{--}}
                 <i class="fas fa-arrow-right workflow-arrow"></i>
                 <div class="workflow-step">
                     <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
