@@ -277,6 +277,7 @@
                         </ul>
                     </li>
                 @endcanany
+                @if(auth()->user()->canPaySubscription())
                 @canany(['suscriptions.show', 'suscriptions.manage', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -304,6 +305,7 @@
                     </ul>
                 </li>
                 @endcan
+                @endif
                 @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
                     <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>
