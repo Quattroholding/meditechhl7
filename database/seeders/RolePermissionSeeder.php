@@ -160,6 +160,22 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'tickets.change_status', 'description' => 'Comentar cambiar estauts', 'module' => 'tickets'],
             ['name' => 'tickets.assign', 'description' => 'Asignar ticket', 'module' => 'tickets'],
 
+            // Quotation management
+            ['name' => 'quotations.view', 'description' => 'Ver lista de cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.create', 'description' => 'Crear nuevas cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.edit', 'description' => 'Editar cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.delete', 'description' => 'Eliminar cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.pdf', 'description' => 'Descargar PDF de cotizaciones', 'module' => 'cotizaciones'],
+
+            // Service Type management
+            ['name' => 'service_types.view', 'description' => 'Ver tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.create', 'description' => 'Crear tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.edit', 'description' => 'Editar tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.delete', 'description' => 'Eliminar tipos de servicio', 'module' => 'cotizaciones'],
+
+            // Dashboard access
+            ['name' => 'dashboard.sales', 'description' => 'Acceso al dashboard de ventas', 'module' => 'dashboards'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -412,6 +428,25 @@ class RolePermissionSeeder extends Seeder
 
         $adminRole = Role::firstOrCreate(['name' => 'soporte']);
         $adminRole->givePermissionTo(Permission::whereNotIn('name', ['manage-roles', 'manage-permissions', 'manage-packages', 'dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting'])->get());
+
+        // Ventas role - Solo acceso a cotizaciones
+        $salesRole = Role::firstOrCreate(['name' => 'ventas']);
+        $salesRole->givePermissionTo([
+            'dashboard.sales',
+            'quotations.view',
+            'quotations.create',
+            'quotations.edit',
+            'quotations.delete',
+            'quotations.pdf',
+            'service_types.view',
+            'service_types.create',
+            'service_types.edit',
+            'service_types.delete',
+            'users.profile',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
+        ]);
 
     }
 }

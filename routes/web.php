@@ -26,6 +26,7 @@ use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\PatientHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
@@ -587,6 +588,20 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/recepy/prescription/pdf/{filename}', [RecepyPrescriptionController::class, 'servePdf'])
         ->name('recepy.prescription.pdf');
 
+});
+
+// Cotizaciones Routes
+Route::middleware(['auth', 'first.login', 'permission:quotations.view'])->prefix('quotations')->name('quotations.')->group(function () {
+    Route::get('/', [QuotationController::class, 'index'])->name('index');
+    Route::get('/{id}/pdf', [QuotationController::class, 'streamPdf'])->name('pdf.stream');
+    Route::get('/{id}/download', [QuotationController::class, 'downloadPdf'])->name('pdf.download');
+    Route::post('/{id}/status', [QuotationController::class, 'changeStatus'])
+        ->middleware('permission:quotations.edit')->name('status');
+});
+
+// Tipos de Servicio Routes
+Route::middleware(['auth', 'first.login', 'permission:service_types.view'])->prefix('service-types')->name('service-types.')->group(function () {
+    Route::get('/', [QuotationController::class, 'serviceTypes'])->name('index');
 });
 
 // Public Prescription PDF Download with Token Authentication

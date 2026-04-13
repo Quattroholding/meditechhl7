@@ -228,6 +228,10 @@ class LoginController extends Controller
             $route = route('user.pending-validations');
         }
 
+        if ($user->hasRole('ventas')) {
+            $route = route('quotations.index');
+        }
+
         return redirect()->intended($route.'?show_salute=true');
     }
 }
