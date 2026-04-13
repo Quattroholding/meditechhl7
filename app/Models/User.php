@@ -542,4 +542,31 @@ class User extends Authenticatable
 
         return max(0, $limit - $currentCount);
     }
+
+    /**
+     * Determine if the user has the required role to manage subscriptions for their current package.
+     */
+    public function canPaySubscription(): bool
+    {
+        // Super admins and accounting always see it
+        if ($this->hasAnyRole(['admin', 'contabilidad'])) {
+            return true;
+        }
+
+        $client = $this->getCurrentClient();
+        if (! $client) {
+            return false;
+        }
+
+        $package = $client->package;
+
+        if (! $package || ! $package->role_payer) {
+            // Default to doctor if no role_payer defined
+            return $this->hasRole('doctor');
+        }
+
+        $allowedRoles = array_map('trim', explode(',', $package->role_payer));
+
+        return $this->hasAnyRole($allowedRoles);
+    }
 }

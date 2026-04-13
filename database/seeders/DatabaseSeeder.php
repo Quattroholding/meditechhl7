@@ -35,5 +35,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SnomedBodySiteSeeder::class);
         $this->call(PatientSatisfactionSurveySeeder::class);
         $this->call(DiagnosticSeeder::class);
+        $this->call(PackageSeeder::class);
     }
 }
