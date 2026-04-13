@@ -306,6 +306,24 @@
                 </li>
                 @endcan
                 @endif
+                @canany(['quotations.view', 'service_types.view'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side"><i class="fa fa-file-invoice-dollar"></i></span>
+                        <span> Cotizaciones </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('quotations.view')
+                        <li><a class="{{ Request::is('quotations') ? 'active' : '' }}"
+                               href="{{ route('quotations.index') }}">Lista de Cotizaciones</a></li>
+                        @endcan
+                        @can('service_types.view')
+                        <li><a class="{{ Request::is('service-types') ? 'active' : '' }}"
+                               href="{{ route('service-types.index') }}">Tipos de Servicio</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
                     <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>

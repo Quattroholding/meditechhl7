@@ -591,10 +591,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
 });
 
 // Cotizaciones Routes
-Route::middleware(['auth', 'first.login', 'permission:quotations.view'])->prefix('quotations')->name('quotations.')->group(function () {
-    Route::get('/', [QuotationController::class, 'index'])->name('index');
-    Route::get('/{id}/pdf', [QuotationController::class, 'streamPdf'])->name('pdf.stream');
-    Route::get('/{id}/download', [QuotationController::class, 'downloadPdf'])->name('pdf.download');
+Route::middleware(['auth', 'first.login'])->prefix('quotations')->name('quotations.')->group(function () {
+    Route::get('/', [QuotationController::class, 'index'])->middleware('permission:quotations.view')->name('index');
+    Route::get('/{id}/pdf', [QuotationController::class, 'streamPdf'])->middleware('permission:quotations.pdf')->name('pdf.stream');
+    Route::get('/{id}/download', [QuotationController::class, 'downloadPdf'])->middleware('permission:quotations.pdf')->name('pdf.download');
     Route::post('/{id}/status', [QuotationController::class, 'changeStatus'])
         ->middleware('permission:quotations.edit')->name('status');
 });
