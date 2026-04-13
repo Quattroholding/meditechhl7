@@ -308,154 +308,180 @@
 
         <div class="content-section">
             <h2>Widgets del Dashboard</h2>
-            <p>SAMI ofrece una variedad de widgets que puede habilitar o deshabilitar según sus necesidades. A continuación, se detalla cada uno de ellos:</p>
+            <p>El Dashboard de SAMI está organizado visualmente para que la información fluya desde indicadores rápidos hasta análisis profundos. A continuación se detallan sus componentes en orden de visualización:</p>
             
-            <h3 class="mt-4"><i class="fas fa-calendar-check me-2 text-primary"></i>Gestión de Citas</h3>
-            
-            <!--<div class="step-card">
-                <div class="step-title">Citas Recientes</div>
-                <div class="step-content">
-                    <p>Muestra un listado de los pacientes con citas próximas a la hora actual. Permite visualizar rápidamente el nombre del paciente, la hora de la cita y el tipo de consulta. Incluye botones de acceso directo para iniciar o retomar la consulta médica de manera eficiente.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Widget de Citas Recientes</p>
-                </div>
-            </div-->
-
-            <div class="step-card">
-                <div class="step-title">Consultas en Progreso</div>
-                <div class="step-content">
-                    <p>Muestra los pacientes que se encuentran actualmente en la sala de espera o cuya consulta ya ha sido iniciada pero no finalizada. Es ideal para llevar un control del flujo de pacientes en tiempo real.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Widget de Consultas en Progreso</p>
-                </div>
-            </div>
-
-            <h3 class="mt-4"><i class="fas fa-users me-2 text-success"></i>Estadísticas de Pacientes</h3>
-            
+            <h3 class="mt-4"><i class="fas fa-chart-bar me-2 text-primary"></i>1. Indicadores de Actividad</h3>
+            <p>Situados en la parte superior, ofrecen una visión instantánea de los números clave del periodo:</p>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="step-card text-center">
-                        <div class="step-title">Pacientes Nuevos</div>
-                        <p>Contabiliza los pacientes registrados por primera vez en el período seleccionado.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                        <div class="step-title">Pacientes nuevos</div>
+                        <p>Total de pacientes registrados por primera vez en el sistema durante el mes actual.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-title">Pacientes activos</div>
+                        <p>Contabiliza los pacientes que han tenido consultas o movimientos recientes en su práctica.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-title">Citas del mes</div>
+                        <p>El volumen total de citas gestionadas en el transcurso del mes vigente.</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-title">Consultas sin finalizar</div>
+                        <p>Recordatorio crítico de actos médicos que han sido iniciados pero aún no se han cerrado formalmente.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p1.png') }}" alt="" style="width: 100%;">
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-calendar-check me-2 text-info"></i>2. Seguimiento de Citas</h3>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="step-card">
+                        <div class="step-title">Citas del Año</div>
+                        <p>Un gráfico interactivo que muestra la tendencia mensual de su volumen de pacientes, permitiéndole comparar el rendimiento a través del tiempo.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p2.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="step-card text-center">
-                        <div class="step-title">Pacientes Antiguos</div>
-                        <p>Muestra el número de pacientes recurrentes que han vuelto a consulta.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="step-card text-center">
-                        <div class="step-title">Pacientes Activos</div>
-                        <p>Indica el total de pacientes que mantienen una relación activa con su práctica.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                <div class="col-md-5">
+                    <div class="step-card">
+                        <div class="step-title">Citas para hoy</div>
+                        <p>Su agenda diaria en tiempo real. Muestra las próximas citas, el nombre del paciente y permite acceso directo para iniciar la consulta.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p3.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h3 class="mt-4"><i class="fas fa-chart-line me-2 text-info"></i>Análisis de Rendimiento</h3>
-            
-            <div class="step-card">
-                <div class="step-title">Tiempos de Atención (Espera y Duración)</div>
-                <div class="step-content">
-                    <p>Estos widgets miden el tiempo promedio que un paciente espera desde su llegada hasta ser atendido, y la duración real de la consulta. Ayudan a identificar cuellos de botella y mejorar la puntualidad.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Gráficos de Tiempo de Espera y Duración</p>
-                </div>
-            </div>
-
-            <div class="step-card">
-                <div class="step-title">Efectividad de Consulta</div>
-                <div class="step-content">
-                    <p>Analiza el flujo de estados de las citas (desde el agendamiento hasta la finalización) para determinar qué porcentaje de citas se completan exitosamente frente a las cancelaciones o inasistencias.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Gráfico de Efectividad</p>
-                </div>
-            </div>
-
-            <h3 class="mt-4"><i class="fas fa-stethoscope me-2 text-danger"></i>Demografía y Salud</h3>
-            
+            <h3 class="mt-4"><i class="fas fa-hourglass-half me-2 text-warning"></i>3. Análisis de Tiempos</h3>
             <div class="row">
                 <div class="col-md-6">
                     <div class="step-card">
-                        <div class="step-title">Pacientes por Género y Edad</div>
-                        <p>Gráficos circulares y de barras que muestran la distribución demográfica de su población de pacientes.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                        <div class="step-title">Tiempo Promedio: Solicitud → Atención</div>
+                        <p>Mide el tiempo de espera desde que el paciente solicita su cita hasta que es atendido. Vital para medir la satisfacción del paciente.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p31.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
+                    
                 </div>
                 <div class="col-md-6">
                     <div class="step-card">
-                        <div class="step-title">Top Condiciones y Medicamentos</div>
-                        <p>Listados automáticos de los diagnósticos más frecuentes y los medicamentos más recetados en su práctica.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                        <div class="step-title">Duración Promedio de Consultas</div>
+                        <p>Calcula el tiempo promedio real que usted dedica a cada paciente durante la consulta médica.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p32.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h3 class="mt-4"><i class="fas fa-clock me-2 text-secondary"></i>Visualización de Carga</h3>
-            
-            <div class="step-card">
-                <div class="step-title">Análisis de Citas (Mensual y Anual)</div>
-                <div class="step-content">
-                    <p>Gráficos de tendencia que comparan el volumen de citas mes a mes o año tras año.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Gráfico de Tendencia Anual</p>
-                </div>
-            </div>
-
-            <div class="step-card">
-                <div class="step-title">Mapa de Calor de Actividad</div>
-                <div class="step-content">
-                    <p>Una cuadrícula visual que muestra los días de la semana y las horas en los que hay mayor concentración de citas, permitiendo una mejor planificación de sus horarios.</p>
-                </div>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Mapa de Calor</p>
-                </div>
-            </div>
-
-            <h3 class="mt-4"><i class="fas fa-file-invoice-dollar me-2 text-warning"></i>Métricas Administrativas</h3>
-            
+            <h3 class="mt-4"><i class="fas fa-users-cog me-2 text-success"></i>4. Demografía de Pacientes</h3>
             <div class="row">
                 <div class="col-md-6">
                     <div class="step-card">
-                        <div class="step-title">Facturación por Sucursal</div>
-                        <p>Resumen monetario de lo facturado en cada una de sus sedes de atención.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                        <div class="step-title">Pacientes por Género</div>
+                        <p>Distribución visual de su población clínica segmentada por sexo.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p33.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="step-card">
-                        <div class="step-title">Tasa de Recaudación</div>
-                        <p>Muestra el porcentaje de facturas pagadas frente a las pendientes, ayudando al control financiero.</p>
-                        <div class="screenshot-placeholder">
-                            <i class="fas fa-image"></i>
+                        <div class="step-title">Pacientes por Rango de Edad</div>
+                        <p>Análisis demográfico que muestra qué grupos etarios (niños, adultos, etc.) frecuentan más su consulta.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p34.png') }}" alt="" style="width: 100%;">
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-list-ol me-2 text-danger"></i>5. Patologías y Tratamientos</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Top 5 Condiciones Activas</div>
+                        <p>Muestra los 5 diagnósticos CIE-10 más recurrentes en su práctica, facilitando la identificación de patologías comunes.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p41.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Top 5 Medicamentos Prescritos</div>
+                        <p>Listado de los fármacos que más prescribe, incluyendo detalles de frecuencia y número de pacientes tratados.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p42.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-tachometer-alt me-2 text-secondary"></i>6. Eficiencia Clínica</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Efectividad de Atención</div>
+                        <p>Proporciona métricas avanzadas como la tasa de completado, flujo de estados de citas y puntos de abandono (inasistencias).</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p51.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Horarios de Mayor Actividad</div>
+                        <p>Un mapa de calor (heatmap) que resalta los días y horas con mayor volumen de pacientes atendidos, ideal para planificar su horario laboral.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p52.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <h3 class="mt-4"><i class="fas fa-file-invoice-dollar me-2 text-success"></i>7. Gestión Financiera</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Facturación por Sede</div>
+                        <p>Resumen monetario de los servicios prestados desglosado por cada una de las clínicas o sucursales donde usted atiende.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p6.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-title">Facturación vs Cobros</div>
+                        <p>Compara el monto total de lo facturado frente a lo que efectivamente ha sido pagado, indicando su eficiencia en la recaudación.</p>
+                        <div>
+                            <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p8.png') }}" alt="" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card mt-4">
+                <div class="step-title"><i class="fas fa-microscope me-2 text-info"></i>8. Diagnósticos por Grupo Etario</div>
+                <div class="step-content">
+                    <p>Muestra la incidencia de diagnósticos específicos segmentados por los rangos de edad de sus pacientes. Este análisis epidemiológico avanzado le permite ver qué patologías son más prevalentes en cada etapa de vida dentro de su población.</p>
+                    <div>
+                        <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p9.png') }}" alt="" style="width: 100%;">
                     </div>
                 </div>
             </div>
@@ -483,10 +509,8 @@
                 <p>Una vez ajustada su selección, el sistema aplicará los cambios automáticamente o al hacer clic en guardar, reflejando su nueva configuración personalizada.</p>
             </div>
 
-            <div class="screenshot-placeholder">
-                <i class="fas fa-cogs"></i>
-                <p>Captura de Pantalla: Modal de Configuración de Widgets</p>
-                <small>Haga clic en el icono de engranaje para gestionar sus widgets</small>
+            <div>
+                <img src="{{ asset('images/tutorial/doctor-dashboard/dd-settings.png') }}" alt="" style="width: 100%;">
             </div>
         </div>
 
