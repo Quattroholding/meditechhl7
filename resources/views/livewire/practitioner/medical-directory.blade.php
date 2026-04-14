@@ -140,7 +140,7 @@
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-medium text-gray-900 truncate">
-                                                {{ $qualification->medicalSpeciality->name }}
+                                                {{ $qualification->medicalSpeciality->name ?? 'N/A' }}
                                             </p>
                                             @if($qualification->issuer_name)
                                                 <p class="text-xs text-gray-500 truncate">
