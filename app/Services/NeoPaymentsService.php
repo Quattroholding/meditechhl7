@@ -27,6 +27,14 @@ class NeoPaymentsService
         $this->clientId = config('services.neopayments.client_id');
         $this->clientSecret = config('services.neopayments.client_secret');
         $this->retryAttempts = config('services.neopayments.retry_attempts', 2);
+
+        // Validate credentials are configured
+        if (empty($this->clientId) || empty($this->clientSecret)) {
+            throw new \RuntimeException(
+                'NeoPayments credentials not configured. '.
+                'Set NEOPAYMENTS_CLIENT_ID and NEOPAYMENTS_CLIENT_SECRET in .env file.'
+            );
+        }
     }
 
     private function authenticate(): string
