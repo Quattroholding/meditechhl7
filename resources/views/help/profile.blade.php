@@ -140,13 +140,13 @@
         </header>
 
         <div class="content-section">
-            <h2>Información Personal</h2>
+            <h2>Configuración de Perfil</h2>
             <p>En esta sección puedes actualizar tus datos básicos que aparecen en el sistema y en los documentos generados.</p>
             
             <div class="step-card">
-                <div class="step-title">Actualizar Datos</div>
+                <div class="step-title"><strong>Actualizar Datos</strong></div>
                 <div class="step-content">
-                    <p>Puedes modificar tu nombre, correo electrónico, teléfono y dirección. Asegúrate de que esta información esté siempre al día ya que es la que se utiliza en las cabeceras de tus documentos médicos.</p>
+                    <p>Puedes modificar tu nombre, teléfono y dirección. Luego de haber modificado la información, debe dar clic en el botón de <strong>"Actualizar"</strong> <br>Asegúrate de que esta información esté siempre al día ya que es la que se utiliza en las cabeceras de tus documentos médicos.</p>
                 </div>
                 <div>
                     <img src="{{ asset('images/tutorial/profile/profile_data.png') }}" alt="" style="width: 100%;">
@@ -155,7 +155,7 @@
         </div>
 
         <div class="content-section">
-            <h2>Seguridad y Contraseña</h2>
+            <h2>Configuración de acceso</h2>
             <p>Mantén tu cuenta segura cambiando tu contraseña periódicamente.</p>
             
             <div class="step-card">
@@ -170,7 +170,7 @@
         </div>
 
         <div class="content-section">
-            <h2>Firma Digital</h2>
+            <h2>Firma y Sello Digital</h2>
             <p>Tu firma es esencial para la validez legal de las recetas, incapacidades y órdenes médicas.</p>
             
             <div class="step-card">
