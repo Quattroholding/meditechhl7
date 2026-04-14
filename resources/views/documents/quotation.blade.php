@@ -302,7 +302,6 @@
                 <tr>
                     <th style="width: 6%;">#</th>
                     <th style="width: 38%;">Tipo de Servicio</th>
-                    <th style="width: 18%; text-align: center;">Cant. Usuarios</th>
                     <th style="width: 19%; text-align: right;">Precio Unit.</th>
                     <th style="width: 19%; text-align: right;">Subtotal</th>
                 </tr>
@@ -317,7 +316,6 @@
                         <br><small style="color: #666;">{{ $item->service_description }}</small>
                         @endif
                     </td>
-                    <td class="text-center">{{ $item->quantity }}</td>
                     <td class="text-right">${{ number_format($item->unit_price, 2) }}</td>
                     <td class="text-right">${{ number_format($item->subtotal, 2) }}</td>
                 </tr>
