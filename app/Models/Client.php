@@ -103,6 +103,16 @@ class Client extends Model
         return $this->hasMany(ClientPreference::class);
     }
 
+    public function creditCards()
+    {
+        return $this->hasMany(ClientCreditCard::class);
+    }
+
+    public function defaultCreditCard()
+    {
+        return $this->hasOne(ClientCreditCard::class)->where('is_default', true)->where('is_active', true);
+    }
+
     public function getFullNameAttribute($attr)
     {
         return $attr->name; // Change the format to whichever you desire

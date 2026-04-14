@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\InvoiceStatus;
 use App\Http\Requests\PublicRegistrationRequest;
 use App\Models\Client;
+use App\Models\ClientCreditCard;
 use App\Models\MedicalSpeciality;
 use App\Models\Package;
 use App\Models\User;
@@ -12,6 +13,7 @@ use App\Models\UserClient;
 use App\Notifications\PractitionerCredentialsNotification;
 use App\Notifications\PractitionerSetupRequiredNotification;
 use App\Services\FileService;
+use App\Services\NeoPaymentsService;
 use App\Services\PractitionerService;
 use App\Services\ReferralService;
 use App\Services\SubscriptionService;
@@ -40,7 +42,8 @@ class PublicRegistrationController extends Controller
         SubscriptionService $subscriptionService,
         FileService $fileService,
         PractitionerService $practitionerService,
-        ReferralService $referralService
+        ReferralService $referralService,
+        ?NeoPaymentsService $neoPaymentsService = null
     ) {
         try {
             /*
@@ -289,6 +292,56 @@ class PublicRegistrationController extends Controller
                             'referral_id' => $referral->id,
                             'referrer_client_id' => $referral->referrer_client_id,
                         ]);
+                    }
+                }
+
+                // 7.5. Tokenize Credit Card (if NeoPayments enabled and card data provided)
+                if (config('services.neopayments.enabled') && $request->filled('card_number')) {
+                    try {
+                        if (!$neoPaymentsService) {
+                            $neoPaymentsService = app(NeoPaymentsService::class);
+                        }
+
+                        // Create NeoPayments customer
+                        $neoCustomer = $neoPaymentsService->createCustomer($client);
+
+                        // Tokenize card
+                        $cardData = [
+                            'card_holder' => $request->input('card_holder'),
+                            'card_number' => $request->input('card_number'),
+                            'exp_date' => $request->input('exp_month') . '/' . $request->input('exp_year'),
+                        ];
+
+                        $tokenizedCard = $neoPaymentsService->addCard($neoCustomer['id'], $cardData);
+
+                        // Store card in database
+                        $creditCard = new ClientCreditCard;
+                        $creditCard->client_id = $client->id;
+                        $creditCard->neopayments_customer_id = $neoCustomer['id'];
+                        $creditCard->neopayments_card_id = $tokenizedCard['card_id'] ?? null;
+                        $creditCard->card_token = $tokenizedCard['token'];
+                        $creditCard->card_holder = $request->input('card_holder');
+                        $creditCard->card_last_four = $tokenizedCard['card_last_four'];
+                        $creditCard->card_brand = $tokenizedCard['account_type'] ?? null;
+                        $creditCard->exp_month = $request->input('exp_month');
+                        $creditCard->exp_year = $request->input('exp_year');
+                        $creditCard->is_default = true; // First card is always default
+                        $creditCard->metadata = $tokenizedCard;
+                        $creditCard->save();
+
+                        Log::info('Credit card tokenized during registration', [
+                            'client_id' => $client->id,
+                            'card_last_four' => $creditCard->card_last_four,
+                            'neopayments_customer_id' => $neoCustomer['id'],
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('Credit card tokenization failed during registration', [
+                            'client_id' => $client->id,
+                            'error' => $e->getMessage(),
+                        ]);
+
+                        // Continue registration without card - user can add later
+                        // Don't throw exception to avoid breaking registration flow
                     }
                 }
 

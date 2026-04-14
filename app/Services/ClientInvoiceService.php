@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\InvoiceItemType;
 use App\Enums\InvoiceStatus;
+use App\Enums\NeoPaymentStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\SubscriptionStatus;
@@ -12,6 +13,7 @@ use App\Models\ClientInvoiceItem;
 use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
 use App\Notifications\InvoiceGeneratedNotification;
+use App\Notifications\PaymentFailedNotification;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +22,13 @@ use Illuminate\Support\Facades\Log;
 class ClientInvoiceService
 {
     public function __construct(
-        protected DiscountService $discountService
-    ) {}
+        protected DiscountService $discountService,
+        protected ?NeoPaymentsService $neoPaymentsService = null
+    ) {
+        if (config('services.neopayments.enabled') && !$this->neoPaymentsService) {
+            $this->neoPaymentsService = app(NeoPaymentsService::class);
+        }
+    }
 
     public function generate(ClientSubscription $subscription): ?ClientInvoice
     {
@@ -87,16 +94,26 @@ class ClientInvoiceService
                 'total' => $invoice->total,
             ]);
 
+            // Attempt automatic credit card payment
+            $payment = $this->attemptAutomaticPayment($invoice);
+
             // Send notification to admin client or doctor
             $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
             if ($notifiableUser) {
                 $delay = now()->plus(minutes: 1);
-                $notifiableUser->notify((new InvoiceGeneratedNotification($invoice))->delay($delay));
+                $notification = new InvoiceGeneratedNotification($invoice);
+
+                if ($payment) {
+                    $notification->setPaymentAttempt($payment);
+                }
+
+                $notifiableUser->notify($notification->delay($delay));
 
                 Log::info('Invoice notification sent', [
                     'invoice_id' => $invoice->id,
                     'user_id' => $notifiableUser->id,
                     'user_email' => $notifiableUser->email,
+                    'payment_attempted' => $payment !== null,
                 ]);
             } else {
                 Log::warning('No notifiable user found for invoice', [
@@ -413,5 +430,199 @@ class ClientInvoiceService
         }
 
         return $cancelled;
+    }
+
+    public function attemptAutomaticPayment(ClientInvoice $invoice): ?ClientInvoicePayment
+    {
+        if (!config('services.neopayments.enabled') || !$this->neoPaymentsService) {
+            return null;
+        }
+
+        $defaultCard = $invoice->client->defaultCreditCard;
+
+        if (!$defaultCard) {
+            Log::info('No default credit card found for automatic payment', [
+                'invoice_id' => $invoice->id,
+                'client_id' => $invoice->client_id,
+            ]);
+
+            return null;
+        }
+
+        if ($defaultCard->isExpired()) {
+            Log::warning('Default credit card is expired', [
+                'invoice_id' => $invoice->id,
+                'client_id' => $invoice->client_id,
+                'card_id' => $defaultCard->id,
+                'exp_month' => $defaultCard->exp_month,
+                'exp_year' => $defaultCard->exp_year,
+            ]);
+
+            return null;
+        }
+
+        try {
+            $metadata = [
+                'invoice_id' => $invoice->id,
+                'client_id' => $invoice->client_id,
+                'subscription_id' => $invoice->subscription_id,
+            ];
+
+            $result = $this->neoPaymentsService->processPaymentWithRetry(
+                $defaultCard->card_token,
+                $invoice->total,
+                $metadata
+            );
+
+            $status = $this->neoPaymentsService->mapTransactionStatus($result['status'] ?? 'FAILED');
+
+            $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
+                'gateway' => 'neopayments',
+                'transaction_id' => $result['transaction_id'] ?? null,
+                'metadata' => $result,
+                'processed_by' => null,
+            ]);
+
+            if ($status->isSuccess()) {
+                $payment->markAsCompleted();
+
+                Log::info('Automatic credit card payment successful', [
+                    'invoice_id' => $invoice->id,
+                    'payment_id' => $payment->id,
+                    'transaction_id' => $result['transaction_id'] ?? null,
+                ]);
+            } else {
+                $payment->markAsFailed("Payment {$status->label()}: " . ($result['message'] ?? 'Unknown error'));
+
+                Log::warning('Automatic credit card payment failed', [
+                    'invoice_id' => $invoice->id,
+                    'payment_id' => $payment->id,
+                    'status' => $status->value,
+                    'message' => $result['message'] ?? null,
+                ]);
+
+                $this->notifyPaymentFailed($invoice, $payment, $status);
+            }
+
+            return $payment;
+        } catch (\Exception $e) {
+            Log::error('Automatic payment exception', [
+                'invoice_id' => $invoice->id,
+                'client_id' => $invoice->client_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
+                'gateway' => 'neopayments',
+                'metadata' => ['error' => $e->getMessage()],
+                'processed_by' => null,
+            ]);
+
+            $payment->markAsFailed('Exception: ' . $e->getMessage());
+
+            $this->notifyPaymentFailed($invoice, $payment, NeoPaymentStatus::FAILED);
+
+            return $payment;
+        }
+    }
+
+    public function retryFailedPayment(ClientInvoicePayment $payment): bool
+    {
+        if (!config('services.neopayments.enabled') || !$this->neoPaymentsService) {
+            return false;
+        }
+
+        $invoice = $payment->invoice;
+        $defaultCard = $invoice->client->defaultCreditCard;
+
+        if (!$defaultCard || $defaultCard->isExpired()) {
+            return false;
+        }
+
+        $retryCount = $payment->metadata['retry_count'] ?? 0;
+        $maxRetries = config('services.neopayments.retry_attempts', 2);
+
+        if ($retryCount >= $maxRetries) {
+            Log::warning('Maximum retry attempts reached', [
+                'payment_id' => $payment->id,
+                'retry_count' => $retryCount,
+            ]);
+
+            return false;
+        }
+
+        try {
+            $metadata = array_merge($payment->metadata ?? [], [
+                'retry_count' => $retryCount + 1,
+                'original_payment_id' => $payment->id,
+            ]);
+
+            $result = $this->neoPaymentsService->processPayment(
+                $defaultCard->card_token,
+                $payment->amount,
+                $metadata
+            );
+
+            $status = $this->neoPaymentsService->mapTransactionStatus($result['status'] ?? 'FAILED');
+
+            $payment->gateway_transaction_id = $result['transaction_id'] ?? $payment->gateway_transaction_id;
+            $payment->metadata = array_merge($payment->metadata ?? [], [
+                'retry_count' => $retryCount + 1,
+                'last_retry_at' => now()->toIso8601String(),
+                'last_result' => $result,
+            ]);
+
+            if ($status->isSuccess()) {
+                $payment->markAsCompleted();
+
+                Log::info('Payment retry successful', [
+                    'payment_id' => $payment->id,
+                    'retry_count' => $retryCount + 1,
+                ]);
+
+                return true;
+            } else {
+                $retryNumber = $retryCount + 1;
+                $payment->markAsFailed("Retry {$retryNumber} - {$status->label()}: " . ($result['message'] ?? 'Unknown error'));
+
+                Log::warning('Payment retry failed', [
+                    'payment_id' => $payment->id,
+                    'retry_count' => $retryCount + 1,
+                    'status' => $status->value,
+                ]);
+
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('Payment retry exception', [
+                'payment_id' => $payment->id,
+                'retry_count' => $retryCount + 1,
+                'error' => $e->getMessage(),
+            ]);
+
+            $payment->metadata = array_merge($payment->metadata ?? [], [
+                'retry_count' => $retryCount + 1,
+                'last_retry_at' => now()->toIso8601String(),
+                'retry_error' => $e->getMessage(),
+            ]);
+            $payment->save();
+
+            return false;
+        }
+    }
+
+    private function notifyPaymentFailed(ClientInvoice $invoice, ClientInvoicePayment $payment, NeoPaymentStatus $status): void
+    {
+        $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
+
+        if ($notifiableUser) {
+            $notifiableUser->notify(new PaymentFailedNotification($invoice, $payment, $status));
+
+            Log::info('Payment failure notification sent', [
+                'invoice_id' => $invoice->id,
+                'payment_id' => $payment->id,
+                'user_email' => $notifiableUser->email,
+            ]);
+        }
     }
 }

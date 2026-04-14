@@ -509,6 +509,74 @@
                             @enderror
                         </div>
                     </div>
+
+                    @if(config('services.neopayments.enabled'))
+                    <div class="card-payment-section" style="margin-top: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border: 2px solid #e0e0e0;">
+                        <h3 style="color: #2D1B69; margin-bottom: 10px;"><i class="fas fa-credit-card"></i> Información de Tarjeta de Crédito</h3>
+                        <p class="text-sm" style="color: #666; margin-bottom: 20px;">Tus datos de tarjeta se procesan de forma segura. No almacenamos información completa de tarjetas.</p>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Nombre en la Tarjeta</label>
+                                <input type="text" name="card_holder" value="{{ old('card_holder') }}" placeholder="Juan Pérez">
+                                @error('card_holder')
+                                <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Número de Tarjeta</label>
+                                <input type="text" name="card_number" id="card_number" value="{{ old('card_number') }}" placeholder="1234 5678 9012 3456" maxlength="19" pattern="[0-9\s]+">
+                                @error('card_number')
+                                <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Mes de Expiración</label>
+                                <select name="exp_month">
+                                    <option value="">MM</option>
+                                    @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}" {{ old('exp_month') == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                                            {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
+                                        </option>
+                                    @endfor
+                                </select>
+                                @error('exp_month')
+                                <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-field">
+                                <label>Año de Expiración</label>
+                                <select name="exp_year">
+                                    <option value="">YY</option>
+                                    @for($i = date('y'); $i <= date('y') + 10; $i++)
+                                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}" {{ old('exp_year') == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                                            {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
+                                        </option>
+                                    @endfor
+                                </select>
+                                @error('exp_year')
+                                <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-field">
+                                <label>CVV</label>
+                                <input type="text" name="cvv" value="{{ old('cvv') }}" placeholder="123" maxlength="4" pattern="[0-9]{3,4}">
+                                @error('cvv')
+                                <span class="error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="form-row">
                         <div class="form-field">
                             <x-input-label name="remember-me"  id="remember-me" class="custom_check mr-2 mb-0 d-inline-flex remember-me">{{__('Estoy de acuerdo con los')}}
@@ -601,6 +669,16 @@
                     checkbox.checked = true;
                 }
             });
+
+            // Auto-format card number with spaces every 4 digits
+            const cardNumberInput = document.getElementById('card_number');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s/g, '');
+                    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                    e.target.value = formattedValue;
+                });
+            }
         });
     </script>
 </body>

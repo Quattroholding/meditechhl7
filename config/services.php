@@ -83,4 +83,12 @@ return [
         'webhook_verify_token' => env('META_WEBHOOK_VERIFY_TOKEN', 'meditech_whatsapp_webhook_2026'),
     ],
 
+    'neopayments' => [
+        'enabled' => env('NEOPAYMENTS_ENABLED', false),
+        'host' => env('NEOPAYMENTS_HOST', 'https://api.neopayments.com'),
+        'client_id' => env('NEOPAYMENTS_CLIENT_ID'),
+        'client_secret' => env('NEOPAYMENTS_CLIENT_SECRET'),
+        'retry_attempts' => env('NEOPAYMENTS_RETRY_ATTEMPTS', 2),
+    ],
+
 ];
