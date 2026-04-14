@@ -657,7 +657,7 @@
                 <h4><span class="step-number">1</span><span class="step-title">Acceder al Módulo de Pagos</span></h4>
                 <p>Navegue a <strong>Cuentas → Facturas</strong> desde el menú principal.</p>
                 <ul>
-                    <li>Desde el módulo de Pagos, haga clic en el ícono de la tarjeta para<strong>"Registrar Pago"</strong></li>
+                    <li>Desde Lista Facturas, seleccione la línea de la factura que vaya a registrar el pago y en la columna de acciones, haga clic en el ícono de la tarjeta para<strong>"Registrar Pago"</strong></li>
                 </ul>
 
             <div>
@@ -666,7 +666,7 @@
             </div>
 
             <!-- Step 2 -->
-            <div class="step-card">
+            <!--<div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Seleccionar Factura</span></h4>
                 <p>Si accedió desde el módulo de Pagos:</p>
                 <ul>
@@ -681,7 +681,7 @@
                     </li>
                 </ul>
                 </div>
-                <!--<div class="info-box note">
+                <div class="info-box note">
                     <div class="info-box-title">
                         <i class="fas fa-info-circle text-primary"></i>
                         Desde el Detalle de Factura
@@ -692,7 +692,7 @@
 
             <!-- Step 3 -->
             <div class="step-card">
-                <h4><span class="step-number">3</span><span class="step-title">Completar Información del Pago</span></h4>
+                <h4><span class="step-number">2</span><span class="step-title">Completar Información del Pago</span></h4>
                 <p>Complete el formulario de registro de pago:</p>
 
                 <div class="field-table-wrapper">
@@ -726,6 +726,11 @@
                                 <td data-label="Requerido">Opcional</td>
                             </tr>
                             <tr>
+                                <td data-label="Campo"><strong>ID de Transacción</strong></td>
+                                <td data-label="Descripcion">Número Identificador de la trasnsacción bancaria</td>
+                                <td data-label="Requerido">Opcional</td>
+                            </tr>
+                            <tr>
                                 <td data-label="Campo"><strong>Notas</strong></td>
                                 <td data-label="Descripcion">Información adicional sobre el pago</td>
                                 <td data-label="Requerido">Opcional</td>
@@ -749,7 +754,7 @@
 
             <!-- Step 4 -->
             <div class="step-card">
-                <h4><span class="step-number">4</span><span class="step-title">Confirmar el Pago</span></h4>
+                <h4><span class="step-number">3</span><span class="step-title">Confirmar el Pago</span></h4>
                 <p>Antes de confirmar, revise:</p>
                 <ul>
                     <li>El monto sea correcto</li>
@@ -770,16 +775,16 @@
 
             <!-- Step 5 -->
             <div class="step-card">
-                <h4><span class="step-number">5</span><span class="step-title">Actualización Automática</span></h4>
+                <h4><span class="step-number">4</span><span class="step-title">Actualización Automática</span></h4>
                 <p>Al registrar el pago, el sistema automáticamente:</p>
                 <ol>
                     <li>Actualiza el monto pagado de la factura</li>
-                    <li>Calcula el monto pendiente</li>
+                    <!--info-color<li>Calcula el monto pendiente</li>
                     <li>Actualiza el estado de pago de la factura:
                         <ul>
-                            <!--<li><strong>Partially Paid:</strong> Si aún queda saldo pendiente</li>-->
+                            <<li><strong>Partially Paid:</strong> Si aún queda saldo pendiente</li>
                             <li><strong>Pagada:</strong> Si el monto pagado cubre el total</li>
-                        </ul>
+                        </ul>-->
                     </li>
                     <!--<li>Genera un comprobante de pago</li>-->
                     <li>Registra la transacción en el historial</li>
@@ -789,7 +794,7 @@
 
             <!-- Step 6 -->
             <div class="step-card">
-                <h4><span class="step-number">6</span><span class="step-title">Descargar Comprobante</span></h4>
+                <h4><span class="step-number">5</span><span class="step-title">Descargar Comprobante</span></h4>
                 <p>Después de registrar el pago:</p>
                 <ul>
                     <!--<li>El sistema muestra un mensaje de confirmación</li>-->
@@ -799,7 +804,7 @@
                     </div>
                     <li>Se abrirá una nueva pestaña con el visualizador de PDF, donde podrá hacer efectiva la descarga del mismo.</li>
                     <div>
-                        <img src="{{ asset('images/tutorial/payments/payment_pdf.png') }}" alt="" style="width: 100%;">
+                        <img src="{{ asset('images/tutorial/payments/payment_pdfv2.png') }}" alt="" style="width: 100%;">
                     </div>
                     <li>Entregue el comprobante al paciente</li>
                 </ul>
@@ -905,17 +910,17 @@
                 <h4><span class="step-number">2</span><span class="step-title">Ver Detalle de Pago</span></h4>
                 <p>Para ver el detalle completo de un pago:</p>
                 <ul>
-                    <li>Dentro de <strong>Cuentas → Pagos</strong>, en la columna de acciones, haga clic en el ícono de detalle</li>
-                    <li>Se mostrará:
+                    <li>Dentro de <strong>Cuentas → Pagos</strong>, en la columna de acciones, haga clic en el ícono de detalle <br>Se mostrará la factura con todos sus detalles.</li>
+                    <!--<li>Se mostrará la factura con todos sus detalles.
                         <ul>
                             <li>Información del pago (monto, fecha, método)</li>
                             <li>Factura asociada</li>
                             <li>Paciente</li>
                             <li>Número de referencia</li>
-                            <!--<li>Usuario que registró el pago</li>
-                            <li>Notas adicionales</li>-->
+                            <li>Usuario que registró el pago</li>
+                            <li>Notas adicionales</li>
                         </ul>
-                    </li>
+                    </li>-->
                     <li>Puede descargar la factura</li>
                 </ul>
 
