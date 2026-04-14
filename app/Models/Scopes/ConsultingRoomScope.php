@@ -15,6 +15,18 @@ class ConsultingRoomScope implements Scope
     {
         $user = auth()->user();
 
+        // Check for WhatsApp client filter first
+        $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+
+        if ($whatsappClientId) {
+            // Filter consulting rooms by WhatsApp client through branch
+            $builder->whereHas('branch', function ($q) use ($whatsappClientId) {
+                $q->where('client_id', $whatsappClientId);
+            });
+
+            return;
+        }
+
         // Skip scope if no authenticated user (e.g., webhooks, API calls)
         if (! $user) {
             return;
