@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\MedicalSpecialityScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -14,6 +15,14 @@ class MedicalSpeciality extends Model
     protected $casts = [
         'is_surgical' => 'boolean',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new MedicalSpecialityScope);
+    }
 
     public function practitionerQualifications(): HasMany
     {

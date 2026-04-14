@@ -15,6 +15,16 @@ class AppointmentScope implements Scope
     {
         $user = auth()->user();
 
+        // Check for WhatsApp client filter first
+        $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+
+        if ($whatsappClientId) {
+            // Filter appointments by WhatsApp client - both patient and practitioner must belong to the client
+            $builder->where('client_id', $whatsappClientId);
+
+            return;
+        }
+
         // Skip scope if no authenticated user (e.g., webhooks, API calls)
         if (! $user) {
             return;

@@ -6,6 +6,7 @@ use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
 use App\Http\Middleware\FirstLoginMiddleware;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\WhatsappClientFilter;
 use App\Jobs\RetryFailedSubscriptionPayments;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -50,12 +51,18 @@ return Application::configure(basePath: dirname(__DIR__))
             'api.token' => ApiTokenMiddleware::class,
             'concurrent.session' => DetectConcurrentSession::class,
             'debug.ip' => DebugIpRestriction::class,
+            'whatsapp.client' => WhatsappClientFilter::class,
 
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
         $middleware->web(append: [
             CheckActiveUserMiddleware::class,
+        ]);
+
+        // Add WhatsApp client filter to API routes
+        $middleware->api(append: [
+            WhatsappClientFilter::class,
         ]);
 
         // Exclude webhooks from CSRF verification
