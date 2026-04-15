@@ -833,7 +833,7 @@
         <section id="catalogo-servicios" class="content-section">
             <h2><i class="fas fa-clipboard-list me-2"></i>2. Catalogo de Servicios</h2>
 
-            <p>El <strong>Catalogo de Servicios</strong> le permite definir todos los procedimientos, consultas y servicios que ofrece en su practica. Estos servicios se utilizan para facturacion, ordenes medicas y estadisticas.</p>
+            <p>El <strong>Catalogo de Servicios</strong> le permite definir todos los procedimientos, consultas y servicios que ofrece en su practica. Estos servicios se utilizan para facturación.</p>
 
             <div class="info-box tip">
                 <div class="info-box-title">

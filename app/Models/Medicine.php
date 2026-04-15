@@ -54,7 +54,11 @@ class Medicine extends BaseModel
 
     public function getFullNameAttribute()
     {
-        return $this->generic_name.' ('.$this->type.' '.$this->mgs.' '.$this->mgs_type.')';
+        $type = $this->type ?? '';
+        $mgs = $this->mgs ?? '';
+        $mgs_type = $this->mgs_type ?? '';
+
+        return trim("{$this->generic_name} ({$type} {$mgs} {$mgs_type})");
     }
 
     public function getConcentrationAttribute()

@@ -140,9 +140,9 @@
                     @if($nextAppointment)
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar appointment appointment-{{$nextAppointment->status}} text-white rounded-circle d-flex align-items-center justify-content-center"
+                                <div class="avatar appointment appointment-{{$nextAppointment->status->value}} text-white rounded-circle d-flex align-items-center justify-content-center"
                                      style="width: 50px; height: 50px;position: relative"
-                                     title="{{ __('appointment.status.' . $nextAppointment->status) }}">
+                                     title="{{ __('appointment.status.' . $nextAppointment->status->value) }}">
                                     <i class="fas fa-user-md"></i>
                                 </div>
                             </div>
