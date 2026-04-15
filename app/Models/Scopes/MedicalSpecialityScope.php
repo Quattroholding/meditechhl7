@@ -37,8 +37,7 @@ class MedicalSpecialityScope implements Scope
         }
 
         // Filter by user's accessible clients
-        if ($user->hasRole('doctor')
-            or $user->hasRole('recepcionista')
+        if ($user->hasRole('recepcionista')
             or $user->hasRole('asistente medico')) {
             $builder->whereHas('practitioners', function ($q) use ($user) {
                 $q->whereHas('user', function ($q2) use ($user) {
