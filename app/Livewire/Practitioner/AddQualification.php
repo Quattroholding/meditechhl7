@@ -53,7 +53,7 @@ class AddQualification extends Component
 
         $this->validate();
 
-        $especialidad = MedicalSpeciality::find($this->medical_speciality_id);
+        $especialidad = MedicalSpeciality::withoutGlobalScopes()->find($this->medical_speciality_id);
 
         if (! $this->practitoner->qualifications()->whereMedicalSpecialityId($this->medical_speciality_id)->first()) {
             $this->practitoner->qualifications()->create([
