@@ -133,7 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // API Token routes - Full access with IP restrictions
-Route::middleware('api.token')->prefix('v1')->group(function () {
+Route::middleware(['api.token', 'whatsapp.client'])->prefix('v1')->group(function () {
     // All endpoints with full access
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);
