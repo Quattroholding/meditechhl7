@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Practitioner;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -24,9 +25,29 @@ class UserFormRequest extends FormRequest
     public function rules(): array
     {
         $rol = $this->input('rol');
+        $userId = $this->route('user'); // ID del usuario si es edición
+
         // Reglas de validación base
         $rules['rol'] = 'required|integer';
         switch ($rol) {
+            case '2':
+                /* ------VALIDACIÓN PARA DOCTOR------ */
+                $rules['first_name'] = 'required|string|max:255';
+                $rules['last_name'] = 'required|string|max:255';
+                $rules['email'] = 'required|email|unique:users,email'.($userId ? ','.$userId : '');
+                /*$rules['password'] = [
+                    'required',
+                    'string',
+                    'confirmed',
+                    'min:8',
+                    'regex:/[a-z]/',      // debe contener al menos una letra minúscula
+                    'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
+                    'regex:/[0-9]/',      // debe contener al menos un número
+                ];*/
+                $rules['id_number'] = 'required|string|max:255|unique:practitioners,identifier'.($this->getPractitionerId($userId) ? ','.$this->getPractitionerId($userId) : '');
+                $rules['registry'] = 'nullable|string|max:60|unique:practitioners,registry'.($this->getPractitionerId($userId) ? ','.$this->getPractitionerId($userId) : '');
+                $rules['clients'] = 'required|array|min:1';
+                break;
             case '3':
                 /* ------VALIDACIÓN PARA RECEPCIONISTA------ */
                 $rules['first_name'] = 'required|string|max:255';
@@ -85,6 +106,9 @@ class UserFormRequest extends FormRequest
             'avatar.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg o gif.',
             'avatar.max' => 'La imagen no debe ser mayor a 2MB.',
             'rol.required' => 'El rol es obligatorio.',
+            'id_number.required' => 'El número de identificación es obligatorio.',
+            'id_number.unique' => 'Este número de identificación ya está registrado.',
+            'registry.unique' => 'Este número de registro médico ya está registrado.',
         ];
     }
 
@@ -94,5 +118,19 @@ class UserFormRequest extends FormRequest
         \Log::info($validator->errors());
 
         parent::failedValidation($validator);
+    }
+
+    /**
+     * Get the practitioner ID for a given user ID (for edit validation)
+     */
+    private function getPractitionerId(?int $userId): ?int
+    {
+        if (! $userId) {
+            return null;
+        }
+
+        $practitioner = Practitioner::where('user_id', $userId)->first();
+
+        return $practitioner?->id;
     }
 }

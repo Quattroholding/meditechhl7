@@ -123,6 +123,8 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $request->session()->flash('message.error', $e->getMessage());
+
+            return redirect(route('user.create'))->withInput();
         }
 
         return redirect(route('user.create'));
@@ -172,6 +174,8 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             $request->session()->flash('message.error', $e->getMessage());
+
+            return redirect(route('user.edit', $id))->withInput();
         }
 
         return redirect(route('user.edit', $id));
