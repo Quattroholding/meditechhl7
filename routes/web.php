@@ -381,11 +381,11 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.l
 
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users.view')->name('user.index');
 
-    Route::get('/create', [UserController::class, 'create'])->middleware('permission:users.create')->name('user.create');
+    Route::get('/create', [UserController::class, 'create'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.create');
 
     Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->middleware('permission:users.change_client')->name('user.change_client');
 
-    Route::post('/store', [UserController::class, 'store'])->middleware('permission:users.create')->name('user.store');
+    Route::post('/store', [UserController::class, 'store'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.store');
 
     Route::get('/{id}/edit', [UserController::class, 'edit'])->middleware('permission:users.edit')->name('user.edit');
 
