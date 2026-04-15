@@ -27,6 +27,13 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
+// Public data endpoints
+Route::get('/countries/{country}/states', function ($countryId) {
+    return \App\Models\State::where('country_id', $countryId)
+        ->orderBy('name')
+        ->get(['id', 'name']);
+});
+
 // Twilio Webhook - Public route (Twilio will call this)
 Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
 

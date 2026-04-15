@@ -31,6 +31,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicPatientRegistrationController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReferralCodeController;
@@ -97,6 +98,17 @@ Route::post('/register/client', [PublicRegistrationController::class, 'store'])
     ->name('public.register.store');
 Route::get('/register/success', [PublicRegistrationController::class, 'success'])
     ->name('public.register.success');
+
+// Registro Público de Pacientes
+// IMPORTANTE: La ruta de success debe ir ANTES de la ruta con {client} para evitar conflictos
+Route::get('/register/patient/success', [PublicPatientRegistrationController::class, 'success'])
+    ->name('public.patient.register.success');
+
+Route::get('/register/patient/{client}', [PublicPatientRegistrationController::class, 'showForm'])
+    ->name('public.patient.register');
+Route::post('/register/patient/{client}', [PublicPatientRegistrationController::class, 'store'])
+    ->middleware('throttle:15,60')
+    ->name('public.patient.register.store');
 
 // Enterprise Leads (Público)
 Route::post('/enterprise-contact', [EnterpriseLeadController::class, 'store'])
@@ -381,11 +393,11 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.l
 
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users.view')->name('user.index');
 
-    Route::get('/create', [UserController::class, 'create'])->middleware('permission:users.create')->name('user.create');
+    Route::get('/create', [UserController::class, 'create'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.create');
 
     Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->middleware('permission:users.change_client')->name('user.change_client');
 
-    Route::post('/store', [UserController::class, 'store'])->middleware('permission:users.create')->name('user.store');
+    Route::post('/store', [UserController::class, 'store'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.store');
 
     Route::get('/{id}/edit', [UserController::class, 'edit'])->middleware('permission:users.edit')->name('user.edit');
 

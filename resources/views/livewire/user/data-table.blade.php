@@ -4,7 +4,7 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',array('show_create'=>$show_create,'title'=>'','li_1'=>route('user.create')))
+                    @component('components.table-header',array('show_create'=>auth()->user()->canPaySubscription(),'title'=>'','li_1'=>route('user.create')))
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">
