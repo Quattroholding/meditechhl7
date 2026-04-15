@@ -228,7 +228,7 @@
                     @endif
                 </div>
                 <div class="company-info">
-                    <div class="company-name">MEDITEC SOLUCIONES</div>
+                    <div class="company-name">SOLUCIONES MEDITEC</div>
                     <div class="company-details">
                         Teléfono: +507 8316174<br>
                         Dirección: Ciudad de Panamá, Panamá<br>
@@ -300,7 +300,6 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 6%;">#</th>
                     <th style="width: 38%;">Tipo de Servicio</th>
                     <th style="width: 19%; text-align: right;">Precio Unit.</th>
                     <th style="width: 19%; text-align: right;">Subtotal</th>
@@ -309,7 +308,6 @@
             <tbody>
                 @foreach($quotation->items as $index => $item)
                 <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
                     <td>
                         <strong>{{ $item->service_name }}</strong>
                         @if($item->service_description)
