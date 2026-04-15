@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Meditec') }} - Teleconsulta</title>
-
+    <title>{{ config('app.name', 'Meditec') }}</title>
+    <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -49,9 +49,12 @@
         <div class="logo-header">
             <h1>
                 <i class="fas fa-heartbeat me-2"></i>
-                {{ config('app.name', 'Meditech2') }}
+                {{ config('app.name', 'SAMI') }}
             </h1>
+            {{--}}
             <p class="mb-0">Teleconsulta Virtual</p>
+
+            {{--}}
         </div>
 
         @yield('content')

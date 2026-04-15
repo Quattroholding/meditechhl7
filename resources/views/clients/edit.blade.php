@@ -53,7 +53,7 @@
                             <!-- RUC/DV -->
                             <div class="input-block  local-forms">
                                 <x-input-label for="ruc" :value="__('Ruc')" required/>
-                                <x-text-input id="ruc" class="block mt-1 w-full" type="number" name="ruc" :value="$data->ruc"/>
+                                <x-text-input id="ruc" class="block mt-1 w-full" type="text" name="ruc" :value="$data->ruc"/>
                                 <x-input-error :messages="$errors->get('ruc')" class="mt-2" />
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                             <!-- PACKAGE -->
                             <div class="input-block  local-forms ">
                                 <x-input-label for="package_id" :value="__('Paquete')" required/>
-                                <x-select-input required name="package_id" :options="\App\Models\Package::whereIsActive(1)->pluck('name','id')->toArray()" :selected="[$data->package_id]" class="block w-full"/>
+                                <x-select-input required name="package_id" :options="\App\Models\Package::pluck('name','id')->toArray()" :selected="[$data->package_id]" class="block w-full"/>
                                 <x-input-error :messages="$errors->get('package_id')" class="mt-2" />
                             </div>
                         </div>
@@ -125,6 +125,8 @@
             <div class="col-sm-12 mt-4">
                 <x-referral-code-display :client="$data" />
             </div>
+        </div>
+    </div>
         </div>
     </div>
 </x-app-layout>
