@@ -26,13 +26,13 @@ use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PatientController;
-use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\PatientHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PractitionerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicRegistrationController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReferralCodeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
@@ -673,7 +673,7 @@ Route::middleware(['auth', 'first.login'])->prefix('reports')->name('reports.')-
     Route::post('/{report}/pdf', [ReportController::class, 'pdf'])->name('pdf');
 });
 
-Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', 'first.login']], function () {
+Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', 'first.login', 'can.manage.subscription']], function () {
 
     // Lista de todas las suscripciones (solo administradores)
     Route::get('/list', [SuscriptionController::class, 'index'])->middleware('permission:suscriptions.manage')->name('suscriptions.index');

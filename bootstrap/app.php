@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ApiTokenMiddleware;
+use App\Http\Middleware\CanManageSubscription;
 use App\Http\Middleware\CheckActiveUserMiddleware;
 use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
@@ -52,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'concurrent.session' => DetectConcurrentSession::class,
             'debug.ip' => DebugIpRestriction::class,
             'whatsapp.client' => WhatsappClientFilter::class,
+            'can.manage.subscription' => CanManageSubscription::class,
 
         ]);
 

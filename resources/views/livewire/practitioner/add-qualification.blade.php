@@ -10,7 +10,7 @@
                 </div>
                 <div class="input-block  local-forms">
                     <x-input-label for="medical_speciality_id" :value="__('doctor.qualification')" />
-                    <x-select-input wire:model="medical_speciality_id" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" :selected="[]" name="medical_speciality_id" class="block mt-1 w-full"/>
+                    <x-select-input wire:model="medical_speciality_id" :options="\App\Models\MedicalSpeciality::withoutGlobalScopes()->pluck('name','id')->toArray()" :selected="[]" name="medical_speciality_id" class="block mt-1 w-full"/>
                     <x-input-error :messages="$errors->get('medical_speciality_id')"/>
                 </div>
                 <p style="color: #000;text-align: center;padding: 15px;">{{__('doctor.qualification_period')}}</p>
