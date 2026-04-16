@@ -37,7 +37,7 @@
             position:absolute;
             top:0;
             right:0;
-            width: 55mm;
+            width: 48mm;
             height: 210mm;
             background: rgba(0, 185, 198, 0.55);
         }
@@ -105,7 +105,7 @@
             background: var(--cyan-soft);
             color:#fff;
             font-weight: 900;
-            font-size: 34pt;
+            font-size: 32pt;
             padding: 1mm 10mm;
             width: 170mm;
         }

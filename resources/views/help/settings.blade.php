@@ -956,8 +956,82 @@
             </div>
 
             <h3>Crear un Servicio Personalizado</h3>
+
+                        
             <p>Para servicios que no tienen codigo CPT:</p>
-            <div class="field-table-wrapper">
+            <div class="step-card">
+                <h4><span class="step-number">1</span><span class="step-title">Completar Informacion del Servicio</span></h4>
+                <p>Una vez seleccionado el codigo CPT, complete los campos adicionales:</p>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripcion</th>
+                                <th>Requerido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Nombre de Servicio</strong></td>
+                                <td data-label="Descripcion">Nombre descriptivo del servicio (max 255 caracteres)</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Descripcion</strong></td>
+                                <td data-label="Descripcion">Texto para detallar el servicio</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
+                                <td data-label="Descripcion">Categoria del servicio</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Precio Base</strong></td>
+                                <td data-label="Descripcion">Precio base del servicio en la moneda configurada</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <!--<tr>
+                                <td data-label="Campo"><strong>Especialidad</strong></td>
+                                <td data-label="Descripcion">Especialidad medica asociada</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Duracion (min)</strong></td>
+                                <td data-label="Descripcion">Tiempo estimado del procedimiento</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Copago</strong></td>
+                                <td data-label="Descripcion">Monto de copago para pacientes con seguro</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Requiere Autorizacion</strong></td>
+                                <td data-label="Descripcion">Indica si requiere autorizacion previa del seguro</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Cubierto por Seguro</strong></td>
+                                <td data-label="Descripcion">Indica si el servicio esta cubierto por seguros</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Guardar el Servicio</span></h4>
+                <p>Haga click en <strong>"Registrar"</strong> para guardar. El sistema:</p>
+                <ul>
+                    <li>Genera automaticamente un codigo de servicio (ej: PROC_0001)</li>
+                    <li>Vincula el servicio a su cuenta</li>
+                    <li>Lo hace disponible para servicios facturables</li>
+                </ul>
+            </div>
+            <!--<div class="field-table-wrapper">
                 <table class="field-table">
                     <thead>
                         <tr>
@@ -977,17 +1051,17 @@
                             <td data-label="Descripcion">Descripcion detallada del servicio</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
                         </tr>
-                        <!--<tr>
+                        <tr>
                             <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
                             <td data-label="Descripcion">Categoria del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                        </tr>-->
+                        </tr>
                         <tr>
                             <td data-label="Campo"><strong>Precio</strong></td>
                             <td data-label="Descripcion">Precio base del servicio</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
                         </tr>
-                        <!--<tr>
+                        <tr>
                             <td data-label="Campo"><strong>Complejidad</strong></td>
                             <td data-label="Descripcion">Nivel: Baja, Media o Alta</td>
                             <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
@@ -996,9 +1070,16 @@
                             <td data-label="Campo"><strong>Codigo de Ingreso</strong></td>
                             <td data-label="Descripcion">Codigo contable para facturacion</td>
                             <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
-                        </tr>-->
+                        </tr>
                     </tbody>
                 </table>
+            </div>-->
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-shield-alt text-primary"></i>
+                    Código de Servicio Personalizado
+                </div>
+                <p class="mb-0">Cada Servicio Personalizado genera un código de forma automática, este código tiene como función identificar el servicio.</p>
             </div>
 
             <h4>Tipos de Servicio Disponibles</h4>
@@ -1020,7 +1101,7 @@
                 <div class="col-md-4">
                     <ul>
                         <li><strong>Imagenologia</strong> - Rayos X, US, etc.</li>
-                        <li><strong>Insumo</strong> - Materiales y suministros</li>
+                        <li><strong>Suministros</strong> - Materiales y suministros</li>
                         <li><strong>Otro</strong> - Servicios varios</li>
                     </ul>
                 </div>
@@ -1043,7 +1124,7 @@
             <ul>
                 <li><strong>Nombre del Servicio:</strong> Escriba parte del nombre (ej: "Sutura") para filtrar los resultados.</li>
                 <li><strong>Código CPT:</strong> Ingrese el código numérico estándar (ej: "99213").</li>
-                <li><strong>Código de Servicio:</strong> Busque por el código interno generado por SAMI (ej: "PROC_0001").</li>
+                <!--<li><strong>Código de Servicio:</strong> Busque por el código interno generado por SAMI (ej: "PROC_0001").</li>-->
             </ul>
             <div>
                 <img src="{{ asset('images/tutorial/settings/setting_servicesearch.png') }}" alt="" style="width: 100%;">
@@ -1065,17 +1146,17 @@
                         <tr>
                             <td data-label="Botón" class="text-center"><i class="fas fa-edit text-primary"></i></td>
                             <td data-label="Acción"><strong>Editar</strong></td>
-                            <td data-label="Funcionalidad">Abre un formulario para modificar el precio, complejidad o nombre (si es personalizado). Los cambios se aplican a futuras facturaciones.</td>
+                            <td data-label="Funcionalidad">Abre un formulario para modificar el precio o nombre (si es personalizado). Los cambios se aplican a futuras facturaciones.</td>
                         </tr>
                         <tr>
                             <td data-label="Botón" class="text-center"><i class="fas fa fa-pause"></i></td>
                             <td data-label="Acción"><strong>Activar/Desactivar</strong></td>
-                            <td data-label="Funcionalidad">Cambia la visibilidad del servicio. Los servicios desactivados no aparecerán como opciones al crear facturas u órdenes, pero se mantienen en el sistema para registros históricos.</td>
+                            <td data-label="Funcionalidad">Cambia la visibilidad del servicio. Los servicios desactivados no aparecerán como opciones al crear facturas, pero se mantienen en el sistema para registros históricos.</td>
                         </tr>
                         <tr>
                             <td data-label="Botón" class="text-center"><i class="fas fa-trash text-danger"></i></td>
                             <td data-label="Acción"><strong>Eliminar</strong></td>
-                            <td data-label="Funcionalidad">Realiza un borrado lógico del servicio. El servicio dejará de ser accesible en el catálogo, aunque la información se conserva internamente para la integridad de sus registros pasados.</td>
+                            <td data-label="Funcionalidad">Antes de eliminar, el usuario debe confirmar si desea eliminar el servicio, luego de confirmar, se realiza un borrado lógico del servicio. El servicio dejará de ser accesible en el catálogo, aunque la información se conserva internamente para la integridad de sus registros pasados.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1127,12 +1208,12 @@
                                     <td data-label="Descripcion">Servicios asociados a CPTs, Servicios personalizados, etc.</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Seccion"><strong>Signos Vitales</strong></td>
-                                    <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
-                                </tr>
-                                                                <tr>
                                     <td data-label="Seccion"><strong>Motivo de Consulta</strong></td>
                                     <td data-label="Descripcion">Descripción detallada de la condición/movito de visita del paciente.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Seccion"><strong>Signos Vitales</strong></td>
+                                    <td data-label="Descripcion">Presion arterial, frecuencia cardiaca, temperatura, etc.</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
@@ -1162,10 +1243,10 @@
                                     <td data-label="Seccion"><strong>Nota General</strong></td>
                                     <td data-label="Descripcion">Nota General de la Consulta</td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td data-label="Seccion"><strong>Incapacidades Médicas</strong></td>
                                     <td data-label="Descripcion">Incapacidades y justificantes</td>
-                                </tr>
+                                </tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -1588,19 +1669,19 @@
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Explorar Modelos</span></h4>
                 <p>En el listado, verá los diferentes diseños disponibles (Ej: Modelo Moderno, Clásico, Minimalista). Cada uno muestra una vista previa miniatura.</p>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Listado de Plantillas de Factura</p>
-                </div>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_ra1.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
 
             <div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Previsualizar y Seleccionar</span></h4>
-                <p>Haga clic en el botón de <strong>"Vista Previa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong> o <strong>"Activar"</strong>.</p>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-search-plus"></i>
-                    <p>Captura: Previsualización de Factura</p>
-                </div>
+                <p>Haga clic en el botón de <strong>"Vista Previa Completa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong> o <strong>"Activar"</strong>.</p>
+
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_ra2.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
         </section>
 
@@ -1620,10 +1701,9 @@
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Selección de Formato</span></h4>
                 <p>Al igual que con las facturas, puede elegir entre varios esquemas visuales para las incapacidades. Asegúrese de que el diseño incluya los campos necesarios para su jurisdicción legal.</p>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-image"></i>
-                    <p>Captura: Selección de Plantilla de Incapacidad</p>
-                </div>
+            <div>
+                <img src="{{ asset('images/tutorial/settings/setting_medleave.png') }}" alt="" style="width: 100%;">
+            </div>
             </div>
         </section>
 
@@ -1642,16 +1722,18 @@
 
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Obtener su Código</span></h4>
-                <p>En esta sección encontrará su código alfanumérico único. Puede copiarlo y compartirlo directamente por correo electrónico o redes sociales.</p>
-                <div class="screenshot-placeholder">
-                    <i class="fas fa-copy"></i>
-                    <p>Captura: Panel de Código de Referidos</p>
+                <p>En esta sección encontrará su código alfanumérico único. Puede copiarlo y compartirlo directamente por correo electrónico o redes sociales, además, puede descargarlo como PDF con QR incluído.</p>
+                <div>
+                    <img src="{{ asset('images/tutorial/settings/setting_referralcode.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
             <div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Seguimiento de Invitaciones</span></h4>
-                <p>Podrá visualizar el historial de personas que se han registrado utilizando su código y el estado de sus suscripciones.</p>
+                <p>Podrá visualizar el historial de personas que se han registrado utilizando su código.</p>
+                <div>
+                    <img src="{{ asset('images/tutorial/settings/setting_referralcode2.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
         <!-- Section 9: Tips -->
         <section id="tips" class="content-section">
@@ -1683,9 +1765,9 @@
                         <ul class="mb-0">
                             <li>No configurar horarios antes de agendar citas</li>
                             <li>Agregar demasiados accesos rapidos (pierde efectividad)</li>
-                            <!--<li>Dejar servicios sin precio definido</li>-->
+                            <!--<li>Dejar servicios sin precio definido</li>
                             <li>No asociar sucursal/consultorio a los horarios</li>
-                            <!--<li>Remover secciones obligatorias de consulta</li>-->
+                            <li>Remover secciones obligatorias de consulta</li>-->
                             <li>No guardar los cambios antes de salir</li>
                         </ul>
                     </div>
@@ -1709,9 +1791,9 @@
                             <td data-label="Descripcion">Crear y gestionar servicios</td>
                         </tr>
                         <tr>
-                            <td data-label="Funcionalidad"><strong>Horarios Laborales</strong></td>
-                            <!--<td data-label="Permiso"><code>settings.create_working_hour_user</code></td>-->
-                            <td data-label="Descripcion">Configurar horarios de trabajo</td>
+                            <td data-label="Funcionalidad"><strong>Plantilla de Consulta</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_consultation_template</code></td>-->
+                            <td data-label="Descripcion">Personalizar secciones de consulta</td>
                         </tr>
                         <tr>
                             <td data-label="Funcionalidad"><strong>Accesos Rapidos</strong></td>
@@ -1719,9 +1801,9 @@
                             <td data-label="Descripcion">Configurar accesos rapidos</td>
                         </tr>
                         <tr>
-                            <td data-label="Funcionalidad"><strong>Plantilla de Consulta</strong></td>
-                            <!--<td data-label="Permiso"><code>settings.create_consultation_template</code></td>-->
-                            <td data-label="Descripcion">Personalizar secciones de consulta</td>
+                            <td data-label="Funcionalidad"><strong>Horarios Laborales</strong></td>
+                            <!--<td data-label="Permiso"><code>settings.create_working_hour_user</code></td>-->
+                            <td data-label="Descripcion">Configurar horarios de trabajo</td>
                         </tr>
                         <tr>
                             <td data-label="Funcionalidad"><strong>Plantilla de Factura</strong></td>
