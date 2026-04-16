@@ -64,7 +64,7 @@
             background: #000;
             color: #fff;
             font-weight: 800;
-            font-size: 30pt;
+            font-size: 28pt;
             padding: 1mm 5mm;
             width: 150mm;
         }
