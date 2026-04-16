@@ -162,6 +162,31 @@ class AppointmentFactory extends Factory
         });
     }
 
+    /**
+     * State for appointment with reminder already scheduled
+     */
+    public function reminderScheduled()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'reminder_scheduled_at' => now()->subHours(1),
+            ];
+        });
+    }
+
+    /**
+     * State for appointment with reminder already sent
+     */
+    public function reminderSent()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'reminder_scheduled_at' => now()->subHours(3),
+                'reminder_sent_at' => now()->subHours(1),
+            ];
+        });
+    }
+
     // State para citas pasadas
     public function past()
     {

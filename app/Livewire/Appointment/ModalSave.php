@@ -502,13 +502,17 @@ class ModalSave extends Component
                 }
 
                 // Si cambió la fecha/hora y la cita está confirmada, notificar al paciente
-                if ($hasDateTimeChanged && $this->appointment->status === 'booked') {
+                if ($hasDateTimeChanged && $this->appointment->status->value === 'booked') {
+
                     $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
 
-                    // Programar nuevo recordatorio con la nueva fecha/hora
+                    // Clear reminder tracking to allow new reminder for rescheduled datetime
+                    $this->appointment->clearReminderTracking();
+
+                    // Schedule new reminder with the new datetime
                     $this->appointment->notifyPatientAboutAppointment();
 
-                    \Log::info('Cita reprogramada - notificación enviada', [
+                    \Log::info('Cita reprogramada - notificación enviada y recordatorio reprogramado', [
                         'appointment_id' => $this->appointment->id,
                         'original_datetime' => $originalStart->format('Y-m-d H:i:s'),
                         'new_datetime' => $newStart->format('Y-m-d H:i:s'),
