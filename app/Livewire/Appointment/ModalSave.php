@@ -489,14 +489,33 @@ class ModalSave extends Component
 
             if ($this->appointment) {
                 // Actualizar cita existente
-                // $appointment = Appointment::find($this->editingAppointment);
+                // Detectar si cambió la fecha/hora antes de actualizar
+                $originalStart = $this->appointment->start->copy();
+                $newStart = $start->copy();
+                $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
+
+                // Actualizar la cita
                 $this->appointment->update($appointmentData);
+
                 if ($this->confirm) {
                     $this->appointment->notifyPatientAboutConfirmation();
                 }
 
-                // Si la cita está confirmada (booked), enviar notificaciones
-                if ($this->appointment->status === 'booked') {
+                // Si cambió la fecha/hora y la cita está confirmada, notificar al paciente
+                if ($hasDateTimeChanged && $this->appointment->status === 'booked') {
+                    $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
+
+                    // Programar nuevo recordatorio con la nueva fecha/hora
+                    $this->appointment->notifyPatientAboutAppointment();
+
+                    \Log::info('Cita reprogramada - notificación enviada', [
+                        'appointment_id' => $this->appointment->id,
+                        'original_datetime' => $originalStart->format('Y-m-d H:i:s'),
+                        'new_datetime' => $newStart->format('Y-m-d H:i:s'),
+                    ]);
+                }
+                // Si la cita está confirmada (booked) pero no cambió la hora, enviar notificaciones normales
+                elseif ($this->appointment->status === 'booked' && ! $hasDateTimeChanged) {
                     // Notificación inmediata de confirmación
                     $this->appointment->notifyPatientAboutBooking();
                     // Programar recordatorio para 2 horas antes

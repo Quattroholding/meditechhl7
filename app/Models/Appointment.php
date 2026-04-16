@@ -10,6 +10,7 @@ use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
+use App\Notifications\AppointmentRescheduledNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -308,6 +309,27 @@ class Appointment extends BaseModel
         $this->patient->notify(
             new AppointmentCancelledNotification($this, $cancellationReason, 'practitioner')
         );
+    }
+
+    /**
+     * Notify the patient about appointment reschedule (date/time change)
+     *
+     * @param  Carbon  $originalDateTime  The original date/time before the change
+     * @param  string|null  $reason  Optional reason for the reschedule
+     */
+    public function notifyPatientAboutReschedule(Carbon $originalDateTime, ?string $reason = null)
+    {
+        $this->patient->notify(
+            new AppointmentRescheduledNotification($this, $originalDateTime, $reason)
+        );
+
+        \Log::info('Patient notified about appointment reschedule', [
+            'appointment_id' => $this->id,
+            'patient_id' => $this->patient_id,
+            'original_datetime' => $originalDateTime->format('Y-m-d H:i:s'),
+            'new_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'reason' => $reason,
+        ]);
     }
 
     /**
