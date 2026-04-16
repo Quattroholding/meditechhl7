@@ -400,7 +400,7 @@
                                                         <button wire:click="deleteService({{ $service->id }})"
                                                                 class="btn btn-danger btn-sm"
                                                                 title="Eliminar"
-                                                                onclick="return confirm('¿Está seguro de eliminar este servicio?')">
+                                                                 wire:confirm="¿Está seguro de eliminar este servicio?">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
