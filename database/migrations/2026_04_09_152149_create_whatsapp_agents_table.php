@@ -33,6 +33,7 @@ return new class extends Migration
             // activo / inactivo
             $table->boolean('active')->default(true);
             $table->integer('client_id')->nullable();
+            $table->string('api_base_url',150)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

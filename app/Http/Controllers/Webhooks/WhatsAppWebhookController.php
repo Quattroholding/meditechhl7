@@ -112,7 +112,7 @@ class WhatsAppWebhookController extends Controller
                 Http::post($agent->webhook_url, [
                     'phone_number_id' => $phoneNumberId,
                     'payload' => $payload,   // opcional: todo el payload original
-                    'api_base_url' => $apiBaseUrl, // URL base del API para que n8n la use
+                    'api_base_url' => $agent->api_base_url, // URL base del API para que n8n la use
                 ]);
             }
 
