@@ -106,6 +106,15 @@
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>
+
+            <a href="{{ route('help.roles') }}" class="nav-link {{ $active === 'roles' ? 'active' : '' }}">
+                <i class="fas fa-user-shield"></i>
+                <span>Roles y Permisos</span>
+                @if ($active === 'roles')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.registration') }}" class="nav-link {{ $active === 'registration' ? 'active' : '' }}">
                 <i class="fas fa-user-plus"></i>
                 <span>Registro</span>
@@ -194,14 +203,6 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Mi Perfil</span>
                 @if ($active === 'profile')
-                    <span class="badge bg-warning">Actual</span>
-                @endif
-            </a>
-
-            <a href="{{ route('help.roles') }}" class="nav-link {{ $active === 'roles' ? 'active' : '' }}">
-                <i class="fas fa-user-shield"></i>
-                <span>Roles y Permisos</span>
-                @if ($active === 'roles')
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>

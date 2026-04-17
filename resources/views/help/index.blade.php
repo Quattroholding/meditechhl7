@@ -574,6 +574,19 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(103, 58, 183, 0.1); color: #673ab7;">
+                            <i class="fas fa-user-shield fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Roles y Permisos</h5>
+                        <p class="card-text text-muted">Gestiona los accesos y funciones permitidas para cada usuario.</p>
+                        <a href="{{ route('help.roles') }}" class="btn text-white" style="background: #673ab7;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                             <i class="fas fa-user-plus fa-2x text-primary"></i>
                         </div>
@@ -763,18 +776,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(103, 58, 183, 0.1); color: #673ab7;">
-                            <i class="fas fa-user-shield fa-2x"></i>
-                        </div>
-                        <h5 class="card-title">Roles y Permisos</h5>
-                        <p class="card-text text-muted">Gestiona los accesos y funciones permitidas para cada usuario.</p>
-                        <a href="{{ route('help.roles') }}" class="btn text-white" style="background: #673ab7;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">

@@ -88,6 +88,7 @@
         .badge-assistant { background: #dbeafe; color: #1e40af; }
         .badge-receptionist { background: #fef9c3; color: #854d0e; }
         .badge-accounting { background: #f3e8ff; color: #6b21a8; }
+        .badge-patient { background: #e0f7fa; color: #006064; }
 
         .back-to-top {
             position: fixed;
@@ -114,8 +115,133 @@
             visibility: visible;
         }
 
+        /* Matrix Table Styles */
+        .matrix-container {
+            margin-top: 30px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .search-input {
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: 2px solid #ede7f6;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--roles-color);
+            outline: none;
+            box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9575cd;
+        }
+
+        .matrix-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: white;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .matrix-table th {
+            background: #673ab7;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .matrix-table th:first-child {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            background: #512da8;
+        }
+
+        .matrix-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .matrix-table td:first-child {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            background: white;
+            font-weight: 500;
+            z-index: 1;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+            white-space: nowrap;
+        }
+
+        .module-row {
+            background: #f8f9fa;
+            font-weight: 700 !important;
+            color: #4527a0;
+            cursor: pointer;
+        }
+
+        .module-row i {
+            transition: transform 0.3s;
+        }
+
+        .module-row.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .module-group-header {
+            background: #ede7f6;
+            color: #5e35b1;
+            padding: 10px 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .permission-allowed {
+            color: #2e7d32;
+            font-size: 1.2rem;
+        }
+
+        .permission-denied {
+            background-color: #ffebee !important;
+            color: #c62828;
+            font-size: 1.2rem;
+        }
+
+        .matrix-table tr:hover td {
+            background-color: #f3e5f5;
+        }
+
         @media (max-width: 992px) {
             .help-content { margin-left: 0; }
+            .matrix-table td:first-child, .matrix-table th:first-child {
+                position: static;
+            }
         }
     </style>
 </head>
@@ -180,10 +306,528 @@
                     <span class="role-badge badge-assistant">Asistente Médico</span>
                     <p class="small mb-0 text-muted">Preparación de pacientes (signos vitales) y soporte en la agenda del doctor.</p>
                 </div>
-                <!--<div class="list-group-item border-0">
-                    <span class="role-badge badge-accounting">Contabilidad</span>
-                    <p class="small mb-0 text-muted">Acceso exclusivo a facturación, reportes financieros y estados de pago.</p>
-                </div>-->
+                <div class="list-group-item border-0 border-bottom">
+                    <span class="role-badge badge-patient">Paciente</span>
+                    <p class="small mb-0 text-muted">Acceso a su portal personal, visualización de sus citas, recetas médicas y resultados de exámenes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-box-title"><strong><i class="fas fa-info-circle me-2"></i>Nota sobre Planes y Administración</strong></div>
+            <p class="mb-2">La disponibilidad de roles y sus permisos específicos dependen directamente del plan seleccionado (Básico, Estándar o Premium).</p>
+            <ul class="mb-0 small">
+                <li><strong>Planes Básico y Estándar:</strong> No existe un rol de "Admin Client" independiente. El Doctor que adquiere la suscripción actúa como administrador del sistema con acceso total.</li>
+                <li><strong>Plan Premium:</strong> El rol de "Admin Client" es independiente. Puede ser el mismo médico (creado como un usuario adicional con ese rol) o una persona distinta encargada exclusivamente de la administración.</li>
+            </ul>
+        </div>
+
+        <div class="content-section matrix-container">
+            <h2>Matriz de Permisos Detallada</h2>
+            <p>Consulta la comparativa completa de funciones permitidas según el plan y el rol asignado.</p>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="matrixSearch" class="search-input" placeholder="Buscar permiso o función (ej: 'citas', 'facturas')...">
+            </div>
+
+            <div class="matrix-table-wrapper">
+                <table class="matrix-table" id="permissionsMatrix">
+                    <thead>
+                        <tr>
+                            <th>Módulo / Función</th>
+                            <th>Doctor (Estándar)</th>
+                            <th>Admin Client (Premium)</th>
+                            <th>Doctor (Premium)</th>
+                            <th>Asistente (Premium)</th>
+                            <th>Recep. (Premium)</th>
+                            <th>Paciente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dashboard -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Dashboard</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Dashboard Principal</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+
+                        <!-- Sedes -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Sedes</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Sucursales / Registrar</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Consultorios / Registrar</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Doctores -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Doctores</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Gestión de Doctores Asociados</td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Pacientes -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Pacientes</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Pacientes</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Crear Pacientes</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Citas -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Citas</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Citas</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Calendario / Crear Cita</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+
+                        <!-- Consultas -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Consultas</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Ver Detalles (Consulta, Órdenes, Incapacidades)</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Editar Consultas</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Descargar PDF Resumen</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Descargar PDF Factura</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+
+                        <!-- Repositorio -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Repositorio de Estudios</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Acceso a Repositorio</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                         <!-- Medicamentos -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Medicamentos</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Medicamentos</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Crear Medicamentos</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Editar Medicamentos</td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Eliminar Medicamentos 'Custom'</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Encuestas -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Encuestas</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Gestión de Encuestas</td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Cuentas -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Cuentas</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Facturas (Lista + Acciones)</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Pagos</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Configuraciones -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Configuraciones</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Servicios</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Plantilla de Consulta</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Accesos Rápidos</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Horario Laboral</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Plantilla de Factura</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Plantilla de Incapacidad Médica</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Código de Referidos</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Directorio -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Directorio Médico</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Acceso a Directorio</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+
+                        <!-- Usuarios -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Usuarios</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Lista de Usuarios</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Crear Usuarios</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Suscripción -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Suscripción</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Ver Plan</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Facturas Suscripción</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Pagos Suscripción</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Métodos de Pago</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Soporte -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Soporte</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Contacto Soporte Técnico</td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Historial Médico -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Historial Médico</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Ver Historial Personal</td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+
+                        <!-- Perfil -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Perfil</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Datos Personales</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Datos Profesionales</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Agregar Especialidad</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Configuraciones Básicas de cuenta</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Firma y Sello Digital</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Código de Referido</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                            <td class="permission-denied"><i class="fas fa-times-circle"></i></td>
+                        </tr>
+
+                        <!-- Cerrar Sesión -->
+                        <tr class="module-group-header">
+                            <td colspan="7">Sistema</td>
+                        </tr>
+                        <tr class="permission-row">
+                            <td>Cerrar Sesión</td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                            <td class="permission-allowed"><i class="fas fa-check-circle"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box mt-4">
+                <div class="info-box-title"><strong><i class="fas fa-info-circle me-2"></i>Sobre esta matriz</strong></div>
+                <p class="small mb-0">Esta tabla representa la configuración estándar del sistema. Si necesitas un plan personalizado, contacte al departamento de ventas para evaluar tu caso.</p>
             </div>
         </div>
 
@@ -243,6 +887,46 @@
         btn.onclick = function() {
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
+
+        // Live Search for Permissions Matrix
+        const searchInput = document.getElementById('matrixSearch');
+        const table = document.getElementById('permissionsMatrix');
+        const rows = table.getElementsByClassName('permission-row');
+        const headers = table.getElementsByClassName('module-group-header');
+
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            const allElements = table.querySelectorAll('tr.permission-row, tr.module-group-header');
+            
+            let currentHeader = null;
+            let currentGroupHasMatch = false;
+
+            allElements.forEach(row => {
+                if (row.classList.contains('module-group-header')) {
+                    // Update previous header if it had no matches
+                    if (currentHeader && !currentGroupHasMatch && filter !== '') {
+                        currentHeader.style.display = 'none';
+                    }
+                    
+                    currentHeader = row;
+                    currentGroupHasMatch = false;
+                    row.style.display = ''; // Reset display
+                } else {
+                    const text = row.cells[0].textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        row.style.display = '';
+                        currentGroupHasMatch = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            // Final check for the last header
+            if (currentHeader && !currentGroupHasMatch && filter !== '') {
+                currentHeader.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
