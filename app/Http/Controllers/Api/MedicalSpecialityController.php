@@ -105,6 +105,12 @@ class MedicalSpecialityController extends Controller
                                         'id' => $subscription->id,
                                         'status' => $subscription->status->value,
                                         'status_label' => $subscription->status->label(),
+                                        'client' => [
+                                            'id' => $subscription->client->id,
+                                            'name' => $subscription->client->name,
+                                            'email' => $subscription->client->email,
+                                            'whatsapp' => $subscription->client->whatsapp,
+                                        ],
                                         'package' => [
                                             'id' => $subscription->package->id,
                                             'name' => $subscription->package->name,
