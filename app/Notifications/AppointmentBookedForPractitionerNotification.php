@@ -29,13 +29,13 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
     {
         $channels = ['database'];
 
-        // Priorizar WhatsApp si está disponible
-        if ($notifiable->whatsapp_phone || $notifiable->phone) {
-            $channels[] = WhatsAppMetaChannel::class;
+        // Priorizar email si está disponible
+        if ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
         }
         // Si no tiene WhatsApp, usar email
-        elseif ($this->isValidEmail($notifiable->email)) {
-            $channels[] = 'mail';
+        elseif ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = WhatsAppMetaChannel::class;
         }
 
         return $channels;
@@ -47,16 +47,19 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
-        // Generate signed URLs for confirm and cancel actions
+        // Generate signed URLs that expire 1 day after the appointment
+        // This gives practitioners time to confirm/cancel up until the appointment
+        $expiresAt = $this->appointment->start->copy()->addDay();
+
         $confirmUrl = URL::temporarySignedRoute(
             'appointments.confirm',
-            now()->addDays(7),
+            $expiresAt,
             ['appointment' => $this->appointment->id]
         );
 
         $cancelUrl = URL::temporarySignedRoute(
             'appointments.cancel',
-            now()->addDays(7),
+            $expiresAt,
             ['appointment' => $this->appointment->id]
         );
 

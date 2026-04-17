@@ -27,10 +27,10 @@ class AppointmentActionController extends Controller
             }
 
             // Check if appointment can be confirmed
-            if (! in_array($appointment->status, ['proposed', 'pending', 'booked'])) {
+            if (! in_array($appointment->status->value, ['proposed', 'pending', 'booked'])) {
                 return view('appointments.action-result', [
                     'success' => false,
-                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status,
+                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status->value,
                     'appointment' => $appointment,
                 ]);
             }
@@ -188,10 +188,10 @@ class AppointmentActionController extends Controller
             }
 
             // Check if appointment can be confirmed
-            if (! in_array($appointment->status, ['proposed', 'pending', 'booked'])) {
+            if (! in_array($appointment->status->value, ['proposed', 'pending', 'booked'])) {
                 return view('appointments.action-result', [
                     'success' => false,
-                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status,
+                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status->value,
                     'appointment' => $appointment,
                 ]);
             }
