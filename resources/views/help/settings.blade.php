@@ -1076,13 +1076,13 @@
             </div>-->
             <div class="info-box note">
                 <div class="info-box-title">
-                    <i class="fas fa-shield-alt text-primary"></i>
+                    <i class="fas fa-info-circle text-primary"></i>
                     Código de Servicio Personalizado
                 </div>
                 <p class="mb-0">Cada Servicio Personalizado genera un código de forma automática, este código tiene como función identificar el servicio.</p>
             </div>
 
-            <h4>Tipos de Servicio Disponibles</h4>
+            <h4>Tipos de Servicios Disponibles</h4>
             <div class="row">
                 <div class="col-md-4">
                     <ul>
@@ -1130,6 +1130,13 @@
                 <img src="{{ asset('images/tutorial/settings/setting_servicesearch.png') }}" alt="" style="width: 100%;">
             </div>
 
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Elementos del Catálogo de Servicios
+                </div>
+                <p class="mb-0">En la lista de catálogo de servicios se incluyen todos los servicios creados, tanto los que se agregan con CPTs como los personalizados.</p>
+            </div>
             <h3>Gestionar Servicios Existentes (Columna Acciones)</h3>
             <p>En el listado de servicios, la última columna le permite realizar las siguientes acciones:</p>
             
@@ -1373,7 +1380,7 @@
                         <i class="fas fa-lock text-danger"></i>
                         Secciones Obligatorias
                     </div>
-                    <p class="mb-0">Algunas secciones son <strong>obligatorias</strong> y no pueden ser removidas. Estas secciones son necesarias para el funcionamiento correcto del sistema y apareceran siempre en sus consultas.</p>
+                    <p class="mb-0">Algunas secciones son <strong>obligatorias</strong> y no pueden ser removidas. Son necesarias para el funcionamiento correcto del sistema y apareceran siempre en sus consultas. Estas secciones son: <strong>Motivo de Consulta, Enfermedad Actual, Diagnósticos, Laboratorios e Imágenes.</strong></p>
                 </div>
             </div>
 
@@ -1478,6 +1485,9 @@
                     <li>Use el boton <i class="fas fa-trash text-danger"></i> para eliminar items que ya no necesite</li>
                     <li>Los cambios se guardan automaticamente</li>
                 </ul>
+                <div>
+                    <img src="{{ asset('images/tutorial/settings/setting_raccessfull.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
 
             <h3>Uso Durante la Consulta</h3>
@@ -1606,7 +1616,7 @@
                 </ol>
 
             <div>
-                <img src="{{ asset('images/tutorial/settings/setting_schedule2.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/settings/setting_schdule.png') }}" alt="" style="width: 100%;">
             </div>
             </div>
 
