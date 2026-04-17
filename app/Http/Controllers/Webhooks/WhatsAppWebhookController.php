@@ -101,18 +101,13 @@ class WhatsAppWebhookController extends Controller
 
             if ($agent->type === 'n8n') {
 
-                /*Http::timeout(10)->post(
-                    $agent->webhook_url,
-                    $payload
-                );*/
-
-                // Obtener la URL base del API según el entorno
-                $apiBaseUrl = config('app.url').'/api/v1/';
+                // Usar el api_base_url configurado en el agent, con fallback al app.url actual
+                $apiBaseUrl = $agent->api_base_url ?? config('app.url').'/api/v1/';
 
                 Http::post($agent->webhook_url, [
                     'phone_number_id' => $phoneNumberId,
                     'payload' => $payload,   // opcional: todo el payload original
-                    'api_base_url' => $agent->api_base_url, // URL base del API para que n8n la use
+                    'api_base_url' => $apiBaseUrl, // URL base del API para que n8n la use
                 ]);
             }
 

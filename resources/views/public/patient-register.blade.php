@@ -317,6 +317,104 @@
             </div>
         </div>
 
+        <!-- Sección: Información de Seguro Médico (Opcional) -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="fas fa-shield-alt me-2"></i>Información de Seguro Médico
+                <small class="text-muted">(Opcional)</small>
+            </h5>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" name="has_insurance" id="has_insurance"
+                               class="form-check-input @error('has_insurance') is-invalid @enderror"
+                               value="1" {{ old('has_insurance') ? 'checked' : '' }}>
+                        <label for="has_insurance" class="form-check-label">
+                            Tengo seguro médico
+                        </label>
+                        @error('has_insurance')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div id="insurance-fields" style="display: {{ old('has_insurance') ? 'block' : 'none' }};">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="insurance_company_id" class="form-label">Compañía de Seguros</label>
+                        <select name="insurance_company_id" id="insurance_company_id"
+                                class="form-control @error('insurance_company_id') is-invalid @enderror">
+                            <option value="">Seleccione...</option>
+                            @foreach($insuranceCompanies as $company)
+                                <option value="{{ $company->id }}" {{ old('insurance_company_id') == $company->id ? 'selected' : '' }}>
+                                    {{ $company->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('insurance_company_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="policy_number" class="form-label">Número de Póliza</label>
+                        <input type="text" name="policy_number" id="policy_number"
+                               class="form-control @error('policy_number') is-invalid @enderror"
+                               value="{{ old('policy_number') }}"
+                               placeholder="Ej: POL-123456">
+                        @error('policy_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="group_number" class="form-label">Número de Grupo (Opcional)</label>
+                        <input type="text" name="group_number" id="group_number"
+                               class="form-control @error('group_number') is-invalid @enderror"
+                               value="{{ old('group_number') }}"
+                               placeholder="Ej: GRP-789">
+                        @error('group_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="relationship_to_subscriber" class="form-label">Relación con el Titular</label>
+                        <select name="relationship_to_subscriber" id="relationship_to_subscriber"
+                                class="form-control @error('relationship_to_subscriber') is-invalid @enderror">
+                            <option value="">Seleccione...</option>
+                            <option value="self" {{ old('relationship_to_subscriber') == 'self' ? 'selected' : '' }}>Yo soy el titular</option>
+                            <option value="spouse" {{ old('relationship_to_subscriber') == 'spouse' ? 'selected' : '' }}>Cónyuge</option>
+                            <option value="child" {{ old('relationship_to_subscriber') == 'child' ? 'selected' : '' }}>Hijo/a</option>
+                            <option value="parent" {{ old('relationship_to_subscriber') == 'parent' ? 'selected' : '' }}>Padre/Madre</option>
+                            <option value="other" {{ old('relationship_to_subscriber') == 'other' ? 'selected' : '' }}>Otro</option>
+                        </select>
+                        @error('relationship_to_subscriber')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row" id="subscriber-name-row" style="display: {{ old('relationship_to_subscriber') && old('relationship_to_subscriber') !== 'self' ? 'block' : 'none' }};">
+                    <div class="col-12 mb-3">
+                        <label for="subscriber_name" class="form-label">Nombre del Titular del Seguro</label>
+                        <input type="text" name="subscriber_name" id="subscriber_name"
+                               class="form-control @error('subscriber_name') is-invalid @enderror"
+                               value="{{ old('subscriber_name') }}"
+                               placeholder="Nombre completo del titular">
+                        <small class="text-muted">Ingrese el nombre de la persona que es titular de la póliza</small>
+                        @error('subscriber_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Botón de Envío -->
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary btn-register">
@@ -390,6 +488,38 @@
             alert('Por favor ingrese un teléfono de contacto válido con el código de país.');
             contactPhoneInput.focus();
             return false;
+        }
+    });
+
+    // Mostrar/ocultar campos de seguro
+    const hasInsuranceCheckbox = document.getElementById('has_insurance');
+    const insuranceFields = document.getElementById('insurance-fields');
+
+    hasInsuranceCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            insuranceFields.style.display = 'block';
+        } else {
+            insuranceFields.style.display = 'none';
+            // Limpiar campos de seguro al ocultar
+            document.getElementById('insurance_company_id').value = '';
+            document.getElementById('policy_number').value = '';
+            document.getElementById('group_number').value = '';
+            document.getElementById('relationship_to_subscriber').value = '';
+            document.getElementById('subscriber_name').value = '';
+            document.getElementById('subscriber-name-row').style.display = 'none';
+        }
+    });
+
+    // Mostrar/ocultar nombre del titular según la relación
+    const relationshipSelect = document.getElementById('relationship_to_subscriber');
+    const subscriberNameRow = document.getElementById('subscriber-name-row');
+
+    relationshipSelect.addEventListener('change', function() {
+        if (this.value && this.value !== 'self') {
+            subscriberNameRow.style.display = 'block';
+        } else {
+            subscriberNameRow.style.display = 'none';
+            document.getElementById('subscriber_name').value = '';
         }
     });
 

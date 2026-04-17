@@ -33,12 +33,13 @@ class BaseModel extends Model
             $changes = $model->isDirty() ? $model->getDirty() : false;
 
             if (count($changes) > 0) {
-                $user_id = User::first()->id;
-                $user_name = 'Administrador Del Sistema';
-                if (Auth::check()) {
-                    $user_id = Auth::user()->id;
-                    $user_name = Auth::user()->full_name;
+                // Skip logging if no user is authenticated
+                if (! Auth::check()) {
+                    return;
                 }
+
+                $user_id = Auth::user()->id;
+                $user_name = Auth::user()->full_name;
 
                 foreach ($changes as $attr => $value) {
                     if ($model->getOriginal($attr) != $model->$attr && ! in_array($attr, ['note', 'DIAGNOSTIC_DESCRIPTION']) && ! is_array($model->$attr) && ! is_array($model->getOriginal($attr))) {
@@ -80,12 +81,14 @@ class BaseModel extends Model
         static::created(function ($model) {
             // do some logging
             // override some property like $model->something = transform($something);
-            $user_id = User::first()?->id ?? 1;
-            $user_name = 'Administrador Del Sistema';
-            if (Auth::check()) {
-                $user_id = Auth::user()->id;
-                $user_name = Auth::user()->full_name;
+
+            // Skip logging if no user is authenticated
+            if (! Auth::check()) {
+                return;
             }
+
+            $user_id = Auth::user()->id;
+            $user_name = Auth::user()->full_name;
 
             return UserLog::create([
                 'user_id' => $user_id,
@@ -113,12 +116,14 @@ class BaseModel extends Model
         static::deleted(function ($model) {
             // do some logging
             // override some property like $model->something = transform($something);
-            $user_id = User::first()->id;
-            $user_name = 'Administrador Del Sistema';
-            if (Auth::check()) {
-                $user_id = Auth::user()->id;
-                $user_name = Auth::user()->full_name;
+
+            // Skip logging if no user is authenticated
+            if (! Auth::check()) {
+                return;
             }
+
+            $user_id = Auth::user()->id;
+            $user_name = Auth::user()->full_name;
 
             return UserLog::create([
                 'user_id' => $user_id,

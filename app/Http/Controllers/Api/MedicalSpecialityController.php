@@ -4,23 +4,49 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\MedicalSpeciality;
+use App\Models\WhatsappAgent;
 use Illuminate\Http\Request;
 
 class MedicalSpecialityController extends Controller
 {
     public function index(Request $request)
     {
+        // Get whatsapp_client_id from request attributes (set by WhatsappClientFilter middleware)
+        $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+
+        // Determine which client_ids to filter based on whatsapp agent type
+        $clientIdsToInclude = null;
+        $clientIdsToExclude = null;
+
+        if ($whatsappClientId) {
+            // Dedicated agent: only show specialities from this specific client
+            $clientIdsToInclude = [$whatsappClientId];
+        } else {
+            // Generic agent: show specialities from all clients EXCEPT those with dedicated agents
+            $clientIdsToExclude = WhatsappAgent::where('active', true)
+                ->whereNotNull('client_id')
+                ->pluck('client_id')
+                ->toArray();
+        }
+
         $query = MedicalSpeciality::query()
             ->when($request->search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
             })
             // Solo especialidades con al menos un practitioner con usuario activo Y suscripción activa Y consulting room
-            ->whereHas('practitioners', function ($query) {
+            ->whereHas('practitioners', function ($query) use ($clientIdsToInclude, $clientIdsToExclude) {
                 $query->where('practitioners.active', true)
-                    ->whereHas('user', function ($userQuery) {
+                    ->whereHas('user', function ($userQuery) use ($clientIdsToInclude, $clientIdsToExclude) {
                         $userQuery->where('users.active', true)
                             // Verificar que el usuario tenga cliente con suscripción activa
-                            ->whereHas('clients', function ($clientQuery) {
+                            ->whereHas('clients', function ($clientQuery) use ($clientIdsToInclude, $clientIdsToExclude) {
+                                // Filter by whatsapp agent type (generic vs dedicated)
+                                if ($clientIdsToInclude) {
+                                    $clientQuery->whereIn('clients.id', $clientIdsToInclude);
+                                } elseif (! empty($clientIdsToExclude)) {
+                                    $clientQuery->whereNotIn('clients.id', $clientIdsToExclude);
+                                }
+
                                 $clientQuery->whereHas('subscriptions', function ($subscriptionQuery) {
                                     $subscriptionQuery->whereIn('status', ['active', 'trial'])
                                         ->where(function ($q) {
@@ -53,7 +79,7 @@ class MedicalSpecialityController extends Controller
         $currentMonthEnd = now()->endOfMonth();
 
         $specialities = $query->get()
-            ->map(function ($speciality) use ($currentMonthStart, $currentMonthEnd) {
+            ->map(function ($speciality) use ($currentMonthStart, $currentMonthEnd, $clientIdsToInclude, $clientIdsToExclude) {
                 // Obtener practitioners activos con usuarios activos Y suscripción activa Y consulting room
                 $availablePractitioners = $speciality->practitioners()
                     ->with([
@@ -67,10 +93,17 @@ class MedicalSpecialityController extends Controller
                         $query->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
                     }])
                     ->where('practitioners.active', true)
-                    ->whereHas('user', function ($query) {
+                    ->whereHas('user', function ($query) use ($clientIdsToInclude, $clientIdsToExclude) {
                         $query->where('users.active', true)
                             // Verificar que el usuario tenga cliente con suscripción activa
-                            ->whereHas('clients', function ($clientQuery) {
+                            ->whereHas('clients', function ($clientQuery) use ($clientIdsToInclude, $clientIdsToExclude) {
+                                // Filter by whatsapp agent type (generic vs dedicated)
+                                if ($clientIdsToInclude) {
+                                    $clientQuery->whereIn('clients.id', $clientIdsToInclude);
+                                } elseif (! empty($clientIdsToExclude)) {
+                                    $clientQuery->whereNotIn('clients.id', $clientIdsToExclude);
+                                }
+
                                 $clientQuery->whereHas('subscriptions', function ($subscriptionQuery) {
                                     $subscriptionQuery->whereIn('status', ['active', 'trial'])
                                         ->where(function ($q) {
@@ -105,6 +138,12 @@ class MedicalSpecialityController extends Controller
                                         'id' => $subscription->id,
                                         'status' => $subscription->status->value,
                                         'status_label' => $subscription->status->label(),
+                                        'client' => [
+                                            'id' => $subscription->client->id,
+                                            'name' => $subscription->client->name,
+                                            'email' => $subscription->client->email,
+                                            'whatsapp' => $subscription->client->whatsapp,
+                                        ],
                                         'package' => [
                                             'id' => $subscription->package->id,
                                             'name' => $subscription->package->name,

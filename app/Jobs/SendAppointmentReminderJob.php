@@ -5,13 +5,14 @@ namespace App\Jobs;
 use App\Models\Appointment;
 use App\Notifications\AppointmentReminderNotification;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SendAppointmentReminderJob implements ShouldQueue
+class SendAppointmentReminderJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,12 +21,25 @@ class SendAppointmentReminderJob implements ShouldQueue
     public $backoff = [60, 300, 600];
 
     /**
+     * The number of seconds the job's unique lock will be held (2 hours)
+     */
+    public int $uniqueFor = 7200;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(
         public Appointment $appointment
     ) {
         $this->onQueue('emails');
+    }
+
+    /**
+     * The unique ID of the job - prevents duplicate jobs in queue
+     */
+    public function uniqueId(): string
+    {
+        return 'appointment-reminder-'.$this->appointment->id;
     }
 
     /**
@@ -38,6 +52,16 @@ class SendAppointmentReminderJob implements ShouldQueue
             Log::info('Appointment reminder job cancelled - appointment no longer exists or not booked', [
                 'appointment_id' => $this->appointment->id,
                 'status' => $this->appointment->status ?? 'deleted',
+            ]);
+
+            return;
+        }
+
+        // Verify reminder hasn't already been sent (final safety check)
+        if ($this->appointment->reminder_sent_at) {
+            Log::info('Appointment reminder already sent, skipping duplicate execution', [
+                'appointment_id' => $this->appointment->id,
+                'reminder_sent_at' => $this->appointment->reminder_sent_at->format('Y-m-d H:i:s'),
             ]);
 
             return;
@@ -68,6 +92,10 @@ class SendAppointmentReminderJob implements ShouldQueue
         try {
             // Send the reminder notification
             $patient->notify(new AppointmentReminderNotification($this->appointment));
+
+            // Mark reminder as sent
+            $this->appointment->reminder_sent_at = now();
+            $this->appointment->saveQuietly();
 
             Log::info('Appointment reminder sent successfully', [
                 'appointment_id' => $this->appointment->id,

@@ -28,6 +28,7 @@ class Appointment extends BaseModel
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
         'consultation_type', 'virtual_room_id', 'virtual_room_url',
         'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata', 'source_creation',
+        'reminder_scheduled_at', 'reminder_sent_at',
     ];
 
     protected $casts = [
@@ -40,6 +41,8 @@ class Appointment extends BaseModel
         'virtual_session_ended_at' => 'datetime',
         'virtual_session_metadata' => 'array',
         'status' => AppointmentStatusEnum::class,
+        'reminder_scheduled_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -351,8 +354,32 @@ class Appointment extends BaseModel
             return false;
         }
 
+        // Skip if reminder already sent
+        if ($this->reminder_sent_at) {
+            \Log::info('Appointment reminder already sent, skipping duplicate', [
+                'appointment_id' => $this->id,
+                'reminder_sent_at' => $this->reminder_sent_at->format('Y-m-d H:i:s'),
+            ]);
+
+            return false;
+        }
+
+        // Skip if reminder already scheduled (prevents re-scheduling)
+        if ($this->reminder_scheduled_at) {
+            \Log::info('Appointment reminder already scheduled, skipping', [
+                'appointment_id' => $this->id,
+                'reminder_scheduled_at' => $this->reminder_scheduled_at->format('Y-m-d H:i:s'),
+            ]);
+
+            return false;
+        }
+
         // Schedule the reminder job to run 2 hours before the appointment
         $reminderTime = $this->start->copy()->subHours(2);
+
+        // Mark reminder as scheduled BEFORE dispatching
+        $this->reminder_scheduled_at = now();
+        $this->saveQuietly(); // Use saveQuietly to avoid triggering model events
 
         SendAppointmentReminderJob::dispatch($this)->delay($reminderTime);
 
@@ -432,5 +459,20 @@ class Appointment extends BaseModel
     public function scopePresencial($query)
     {
         return $query->where('consultation_type', 'presencial');
+    }
+
+    /**
+     * Clear reminder tracking when appointment is rescheduled
+     * Allows a new reminder to be scheduled for the new datetime
+     */
+    public function clearReminderTracking(): void
+    {
+        $this->reminder_scheduled_at = null;
+        $this->reminder_sent_at = null;
+        $this->saveQuietly();
+
+        \Log::info('Reminder tracking cleared for rescheduled appointment', [
+            'appointment_id' => $this->id,
+        ]);
     }
 }

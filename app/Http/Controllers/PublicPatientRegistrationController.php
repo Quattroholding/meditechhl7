@@ -6,8 +6,10 @@ use App\Http\Requests\PublicPatientRegistrationRequest;
 use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
 use App\Models\Country;
+use App\Models\InsuranceCompany;
 use App\Models\Patient;
 use App\Models\PatientClient;
+use App\Models\PatientInsurancePolicy;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +34,12 @@ class PublicPatientRegistrationController extends Controller
         // Obtener países para el selector
         $countries = Country::all();
 
-        return view('public.patient-register', compact('client', 'countries'));
+        // Obtener compañías de seguros activas del cliente
+        $insuranceCompanies = InsuranceCompany::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('public.patient-register', compact('client', 'countries', 'insuranceCompanies'));
     }
 
     /**
@@ -117,7 +124,37 @@ class PublicPatientRegistrationController extends Controller
                     'patient_id' => $patient->id,
                 ]);
 
-                // 6. Enviar email de bienvenida con credenciales
+                // 6. Crear póliza de seguro si se proporcionó información
+                if ($request->has_insurance && $request->insurance_company_id) {
+                    $insuranceData = [
+                        'patient_id' => $patient->id,
+                        'insurance_company_id' => $request->insurance_company_id,
+                        'policy_number' => $request->policy_number,
+                        'group_number' => $request->group_number,
+                        'relationship_to_subscriber' => $request->relationship_to_subscriber ?? 'self',
+                        'subscriber_name' => $request->relationship_to_subscriber === 'self'
+                            ? $patient->name
+                            : $request->subscriber_name,
+                        'priority' => 'primary',
+                        'is_active' => true,
+                        'effective_date' => now(),
+                    ];
+
+                    // Si el titular es el mismo paciente, vincular subscriber_patient_id
+                    if ($request->relationship_to_subscriber === 'self') {
+                        $insuranceData['subscriber_patient_id'] = $patient->id;
+                    }
+
+                    PatientInsurancePolicy::create($insuranceData);
+
+                    Log::info('Insurance policy created for patient', [
+                        'patient_id' => $patient->id,
+                        'insurance_company_id' => $request->insurance_company_id,
+                        'policy_number' => $request->policy_number,
+                    ]);
+                }
+
+                // 7. Enviar email de bienvenida con credenciales
                 $registrationData = [
                     'username' => $user->email,
                     'password' => $password,
@@ -140,7 +177,7 @@ class PublicPatientRegistrationController extends Controller
                     'email' => $user->email,
                 ]);
 
-                // 7. Redireccionar a success
+                // 8. Redireccionar a success
                 return redirect()->route('public.patient.register.success')
                     ->with('client_name', $client->name)
                     ->with('email', $user->email);
