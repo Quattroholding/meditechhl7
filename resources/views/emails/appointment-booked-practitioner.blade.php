@@ -62,9 +62,16 @@
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td style="padding-right: 10px;" width="50%">
+                    {{--}}
                     <x-email.button href="{{ $confirmUrl }}" type="success" icon="✅">
                         Confirmar Cita
                     </x-email.button>
+                    {{--}}
+                    @if($calendarUrl ?? false)
+                        <x-email.button href="{{ $calendarUrl }}" type="primary" icon="📅">
+                            Ver en Calendario
+                        </x-email.button>
+                    @endif
                 </td>
                 <td style="padding-left: 10px;" width="50%">
                     <x-email.button href="{{ $cancelUrl }}" type="danger" icon="❌">
@@ -75,12 +82,13 @@
         </table>
     </div>
 
-    {{-- Botón para ver en calendario --}}
+    {{-- Botón para ver en calendario
     @if($calendarUrl ?? false)
         <x-email.button href="{{ $calendarUrl }}" type="primary" icon="📅">
             Ver en Calendario
         </x-email.button>
     @endif
+     --}}
 
     {{-- Recordatorio importante --}}
     <x-email.message-box type="warning" title="⏰ Recordatorio Importante">

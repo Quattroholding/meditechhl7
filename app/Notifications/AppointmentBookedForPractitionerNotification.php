@@ -79,7 +79,7 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
                 'clinicName' => $clinicName,
                 'description' => $this->appointment->description,
                 'comment' => $this->appointment->comment,
-                'calendarUrl' => route('appointment.calendar'),
+                'calendarUrl' => env('APP_SAMI_URL').'/appointments/calendar', // route('appointment.calendar')
                 'confirmUrl' => $confirmUrl,
                 'cancelUrl' => $cancelUrl,
             ]);
