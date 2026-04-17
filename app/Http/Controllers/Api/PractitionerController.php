@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Practitioner;
 use App\Models\ServiceCatalog;
 use App\Models\UserWorkingHour;
+use App\Models\WhatsappAgent;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,10 +27,35 @@ class PractitionerController extends Controller
         $currentMonthStart = now()->startOfMonth();
         $currentMonthEnd = now()->endOfMonth();
 
+        // Get whatsapp_client_id from request attributes (set by WhatsappClientFilter middleware)
+        $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+
         \Log::info('PractitionerController - Start', [
             'speciality_id' => $request->speciality_id,
-            'whatsapp_client_id' => request()->attributes->get('whatsapp_client_id'),
+            'whatsapp_client_id' => $whatsappClientId,
         ]);
+
+        // Determine which client_ids to filter based on whatsapp agent type
+        $clientIdsToInclude = null;
+        $clientIdsToExclude = null;
+
+        if ($whatsappClientId) {
+            // Dedicated agent: only show practitioners from this specific client
+            $clientIdsToInclude = [$whatsappClientId];
+            \Log::info('PractitionerController - Dedicated agent', [
+                'client_id' => $whatsappClientId,
+            ]);
+        } else {
+            // Generic agent: show practitioners from all clients EXCEPT those with dedicated agents
+            $clientIdsToExclude = WhatsappAgent::where('active', true)
+                ->whereNotNull('client_id')
+                ->pluck('client_id')
+                ->toArray();
+
+            \Log::info('PractitionerController - Generic agent', [
+                'excluding_clients' => $clientIdsToExclude,
+            ]);
+        }
 
         // Optimized: Get user IDs that have active consulting rooms using subquery
         $userIdsWithConsultingRooms = \DB::table('users')
@@ -87,6 +113,23 @@ class PractitionerController extends Controller
             ->userActive()
             // Optimized: Use whereIn instead of nested whereHas
             ->whereIn('user_id', $userIdsWithConsultingRooms)
+            // Filter by whatsapp agent type (generic vs dedicated)
+            ->when($clientIdsToInclude, function ($query) use ($clientIdsToInclude) {
+                // Dedicated agent: only practitioners from this client
+                return $query->whereHas('user.clients', function ($q) use ($clientIdsToInclude) {
+                    $q->whereIn('clients.id', $clientIdsToInclude);
+                });
+            })
+            ->when($clientIdsToExclude, function ($query) use ($clientIdsToExclude) {
+                // Generic agent: practitioners from all clients EXCEPT those with dedicated agents
+                if (! empty($clientIdsToExclude)) {
+                    return $query->whereHas('user.clients', function ($q) use ($clientIdsToExclude) {
+                        $q->whereNotIn('clients.id', $clientIdsToExclude);
+                    });
+                }
+
+                return $query;
+            })
             ->orderBy('appointments_this_month', 'asc')
             ->paginate($perPage);
 
