@@ -228,6 +228,7 @@ class PatientController extends Controller
                 'gender' => $gender,
                 'active' => true,
                 'creation_source' => 'whatsapp',
+                'communication'=>'{"language": "es", "preferred": true}',
             ]);
 
             if ($patient->save()) {
