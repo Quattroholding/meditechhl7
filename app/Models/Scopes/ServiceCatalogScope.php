@@ -26,7 +26,7 @@ class ServiceCatalogScope implements Scope
                 or $user->hasRole('asistente medico')
                 or $user->hasRole('admin client')) {
 
-            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
+            $builder->whereIn('service_catalogs.client_id', $user->clients()->pluck('client_id'));
         }
     }
 }

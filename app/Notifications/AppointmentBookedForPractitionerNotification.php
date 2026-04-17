@@ -9,8 +9,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
 
-class AppointmentProposedNotification extends Notification implements ShouldQueue
+class AppointmentBookedForPractitionerNotification extends Notification implements ShouldQueue
 {
     use Queueable, ValidatesEmailChannel;
 
@@ -43,25 +44,41 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
     public function toMail($notifiable)
     {
         $patient = $this->appointment->patient;
-        $requestedDate = $this->appointment->original_requested_datetime;
+        $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
+        // Generate signed URLs for confirm and cancel actions
+        $confirmUrl = URL::temporarySignedRoute(
+            'appointments.confirm',
+            now()->addDays(7),
+            ['appointment' => $this->appointment->id]
+        );
+
+        $cancelUrl = URL::temporarySignedRoute(
+            'appointments.cancel',
+            now()->addDays(7),
+            ['appointment' => $this->appointment->id]
+        );
+
         return (new MailMessage)
-            ->subject('Nueva Solicitud de Cita Médica - '.$clinicName)
+            ->subject('Nueva Cita Médica Agendada - '.$clinicName)
             ->bcc('business@meditecpty.com')
-            ->view('emails.appointment-proposed', [
+            ->view('emails.appointment-booked-practitioner', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
-                'requestedDate' => $requestedDate->format('d/m/Y'),
-                'requestedTime' => $requestedDate->format('H:i'),
+                'appointmentDate' => $appointmentDate->format('d/m/Y'),
+                'appointmentTime' => $appointmentDate->format('H:i'),
                 'durationMinutes' => $this->appointment->minutes_duration,
                 'serviceType' => $this->appointment->service_type ?? 'Consulta',
+                'specialty' => $this->appointment->medicalSpeciality->name ?? 'Medicina General',
                 'branchName' => $this->appointment->consultingRoom->branch->name ?? 'N/A',
                 'consultingRoom' => $this->appointment->consultingRoom->name ?? 'N/A',
                 'clinicName' => $clinicName,
                 'description' => $this->appointment->description,
                 'comment' => $this->appointment->comment,
-                'reviewUrl' => url('/appointments?status=proposed'), // . $this->appointment->id
+                'calendarUrl' => route('appointment.calendar'),
+                'confirmUrl' => $confirmUrl,
+                'cancelUrl' => $cancelUrl,
             ]);
     }
 
@@ -74,30 +91,33 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
     {
         return [
             // Standard notification fields
-            'title' => 'Nueva Solicitud de Cita',
-            'message' => 'Nueva solicitud de cita de '.$this->appointment->patient->name,
+            'title' => 'Nueva Cita Médica Agendada',
+            'message' => 'Nueva cita agendada con '.$this->appointment->patient->name,
             'steps' => array_filter([
-                '📅 Fecha solicitada: '.$this->appointment->original_requested_datetime->format('d/m/Y H:i'),
+                '👤 Paciente: '.$this->appointment->patient->name,
+                '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
+                '🕐 Hora: '.$this->appointment->start->format('H:i'),
                 '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
                 $this->appointment->service_type ? '🩺 Tipo: '.$this->appointment->service_type : null,
                 $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
+                $this->appointment->consultingRoom->name ? '🚪 Consultorio: '.$this->appointment->consultingRoom->name : null,
                 $this->appointment->comment ? '💬 Comentario: '.$this->appointment->comment : null,
             ]),
             'action' => [
-                'text' => 'Revisar Solicitud',
-                'url' => url('/appointments?status=proposed'),
+                'text' => 'Ver en Calendario',
+                'url' => route('appointment.calendar'),
             ],
             'priority' => 'high',
-            'icon' => 'fas fa-calendar-plus',
+            'icon' => 'fas fa-calendar-check',
 
             // Legacy/specific fields (for backwards compatibility)
-            'type' => 'appointment_proposed',
+            'type' => 'appointment_booked_practitioner',
             'appointment_id' => $this->appointment->id,
             'patient_name' => $this->appointment->patient->name,
             'patient_id' => $this->appointment->patient->id,
-            'requested_datetime' => $this->appointment->original_requested_datetime->format('Y-m-d H:i:s'),
-            'requested_date' => $this->appointment->original_requested_datetime->format('Y-m-d'),
-            'requested_time' => $this->appointment->original_requested_datetime->format('H:i'),
+            'appointment_datetime' => $this->appointment->start->format('Y-m-d H:i:s'),
+            'appointment_date' => $this->appointment->start->format('Y-m-d'),
+            'appointment_time' => $this->appointment->start->format('H:i'),
             'duration_minutes' => $this->appointment->minutes_duration,
             'service_type' => $this->appointment->service_type,
             'clinic_name' => $this->appointment->client->name ?? null,
@@ -115,20 +135,24 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
     public function toWhatsApp(object $notifiable): string
     {
         $patient = $this->appointment->patient;
-        $requestedDate = $this->appointment->original_requested_datetime;
+        $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
-        $message = "📋 *Nueva Solicitud de Cita*\n\n";
+        $message = "✅ *Nueva Cita Médica Agendada*\n\n";
         $message .= "Hola Dr. {$notifiable->name},\n\n";
-        $message .= "Ha recibido una nueva solicitud de cita:\n\n";
+        $message .= "Se ha agendado una nueva cita médica:\n\n";
 
         $message .= "👤 *Paciente:* {$patient->name}\n";
-        $message .= "📅 *Fecha solicitada:* {$requestedDate->format('d/m/Y')}\n";
-        $message .= "🕐 *Hora solicitada:* {$requestedDate->format('H:i a')}\n";
+        $message .= "📅 *Fecha:* {$appointmentDate->format('d/m/Y')}\n";
+        $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
         $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
 
         if ($this->appointment->service_type) {
             $message .= "🩺 *Tipo de consulta:* {$this->appointment->service_type}\n";
+        }
+
+        if ($this->appointment->medicalSpeciality) {
+            $message .= "🏥 *Especialidad:* {$this->appointment->medicalSpeciality->name}\n";
         }
 
         $message .= "🏢 *Clínica:* {$clinicName}\n";
@@ -145,8 +169,8 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
             $message .= "\n💬 *Comentario del paciente:*\n{$this->appointment->comment}\n";
         }
 
-        $message .= "\n📱 Por favor revise la solicitud en el sistema para confirmar o proponer un nuevo horario.\n";
-        $message .= "\nGracias por su atención.";
+        $message .= "\n📱 Puede confirmar o gestionar la cita desde el sistema.\n";
+        $message .= "\n¡Que tenga un excelente día!";
 
         return $message;
     }
@@ -176,6 +200,6 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
         }
 
         // Log other errors as errors
-        \Log::error('Falló el envío de notificación de cita propuesta', $context);
+        \Log::error('Falló el envío de notificación de cita agendada al médico', $context);
     }
 }

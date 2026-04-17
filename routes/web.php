@@ -660,6 +660,12 @@ Route::prefix('appointment-action')->name('appointment.action.')->group(function
     Route::get('/{appointmentId}/cancel/{token}', [AppointmentActionController::class, 'cancel'])->name('cancel');
 });
 
+// Appointment Email Actions (Public routes with signed URL validation for practitioners)
+Route::prefix('appointments')->name('appointments.')->group(function () {
+    Route::get('/{appointment}/confirm', [AppointmentActionController::class, 'confirmSigned'])->name('confirm');
+    Route::get('/{appointment}/cancel', [AppointmentActionController::class, 'cancelSigned'])->name('cancel');
+});
+
 // Virtual Consultation Room - Public Patient Access (with token)
 Route::get('/join-consultation/{appointment}/{token}', function (Appointment $appointment, string $token) {
     // Verify appointment is virtual

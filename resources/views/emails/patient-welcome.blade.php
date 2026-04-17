@@ -304,12 +304,14 @@
                         <span><strong>{{__('patient.physical_address')}}:</strong> {{ $clinicInfo['address'] }}</span>
                     </div>
                 @endif
+                {{--}}
                 @if($clinicInfo['website'])
                     <div class="contact-item">
                         <span>🌐</span>
                         <span><strong>Web:</strong> <a href="{{ $clinicInfo['website'] }}" style="color: #1976d2;">{{ $clinicInfo['website'] }}</a></span>
                     </div>
                 @endif
+                {{--}}
             </div>
         </div>
 
@@ -327,7 +329,7 @@
             @endif
             {{--}}
             @if($clinicInfo['website'])
-                <a href="{{ $clinicInfo['website'] }}/login?username={{$registrationData['username']}}" class="btn" style="margin-left: 10px;">
+                <a href="{{ url('/login?username='.$registrationData['username']) }}" class="btn" style="margin-left: 10px;">
                     🌐 Visitar Sitio Web
                 </a>
             @endif
