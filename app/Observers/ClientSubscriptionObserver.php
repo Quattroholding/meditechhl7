@@ -74,8 +74,9 @@ class ClientSubscriptionObserver
                 }
 
                 // Clear cache tags if using Redis/Memcached
-                // If you're using file cache, this won't work and you'll need Cache::flush()
-                if (config('cache.default') !== 'file') {
+                // File and database drivers don't support tagging
+                $cacheDriver = config('cache.default');
+                if (in_array($cacheDriver, ['redis', 'memcached', 'array'])) {
                     Cache::tags(['practitioners', 'subscriptions'])->flush();
                 }
 

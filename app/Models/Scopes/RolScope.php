@@ -36,7 +36,7 @@ class RolScope implements Scope
             $client = DB::table('clients')
                 ->join('packages', 'clients.package_id', '=', 'packages.id')
                 ->where('clients.id', $clientId)
-                ->select('packages.max_users', 'packages.max_doctors_included')
+                ->select('packages.id as package_id', 'packages.max_users', 'packages.max_doctors_included')
                 ->first();
 
             if (! $client) {
@@ -52,11 +52,13 @@ class RolScope implements Scope
                 'asistente medico' => 6,
             ];
 
-            // Determinar si es paquete personalizado (permite múltiples usuarios del mismo rol)
-            $isCustomPackage = $client->max_doctors_included > 1;
+            // Determinar si es paquete empresarial (permite múltiples usuarios del mismo rol)
+            // Paquetes 1-3 (Básico, Estándar, Premium): un usuario por rol
+            // Paquetes 4+ (Empresarial, Hospital): múltiples usuarios del mismo rol
+            $isEnterprisePackage = $client->package_id >= 4;
 
-            if ($isCustomPackage) {
-                // PAQUETE PERSONALIZADO: Validar límites de doctores y total de usuarios
+            if ($isEnterprisePackage) {
+                // PAQUETE EMPRESARIAL: Validar límites de doctores y total de usuarios
 
                 // Contar doctores actuales
                 $currentDoctors = DB::table('users')

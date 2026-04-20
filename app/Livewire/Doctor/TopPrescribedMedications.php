@@ -3,6 +3,7 @@
 namespace App\Livewire\Doctor;
 
 use App\Models\MedicationRequest;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -38,8 +39,20 @@ class TopPrescribedMedications extends Component
         $practitionerId = auth()->user()->practitioner->id;
         $days = (int) $this->timeFrame;
 
+        // Cache key único por practitioner y timeframe
+        $cacheKey = "top_medications_practitioner_{$practitionerId}_days_{$days}";
+
+        // Cache por 10 minutos - query muy pesado
+        $this->topMedications = Cache::tags(['doctor_dashboard', 'medications', 'practitioner_'.$practitionerId])
+            ->remember($cacheKey, 600, function () use ($practitionerId, $days) {
+                return $this->fetchTopMedications($practitionerId, $days);
+            });
+    }
+
+    private function fetchTopMedications($practitionerId, $days)
+    {
         // Obtener los medicamentos más prescritos por el doctor
-        $this->topMedications = MedicationRequest::query()
+        $medications = MedicationRequest::query()
             ->select([
                 'medications.id as medication_id',
                 'medications.generic_name as generic_name1',
@@ -135,8 +148,9 @@ class TopPrescribedMedications extends Component
             });
 
         // Calcular porcentajes
-        $totalCount = $this->topMedications->sum('prescription_count');
-        $this->topMedications = $this->topMedications->map(function ($medication) use ($totalCount) {
+        $totalCount = $medications->sum('prescription_count');
+
+        return $medications->map(function ($medication) use ($totalCount) {
             $medication['percentage'] = $totalCount > 0 ? round(($medication['prescription_count'] / $totalCount) * 100, 1) : 0;
 
             return $medication;

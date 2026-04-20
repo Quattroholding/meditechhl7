@@ -4,6 +4,7 @@ namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class MonthlyAppointments extends Component
@@ -52,19 +53,30 @@ class MonthlyAppointments extends Component
         // CLIENTES ASOCIADOS AL PRACTITIONER
         $this->userclient = auth()->user()->clients->pluck('id')->toArray();
 
-        // QUERY PARA MOSTRAR CITAS REGISTRADAS EN EL MES ACTUAL
-        $this->appointments = Appointment::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->whereNull('deleted_at')
-            ->whereIn('client_id', $this->userclient)
-            ->count();
+        // Cache por 5 minutos con key única por usuario y mes
+        $cacheKey = 'doctor_monthly_appointments_'.auth()->id().'_'.Carbon::now()->format('Y-m');
 
-        // QUERY PARA MOSTRAR CITAS REGISTRADAS EL MES ANTERIOR
-        $lastMonthAppointments = Appointment::whereMonth('created_at', $lastMonth)
-            ->whereYear('created_at', $lastYear)
-            ->whereNull('deleted_at')
-            ->whereIn('client_id', $this->userclient)
-            ->count();
+        $data = Cache::tags(['doctor_dashboard', 'appointments'])->remember($cacheKey, 300, function () use ($currentMonth, $currentYear, $lastMonth, $lastYear) {
+            $currentCount = Appointment::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->whereNull('deleted_at')
+                ->whereIn('client_id', $this->userclient)
+                ->count();
+
+            $lastMonthCount = Appointment::whereMonth('created_at', $lastMonth)
+                ->whereYear('created_at', $lastYear)
+                ->whereNull('deleted_at')
+                ->whereIn('client_id', $this->userclient)
+                ->count();
+
+            return [
+                'current' => $currentCount,
+                'lastMonth' => $lastMonthCount,
+            ];
+        });
+
+        $this->appointments = $data['current'];
+        $lastMonthAppointments = $data['lastMonth'];
 
         // PORCENTAJE QUE COMPARA LA CANTIDAD DE CITAS REGISTRADAS EL MES PASADO CON EL DE EL MES ACTUAL
         if ($lastMonthAppointments > 0) {

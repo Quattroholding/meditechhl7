@@ -8,10 +8,19 @@ use App\Models\SurveyResponse;
 use App\Notifications\EncounterPrescriptionNotification;
 use App\Notifications\SendPatientSatisfactionSurvey;
 use App\Services\EncounterPrescriptionPdfService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class EncounterObserver
 {
+    /**
+     * Handle the Encounter "created" event.
+     */
+    public function created(Encounter $encounter): void
+    {
+        $this->clearDashboardCache();
+    }
+
     /**
      * Handle the Encounter "updated" event.
      */
@@ -22,6 +31,15 @@ class EncounterObserver
         }
 
         $this->sendPrescriptionNotification($encounter);
+        $this->clearDashboardCache();
+    }
+
+    /**
+     * Handle the Encounter "deleted" event.
+     */
+    public function deleted(Encounter $encounter): void
+    {
+        $this->clearDashboardCache();
     }
 
     /**
@@ -181,5 +199,13 @@ class EncounterObserver
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+    }
+
+    /**
+     * Clear dashboard cache for encounters
+     */
+    private function clearDashboardCache(): void
+    {
+        Cache::tags(['dashboard', 'encounters'])->flush();
     }
 }

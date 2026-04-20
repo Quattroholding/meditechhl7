@@ -228,6 +228,7 @@ class PatientController extends Controller
                 'gender' => $gender,
                 'active' => true,
                 'creation_source' => 'whatsapp',
+                'communication'=>'{"language": "es", "preferred": true}',
             ]);
 
             if ($patient->save()) {
@@ -370,7 +371,7 @@ class PatientController extends Controller
                     'password' => $password,
                 ];
                 if ($request->has('email') && ! config('mail.testing_mode')) {
-                    Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                    Mail::to($request->email)->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 } else {
                     Mail::to(config('mail.testing_patient_email'))->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 }

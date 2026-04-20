@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AppointmentStatusEnum;
 use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Scopes\AppointmentScope;
+use App\Notifications\AppointmentBookedForPractitionerNotification;
 use App\Notifications\AppointmentBookedNotification;
 use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
@@ -283,6 +284,14 @@ class Appointment extends BaseModel
     {
         $this->practitioner->notify(
             new AppointmentProposedNotification($this)
+        );
+    }
+
+    // Notificación al practitioner sobre cita agendada
+    public function notifyPractitionerAboutBooking()
+    {
+        $this->practitioner->notify(
+            new AppointmentBookedForPractitionerNotification($this)
         );
     }
 

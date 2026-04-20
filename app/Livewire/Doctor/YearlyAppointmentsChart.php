@@ -4,6 +4,7 @@ namespace App\Livewire\Doctor;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -39,7 +40,20 @@ class YearlyAppointmentsChart extends Component
     {
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->month;
+        $userId = auth()->id();
 
+        // Cache key único por usuario y mes actual
+        $cacheKey = "yearly_appointments_user_{$userId}_year_{$currentYear}_month_{$currentMonth}";
+
+        // Cache por 15 minutos
+        $this->chartData = Cache::tags(['doctor_dashboard', 'appointments', 'charts'])
+            ->remember($cacheKey, 900, function () use ($currentYear, $currentMonth) {
+                return $this->fetchYearlyAppointments($currentYear, $currentMonth);
+            });
+    }
+
+    private function fetchYearlyAppointments($currentYear, $currentMonth)
+    {
         // Inicializar categorías (meses hasta el mes actual)
         $categories = [];
         for ($month = 1; $month <= $currentMonth; $month++) {
@@ -91,7 +105,7 @@ class YearlyAppointmentsChart extends Component
             ];
         }
 
-        $this->chartData = [
+        return [
             'categories' => $categories,
             'series' => $series,
         ];

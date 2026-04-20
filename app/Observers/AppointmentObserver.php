@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Appointment;
 use App\Models\AppointmentStatus;
+use Illuminate\Support\Facades\Cache;
 
 class AppointmentObserver
 {
@@ -21,6 +22,9 @@ class AppointmentObserver
             'status' => $appointment->status,
             'user_id' => $user_id, // Asume que estás usando autenticación
         ]);
+
+        // Invalidar cache de dashboards
+        $this->clearDashboardCache($appointment);
     }
 
     /**
@@ -44,5 +48,29 @@ class AppointmentObserver
                 'user_id' => $user_id, // Asume que estás usando autenticación
             ]);
         }
+
+        // Invalidar cache si cambió algo relevante
+        $this->clearDashboardCache($appointment);
+    }
+
+    /**
+     * Handle the Appointment "deleted" event.
+     */
+    public function deleted(Appointment $appointment): void
+    {
+        // Invalidar cache cuando se elimina una cita
+        $this->clearDashboardCache($appointment);
+    }
+
+    /**
+     * Clear dashboard cache for appointments
+     */
+    private function clearDashboardCache(Appointment $appointment): void
+    {
+        // Limpiar cache tags de appointments
+        Cache::tags(['dashboard', 'appointments'])->flush();
+        Cache::tags(['doctor_dashboard', 'appointments'])->flush();
+        Cache::tags(['doctor_dashboard', 'effectiveness'])->flush(); // Consultation effectiveness
+        Cache::tags(['doctor_dashboard', 'charts'])->flush(); // Yearly charts
     }
 }

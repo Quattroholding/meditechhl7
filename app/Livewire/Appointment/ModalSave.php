@@ -543,8 +543,10 @@ class ModalSave extends Component
                 } elseif ($this->status === 'booked') {
                     // Si la cita se crea directamente como confirmada, enviar notificaciones
                     $app->addPatientToPractitionerClient();
-                    // Notificación inmediata de confirmación
+                    // Notificación al paciente
                     $app->notifyPatientAboutBooking();
+                    // Notificación al médico con botones de acción
+                    $app->notifyPractitionerAboutBooking();
                     // Programar recordatorio para 2 horas antes
                     $app->notifyPatientAboutAppointment();
                 }

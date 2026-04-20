@@ -18,6 +18,7 @@
                         <livewire:doctor.profile-about practitioner_id="{{$data->id}}"/>
                         <livewire:doctor.profile-details practitioner_id="{{$data->id}}"/>
                     </div>
+                    @if(auth()->user()->hasAnyRole(['admin','doctor']))
                     <div class="row mt-4">
                         <div class="col-12 col-lg-7">
                             <livewire:doctor.signature-manager practitioner_id="{{$data->id}}"/>
@@ -26,6 +27,7 @@
                             <x-referral-code-display :client="$data->user->getCurrentClient()" />
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
