@@ -25,7 +25,7 @@ class CanManageSubscription
 
         // Verificar que el usuario pueda gestionar suscripciones
         if (! auth()->user()->canPaySubscription()) {
-            abort(403, 'No tienes permiso para acceder a la gestión de suscripciones.');
+            abort(403, 'No tienes permiso para acceder a esta sección.');
         }
 
         return $next($request);

@@ -301,7 +301,7 @@ Route::group(['prefix' => 'clients', 'middleware' => ['auth', 'verified', 'first
 
     Route::get('/', [ClientController::class, 'index'])->middleware('permission:clients.view')->name('client.index');
 
-    Route::get('/referral_code', [ClientController::class, 'getReferralCode'])->name('client.referral_code');
+    Route::get('/referral_code', [ClientController::class, 'getReferralCode'])->middleware('can.manage.subscription')->name('client.referral_code');
 
     Route::get('/create', [ClientController::class, 'create'])->middleware('permission:clients.create')->name('client.create');
 
@@ -450,10 +450,10 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     Route::get('/invoice-template', [SettingController::class, 'invoiceTemplate'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template');
     Route::get('/invoice-template/preview/{template}', [SettingController::class, 'invoiceTemplatePreview'])->middleware('permission:settings.invoice_template')->name('setting.invoice_template.preview');
 
-    Route::get('/medical-leave-template', [SettingController::class, 'medicalLeaveTemplate'])->name('setting.medical_leave_template');
+    Route::get('/medical-leave-template', [SettingController::class, 'medicalLeaveTemplate'])->middleware('can.manage.subscription')->name('setting.medical_leave_template');
     Route::get('/medical-leave-template/preview/{template}', [SettingController::class, 'medicalLeaveTemplatePreview'])->name('setting.medical_leave_template.preview');
 
-    Route::get('/prescription-template', [SettingController::class, 'prescriptionTemplate'])->name('setting.prescription_template');
+    Route::get('/prescription-template', [SettingController::class, 'prescriptionTemplate'])->middleware('can.manage.subscription')->name('setting.prescription_template');
     Route::get('/prescription-template/preview/{template}', [SettingController::class, 'prescriptionTemplatePreview'])->name('setting.prescription_template.preview');
 
 });

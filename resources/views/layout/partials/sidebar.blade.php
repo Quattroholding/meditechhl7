@@ -229,7 +229,9 @@
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
                         @endcan
+                        @if(auth()->user()->canPaySubscription())
                             <li><a class="{{ Request::is('client/referral_code/') ? 'active' : '' }}"   href="{{ route('client.referral_code') }}">{{ __('Código de referidos') }}</a></li>
+                        @endif
                     </ul>
                 </li>
                 @endcanany

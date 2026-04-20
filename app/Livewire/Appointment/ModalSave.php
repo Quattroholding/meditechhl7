@@ -177,6 +177,11 @@ class ModalSave extends Component
                     $q->where('medical_speciality_id', $this->medical_speciality_id);
                 });
             })
+                ->whereHas('user', function ($q) {
+                    $q->whereHas('roles', function ($q) {
+                        $q->where('name', 'doctor');
+                    });
+                })
                 ->withActiveSubscription()
                 ->get()
                 ->pluck('name', 'id')
@@ -620,7 +625,13 @@ class ModalSave extends Component
 
             $this->practitioners = Practitioner::whereHas('qualifications', function ($q) {
                 $q->where('medical_speciality_id', $this->appointment->medical_speciality_id);
-            })->get()->pluck('name', 'id')->toArray();
+            })
+                ->whereHas('user', function ($q) {
+                    $q->whereHas('roles', function ($q) {
+                        $q->where('name', 'doctor');
+                    });
+                })
+                ->get()->pluck('name', 'id')->toArray();
 
             $this->editingAppointment = $appointment_id;
             $this->modalTitle = 'Editar Cita';
