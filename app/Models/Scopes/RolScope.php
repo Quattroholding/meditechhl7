@@ -22,7 +22,76 @@ class RolScope implements Scope
 
         // Caso DOCTOR
         if ($user->hasRole('doctor') && $user->practitioner) {
-            $builder->whereIn('id', [3, 6]);
+            $clientId = $user->default_client_id;
+
+            // Obtener el paquete del cliente
+            $client = DB::table('clients')
+                ->join('packages', 'clients.package_id', '=', 'packages.id')
+                ->where('clients.id', $clientId)
+                ->select('packages.id as package_id', 'packages.max_users', 'packages.max_doctors_included')
+                ->first();
+
+            if (! $client) {
+                $builder->whereIn('id', []);
+
+                return;
+            }
+
+            // Roles que el doctor puede crear
+            $allowedRoles = [
+                'recepcionista' => 3,
+                'asistente medico' => 6,
+            ];
+
+            // Determinar si es paquete empresarial
+            $isEnterprisePackage = $client->package_id >= 4;
+
+            if ($isEnterprisePackage) {
+                // PAQUETE EMPRESARIAL: Validar límite total de usuarios
+                $totalUsers = DB::table('users')
+                    ->where('default_client_id', $clientId)
+                    ->where('active', true)
+                    ->count();
+
+                $availableRoles = [];
+
+                // Permitir crear roles si no se ha alcanzado el límite total de usuarios
+                if ($totalUsers < $client->max_users) {
+                    $availableRoles = [3, 6]; // recepcionista y asistente medico
+                }
+
+                if (empty($availableRoles)) {
+                    $builder->whereIn('id', []);
+
+                    return;
+                }
+
+                $builder->whereIn('id', $availableRoles);
+            } else {
+                // PAQUETE ESTÁNDAR/PREMIUM: Un usuario por rol
+                // Buscar roles que ya tienen UN usuario creado para ese cliente
+                $existingRoles = DB::table('users')
+                    ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                    ->where('users.default_client_id', $clientId)
+                    ->where('active', true)
+                    ->whereIn('roles.id', array_values($allowedRoles))
+                    ->pluck('roles.id')
+                    ->toArray();
+
+                // Filtrar roles que no existen aún
+                $availableRoles = array_diff(array_values($allowedRoles), $existingRoles);
+
+                // Si no queda ningún rol disponible, devolvemos vacío
+                if (empty($availableRoles)) {
+                    $builder->whereIn('id', []);
+
+                    return;
+                }
+
+                // Mostrar solo roles disponibles
+                $builder->whereIn('id', $availableRoles);
+            }
 
             return;
         }

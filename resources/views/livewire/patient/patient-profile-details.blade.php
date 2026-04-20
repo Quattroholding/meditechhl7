@@ -64,8 +64,8 @@
                             <div class="col-12 col-md-6 col-xl-4">
                                 <!-- EMAIL -->
                                 <div class="input-block local-forms">
-                                    <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true"/>
-                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$patient->email"/>
+                                    <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true" />
+                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$patient->email" readonly/>
                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
                             </div>

@@ -3,6 +3,7 @@
 namespace App\Livewire\Appointment;
 
 use App\Enums\AppointmentCancelledReason;
+use App\Events\AppointmentCheckedIn;
 use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
@@ -298,12 +299,20 @@ class Calendar extends Component
                 }
 
                 if ($newStatus == 'checked-in') {
-                    $this->dispatch('showToastrAppointment',
-                        type: 'success',
-                        message: '¡Espere por favor en unos segundos empezara su consulta!',
-                        appointment_id : $appointmentId,
-                        reditect_to_encounter: true,
-                    );
+
+                    if(auth()->user()->hasAnyRole(['admin', 'doctor']) or
+                        (auth()->user()->practitioner && $appointment->practitioner_id == auth()->user()->practitioner()->user_id)){
+
+                        $this->dispatch('showToastrAppointment',
+                            type: 'success',
+                            message: '¡Espere por favor en unos segundos empezara su consulta!',
+                            appointment_id : $appointmentId,
+                            reditect_to_encounter: true,
+                        );
+
+                    }else{
+                        broadcast(new AppointmentCheckedIn($appointment));
+                    }
                 }
             }
         } catch (\Exception $e) {

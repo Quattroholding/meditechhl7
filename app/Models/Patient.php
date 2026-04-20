@@ -275,7 +275,7 @@ class Patient extends BaseModel
             $path = url('storage/'.$this->avatar()->path);
         }
 
-        if (auth()->user() && auth()->user()->hasRole('doctor')) {
+        if (auth()->user() && auth()->user()->can('patients.medical_history')) {
             $title = 'Ver historial medico';
             $route = route('patient.medical_history', $this->id);
         }

@@ -1,18 +1,44 @@
 <div>
     @if($currentReminder)
     @php
-        $stepMap = [
-            'subscription' => 1,
-            'branch' => 2,
-            'consulting_room' => 3,
-            'patient' => 4,
-            'service_catalog' => 5,
-            'working_hours' => 6,
-            'signature_and_seal' => 7,
-            'rapid_access' => 8,
-        ];
-        $currentStep = $stepMap[$currentReminder] ?? 8;
-        $totalSteps = 8;
+        // Determinar pasos según el rol del usuario
+        $isDoctor = auth()->user()->hasRole('doctor');
+        $isAdminClient = auth()->user()->hasRole('admin client');
+
+        if ($isAdminClient) {
+            // Admin client: solo 4 pasos
+            $stepMap = [
+                'subscription' => 1,
+                'branch' => 2,
+                'consulting_room' => 3,
+                'patient' => 4,
+            ];
+            $totalSteps = 4;
+        } elseif ($isDoctor) {
+            // Doctor: todos los 8 pasos
+            $stepMap = [
+                'subscription' => 1,
+                'branch' => 2,
+                'consulting_room' => 3,
+                'patient' => 4,
+                'service_catalog' => 5,
+                'working_hours' => 6,
+                'signature_and_seal' => 7,
+                'rapid_access' => 8,
+            ];
+            $totalSteps = 8;
+        } else {
+            // Otros roles: usar configuración por defecto
+            $stepMap = [
+                'subscription' => 1,
+                'branch' => 2,
+                'consulting_room' => 3,
+                'patient' => 4,
+            ];
+            $totalSteps = 4;
+        }
+
+        $currentStep = $stepMap[$currentReminder] ?? $totalSteps;
         $progress = ($currentStep / $totalSteps) * 100;
     @endphp
     <div style="position: fixed !important; bottom: 24px !important; right: 24px !important; z-index: 99999 !important; pointer-events: auto !important;">

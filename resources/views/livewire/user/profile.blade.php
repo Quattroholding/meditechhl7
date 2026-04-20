@@ -77,7 +77,7 @@
 
                                 <div class="input-block local-forms">
                                     <x-input-label for="email" :value="__('user.email')" required/>
-                                    <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $data->email)" required autocomplete="username" />
+                                    <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $data->email)" readonly required autocomplete="username" />
                                     <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
                                     @if ($data instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $data->hasVerifiedEmail())
