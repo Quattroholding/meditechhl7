@@ -5,6 +5,7 @@ namespace App\Livewire\Doctor;
 use App\Models\Appointment;
 use App\Models\AppointmentStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class ConsultationEffectiveness extends Component
@@ -59,9 +60,29 @@ class ConsultationEffectiveness extends Component
 
     public function loadEffectivenessData()
     {
-
         $days = (int) $this->timeFrame;
+        $userId = auth()->id();
 
+        // Cache key único por usuario y timeframe
+        $cacheKey = "consultation_effectiveness_user_{$userId}_days_{$days}";
+
+        // Cache por 10 minutos - procesamiento MUY pesado
+        $data = Cache::tags(['doctor_dashboard', 'effectiveness', 'appointments'])
+            ->remember($cacheKey, 600, function () use ($days) {
+                return $this->fetchEffectivenessData($days);
+            });
+
+        // Asignar datos desde cache
+        $this->totalAppointments = $data['totalAppointments'];
+        $this->effectivenessData = $data['effectivenessData'];
+        $this->averageCompletionTime = $data['averageCompletionTime'];
+        $this->statusCounts = $data['statusCounts'];
+        $this->dropoffPoints = $data['dropoffPoints'];
+        $this->conversionRate = $data['conversionRate'];
+    }
+
+    private function fetchEffectivenessData($days)
+    {
         // Obtener citas del período seleccionado
         $appointments = Appointment::query()
             ->when($days > 0, function ($query) use ($days) {
@@ -69,12 +90,17 @@ class ConsultationEffectiveness extends Component
             })
             ->get();
 
-        $this->totalAppointments = $appointments->count();
+        $totalAppointments = $appointments->count();
 
-        if ($this->totalAppointments == 0) {
-            $this->resetData();
-
-            return;
+        if ($totalAppointments == 0) {
+            return [
+                'totalAppointments' => 0,
+                'effectivenessData' => [],
+                'averageCompletionTime' => 0,
+                'statusCounts' => [],
+                'dropoffPoints' => [],
+                'conversionRate' => 0,
+            ];
         }
 
         // Obtener historial de estados para estas citas
@@ -86,16 +112,26 @@ class ConsultationEffectiveness extends Component
             ->get()
             ->groupBy('appointment_id');
 
-        $this->calculateEffectivenessMetrics($statusHistory);
-        $this->calculateStatusCounts($statusHistory);
-        $this->calculateDropoffPoints($statusHistory);
-        $this->calculateConversionRate($statusHistory);
+        // Calcular todas las métricas
+        $effectivenessData = $this->computeEffectivenessMetrics($statusHistory);
+        $statusCounts = $this->computeStatusCounts($statusHistory);
+        $dropoffPoints = $this->computeDropoffPoints($statusHistory, $totalAppointments);
+        $conversionRate = $this->computeConversionRate($statusHistory, $totalAppointments);
+
+        return [
+            'totalAppointments' => $totalAppointments,
+            'effectivenessData' => $effectivenessData['data'],
+            'averageCompletionTime' => $effectivenessData['avgTime'],
+            'statusCounts' => $statusCounts,
+            'dropoffPoints' => $dropoffPoints,
+            'conversionRate' => $conversionRate,
+        ];
     }
 
-    private function calculateEffectivenessMetrics($statusHistory)
+    private function computeEffectivenessMetrics($statusHistory)
     {
         $completionTimes = [];
-        $this->effectivenessData = [
+        $effectivenessData = [
             'booked_to_arrived' => 0,
             'arrived_to_checked_in' => 0,
             'checked_in_to_fulfilled' => 0,
@@ -107,28 +143,28 @@ class ConsultationEffectiveness extends Component
 
             // Calcular tiempo entre estados
             if (isset($statusesByStatus['booked']) && isset($statusesByStatus['arrived'])) {
-                $this->effectivenessData['booked_to_arrived']++;
+                $effectivenessData['booked_to_arrived']++;
                 $diff = Carbon::parse($statusesByStatus['arrived']->created_at)
                     ->diffInMinutes(Carbon::parse($statusesByStatus['booked']->created_at));
                 $completionTimes['booked_to_arrived'][] = $diff;
             }
 
             if (isset($statusesByStatus['arrived']) && isset($statusesByStatus['checked-in'])) {
-                $this->effectivenessData['arrived_to_checked_in']++;
+                $effectivenessData['arrived_to_checked_in']++;
                 $diff = Carbon::parse($statusesByStatus['checked-in']->created_at)
                     ->diffInMinutes(Carbon::parse($statusesByStatus['arrived']->created_at));
                 $completionTimes['arrived_to_checked_in'][] = $diff;
             }
 
             if (isset($statusesByStatus['checked-in']) && isset($statusesByStatus['fulfilled'])) {
-                $this->effectivenessData['checked_in_to_fulfilled']++;
+                $effectivenessData['checked_in_to_fulfilled']++;
                 $diff = Carbon::parse($statusesByStatus['fulfilled']->created_at)
                     ->diffInMinutes(Carbon::parse($statusesByStatus['checked-in']->created_at));
                 $completionTimes['checked_in_to_fulfilled'][] = $diff;
             }
 
             if (isset($statusesByStatus['booked']) && isset($statusesByStatus['fulfilled'])) {
-                $this->effectivenessData['booked_to_fulfilled']++;
+                $effectivenessData['booked_to_fulfilled']++;
                 $diff = Carbon::parse($statusesByStatus['fulfilled']->created_at)
                     ->diffInMinutes(Carbon::parse($statusesByStatus['booked']->created_at));
                 $completionTimes['booked_to_fulfilled'][] = $diff;
@@ -136,14 +172,17 @@ class ConsultationEffectiveness extends Component
         }
 
         // Calcular tiempo promedio de completación total
+        $avgTime = 0;
         if (isset($completionTimes['booked_to_fulfilled']) && count($completionTimes['booked_to_fulfilled']) > 0) {
-            $this->averageCompletionTime = round(array_sum($completionTimes['booked_to_fulfilled']) / count($completionTimes['booked_to_fulfilled']));
+            $avgTime = round(array_sum($completionTimes['booked_to_fulfilled']) / count($completionTimes['booked_to_fulfilled']));
         }
+
+        return ['data' => $effectivenessData, 'avgTime' => $avgTime];
     }
 
-    private function calculateStatusCounts($statusHistory)
+    private function computeStatusCounts($statusHistory)
     {
-        $this->statusCounts = [
+        $statusCounts = [
             'booked' => 0,
             'arrived' => 0,
             'checked-in' => 0,
@@ -156,15 +195,17 @@ class ConsultationEffectiveness extends Component
             // Contar cuántas citas llegaron a cada estado
             foreach ($this->expectedStatusFlow as $status => $order) {
                 if ($this->getStatusOrder($maxStatus) >= $order) {
-                    $this->statusCounts[$status]++;
+                    $statusCounts[$status]++;
                 }
             }
         }
+
+        return $statusCounts;
     }
 
-    private function calculateDropoffPoints($statusHistory)
+    private function computeDropoffPoints($statusHistory, $totalAppointments)
     {
-        $this->dropoffPoints = [];
+        $dropoffPoints = [];
         $transitions = [
             'booked_to_arrived' => 0,
             'arrived_to_checked_in' => 0,
@@ -187,14 +228,16 @@ class ConsultationEffectiveness extends Component
         }
 
         foreach ($transitions as $transition => $dropoffs) {
-            $this->dropoffPoints[$transition] = [
+            $dropoffPoints[$transition] = [
                 'count' => $dropoffs,
-                'percentage' => $this->totalAppointments > 0 ? round(($dropoffs / $this->totalAppointments) * 100, 1) : 0,
+                'percentage' => $totalAppointments > 0 ? round(($dropoffs / $totalAppointments) * 100, 1) : 0,
             ];
         }
+
+        return $dropoffPoints;
     }
 
-    private function calculateConversionRate($statusHistory)
+    private function computeConversionRate($statusHistory, $totalAppointments)
     {
         $fulfilledCount = 0;
 
@@ -204,8 +247,8 @@ class ConsultationEffectiveness extends Component
             }
         }
 
-        $this->conversionRate = $this->totalAppointments > 0 ?
-            round(($fulfilledCount / $this->totalAppointments) * 100, 1) : 0;
+        return $totalAppointments > 0 ?
+            round(($fulfilledCount / $totalAppointments) * 100, 1) : 0;
     }
 
     private function getStatusOrder($status)
