@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\PatientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -79,11 +78,6 @@ class PatientRelationship extends BaseModel
         'ECON' => 'Emergency Contact',
         'O' => 'Other',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new PatientScope);
-    }
 
     // Relationships
     public function patient(): BelongsTo

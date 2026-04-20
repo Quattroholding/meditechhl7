@@ -4,7 +4,7 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',['show_create'=>true])
+                    @component('components.table-header',['show_create'=>auth()->user()->can('medicines.create')])
                         @slot('title')
 
                         @endslot
@@ -96,12 +96,12 @@
                                         </span>
                                     </td>
                                     <td data-column="acciones" data-priority="1" data-label="Acciones" class="text-end">
-                                        @if(auth()->user()->can('medicines.edit'))
+                                        @if(auth()->user()->can('medicines.edit') && $medication->code_system === 'CUSTOM')
                                             <a href="{{ route('medicine.edit', $medication->id) }}" class="btn btn-success btn-sm" title="Editar">
                                                 <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endif
-                                        @if($medication->code_system === 'CUSTOM')
+                                        @if($medication->code_system === 'CUSTOM' and auth()->user()->can('medicines.delete'))
                                             <div class="btn-group btn-group-sm">
 
                                                 <a href="javascript:;" onclick="confirm('¿Estás seguro de eliminar este medicamento?') || event.stopImmediatePropagation()" wire:click="$dispatch('deleteMedication', { id: {{ $medication->id }} })" class="btn btn-danger btn-sm" title="Eliminar">

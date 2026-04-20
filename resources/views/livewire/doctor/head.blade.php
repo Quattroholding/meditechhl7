@@ -55,8 +55,9 @@
                 </div>
             </div>
             <div class="data-actions">
+                @if(auth()->user()->hasAnyRole(['admin','doctor']))
                 <livewire:practitioner.add-qualification :practitioner_id="$data->id"/>
-
+                @endif
             </div>
         </div>
     </div>

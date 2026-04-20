@@ -214,7 +214,7 @@ class PatientController extends Controller
         // dd($request->all());
         $validated = $request->validate([
             'identifier' => 'required',
-            'identifier_type' => 'required',
+            'id_type' => 'required',
             'given_name' => 'required',
             'family_name' => 'required',
             'gender' => 'required',
@@ -224,7 +224,7 @@ class PatientController extends Controller
             // 'billing_address' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            'blood_type' => 'required',
+            'blood_type' => 'nullable',
             'contact_name' => 'nullable|string|max:255',
             'contact_email' => 'nullable|email|max:255',
             'contact_phone' => 'nullable|string|max:255',
@@ -233,8 +233,8 @@ class PatientController extends Controller
         $model = Patient::findOrFail($id);
         $model->fill($request->except('birth_date', 'id_type', 'phone'));
         $model->name = $request->given_name.' '.$request->family_name;
-        $model->identifier_type = $request->identifier_type;
-        $model->phone = $request->full_phone;
+        $model->identifier_type = $request->id_type ?? $request->identifier_type;
+        $model->phone = $request->full_phone ?? $request->phone;
         $model->birth_date = substr($request->birth_date, 6, 4).'-'.substr($request->birth_date, 3, 2).'-'.substr($request->birth_date, 0, 2);
         $model->country_id = $request->country_id;
         $model->state_id = $request->state_id;

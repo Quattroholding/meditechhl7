@@ -91,7 +91,7 @@
                                                 <a href="{{ route('invoice.show', $invoice->id) }}" class="btn btn-info btn-sm" title="{{ __('invoice.view_details') }}">
                                                     <i class="far fa-eye me-2"></i>
                                                 </a>
-                                                @if($invoice->balance > 0)
+                                                @if($invoice->balance > 0 && auth()->user()->can('payments.create'))
                                                     <a href="javascript:;" wire:click="openPaymentModal({{ $invoice->id }})" class="btn btn-primary btn-sm" title="{{ __('Registrar Pago') }}">
                                                         <i class="fas fa-credit-card me-2"></i>
                                                     </a>

@@ -20,13 +20,10 @@ class ServiceCatalogScope implements Scope
             return;
         }
 
-        if ($user->hasRole('doctor')) {
-            $builder->where('practitioner_id', $user->practitioner->id);
-        } elseif ($user->hasRole('recepcionista')
-                or $user->hasRole('asistente medico')
-                or $user->hasRole('admin client')) {
-
-            $builder->whereIn('service_catalogs.client_id', $user->clients()->pluck('client_id'));
+        if ($user->hasRole('doctor') || $user->hasRole('asistente medico')) {
+            $builder->where('service_catalog.created_by', $user->id);
+        } elseif ($user->hasRole('recepcionista') || $user->hasRole('admin client')) {
+            $builder->whereIn('service_catalog.client_id', $user->clients()->pluck('client_id'));
         }
     }
 }
