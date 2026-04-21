@@ -56,10 +56,10 @@ class MedicationRequestObserver
     {
         if ($medicationRequest->practitioner_id) {
             // Clear cache específico del practitioner
-            CacheHelper::flush(['doctor_dashboard', 'medications', 'practitioner_'.$medicationRequest->practitioner_id]);
+            Cache::tags(['doctor_dashboard', 'medications', 'practitioner_'.$medicationRequest->practitioner_id])->flush();
         }
 
         // Clear general medications cache
-        CacheHelper::flush(['doctor_dashboard', 'medications']);
+        Cache::tags(['doctor_dashboard', 'medications'])->flush();
     }
 }

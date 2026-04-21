@@ -208,6 +208,6 @@ class EncounterObserver
      */
     private function clearDashboardCache(): void
     {
-        CacheHelper::flush(['dashboard', 'encounters']);
+        Cache::tags(['dashboard', 'encounters'])->flush();
     }
 }

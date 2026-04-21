@@ -54,8 +54,8 @@ class PatientObserver
      */
     private function clearDashboardCache(): void
     {
-        CacheHelper::flush(['dashboard', 'patients']);
-        CacheHelper::flush(['doctor_dashboard', 'patients']);
-        CacheHelper::flush(['doctor_dashboard', 'demographics']); // Age blocks
+        Cache::tags(['dashboard', 'patients'])->flush();
+        Cache::tags(['doctor_dashboard', 'patients'])->flush();
+        Cache::tags(['doctor_dashboard', 'demographics'])->flush(); // Age blocks
     }
 }
