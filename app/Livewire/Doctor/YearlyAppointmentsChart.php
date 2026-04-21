@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Doctor;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -46,8 +48,7 @@ class YearlyAppointmentsChart extends Component
         $cacheKey = "yearly_appointments_user_{$userId}_year_{$currentYear}_month_{$currentMonth}";
 
         // Cache por 15 minutos
-        $this->chartData = Cache::tags(['doctor_dashboard', 'appointments', 'charts'])
-            ->remember($cacheKey, 900, function () use ($currentYear, $currentMonth) {
+        $this->chartData = CacheHelper::remember(['doctor_dashboard', 'appointments', 'charts'], $cacheKey, 900, function () use ($currentYear, $currentMonth) {
                 return $this->fetchYearlyAppointments($currentYear, $currentMonth);
             });
     }

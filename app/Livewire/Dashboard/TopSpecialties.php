@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Helpers\CacheHelper;
+
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;

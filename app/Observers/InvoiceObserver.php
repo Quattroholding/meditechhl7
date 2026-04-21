@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Cache;
 
@@ -52,6 +54,6 @@ class InvoiceObserver
      */
     private function clearDashboardCache(): void
     {
-        Cache::tags(['dashboard', 'invoices'])->flush();
+        CacheHelper::flush(['dashboard', 'invoices']);
     }
 }

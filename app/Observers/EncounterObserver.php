@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
@@ -206,6 +208,6 @@ class EncounterObserver
      */
     private function clearDashboardCache(): void
     {
-        Cache::tags(['dashboard', 'encounters'])->flush();
+        CacheHelper::flush(['dashboard', 'encounters']);
     }
 }

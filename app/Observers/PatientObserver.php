@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Patient;
 use Illuminate\Support\Facades\Cache;
 
@@ -52,8 +54,8 @@ class PatientObserver
      */
     private function clearDashboardCache(): void
     {
-        Cache::tags(['dashboard', 'patients'])->flush();
-        Cache::tags(['doctor_dashboard', 'patients'])->flush();
-        Cache::tags(['doctor_dashboard', 'demographics'])->flush(); // Age blocks
+        CacheHelper::flush(['dashboard', 'patients']);
+        CacheHelper::flush(['doctor_dashboard', 'patients']);
+        CacheHelper::flush(['doctor_dashboard', 'demographics']); // Age blocks
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\MedicationRequest;
 use Illuminate\Support\Facades\Cache;
 
@@ -54,10 +56,10 @@ class MedicationRequestObserver
     {
         if ($medicationRequest->practitioner_id) {
             // Clear cache específico del practitioner
-            Cache::tags(['doctor_dashboard', 'medications', 'practitioner_'.$medicationRequest->practitioner_id])->flush();
+            CacheHelper::flush(['doctor_dashboard', 'medications', 'practitioner_'.$medicationRequest->practitioner_id]);
         }
 
         // Clear general medications cache
-        Cache::tags(['doctor_dashboard', 'medications'])->flush();
+        CacheHelper::flush(['doctor_dashboard', 'medications']);
     }
 }

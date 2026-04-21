@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Appointment;
 use App\Models\Encounter;
 use App\Models\Invoice;
@@ -62,7 +64,7 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $cacheKey = 'dashboard_appointments_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
 
-        $data = Cache::tags(['dashboard', 'appointments'])->remember($cacheKey, 300, function () use ($curr_month) {
+        $data = CacheHelper::remember(['dashboard', 'appointments'], $cacheKey, 300, function () use ($curr_month) {
             $count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
             $lastMonth = Appointment::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
@@ -98,7 +100,7 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $cacheKey = 'dashboard_patients_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
 
-        $data = Cache::tags(['dashboard', 'patients'])->remember($cacheKey, 300, function () use ($curr_month) {
+        $data = CacheHelper::remember(['dashboard', 'patients'], $cacheKey, 300, function () use ($curr_month) {
             $count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
             $lastMonth = Patient::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
@@ -134,7 +136,7 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $cacheKey = 'dashboard_encounters_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
 
-        $data = Cache::tags(['dashboard', 'encounters'])->remember($cacheKey, 300, function () use ($curr_month) {
+        $data = CacheHelper::remember(['dashboard', 'encounters'], $cacheKey, 300, function () use ($curr_month) {
             $count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
             $lastMonth = Encounter::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
@@ -171,7 +173,7 @@ class Counter extends Component
         $curr_month = Carbon::now();
         $cacheKey = 'dashboard_invoices_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
 
-        $data = Cache::tags(['dashboard', 'invoices'])->remember($cacheKey, 300, function () use ($curr_month) {
+        $data = CacheHelper::remember(['dashboard', 'invoices'], $cacheKey, 300, function () use ($curr_month) {
             $count = Invoice::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total_net');
             $lastMonth = Invoice::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total_net');
 
