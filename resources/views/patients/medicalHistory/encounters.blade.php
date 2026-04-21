@@ -136,11 +136,17 @@
     @endif
 </div>
 
+@push('scripts')
 <script>
-let historyDownloadId = null;
-let pollingInterval = null;
+// Asegurar que las variables sean globales
+if (typeof window.historyDownloadId === 'undefined') {
+    window.historyDownloadId = null;
+}
+if (typeof window.pollingInterval === 'undefined') {
+    window.pollingInterval = null;
+}
 
-async function requestFullHistory(patientId) {
+window.requestFullHistory = async function(patientId) {
     const btn = document.getElementById('downloadHistoryBtn');
     const btnText = document.getElementById('downloadHistoryText');
 
@@ -161,43 +167,43 @@ async function requestFullHistory(patientId) {
         const data = await response.json();
 
         if (data.success) {
-            historyDownloadId = data.history_download_id;
+            window.historyDownloadId = data.history_download_id;
             btnText.textContent = 'Generando... 0%';
-            startPolling();
-            showNotification('Generación iniciada. Te notificaremos cuando esté listo.', 'success');
+            window.startPolling();
+            window.showNotification('Generación iniciada. Te notificaremos cuando esté listo.', 'success');
         } else {
             throw new Error(data.message || 'Error al iniciar generación');
         }
     } catch (error) {
         console.error('Error:', error);
-        showNotification(error.message, 'error');
-        resetButton();
+        window.showNotification(error.message, 'error');
+        window.resetButton();
     }
 }
 
-function startPolling() {
-    pollingInterval = setInterval(checkStatus, 3000);
+window.startPolling = function() {
+    window.pollingInterval = setInterval(window.checkStatus, 3000);
 }
 
-function stopPolling() {
-    if (pollingInterval) {
-        clearInterval(pollingInterval);
-        pollingInterval = null;
+window.stopPolling = function() {
+    if (window.pollingInterval) {
+        clearInterval(window.pollingInterval);
+        window.pollingInterval = null;
     }
 }
 
-async function checkStatus() {
-    if (!historyDownloadId) return;
+window.checkStatus = async function() {
+    if (!window.historyDownloadId) return;
 
     try {
-        const response = await fetch(`/patient-history/${historyDownloadId}/status`);
+        const response = await fetch(`/patient-history/${window.historyDownloadId}/status`);
         const data = await response.json();
 
         if (data.success) {
             const btnText = document.getElementById('downloadHistoryText');
 
             if (data.status === 'completed') {
-                stopPolling();
+                window.stopPolling();
                 btnText.textContent = 'Listo - Haz clic para descargar';
                 const btn = document.getElementById('downloadHistoryBtn');
                 btn.style.background = '#10b981';
@@ -205,12 +211,12 @@ async function checkStatus() {
                 btn.style.cursor = 'pointer';
                 btn.disabled = false;
                 btn.onclick = () => window.location.href = data.download_url;
-                showNotification(`Historial listo (${data.total_encounters} consultas)`, 'success');
+                window.showNotification(`Historial listo (${data.total_encounters} consultas)`, 'success');
             } else if (data.status === 'failed') {
-                stopPolling();
+                window.stopPolling();
                 btnText.textContent = 'Error en generación';
-                showNotification(data.error_message || 'Error al generar historial', 'error');
-                setTimeout(resetButton, 3000);
+                window.showNotification(data.error_message || 'Error al generar historial', 'error');
+                setTimeout(window.resetButton, 3000);
             } else if (data.status === 'processing') {
                 btnText.textContent = `Generando... ${data.progress}% (${data.processed_encounters}/${data.total_encounters})`;
             }
@@ -220,7 +226,7 @@ async function checkStatus() {
     }
 }
 
-function resetButton() {
+window.resetButton = function() {
     const btn = document.getElementById('downloadHistoryBtn');
     const btnText = document.getElementById('downloadHistoryText');
 
@@ -229,13 +235,13 @@ function resetButton() {
     btn.style.cursor = 'pointer';
     btn.style.background = '#10b981';
     btnText.textContent = 'Descargar Historial Completo';
-    btn.onclick = () => requestFullHistory({{ $patient->id }});
+    btn.onclick = () => window.requestFullHistory({{ $patient->id }});
 
-    historyDownloadId = null;
-    stopPolling();
+    window.historyDownloadId = null;
+    window.stopPolling();
 }
 
-function showNotification(message, type = 'info') {
+window.showNotification = function(message, type = 'info') {
     const colors = {success: '#10b981', error: '#ef4444', info: '#3b82f6'};
     const notification = document.createElement('div');
     notification.style.cssText = `position:fixed;top:20px;right:20px;background:${colors[type]};color:white;padding:16px 24px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:9999;font-size:14px;max-width:400px;animation:slideIn 0.3s ease;`;
@@ -247,9 +253,14 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-const style = document.createElement('style');
-style.textContent = `@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}`;
-document.head.appendChild(style);
+// Solo agregar el estilo una vez
+if (!document.getElementById('notification-animations')) {
+    const style = document.createElement('style');
+    style.id = 'notification-animations';
+    style.textContent = `@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}`;
+    document.head.appendChild(style);
+}
 
-window.addEventListener('beforeunload', stopPolling);
+window.addEventListener('beforeunload', window.stopPolling);
 </script>
+@endpush
