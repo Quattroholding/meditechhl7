@@ -45,7 +45,8 @@ class TopPrescribedMedications extends Component
         $cacheKey = "top_medications_practitioner_{$practitionerId}_days_{$days}";
 
         // Cache por 10 minutos - query muy pesado
-        $this->topMedications = CacheHelper::remember(['doctor_dashboard', 'medications', 'practitioner_'.$practitionerId], $cacheKey, 600, function () use ($practitionerId, $days) {
+        $this->topMedications = Cache::tags(['doctor_dashboard', 'medications', 'practitioner_'.$practitionerId])
+        ->remember($cacheKey, 600, function () use ($practitionerId, $days) {
                 return $this->fetchTopMedications($practitionerId, $days);
             });
     }

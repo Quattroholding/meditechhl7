@@ -54,6 +54,6 @@ class InvoiceObserver
      */
     private function clearDashboardCache(): void
     {
-        CacheHelper::flush(['dashboard', 'invoices']);
+        Cache::tags(['dashboard', 'invoices'])->flush();
     }
 }

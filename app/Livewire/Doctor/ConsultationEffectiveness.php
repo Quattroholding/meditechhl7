@@ -69,7 +69,8 @@ class ConsultationEffectiveness extends Component
         $cacheKey = "consultation_effectiveness_user_{$userId}_days_{$days}";
 
         // Cache por 10 minutos - procesamiento MUY pesado
-        $data = CacheHelper::remember(['doctor_dashboard', 'effectiveness', 'appointments'], $cacheKey, 600, function () use ($days) {
+        $data = Cache::tags(['doctor_dashboard', 'effectiveness', 'appointments'])
+        ->remember($cacheKey, 600, function () use ($days) {
                 return $this->fetchEffectivenessData($days);
             });
 

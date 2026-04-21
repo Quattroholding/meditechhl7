@@ -79,7 +79,7 @@ class ClientSubscriptionObserver
                 // File and database drivers don't support tagging
                 $cacheDriver = config('cache.default');
                 if (in_array($cacheDriver, ['redis', 'memcached', 'array'])) {
-                    CacheHelper::flush(['practitioners', 'subscriptions']);
+                    Cache::tags(['practitioners', 'subscriptions'])->flush();
                 }
 
                 Log::info('ClientSubscriptionObserver - Cache cleared', [

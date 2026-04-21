@@ -92,7 +92,8 @@ class PatientsByAgeBlock extends Component
         $cacheKey = "patients_by_age_clients_{$clientKey}";
 
         // Cache por 1 hora - demografía cambia lentamente
-        $data = CacheHelper::remember(['doctor_dashboard', 'patients', 'demographics'], $cacheKey, 3600, function () use ($userclient) {
+        $data = Cache::tags(['doctor_dashboard', 'patients', 'demographics'])
+         ->remember($cacheKey, 3600, function () use ($userclient) {
                 return $this->fetchPatientsByAge($userclient);
             });
 
