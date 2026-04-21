@@ -148,8 +148,13 @@ class Practitioner extends BaseModel
             $path = url('storage/'.$this->avatar()->path);
         }
 
+        $route = '';
+
+        if(auth()->user()->can('practitioners.profile'))
+            $route = route('practitioner.profile',$this->id);
+
         return '<div class="profile-image m-0">
-                  <a href="'.url('practitioners/'.$this->id.'/profile').'"  class= "text-base">
+                  <a href="'.$route.'"  class= "text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$this->name.'
                                     </a>

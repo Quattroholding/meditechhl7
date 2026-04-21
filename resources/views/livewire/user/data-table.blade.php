@@ -60,7 +60,9 @@
                                         <span class="cell-content">{{$user->id}}</span>
                                     </td>
                                     <td data-column="full_name" data-priority="2" data-label="{{__('user.full_name')}}">
-                                        <span class="cell-content">{!!  $user->profile_name !!}</span>
+                                        <span class="cell-content">
+                                            {!!  $user->profile_name !!}
+                                        </span>
                                     </td>
                                     <td data-column="email" data-priority="3" data-label="{{__('user.email')}}">
                                         <span class="cell-content">{{ $user->email }}</span>

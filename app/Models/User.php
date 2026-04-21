@@ -203,7 +203,7 @@ class User extends Authenticatable
         if ($this->profile_picture) {
             $path = url('storage/'.$this->profile_picture);
         }
-
+        $route='';
         if ($this->hasRole('doctor') && $this->practitioner) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
@@ -213,10 +213,18 @@ class User extends Authenticatable
             if ($gender) {
                 $prefix = $gender == 'female' ? 'Dra. ' : 'Dr. ';
             }
+
+            if(auth()->user()->can('practitioners.profile') && auth()->user()->id == $this->practitioner->user_id)
+                $route = route('practitioner.profile',$this->practitioner->id);
+        }else if($this->hasRole('paciente') && $this->patient){
+            if(auth()->user()->can('patients.profile'))
+                $route = route('patient.profile',$this->patient->id);
+        }else if(auth()->user()->can('users.profile') && auth()->user()->id == $this->id){
+            $route = url('/profile');
         }
 
         return '<div class="profile-image">
-                  <a href="'.url('patient/'.$this->id.'/pofile').'" class= "text-base">
+                  <a href="'.$route.'" class= "text-base">
                                         <img width="28" height="28" src="'.$path.'" class="rounded-circle m-r-5" alt="" style="display:inline-block;">
                                         '.$prefix.$this->first_name.' '.$this->last_name.'
                                     </a>

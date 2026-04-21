@@ -41,38 +41,59 @@
                         <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
                     </x-dashboard-tile>
 
-
+                    {{--}}
                     <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="60">
                         <livewire:dashboard.tiles.realtime-stats wire:key="tile_realtime_stats" />
                     </x-dashboard-tile>
+                    {{--}}
 
 
-                    <x-dashboard-tile position="g2:l2" :refresh-interval-in-seconds="120">
+                    <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="120">
                         <livewire:dashboard.tiles.appointments-by-status wire:key="tile_appointments_status" />
                     </x-dashboard-tile>
 
+                    {{-- Fila 4: Appointments by Source (Pie Chart) --}}
+                    <x-dashboard-tile position="g2:l3" :refresh-interval-in-seconds="300">
+                        <livewire:dashboard.tiles.appointments-by-source wire:key="tile_appointments_source" />
+                    </x-dashboard-tile>
+                    {{--}}
                     <x-dashboard-tile position="a3:f3" :refresh-interval-in-seconds="300">
                         @livewire('dashboard.top-specialties')
                     </x-dashboard-tile>
+                    {{--}}
 
-                    <x-dashboard-tile position="g3:l4" :refresh-interval-in-seconds="300">
+                    <x-dashboard-tile position="a3:f4" :refresh-interval-in-seconds="300">
                         <livewire:dashboard.tiles.revenue-chart wire:key="tile_revenue_chart" />
                     </x-dashboard-tile>
 
-                    {{-- Fila 4: Appointments by Source (Pie Chart) --}}
-                    <x-dashboard-tile position="a4:f4" :refresh-interval-in-seconds="300">
-                        <livewire:dashboard.tiles.appointments-by-source wire:key="tile_appointments_source" />
-                    </x-dashboard-tile>
 
-                    {{-- Fila 5: Appointments Table + Appointments by Specialties --}}
+
+                    {{-- Fila 5: Appointments Table + Appointments by Specialties
                     <x-dashboard-tile position="a5:f5" :refresh-interval-in-seconds="120">
                         @livewire('admin-dashboard-appointments')
                     </x-dashboard-tile>
-
-
+                    --}}
+                   {{---}}
                     <x-dashboard-tile position="g5:l5" :refresh-interval-in-seconds="300">
                         @livewire('admin.appointments-by-specialties')
                     </x-dashboard-tile>
+                    {{-----}}
+
+                    {{-- Admin Only: Subscription Analytics --}}
+                    @if(auth()->user()->hasRole('admin'))
+                        {{-- Fila 7: Subscriptions by Package and Status --}}
+                        <x-dashboard-tile position="g4:l4" :refresh-interval-in-seconds="300">
+                            <livewire:dashboard.tiles.subscriptions-by-package wire:key="tile_subscriptions_package" />
+                        </x-dashboard-tile>
+
+                        <x-dashboard-tile position="g5:l5" :refresh-interval-in-seconds="300">
+                            <livewire:dashboard.tiles.subscriptions-by-status wire:key="tile_subscriptions_status" />
+                        </x-dashboard-tile>
+                        {{-- Fila 6: Subscription Revenue Chart (Full width) --}}
+                        <x-dashboard-tile position="a7:l7" :refresh-interval-in-seconds="300">
+                            <livewire:dashboard.tiles.subscription-revenue-chart wire:key="tile_subscription_revenue" />
+                        </x-dashboard-tile>
+                    @endif
                 </x-dashboard>
             </div>
 
