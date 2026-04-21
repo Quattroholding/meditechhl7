@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\ClientSubscription;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -77,7 +79,7 @@ class ClientSubscriptionObserver
                 // File and database drivers don't support tagging
                 $cacheDriver = config('cache.default');
                 if (in_array($cacheDriver, ['redis', 'memcached', 'array'])) {
-                    Cache::tags(['practitioners', 'subscriptions'])->flush();
+                    CacheHelper::flush(['practitioners', 'subscriptions']);
                 }
 
                 Log::info('ClientSubscriptionObserver - Cache cleared', [

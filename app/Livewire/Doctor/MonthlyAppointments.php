@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Doctor;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -56,7 +58,7 @@ class MonthlyAppointments extends Component
         // Cache por 5 minutos con key única por usuario y mes
         $cacheKey = 'doctor_monthly_appointments_'.auth()->id().'_'.Carbon::now()->format('Y-m');
 
-        $data = Cache::tags(['doctor_dashboard', 'appointments'])->remember($cacheKey, 300, function () use ($currentMonth, $currentYear, $lastMonth, $lastYear) {
+        $data = CacheHelper::remember(['doctor_dashboard', 'appointments'], $cacheKey, 300, function () use ($currentMonth, $currentYear, $lastMonth, $lastYear) {
             $currentCount = Appointment::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->whereNull('deleted_at')

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Doctor;
 
+use App\Helpers\CacheHelper;
+
 use App\Models\Appointment;
 use App\Models\AppointmentStatus;
 use Carbon\Carbon;
@@ -67,8 +69,7 @@ class ConsultationEffectiveness extends Component
         $cacheKey = "consultation_effectiveness_user_{$userId}_days_{$days}";
 
         // Cache por 10 minutos - procesamiento MUY pesado
-        $data = Cache::tags(['doctor_dashboard', 'effectiveness', 'appointments'])
-            ->remember($cacheKey, 600, function () use ($days) {
+        $data = CacheHelper::remember(['doctor_dashboard', 'effectiveness', 'appointments'], $cacheKey, 600, function () use ($days) {
                 return $this->fetchEffectivenessData($days);
             });
 
