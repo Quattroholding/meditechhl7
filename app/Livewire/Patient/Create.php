@@ -90,6 +90,8 @@ class Create extends Component
     // File upload fields
     public $archivos = [];
 
+    public $fileErrors = [];
+
     protected $rules = [
         'id_number' => 'required',
         'id_type' => 'required',
@@ -261,6 +263,16 @@ class Create extends Component
 
     public function savePatient()
     {
+        // Verificar si hay errores de archivos antes de continuar
+        if (count($this->fileErrors) > 0) {
+            session()->flash('message.error', 'Por favor, elimine los archivos que exceden el tamaño máximo antes de continuar.');
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Por favor, elimine los archivos que exceden el tamaño máximo antes de continuar.',
+            );
+
+            return;
+        }
 
         $this->validate();
 
@@ -371,6 +383,28 @@ class Create extends Component
 
     }
 
+    public function removeFile($index)
+    {
+        if (isset($this->archivos[$index])) {
+            unset($this->archivos[$index]);
+            // Reindexar el array
+            $this->archivos = array_values($this->archivos);
+        }
+    }
+
+    public function updatedArchivos()
+    {
+        $this->fileErrors = [];
+
+        foreach ($this->archivos as $index => $archivo) {
+            $sizeInKB = $archivo->getSize() / 1024;
+
+            if ($sizeInKB > 1024) {
+                $this->fileErrors[$index] = 'El archivo "'.$archivo->getClientOriginalName().'" excede el tamaño máximo de 1 MB ('.number_format($sizeInKB, 2).' KB)';
+            }
+        }
+    }
+
     public function resetForm()
     {
         $this->patientExists = false;
@@ -398,6 +432,7 @@ class Create extends Component
         $this->state_id = null;
         $this->states = [];
         $this->archivos = [];
+        $this->fileErrors = [];
     }
 
     private function getIdPattern()
