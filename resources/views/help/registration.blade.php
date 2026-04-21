@@ -1252,7 +1252,7 @@
                             </ol>
                         </div>
                         <div>
-                            <img src="{{ asset('images/tutorial/register/plans.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/register/fplans.png') }}" alt="" style="width: 100%;">
                         </div>
                     </div>
                 </section>
@@ -1820,7 +1820,7 @@
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
                                     <h6>1. Pago de Suscripción</h6>
-                                    <p>Para poder agendar citas y llenar sus consultas, deberá primero hacer el pago de la suscripción del plan que seleccionó, haga clic en <strong>+Ver Facturas</strong> y se desplegará la pantalla de Detalle Factura donde podrá registrar su pago.</p>
+                                    <p>Para poder agendar citas y llenar sus consultas, deberá primero hacer el pago de la suscripción del plan que seleccionó, haga clic en <strong>+Ver Facturas</strong>.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/1step.png') }}" alt="" style="width: 100%;">
                                     </div>
@@ -1829,8 +1829,18 @@
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>2. Configurar Sucursal</h6>
-                                    <p>Luego de registrar su pago, el asistente pasa automáticamente al paso 2 que es la configuración de una sucursal, haz clic en <strong>+Crear Sucursal</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su sucursal.</p>
+                                    <h6>2. Pantalla de Pago</h6>
+                                    <p>Se desplegará la pantalla de Detalle Factura donde podrá registrar su pago.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/1stepf.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>3. Configurar Sucursal</h6>
+                                    <p>Luego de registrar su pago, el asistente pasa automáticamente al paso 2 que es la configuración de una sucursal, haz clic en <strong>+Crear Sucursal</strong>.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/2step.png') }}" alt="" style="width: 100%;">
                                     </div>
@@ -1839,20 +1849,48 @@
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>3. Configurar Consultorio</h6>
-                                    <p>Luego de registrar su primera sucursal, el asistente pasa automáticamente al paso 3 que corresponde a configuración de un consultorio, haz clic en <strong>+Crear Consultorio</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su consultorio.</p>
+                                    <h6>3. Pantalla de Crear Sucursal</h6>
+                                    <p>Llene los datos y haga clic en <strong>"Registrar"</strong> para registrar su sucursal.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/2stepf.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>4. Configurar Consultorio</h6>
+                                    <p>Luego de registrar su primera sucursal, el asistente pasa automáticamente al paso 3 que corresponde a configuración de un consultorio, haz clic en <strong>+Crear Consultorio</strong>.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/3step.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>5. Pantalla Crear Consultorio</h6>
+                                    <p>Llene los datos y haga clic en <strong>"Registrar"</strong> para registrar su consultorio.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/3stepf.png') }}" alt="" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="timeline-item completed">
                                 <div class="timeline-content">
-                                    <h6>4. Regisrar Paciente</h6>
-                                    <p>Luego de registrar su primer consultorio, el asistente pasa automáticamente al paso 4 que corresponde al registro de un paciente, haz clic en <strong>+Regisrar Paciente</strong>, llena los datos y haga clic en <strong>"Registrar"</strong> para registrar su paciente.</p>
+                                    <h6>5. Registrar Paciente</h6>
+                                    <p>Luego de registrar su primer consultorio, el asistente pasa automáticamente al paso 4 que corresponde al registro de un paciente, haz clic en <strong>+Registrar Paciente</strong>.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/register/assistant/4step.png') }}" alt="" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item completed">
+                                <div class="timeline-content">
+                                    <h6>6. Pantalla Regisrar Paciente</h6>
+                                    <p>Llene los datos y haga clic en <strong>"Registrar"</strong> para registrar su paciente.</p>
+                                    <div>
+                                        <img src="{{ asset('images/tutorial/register/assistant/4stepf.png') }}" alt="" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
