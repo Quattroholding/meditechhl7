@@ -66,7 +66,11 @@ class VitalSigns extends Component
                     $vs->save();
                 }
 
-                $this->calculateIMC();
+                // Solo calcular IMC automáticamente cuando se modifique peso o estatura
+                // No recalcular si se está editando directamente el IMC
+                if (in_array($code, ['29463-7', '8302-2'])) {
+                    $this->calculateIMC();
+                }
             }
 
             // Actualizar el valor original después de guardar exitosamente

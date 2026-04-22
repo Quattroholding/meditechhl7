@@ -250,13 +250,13 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 
     Route::get('/', [ConsultationController::class, 'index'])->middleware('permission:consultations.view')->name('consultation.index');
 
-    Route::get('/{encounter_id}/view', [ConsultationController::class, 'view'])->middleware('permission:consultations.view')->name('consultation.view');
+    Route::get('/{encounter_id}/view', [ConsultationController::class, 'view'])->middleware('permission:consultations.show')->name('consultation.view');
 
     Route::post('/{encounter_id}/resend-whatsapp', [ConsultationController::class, 'resendPrescriptionsWhatsApp'])->middleware('permission:consultations.view')->name('consultation.resend-whatsapp');
 
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->middleware('permission:consultations.create')->name('consultation.show');
 
-    Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:consultations.view')->name('consultation.download_resumen');
+    Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:download_resumen')->name('consultation.download_resumen');
 
     Route::post('/{appointment_id}', [ConsultationController::class, 'finished'])->middleware('permission:consultations.create')->name('consultation.finished');
 

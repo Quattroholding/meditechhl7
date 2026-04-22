@@ -44,6 +44,8 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'patients.medical_history', 'description' => 'Ver historial medico de pacientes', 'module' => 'pacientes'],
             ['name' => 'patients.add_note', 'description' => 'Agregar nota general de pacientes', 'module' => 'pacientes'],
             ['name' => 'patients.insurance', 'description' => 'Gerstionar seguros de pacientes', 'module' => 'pacientes'],
+            ['name' => 'patients.see_conditions', 'description' => 'Ver condiciones medicas de pacientes', 'module' => 'pacientes'],
+
 
             // Practitioner management
             ['name' => 'practitioners.view', 'description' => 'Ver lista de médicos y profesionales', 'module' => 'medicos'],
@@ -64,9 +66,11 @@ class RolePermissionSeeder extends Seeder
 
             // Consultation management
             ['name' => 'consultations.view', 'description' => 'Ver historial de consultas', 'module' => 'consultas'],
+            ['name' => 'consultations.show', 'description' => 'Ver detalle de consultas', 'module' => 'consultas'],
             ['name' => 'consultations.create', 'description' => 'Crear nuevas consultas médicas', 'module' => 'consultas'],
             ['name' => 'consultations.edit', 'description' => 'Editar consultas existentes', 'module' => 'consultas'],
             ['name' => 'consultations.delete', 'description' => 'Eliminar registros de consultas', 'module' => 'consultas'],
+            ['name' => 'consultations.download_resumen', 'description' => 'Descargar Resumen de consulta', 'module' => 'consultas'],
 
             // Branches management
             ['name' => 'branches.view', 'description' => 'Ver lista de sucursales', 'module' => 'sucursales'],
@@ -216,8 +220,10 @@ class RolePermissionSeeder extends Seeder
             'patients.add_note',
             'patients.insurance',
             'consultations.view',
+            'consultations.show',
             'consultations.create',
             'consultations.edit',
+            'consultations.download_resumen',
             'invoices.view',
             'invoices.create',
             'invoices.edit',
@@ -271,9 +277,7 @@ class RolePermissionSeeder extends Seeder
             'patients.view',
             'patients.create',
             'patients.edit',
-            'patients.add_note',
             'patients.insurance',
-            'patients.medical_history',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
@@ -369,6 +373,7 @@ class RolePermissionSeeder extends Seeder
             'patients.add_note',
             'patients.insurance',
             'consultations.view',
+            'consultations.show',
             'consultations.create',
             'consultations.edit',
             'invoices.view',
