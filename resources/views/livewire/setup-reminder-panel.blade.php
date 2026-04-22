@@ -24,9 +24,9 @@
                 'service_catalog' => 5,
                 'working_hours' => 6,
                 'signature_and_seal' => 7,
-                'rapid_access' => 8,
+                //'rapid_access' => 8,
             ];
-            $totalSteps = 8;
+            $totalSteps = 7;
         } else {
             // Otros roles: usar configuración por defecto
             $stepMap = [
