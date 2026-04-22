@@ -17,7 +17,7 @@ class ConsultationPolicy
 
     public function view(User $user, Encounter $encounter)
     {
-        if ($user->hasAnyRole('admin', 'asistente medico')) {
+        if ($user->hasAnyRole(['admin', 'asistente medico'])) {
             return true;
         } elseif ($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
             return true;
