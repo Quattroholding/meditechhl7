@@ -83,6 +83,7 @@
                             >
                                 <i class="fas fa-edit"></i>
                             </button>
+                            {{--}}
                             <button
                                 class="btn btn-sm btn-danger"
                                 wire:click="deleteRole({{ $role->id }})"
@@ -90,6 +91,7 @@
                             >
                                 <i class="fas fa-trash"></i>
                             </button>
+                            {{--}}
                         </td>
                     </tr>
                     <!-- Hidden row for expanded details -->

@@ -235,14 +235,7 @@
                     </ul>
                 </li>
                 @endcanany
-                @can('practitioners.directory')
-                <li>
-                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
-                        <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
-                        <span>{{ __('patient.medical_directory') }}</span>
-                    </a>
-                </li>
-                @endcan
+
                 @if(auth()->user()->can('patients.medical_history') && auth()->user()->patient)
                 <li>
                     <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
@@ -271,6 +264,44 @@
                     </ul>
                 </li>
                 @endcanany
+                @role('admin')
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-key"></i></span>
+                        <span> Tokens API </span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('api-tokens') ? 'active' : '' }}"  href="{{ route('api-tokens.index') }}">Gestionar Tokens</a></li>
+                        <li><a class="{{ Request::is('api-tokens/create') ? 'active' : '' }}"  href="{{ route('api-tokens.create') }}">Crear Token</a></li>
+                    </ul>
+                </li>
+                @endrole
+
+                @canany(['manage-roles', 'manage-permissions'])
+                    <li class="submenu">
+                        <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-shield-alt"></i></span>
+                            <span> Roles y Permisos </span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            @can('manage-roles')
+                                <li><a class="{{ Request::is('roles') ? 'active' : '' }}"  href="{{ route('role.index') }}">Gestionar Roles</a></li>
+                            @endcan
+                            @can('manage-permissions')
+                                <li><a class="{{ Request::is('permissions') ? 'active' : '' }}"  href="{{ route('permission.index') }}">Gestionar Permisos</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany
+
+                @can('manage insurances')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">
+                        <span class="menu-side">
+                            <i class="fa fa-shield"></i>
+                        </span>
+                            <span>Aseguradoras</span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['manage-packages'])
                     <li class="submenu">
                         <a href="javascript:;"><span class="menu-side">
@@ -337,6 +368,14 @@
                     </ul>
                 </li>
                 @endcanany
+                @can('practitioners.directory')
+                    <li>
+                        <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
+                            <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
+                            <span>{{ __('patient.medical_directory') }}</span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['tickets.index'])
                 <li>
                     <a class="{{ Request::is('tickets') ? 'active' : '' }}"  href="{{ route('tickets.index') }}">
@@ -369,44 +408,7 @@
                         </a>
                     </li>
                 @endcan
-                @role('admin')
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <i class="fa fa-key"></i></span>
-                        <span> Tokens API </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a class="{{ Request::is('api-tokens') ? 'active' : '' }}"  href="{{ route('api-tokens.index') }}">Gestionar Tokens</a></li>
-                        <li><a class="{{ Request::is('api-tokens/create') ? 'active' : '' }}"  href="{{ route('api-tokens.create') }}">Crear Token</a></li>
-                    </ul>
-                </li>
-                @endrole
 
-                @canany(['manage-roles', 'manage-permissions'])
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <i class="fa fa-shield-alt"></i></span>
-                        <span> Roles y Permisos </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        @can('manage-roles')
-                        <li><a class="{{ Request::is('roles') ? 'active' : '' }}"  href="{{ route('role.index') }}">Gestionar Roles</a></li>
-                        @endcan
-                        @can('manage-permissions')
-                        <li><a class="{{ Request::is('permissions') ? 'active' : '' }}"  href="{{ route('permission.index') }}">Gestionar Permisos</a></li>
-                        @endcan
-                    </ul>
-                </li>
-                @endcanany
-
-                @can('manage insurances')
-                <li class="menu-side">
-                    <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">
-                        <span class="menu-side">
-                            <i class="fa fa-shield"></i>
-                        </span>
-                        <span>Aseguradoras</span>
-                    </a>
-                </li>
-                @endcan
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">

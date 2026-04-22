@@ -245,6 +245,8 @@ class RolePermissionSeeder extends Seeder
             'rooms.delete',
             'medicines.view',
             'medicines.create',
+            'medicines.edit',
+            'medicines.delete',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',

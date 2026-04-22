@@ -393,11 +393,11 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.l
 
     Route::get('/', [UserController::class, 'index'])->middleware('permission:users.view')->name('user.index');
 
-    Route::get('/create', [UserController::class, 'create'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.create');
+    Route::get('/create', [UserController::class, 'create'])->middleware(['permission:users.create', 'can.manage.subscription'])->name('user.create');
 
     Route::get('/change_client/{client_id}', [UserController::class, 'changeClient'])->middleware('permission:users.change_client')->name('user.change_client');
 
-    Route::post('/store', [UserController::class, 'store'])->middleware(['permission:users.create','can.manage.subscription'])->name('user.store');
+    Route::post('/store', [UserController::class, 'store'])->middleware(['permission:users.create', 'can.manage.subscription'])->name('user.store');
 
     Route::get('/{id}/edit', [UserController::class, 'edit'])->middleware('permission:users.edit')->name('user.edit');
 
@@ -620,8 +620,37 @@ Route::middleware(['auth', 'first.login', 'permission:service_types.view'])->pre
 Route::get('prescriptions/{id}/pdf/download', [RecepyPrescriptionController::class, 'downloadPdf']);
 
 // Survey Routes
-Route::middleware(['auth', 'first.login', 'permission:surveys.view'])->group(function () {
-    Route::resource('surveys', SurveyController::class);
+Route::middleware(['auth', 'first.login'])->group(function () {
+    // View routes (index, show)
+    Route::get('surveys', [SurveyController::class, 'index'])
+        ->middleware('permission:surveys.view')
+        ->name('surveys.index');
+    Route::get('surveys/{survey}', [SurveyController::class, 'show'])
+        ->middleware('permission:surveys.view')
+        ->name('surveys.show');
+
+    // Create routes (create, store)
+    Route::get('surveys/create', [SurveyController::class, 'create'])
+        ->middleware('permission:surveys.create')
+        ->name('surveys.create');
+    Route::post('surveys', [SurveyController::class, 'store'])
+        ->middleware('permission:surveys.create')
+        ->name('surveys.store');
+
+    // Edit routes (edit, update)
+    Route::get('surveys/{survey}/edit', [SurveyController::class, 'edit'])
+        ->middleware('permission:surveys.edit')
+        ->name('surveys.edit');
+    Route::put('surveys/{survey}', [SurveyController::class, 'update'])
+        ->middleware('permission:surveys.edit')
+        ->name('surveys.update');
+    Route::patch('surveys/{survey}', [SurveyController::class, 'update'])
+        ->middleware('permission:surveys.edit');
+
+    // Delete route (destroy)
+    Route::delete('surveys/{survey}', [SurveyController::class, 'destroy'])
+        ->middleware('permission:surveys.delete')
+        ->name('surveys.destroy');
 });
 
 // Public Survey Routes (no authentication required)
