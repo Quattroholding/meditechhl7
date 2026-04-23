@@ -1334,17 +1334,17 @@ body {
                             <tr>
                                 <td data-label="Campo"><strong>Paciente</strong></td>
                                 <td data-label="Descripcion">Busque y seleccione el paciente por nombre o documento de identidad</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br> <small>en todos los usuarios, excluyendo al paciente.</small></td>
                             </tr>
                             <tr>
                                 <td data-label="Campo"><strong>Especialidad</strong></td>
-                                <td data-label="Descripcion">Busque y seleccione la especialidad requerida para la cita.</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br><small>en usuarios con ROL Paciente, Asistente, Recepcionista y Médico con más de 1 una especialidad.</small></td>
+                                <td data-label="Descripcion">Seleccione la especialidad médica requerida para la consulta.</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br><small>Visible para todos los roles (para Doctores solo si tienen más de una especialidad).</small></td>
                             </tr>
                             <tr>
                                 <td data-label="Campo"><strong>Doctor</strong></td>
-                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita</td>
-                                <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>en usuarios con ROL Paciente, Asistente y Recepcionista.</small></td>
+                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita.</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>Visible para Paciente, Asistente y Recepcionista (no visible para Doctores).</small></td>
                             </tr>
                             <tr>
                                 <td data-label="Campo"><strong>Fecha</strong></td>
@@ -1429,7 +1429,35 @@ body {
 
             <!-- Step 5 -->
             <div class="step-card">
-                <h4><span class="step-number">5</span><span class="step-title">Selección de Fecha y Horario Disponible</span></h4>
+                <h4><span class="step-number">5</span><span class="step-title">Selección de Especialidad</span></h4>
+                <p>Seleccione la especialidad médica para la consulta:</p>
+                <ul>
+                    <li>Este campo es visible para todos los roles del sistema.</li>
+                    <li><strong>Nota para Doctores:</strong> Este campo solo se mostrará si usted tiene más de una especialidad registrada en su perfil.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-spec.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step-card">
+                <h4><span class="step-number">6</span><span class="step-title">Selección de Doctor</span></h4>
+                <p>Asigne al profesional de salud que realizará la atención:</p>
+                <ul>
+                    <li>Este campo es visible para pacientes, asistentes y recepcionistas.</li>
+                    <li><strong>Nota:</strong> Este campo no es visible para los doctores, ya que el sistema asigna automáticamente la cita a su propia agenda.</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-doc.png') }}" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step-card">
+                <h4><span class="step-number">7</span><span class="step-title">Selección de Fecha y Horario Disponible</span></h4>
                 <p>El sistema valida automáticamente la disponibilidad:</p>
                 <ul>
                     <li>Se verifican los horarios de trabajo del doctor seleccionado</li>
@@ -1450,9 +1478,9 @@ body {
                 </div>
             </div>
 
-            <!-- Step 6 -->
+            <!-- Step 8 -->
             <div class="step-card">
-                <h4><span class="step-number">6</span><span class="step-title">Duración de la Cita</span></h4>
+                <h4><span class="step-number">8</span><span class="step-title">Duración de la Cita</span></h4>
                 <p>Seleccione el tiempo estimado para la atención del paciente:</p>
                 <ul>
                     <li>El tiempo se define en minutos (ej. 15, 30, 45, 60 min).</li>
@@ -1465,9 +1493,9 @@ body {
                 </div>
             </div>
 
-            <!-- Step 7 -->
+            <!-- Step 9 -->
             <div class="step-card">
-                <h4><span class="step-number">7</span><span class="step-title">Selección de Consultorio</span></h4>
+                <h4><span class="step-number">9</span><span class="step-title">Selección de Consultorio</span></h4>
                 <p>Asigne el espacio físico donde se llevará a cabo la consulta:</p>
                 <ul>
                     <li>Seleccione uno de los consultorios disponibles en la sucursal.</li>
@@ -1479,12 +1507,12 @@ body {
                 </div>
             </div>
 
-            <!-- Step 8 -->
+            <!-- Step 10 -->
             <div class="step-card">
-                <h4><span class="step-number">8</span><span class="step-title">Tipo de Servicio</span></h4>
+                <h4><span class="step-number">10</span><span class="step-title">Tipo de Servicio</span></h4>
                 <p>Indique el propósito o servicio específico de la cita:</p>
                 <ul>
-                    <li>Seleccione de la lista de servicios configurados (ej. Consulta General, Control, Procedimiento).</li>
+                    <!--<li>Seleccione de la lista de servicios configurados (ej. Consulta General, Control, Procedimiento).</li>-->
                     <li>Este campo ayuda a categorizar la cita y preparar cualquier material necesario previo a la atención.</li>
                 </ul>
 
@@ -1493,9 +1521,9 @@ body {
                 </div>
             </div>
 
-            <!-- Step 9 -->
+            <!-- Step 11 -->
             <div class="step-card">
-                <h4><span class="step-number">9</span><span class="step-title">Nota Adicional (Opcional)</span></h4>
+                <h4><span class="step-number">11</span><span class="step-title">Nota Adicional (Opcional)</span></h4>
                 <p>Utilice este campo para añadir información relevante para el médico o el equipo de recepción:</p>
                 <ul>
                     <li>Motivo específico de la consulta si requiere aclaración extra.</li>
@@ -1508,9 +1536,9 @@ body {
                 </div>
             </div>
 
-            <!-- Step 10 -->
+            <!-- Step 12 -->
             <div class="step-card">
-                <h4><span class="step-number">10</span><span class="step-title">Guardar la Cita</span></h4>
+                <h4><span class="step-number">12</span><span class="step-title">Guardar la Cita</span></h4>
                 <p>Una vez completados todos los campos requeridos:</p>
                 <ol>
                     <li>Revise que todos los datos sean correctos</li>
@@ -1524,7 +1552,7 @@ body {
                         <i class="fas fa-bell text-primary"></i>
                         Notificaciones
                     </div>
-                    <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por WhatsApp o correo electrónico, dependiendo de la configuración del sistema.</p>
+                    <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por correo electrónico.</p>
                 </div>
 
             <div>
@@ -1668,7 +1696,7 @@ body {
             <h3>Mensajes Interactivos</h3>
             <p>Los pacientes pueden interactuar con los mensajes de WhatsApp para:</p>
             <ul>
-                <li><strong>Confirmar asistencia:</strong> El paciente responde "Confirmar" y la cita cambia automáticamente a estado <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></li>
+                <li><strong>Confirmar asistencia:</strong> El paciente responde "Confirmar" y la cita cambia automáticamente a estado <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></li>
                 <li><strong>Cancelar cita:</strong> El paciente responde "Cancelar" y la cita se actualiza a estado <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></li>
                 <li><strong>Solicitar reagendamiento:</strong> El paciente puede solicitar un nuevo horario</li>
             </ul>
@@ -1753,6 +1781,14 @@ body {
                     </tbody>
                 </table>
             </div>
+
+            <div class="info-box note mt-4">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Ordenamiento
+                </div>
+                <p class="mb-0">El ordenamiento se ejecuta haciendo clic en el nombre en la columna que desea ordenar.</p>
+            </div>
         </section>
 
         <!-- Section 9: Tips -->
@@ -1783,8 +1819,8 @@ body {
                             Errores Comunes a Evitar
                         </div>
                         <ul class="mb-0">
-                            <!--<li>No verificar disponibilidad antes de agendar</li>-->
-                            <li>Olvidar actualizar el estado de las citas</li>
+                            <!--<li>No verificar disponibilidad antes de agendar</li>
+                            <li>Olvidar actualizar el estado de las citas</li>-->
                             <li>No registrar el motivo de consulta</li>
                             <!--<li>Agendar fuera del horario del doctor</li>
                             <li>No enviar recordatorios a los pacientes</li>-->
