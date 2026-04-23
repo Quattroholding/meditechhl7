@@ -117,6 +117,11 @@ class Encounter extends BaseModel
         return $this->hasMany(MedicalLeave::class);
     }
 
+    public function snapshots(): HasMany
+    {
+        return $this->hasMany(EncounterSnapshot::class)->orderBy('version', 'desc');
+    }
+
     /**
      * Scope a query to only include appointments fullfilled.
      */

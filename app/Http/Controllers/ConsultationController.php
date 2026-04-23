@@ -16,6 +16,7 @@ use App\Models\PresentIllnesType;
 use App\Models\Scopes\EncouterScope;
 use App\Models\ServiceCatalog;
 use App\Notifications\EncounterPrescriptionNotification;
+use App\Services\EncounterSnapshotService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -269,9 +270,25 @@ class ConsultationController extends Controller
 
             // Update encounter status
             if (auth()->user()->id == $appointment->practitioner->user_id) {
+                $wasAlreadyFinished = $encounter->getRawOriginal('status') === 'finished';
+
                 $encounter->status = 'finished';
                 $encounter->end = now();
                 $encounter->save();
+
+                // If encounter was already finished and has no snapshots, create initial snapshot
+                // This handles cases where the feature was added after encounter was completed
+                if ($wasAlreadyFinished && $encounter->snapshots()->count() === 0) {
+                    $snapshotService = app(EncounterSnapshotService::class);
+                    $snapshotService->createSnapshot(
+                        $encounter,
+                        'initial_finish',
+                        'Snapshot inicial creado al activar funcionalidad'
+                    );
+                    \Log::info('Snapshot inicial creado para encounter ya finalizado', [
+                        'encounter_id' => $encounter->id,
+                    ]);
+                }
             }
 
             // Build success message

@@ -27,39 +27,97 @@
                 <td>
                     <div class="multivalue-item-sustento-container">
                         <div class="input-block local-forms">
-                            <x-input-label for="especialist" :value="__('Especialista')" />
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
 
-                            @if($s->referred_to_id)
-                                @php
-                                    $selectedPractitioner = \App\Models\Practitioner::find($s->referred_to_id);
-                                @endphp
+                                <x-input-label for="especialist" :value="__('Especialista')" />
 
-                                @if($selectedPractitioner)
-                                    <!-- Médico seleccionado -->
-                                    <div style="display: flex; gap: 10px; align-items: center; padding: 12px; background: #f8f9fa; border: 2px solid #28a745; border-radius: 8px; margin-bottom: 10px;">
-                                        <div style="flex: 1;">
-                                            <div style="font-weight: 600; color: #333; margin-bottom: 2px;">
-                                                <i class="fa fa-user-md" style="color: #28a745; margin-right: 5px;"></i>
-                                                {{ $selectedPractitioner->name }}
-                                            </div>
-                                            <div style="font-size: 12px; color: #666;">
-                                                ID: {{ $selectedPractitioner->identifier }}
-                                            </div>
+
+                            </div>
+
+                            @if($useExternalSpecialist[$s->id] ?? false)
+                                <!-- Formulario de Especialista Externo -->
+                                <div style="padding: 15px; background: #fff; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 10px;">
+                                    <div style="margin-bottom: 8px;">
+                                        <i class="fa fa-external-link-alt text-warning"></i>
+                                        <strong>Especialista Externo</strong><br/>
+                                    </div><br/>
+
+                                    <div class="row">
+                                        <div class="col-md-6  input-block local-forms">
+                                            <x-input-label for="full_name" :value="__('patient.full_name')" required="true"/>
+                                            <x-text-input  wire:model.live.debounce.500ms="externalSpecialistName.{{$s->id}}" class="block mt-1 w-full" type="text"  placeholder="Dr. Juan Pérez"/>
                                         </div>
-                                        <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-sm btn-outline-primary" style="white-space: nowrap;">
-                                            <i class="fa fa-exchange-alt"></i> Cambiar
+                                        <div class="col-md-4 mb-2 input-block local-forms">
+                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">Teléfono</label>
+                                            <input
+                                                type="text"
+                                                class="form-control form-control-sm"
+                                                wire:model.live.debounce.500ms="externalSpecialistPhone.{{$s->id}}"
+                                                placeholder="+507 6000-0000">
+                                        </div>
+                                        <div class="col-md-4 mb-2 input-block local-forms">
+                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">Clínica</label>
+                                            <input
+                                                type="text"
+                                                class="form-control form-control-sm"
+                                                wire:model.live.debounce.500ms="externalSpecialistClinic.{{$s->id}}"
+                                                placeholder="Hospital San Fernando">
+                                        </div>
+                                        <div class="col-md-4 mb-2 input-block local-forms">
+                                            <button
+                                                type="button"
+                                                wire:click="toggleExternalSpecialist({{$s->id}})"
+                                                class="btn btn-sm {{ ($useExternalSpecialist[$s->id] ?? false) ? 'btn-warning' : 'btn-info' }}"
+                                                style="white-space: nowrap;">
+                                                <i class="fa {{ ($useExternalSpecialist[$s->id] ?? false) ? 'fa-users' : 'fa-user-edit' }}"></i>
+                                                {{ ($useExternalSpecialist[$s->id] ?? false) ? 'Usar Directorio' : 'Especialista Externo' }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Directorio Médico (existente) -->
+                                @if($s->referred_to_id)
+                                    @php
+                                        $selectedPractitioner = \App\Models\Practitioner::find($s->referred_to_id);
+                                    @endphp
+
+                                    @if($selectedPractitioner)
+                                        <!-- Médico seleccionado -->
+                                        <div style="display: flex; gap: 10px; align-items: center; padding: 12px; background: #f8f9fa; border: 2px solid #28a745; border-radius: 8px; margin-bottom: 10px;">
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 600; color: #333; margin-bottom: 2px;">
+                                                    <i class="fa fa-user-md" style="color: #28a745; margin-right: 5px;"></i>
+                                                    {{ $selectedPractitioner->name }}
+                                                </div>
+                                                <div style="font-size: 12px; color: #666;">
+                                                    ID: {{ $selectedPractitioner->identifier }}
+                                                </div>
+                                            </div>
+                                            <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-sm btn-outline-primary" style="white-space: nowrap;">
+                                                <i class="fa fa-exchange-alt"></i> Cambiar
+                                            </button>
+                                        </div>
+                                    @endif
+                                @else
+                                    <!-- No hay médico seleccionado -->
+                                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px;">
+                                        <i class="fa fa-user-md" style="font-size: 32px; color: #ccc; margin-bottom: 10px;"></i>
+                                        <div style="color: #666; margin-bottom: 15px; font-size: 14px;">No hay médico seleccionado</div>
+                                        <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-primary">
+                                            <i class="fa fa-users"></i> Ver Directorio Médico
+                                        </button>
+                                        <!-- Toggle entre Directorio e Externo -->
+                                        <button
+                                            type="button"
+                                            wire:click="toggleExternalSpecialist({{$s->id}})"
+                                            class="btn btn-sm {{ ($useExternalSpecialist[$s->id] ?? false) ? 'btn-warning' : 'btn-info' }}"
+                                            style="white-space: nowrap;">
+                                            <i class="fa {{ ($useExternalSpecialist[$s->id] ?? false) ? 'fa-users' : 'fa-user-edit' }}"></i>
+                                            {{ ($useExternalSpecialist[$s->id] ?? false) ? 'Usar Directorio' : 'Especialista Externo' }}
                                         </button>
                                     </div>
                                 @endif
-                            @else
-                                <!-- No hay médico seleccionado -->
-                                <div style="text-align: center; padding: 20px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px;">
-                                    <i class="fa fa-user-md" style="font-size: 32px; color: #ccc; margin-bottom: 10px;"></i>
-                                    <div style="color: #666; margin-bottom: 15px; font-size: 14px;">No hay médico seleccionado</div>
-                                    <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-primary">
-                                        <i class="fa fa-users"></i> Ver Directorio Médico
-                                    </button>
-                                </div>
                             @endif
 
                             @include('partials.input_saving',['saving'=>$savingEspecialist[$s->id] ?? false, 'saved'=>$savedEspecialist[$s->id] ?? false])

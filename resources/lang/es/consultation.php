@@ -116,4 +116,5 @@ return [
     'diagnostic_note' => 'Nota',
     'instruction' => 'Instrucciones adicionales',
     'diagnostic_clinical_status' => 'Estatus Clinico',
+    'changes_history' => 'Historial de Cambios',
 ];

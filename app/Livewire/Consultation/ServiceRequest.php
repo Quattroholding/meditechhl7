@@ -80,7 +80,8 @@ class ServiceRequest extends Component
 
     private function searchServiceRequests()
     {
-        $response = Http::get(url('api/cpts/'.$this->type), [
+        $http = app()->environment('local') ? Http::withoutVerifying() : Http::asForm();
+        $response = $http->get(url('api/cpts/'.$this->type), [
             'dropdown' => true,
             'q' => $this->query,
             'perPage' => $this->perPage,

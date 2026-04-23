@@ -11,6 +11,8 @@ class Referral extends BaseModel
         'fhir_id', 'encounter_id', 'patient_id', 'requester_id', 'referred_to_id', 'practitioner_id',
         'identifier', 'status', 'intent', 'priority', 'code', 'reason',
         'description', 'occurrence_date', 'note', 'supporting_info',
+        'external_specialist_name', 'external_specialist_specialty', 'external_specialist_license',
+        'external_specialist_phone', 'external_specialist_clinic',
     ];
 
     protected $casts = [
@@ -36,7 +38,7 @@ class Referral extends BaseModel
 
     public function referredTo(): BelongsTo
     {
-        return $this->belongsTo(Practitioner::class, 'referred_to_id')->withDefault(['name' => 'N/A']);
+        return $this->belongsTo(Practitioner::class, 'referred_to_id')->withDefault(['name' => $this->external_specialist_name]);
     }
 
     public function speciality()

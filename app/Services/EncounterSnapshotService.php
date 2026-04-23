@@ -45,7 +45,8 @@ class EncounterSnapshotService
             'medicationRequests',
             'presentIllnesses',
             'procedures',
-            'referrals',
+            'referrals.referredTo',
+            'referrals.speciality',
             'observations',
             'serviceRequests.results',
             'skinLesions.bodyStructure',
@@ -203,17 +204,48 @@ class EncounterSnapshotService
                 'performed_date' => $procedure->performed_date,
                 'body_site' => $procedure->body_site,
             ])->toArray(),
-            'referrals' => $encounter->referrals->map(fn ($referral) => [
-                'id' => $referral->id,
-                'referred_to_id' => $referral->referred_to_id,
-                'status' => $referral->getRawOriginal('status'),
-                'intent' => $referral->getRawOriginal('intent'),
-                'priority' => $referral->priority,
-                'code' => $referral->code,
-                'reason' => $referral->reason,
-                'description' => $referral->description,
-                'occurrence_date' => $referral->occurrence_date,
-            ])->toArray(),
+            'referrals' => $encounter->referrals->map(function ($referral) {
+                $data = [
+                    'id' => $referral->id,
+                    'referred_to_id' => $referral->referred_to_id,
+                    'status' => $referral->getRawOriginal('status'),
+                    'intent' => $referral->getRawOriginal('intent'),
+                    'priority' => $referral->priority,
+                    'code' => $referral->code,
+                    'reason' => $referral->reason,
+                    'description' => $referral->description,
+                    'occurrence_date' => $referral->occurrence_date,
+                    // Campos de especialista externo
+                    'external_specialist_name' => $referral->external_specialist_name,
+                    'external_specialist_specialty' => $referral->external_specialist_specialty,
+                    'external_specialist_license' => $referral->external_specialist_license,
+                    'external_specialist_phone' => $referral->external_specialist_phone,
+                    'external_specialist_clinic' => $referral->external_specialist_clinic,
+                ];
+
+                // Si es especialista interno, agregar info del practitioner
+                if ($referral->referred_to_id && $referral->referredTo) {
+                    $data['referred_to_practitioner'] = [
+                        'id' => $referral->referredTo->id,
+                        'name' => $referral->referredTo->name,
+                        'licence_code' => $referral->referredTo->licence_code,
+                        'identifier' => $referral->referredTo->identifier,
+                        'email' => $referral->referredTo->email,
+                        'phone' => $referral->referredTo->phone,
+                    ];
+                }
+
+                // Agregar info de la especialidad
+                if ($referral->speciality) {
+                    $data['speciality'] = [
+                        'id' => $referral->speciality->id,
+                        'name' => $referral->speciality->name,
+                        'code' => $referral->speciality->code,
+                    ];
+                }
+
+                return $data;
+            })->toArray(),
             'observations' => $encounter->observations->map(fn ($obs) => [
                 'id' => $obs->id,
                 'code' => $obs->code,
@@ -334,5 +366,160 @@ class EncounterSnapshotService
     public function getAllSnapshots(Encounter $encounter)
     {
         return $encounter->snapshots()->orderBy('version', 'desc')->get();
+    }
+
+    /**
+     * Compare two snapshots and identify changes.
+     *
+     * @return array Array with 'added', 'removed', and 'modified' keys for each section
+     */
+    public function compareSnapshots(?EncounterSnapshot $previousSnapshot, EncounterSnapshot $currentSnapshot): array
+    {
+        if (! $previousSnapshot) {
+            return ['is_first_version' => true];
+        }
+
+        $previous = $previousSnapshot->snapshot_data;
+        $current = $currentSnapshot->snapshot_data;
+
+        $changes = [
+            'is_first_version' => false,
+            'encounter' => $this->compareEncounterData($previous['encounter'] ?? [], $current['encounter'] ?? []),
+            'diagnoses' => $this->compareArrayById($previous['diagnoses'] ?? [], $current['diagnoses'] ?? []),
+            'vital_signs' => $this->compareArrayById($previous['vital_signs'] ?? [], $current['vital_signs'] ?? []),
+            'medication_requests' => $this->compareArrayById($previous['medication_requests'] ?? [], $current['medication_requests'] ?? []),
+            'present_illness' => $this->comparePresentIllness($previous['present_illness'] ?? null, $current['present_illness'] ?? null),
+            'physical_exams' => $this->compareArrayById($previous['physical_exams'] ?? [], $current['physical_exams'] ?? []),
+            'procedures' => $this->compareArrayById($previous['procedures'] ?? [], $current['procedures'] ?? []),
+            'referrals' => $this->compareArrayById($previous['referrals'] ?? [], $current['referrals'] ?? []),
+            'observations' => $this->compareArrayById($previous['observations'] ?? [], $current['observations'] ?? []),
+            'service_requests' => $this->compareArrayById($previous['service_requests'] ?? [], $current['service_requests'] ?? []),
+            'skin_lesions' => $this->compareArrayById($previous['skin_lesions'] ?? [], $current['skin_lesions'] ?? []),
+            'charge_items' => $this->compareArrayById($previous['charge_items'] ?? [], $current['charge_items'] ?? []),
+            'medical_leaves' => $this->compareArrayById($previous['medical_leaves'] ?? [], $current['medical_leaves'] ?? []),
+        ];
+
+        return $changes;
+    }
+
+    /**
+     * Compare encounter basic data.
+     */
+    protected function compareEncounterData(array $previous, array $current): array
+    {
+        $changes = [];
+        $fieldsToCompare = ['status', 'reason', 'general_note', 'follow_up_date', 'diagnosis'];
+
+        foreach ($fieldsToCompare as $field) {
+            $prevValue = $previous[$field] ?? null;
+            $currValue = $current[$field] ?? null;
+
+            if ($prevValue !== $currValue) {
+                $changes[$field] = [
+                    'old' => $prevValue,
+                    'new' => $currValue,
+                ];
+            }
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Compare arrays by ID and detect added, removed, and modified items.
+     */
+    protected function compareArrayById(array $previous, array $current): array
+    {
+        $previousById = collect($previous)->keyBy('id');
+        $currentById = collect($current)->keyBy('id');
+
+        $added = [];
+        $removed = [];
+        $modified = [];
+
+        // Find added items
+        foreach ($currentById as $id => $item) {
+            if (! $previousById->has($id)) {
+                $added[] = $item;
+            }
+        }
+
+        // Find removed items
+        foreach ($previousById as $id => $item) {
+            if (! $currentById->has($id)) {
+                $removed[] = $item;
+            }
+        }
+
+        // Find modified items
+        foreach ($currentById as $id => $currentItem) {
+            if ($previousById->has($id)) {
+                $previousItem = $previousById->get($id);
+                if (json_encode($previousItem) !== json_encode($currentItem)) {
+                    $modified[] = [
+                        'id' => $id,
+                        'old' => $previousItem,
+                        'new' => $currentItem,
+                        'changed_fields' => $this->getChangedFields($previousItem, $currentItem),
+                    ];
+                }
+            }
+        }
+
+        return [
+            'added' => $added,
+            'removed' => $removed,
+            'modified' => $modified,
+        ];
+    }
+
+    /**
+     * Compare present illness data.
+     */
+    protected function comparePresentIllness(?array $previous, ?array $current): array
+    {
+        if ($previous === null && $current === null) {
+            return ['changed' => false];
+        }
+
+        if ($previous === null) {
+            return ['changed' => true, 'type' => 'added', 'new' => $current];
+        }
+
+        if ($current === null) {
+            return ['changed' => true, 'type' => 'removed', 'old' => $previous];
+        }
+
+        if (json_encode($previous) === json_encode($current)) {
+            return ['changed' => false];
+        }
+
+        return [
+            'changed' => true,
+            'type' => 'modified',
+            'old' => $previous,
+            'new' => $current,
+            'changed_fields' => $this->getChangedFields($previous, $current),
+        ];
+    }
+
+    /**
+     * Get list of changed fields between two arrays.
+     */
+    protected function getChangedFields(array $old, array $new): array
+    {
+        $changed = [];
+
+        foreach ($new as $key => $value) {
+            $oldValue = $old[$key] ?? null;
+            if (json_encode($oldValue) !== json_encode($value)) {
+                $changed[$key] = [
+                    'old' => $oldValue,
+                    'new' => $value,
+                ];
+            }
+        }
+
+        return $changed;
     }
 }
