@@ -28,13 +28,6 @@
                 </x-accordion>
             </div>
 
-            <!-- Historial de Snapshots -->
-            @if($encounter->snapshots()->count() > 0)
-                <div class="col-md-10 col-sm-12 mt-4">
-                    @livewire('consultation.encounter-snapshot-history', ['encounterId' => $encounter->id])
-                </div>
-            @endif
-
             <div class="my-5">&nbsp;</div>
             <div class="my-5">&nbsp;</div>
 

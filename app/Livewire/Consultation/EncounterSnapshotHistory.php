@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Livewire\Consultation;
+
+use App\Models\Encounter;
+use App\Services\EncounterSnapshotService;
+use Livewire\Component;
+
+class EncounterSnapshotHistory extends Component
+{
+    public $encounterId;
+
+    public $encounter;
+
+    public $snapshots = [];
+
+    public $showModal = false;
+
+    public $selectedSnapshot = null;
+
+    public $selectedSnapshotData = null;
+
+    public function mount()
+    {
+        $this->encounter = Encounter::find($this->encounterId);
+        $this->loadSnapshots();
+    }
+
+    public function loadSnapshots()
+    {
+        if ($this->encounter) {
+            $snapshotService = app(EncounterSnapshotService::class);
+            $this->snapshots = $snapshotService->getAllSnapshots($this->encounter);
+        }
+    }
+
+    public function viewSnapshot($snapshotId)
+    {
+        $snapshot = $this->snapshots->firstWhere('id', $snapshotId);
+
+        if ($snapshot) {
+            $this->selectedSnapshot = $snapshot;
+            $this->selectedSnapshotData = $snapshot->snapshot_data;
+            $this->showModal = true;
+        }
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->selectedSnapshot = null;
+        $this->selectedSnapshotData = null;
+    }
+
+    public function render()
+    {
+        return view('livewire.consultation.encounter-snapshot-history');
+    }
+}
