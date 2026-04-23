@@ -1,6 +1,6 @@
 <div>
     <!-- Table Header -->
-    @component('components.table-header')
+    @component('components.table-header',array('show_create'=>auth()->user()->can('surveys.create')))
         @slot('title')
 
         @endslot
@@ -49,17 +49,23 @@
                         <td>{{ $survey->created_at }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
+                                @can('surveys.view')
                                 <a href="{{ route('surveys.show', $survey->id) }}" class="btn btn-info btn-sm text-white">
                                     <i class="fa fa-eye"></i>
                                 </a>
+                                @endcan
+                                @can('surveys.edit')
                                 <a href="{{ route('surveys.edit', $survey->id) }}" class="btn btn-warning btn-sm text-white">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                @endcan
+                                @can('surveys.delete')
                                 <button wire:click="delete({{ $survey->id }})"
                                         onclick="return confirm('¿Está seguro de eliminar esta encuesta?')"
                                         class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash"></i>
                                 </button>
+                                @endcan
                             </div>
                         </td>
                     </tr>

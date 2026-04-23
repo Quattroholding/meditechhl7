@@ -26,19 +26,24 @@
                                 <th data-column="created_at" data-priority="3">
                                     <x-table-sort-button title="{{__('invoice.created_at')}}" columnName="created_at" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
-                                <th data-column="patient" data-priority="4">
+                                @if(auth()->user()->hasAnyRole(['admin','admin client']))
+                                    <th data-column="practitioner" data-priority="5">
+                                        <x-table-sort-button title="{{ __('invoice.bill_by') }}" columnName=""/>
+                                    </th>
+                                @endif
+                                <th data-column="patient" data-priority="6">
                                     <x-table-sort-button title="{{ __('invoice.bill_to') }}" columnName=""/>
                                 </th>
-                                <th data-column="total_amount" data-priority="5">
+                                <th data-column="total_amount" data-priority="7">
                                     <x-table-sort-button title="{{__('invoice.amount')}}" columnName="total_amount" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
-                                <th data-column="due_date" data-priority="6">
+                                <th data-column="due_date" data-priority="8">
                                     <x-table-sort-button title="{{__('invoice.due_date')}}" columnName="due_date" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
-                                <th data-column="payment_status" data-priority="7">
+                                <th data-column="payment_status" data-priority="9">
                                     <x-table-sort-button title="{{ __('invoice.statuss') }}" columnName=""></x-table-sort-button>
                                 </th>
-                                <th data-column="acciones" data-priority="1" class="text-end">
+                                <th data-column="acciones" data-priority="10" class="text-end">
                                     <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
                                 </th>
                             </tr>
@@ -60,6 +65,11 @@
                                     <td data-column="created_at" data-priority="3" data-label="{{__('invoice.created_at')}}">
                                         <span class="cell-content">{{ $invoice->created_at }}</span>
                                     </td>
+                                    @if(auth()->user()->hasAnyRole(['admin','admin client']))
+                                        <td data-column="created_at" data-priority="3" data-label="{{__('invoice.bill_by')}}">
+                                            <span class="cell-content">{!!  $invoice->performerPractitioner->profile_name !!} </span>
+                                        </td>
+                                    @endif
                                     <td data-column="patient" data-priority="4" data-label="{{ __('invoice.bill_to') }}">
                                         <span class="cell-content">
                                             @if($invoice->patient)

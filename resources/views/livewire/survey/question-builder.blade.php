@@ -2,6 +2,7 @@
    @include('partials.message')
 
     <div class="row">
+        @can('surveys.edit')
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -85,6 +86,7 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <div class="col-md-6">
             <div class="card">
@@ -119,6 +121,7 @@
                                                 </div>
                                             @endif
                                         </div>
+                                        @can('surveys.edit')
                                         <div class="btn-group btn-group-sm ml-2">
                                             <button wire:click="editQuestion({{ $question->id }})"
                                                     class="btn btn-warning btn-sm">
@@ -130,6 +133,7 @@
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </div>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

@@ -14,7 +14,7 @@
                     Admin Dashboard
                 @endslot
             @endcomponent
-    
+
 
             <div class="dashboard-init-v2">
                 <x-dashboard>
@@ -34,10 +34,14 @@
                 <x-dashboard-tile position="j1:l1" :refresh-interval-in-seconds="120">
                     <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
                 </x-dashboard-tile>
-
-
+                {{--}}
                 <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="60">
                     <livewire:dashboard.tiles.realtime-stats wire:key="tile_realtime_stats" />
+                </x-dashboard-tile>
+                {{--}}
+
+                <x-dashboard-tile position="a2:f2" :refresh-interval-in-seconds="300">
+                    @livewire('client.appointments-by-branch')
                 </x-dashboard-tile>
 
 
@@ -46,22 +50,22 @@
                 </x-dashboard-tile>
 
 
-                <x-dashboard-tile position="a3:f4" :refresh-interval-in-seconds="300">
-                    <livewire:dashboard.tiles.revenue-chart wire:key="tile_revenue_chart" />
-                </x-dashboard-tile>
+
 
 
                 <x-dashboard-tile position="g3:l3" :refresh-interval-in-seconds="300">
                     @livewire('admin.appointments-by-specialties')
                 </x-dashboard-tile>
 
-                <x-dashboard-tile position="g4:l4" :refresh-interval-in-seconds="300">
-                    @livewire('client.appointments-by-branch')
-                </x-dashboard-tile>
 
-                <x-dashboard-tile position="a5:l5" :refresh-interval-in-seconds="300">
+
+                <x-dashboard-tile position="a3:f3" :refresh-interval-in-seconds="300">
                     @livewire('client.invoices-by-branch')
                 </x-dashboard-tile>
+
+                    <x-dashboard-tile position="a6:l6" :refresh-interval-in-seconds="300">
+                        <livewire:dashboard.tiles.revenue-chart wire:key="tile_revenue_chart" />
+                    </x-dashboard-tile>
             </x-dashboard>
             </div>
 

@@ -82,9 +82,11 @@
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                                 @endif
+                                                @can('consultations.download_resumen')
                                                 <a href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank" class="btn btn-danger btn-sm"  title="{{__('consultation.download_resumen')}}">
                                                     <i  class="fa-solid fa-file-pdf m-r-5"></i>
                                                 </a>
+                                                @endcan
                                                 @if($dato->invoice)
                                                     <a href="{{ route('invoice.download',$dato->invoice->id) }}" target="_blank" class="btn btn-success btn-sm" title="{{__('consultation.download_invoice')}}">
                                                         <i  class="fa-solid fa-file-pdf m-r-5"></i>

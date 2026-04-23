@@ -3,10 +3,10 @@
         <div class="chart-title patient-visit mb-3">
             <h4>
                 <i class="fe fe-trending-up me-2"></i>
-                Ingresos - Últimos 7 Días
+                Ingresos - {{ now()->format('F Y') }}
             </h4>
             <div>
-                <span class="badge bg-success">Total: ${{ number_format($total_week, 2) }}</span>
+                <span class="badge bg-success">Total: ${{ number_format($total_month, 2) }}</span>
             </div>
         </div>
         

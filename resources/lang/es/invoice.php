@@ -30,6 +30,7 @@ return [
     // Table Headers
     'type' => 'Tipo',
     'bill_to' => 'Facturar a',
+    'bill_by' => 'Facturado Por',
     'patient' => 'Paciente',
     'amount' => 'Monto',
     'total_amount' => 'Monto Total',

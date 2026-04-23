@@ -166,8 +166,8 @@
                             <p class="mb-0">{{ $nextAppointment->service_type ?? 'Consulta general' }}</p>
                         </div>
                         <div class="mt-3">
-                            <span class="appointment appointment-{{$nextAppointment->status}}" style="position:relative;">
-                                {{ ucfirst(__('appointment.status.' . $nextAppointment->status)) }}
+                            <span class="appointment appointment-{{$nextAppointment->status->label()}}" style="position:relative;">
+                                {{ ucfirst(__('appointment.status.' . $nextAppointment->status->label())) }}
                             </span>
                         </div>
                     @else
