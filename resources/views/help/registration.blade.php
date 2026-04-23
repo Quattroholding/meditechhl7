@@ -1832,7 +1832,7 @@
                                     <h6>2. Pantalla de Pago</h6>
                                     <p>Se desplegará la pantalla de Detalle Factura donde podrá registrar su pago.</p>
                                     <div>
-                                        <img src="{{ asset('images/tutorial/register/assistant/1stepf.png') }}" alt="" style="width: 100%;">
+                                        <img src="{{ asset('images/tutorial/register/assistant/1stepf2.png') }}" alt="" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
@@ -1900,7 +1900,7 @@
                         <div class="info-box info-warning">
                             <i class="fas fa-exclamation-triangle"></i>
                             <div>
-                                <strong>Importante:</strong> Este tutorial cubre las <strong>Configuraciones Básicas</strong>, el <strong>Asistente de Configurción</strong> posee <strong>8 pasos</strong> en total que le recomendamos seguir para poder tener una mejor experiencia y pueda aprovechar al máximo el uso de nuestro sistema.
+                                <strong>Importante:</strong> Este tutorial cubre las <strong>Configuraciones Básicas y necesarias</strong> para comenzar el agendamiento de citas, el <strong>Asistente de Configuración</strong> posee <strong>7 pasos</strong> en total que le recomendamos seguir para poder tener una mejor experiencia y pueda aprovechar al máximo el uso de nuestro sistema.
                             </div>
                         </div>
                     </div>

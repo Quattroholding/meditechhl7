@@ -217,8 +217,8 @@
         </div>-->
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('help.profile') }}" class="btn btn-outline-success btn-lg">
-                <i class="fas fa-arrow-left me-2"></i>Perfil de Usuario
+            <a href="{{ route('help.subscriptions') }}" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-arrow-left me-2"></i>Suscripciones
             </a>
             <a href="{{ route('help.index') }}" class="btn btn-success btn-lg">
                 <i class="fas fa-home me-2"></i>Volver al Inicio
