@@ -1283,7 +1283,7 @@
                         <p>Los <strong>signos vitales</strong> son las mediciones fisiológicas tomadas durante las consultas:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-vs.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Campos de la Sección de Signos Vitales:</h5>
@@ -1531,11 +1531,11 @@
                             <ol>
                                 <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
                                 <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
-                                <li>En la seccion de <strong>"Antecedentes Médicos"</strong>, haz clic en <strong>"Agregar"</strong></li>
+                                <li>En el encabezado, en la parte derecha haga clic en <strong>"Antecedentes Médicos"</strong></li>
                                 <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
                                 <li>Ingresa el <strong>título</strong> descriptivo</li>
-                                <li>Agrega una <strong>descripción</strong> detallada</li>
                                 <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
+                                <li>Agrega una <strong>descripción</strong> detallada</li>
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
                         </div>
@@ -1719,6 +1719,8 @@
                                 <li>En la sección de <strong>"Pacientes"</strong>, haz clic en <strong>"Lista Pacientes"</strong>.</li>
                                 <li>Busca al paciente y haz clic en su nombre o en el botón de <strong>"Historial Médico"</strong>.</li>
                                 <li>En el encabezado del historial, haz clic en el botón 🛡️ <strong>"Gestionar Seguros"</strong>.</li>
+                                <li>Llena los datos correspondientes en el formulario</li>
+                                <li>Haz clic en el botón <strong>"Agregar Seguro"</strong> para completar el registro.</li>
                             </ol>
                         </div>
 
@@ -1734,11 +1736,11 @@
                             </li>
                             <li>
                                 <i class="fas fa-plus-circle"></i>
-                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura y fechas de vigencia.</div>
+                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura, fechas de vigencia, etc.</div>
                             </li>
                             <li>
                                 <i class="fas fa-toggle-on"></i>
-                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de estado para habilitar o inhabilitar una póliza sin eliminarla.</div>
+                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de acciones para activar o desactivar una póliza sin eliminarla.</div>
                             </li>
                             <li>
                                 <i class="fas fa-trash-alt"></i>
