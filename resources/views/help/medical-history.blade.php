@@ -1681,11 +1681,11 @@
                 <section id="notas-privadas" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Notas Privadas</h3>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnote.png') }}" alt="" style="width: 100%;">
+                        </div>
                     <div class="step-content">
                         <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo.</p>
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-pvnote.png') }}" alt="" style="width: 100%;">
-                        </div>
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
@@ -1695,6 +1695,9 @@
                                 <li>EScriba la información que necesite</li>
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnoterecord.png') }}" alt="" style="width: 100%;">
                         </div>
                         <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
