@@ -34,17 +34,19 @@ class SpecialityQuestions extends Component
 
     public function loadQuestions()
     {
-        // Cargar las 7 preguntas del IPSS desde la tabla
-        $this->questions = EncounterSpecialityQuestion::where('medical_speciality_id', $this->medical_specialty_id)
-            ->whereIn('question_esp', [
-                'Vaciado incompleto',
-                'Frecuencia',
-                'Intermitencia',
-                'Urgencia',
-                'Flujo Débil',
-                'Tirante',
-                'Nocturno',
-            ])
+
+        $questionsList = [
+            'Vaciado incompleto',
+            'Frecuencia',
+            'Intermitencia',
+            'Urgencia',
+            'Flujo Débil',
+            'Tirante',
+            'Nocturno'
+        ];
+
+        $this->questions = EncounterSpecialityQuestion::where('medical_speciality_id', 42)
+            ->whereIn('question_esp', $questionsList)
             ->orderBy('id')
             ->get();
     }
@@ -61,7 +63,7 @@ class SpecialityQuestions extends Component
         }
 
         // Cargar calidad de vida
-        $qolQuestion = EncounterSpecialityQuestion::where('medical_speciality_id', $this->medical_specialty_id)
+        $qolQuestion = EncounterSpecialityQuestion::where('medical_speciality_id', 42)
             ->where('question_esp', 'LIKE', '%Si tuviera que pasar el resto%')
             ->first();
 
@@ -95,7 +97,7 @@ class SpecialityQuestions extends Component
 
     public function saveQualityOfLife()
     {
-        $qolQuestion = EncounterSpecialityQuestion::where('medical_speciality_id', $this->medical_specialty_id)
+        $qolQuestion = EncounterSpecialityQuestion::where('medical_speciality_id', 42)
             ->where('question_esp', 'LIKE', '%Si tuviera que pasar el resto%')
             ->first();
 
