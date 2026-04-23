@@ -136,13 +136,7 @@
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>
-            <a href="{{ route('help.subscriptions') }}" class="nav-link {{ $active === 'subscriptions' ? 'active' : '' }}">
-                <i class="fas fa-id-card"></i>
-                <span>Suscripciones</span>
-                @if ($active === 'subscriptions')
-                    <span class="badge bg-warning">Actual</span>
-                @endif
-            </a>
+
             <a href="{{ route('help.patients') }}" class="nav-link {{ $active === 'patients' ? 'active' : '' }}">
                 <i class="fas fa-hospital-user"></i>
                 <span>Pacientes</span>
@@ -203,6 +197,14 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Mi Perfil</span>
                 @if ($active === 'profile')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
+            <a href="{{ route('help.subscriptions') }}" class="nav-link {{ $active === 'subscriptions' ? 'active' : '' }}">
+                <i class="fas fa-id-card"></i>
+                <span>Suscripciones</span>
+                @if ($active === 'subscriptions')
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>

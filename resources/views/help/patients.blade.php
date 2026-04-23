@@ -976,18 +976,18 @@
                             <ol>
                                 <li>Inicia sesión en tu cuenta SAMI</li>
                                 <li>En el menú lateral, busca <strong>"Pacientes"</strong></li>
-                                <li>Haz clic para ver la lista de pacientes</li>
+                                <li>Haz clic en <strong>Lista Pacientes</strong> para ver la lista de pacientes</li>
                             </ol>
                         </div>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
                         </div>
 
-                        <div class="info-box info-note">
-                            <i class="fas fa-info-circle"></i>
+                        <div class="info-box info-tip">
+                            <i class="fas fa-lightbulb"></i>
                             <div>
-                                <strong>Nota:</strong> Puede acceder desde el asistente de configuración (cuadro en la esquina inferior derecha) para registrar un paciente.
+                                <strong>Buscar primero:</strong> Antes de crear un nuevo paciente, usa el buscador para verificar que no exista ya en el sistema. Puedes buscar por nombre o numero de documento.
                             </div>
                         </div>
                         {{--}}<p class="mt-3">URL directa:</p>
@@ -1007,12 +1007,23 @@
                         <p>En la lista de pacientes, haz clic en el botón <strong>"Nuevo(a)"</strong>:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/patients/direct-url.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
                         </div>
-                        <div class="info-box info-tip">
-                            <i class="fas fa-lightbulb"></i>
+                                                <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
                             <div>
-                                <strong>Buscar primero:</strong> Antes de crear un nuevo paciente, usa el buscador para verificar que no exista ya en el sistema. Puedes buscar por nombre o numero de documento.
+                                <strong>Nota:</strong> Puede acceder de distintas formar para hacer el registro de un paciente: 
+                                <ol>
+                                    <li>
+                                        Desde el asistente de configuración (cuadro en la esquina inferior derecha)y da clic en <strong>+registrar Paciente</strong>.
+                                    </li>
+                                    <li>
+                                        Desde Lista Pacientes, haga clic en el botón azúl que dice<strong>+Nuevo(a)</strong>
+                                    </li>
+                                    <li>
+                                        Haciendo clic en <strong>Crear Paciente</strong>, puede accesar directamente al formulario del registro del paciente.
+                                    </li>
+                                </ol>
                             </div>
                         </div>
                     </div>
@@ -1490,44 +1501,105 @@
                 <section id="perfil" class="step-card">
                     <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-address-card me-2"></i>Ver Información del Paciente</h3>
                     <div class="step-content">
-                        <p>Despues de crear o asociar un paciente, puedes ver su perfil completo:</p>
-                        <ol>
-                            <li>Diríjase a <strong>Lista Pacientes</strong></li>
-                            <li>Elija el paciente y en la columna de acciones da clic en el botón de detalle →                               
-                                        <button class="btn btn-info btn-sm" style="pointer-events: none;"><i class="fa-solid fa-eye text-white"></i></button>
-                            </li>
-                        </ol>
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/patient_detailbtn.png') }}" alt="" style="width: 100%;">
+                        <p>Después de crear o asociar un paciente, puedes ver su perfil completo haciendo clic en el icono de ojo <button class="btn btn-info btn-sm" style="pointer-events: none;"><i class="fa-solid fa-eye text-white"></i></button> en la lista de pacientes.</p>
+                        
+                        <div class="info-box info-tip mb-4">
+                            <i class="fas fa-layer-group"></i>
+                            <div>
+                                <strong>Organización por Pestañas:</strong> Para facilitar la navegación, la información se divide en 6 pestañas principales que cubren todos los aspectos del paciente.
+                            </div>
                         </div>
-                        <h5 class="mt-4">El perfil incluye:</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-section-card">
-                                    <h6><i class="fas fa-user"></i> Información Personal</h6>
-                                    <ul>
-                                        <li>Datos de identificación</li>
-                                        <li>Información de contacto</li>
-                                        <li>Dirección</li>
-                                        <li>Contacto de emergencia</li>
-                                    </ul>
+
+                        <div class="row tabs-detail">
+                            <!-- Pestaña General -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0288d1 !important;">
+                                    <div class="card-body">
+                                        <h6 class="text-primary fw-bold"><i class="fas fa-user me-2"></i>1. General</h6>
+                                        <p class="small text-muted mb-2">Información básica y de contacto inicial.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Datos Personales:</strong> Nombre, nacimiento, género y tipo de sangre.</li>
+                                            <li><strong>Contacto:</strong> Teléfono, WhatsApp, email y dirección física.</li>
+                                            <li><strong>Emergencia:</strong> Datos de la persona a contactar en caso de urgencia.</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-section-card">
-                                    <h6><i class="fas fa-notes-medical"></i> Información Clinica</h6>
-                                    <ul>
-                                        <li>Historia médica</li>
-                                        <li>Citas programadas</li>
-                                        <li>Consultas realizadas</li>
-                                        <li>Documentos adjuntos</li>
-                                    </ul>
+
+                            <!-- Pestaña Relaciones -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #6a1b9a !important;">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold" style="color: #6a1b9a;"><i class="fas fa-users me-2"></i>2. Relaciones Familiares</h6>
+                                        <p class="small text-muted mb-2">Conexiones entre pacientes dentro del sistema.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Dependientes:</strong> Lista de hijos, cónyuges o padres asociados.</li>
+                                            <li><strong>Vínculos:</strong> Permite gestionar quién es el responsable de la cuenta familiar.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña Condiciones -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #d32f2f !important;">
+                                    <div class="card-body">
+                                        <h6 class="text-danger fw-bold"><i class="fas fa-notes-medical me-2"></i>3. Condiciones</h6>
+                                        <p class="small text-muted mb-2">Resumen clínico y antecedentes del paciente.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Diagnósticos:</strong> Problemas de salud activos registrados.</li>
+                                            <li><strong>Alergias:</strong> Reacciones a medicamentos o sustancias.</li>
+                                            <li><strong>Antecedentes:</strong> Historial patológico y quirúrgico.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña Seguros -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #2e7d32 !important;">
+                                    <div class="card-body">
+                                        <h6 class="text-success fw-bold"><i class="fas fa-shield-alt me-2"></i>4. Seguros</h6>
+                                        <p class="small text-muted mb-2">Gestión de pólizas y coberturas médicas.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Pólizas:</strong> Lista de seguros vinculados (Privados o CSS).</li>
+                                            <li><strong>Cobertura:</strong> Número de carnet, vigencia e información del titular.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña Citas -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #f9a825 !important;">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold" style="color: #f9a825;"><i class="fas fa-calendar-alt me-2"></i>5. Citas</h6>
+                                        <p class="small text-muted mb-2">Control de asistencia y programación.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Historial:</strong> Resumen de todas las citas pasadas y futuras.</li>
+                                            <li><strong>Estado:</strong> Visualización de citas confirmadas, canceladas o pendientes.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña Archivos -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #455a64 !important;">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold" style="color: #455a64;"><i class="fas fa-file-pdf me-2"></i>6. Archivos</h6>
+                                        <p class="small text-muted mb-2">Repositorio de documentos y multimedia.</p>
+                                        <ul class="small mb-0">
+                                            <li><strong>Documentos:</strong> Identificaciones, carnets de seguro y resultados.</li>
+                                            <li><strong>Formatos:</strong> Soporte para imágenes (JPG, PNG) y PDFs.</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/patient_detail.png') }}" alt="" style="width: 100%;">
+                        <div class="mt-4">
+                            <img src="{{ asset('images/tutorial/patients/patient_detail.png') }}" alt="Vista de Pestañas de Detalle de Paciente" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                 </section>

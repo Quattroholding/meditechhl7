@@ -154,7 +154,7 @@
                                                     @csrf
                                                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                                                     <input type="hidden" name="prorate" value="1">
-                                                    <button type="submit" class="btn btn-primary w-100" onclick="return confirm('¿Está seguro que desea actualizar a este plan? Se calculará el prorrateo correspondiente.')">
+                                                    <button type="submit" class="btn btn-primary w-100" wire:confirm="¿Está seguro que desea actualizar a este plan? Se calculará el prorrateo correspondiente?">
                                                         <i class="fas fa-arrow-up me-2"></i>Actualizar a este Plan
                                                     </button>
                                                 </form>

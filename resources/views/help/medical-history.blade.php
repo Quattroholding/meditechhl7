@@ -870,12 +870,12 @@
                                 Notas Privadas
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#agregar">
                                 <i class="fas fa-plus-circle"></i>
                                 Agregar Antecedentes
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#seguros">
                                 <i class="fas fa-shield-alt"></i>
@@ -969,6 +969,13 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
+                                    <i class="fas fa-diagnoses"></i>
+                                    <h6>Diagnósticos</h6>
+                                    <p>Diagnósticos ICD-10</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="section-card">
                                     <i class="fas fa-heartbeat"></i>
                                     <h6>Signos Vitales</h6>
                                     <p>Mediciones vitales</p>
@@ -986,13 +993,6 @@
                                     <i class="fas fa-notes-medical"></i>
                                     <h6>Enfermedades Actuales</h6>
                                     <p>Motivo de consulta</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="section-card">
-                                    <i class="fas fa-diagnoses"></i>
-                                    <h6>Diagnósticos</h6>
-                                    <p>Diagnósticos ICD-10</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1025,13 +1025,6 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-sticky-note"></i>
-                                    <h6>Notas Privadas</h6>
-                                    <p>Notas del médico</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="section-card">
                                     <i class="fas fa-comment-medical"></i>
                                     <h6>Notas Médicas</h6>
                                     <p>Impresiones médicas</p>
@@ -1042,6 +1035,13 @@
                                     <i class="fas fa-file-medical"></i>
                                     <h6>Incapacidades</h6>
                                     <p>Incapacidades Médicas</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="section-card">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <h6>Notas Privadas</h6>
+                                    <p>Notas del médico</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1127,7 +1127,7 @@
                                     </li>
                                     <li>
                                         <i class="fas fa-allergies"></i>
-                                        <div><strong>Alergias conocidas</strong></div>
+                                        <div><strong>Antecedentes Médicos</strong></div>
                                     </li> 
                                     <li>                               
                                         <i class="fas fa-heartbeat"></i>
@@ -1190,14 +1190,18 @@
                         </div>
                             <p>Este documento incluye:</p>
                             <ul class="checklist">
-                                <li><i class="fas fa-check-circle"></i> <div><strong>Datos del Paciente:</strong> Nombre completo, edad y número de identificación.</div></li>
-                                <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora y nombre del médico que atendió.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Datos del Paciente:</strong> Nombre completo, edad, género, fecha de nacimiento, estado civil, dirección, número de identificación, teléfono de casa y lugar de residencia.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora, nombre del médico que atendió y número de consulta.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Motivo de Consulta y Enfermedad Actual:</strong> Descripción detallada de los síntomas y motivo de la visita.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Signos Vitales:</strong> Registro de las mediciones tomadas durante la consulta.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Diagnósticos:</strong> Conclusiones médicas codificadas bajo ICD-10.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Órdenes Médicas:</strong> Medicamentos recetados con sus dosis e instrucciones, y estudios solicitados.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Notas Médicas:</strong> Recomendaciones y observaciones adicionales del profesional de salud.</div></li>
                             </ul>
+                        </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Nota:</strong> Las secciones dependen de la plantilla de consulta configurada por el medico. Algunas pueden o no aparecer en el resumen médico.
                         </div>
                     </div>
                 </section>
@@ -1279,7 +1283,7 @@
                         <p>Los <strong>signos vitales</strong> son las mediciones fisiológicas tomadas durante las consultas:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-vs.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Campos de la Sección de Signos Vitales:</h5>
@@ -1293,14 +1297,9 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Sistolica</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8480-6</span></td>-->
-                                    <td data-label="Unidad">mmHg</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Diastolica</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8462-4</span></td>-->
-                                    <td data-label="Unidad">mmHg</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8310-5</span></td>-->
+                                    <td data-label="Unidad">°C</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
@@ -1308,9 +1307,19 @@
                                     <td data-label="Unidad">lpm</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8310-5</span></td>-->
-                                    <td data-label="Unidad">°C</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Arterial Sistólica</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8480-6</span></td>-->
+                                    <td data-label="Unidad">mmHg</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Arterial Diastólica</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8462-4</span></td>-->
+                                    <td data-label="Unidad">mmHg</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-lungs-virus text-info me-2"></i> Frecuencia Respiratoria</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
+                                    <td data-label="Unidad">lpm</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
@@ -1323,7 +1332,7 @@
                                     <td data-label="Unidad">kg</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Altura</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Talla</td>
                                     <!--<td data-label="Codigo LOINC"><span class="code">8302-2</span></td>-->
                                     <td data-label="Unidad">cm</td>
                                 </tr>
@@ -1331,6 +1340,11 @@
                                     <td data-label="Signo Vital"><i class="fas fa-calculator text-success me-2"></i> IMC</td>
                                     <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
                                     <td data-label="Unidad">kg/m²</td>
+                                </tr>
+                                                                <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-droplet text-danger me-2"></i> Glucemia Capilar</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
+                                    <td data-label="Unidad">mg/dL</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1352,7 +1366,7 @@
                         <p>La Sección de <strong>Enfermedad Actual</strong> posee los registros detallado de los padecimientos registrados en las citas:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-actillness.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-ai.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Información mostrada del padecimiento:</h5>
@@ -1506,6 +1520,36 @@
                                 </div>
                             </div>
                         </div>
+
+                    <!-- Agregar Antecedentes -->
+                    <h3 class="step-title" style="padding-left: 0;">Agregar Antecedentes Médicos</h3>
+                    <div class="step-content">
+                        <p>Puedes agregar manualmente antecedentes médicos históricos del paciente:</p>
+
+                        <div class="sub-step">
+                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
+                            <ol>
+                                <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
+                                <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
+                                <li>En el encabezado, en la parte derecha haga clic en <strong>"Antecedentes Médicos"</strong></li>
+                                <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
+                                <li>Ingresa el <strong>título</strong> descriptivo</li>
+                                <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
+                                <li>Agrega una <strong>descripción</strong> detallada</li>
+                                <li>Haz clic en <strong>"Guardar"</strong></li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/modal-prev.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar información precisa.
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -1576,7 +1620,7 @@
                     <div class="step-number">10</div>
                     <h3 class="step-title">Incapacidades Médicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>Incapacidades médicas</strong> (incapacidades) emitidas al paciente:</p>
+                        <p>La Sección de <strong>Incapacidades médicas</strong> contiene el historial de las incapacidades médicas emitidas al paciente.</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-license.png') }}" alt="" style="width: 100%;">
@@ -1587,7 +1631,7 @@
                                  <ul class="checklist">
                                      <li>
                                          <i class="fas fa-id-card"></i>
-                                         <div><strong>Número del Seguro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
+                                         <div><strong>Número de Registro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
                                      </li>
                                      <li>
                                          <i class="fas fa-calendar-alt"></i>
@@ -1637,11 +1681,11 @@
                 <section id="notas-privadas" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Notas Privadas</h3>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnote.png') }}" alt="" style="width: 100%;">
+                        </div>
                     <div class="step-content">
                         <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo.</p>
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-pvnote.png') }}" alt="" style="width: 100%;">
-                        </div>
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
@@ -1652,45 +1696,15 @@
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
                         </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnoterecord.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
                                 <strong>Descarga:</strong> Las licencias médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
                             </div>
                         </div>-->
-                    </div>
-                </section>
-
-                <!-- Agregar Antecedentes -->
-                <section id="agregar" class="step-card step-success">
-                    <h3 class="step-title" style="padding-left: 0;">Agregar Antecedentes Médicos</h3>
-                    <div class="step-content">
-                        <p>Puedes agregar manualmente antecedentes médicos históricos del paciente:</p>
-
-                        <div class="sub-step">
-                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
-                            <ol>
-                                <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
-                                <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
-                                <li>En la seccion de <strong>"Antecedentes Médicos"</strong>, haz clic en <strong>"Agregar"</strong></li>
-                                <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
-                                <li>Ingresa el <strong>título</strong> descriptivo</li>
-                                <li>Agrega una <strong>descripción</strong> detallada</li>
-                                <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
-                                <li>Haz clic en <strong>"Guardar"</strong></li>
-                            </ol>
-                        </div>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/modal-prev.png') }}" alt="" style="width: 100%;">
-                        </div>
-
-                        <div class="info-box info-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div>
-                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar información precisa.
-                            </div>
-                        </div>
                     </div>
                 </section>
 
@@ -1708,6 +1722,8 @@
                                 <li>En la sección de <strong>"Pacientes"</strong>, haz clic en <strong>"Lista Pacientes"</strong>.</li>
                                 <li>Busca al paciente y haz clic en su nombre o en el botón de <strong>"Historial Médico"</strong>.</li>
                                 <li>En el encabezado del historial, haz clic en el botón 🛡️ <strong>"Gestionar Seguros"</strong>.</li>
+                                <li>Llena los datos correspondientes en el formulario</li>
+                                <li>Haz clic en el botón <strong>"Agregar Seguro"</strong> para completar el registro.</li>
                             </ol>
                         </div>
 
@@ -1723,11 +1739,11 @@
                             </li>
                             <li>
                                 <i class="fas fa-plus-circle"></i>
-                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura y fechas de vigencia.</div>
+                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura, fechas de vigencia, etc.</div>
                             </li>
                             <li>
                                 <i class="fas fa-toggle-on"></i>
-                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de estado para habilitar o inhabilitar una póliza sin eliminarla.</div>
+                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de acciones para activar o desactivar una póliza sin eliminarla.</div>
                             </li>
                             <li>
                                 <i class="fas fa-trash-alt"></i>

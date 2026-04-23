@@ -734,20 +734,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-crown fa-2x text-warning"></i>
-                        </div>
-                        <h5 class="card-title">Mi Suscripción</h5>
-                        <p class="card-text text-muted">Gestiona tu plan y pagos mensuales.</p>
-                        <a href="{{ route('help.subscriptions') }}" class="btn btn-warning">
-                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
-                        </a>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
@@ -772,6 +759,21 @@
                         <h5 class="card-title">Perfil de Usuario</h5>
                         <p class="card-text text-muted">Gestiona tu información personal, seguridad y firma digital.</p>
                         <a href="{{ route('help.profile') }}" class="btn text-white" style="background: #0288d1;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-crown fa-2x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Mi Suscripción</h5>
+                        <p class="card-text text-muted">Gestiona tu plan y pagos mensuales.</p>
+                        <a href="{{ route('help.subscriptions') }}" class="btn btn-warning">
+                            <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                        </a>
                     </div>
                 </div>
             </div>

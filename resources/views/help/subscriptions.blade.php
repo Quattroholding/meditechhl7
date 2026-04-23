@@ -711,7 +711,7 @@
                 <p>El sistema genera facturas automáticamente:</p>
                 <ul>
                     <li>Se crean en la fecha de renovación mensual</li>
-                    <li>Incluyen precio base + ITBMS</li>
+                    <li>Incluyen precio base</li>
                     <li>Se aplican descuentos automáticamente, si usa su código de referidos</li>
                     <li>Estado inicial: Pendiente</li>
                 </ul>
@@ -728,7 +728,7 @@
                 </ul>
 
                 <div>
-                    <img src="{{ asset('images/tutorial/subscriptions/invoices.png') }}" alt="" style="width: 100%;">
+                    <img src="{{ asset('images/tutorial/subscriptions/invoice.png') }}" alt="" style="width: 100%;">
                 </div>
             </div>
 
@@ -773,8 +773,8 @@
                 <p>Después de realizar el pago:</p>
                 <ul>
                     <li>Vaya a <strong>Suscripción → Facturas</strong></li>
-                    <li>Haga clic en <strong>"Pagar ahora"</strong></li>
                     <li>Seleccione la factura a pagar</li>
+                    <li>Haga clic en <strong>"Pagar ahora"</strong></li>
                     <li>Complete el formulario con:
                         <ul>
                             <li>Monto pagado</li>
@@ -936,13 +936,13 @@
 
         <div class="row mt-5">
             <div class="col-md-6">
-                <a href="{{ route('help.payments') }}" class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-arrow-left me-2"></i>Anterior: Pagos
+                <a href="{{ route('help.profile') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Anterior: Mi Perfil
                 </a>
             </div>
-            <div class="col-md-6  btn-end text-end">
-                <a href="{{ route('help.index') }}" class="btn btn-warning btn-lg">
-                    <i class="fas fa-home me-2"></i>Volver al Inicio
+            <div class="col-md-6 btn-end text-end">
+                <a href="{{ route('help.support') }}" class="btn btn-warning btn-lg">
+                    Siguiente: Soporte <i class="fas fa-arrow-right ms-2"></i>
                 </a>
             </div>
         </div>

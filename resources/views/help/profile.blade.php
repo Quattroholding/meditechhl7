@@ -190,11 +190,11 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('help.index') }}" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-home me-2"></i>Volver al Inicio
+            <a href="{{ route('help.settings') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i>Configuraciones
             </a>
-            <a href="{{ route('help.support') }}" class="btn btn-primary btn-lg">
-                Soporte y Contacto <i class="fas fa-arrow-right ms-2"></i>
+            <a href="{{ route('help.subscriptions') }}" class="btn btn-primary btn-lg">
+                Suscripciones <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
     </main>

@@ -1845,11 +1845,11 @@
 
         <!-- Navigation -->
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('help.appointments') }}" class="btn btn-outline-secondary btn-lg">
-                <i class="fas fa-arrow-left me-2"></i>Agendamiento de Citas
+            <a href="{{ route('help.doctor-dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i>Dashboard Médico
             </a>
-            <a href="{{ route('help.index') }}" class="btn btn-primary btn-lg">
-                <i class="fas fa-home me-2"></i>Volver al Inicio
+            <a href="{{ route('help.profile') }}" class="btn btn-primary btn-lg">
+                Mi Perfil <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
     </main>
