@@ -137,6 +137,21 @@ class ModalSave extends Component
         }
     }
 
+    #[On('openAppointmentModalWithPatient')]
+    public function openModalWithPatient($patientId, $title = 'Nueva Cita', $date = null, $time = null)
+    {
+        $this->resetForm($date, $time);
+        $this->patient_id = $patientId;
+        $this->showModal = true;
+        $this->title = $title;
+        $this->buttonSaveTitle = 'Guardar Cita';
+
+        // Cargar consultorios si ya hay doctor y fecha
+        if ($this->doctor_id && $this->appointment_date) {
+            $this->loadConsultorios();
+        }
+    }
+
     public function resetForm($date = null, $time = '')
     {
         $this->consulting_room_id = '';
@@ -510,6 +525,23 @@ class ModalSave extends Component
                 if ($hasDateTimeChanged && $this->appointment->status->value === 'booked') {
 
                     $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
+
+                    // Si el usuario que cambia la cita no es el médico, notificar también al médico
+                    $currentUser = auth()->user();
+                    $isPractitioner = $currentUser->hasRole('doctor') &&
+                                    $this->appointment->practitioner->user_id === $currentUser->id;
+
+                    if (! $isPractitioner) {
+                        $changedBy = $currentUser->first_name.' '.$currentUser->last_name;
+                        $this->appointment->notifyPractitionerAboutReschedule($originalStart, $this->notes, $changedBy);
+
+                        \Log::info('Médico notificado sobre reprogramación de cita por otro usuario', [
+                            'appointment_id' => $this->appointment->id,
+                            'practitioner_id' => $this->appointment->practitioner_id,
+                            'changed_by' => $changedBy,
+                            'changed_by_user_id' => $currentUser->id,
+                        ]);
+                    }
 
                     // Clear reminder tracking to allow new reminder for rescheduled datetime
                     $this->appointment->clearReminderTracking();

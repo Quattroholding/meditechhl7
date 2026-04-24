@@ -32,10 +32,63 @@
                 </div>
             </div>
         </div>
-        @if($patientExists)
+        @if($patientExists && $existingPatientData)
         <div class="row">
-            <p>Este usuario ya se encuentra registrado en el sistema, ¿Desea asociarlo a su empresa?</p>
-            <a class="btn btn-primary cancel-form" id="associate-yes" wire:click.stop="asociar()">  Asociar </a>
+            <div class="col-12">
+                <div class="alert alert-info" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; padding: 20px; color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: start; gap: 15px;">
+                        <div style="font-size: 40px; opacity: 0.9;">👤</div>
+                        <div style="flex: 1;">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 15px; font-size: 18px;">
+                                ⚠️ Paciente Ya Registrado
+                            </h5>
+                            <p style="margin-bottom: 15px; opacity: 0.95; font-size: 14px;">
+                                Este paciente ya se encuentra registrado en el sistema. Por favor verifique que sea el mismo paciente antes de asociarlo a su empresa.
+                            </p>
+
+                            <div style="background: rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 15px; backdrop-filter: blur(10px);">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Nombre Completo</div>
+                                        <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['name'] ?? 'N/A' }}</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Documento</div>
+                                        <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['identifier'] ?? 'N/A' }}</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Fecha de Nacimiento</div>
+                                        <div style="font-weight: 600; font-size: 15px;">
+                                            {{ $existingPatientData['birth_date'] ? \Carbon\Carbon::parse($existingPatientData['birth_date'])->format('d/m/Y') : 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Género</div>
+                                        <div style="font-weight: 600; font-size: 15px;">
+                                            @if($existingPatientData['gender'] === 'male')
+                                                👨 Masculino
+                                            @elseif($existingPatientData['gender'] === 'female')
+                                                👩 Femenino
+                                            @else
+                                                {{ ucfirst($existingPatientData['gender'] ?? 'N/A') }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button type="button" class="btn btn-light" wire:click.stop="asociar()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid white;">
+                                    ✅ Sí, Asociar este Paciente
+                                </button>
+                                <button type="button" class="btn btn-outline-light" wire:click="resetForm()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5);">
+                                    ❌ No es el mismo paciente
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         @endif
         @if($patientDontExists)

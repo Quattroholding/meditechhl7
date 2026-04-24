@@ -19,6 +19,9 @@
                     @if($showInsuranceModal && $selectedPatientForInsurance)
                         @livewire('patient.add-insurance', ['patient_id' => $selectedPatientForInsurance->id, 'showInsuranceModal' => true, 'hideButton' => true], key('insurance-'.$selectedPatientForInsurance->id))
                     @endif
+
+                    <!-- Modal de agendar cita -->
+                    @livewire('appointment.modal-save')
                     <div class="table-responsive">
                         <table class="table border-0 custom-table comman-table mb-0 responsive-table">
                             <thead>
@@ -76,6 +79,14 @@
                                                     <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{__('Gestionar Seguros')}}">
                                                         <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
                                                     </a>
+                                                @endcan
+                                                @can('appointments.create')
+                                                    <button type="button"
+                                                            onclick="Livewire.dispatch('openAppointmentModalWithPatient', { patientId: {{ $patient->id }} })"
+                                                            class="btn btn-warning btn-sm"
+                                                            title="Agendar Cita">
+                                                        <i class="fa-solid fa-calendar-plus m-r-5"></i>
+                                                    </button>
                                                 @endcan
                                             </div>
                                     </td>
