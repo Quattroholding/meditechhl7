@@ -26,7 +26,9 @@
                                 <th style="width: 50px;"></th>
                                 <th>Paciente</th>
                                 <th>Fecha Consulta</th>
+                                @can('patients.see_conditions')
                                 <th>Diagnóstico Principal</th>
+                                @endcan
                                 <th>Tipo de Cita</th>
                                 <th>Servicios</th>
                                 <th class="text-end">Resultados</th>
@@ -57,6 +59,7 @@
                                     <td>
                                         {{ $encounter->start ? $encounter->start->format('d/m/Y H:i') : 'N/A' }}
                                     </td>
+                                    @can('patients.see_conditions')
                                     <td>
                                         @if($encounter->diagnoses->isNotEmpty())
                                             @php
@@ -77,6 +80,7 @@
                                             <span class="text-muted">Sin diagnóstico</span>
                                         @endif
                                     </td>
+                                    @endcan
                                     <td>
                                         @if($encounter->appointment && $encounter->appointment->service_type)
                                             <span class="badge bg-info">

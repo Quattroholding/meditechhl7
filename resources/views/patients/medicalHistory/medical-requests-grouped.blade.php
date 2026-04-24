@@ -255,10 +255,35 @@
                                         </a>
                                     @endif
                                     @if($services->count() > 0)
-                                        <a href="{{route('medical-order.download',$encounter->id)}}" target="_blank"
-                                           class="btn btn-sm" style="background: #0891b2; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                            📋 Descargar Orden Médica
-                                        </a>
+                                        @php
+                                            // Agrupar service requests por tipo
+                                            $servicesByType = $services->groupBy('service_type');
+                                        @endphp
+
+                                        @foreach($servicesByType as $serviceType => $serviceGroup)
+                                            <a href="{{route('medical-order.download',$encounter->id)}}?service_type={{$serviceType}}"
+                                               target="_blank"
+                                               class="btn btn-sm"
+                                               style="background: #0891b2; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                                @switch($serviceType)
+                                                    @case('laboratory')
+                                                        🧪
+                                                        @break
+                                                    @case('imaging')
+                                                        📸
+                                                        @break
+                                                    @case('radiology')
+                                                        ☢️
+                                                        @break
+                                                    @case('procedure')
+                                                        🩺
+                                                        @break
+                                                    @default
+                                                        📋
+                                                @endswitch
+                                                Descargar Orden {{ \App\Enums\ServiceType::pluralLabelFromValue($serviceType) }}
+                                            </a>
+                                        @endforeach
                                     @endif
                                 </div>
                             </div>
