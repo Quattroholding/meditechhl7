@@ -843,7 +843,47 @@ Route::prefix('help')->name('help.')->group(function () {
     })->name('profile');
 
     Route::get('/roles', function () {
-        return view('help.roles');
+        $roles = \App\Models\Rol::whereIn('id', [5, 2, 6, 3, 4])
+            ->get()
+            ->sortBy(function($role) {
+                return array_search($role->id, [5, 2, 6, 3, 4]);
+            });
+
+        $excludedModules = ['roles', 'clientes', 'encuestas', 'reportes', 'aseguradoras', 'paquetes'];
+        $excludedPermissions = [
+            'Validar usuarios registrados desde la aplicación móvil',
+            'Eliminar registros de pacientes',
+            'Eliminar registros de consultas',
+            'Editar información de medicamentos',
+            'Eliminar medicamentos del catálogo',
+            'Seleccionar plantilla de recetas medicas',
+            'Acceso al dashboard de contabilidad',
+            'Editar factura de suscripcion',
+            'Editar pago de suscripcion',
+            'Cancelar pago de suscripcion',
+            'Verificar pago de suscripcion',
+            'Ver lista de suscripciones',
+            'Comentar cambiar estauts',
+            'Asignar ticket'
+        ];
+
+        $permissions = \Spatie\Permission\Models\Permission::whereNotIn('module', $excludedModules)
+            ->whereNotIn('description', $excludedPermissions)
+            ->whereNotIn('name', $excludedPermissions) // Backup check for name
+            ->orderBy('id')
+            ->get()
+            ->groupBy('module');
+        
+        // Fetch permission-role assignments
+        $matrix = \Illuminate\Support\Facades\DB::table('role_has_permissions')
+            ->select('permission_id', 'role_id')
+            ->get()
+            ->groupBy('permission_id')
+            ->map(function($item) {
+                return $item->pluck('role_id')->all();
+            });
+
+        return view('help.roles', compact('roles', 'permissions', 'matrix'));
     })->name('roles');
 
     Route::get('/support', function () {
