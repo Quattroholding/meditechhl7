@@ -13,6 +13,12 @@ class NewUserRegistrationNotification extends Notification implements ShouldQueu
 {
     use Queueable, ValidatesEmailChannel;
 
+    public $tries = 3;
+
+    public $backoff = [60, 300, 600];
+
+    public $deleteWhenMissingModels = true;
+
     /**
      * Create a new notification instance.
      */

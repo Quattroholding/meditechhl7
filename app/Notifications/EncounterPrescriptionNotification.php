@@ -21,6 +21,8 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     /**
      * IDs of medication requests to include in PDF
      */
