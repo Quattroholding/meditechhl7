@@ -51,6 +51,7 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
 
         return (new MailMessage)
             ->subject('Cambio de Horario en su Cita Médica - '.$clinicName)
+            ->bcc('business@meditecpty.com')
             ->view('emails.appointment-rescheduled', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
