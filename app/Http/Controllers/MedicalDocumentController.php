@@ -67,6 +67,29 @@ class MedicalDocumentController extends Controller
     }
 
     /**
+     * Generar orden de referencia para un encounter específico
+     */
+    public function generateReferralOrder(Request $request, $encounterId)
+    {
+        try {
+            $encounter = Encounter::findOrFail($encounterId);
+
+            if ($encounter->referrals->isEmpty()) {
+                return response()->json([
+                    'error' => 'Este encuentro no tiene referrals a especialistas.',
+                ], 400);
+            }
+
+            return $this->pdfService->streamReferralOrderPdf($encounter);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al generar la orden de referencia: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Generar receta médica para medicamentos específicos
      */
     public function generatePrescriptionByMedications(Request $request)

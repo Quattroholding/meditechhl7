@@ -13,7 +13,7 @@
             <!-- /Page Header -->
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-9 ">
                     <div class="card">
                         <div class="card-body">
                             <!-- Tab Navigation -->
@@ -71,6 +71,15 @@
                                         <i class="fa fa-share-alt"></i> {{ __('consultation.referrals') }}
                                     </button>
                                 </li>
+                                @endif
+
+                                <!-- Historial de Snapshots -->
+                                @if($encounter->snapshots()->count() > 0)
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="change_history-tab" data-bs-toggle="tab" data-bs-target="#change_history" type="button" role="tab" aria-controls="change_history" aria-selected="false">
+                                            <i class="fa fa-clock"></i> {{ __('consultation.changes_history') }}
+                                        </button>
+                                    </li>
                                 @endif
                             </ul>
 
@@ -400,12 +409,12 @@
                                                                 <td>{{ $referral->speciality->name }}</td>
                                                                 <td>{{ $referral->reason }}</td>
                                                                 <td>
-                                                                    <span class="badge badge-{{ $referral->status == 'active' ? 'success' : 'secondary' }}">
+                                                                    <span class="badge bg-{{ $referral->status == 'active' ? 'success' : 'secondary' }}">
                                                                         {{ ucfirst($referral->status) }}
                                                                     </span>
                                                                 </td>
-                                                                <td>{{$referral->referredTo->name}}</td>
-                                                                <td>{{ $referral->ocurrence_date ? $referral->ocurrence_date->format('Y-m-d H:i') : 'N/A' }}</td>
+                                                                <td>{{ $referral->occurrence_date ??  'N/A' }}</td>
+                                                                <td>{{$referral->referredTo->name ?? $referral->external_specialist_name }}</td>
                                                                 <td>{{ ucfirst($referral->priority) }}</td>
                                                             </tr>
                                                         @endforeach
@@ -416,51 +425,94 @@
                                     </div>
                                 </div>
                                 @endif
+                                @if($encounter->snapshots()->count() > 0)
+                                    <!-- Change History Tabs Tab -->
+                                    <div class="tab-pane fade" id="change_history" role="tabpanel" aria-labelledby="change_history-tab">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                @livewire('consultation.encounter-snapshot-history', ['encounterId' => $encounter->id])
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Action Buttons -->
                             <div class="text-center mt-4">
 
-                                <a href="{{ route('consultation.index') }}" class="btn btn-secondary">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="float-end">
+                                <a href="{{ route('consultation.index') }}" class="btn btn-secondary  mb-2">
                                     <i class="fa fa-arrow-left"></i> {{ __('generic.back') }}
                                 </a>
-                                @if($encounter->medicationRequests->count() > 0)
-                                    <a href="{{route('prescription.download',$encounter->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf"></i> {{__('Descargar receta')}} </a>
-                                @endif
-                                @if($encounter->serviceRequests->count() > 0)
-                                    @php
-                                        // Agrupar service requests por tipo
-                                        $servicesByType = $encounter->serviceRequests->groupBy('service_type');
-                                    @endphp
-
-                                    @foreach($servicesByType as $serviceType => $services)
-                                        <a href="{{route('medical-order.download',$encounter->id)}}?service_type={{$serviceType}}"
-                                           target="_blank"
-                                           class="btn btn-primary">
-                                            <i class="fa fa-file-pdf"></i> Descargar Orden {{ \App\Enums\ServiceType::pluralLabelFromValue($serviceType) }}
-                                        </a>
-                                    @endforeach
-                                @endif
-                                <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-primary" target="_blank">
-                                    <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
-                                </a>
-
-                                @php
-                                    // Check if there are unsent prescriptions or service requests
-                                    $hasUnsentMedications = $encounter->medicationRequests->whereNull('notification_sent_at')->count() > 0;
-                                    $hasUnsentServiceRequests = $encounter->serviceRequests->whereNull('notification_sent_at')->count() > 0;
-                                    $canResendWhatsApp = $hasUnsentMedications || $hasUnsentServiceRequests;
-                                @endphp
-
-                                @if($canResendWhatsApp && ($encounter->patient->whatsapp_phone || $encounter->patient->phone))
-                                    <form action="{{ route('consultation.resend-whatsapp', $encounter->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de enviar las prescripciones por WhatsApp al paciente?');">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">
-                                            <i class="fab fa-whatsapp"></i> Enviar Recetas por WhatsApp
-                                        </button>
-                                    </form>
+                                @if(auth()->user()->can('edit',$encounter))
+                                    <a href="{{ route('consultation.show',$encounter->appointment_id) }}" class="btn btn-primary  mb-2" title="{{__('generic.edit')}}">
+                                        <i  class="fa-solid fa-pen-to-square m-r-5"></i> {{ __('generic.edit') }}
+                                    </a>
                                 @endif
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            @can('consultations.download_resumen')
+                                <a href="{{ route('consultation.download_resumen', $encounter->appointment_id) }}" class="btn btn-info btn-block mb-2" target="_blank">
+                                    <i class="fa fa-download"></i> {{ __('consultation.download_resumen') }}
+                                </a>
+                            @endcan
+                            @if($encounter->medicationRequests->count() > 0)
+                                <a href="{{route('prescription.download',$encounter->id)}}" target="_blank" class="btn btn-warning btn-block mb-2"><i class="fa fa-file-pdf"></i> {{__('Descargar receta')}} </a>
+                            @endif
+                            @if($encounter->serviceRequests->count() > 0)
+                                @php
+                                    // Agrupar service requests por tipo
+                                    $servicesByType = $encounter->serviceRequests->groupBy('service_type');
+                                @endphp
+
+                                @foreach($servicesByType as $serviceType => $services)
+                                    <a href="{{route('medical-order.download',$encounter->id)}}?service_type={{$serviceType}}"
+                                       target="_blank"
+                                       class="btn btn-primary btn-block mb-2">
+                                        <i class="fa fa-file-pdf"></i> Descargar Orden {{ \App\Enums\ServiceType::pluralLabelFromValue($serviceType) }}
+                                    </a>
+                                @endforeach
+                            @endif
+
+                            @if($encounter->referrals->count() > 0)
+                                <a href="{{route('referral-order.download',$encounter->id)}}"
+                                   target="_blank"
+                                   class="btn btn-primary btn-block mb-2">
+                                    <i class="fa fa-file-pdf"></i> Descargar Orden de Referencia
+                                </a>
+                            @endif
+
+
+                            @php
+                                // Check if there are unsent prescriptions or service requests
+                                $hasUnsentMedications = $encounter->medicationRequests->whereNull('notification_sent_at')->count() > 0;
+                                $hasUnsentServiceRequests = $encounter->serviceRequests->whereNull('notification_sent_at')->count() > 0;
+
+                                // Check if practitioner has signature and seal (same logic as EncounterObserver)
+                                $pdfService = new \App\Services\EncounterPrescriptionPdfService;
+                                $practitionerHasSignatureAndSeal = $pdfService->practitionerHasSignatureAndSeal($encounter->practitioner);
+
+                                $canResendWhatsApp = ($hasUnsentMedications || $hasUnsentServiceRequests) && $practitionerHasSignatureAndSeal;
+                            @endphp
+
+                            @if($canResendWhatsApp && ($encounter->patient->whatsapp_phone || $encounter->patient->phone))
+                                <form action="{{ route('consultation.resend-whatsapp', $encounter->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de enviar las prescripciones por WhatsApp al paciente?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success btn-block mb-2">
+                                        <i class="fab fa-whatsapp"></i> Enviar Recetas por WhatsApp
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>

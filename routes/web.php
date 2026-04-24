@@ -580,6 +580,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::post('/medical-order/custom/download', [MedicalDocumentController::class, 'generateMedicalOrderByServices'])
         ->name('medical-order.custom.download');
 
+    // Referral Order Routes
+    Route::get('/referral-order/{encounter}/download', [MedicalDocumentController::class, 'generateReferralOrder'])
+        ->name('referral-order.download');
+
     // Medical Leave Routes
     Route::get('/medical-leaves/{id}/download', [MedicalDocumentController::class, 'downloadMedicalLeavePdf'])
         ->name('medical-leaves.download-pdf');

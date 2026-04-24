@@ -20,6 +20,8 @@ class EncounterSnapshotHistory extends Component
 
     public $selectedSnapshotData = null;
 
+    public $snapshotChanges = null;
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounterId);
@@ -41,6 +43,15 @@ class EncounterSnapshotHistory extends Component
         if ($snapshot) {
             $this->selectedSnapshot = $snapshot;
             $this->selectedSnapshotData = $snapshot->snapshot_data;
+
+            // Get previous snapshot for comparison
+            $snapshotService = app(EncounterSnapshotService::class);
+            $previousSnapshot = $this->snapshots
+                ->where('version', $snapshot->version - 1)
+                ->first();
+
+            $this->snapshotChanges = $snapshotService->compareSnapshots($previousSnapshot, $snapshot);
+
             $this->showModal = true;
         }
     }
@@ -50,6 +61,7 @@ class EncounterSnapshotHistory extends Component
         $this->showModal = false;
         $this->selectedSnapshot = null;
         $this->selectedSnapshotData = null;
+        $this->snapshotChanges = null;
     }
 
     public function render()
