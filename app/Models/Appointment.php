@@ -11,6 +11,7 @@ use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
+use App\Notifications\AppointmentRescheduledForPractitionerNotification;
 use App\Notifications\AppointmentRescheduledNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -341,6 +342,29 @@ class Appointment extends BaseModel
             'original_datetime' => $originalDateTime->format('Y-m-d H:i:s'),
             'new_datetime' => $this->start->format('Y-m-d H:i:s'),
             'reason' => $reason,
+        ]);
+    }
+
+    /**
+     * Notify the practitioner about appointment reschedule (date/time change)
+     *
+     * @param  Carbon  $originalDateTime  The original date/time before the change
+     * @param  string|null  $reason  Optional reason for the reschedule
+     * @param  string|null  $changedBy  Name of the person who made the change
+     */
+    public function notifyPractitionerAboutReschedule(Carbon $originalDateTime, ?string $reason = null, ?string $changedBy = null)
+    {
+        $this->practitioner->notify(
+            new AppointmentRescheduledForPractitionerNotification($this, $originalDateTime, $reason, $changedBy)
+        );
+
+        \Log::info('Practitioner notified about appointment reschedule', [
+            'appointment_id' => $this->id,
+            'practitioner_id' => $this->practitioner_id,
+            'original_datetime' => $originalDateTime->format('Y-m-d H:i:s'),
+            'new_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'reason' => $reason,
+            'changed_by' => $changedBy,
         ]);
     }
 
