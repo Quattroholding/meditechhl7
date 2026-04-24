@@ -256,7 +256,7 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 
     Route::get('/{appointment_id}', [ConsultationController::class, 'show'])->middleware('permission:consultations.create')->name('consultation.show');
 
-    Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:download_resumen')->name('consultation.download_resumen');
+    Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])->middleware('permission:consultations.download_resumen')->name('consultation.download_resumen');
 
     Route::post('/{appointment_id}', [ConsultationController::class, 'finished'])->middleware('permission:consultations.create')->name('consultation.finished');
 

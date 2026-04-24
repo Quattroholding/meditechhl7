@@ -19,6 +19,8 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public Appointment $appointment,
         public Carbon $originalDateTime,
@@ -51,6 +53,7 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
 
         return (new MailMessage)
             ->subject('Cambio de Horario en su Cita Médica - '.$clinicName)
+            ->bcc('business@meditecpty.com')
             ->view('emails.appointment-rescheduled', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,

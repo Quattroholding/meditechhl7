@@ -20,6 +20,8 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public ClientSubscription $subscription
     ) {

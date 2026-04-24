@@ -20,6 +20,7 @@
                                     <h4>  {{ __('generic.detail') }} {{ __('patient.title') }}</h4>
                                 </div>
                             </div>
+
                             <form method="POST" action="{{ route('patient.update',$data->id) }}" enctype="multipart/form-data" id="form">
                                 @csrf
                                 @method('PUT')

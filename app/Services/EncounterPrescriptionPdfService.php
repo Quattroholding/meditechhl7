@@ -219,11 +219,13 @@ class EncounterPrescriptionPdfService
 
         if ($referrals === null) {
             $referrals = $encounter->referrals()->with([
-                'referredTo.medicalSpeciality',
+                'referredTo',
+                'speciality',
             ])->get();
         } elseif (is_array($referrals)) {
             $referrals = Referral::with([
-                'referredTo.medicalSpeciality',
+                'referredTo',
+                'speciality',
             ])
                 ->whereIn('id', $referrals)
                 ->get();

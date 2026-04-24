@@ -18,6 +18,8 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public Appointment $appointment
     ) {

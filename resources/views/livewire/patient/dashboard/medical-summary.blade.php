@@ -135,9 +135,11 @@
                                             @endforeach
                                         </div>
                                     </div>
+                                    {{--}}
                                     <a href="{{ route('consultation.view', $encounter->id) }}" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    {{--}}
                                 </div>
                             </div>
                         @endforeach

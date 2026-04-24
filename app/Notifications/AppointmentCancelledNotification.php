@@ -18,6 +18,8 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public Appointment $appointment,
         public ?string $cancellationReason = null,

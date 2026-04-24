@@ -91,12 +91,14 @@
                             @error('start_datetime')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            @if($start_datetime)
                             <small class="form-text text-muted">
                                 Formato: Día {{ \Carbon\Carbon::parse($start_datetime)->format('d') }},
                                 Mes {{ \Carbon\Carbon::parse($start_datetime)->format('m') }},
                                 Año {{ \Carbon\Carbon::parse($start_datetime)->format('Y') }},
                                 Hora {{ \Carbon\Carbon::parse($start_datetime)->format('H:i') }}
                             </small>
+                            @endif
                         </div>
 
                         <!-- Fecha y Hora de Fin -->
@@ -113,12 +115,14 @@
                             @error('end_datetime')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            @if($end_datetime)
                             <small class="form-text text-muted">
                                 Formato: Día {{ \Carbon\Carbon::parse($end_datetime)->format('d') }},
                                 Mes {{ \Carbon\Carbon::parse($end_datetime)->format('m') }},
                                 Año {{ \Carbon\Carbon::parse($end_datetime)->format('Y') }},
                                 Hora {{ \Carbon\Carbon::parse($end_datetime)->format('H:i') }}
                             </small>
+                            @endif
                         </div>
 
                         <!-- Días Totales (Calculado) -->

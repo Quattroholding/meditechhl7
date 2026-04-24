@@ -244,9 +244,10 @@ class ConsultationController extends Controller
                     $chargeItem->markAsBilled();
                 }
 
-                // Calculate tax (if applicable) - assuming 7% tax rate for Panama
-                $taxRate = 0.07; // 7% ITBMS for Panama
-                $taxAmount = $subtotal * $taxRate;
+                // Calculate tax (if applicable)
+                $taxEnabled = config('billing.tax_enabled', false);
+                $taxRate = config('billing.tax_rate', 0.07); // Default 7% ITBMS for Panama
+                $taxAmount = $taxEnabled ? ($subtotal * $taxRate) : 0;
                 $totalAmount = $subtotal + $taxAmount;
 
                 // Update invoice totals
