@@ -8,9 +8,9 @@
 
 @section('content')
     {{-- Mensaje de saludo --}}
-    <x-email.message-box title="Estimado Dr. {{ $practitionerName }}">
+    <x-email.message-box title="Estimado {{ $practitionerName }}">
         <p style="font-size: 16px; margin: 0;">
-            Ha recibido una nueva <strong>solicitud de cita médica</strong> que requiere su revisión y confirmación. 
+            Ha recibido una nueva <strong>solicitud de cita médica</strong> que requiere su revisión y confirmación.
             A continuación encontrará todos los detalles de la solicitud.
         </p>
     </x-email.message-box>
@@ -45,7 +45,7 @@
                     </p>
                 </div>
             @endif
-            
+
             @if($comment)
                 <div>
                     <p style="margin: 0; color: #155724;">

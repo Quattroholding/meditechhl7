@@ -8,7 +8,7 @@
 
 @section('content')
     {{-- Mensaje de saludo --}}
-    <x-email.message-box title="Estimado Dr. {{ $practitionerName }}">
+    <x-email.message-box title="Estimado {{ $practitionerName }}">
         <p style="font-size: 16px; margin: 0;">
             Se ha <strong>agendado una nueva cita médica</strong> con usted.
             A continuación encontrará todos los detalles de la cita.
