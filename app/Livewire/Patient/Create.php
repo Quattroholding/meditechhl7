@@ -65,6 +65,8 @@ class Create extends Component
 
     public $patientDontExists = true;
 
+    public $existingPatientData = null;
+
     // Dependent patient fields
     public $is_dependent = false;
 
@@ -230,6 +232,8 @@ class Create extends Component
         $this->patientDontExists = true;
         $this->patientExists = false;
         $this->patients = [];
+        $this->existingPatientData = null;
+
         $query = DB::table('patients')
             ->whereRaw("(identifier ='".$this->id_number."' or identifier ='".$this->id_number."-SELF' or identifier ='".$this->id_number."-SPOUSE' or identifier ='".$this->id_number."-CHILD' or identifier ='".$this->id_number."-CHILDDISAB')")
             ->get();
@@ -239,6 +243,16 @@ class Create extends Component
             $this->patientExists = true;
             $this->patients = $query->pluck('id');
 
+            // Obtener los datos del primer paciente para mostrar
+            $firstPatient = $query->first();
+            $this->existingPatientData = [
+                'name' => $firstPatient->name,
+                'given_name' => $firstPatient->given_name,
+                'family_name' => $firstPatient->family_name,
+                'birth_date' => $firstPatient->birth_date,
+                'identifier' => $firstPatient->identifier,
+                'gender' => $firstPatient->gender,
+            ];
         }
     }
 
@@ -259,6 +273,7 @@ class Create extends Component
 
         $this->id_number = null;
         $this->patientExists = false;
+        $this->existingPatientData = null;
     }
 
     public function savePatient()
@@ -409,6 +424,7 @@ class Create extends Component
     {
         $this->patientExists = false;
         $this->patientDontExists = false;
+        $this->existingPatientData = null;
         $this->id_number = '';
         $this->first_name = '';
         $this->last_name = '';

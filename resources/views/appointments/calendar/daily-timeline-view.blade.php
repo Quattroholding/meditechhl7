@@ -87,8 +87,8 @@
 
         /* Estados de las citas */
         .timeline-item.fulfilled {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
-            border-left-color: #28a745;
+            background: linear-gradient(135deg, #c6cdd3, #ced8e2);
+            border-left-color: #6a7177;
         }
         .timeline-item.fulfilled::before {
             background: #28a745;
@@ -711,7 +711,7 @@
                             @if($status === 'next') #007bff
                             @elseif($status === 'current') #ffc107
                             @elseif($status === 'pending') #408f2d
-                            @elseif($status === 'fulfilled') #28a745
+                            @elseif($status === 'fulfilled') #34495e
                             @elseif($status === 'overdue') #dc3545
                             @elseif($status === 'upcoming') #6f42c1
                             @elseif($status === 'cancelled') #6c757d
