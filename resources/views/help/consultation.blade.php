@@ -867,7 +867,7 @@
                         Menú Lateral
                     </div>
                     <p class="mb-0">
-                        En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente, documentos previos y, en caso de teleconsulta, la sala de videollamada. Además, encontrará una guía, ubicada al final de este menú, que muestra las secciones en rojo,si las secciones que son requeridas para poder finalizar la consulta, se encuentran vacías.</p>
+                        En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente y documentos previos haciendo clic en <strong>Ver información del paciente</strong>. Además, encontrará una guía, ubicada al final de este menú, que muestra las secciones en rojo, si las secciones que son requeridas para poder finalizar la consulta, se encuentran vacías.</p>
                 </div>
                 <div>
                     <img src="{{ asset('images/tutorial/encounters/encounter_sidemenu.png') }}" alt="" style="width: 100%;">
@@ -880,7 +880,7 @@
                 <h4><span class="step-number">2</span><span class="step-title">Agregar Servicios Facturables</span></h4>
                 <p>Expanda la primera sección <strong>"Servicios Facturables"</strong>, elija la categoría y agregue los servicios necesarios que fueron previamente registrados en la sección de Configuraciones -> Catálogo de Servicios. </p>
             <div>
-                <img src="{{ asset('images/tutorial/encounters/encounter_services.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/invoices/invoice_add.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box note">
@@ -1131,11 +1131,12 @@
             <div class="step-card">
                 <h4><span class="step-number">8</span><span class="step-title">Agregar Referencia Especialista</span></h4>
                 <p>En caso de que usted considere que el paciente debe ser evaluado o referido a algún especialista, puede agregar una referencia especialista:</p>
-                <ul>
+                <ol>
                     <li>Escriba la <strong>Especialidad</strong> a la que referirá al paciente</li>
                     <li>Agregue una <strong>Nota de Referencia</strong></li>
                     <li>En caso de que desee referir a alguien y que sea usuario de nuestro sistema puede agregarlo a la referencia dando clic a <strong>Ver Directorio Médico</strong></li>
-                </ul>
+                    <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro del la referencia agregada.</li>
+                </ol>
 
             <div>
                 <img src="{{ asset('images/tutorial/encounters/encounter_refesp.png') }}" alt="" style="width: 100%;">
@@ -1153,6 +1154,7 @@
                     <li>Complete los campos del formulario de prescripción detallados en la tabla a continuación.</li>
                     <li>Haga clic en <strong>"Guardar"</strong> o el botón correspondiente para incluir el medicamento en la receta.</li>
                     <li>Repita el proceso para todos los medicamentos adicionales que requiera el paciente.</li>
+                    <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro del medicamento agregado.</li>
                 </ol>
 
                 <div class="field-table-wrapper">
@@ -1182,7 +1184,7 @@
                             </tr>
                             <tr>
                                 <td data-label="Campo"><strong>Indicaciones</strong></td>
-                                <td data-label="Descripcion">Prescripción completada automáticamente al llenar los campos previos específicas al paciente.</td>
+                                <td data-label="Descripcion">Prescripción completada automáticamente al llenar los campos previos.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1204,6 +1206,18 @@
 
                 <div>
                     <img src="{{ asset('images/tutorial/encounters/encounter_medhis.png') }}" alt="" style="width: 100%;">
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-bolt text-success"></i>
+                        Listado de Acceso Rápido
+                    </div>
+                    <p class="mb-0">
+                        Para agilizar la solicitud de estudios frecuentes, puede utilizar el botón <strong>"Listado de Acceso Rápido"</strong>. 
+                        Este listado le permite seleccionar rápidamente estudios previamente marcados como favoritos. 
+                        Puede configurar sus propios accesos rápidos en la sección de <a href="{{ route('help.settings') }}">Configuraciones → Accesos Rápidos</a>.
+                    </p>
                 </div>
             </div>
             <!-- Step 8: Treatment Plan -->
@@ -1307,9 +1321,9 @@
                 <h4><span class="step-number">4</span><span class="step-title">Después de Finalizar</span></h4>
                 <p>Después de finalizar la consulta, puede:</p>
                 <ul>
-                    <li>Ver el resumen completo de la consulta</li>
-                    <li>Descargar los documentos generados</li>
-                    <li>Enviar la receta al paciente por WhatsApp o correo</li>
+                    <!--<li>Ver el resumen completo de la consulta</li>
+                    <li>Descargar los documentos generados</li>-->
+                    <li>Enviar la receta al paciente por <!--WhatsApp o-->correo</li>
                     <li>Agendar una cita de seguimiento si es necesario</li>
                     <li>Regresar al calendario para atender al siguiente paciente</li>
                 </ul>
@@ -1347,8 +1361,8 @@
                         <ul class="mb-0">
                             <li>No documentar signos vitales</li>
                             <li>Omitir el examen físico</li>
-                            <li>No especificar diagnósticos con CIE-10</li>
-                            <!--<li>Prescribir sin indicar dosis o duración</li>-->
+                            <!--<li>No especificar diagnósticos con CIE-10</li>
+                            <li>Prescribir sin indicar dosis o duración</li>-->
                             <li>Finalizar sin revisar la información</li>
                             <li>No generar los documentos para el paciente</li>
                         </ul>
