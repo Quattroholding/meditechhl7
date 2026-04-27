@@ -849,7 +849,7 @@ Route::prefix('help')->name('help.')->group(function () {
                 return array_search($role->id, [5, 2, 6, 3, 4]);
             });
 
-        $excludedModules = ['roles', 'clientes', 'encuestas', 'reportes', 'aseguradoras', 'paquetes'];
+        $excludedModules = ['roles', 'clientes', 'encuestas', 'reportes', 'aseguradoras', 'paquetes', 'hemoscreen', 'cotizaciones', 'tickets', 'dashboards'];
         $excludedPermissions = [
             'Validar usuarios registrados desde la aplicación móvil',
             'Eliminar registros de pacientes',

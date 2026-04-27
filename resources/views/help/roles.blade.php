@@ -270,7 +270,7 @@
                     <div class="card h-100 border-0 shadow-sm bg-light">
                         <div class="card-body">
                             <h5><i class="fas fa-id-badge text-primary me-2"></i>¿Qué es un Rol?</h5>
-                            <p class="small mb-0">Un rol es una etiqueta que define un conjunto de responsabilidades. Ejemplo: "Doctor", "Asistente", "Contador".</p>
+                            <p class="small mb-0">Un rol es una etiqueta que define un conjunto de responsabilidades. Ejemplo: "Doctor", "Asistente".</p>
                         </div>
                     </div>
                 </div>

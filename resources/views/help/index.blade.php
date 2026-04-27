@@ -591,7 +591,7 @@
                             <i class="fas fa-user-plus fa-2x text-primary"></i>
                         </div>
                         <h5 class="card-title">Registro de Cliente</h5>
-                        <p class="card-text text-muted">Aprende como registrar tu clinica o consultorio en SAMI paso a paso.</p>
+                        <p class="card-text text-muted">Aprende como ser un usuario de SAMI: seleccionar el plan que adaptado a tu necesidad, como registrar tu pago, conocer el asistente de configuración y mucho más.</p>
                         <a href="{{ route('help.registration') }}" class="btn btn-primary">
                             <i class="fas fa-arrow-right me-2"></i>Ver Guia
                         </a>
