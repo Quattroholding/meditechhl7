@@ -137,6 +137,14 @@
                 @endif
             </a>
 
+            <a href="{{ route('help.doctors') }}" class="nav-link {{ $active === 'doctors' ? 'active' : '' }}">
+                <i class="fas fa-user-md"></i>
+                <span>Doctores</span>
+                @if ($active === 'doctors')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.patients') }}" class="nav-link {{ $active === 'patients' ? 'active' : '' }}">
                 <i class="fas fa-hospital-user"></i>
                 <span>Pacientes</span>
@@ -197,6 +205,14 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Mi Perfil</span>
                 @if ($active === 'profile')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
+            <a href="{{ route('help.users') }}" class="nav-link {{ $active === 'users' ? 'active' : '' }}">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
+                @if ($active === 'users')
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>

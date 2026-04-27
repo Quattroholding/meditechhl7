@@ -902,6 +902,14 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.medical-directory');
     })->name('medical-directory');
 
+    Route::get('/doctors', function () {
+        return view('help.doctors');
+    })->name('doctors');
+
+    Route::get('/users', function () {
+        return view('help.users');
+    })->name('users');
+
     // Future help pages can be added here
 });
 

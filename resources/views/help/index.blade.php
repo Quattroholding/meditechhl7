@@ -632,6 +632,19 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(85, 172, 238, 0.1); color: #55acee;">
+                            <i class="fas fa-user-md fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Doctores</h5>
+                        <p class="card-text text-muted">Gestiona el personal médico y sus perfiles profesionales.</p>
+                        <a href="{{ route('help.doctors') }}" class="btn text-white" style="background: #55acee;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(111, 66, 193, 0.1);">
                             <i class="fas fa-user-injured fa-2x" style="color: #6f42c1;"></i>
                         </div>
@@ -774,6 +787,19 @@
                         <a href="{{ route('help.subscriptions') }}" class="btn btn-warning">
                             <i class="fas fa-arrow-right me-2"></i>Ver Guia
                         </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(108, 117, 125, 0.1); color: #6c757d;">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Gestión de Usuarios</h5>
+                        <p class="card-text text-muted">Controla el acceso y perfiles de todo el personal administrativo.</p>
+                        <a href="{{ route('help.users') }}" class="btn text-white" style="background: #6c757d;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
                     </div>
                 </div>
             </div>
