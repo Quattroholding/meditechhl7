@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositorio de Estudios - Centro de Ayuda SAMI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --study-color: #00897b;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+        html {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-text);
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .help-content {
+            margin-left: 280px;
+            padding: 30px;
+            max-width: calc(100vw - 280px);
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 992px) {
+            .help-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, var(--study-color) 0%, #4db6ac 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 137, 123, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .help-breadcrumb {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .content-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .content-section h2 {
+            color: var(--study-color);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0f2f1;
+        }
+
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .field-table th {
+            background: var(--study-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .field-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--study-color);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 137, 123, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 9999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            border: 2px dashed var(--study-color);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-placeholder i {
+            font-size: 3rem;
+            color: var(--study-color);
+            margin-bottom: 15px;
+        }
+
+        .screenshot-placeholder p {
+            color: #004d40;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .screenshot-placeholder small {
+            color: var(--study-color);
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #fff 0%, #f1f8e9 100%);
+            border-left: 4px solid var(--study-color);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            height: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .step-content {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .required-badge {
+            background: #dc3545;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .optional-badge {
+            background: #6c757d;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Responsive Tables */
+        @media (max-width: 768px) {
+            .field-table thead {
+                display: none;
+            }
+
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            .field-table td {
+                display: block;
+                text-align: right;
+                padding: 10px 15px;
+                position: relative;
+                border-bottom: 1px solid #f8f9fa;
+            }
+
+            .field-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                font-weight: 700;
+                color: var(--study-color);
+            }
+
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    @include('help.sidebar', ['active' => 'service-requests'])
+
+    <main class="help-content">
+        <nav class="help-breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="breadcrumb-item active">Repositorio de Estudios</li>
+            </ol>
+        </nav>
+
+        <div class="module-header">
+            <h1><i class="fas fa-microscope me-3"></i>Repositorio de Estudios</h1>
+            <p>Módulo centralizado para la gestión y seguimiento de todas las solicitudes de estudios (Laboratorios, Imágenes y Procedimientos) realizadas en el sistema.</p>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-list me-2"></i>Lista de Estudios</h2>
+            <p>En esta sección podrá visualizar todas las solicitudes generadas. A continuación se explican los campos disponibles en la tabla de resultados:</p>
+            
+            <div>
+                <img src="{{ asset('images/tutorial/service_requests/services-st.png') }}" alt="" style="width: 100%;">
+            </div>
+
+            <div class="table-responsive">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>ID</strong></td>
+                            <td data-label="Descripción">Identificador único interno de la solicitud en el sistema.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Código</strong></td>
+                            <td data-label="Descripción">Código de referencia asociado al estudio (ej. CUPS o código interno de la entidad).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Tipo</strong></td>
+                            <td data-label="Descripción">Categoría a la que pertenece el estudio (Laboratorio, Imagen o Procedimiento).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Descripción</strong></td>
+                            <td data-label="Descripción">Nombre detallado o descripción del estudio solicitado.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Paciente</strong></td>
+                            <td data-label="Descripción">Nombre completo del paciente a quien se le solicitó el estudio.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Profesional</strong></td>
+                            <td data-label="Descripción">Médico o profesional de la salud que realizó la solicitud.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Estado</strong></td>
+                            <td data-label="Descripción">Situación actual de la solicitud (Borrador, Activo, Completado, etc.).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Prioridad</strong></td>
+                            <td data-label="Descripción">Nivel de urgencia de la solicitud (Rutina, Urgente, Inmediato).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Fecha Inicio / Fin</strong></td>
+                            <td data-label="Descripción">Rango de fechas programado o de ejecución del estudio.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-tasks me-2"></i>Acciones y Gestión</h2>
+            <p>Dentro de la lista de estudios, cada registro cuenta con acciones específicas para su gestión:</p>
+            <div class="mb-4">
+                <img src="{{ asset('images/tutorial/service_requests/services-detail.png') }}" alt="Subir Resultado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="step-card">
+                        <div class="step-title"><i class="fas fa-upload text-primary me-2"></i>Subir Resultados</div>
+                        <div class="step-content">
+                            <p>Para cargar los resultados de un estudio:</p>
+                            <ol>
+                                <li>Ubique el estudio en la lista.</li>
+                                <li>Haga clic en el icono de <strong>Subir (botón azul)</strong> ubicado en la columna de acciones.</li>
+                                <li>Se abrirá el modal <strong>"Subir Resultado"</strong> donde deberá completar la información técnica.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="step-card">
+                        <div class="step-title"><i class="fas fa-exchange-alt text-warning me-2"></i>Cambiar Estado</div>
+                        <div class="step-content">
+                            <p>Puede gestionar el ciclo de vida de la solicitud manualmente:</p>
+                            <ol>
+                                <li>Haga clic en el icono de <strong>Cambiar Estado (botón amarillo)</strong>.</li>
+                                <li>Se abrirá el modal <strong>"Gestión de Estado"</strong>.</li>
+                                <li>Seleccione el nuevo estado y guarde los cambios.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-window-maximize me-2"></i>Detalle: Modal Subir Resultado</h3>
+            <p>Este formulario permite vincular el documento físico o digital del resultado con el registro del paciente:</p>
+            
+            <div class="mb-4">
+                <img src="{{ asset('images/tutorial/service_requests/services-mod1.png') }}" alt="Subir Resultado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            </div>
+
+            <div class="table-responsive">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                            <th>Obligatorio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Tipo de Resultado</strong></td>
+                            <td data-label="Descripción">Clasificación del tipo de informe que se está cargando.</td>
+                            <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Estado</strong></td>
+                            <td data-label="Descripción">Estado clínico del resultado (ej. Preliminar, Final, Corregido).</td>
+                            <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Fecha del Resultado</strong></td>
+                            <td data-label="Descripción">Fecha y hora exacta en la que se generó el resultado.</td>
+                            <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Archivo</strong></td>
+                            <td data-label="Descripción">Botón para seleccionar el archivo desde su equipo. Formatos soportados: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX. (Máx. 10MB).</td>
+                            <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Interpretación</strong></td>
+                            <td data-label="Descripción">Evaluación cualitativa del resultado (ej. Normal, Anormal, Crítico).</td>
+                            <td data-label="Obligatorio"><span class="optional-badge">No</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Rango de Referencia</strong></td>
+                            <td data-label="Descripción">Texto descriptivo de los valores normales para comparar con el resultado.</td>
+                            <td data-label="Obligatorio"><span class="optional-badge">No</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Observaciones</strong></td>
+                            <td data-label="Descripción">Comentarios clínicos relevantes sobre el estudio.</td>
+                            <td data-label="Obligatorio"><span class="optional-badge">No</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Notas</strong></td>
+                            <td data-label="Descripción">Cualquier anotación adicional o administrativa.</td>
+                            <td data-label="Obligatorio"><span class="optional-badge">No</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-history me-2"></i>Detalle: Modal Gestión de Estado</h3>
+            <p>Utilice este modal para actualizar en qué etapa se encuentra la solicitud de estudio:</p>
+
+            <div class="mb-4">
+                <img src="{{ asset('images/tutorial/service_requests/services-mod2.png') }}" alt="Gestión de Estado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            </div>
+
+            <div class="table-responsive">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                            <th>Obligatorio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Nuevo Estado</strong></td>
+                            <td data-label="Descripción">Seleccione el estado al que desea transicionar la solicitud (ej. Activo, En Espera, Cancelado).</td>
+                            <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Razón del cambio</strong></td>
+                            <td data-label="Descripción">Espacio para justificar el motivo por el cual se está modificando el estado, útil para auditoría médica.</td>
+                            <td data-label="Obligatorio"><span class="optional-badge">No</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-info-circle me-2"></i>Estados de la Solicitud</h2>
+            <p>Las solicitudes pueden pasar por diferentes estados según el estándar FHIR:</p>
+            <ul>
+                <li><span class="status-badge bg-secondary text-white">Borrador</span>: La solicitud ha sido creada pero aún no se ha enviado o confirmado.</li>
+                <li><span class="status-badge bg-primary text-white">Activo</span>: La solicitud está confirmada y pendiente de ejecución o resultados.</li>
+                <li><span class="status-badge bg-warning text-dark">En Espera</span>: La solicitud ha sido pausada temporalmente.</li>
+                <li><span class="status-badge bg-success text-white">Completado</span>: El estudio se ha realizado y los resultados están disponibles.</li>
+                <li><span class="status-badge bg-danger text-white">Revocado</span>: La solicitud ha sido cancelada.</li>
+            </ul>
+        </div>
+    </main>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -890,6 +890,18 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.support');
     })->name('support');
 
+    Route::get('/service-requests', function () {
+        return view('help.service-requests');
+    })->name('service-requests');
+
+    Route::get('/medicines', function () {
+        return view('help.medicines');
+    })->name('medicines');
+
+    Route::get('/medical-directory', function () {
+        return view('help.medical-directory');
+    })->name('medical-directory');
+
     // Future help pages can be added here
 });
 

@@ -209,6 +209,30 @@
                 @endif
             </a>
 
+            <a href="{{ route('help.service-requests') }}" class="nav-link {{ $active === 'service-requests' ? 'active' : '' }}">
+                <i class="fas fa-microscope"></i>
+                <span>Repositorio Estudios</span>
+                @if ($active === 'service-requests')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
+            <a href="{{ route('help.medicines') }}" class="nav-link {{ $active === 'medicines' ? 'active' : '' }}">
+                <i class="fas fa-pills"></i>
+                <span>Medicamentos</span>
+                @if ($active === 'medicines')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
+            <a href="{{ route('help.medical-directory') }}" class="nav-link {{ $active === 'medical-directory' ? 'active' : '' }}">
+                <i class="fas fa-address-book"></i>
+                <span>Directorio Médico</span>
+                @if ($active === 'medical-directory')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.support') }}" class="nav-link {{ $active === 'support' ? 'active' : '' }}">
                 <i class="fas fa-question-circle"></i>
                 <span>Soporte</span>
