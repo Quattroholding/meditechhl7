@@ -139,47 +139,139 @@
             <p>Gestiona tu información personal, seguridad y preferencias de SAMI.</p>
         </header>
 
+        <!-- 1. Encabezado de Perfil -->
         <div class="content-section">
-            <h2>Configuración de Perfil</h2>
-            <p>En esta sección puedes actualizar tus datos básicos que aparecen en el sistema y en los documentos generados.</p>
-            
+            <h2>Encabezado de Perfil</h2>
+            <p>El cintillo azul en la parte superior muestra un resumen rápido de tu identidad y actividad en la plataforma.</p>
             <div class="step-card">
-                <div class="step-title"><strong>Actualizar Datos</strong></div>
                 <div class="step-content">
-                    <p>Puedes modificar tu nombre, teléfono y dirección. Luego de haber modificado la información, debe dar clic en el botón de <strong>"Actualizar"</strong> <br>Asegúrate de que esta información esté siempre al día ya que es la que se utiliza en las cabeceras de tus documentos médicos.</p>
+                    <ul>
+                        <li><strong>Información Personal:</strong> Muestra tu nombre completo, tipo y número de documento, correo electrónico y teléfono.</li>
+                        <li><strong>Estadísticas:</strong> Indica el total de citas agendadas y consultas finalizadas a la fecha.</li>
+                        <li><strong>Agregar Especialidad:</strong> Botón directo para gestionar tus cualificaciones médicas.</li>
+                    </ul>
                 </div>
-                <div>
-                    <img src="{{ asset('images/tutorial/profile/profile_data.png') }}" alt="" style="width: 100%;">
+                    <div>
+                         <img src="{{ asset('images/tutorial/profile/profile_header.png') }}" alt="" style="width: 100%;">
+                    </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- COLUMNA IZQUIERDA: Acerca de mí y Especialidades -->
+            <div class="col-lg-4">
+                <!-- 2. Acerca de mí -->
+                <div class="content-section">
+                    <h2>Acerca de mí</h2>
+                    <p>Información demográfica y de registro profesional.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <ul class="mb-0">
+                                <li><strong>Género y Nacimiento:</strong> Datos básicos de identificación.</li>
+                                <li><strong>Registro y Licencia:</strong> Tus códigos de identificación profesional.</li>
+                                <li><strong>Último ingreso:</strong> Registro de tu última sesión.</li>
+                            </ul>
+                        </div>
+                    <div>
+                         <img src="{{ asset('images/tutorial/profile/profile_aboutme.png') }}" alt="" style="width: 100%;">
+                    </div>
+                    </div>
+                </div>
+
+                <!-- 3. Especialidades -->
+                <div class="content-section">
+                    <h2>Especialidades</h2>
+                    <p>Gestión de tus áreas de especialización médica.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <ul class="mb-0">
+                                <li><strong>Listado:</strong> Visualiza tus especialidades y su periodo de vigencia.</li>
+                                <li><strong>Especialidad Principal:</strong> Elige cuál aparecerá destacada en las búsquedas de pacientes.</li>
+                            </ul>
+                        </div>
+                    <div>
+                         <img src="{{ asset('images/tutorial/profile/profile_specialities.png') }}" alt="" style="width: 100%;">
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Configuración de Perfil y Acceso -->
+            <div class="col-lg-8">
+                <!-- 4. Configuración de Perfil -->
+                <div class="content-section">
+                    <h2>Configuración de Perfil</h2>
+                    <p>Actualiza tus datos básicos que aparecen en los documentos generados.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <p>Modifica tu nombre, teléfono y dirección. Asegúrate de mantener estos datos actualizados.</p>
+                            <p class="text-primary"><strong><i class="fas fa-save"></i> Importante:</strong> Debes hacer clic en <strong>“ACTUALIZAR”</strong> para guardar los cambios.</p>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/profile/profile_data.png') }}" alt="Datos de perfil" class="img-fluid rounded border shadow-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Configuración de acceso -->
+                <div class="content-section">
+                    <h2>Configuración de acceso</h2>
+                    <p>Cambia tu contraseña periódicamente para mantener tu cuenta segura.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <p>Introduce tu clave actual y la nueva contraseña (dos veces).</p>
+                            <div class="info-box py-2 my-2">
+                                <p class="mb-0 small"><i class="fas fa-shield-alt me-2"></i><strong>Requisito:</strong> Mínimo <strong>8 caracteres</strong>.</p>
+                            </div>
+                            <p class="text-primary"><strong><i class="fas fa-save"></i> Importante:</strong> Haz clic en <strong>“ACTUALIZAR”</strong> al finalizar.</p>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/profile/profile_pw.png') }}" alt="Seguridad" class="img-fluid rounded border shadow-sm">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="content-section">
-            <h2>Configuración de acceso</h2>
-            <p>Mantén tu cuenta segura cambiando tu contraseña periódicamente.</p>
-            
-            <div class="step-card">
-                <div class="step-title">Cambio de Contraseña</div>
-                <div class="step-content">
-                    <p>Para cambiar tu contraseña, introduce tu clave actual y luego la nueva contraseña dos veces para confirmar. Recuerda usar una combinación segura de letras, números y símbolos.</p>
-                </div>
-                <div>
-                    <img src="{{ asset('images/tutorial/profile/profile_pw.png') }}" alt="" style="width: 100%;">
+        <div class="row">
+            <!-- 6. Firma y Sello Digital -->
+            <div class="col-lg-7">
+                <div class="content-section h-100">
+                    <h2>Firma y Sello Digital</h2>
+                    <p>Esencial para la validez legal de recetas, incapacidades e <strong>HISTORIA CLÍNICA</strong>.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <p>Sube imágenes (JPG, PNG, GIF, SVG) de hasta 2MB.</p>
+                            <ul>
+                                <li><strong>Carga:</strong> Haz clic en <strong>“Subir Firma”</strong> o <strong>“Subir Sello”</strong> tras elegir el archivo.</li>
+                                <li><strong>Gestión:</strong> Usa <strong>"Eliminar"</strong> para quitar o selecciona un nuevo archivo para <strong>"Reemplazar"</strong>.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/profile/profile_sign.png') }}" alt="Firma y sello" class="img-fluid rounded border shadow-sm">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="content-section">
-            <h2>Firma y Sello Digital</h2>
-            <p>Tu firma es esencial para la validez legal de las recetas, incapacidades y órdenes médicas.</p>
-            
-            <div class="step-card">
-                <div class="step-title">Gestión de Firma</div>
-                <div class="step-content">
-                    <p>Puedes subir una imagen de tu firma escaneada o utilizar la herramienta de dibujo para crear una firma digital directamente en el sistema.</p>
-                </div>
-                <div>
-                    <img src="{{ asset('images/tutorial/profile/profile_sign.png') }}" alt="" style="width: 100%;">
+            <!-- 7. Código de Referidos -->
+            <div class="col-lg-5">
+                <div class="content-section h-100">
+                    <h2>Tu Código de Referido</h2>
+                    <p>Gana beneficios invitando a otros colegas a unirse a SAMI.</p>
+                    <div class="step-card">
+                        <div class="step-content">
+                            <p>Gana crédito en tu próxima factura por cada nuevo cliente registrado con tu código.</p>
+                            <ul>
+                                <li><strong>Código y Enlace:</strong> Copia y comparte tu identificador único.</li>
+                                <li><strong>QR Imprimible:</strong> Descarga un PDF con código QR para tu consultorio.</li>
+                                <li><strong>Seguimiento:</strong> Revisa tu total de referidos exitosos.</li>
+                            </ul>
+                        </div>
+                    <div>
+                         <img src="{{ asset('images/tutorial/profile/profile_referralcode.png') }}" alt="" style="width: 100%;">
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
