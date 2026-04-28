@@ -648,7 +648,7 @@
                 <ul>
                     <li>Desplácese hacia abajo en la interfaz de consulta</li>
                     <li>Localice y expanda la sección <strong>"Servicios Facturables"</strong></li>
-                    <li>Esta sección muestra los servicios ya agregados y permite agregar nuevos</li>
+                    <li>Esta sección muestra los servicios ya agregados</li>
                 </ul>
 
             <div>
@@ -677,8 +677,10 @@
                         <ul>
                             <li>Nombre del servicio</li>
                             <li>Código CPT (si aplica)</li>
-                            <!--<li>Precio base</li>
-                            <li>Tipo de servicio</li>-->
+                            <li>Tipo de servicio</li>
+                            <li>Descripción</li>
+                            <li>Precio asignado al servicio</li>
+                            <!--<li>Precio base</li>-->
                         </ul>
                     </li>
                 </ul>
@@ -692,7 +694,7 @@
                         <i class="fas fa-lightbulb text-success"></i>
                         Acceso Rápido
                     </div>
-                    <p class="mb-0">Esta sección cuenta con un "Acceso Rápido" con los servicios más utilizados, para acceder a el haga clic en <strong>"Listado de Servicios"</strong>. Esto permite agregar servicios comunes con un sólo clic, sin necesidad de buscar.</p>
+                    <p class="mb-0">Esta sección cuenta con un "Acceso Rápido" con los servicios más utilizados, para acceder a el haga clic en <strong>"Listado de Servicios"</strong>. Esto permite agregar servicios comunes con un sólo clic.</p>
                 </div>
             </div>
 
@@ -784,13 +786,13 @@
                 <li><strong>Total estimado:</strong> Incluye impuestos (calculados al finalizar)</li>
             </ul>-->
 
-            <div class="info-box note">
+            <!--<div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-calculator text-primary"></i>
                     Cálculo de Impuestos
                 </div>
                 <p class="mb-0">El sistema aplica automáticamente el 7% de ITBMS (Impuesto de Transferencia de Bienes Muebles y Servicios) sobre el subtotal al generar la factura. Este cálculo se realiza al finalizar la consulta.</p>
-            </div>
+            </div>-->
         </section>
 
         <!-- Section 3: Automatic Invoice Generation -->
@@ -1027,11 +1029,11 @@
                             <td data-label="Descripcion">No se ha registrado ningún pago</td>
                             <td data-label="Badge"><span class="status-badge status-unpaid">No Pagada</span></td>
                         </tr>
-                        <!--<tr>
+                        <tr>
                             <td data-label="Estado"><strong>Partially Paid</strong></td>
                             <td data-label="Descripcion">Se ha pagado parte del monto total</td>
                             <td data-label="Badge"><span class="status-badge status-partially-paid">Pago Parcial</span></td>
-                        </tr>-->
+                        </tr>
                         <tr>
                             <td data-label="Estado"><strong>Paid</strong></td>
                             <td data-label="Descripcion">Monto total pagado completamente</td>

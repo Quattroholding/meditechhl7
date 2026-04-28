@@ -825,7 +825,7 @@
                     <i class="fas fa-shield-alt text-primary"></i>
                     Permisos Requeridos
                 </div>
-                <p class="mb-0">Cada seccion de configuracion requiere permisos especificos. Si no puede ver alguna opcion, contacte al administrador de su organizacion para solicitar los permisos necesarios.</p>
+                <p class="mb-0">Cada sección de configuración requiere permisos específicos y pueden variar dependiendo del rol que tenga el usuario. Si no puede ver alguna opcion, contacte al administrador de su organizacion para solicitar los permisos necesarios.</p>
             </div>
         </section>
 
@@ -900,11 +900,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!--<tr>
                                 <td data-label="Campo"><strong>Codigo CPT</strong></td>
                                 <td data-label="Descripcion">Codigo seleccionado del buscador</td>
                                 <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <td data-label="Campo"><strong>Precio</strong></td>
                                 <td data-label="Descripcion">Precio base del servicio en la moneda configurada</td>
@@ -961,7 +961,7 @@
             <p>Para servicios que no tienen codigo CPT:</p>
             <div class="step-card">
                 <h4><span class="step-number">1</span><span class="step-title">Completar Informacion del Servicio</span></h4>
-                <p>Una vez seleccionado el codigo CPT, complete los campos adicionales:</p>
+                <p>Complete los campos adicionales:</p>
                 <div class="field-table-wrapper">
                     <table class="field-table">
                         <thead>
@@ -1077,9 +1077,9 @@
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-info-circle text-primary"></i>
-                    Código de Servicio Personalizado
+                    Código de Servicios
                 </div>
-                <p class="mb-0">Cada Servicio Personalizado genera un código de forma automática, este código tiene como función identificar el servicio.</p>
+                <p class="mb-0">Cada Servicio, tanto el servicio personalizado como los servicios con CPT generan un código de forma automática, este código tiene como función identificar el servicio.</p>
             </div>
 
             <h4>Tipos de Servicios Disponibles</h4>
@@ -1687,7 +1687,7 @@
 
             <div class="step-card">
                 <h4><span class="step-number">2</span><span class="step-title">Previsualizar y Seleccionar</span></h4>
-                <p>Haga clic en el botón de <strong>"Vista Previa Completa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong> o <strong>"Activar"</strong>.</p>
+                <p>Haga clic en el botón de <strong>"Vista Previa Completa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong><!-- o <strong>"Activar"</strong>-->.</p>
 
             <div>
                 <img src="{{ asset('images/tutorial/settings/setting_ra2.png') }}" alt="" style="width: 100%;">

@@ -410,6 +410,12 @@
             </div>
 
             <h3 class="mt-4"><i class="fas fa-list-ol me-2 text-danger"></i>5. Patologías y Tratamientos</h3>
+            <div class="info-box note mb-4">
+                <div class="info-box-title">
+                    <i class="fas fa-clock"></i> Filtrado por Período
+                </div>
+                <p class="mb-0">En esta sección puede filtrar los datos seleccionando periodos de tiempo específicos, como: <strong>Últimos 30 días, Últimos 7 días, Todos los registros</strong>, entre otros rangos personalizados.</p>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="step-card">
@@ -432,6 +438,12 @@
             </div>
 
             <h3 class="mt-4"><i class="fas fa-tachometer-alt me-2 text-secondary"></i>6. Eficiencia Clínica</h3>
+            <div class="info-box note mb-4">
+                <div class="info-box-title">
+                    <i class="fas fa-clock"></i> Filtrado por Período
+                </div>
+                <p class="mb-0">Al igual que en la sección anterior, los indicadores de eficiencia permiten ajustar el marco temporal (30 días, 7 días, histórico completo, etc.) para un análisis más preciso de su rendimiento.</p>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="step-card">
@@ -488,7 +500,7 @@
         </div>
 
         <div class="content-section">
-            <h2>Personalización del Dashboard</h2>
+            <h2>Personalización del Dashboard - Configuración de Widgets</h2>
             <p>Usted tiene el control total sobre lo que ve en su pantalla de inicio. Siga estos pasos para personalizar sus widgets:</p>
             
             <div class="step-card">
@@ -500,13 +512,18 @@
             <div class="step-card">
                 <div class="step-number">2</div>
                 <div class="step-title">Seleccionar Widgets</div>
-                <p>En el modal emergente, podrá ver una lista de todos los widgets disponibles. Use los interruptores para activar o desactivar los que desee ver.</p>
+                <p>En el modal emergente, podrá ver una lista de todos los widgets disponibles. Use la <strong>X</strong> para eliminar el widget y arrastre el widget para volver agregarlos al dashboard.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-title">Disposición de Widgets</div>
+                <p>Los Widgets se pueden reubicar en la pantalla arrastrándolos a la posición deseada y ajustar el tamaño si lo desea.</p>
             </div>
 
             <div class="step-card">
-                <div class="step-number">3</div>
+                <div class="step-number">4</div>
                 <div class="step-title">Guardar Cambios</div>
-                <p>Una vez ajustada su selección, el sistema aplicará los cambios automáticamente o al hacer clic en guardar, reflejando su nueva configuración personalizada.</p>
+                <p>Una vez ajustada su selección, haga clic en <strong>Guardar y Cerrar</strong>, para visualizar su nueva configuración personalizada.</p>
             </div>
 
             <div>

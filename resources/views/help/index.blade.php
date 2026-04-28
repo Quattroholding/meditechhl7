@@ -591,7 +591,7 @@
                             <i class="fas fa-user-plus fa-2x text-primary"></i>
                         </div>
                         <h5 class="card-title">Registro de Cliente</h5>
-                        <p class="card-text text-muted">Aprende como registrar tu clinica o consultorio en SAMI paso a paso.</p>
+                        <p class="card-text text-muted">Aprende como ser un usuario de SAMI: seleccionar el plan que adaptado a tu necesidad, como registrar tu pago, conocer el asistente de configuración y mucho más.</p>
                         <a href="{{ route('help.registration') }}" class="btn btn-primary">
                             <i class="fas fa-arrow-right me-2"></i>Ver Guia
                         </a>
@@ -625,6 +625,19 @@
                         <a href="{{ route('help.consulting-rooms') }}" class="btn btn-info text-white">
                             <i class="fas fa-arrow-right me-2"></i>Ver Guia
                         </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(85, 172, 238, 0.1); color: #55acee;">
+                            <i class="fas fa-user-md fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Doctores</h5>
+                        <p class="card-text text-muted">Gestiona el personal médico y sus perfiles profesionales.</p>
+                        <a href="{{ route('help.doctors') }}" class="btn text-white" style="background: #55acee;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
                     </div>
                 </div>
             </div>
@@ -778,7 +791,59 @@
                 </div>
             </div>
 
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(108, 117, 125, 0.1); color: #6c757d;">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Gestión de Usuarios</h5>
+                        <p class="card-text text-muted">Controla el acceso y perfiles de todo el personal administrativo.</p>
+                        <a href="{{ route('help.users') }}" class="btn text-white" style="background: #6c757d;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
 
+
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(0, 137, 123, 0.1); color: #00897b;">
+                            <i class="fas fa-microscope fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Repositorio de Estudios</h5>
+                        <p class="card-text text-muted">Gestiona y consulta todas las solicitudes de laboratorios, imágenes y procedimientos.</p>
+                        <a href="{{ route('help.service-requests') }}" class="btn text-white" style="background: #00897b;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(103, 58, 183, 0.1); color: #673ab7;">
+                            <i class="fas fa-pills fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Medicamentos</h5>
+                        <p class="card-text text-muted">Aprende a gestionar el catálogo de medicamentos y sus detalles técnicos.</p>
+                        <a href="{{ route('help.medicines') }}" class="btn text-white" style="background: #673ab7;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(26, 35, 126, 0.1); color: #1a237e;">
+                            <i class="fas fa-address-book fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Directorio Médico</h5>
+                        <p class="card-text text-muted">Consulta la información detallada de los profesionales y solicita citas.</p>
+                        <a href="{{ route('help.medical-directory') }}" class="btn text-white" style="background: #1a237e;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
@@ -788,7 +853,7 @@
                         </div>
                         <h5 class="card-title">Soporte y Contacto</h5>
                         <p class="card-text text-muted">¿Necesitas ayuda técnica? Contacta con nuestro equipo.</p>
-                        <a href="{{ route('help.support') }}" class="btn text-white" style="background: #198754;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a></a>
+                        <a href="{{ route('help.support') }}" class="btn text-white" style="background: #198754;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
                     </div>
                 </div>
             </div>

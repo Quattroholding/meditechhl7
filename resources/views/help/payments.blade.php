@@ -739,13 +739,13 @@
                     </table>
                 </div>
 
-                <!--<div class="info-box warning">
+                <div class="info-box warning">
                     <div class="info-box-title">
                         <i class="fas fa-exclamation-triangle text-warning"></i>
                         Pagos Parciales
                     </div>
                     <p class="mb-0">Puede registrar un pago por un monto menor al total de la factura. El sistema marcará la factura como "Pago Parcial" y permitirá registrar pagos adicionales hasta completar el monto total.</p>
-                </div>-->
+                </div>
 
             <div>
                 <img src="{{ asset('images/tutorial/payments/payment_form.png') }}" alt="" style="width: 100%;">
@@ -779,12 +779,12 @@
                 <p>Al registrar el pago, el sistema automáticamente:</p>
                 <ol>
                     <li>Actualiza el monto pagado de la factura</li>
-                    <!--info-color<li>Calcula el monto pendiente</li>
+                    <li>Calcula el monto pendiente</li>
                     <li>Actualiza el estado de pago de la factura:
                         <ul>
-                            <<li><strong>Partially Paid:</strong> Si aún queda saldo pendiente</li>
+                            <li><strong>Pago Parcial:</strong> Si aún queda saldo pendiente</li>
                             <li><strong>Pagada:</strong> Si el monto pagado cubre el total</li>
-                        </ul>-->
+                        </ul>
                     </li>
                     <!--<li>Genera un comprobante de pago</li>-->
                     <li>Registra la transacción en el historial</li>
@@ -929,7 +929,7 @@
             </div>
             </div>
 
-            <!-- Multiple Payments 
+            <!-- Multiple Payments -->
             <h3>Pagos Parciales y Múltiples Pagos</h3>
             <p>Una factura puede tener múltiples pagos asociados:</p>
             <ul>
@@ -951,7 +951,7 @@
                     <li>Pago 2: $150.00 (tarjeta) → Estado: Pago Parcial, Pendiente: $150.00</li>
                     <li>Pago 3: $150.00 (transferencia) → Estado: Pagada, Pendiente: $0.00</li>
                 </ul>
-            </div>-->
+            </div>
         </section>
 
         <!-- Section 5: Reports 

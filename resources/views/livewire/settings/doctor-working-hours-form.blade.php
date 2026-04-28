@@ -134,9 +134,9 @@
                                         <div class="input-block local-forms">
                                             <x-input-label for="start_{{ $day }}_{{ $index }}" :value="__('Hora Entrada')" />
                                             <input id="start-{{ $day }}-{{ $index }}"
-                                                   type="time"
-                                                   wire:model.live="workingHours.{{ $day }}.{{ $index }}.start"
-                                                   class="form-control p-2">
+                                                   type="text"
+                                                   wire:model="workingHours.{{ $day }}.{{ $index }}.start"
+                                                   class="form-control p-2 datetimepicker24">
                                             <x-input-error :messages="$errors->get('workingHours.'.$day.'.'.$index.'.start')" class="mt-2" />
                                         </div>
                                     </div>
@@ -145,9 +145,10 @@
                                     <div class="col-12 col-md-2 mb-2">
                                         <div class="input-block local-forms">
                                             <x-input-label for="end_{{ $day }}_{{ $index }}" :value="__('Hora Salida')" />
-                                            <input type="time"
-                                                   wire:model.live="workingHours.{{ $day }}.{{ $index }}.end"
-                                                   class="form-control p-2">
+                                            <input id="end-{{ $day }}-{{ $index }}"
+                                                   type="text"
+                                                   wire:model="workingHours.{{ $day }}.{{ $index }}.end"
+                                                   class="form-control p-2 datetimepicker24">
                                             <x-input-error :messages="$errors->get('workingHours.'.$day.'.'.$index.'.end')" class="mt-2" />
                                         </div>
                                     </div>
@@ -193,4 +194,32 @@
             </div>
         </div>
     </form>
+
+    @script
+    <script>
+        const initTimePickers = () => {
+            $('.datetimepicker24').datetimepicker({
+                format: 'HH:mm',
+                icons: {
+                    up: "fas fa-angle-up",
+                    down: "fas fa-angle-down",
+                    next: 'fas fa-angle-right',
+                    previous: 'fas fa-angle-left'
+                }
+            }).on('dp.change', function(e) {
+                const model = $(this).attr('wire:model');
+                if (model) {
+                    $wire.set(model, e.date.format('HH:mm'));
+                }
+            });
+        };
+
+        initTimePickers();
+
+        // Re-inicializar después de que Livewire actualice el DOM
+        Livewire.hook('morph.updated', ({ el, component }) => {
+            initTimePickers();
+        });
+    </script>
+    @endscript
 </div>

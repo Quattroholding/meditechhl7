@@ -865,7 +865,7 @@ Route::prefix('help')->name('help.')->group(function () {
                 return array_search($role->id, [5, 2, 6, 3, 4]);
             });
 
-        $excludedModules = ['roles', 'clientes', 'encuestas', 'reportes', 'aseguradoras', 'paquetes'];
+        $excludedModules = ['roles', 'clientes', 'encuestas', 'reportes', 'aseguradoras', 'paquetes', 'hemoscreen', 'cotizaciones', 'tickets', 'dashboards'];
         $excludedPermissions = [
             'Validar usuarios registrados desde la aplicación móvil',
             'Eliminar registros de pacientes',
@@ -905,6 +905,26 @@ Route::prefix('help')->name('help.')->group(function () {
     Route::get('/support', function () {
         return view('help.support');
     })->name('support');
+
+    Route::get('/service-requests', function () {
+        return view('help.service-requests');
+    })->name('service-requests');
+
+    Route::get('/medicines', function () {
+        return view('help.medicines');
+    })->name('medicines');
+
+    Route::get('/medical-directory', function () {
+        return view('help.medical-directory');
+    })->name('medical-directory');
+
+    Route::get('/doctors', function () {
+        return view('help.doctors');
+    })->name('doctors');
+
+    Route::get('/users', function () {
+        return view('help.users');
+    })->name('users');
 
     // Future help pages can be added here
 });

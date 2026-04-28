@@ -93,7 +93,8 @@ class ConsultationController extends Controller
             }
 
             // CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST A ACTIVE
-            $encounter->serviceRequests()->update(['status' => 'active']);
+            $encounter->serviceRequests()->where('status', 'draft')
+            ->update(['status' => 'active']);
 
             // Get billable ChargeItems for this encounter
             $chargeItems = ChargeItem::where('encounter_id', $encounter->id)
