@@ -217,6 +217,7 @@
                             <x-input-error :messages="$errors->get('copay_amount')"/>
                         </div>
                     </div>
+                    {{--}}
                     <div class="col-md-3">
                         <div class="input-block local-forms">
                             <x-input-label for="deductible_amount" :value="__('Deducible')"/>
@@ -231,6 +232,7 @@
                             <x-input-error :messages="$errors->get('out_of_pocket_max')"/>
                         </div>
                     </div>
+                    {{--}}
                 </div>
 
                 <!-- Row 6: Status and Notes -->

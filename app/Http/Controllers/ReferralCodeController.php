@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Barryvdh\DomPDF\Facade\Pdf;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ReferralCodeController extends Controller
 {
@@ -24,11 +27,16 @@ class ReferralCodeController extends Controller
         // Generate registration URL with referral code
         $shareUrl = route('public.register', ['ref' => $referralCode->code]);
 
-        // Generate QR code as SVG for better quality in PDF
-        $qrCode = base64_encode(QrCode::format('svg')
-            ->size(200)
-            ->errorCorrection('H')
-            ->generate($shareUrl));
+        // Generate QR code using BaconQrCode directly
+        $renderer = new ImageRenderer(
+            new RendererStyle(200),
+            new SvgImageBackEnd
+        );
+        $writer = new Writer($renderer);
+        $qrCodeSvg = $writer->writeString($shareUrl);
+
+        // Encode for embedding in PDF
+        $qrCode = base64_encode($qrCodeSvg);
 
         // Load PDF view
         $pdf = Pdf::loadView('pdf.referral-code', [

@@ -75,7 +75,9 @@
                         @endif
                         @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
                             @include('layout.partials.header')
+                            @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500','two-factor.settings']))
                             <x-subscription-alert />
+                            @endif
                             @include('layout.partials.sidebar')
                         @endif
                       {{$slot}}
@@ -86,7 +88,7 @@
     <div class="sidebar-overlay" data-reff=""></div>
 
     <!-- Setup Reminder Panel - Outside main-wrapper for proper fixed positioning -->
-    @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500']))
+    @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500','two-factor.settings']))
         <livewire:setup-reminder-panel />
     @endif
 

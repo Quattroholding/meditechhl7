@@ -5,6 +5,7 @@ use App\Http\Middleware\CanManageSubscription;
 use App\Http\Middleware\CheckActiveUserMiddleware;
 use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
+use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use App\Http\Middleware\FirstLoginMiddleware;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\WhatsappClientFilter;
@@ -54,12 +55,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'debug.ip' => DebugIpRestriction::class,
             'whatsapp.client' => WhatsappClientFilter::class,
             'can.manage.subscription' => CanManageSubscription::class,
+            '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
 
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
         $middleware->web(append: [
             CheckActiveUserMiddleware::class,
+            EnsureTwoFactorIsEnabled::class,
         ]);
 
         // Add WhatsApp client filter to API routes

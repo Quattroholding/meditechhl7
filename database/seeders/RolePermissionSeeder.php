@@ -46,7 +46,6 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'patients.insurance', 'description' => 'Gerstionar seguros de pacientes', 'module' => 'pacientes'],
             ['name' => 'patients.see_conditions', 'description' => 'Ver condiciones medicas de pacientes', 'module' => 'pacientes'],
 
-
             // Practitioner management
             ['name' => 'practitioners.view', 'description' => 'Ver lista de médicos y profesionales', 'module' => 'medicos'],
             ['name' => 'practitioners.create', 'description' => 'Registrar nuevos médicos', 'module' => 'medicos'],
@@ -360,7 +359,6 @@ class RolePermissionSeeder extends Seeder
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
         $doctorRole->givePermissionTo([
             'dashboard.doctor',
-            'users.view',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
@@ -395,7 +393,6 @@ class RolePermissionSeeder extends Seeder
             'rooms.create',
             'rooms.edit',
             'rooms.delete',
-            'medicines.view',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',
@@ -454,6 +451,30 @@ class RolePermissionSeeder extends Seeder
             'tickets.create',
             'tickets.comment',
         ]);
+
+        // Set 2FA requirement for specific roles
+        $rolesToRequire2FA = [
+            'admin' => 'Este rol requiere autenticación de dos factores por políticas de seguridad.',
+            'contabilidad' => 'Este rol maneja información financiera sensible y requiere 2FA.',
+            'validador' => 'Este rol valida usuarios y requiere 2FA para mayor seguridad.',
+            'soporte' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'ventas' => 'Este rol maneja datos de clientes y requiere 2FA.',
+            'doctor' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'recepcionista' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'admin client' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'asistente medico' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'paciente' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+        ];
+
+        foreach ($rolesToRequire2FA as $roleName => $description) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->update([
+                    'requires_2fa' => true,
+                    'requires_2fa_description' => $description,
+                ]);
+            }
+        }
 
     }
 }

@@ -9,13 +9,14 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -203,7 +204,7 @@ class User extends Authenticatable
         if ($this->profile_picture) {
             $path = url('storage/'.$this->profile_picture);
         }
-        $route='';
+        $route = '';
         if ($this->hasRole('doctor') && $this->practitioner) {
             /*$prefix='Dr ';
             if($this->practitioner->gender =='female')
@@ -214,12 +215,14 @@ class User extends Authenticatable
                 $prefix = $gender == 'female' ? 'Dra. ' : 'Dr. ';
             }
 
-            if(auth()->user()->can('practitioners.profile') && auth()->user()->id == $this->practitioner->user_id)
-                $route = route('practitioner.profile',$this->practitioner->id);
-        }else if($this->hasRole('paciente') && $this->patient){
-            if(auth()->user()->can('patients.profile'))
-                $route = route('patient.profile',$this->patient->id);
-        }else if(auth()->user()->can('users.profile') && auth()->user()->id == $this->id){
+            if (auth()->user()->can('practitioners.profile') && auth()->user()->id == $this->practitioner->user_id) {
+                $route = route('practitioner.profile', $this->practitioner->id);
+            }
+        } elseif ($this->hasRole('paciente') && $this->patient) {
+            if (auth()->user()->can('patients.profile')) {
+                $route = route('patient.profile', $this->patient->id);
+            }
+        } elseif (auth()->user()->can('users.profile') && auth()->user()->id == $this->id) {
             $route = url('/profile');
         }
 
@@ -576,5 +579,22 @@ class User extends Authenticatable
         $allowedRoles = array_map('trim', explode(',', $package->role_payer));
 
         return $this->hasAnyRole($allowedRoles);
+    }
+
+    /**
+     * Check if user has two-factor authentication enabled.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return ! is_null($this->two_factor_confirmed_at)
+            && ! is_null($this->two_factor_secret);
+    }
+
+    /**
+     * Check if any of the user's roles require two-factor authentication.
+     */
+    public function requiresTwoFactor(): bool
+    {
+        return $this->roles()->where('requires_2fa', true)->exists();
     }
 }

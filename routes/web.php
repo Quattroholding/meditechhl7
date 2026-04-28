@@ -8,6 +8,7 @@ use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppointmentActionController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\TwoFactorLoginController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationController;
@@ -44,10 +45,16 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SuscriptionController;
 use App\Http\Controllers\SuscriptionInvoiceController;
 use App\Http\Controllers\SuscriptionPaymentController;
+use App\Http\Controllers\TwoFactorAdminController;
+use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Http\Controllers\UserController;
+use App\Livewire\User\Profile;
 use App\Models\Appointment;
+use App\Models\Rol;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 // Incluir el archivo de rutas de autenticación
 require __DIR__.'/auth.php';
@@ -204,6 +211,12 @@ Route::get('/login/concurrent-session', [LoginController::class, 'showConcurrent
 
 Route::post('/login/cancel', [LoginController::class, 'cancelLogin'])->name('login.cancel');
 
+// Two-Factor Authentication Challenge Routes (before auth - user not authenticated yet)
+Route::get('/two-factor-challenge', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'show'])
+    ->name('two-factor.login');
+Route::post('/two-factor-challenge', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'verify'])
+    ->name('two-factor.verify');
+
 // First Login Routes
 Route::middleware('auth')->group(function () {
     Route::get('/first-login', [FirstLoginController::class, 'show'])->name('first-login.show');
@@ -230,9 +243,12 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // User Profile Route
-    Route::get('/user-profile', function () {
-        return view('user-profile');
-    })->name('user.profile');
+    Route::get('/user-profile', Profile::class)->name('user.profile');
+
+    // Two-Factor Settings Page (Dedicated - avoids nested component issues)
+    Route::get('/two-factor-settings', function () {
+        return view('two-factor-settings');
+    })->name('two-factor.settings');
 
     // Notifications Routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -843,9 +859,9 @@ Route::prefix('help')->name('help.')->group(function () {
     })->name('profile');
 
     Route::get('/roles', function () {
-        $roles = \App\Models\Rol::whereIn('id', [5, 2, 6, 3, 4])
+        $roles = Rol::whereIn('id', [5, 2, 6, 3, 4])
             ->get()
-            ->sortBy(function($role) {
+            ->sortBy(function ($role) {
                 return array_search($role->id, [5, 2, 6, 3, 4]);
             });
 
@@ -864,22 +880,22 @@ Route::prefix('help')->name('help.')->group(function () {
             'Verificar pago de suscripcion',
             'Ver lista de suscripciones',
             'Comentar cambiar estauts',
-            'Asignar ticket'
+            'Asignar ticket',
         ];
 
-        $permissions = \Spatie\Permission\Models\Permission::whereNotIn('module', $excludedModules)
+        $permissions = Permission::whereNotIn('module', $excludedModules)
             ->whereNotIn('description', $excludedPermissions)
             ->whereNotIn('name', $excludedPermissions) // Backup check for name
             ->orderBy('id')
             ->get()
             ->groupBy('module');
-        
+
         // Fetch permission-role assignments
-        $matrix = \Illuminate\Support\Facades\DB::table('role_has_permissions')
+        $matrix = DB::table('role_has_permissions')
             ->select('permission_id', 'role_id')
             ->get()
             ->groupBy('permission_id')
-            ->map(function($item) {
+            ->map(function ($item) {
                 return $item->pluck('role_id')->all();
             });
 
@@ -950,3 +966,22 @@ Route::middleware(['auth', 'role:hemoscreen'])->prefix('hemoscreen')->name('hemo
     Route::get('/export-single-pdf/{result}', [HemoScreenExportController::class, 'exportSinglePdf'])->name('export-single-pdf');
     Route::get('/export-csv', [HemoScreenExportController::class, 'exportCsv'])->name('export-csv');
 });
+
+// Two-Factor Authentication Routes (Custom - Fortify handles most 2FA routes automatically)
+Route::middleware(['auth'])->group(function () {
+    // Admin override - disable 2FA for another user
+    Route::post('/admin/users/{user}/disable-2fa', [TwoFactorAdminController::class, 'disableUserTwoFactor'])
+        ->middleware('role:admin')
+        ->name('2fa.admin.disable');
+
+    Route::get('/admin/users/{user}/two-factor-status', [TwoFactorAdminController::class, 'viewUserTwoFactorStatus'])
+        ->middleware('role:admin')
+        ->name('2fa.admin.status');
+});
+
+// Email backup codes during 2FA challenge (not authenticated yet)
+Route::post('/two-factor-challenge/request-email-code', [TwoFactorEmailBackupController::class, 'requestEmailCode'])
+    ->name('2fa.email-backup.request');
+
+Route::post('/two-factor-challenge/verify-email-code', [TwoFactorEmailBackupController::class, 'verifyEmailCode'])
+    ->name('2fa.email-backup.verify');
