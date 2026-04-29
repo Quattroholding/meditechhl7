@@ -4,6 +4,7 @@ namespace App\Livewire\Medicine;
 
 use App\Models\Medication;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -40,7 +41,7 @@ class DataTable extends Component
     public function render()
     {
         $data = Medication::query()
-            ->with('ingredients')
+            ->with(['ingredients', 'medicationRequests'])
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->orWhere('generic_name', 'like', '%'.$this->search.'%')
@@ -70,5 +71,50 @@ class DataTable extends Component
     public function refreshMedicines()
     {
         $this->resetPage();
+    }
+
+    #[On('deleteMedication')]
+    public function deleteMedication($id)
+    {
+        $medication = Medication::find($id);
+
+        if (! $medication) {
+            $this->dispatch('showToastrDeleteMEdication',
+                type: 'error',
+                message: 'Medicamento no encontrado.',
+            );
+            session()->flash('error', 'Medicamento no encontrado.');
+
+            return;
+        }
+
+        // Authorize using the policy and get the response message
+        $response = Gate::inspect('delete', $medication);
+
+        if ($response->denied()) {
+            $this->dispatch('showToastrDeleteMEdication',
+                type: 'error',
+                message: $response->message(),
+            );
+            session()->flash('error', $response->message());
+
+            return;
+        }
+
+        try {
+            $medication->delete();
+            $this->dispatch('showToastrDeleteMEdication',
+                type: 'success',
+                message: 'Medicamento eliminado correctamente.',
+            );
+            session()->flash('success', 'Medicamento eliminado correctamente.');
+            $this->resetPage();
+        } catch (\Exception $e) {
+            $this->dispatch('showToastrDeleteMEdication',
+                type: 'error',
+                message: 'Error al eliminar el medicamento: '.$e->getMessage(),
+            );
+            session()->flash('error', 'Error al eliminar el medicamento: '.$e->getMessage());
+        }
     }
 }

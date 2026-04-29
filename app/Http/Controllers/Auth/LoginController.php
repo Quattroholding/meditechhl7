@@ -52,7 +52,7 @@ class LoginController extends Controller
             $user = Auth::user();
 
             // Check if user has 2FA enabled
-            if ($user->hasTwoFactorEnabled()) {
+            if ($user->hasTwoFactorEnabled() && config('two-factor.enabled', true)) {
                 // Store user ID in session for 2FA challenge
                 $request->session()->put([
                     'login.id' => $user->id,

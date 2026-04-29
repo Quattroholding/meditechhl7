@@ -101,16 +101,16 @@
                                                 <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endif
-                                        {{--}}
-                                        @if($medication->code_system === 'CUSTOM' and auth()->user()->can('medicines.delete'))
-                                            <div class="btn-group btn-group-sm">
 
-                                                <a href="javascript:;" onclick="confirm('¿Estás seguro de eliminar este medicamento?') || event.stopImmediatePropagation()" wire:click="$dispatch('deleteMedication', { id: {{ $medication->id }} })" class="btn btn-danger btn-sm" title="Eliminar">
-                                                    <i class="fa fa-trash-alt m-r-5"></i>
-                                                </a>
-                                            </div>
-                                        @endif
-                                        {{--}}
+                                        @can('delete', $medication)
+                                            <a href="javascript:;"
+                                               onclick="confirm('¿Estás seguro de eliminar este medicamento?\n\nEsta acción no se puede deshacer.') || event.stopImmediatePropagation()"
+                                               wire:click="$dispatch('deleteMedication', { id: {{ $medication->id }} })"
+                                               class="btn btn-danger btn-sm"
+                                               title="Eliminar">
+                                                <i class="fa fa-trash-alt m-r-5"></i>
+                                            </a>
+                                        @endcan
                                     </td>
                                 </tr>
                                 <!-- Hidden row for expanded details -->
@@ -130,4 +130,16 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrDeleteMEdication', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>
