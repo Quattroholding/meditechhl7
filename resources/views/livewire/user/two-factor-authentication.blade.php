@@ -140,9 +140,9 @@
                 <i class="fas fa-download me-1"></i> Descargar Códigos
             </button>
 
-            <button class="btn btn-secondary" wire:click="$set('showingRecoveryCodes', false)">
+            <a class="btn btn-secondary" href="{{route('dash')}}">
                 Ya los guardé
-            </button>
+            </a>
         </div>
     @endif
 

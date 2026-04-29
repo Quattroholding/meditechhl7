@@ -101,6 +101,7 @@
                                                 <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
                                         @endif
+                                        {{--}}
                                         @if($medication->code_system === 'CUSTOM' and auth()->user()->can('medicines.delete'))
                                             <div class="btn-group btn-group-sm">
 
@@ -109,6 +110,7 @@
                                                 </a>
                                             </div>
                                         @endif
+                                        {{--}}
                                     </td>
                                 </tr>
                                 <!-- Hidden row for expanded details -->
