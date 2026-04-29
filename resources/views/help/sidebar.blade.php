@@ -209,6 +209,14 @@
                 @endif
             </a>
 
+            <a href="{{ route('help.2fa') }}" class="nav-link {{ $active === '2fa' ? 'active' : '' }}">
+                <i class="fas fa-shield-alt"></i>
+                <span>Seguridad 2FA</span>
+                @if ($active === '2fa')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.users') }}" class="nav-link {{ $active === 'users' ? 'active' : '' }}">
                 <i class="fas fa-users"></i>
                 <span>Usuarios</span>
