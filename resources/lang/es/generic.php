@@ -23,4 +23,11 @@ return [
     'logout' => 'Cerrar sesion',
     'select' => 'Seleccione',
     'close' => 'Cerrar',
+    'date'=>'Fecha',
+    'from'=>'Desde',
+    'to'=>'Hasta',
+    'reason'=>'Razon',
+    'user' => 'Usuario',
+    'before'=>'antes',
+    'after'=>'despues',
 ];

@@ -32,6 +32,11 @@ class ViewResults extends Component
         if (! $this->serviceRequest) {
             session()->flash('error', __('service_request.not_found'));
 
+            $this->dispatch('showToastrSrViewResult',
+                type: 'error',
+                message:  __('service_request.not_found'),
+            );
+
             return;
         }
 
@@ -72,11 +77,21 @@ class ViewResults extends Component
         if (! $result || ! $result->file_path) {
             session()->flash('error', __('service_request_result.download_failed'));
 
+            $this->dispatch('showToastrSrViewResult',
+                type: 'error',
+                message:  __('service_request_result.download_failed'),
+            );
+
             return;
         }
 
         if (! Storage::disk('public')->exists($result->file_path)) {
             session()->flash('error', __('service_request_result.file_not_found'));
+
+            $this->dispatch('showToastrSrViewResult',
+                type: 'error',
+                message:   __('service_request_result.file_not_found'),
+            );
 
             return;
         }
@@ -91,6 +106,11 @@ class ViewResults extends Component
         if (! $result) {
             session()->flash('error', __('service_request_result.not_found'));
 
+            $this->dispatch('showToastrSrViewResult',
+                type: 'error',
+                message:  __('service_request_result.not_found'),
+            );
+
             return;
         }
 
@@ -103,6 +123,12 @@ class ViewResults extends Component
         $result->delete();
 
         session()->flash('success', __('service_request_result.deleted_successfully'));
+
+        $this->dispatch('showToastrSrViewResult',
+            type: 'success',
+            message:  __('service_request_result.deleted_successfully'),
+        );
+
         $this->loadResults(); // Recargar la lista
         $this->closeResultDetail(); // Cerrar detalle si está abierto
     }

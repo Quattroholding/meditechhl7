@@ -102,8 +102,8 @@
                                     <thead>
                                         <tr>
                                             <th>{{ __('generic.date') }}</th>
-                                            <th>{{ __('generic.from') }}</th>
-                                            <th>{{ __('generic.to') }}</th>
+                                            <th>{{ __('generic.before') }}</th>
+                                            <th>{{ __('generic.after') }}</th>
                                             <th>{{ __('generic.reason') }}</th>
                                             <th>{{ __('generic.user') }}</th>
                                         </tr>
@@ -115,24 +115,24 @@
                                                     <small>{{ $log->changed_at ? $log->changed_at->format('d/m/Y H:i') : $log->created_at->format('d/m/Y H:i') }}</small>
                                                 </td>
                                                 <td>
-                                                    @if($log->old_value)
-                                                        <span class="badge bg-{{ $this->getStatusColor($log->old_value) }}">
-                                                            {{ __('service_request.status_' . $log->old_value) }}
+                                                    @if($log->old_status)
+                                                        <span class="badge bg-{{ $this->getStatusColor($log->old_status) }}">
+                                                           {{ $log->old_status }}
                                                         </span>
                                                     @else
                                                         <small class="text-muted">-</small>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-{{ $this->getStatusColor($log->new_value) }}">
-                                                        {{ __('service_request.status_' . $log->new_value) }}
+                                                    <span class="badge bg-{{ $this->getStatusColor($log->new_status) }}">
+                                                        {{  $log->new_status }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <small>{{ $log->reason ?: '-' }}</small>
+                                                    <small>{{ $log->observation ?: '-' }}</small>
                                                 </td>
                                                 <td>
-                                                    <small>{{ $log->user?->name ?: __('generic.system') }}</small>
+                                                    <small>{{ $log->user?->full_name ?: __('generic.system') }}</small>
                                                 </td>
                                             </tr>
                                         @endforeach
