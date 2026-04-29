@@ -208,8 +208,10 @@
                         @can('settings.create_user_procedures')
                         <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Servicios') }}</a></li>
                         @endcan
-                        @can('settings.signature_and_seal' && auth()->user()->practitioner)
+                        @can('settings.signature_and_seal')
+                            @if(auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/{id}/signature_and_seal') ? 'active' : '' }}"  href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('Firma y Sello') }}</a></li>
+                            @endif
                         @endcan
                         @can('settings.create_consultation_template')
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
