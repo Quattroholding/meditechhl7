@@ -229,6 +229,17 @@
                             <img src="{{ asset('images/tutorial/profile/profile_pw.png') }}" alt="Seguridad" class="img-fluid rounded border shadow-sm">
                         </div>
                     </div>
+
+                    <!-- Nueva sección de 2FA -->
+                    <div class="step-card" style="border-left-color: #1a237e; background: linear-gradient(135deg, #e8eaf6 0%, #fff 100%);">
+                        <div class="step-content">
+                            <h5><i class="fas fa-shield-alt me-2 text-primary"></i>Autenticación de Dos Factores (2FA) - <strong>Obligatorio</strong></h5>
+                            <p>SAMI ahora requiere autenticación de dos factores para todos los usuarios. El sistema te guiará automáticamente para vincular tu celular en tu próximo inicio de sesión.</p>
+                            <a href="{{ route('help.2fa') }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-book-open me-1"></i> Ver Guía de Configuración Obligatoria
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

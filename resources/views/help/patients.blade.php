@@ -964,9 +964,40 @@
                     </div>
                 </section>
 
-                <!-- Paso 1: Acceder al Modulo -->
+                <!-- Paso 1: Nuevo Paciente -->
                 <section id="paso-1" class="step-card">
                     <div class="step-number">1</div>
+                    <h3 class="step-title">Iniciar Registro de Nuevo Paciente</h3>
+                    <div class="step-content">
+                        <p>Para atender a un paciente dentro de SAMI, este deberá ser previamente registrado, antes de agendar la cita:</p>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
+                        </div>
+                                                <div class="info-box info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Nota:</strong> Puede acceder de distintas formas para hacer el registro de un paciente: 
+                                <ol>
+                                    <li>
+                                        Desde el asistente de configuración (cuadro en la esquina inferior derecha)y da clic en <strong>+registrar Paciente</strong>.
+                                    </li>
+                                    <li>
+                                        Haga clic en <strong>Lista Pacientes</strong> y desde Lista Pacientes, haga clic en el botón azúl que dice<strong>+Nuevo(a)</strong>
+                                    </li>
+                                    <li>
+                                        Haciendo clic en <strong>Crear Paciente</strong>, puede accesar directamente al formulario del registro del paciente.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Paso 1: Acceder al Modulo -->
+                <section id="paso-2" class="step-card">
+                    <div class="step-number">2</div>
                     <h3 class="step-title">Acceder al Módulo de Pacientes</h3>
                     <div class="step-content">
                         <p>Para acceder al módulo de pacientes:</p>
@@ -999,35 +1030,6 @@
                     </div>
                 </section>
 
-                <!-- Paso 2: Nuevo Paciente -->
-                <section id="paso-2" class="step-card">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">Iniciar Registro de Nuevo Paciente</h3>
-                    <div class="step-content">
-                        <p>En la lista de pacientes, haz clic en el botón <strong>"Nuevo(a)"</strong>:</p>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/patients/create-patient.png') }}" alt="" style="width: 100%;">
-                        </div>
-                                                <div class="info-box info-note">
-                            <i class="fas fa-info-circle"></i>
-                            <div>
-                                <strong>Nota:</strong> Puede acceder de distintas formar para hacer el registro de un paciente: 
-                                <ol>
-                                    <li>
-                                        Desde el asistente de configuración (cuadro en la esquina inferior derecha)y da clic en <strong>+registrar Paciente</strong>.
-                                    </li>
-                                    <li>
-                                        Desde Lista Pacientes, haga clic en el botón azúl que dice<strong>+Nuevo(a)</strong>
-                                    </li>
-                                    <li>
-                                        Haciendo clic en <strong>Crear Paciente</strong>, puede accesar directamente al formulario del registro del paciente.
-                                    </li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- Paso 3: Datos de Identificacion -->
                 <section id="paso-3" class="step-card step-important">

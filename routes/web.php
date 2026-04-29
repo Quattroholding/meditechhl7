@@ -926,6 +926,10 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.users');
     })->name('users');
 
+    Route::get('/2fa', function () {
+        return view('help.2fa');
+    })->name('2fa');
+
     // Future help pages can be added here
 });
 
