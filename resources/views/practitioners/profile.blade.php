@@ -17,7 +17,7 @@
                     <div class="row">
                         <livewire:doctor.profile-about practitioner_id="{{$data->id}}"/>
                         <livewire:doctor.profile-details practitioner_id="{{$data->id}}"/>
-                        <div class="col-12 col-lg-3">
+                        <div class="col-12 col-lg-4">
                             <div class="card">
                                 <div class="card-body">
                                     @livewire('user.two-factor-authentication')
