@@ -38,7 +38,7 @@ class Medication extends Model
 
     public function medicationRequests(): HasMany
     {
-        return $this->hasMany(MedicationRequest::class);
+        return $this->hasMany(MedicationRequest::class,'medication_id2');
     }
 
     public function ingredients(): HasMany
