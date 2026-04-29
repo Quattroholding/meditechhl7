@@ -1,4 +1,4 @@
-<div class="col-lg-9">
+<div class="col-lg-8">
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">

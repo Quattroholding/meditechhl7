@@ -1,4 +1,4 @@
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">
@@ -35,6 +35,7 @@
                 </div>
             </div>
         </div>
+
     </div>
     @if(auth()->user()->hasAnyRole(['admin','doctor']))
     <div class="doctor-personals-grp">

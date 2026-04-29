@@ -17,15 +17,17 @@
                     <div class="row">
                         <livewire:doctor.profile-about practitioner_id="{{$data->id}}"/>
                         <livewire:doctor.profile-details practitioner_id="{{$data->id}}"/>
+                        <div class="col-12 col-lg-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    @livewire('user.two-factor-authentication')
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     @if(auth()->user()->hasAnyRole(['admin','doctor']))
                     <div class="row mt-4">
-                        <div class="col-12 col-lg-7">
-                            <livewire:doctor.signature-manager practitioner_id="{{$data->id}}"/>
-                        </div>
-                        <div class="col-12 col-lg-5">
-                            <x-referral-code-display :client="$data->user->getCurrentClient()" />
-                        </div>
+
                     </div>
                     @endif
                 </div>

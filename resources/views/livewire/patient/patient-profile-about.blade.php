@@ -1,4 +1,4 @@
-<div class="col-lg-3">
+<div class="col-lg-4">
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">
@@ -25,6 +25,11 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+            @livewire('user.two-factor-authentication')
             </div>
         </div>
     </div>
