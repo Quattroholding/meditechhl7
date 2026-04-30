@@ -222,7 +222,7 @@
                         </tr>
                         <tr>
                             <td><strong>Código</strong></td>
-                            <td>Código de referencia estándar o interno del medicamento.</td>
+                            <td>Código registro para medicamentos provenientes del MINSA.</td>
                         </tr>
                         <tr>
                             <td><strong>Fuente</strong></td>
@@ -252,12 +252,18 @@
         <div class="content-section">
             <h2><i class="fas fa-plus-circle me-2"></i>Gestión de Medicamentos</h2>
             <div class="info-box border-start border-4 border-primary p-3 bg-light mb-3">
-                <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i><strong>Nota:</strong> Solo los medicamentos marcados como "CUSTOM" pueden ser editados o eliminados por el usuario administrador del cliente, siempre que cuente con los permisos necesarios.</p>
+                <p class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i><strong>Nota:</strong> Solo los medicamentos marcados como "CUSTOM" pueden ser eliminados si se cumplen estas 2 condiciones: <ol>
+                    <li>
+                        Que tenga asignado el permiso para borrar medicamentos.
+                    </li>
+                <li>
+                    Que el medicamento no haya sido adjunto a ninguna receta.    
+                </li></ol></p>
             </div>
             <p>Desde este módulo puede:</p>
             <ul>
                 <li>Buscar medicamentos por nombre, código o fabricante.</li>
-                <li>Filtrar por estado (Activo/Inactivo).</li>
+                <!--<li>Filtrar por estado (Activo/Inactivo).</li>-->
                 <li>Agregar nuevos medicamentos personalizados al catálogo de su institución.</li>
             </ul>
         </div>
