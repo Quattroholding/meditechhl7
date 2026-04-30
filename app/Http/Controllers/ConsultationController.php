@@ -92,9 +92,17 @@ class ConsultationController extends Controller
                 throw new \Exception('Encounter no encontrado.');
             }
 
-            // CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST A ACTIVE
-            $encounter->serviceRequests()->where('status', 'draft')
-            ->update(['status' => 'active']);
+            // CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST
+            // Si el procedimiento se realizó en la consulta, marcar como completed
+            $encounter->serviceRequests()
+                ->where('status', 'draft')
+                ->where('performed_in_consultation', true)
+                ->update(['status' => 'completed']);
+
+            // Los demás service requests se marcan como active
+            $encounter->serviceRequests()
+                ->where('status', 'draft')
+                ->update(['status' => 'active']);
 
             // Get billable ChargeItems for this encounter
             $chargeItems = ChargeItem::where('encounter_id', $encounter->id)

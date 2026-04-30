@@ -14,7 +14,8 @@ class ServiceRequest extends BaseModel
 
     protected $fillable = ['fhir_id', 'encounter_id', 'patient_id', 'practitioner_id', 'status', 'intent', 'priority', 'do_not_perform', 'code', 'service_type',
         'code_system', 'code_display', 'quantity', 'quantity_unit', 'occurrence_start', 'occurrence_end', 'body_site', 'note', 'patient_instruction',
-        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id', 'notification_sent_at', 'message_control_id', 'hemo_identification'];
+        'supporting_info', 'reason_code', 'reason_reference', 'authored_on', 'last_updated', 'scb_id', 'notification_sent_at', 'message_control_id', 'hemo_identification',
+        'performed_in_consultation', 'procedure_notes'];
 
     public static function boot(): void
     {
