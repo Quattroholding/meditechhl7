@@ -155,7 +155,14 @@
                                                             @endif
                                                         </div>
                                                     @endif
-
+                                                    <br/><br/>
+                                                    @if($service->performed_in_consultation || $service->procedure_notes)
+                                                        <div style="background: white; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151; border: 1px solid #bae6fd;">
+                                                            @if($service->performed_in_consultation)
+                                                                <div><strong>📝 Notas del procedimiento realizado:</strong> {{ $service->procedure_notes }}</div>
+                                                            @endif
+                                                        </div>
+                                                    @endif
                                                     <!-- Resultados de Laboratorio (Observaciones) -->
                                                     @if($service->observations()->count() > 0)
                                                         <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 12px; border: 2px solid #3b82f6;">
