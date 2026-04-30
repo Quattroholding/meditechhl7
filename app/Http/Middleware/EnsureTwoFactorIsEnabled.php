@@ -24,6 +24,8 @@ class EnsureTwoFactorIsEnabled
         'logout',
         'profile',
         'user-profile',
+        'first-login',
+        'first-login/*',
         'livewire/*',
     ];
 
