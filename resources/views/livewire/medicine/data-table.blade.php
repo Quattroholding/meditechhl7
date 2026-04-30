@@ -96,12 +96,11 @@
                                         </span>
                                     </td>
                                     <td data-column="acciones" data-priority="1" data-label="Acciones" class="text-end">
-                                        @if(auth()->user()->can('medicines.edit') && $medication->code_system === 'CUSTOM')
+                                        @can('update', $medication)
                                             <a href="{{ route('medicine.edit', $medication->id) }}" class="btn btn-success btn-sm" title="Editar">
                                                 <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                             </a>
-                                        @endif
-
+                                        @endcan
                                         @can('delete', $medication)
                                             <a href="javascript:;"
                                                onclick="confirm('¿Estás seguro de eliminar este medicamento?\n\nEsta acción no se puede deshacer.') || event.stopImmediatePropagation()"

@@ -91,6 +91,7 @@ class CreateForm extends Component
                 'manufacturer' => $this->manufacturer,
                 'status' => $this->status,
                 'is_brand' => ! empty($this->home_name) && $this->home_name !== $this->generic_name,
+                'created_by'=>auth()->user()->id,
             ]);
 
             // Create all ingredients

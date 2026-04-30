@@ -183,7 +183,7 @@
                 </div>
 
                 <div class="product-card__content">
-                    <h3 class="product-card__name">SAMI</h3>
+                    <img src="{{url('/images/logoSAMI.jpg')}}" width="100%" style="margin: 0 auto;">
                     <p class="product-card__tagline">Sistema de Gestión para Clínicas y Hospitales</p>
 
                     <ul class="product-card__features">
@@ -256,8 +256,8 @@
                     <div class="product-card__badge product-card__badge--free">100% Gratis</div>
                 </div>
 
-                <div class="product-card__content">
-                    <h3 class="product-card__name">SAMI Recetas</h3>
+                <div class="product-card__content" >
+                    <img src="{{url('/landing/images/logoSAMIRecetas.jpg')}}" width="60%" style="margin: 0 auto;">
                     <p class="product-card__tagline">Recetas Médicas Digitales para Panamá</p>
 
                     <ul class="product-card__features">

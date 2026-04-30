@@ -3,6 +3,7 @@
 namespace App\Livewire\Medicine;
 
 use App\Models\Medication;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 class EditForm extends Component
@@ -106,6 +107,17 @@ class EditForm extends Component
         $this->validate();
 
         try {
+
+            // Authorize using the policy and get the response message
+            $response = Gate::inspect('update', $this->medication);
+
+
+            if ($response->denied()) {
+
+                session()->flash('message.error', $response->message());
+
+                return redirect()->route('medicine.index');
+            }
             // Update medication
             $this->medication->update([
                 'generic_name' => $this->generic_name,
@@ -156,6 +168,10 @@ class EditForm extends Component
             return redirect()->route('medicine.index');
 
         } catch (\Exception $e) {
+            $this->dispatch('showToastrUpdateMEdication',
+                type: 'error',
+                message:  'Error al actualizar el medicamento: '.$e->getMessage(),
+            );
             session()->flash('message.error', 'Error al actualizar el medicamento: '.$e->getMessage());
         }
     }

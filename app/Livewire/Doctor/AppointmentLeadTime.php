@@ -80,6 +80,7 @@ class AppointmentLeadTime extends Component
 
     private function calculateAverageLeadTime($practitionerId, $dateRange)
     {
+
         $appointments = Appointment::where('practitioner_id', $practitionerId)
             ->whereBetween('start', [$dateRange['start'], $dateRange['end']])
             ->whereNotNull('start')
@@ -98,13 +99,15 @@ class AppointmentLeadTime extends Component
         $count = 0;
 
         foreach ($appointments as $appointment) {
-            $requestTime = Carbon::parse($appointment->created_at);
-            $attentionTime = Carbon::parse($appointment->start);
+            // Ensure Carbon instances (parse if string, use directly if already Carbon)
+            $requestTime =Carbon::parse($appointment->getRawOriginal('created_at'));
+            $attentionTime =  Carbon::parse($appointment->start);
             $diffInMinutes = $requestTime->diffInMinutes($attentionTime);
-
             $totalMinutes += $diffInMinutes;
             $count++;
         }
+
+        // dd($totalMinutes);
 
         if ($count > 0) {
             $avgMinutes = $totalMinutes / $count;
@@ -153,11 +156,10 @@ class AppointmentLeadTime extends Component
                     ->get();
 
                 $avgMinutes = 0;
-                $avgDiv = $avgMinutes / 60;
                 if ($appointments->isNotEmpty()) {
                     $totalMinutes = 0;
                     foreach ($appointments as $appointment) {
-                        $requestTime = Carbon::parse($appointment->created_at);
+                        $requestTime = Carbon::parse($appointment->getRawOriginal('created_at'));
                         $attentionTime = Carbon::parse($appointment->start);
                         $totalMinutes += $requestTime->diffInMinutes($attentionTime);
                     }
@@ -166,7 +168,7 @@ class AppointmentLeadTime extends Component
 
                 $this->chartData[] = [
                     'label' => $date->format('D d'),
-                    'value' => round($avgDiv, 1), // Convert to hours for chart
+                    'value' => round($avgMinutes / 60, 1), // Convert to hours for chart
                 ];
             }
         } elseif ($this->filter === 'monthly') {
@@ -186,7 +188,7 @@ class AppointmentLeadTime extends Component
                 if ($appointments->isNotEmpty()) {
                     $totalMinutes = 0;
                     foreach ($appointments as $appointment) {
-                        $requestTime = Carbon::parse($appointment->created_at);
+                        $requestTime =  Carbon::parse($appointment->getRawOriginal('created_at'));
                         $attentionTime = Carbon::parse($appointment->start);
                         $totalMinutes += $requestTime->diffInMinutes($attentionTime);
                     }

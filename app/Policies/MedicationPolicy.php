@@ -35,9 +35,28 @@ class MedicationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Medication $medication): bool
+    public function update(User $user, Medication $medication): Response
     {
-        return false;
+        // Check if user has permission to edit medicines
+        if (! $user->can('medicines.edit')) {
+            return Response::deny('No tienes permiso para editar medicamentos.');
+        }
+
+        // Check if medication is custom
+        if ($medication->code_system !== 'CUSTOM') {
+            return Response::deny('Solo se pueden actualizar medicamentos personalizados.');
+        }
+
+        // Check if medication is associated with any prescriptions
+        if ($medication->medicationRequests()->exists()) {
+            return Response::deny('No se puede actualizar un medicamento que ya está asociado a recetas médicas.');
+        }
+
+        if ($user->id !== $medication->created_by) {
+            return Response::deny('No se puede actualizar un medicamento que no fue creado por usted.');
+        }
+
+        return Response::allow();
     }
 
     /**
@@ -63,6 +82,10 @@ class MedicationPolicy
         // Check if medication is associated with any prescriptions
         if ($medication->medicationRequests()->exists()) {
             return Response::deny('No se puede eliminar un medicamento que ya está asociado a recetas médicas.');
+        }
+
+        if ($user->id !== $medication->created_by) {
+            return Response::deny('No se puede eliminar un medicamento que no fue creado por usted.');
         }
 
         return Response::allow();
