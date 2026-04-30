@@ -251,7 +251,26 @@
                                 @endif
 
                                 <!-- Payment Information -->
-                                @if($invoice->payment_date || $invoice->payment_method || $invoice->payment_reference)
+                                @php
+                                    $paymentMethod = $invoice->payment_method;
+                                    $paymentRef = $invoice->payment_reference;
+                                    $transactionId = null;
+                                    $paymentNotes = null;
+
+                                    if ($invoice->payments && $invoice->payments->count() > 0) {
+                                        $lastPayment = $invoice->payments->first();
+                                        if (!$paymentMethod) {
+                                            $paymentMethod = $lastPayment->payment_method_label;
+                                        }
+                                        if (!$paymentRef) {
+                                            $paymentRef = $lastPayment->reference_number;
+                                        }
+                                        $transactionId = $lastPayment->transaction_id;
+                                        $paymentNotes = $lastPayment->notes;
+                                    }
+                                @endphp
+
+                                @if($invoice->payment_date || $paymentMethod || $paymentRef || $transactionId || $paymentNotes)
                                     <div class="invoice-info">
                                         <h5>{{ __('invoice.payment_information') }}</h5>
                                         <div class="row">
@@ -260,14 +279,24 @@
                                                     <p><strong>{{ __('invoice.payment_date') }}:</strong><br>{{ $invoice->payment_date->format('d/m/Y') }}</p>
                                                 </div>
                                             @endif
-                                            @if($invoice->payment_method)
+                                            @if($paymentMethod)
                                                 <div class="col-md-4">
-                                                    <p><strong>{{ __('invoice.payment_method') }}:</strong><br>{{ $invoice->payment_method }}</p>
+                                                    <p><strong>{{ __('invoice.payment_method') }}:</strong><br>{{ $paymentMethod }}</p>
                                                 </div>
                                             @endif
-                                            @if($invoice->payment_reference)
+                                            @if($paymentRef)
                                                 <div class="col-md-4">
-                                                    <p><strong>{{ __('invoice.payment_reference') }}:</strong><br>{{ $invoice->payment_reference }}</p>
+                                                    <p><strong>{{ __('invoice.payment_reference') }}:</strong><br>{{ $paymentRef }}</p>
+                                                </div>
+                                            @endif
+                                            @if($transactionId)
+                                                <div class="col-md-4">
+                                                    <p><strong>{{ __('invoice.transaction_id') }}:</strong><br>{{ $transactionId }}</p>
+                                                </div>
+                                            @endif
+                                            @if($paymentNotes)
+                                                <div class="col-12">
+                                                    <p><strong>{{ __('invoice.payment_notes') }}:</strong><br>{{ $paymentNotes }}</p>
                                                 </div>
                                             @endif
                                         </div>

@@ -139,6 +139,8 @@ return [
     'payment_date' => 'Fecha de Pago',
     'payment_method' => 'Método de Pago',
     'payment_reference' => 'Referencia de Pago',
+    'transaction_id' => 'ID de Transacción',
+    'payment_notes' => 'Notas de Pago',
     'payment_terms' => 'Términos de Pago',
 
     // Billing Information

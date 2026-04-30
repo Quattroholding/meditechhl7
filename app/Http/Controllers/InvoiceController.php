@@ -24,6 +24,7 @@ class InvoiceController extends Controller
             'issuerOrganization',
             'client',
             'lineItems.chargeItem',
+            'payments',
         ])->findOrFail($id);
 
         // Verify user has access to this invoice
@@ -46,6 +47,7 @@ class InvoiceController extends Controller
                 'performerPractitioner',
                 'issuerOrganization',
                 'lineItems.chargeItem',
+                'payments',
             ])->findOrFail($invoice_id);
 
             // Verify user has access to this invoice

@@ -146,6 +146,8 @@ class SettingController extends Controller
             'due_date' => now()->addDays(15),
             'status' => InvoiceStatus::PAID,
             'payment_status' => PaymentStatus::COMPLETED,
+            'payment_method' => 'Efectivo',
+            'payment_reference' => 'REF-123456',
             'payment_terms' => 'Pago dentro de 15 días',
             'currency' => 'USD',
             'subtotal' => 285.00,
@@ -155,6 +157,7 @@ class SettingController extends Controller
             'notes' => 'Esta es una factura de ejemplo para vista previa. Gracias por su confianza.',
             'encounter' => $encounter,
             'patient' => $patient,
+            'payments' => collect([]),
         ];
 
         // Sample line items
