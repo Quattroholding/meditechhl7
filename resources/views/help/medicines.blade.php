@@ -321,26 +321,27 @@
         <div class="content-section">
             <h2><i class="fas fa-mouse-pointer me-2"></i>Botones de Acciones</h2>
             <p>En la lista de medicamentos, encontrará los siguientes botones para interactuar con los registros:</p>
+
+            <div class="info-box border-start border-4 border-warning p-3 bg-light mb-4 shadow-sm">
+                <p class="mb-0"><i class="fas fa-exclamation-triangle text-warning me-2"></i><strong>Condiciones para Editar o Eliminar:</strong></p>
+                <p class="mb-0 mt-2 small text-muted">Estas acciones solo son posibles para medicamentos de fuente <strong>"CUSTOM"</strong> bajo las siguientes condiciones:</p>
+                <ul class="mb-0 mt-2 small">
+                    <li>Contar con los permisos necesarios asignados a su cuenta.</li>
+                    <li>El medicamento <strong>no debe haber sido utilizado</strong> en ninguna receta médica previa.</li>
+                </ul>
+            </div>
             
             <div class="row mt-4">
                 <div class="col-md-6 mb-3">
-                    <div class="p-4 border rounded h-100 bg-light">
+                    <div class="p-4 border rounded h-100 bg-light shadow-sm text-center">
                         <h5 class="text-primary"><i class="fas fa-edit me-2"></i>Editar</h5>
-                        <p class="mb-0">Permite modificar cualquier información previamente registrada del medicamento.</p>
+                        <p class="mb-0">Permite modificar la información de un medicamento personalizado.</p>
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <div class="p-4 border rounded h-100 bg-light">
+                    <div class="p-4 border rounded h-100 bg-light shadow-sm text-center">
                         <h5 class="text-danger"><i class="fas fa-trash me-2"></i>Eliminar</h5>
-                        <p class="mb-2">Permite dar de baja un medicamento del sistema definitivamente.</p>
-                        <div class="info-box border-start border-4 border-warning p-3 bg-white mt-3">
-                            <p class="mb-0"><i class="fas fa-exclamation-triangle text-warning me-2"></i><strong>Condiciones para eliminar:</strong></p>
-                            <p class="mb-0 mt-2 small text-muted">Esta acción solo es posible para medicamentos tipo <strong>"CUSTOM"</strong> si:</p>
-                            <ul class="mb-0 mt-2 small">
-                                <li>Tiene asignado el permiso para borrar medicamentos.</li>
-                                <li>El medicamento no ha sido adjunto a ninguna receta médica.</li>
-                            </ul>
-                        </div>
+                        <p class="mb-0">Permite retirar un medicamento personalizado del catálogo.</p>
                     </div>
                 </div>
             </div>
