@@ -349,7 +349,7 @@
             <h2><i class="fas fa-tasks me-2"></i>Acciones y Gestión</h2>
             <p>Dentro de la lista de estudios, cada registro cuenta con acciones específicas para su gestión:</p>
             <div class="mb-4">
-                <img src="{{ asset('images/tutorial/service_requests/services-detail.png') }}" alt="Subir Resultado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <img src="{{ asset('images/tutorial/service_requests/sr-detail.png') }}" alt="Subir Resultado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -447,7 +447,7 @@
             <p>Utilice este modal para actualizar en qué etapa se encuentra la solicitud de estudio:</p>
 
             <div class="mb-4">
-                <img src="{{ asset('images/tutorial/service_requests/services-mod2.png') }}" alt="Gestión de Estado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <img src="{{ asset('images/tutorial/service_requests/sr-mod2.png') }}" alt="Gestión de Estado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
             </div>
 
             <div class="table-responsive">
