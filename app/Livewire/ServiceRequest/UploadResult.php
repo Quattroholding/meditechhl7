@@ -124,7 +124,7 @@ class UploadResult extends Component
                 'uploaded_at' => now(),
                 'observations' => $this->observations,
                 'notes' => $this->notes,
-                'interpretation' => $this->interpretation,
+                'interpretation' => $this->interpretation ?? 'normal',
                 'reference_range' => $this->reference_range,
                 'effective_date' => $this->result_date,
                 'issued_date' => now(),

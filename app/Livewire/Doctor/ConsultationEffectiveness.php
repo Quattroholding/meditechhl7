@@ -173,6 +173,8 @@ class ConsultationEffectiveness extends Component
             }
         }
 
+
+
         // Calcular tiempo promedio de completación total
         $avgTime = 0;
         if (isset($completionTimes['booked_to_fulfilled']) && count($completionTimes['booked_to_fulfilled']) > 0) {

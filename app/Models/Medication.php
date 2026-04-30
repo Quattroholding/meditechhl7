@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Medication extends Model
+class Medication extends BaseModel
 {
     use SoftDeletes;
 
@@ -22,6 +23,7 @@ class Medication extends Model
         'manufacturer',
         'is_brand',
         'fhir_payload',
+        'created_by',
     ];
 
     protected $hidden = [
@@ -118,5 +120,11 @@ class Medication extends Model
         ];
 
         return $units[$unit] ?? '1';
+    }
+
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

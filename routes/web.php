@@ -24,6 +24,7 @@ use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MedicalDocumentController;
+use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PatientController;
@@ -212,9 +213,9 @@ Route::get('/login/concurrent-session', [LoginController::class, 'showConcurrent
 Route::post('/login/cancel', [LoginController::class, 'cancelLogin'])->name('login.cancel');
 
 // Two-Factor Authentication Challenge Routes (before auth - user not authenticated yet)
-Route::get('/two-factor-challenge', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'show'])
+Route::get('/two-factor-challenge', [TwoFactorLoginController::class, 'show'])
     ->name('two-factor.login');
-Route::post('/two-factor-challenge', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'verify'])
+Route::post('/two-factor-challenge', [TwoFactorLoginController::class, 'verify'])
     ->name('two-factor.verify');
 
 // First Login Routes
@@ -515,17 +516,17 @@ Route::group(['prefix' => 'practitioners', 'middleware' => ['auth', 'verified', 
 
 Route::group(['prefix' => 'medicines', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
-    Route::get('/', function () {
-        return view('medicine.index');
-    })->middleware('permission:medicines.view')->name('medicine.index');
+    Route::get('/', [MedicineController::class, 'index'])
+        ->middleware('permission:medicines.view')
+        ->name('medicine.index');
 
-    Route::get('/create', function () {
-        return view('medicine.create');
-    })->middleware('permission:medicines.create')->name('medicine.create');
+    Route::get('/create', [MedicineController::class, 'create'])
+        ->middleware('permission:medicines.create')
+        ->name('medicine.create');
 
-    Route::get('/{id}/edit', function ($id) {
-        return view('medicine.edit', ['medicine_id' => $id]);
-    })->middleware('permission:medicines.edit')->name('medicine.edit');
+    Route::get('/{id}/edit', [MedicineController::class, 'edit'])
+        ->middleware('permission:medicines.edit')
+        ->name('medicine.edit');
 
 });
 
