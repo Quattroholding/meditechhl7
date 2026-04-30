@@ -709,6 +709,41 @@
                 </div>
                 <p class="mb-0">Solo puede iniciar una consulta si la cita está en estado <strong>"LLegó"</strong>. Si la cita está en otro estado, primero debe actualizarla, ya sea que tenga que <strong>"Confirmar"</strong> o <strong>"Registrar Llegada"</strong>, todo dependerá del estado que tenga la cita.</p>
             </div>
+
+            <!-- Notificación Doctor -->
+            <div class="step-card mt-4">
+                <h4><i class="fas fa-bell text-danger me-2"></i>Notificación de Paciente Listo (Tiempo Real)</h4>
+                <p>Para agilizar el flujo de atención, SAMI cuenta con un sistema de notificaciones en tiempo real. Cuando el personal de recepción marca la llegada de un paciente e inicia el proceso desde su terminal, si el médico tiene su sesión abierta en SAMI, se le desplegará automáticamente una ventana emergente (modal) con la información del paciente.</p>
+                
+                <div class="row align-items-center mt-3">
+                    <div class="col-md-12 mb-3">
+                        <img src="{{ asset('images/tutorial/encounters/patient_ready_modal.png') }}" alt="Modal de Paciente Listo" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                    </div>
+                    <div class="col-md-12">
+                        <p>Desde esta ventana, el doctor puede visualizar el nombre del paciente, la hora de la cita y el consultorio asignado, pudiendo elegir una de las siguientes acciones:</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light h-100 text-center">
+                                    <h6 class="fw-bold"><i class="fas fa-play text-primary me-2"></i>Iniciar Consulta</h6>
+                                    <p class="small mb-0">Abre de forma inmediata el módulo de consulta para empezar la atención médica.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light h-100 text-center">
+                                    <h6 class="fw-bold"><i class="fas fa-times text-success me-2"></i>Cerrar</h6>
+                                    <p class="small mb-0">Cierra el aviso. El doctor podrá iniciar la consulta manualmente más tarde desde su agenda.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light h-100 text-center">
+                                    <h6 class="fw-bold"><i class="fas fa-clock text-warning me-2"></i>Recordar en 5 min</h6>
+                                    <p class="small mb-0">Pospone el aviso para que vuelva a aparecer automáticamente después de 5 minutos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Section 3: Consultation Sections -->
@@ -1214,9 +1249,9 @@
                         Listado de Acceso Rápido
                     </div>
                     <p class="mb-0">
-                        Para agilizar la solicitud de estudios frecuentes, puede utilizar el botón <strong>"Listado de Acceso Rápido"</strong>. 
-                        Este listado le permite seleccionar rápidamente estudios previamente marcados como favoritos. 
-                        Puede configurar sus propios accesos rápidos en la sección de <a href="{{ route('help.settings') }}">Configuraciones → Accesos Rápidos</a>.
+                        Para agilizar la solicitud de medicamentos frecuentes, puede utilizar el botón <strong>"Listado de Acceso Rápido"</strong>. 
+                        Este listado le permite seleccionar rápidamente medicamentos previamente marcados como favoritos. 
+                        <br>Puede configurar sus propios accesos rápidos haciendo clic a la estrella que sale en lista desplegable de medicamentos cuando está en la consulta.</a>.
                     </p>
                 </div>
             </div>

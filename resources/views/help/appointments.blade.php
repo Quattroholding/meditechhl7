@@ -1155,7 +1155,7 @@ body {
             </div>
 
             <div>
-                <img src="{{ asset('images/tutorial/appointments/appointment-colors.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/appointments/appointment-calendarf.png') }}" alt="" style="width: 100%;">
             </div>
         </section>
 
@@ -1172,7 +1172,7 @@ body {
                         <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>
                         <!--<span class="status-badge status-pending">Pendiente</span>-->
                         <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
-                        <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
+                        {{--}}<span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>{{--}}
                         <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
                         <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
                         <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
@@ -1238,11 +1238,11 @@ body {
                                 <td data-label="Descripcion">Cita reservada en el sistema</td>
                                 <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
                             </tr>
-                            <tr>
+                            {{--}}<tr>
                                 <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></td>
                                 <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
                                 <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
-                            </tr>
+                            </tr>{{--}}
                             <tr>
                                 <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span></td>
                                 <td data-label="Descripcion">Paciente está en la sala de espera</td>
@@ -1632,12 +1632,12 @@ body {
                 <small>Recomendado: 800x500px - Mostrar el efecto visual de arrastrar una cita en el calendario</small>
             </div> -->
 
-            {{--}}<h3>Eliminar una Cita</h3>
+            <h3>Eliminar una Cita</h3>
             <p>Para eliminar una cita:</p>
             <ol>
                 <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
                 <li>Clic en <strong>"Borrar"</strong></li>
-                <!--<li>Ingrese el motivo de cancelación (opcional pero recomendado)</li> -->
+                <li>Ingrese el motivo de cancelación (opcional pero recomendado y sólo para usuarios con rol <strong>"Paciente"</strong>)</li>
                 <li>Confirme la cancelación</li>
                 <li>Aparecerá un mensaje el parte superior derecha confirmando que la cita se ha elimnado exitosamente</li>
             </ol>
@@ -1648,7 +1648,7 @@ body {
                     Advertencia
                 </div>
                 <p class="mb-0">La cancelación de citas es una acción que queda registrada en el historial. Si el paciente necesita otra cita, deberá crear una nueva.</p>
-            </div>{{--}}
+            </div>
         </section>
 
         <!-- Section 7: WhatsApp Integration -->
