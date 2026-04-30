@@ -198,11 +198,11 @@
             </div>
 
             <ul>
-                <li><strong>Nombre del Profesional:</strong> Nombre completo y título del médico.</li>
-                <li><strong>ID / Identificación:</strong> Número de identificación profesional o registro médico.</li>
+                <li><strong>Nombre del Profesional:</strong> Nombre completo.</li>
+                <li><strong>ID / Identificación:</strong> Número de identificación personal.</li>
                 <li><strong>Estado:</strong> Indica si el profesional está actualmente <span class="badge bg-success">Activo</span> para recibir citas.</li>
                 <li><strong>Avatar / Foto:</strong> Imagen de perfil del profesional para facilitar su identificación.</li>
-                <li><strong>Información de Contacto:</strong> Teléfono y correo electrónico (si el profesional ha autorizado su visualización).</li>
+                <li><strong>Información de Contacto:</strong> Teléfono y correo electrónico <!--(si el profesional ha autorizado su visualización)-->.</li>
                 <li><strong>Horario Laboral:</strong> Detalle de los días y horas de atención, organizado por sedes o sucursales.</li>
                 <li><strong>Especialidades:</strong> Lista de especialidades médicas avaladas por el profesional.</li>
             </ul>
@@ -224,7 +224,8 @@
 
         <div class="content-section">
             <h2><i class="fas fa-calendar-alt me-2"></i>Solicitud de Citas</h2>
-            <p>Si usted ha ingresado al sistema con el rol de <strong>Paciente</strong>, verá un botón de acción en cada tarjeta para solicitar una cita directamente con el profesional seleccionado, facilitando el acceso a la salud.</p>
+            <p>Si usted ha ingresado al sistema con el rol de <strong>Paciente</strong>, verá un botón de acción en cada tarjeta para solicitar una cita directamente con el profesional seleccionado, facilitando el acceso a la salud. <br>
+            Si usted ha ingresado al sistema con el rol de <strong>Médico</strong> puede hacer una referencia a otro especialista si el paciente lo necesita, dentro de la plantilla de consulta.</p>
         </div>
     </main>
 
