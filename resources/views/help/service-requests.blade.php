@@ -292,7 +292,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>ID</strong></td>
                             <td data-label="Descripción">Identificador único interno de la solicitud en el sistema.</td>
                         </tr>
@@ -307,12 +307,12 @@
                         <tr>
                             <td data-label="Campo"><strong>Descripción</strong></td>
                             <td data-label="Descripción">Nombre detallado o descripción del estudio solicitado.</td>
-                        </tr>
+                        </tr>-->
                         <tr>
                             <td data-label="Campo"><strong>Paciente</strong></td>
                             <td data-label="Descripción">Nombre completo del paciente a quien se le solicitó el estudio.</td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td data-label="Campo"><strong>Profesional</strong></td>
                             <td data-label="Descripción">Médico o profesional de la salud que realizó la solicitud.</td>
                         </tr>
@@ -323,10 +323,22 @@
                         <tr>
                             <td data-label="Campo"><strong>Prioridad</strong></td>
                             <td data-label="Descripción">Nivel de urgencia de la solicitud (Rutina, Urgente, Inmediato).</td>
+                        </tr>-->
+                        <tr>
+                            <td data-label="Campo"><strong>Fecha de Consulta</strong></td>
+                            <td data-label="Descripción">Fecha y hora en que se asignó una orden médica a la consulta de paciente.</td>
                         </tr>
                         <tr>
-                            <td data-label="Campo"><strong>Fecha Inicio / Fin</strong></td>
-                            <td data-label="Descripción">Rango de fechas programado o de ejecución del estudio.</td>
+                            <td data-label="Campo"><strong>Tipo de Cita</strong></td>
+                            <td data-label="Descripción">Tipo de Servicio que fue colocado al crear la cita.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Servicios</strong></td>
+                            <td data-label="Descripción">Servicios que fueron agregados en la consulta.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Resultados</strong></td>
+                            <td data-label="Descripción">Resultados cargados a las ordenes médicas que le fueran agregadas al paciente en la consulta.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -347,8 +359,9 @@
                             <p>Para cargar los resultados de un estudio:</p>
                             <ol>
                                 <li>Ubique el estudio en la lista.</li>
-                                <li>Haga clic en el icono de <strong>Subir (botón azul)</strong> ubicado en la columna de acciones.</li>
+                                <li>Haga clic en el icono de <strong>Subir Resultados (botón azul)</strong> ubicado en la columna de acciones.</li>
                                 <li>Se abrirá el modal <strong>"Subir Resultado"</strong> donde deberá completar la información técnica.</li>
+                                <li>Luego de haber completado toda la información, haga clic en <strong>"Subir Resultado"</strong>.</li>
                             </ol>
                         </div>
                     </div>
@@ -361,7 +374,8 @@
                             <ol>
                                 <li>Haga clic en el icono de <strong>Cambiar Estado (botón amarillo)</strong>.</li>
                                 <li>Se abrirá el modal <strong>"Gestión de Estado"</strong>.</li>
-                                <li>Seleccione el nuevo estado y guarde los cambios.</li>
+                                <li>Seleccione el nuevo estado y el la razón del cambio(este campo es opcional).</li>
+                                <li>Luego de haber completado toda la información, haga clic en <strong>"Cambiar Estado"</strong>.</li>
                             </ol>
                         </div>
                     </div>
@@ -392,7 +406,7 @@
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Estado</strong></td>
-                            <td data-label="Descripción">Estado clínico del resultado (ej. Preliminar, Final, Corregido).</td>
+                            <td data-label="Descripción">Estado clínico del resultado (ej. Preliminar, Final, Corregido o Modificado).</td>
                             <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
                         </tr>
                         <tr>
@@ -448,7 +462,7 @@
                     <tbody>
                         <tr>
                             <td data-label="Campo"><strong>Nuevo Estado</strong></td>
-                            <td data-label="Descripción">Seleccione el estado al que desea transicionar la solicitud (ej. Activo, En Espera, Cancelado).</td>
+                            <td data-label="Descripción">Seleccione el estado al que desea transicionar la solicitud (ej. Activo, En Espera, Completado, Revocado o Ingresado por error).</td>
                             <td data-label="Obligatorio"><span class="required-badge">Sí</span></td>
                         </tr>
                         <tr>
@@ -470,6 +484,7 @@
                 <li><span class="status-badge bg-warning text-dark">En Espera</span>: La solicitud ha sido pausada temporalmente.</li>
                 <li><span class="status-badge bg-success text-white">Completado</span>: El estudio se ha realizado y los resultados están disponibles.</li>
                 <li><span class="status-badge bg-danger text-white">Revocado</span>: La solicitud ha sido cancelada.</li>
+                <li><span class="status-badge bg-black text-white">Ingresado por error</span>: El estudio ha sido ingresado por error.</li>
             </ul>
         </div>
     </main>
