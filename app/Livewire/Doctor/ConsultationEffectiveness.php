@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\Appointment;
 use App\Models\AppointmentStatus;
 use Carbon\Carbon;
@@ -70,7 +68,7 @@ class ConsultationEffectiveness extends Component
 
         // Cache por 10 minutos - procesamiento MUY pesado
         $data = Cache::tags(['doctor_dashboard', 'effectiveness', 'appointments'])
-        ->remember($cacheKey, 600, function () use ($days) {
+            ->remember($cacheKey, 600, function () use ($days) {
                 return $this->fetchEffectivenessData($days);
             });
 
@@ -172,8 +170,6 @@ class ConsultationEffectiveness extends Component
                 $completionTimes['booked_to_fulfilled'][] = $diff;
             }
         }
-
-
 
         // Calcular tiempo promedio de completación total
         $avgTime = 0;

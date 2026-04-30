@@ -144,7 +144,7 @@ class DashboardController extends Controller
 
         $widgetComponents = [
             'overview' => 'patient.dashboard.overview',
-            //'upcoming-appointments' => 'patient.dashboard.upcoming-appointments',
+            // 'upcoming-appointments' => 'patient.dashboard.upcoming-appointments',
             'recent-consultations' => 'patient.dashboard.recent-consultations',
             'outstanding-invoices' => 'patient.dashboard.outstanding-invoices',
             'medical-summary' => 'patient.dashboard.medical-summary',

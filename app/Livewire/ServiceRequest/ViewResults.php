@@ -79,7 +79,7 @@ class ViewResults extends Component
 
             $this->dispatch('showToastrSrViewResult',
                 type: 'error',
-                message:  __('service_request_result.download_failed'),
+                message: __('service_request_result.download_failed'),
             );
 
             return;

@@ -118,18 +118,26 @@
 
 </header>
 <footer >
-    @if($firma || $sello)
+
+    @php
+        $firmaPath = $firma ? storage_path('app/private/'.$firma) : null;
+        $selloPath = $sello ? storage_path('app/private/'.$sello) : null;
+        $firmaExists = $firmaPath && file_exists($firmaPath);
+        $selloExists = $selloPath && file_exists($selloPath);
+    @endphp
+
+    @if($firmaExists || $selloExists)
     <div class="tabla_firma"  style="position:absolute;top:20px;">
         <table width="100%" border="0" cellspacing="">
             <tr>
                 <td align="right">
-                    @if($sello)
-                    <img src="{{storage_path('app/private/'.$sello)}}">
+                    @if($selloExists)
+                    <img src="{{$selloPath}}">
                     @endif
                 </td>
                 <td align="left">
-                    @if($firma)
-                    <img src="{{storage_path('app/private/'.$firma)}}">
+                    @if($firmaExists)
+                    <img src="{{$firmaPath}}">
                     @endif
                 </td>
             </tr>

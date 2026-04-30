@@ -150,8 +150,9 @@ class Practitioner extends BaseModel
 
         $route = '';
 
-        if(auth()->user()->can('practitioners.profile'))
-            $route = route('practitioner.profile',$this->id);
+        if (auth()->user()->can('practitioners.profile')) {
+            $route = route('practitioner.profile', $this->id);
+        }
 
         return '<div class="profile-image m-0">
                   <a href="'.$route.'"  class= "text-base">

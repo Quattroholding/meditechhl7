@@ -111,7 +111,6 @@ class EditForm extends Component
             // Authorize using the policy and get the response message
             $response = Gate::inspect('update', $this->medication);
 
-
             if ($response->denied()) {
 
                 session()->flash('message.error', $response->message());
@@ -170,7 +169,7 @@ class EditForm extends Component
         } catch (\Exception $e) {
             $this->dispatch('showToastrUpdateMEdication',
                 type: 'error',
-                message:  'Error al actualizar el medicamento: '.$e->getMessage(),
+                message: 'Error al actualizar el medicamento: '.$e->getMessage(),
             );
             session()->flash('message.error', 'Error al actualizar el medicamento: '.$e->getMessage());
         }

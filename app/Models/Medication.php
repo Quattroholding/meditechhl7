@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,7 +39,7 @@ class Medication extends BaseModel
 
     public function medicationRequests(): HasMany
     {
-        return $this->hasMany(MedicationRequest::class,'medication_id2');
+        return $this->hasMany(MedicationRequest::class, 'medication_id2');
     }
 
     public function ingredients(): HasMany
@@ -121,7 +120,6 @@ class Medication extends BaseModel
 
         return $units[$unit] ?? '1';
     }
-
 
     public function createdBy(): BelongsTo
     {

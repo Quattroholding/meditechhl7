@@ -17,9 +17,8 @@ class CacheHelper
     /**
      * Get cache with optional tags support
      *
-     * @param string|array $tags
-     * @param string $key
-     * @param mixed $default
+     * @param  string|array  $tags
+     * @param  mixed  $default
      * @return mixed
      */
     public static function get($tags, string $key, $default = null)
@@ -30,17 +29,16 @@ class CacheHelper
 
         // Fallback: use key with tag prefix
         $prefixedKey = static::getPrefixedKey($tags, $key);
+
         return Cache::get($prefixedKey, $default);
     }
 
     /**
      * Put cache with optional tags support
      *
-     * @param string|array $tags
-     * @param string $key
-     * @param mixed $value
-     * @param \DateTimeInterface|\DateInterval|int|null $ttl
-     * @return bool
+     * @param  string|array  $tags
+     * @param  mixed  $value
+     * @param  \DateTimeInterface|\DateInterval|int|null  $ttl
      */
     public static function put($tags, string $key, $value, $ttl = null): bool
     {
@@ -50,16 +48,15 @@ class CacheHelper
 
         // Fallback: use key with tag prefix
         $prefixedKey = static::getPrefixedKey($tags, $key);
+
         return Cache::put($prefixedKey, $value, $ttl);
     }
 
     /**
      * Remember cache with optional tags support
      *
-     * @param string|array $tags
-     * @param string $key
-     * @param \DateTimeInterface|\DateInterval|int|null $ttl
-     * @param \Closure $callback
+     * @param  string|array  $tags
+     * @param  \DateTimeInterface|\DateInterval|int|null  $ttl
      * @return mixed
      */
     public static function remember($tags, string $key, $ttl, \Closure $callback)
@@ -70,14 +67,14 @@ class CacheHelper
 
         // Fallback: use key with tag prefix
         $prefixedKey = static::getPrefixedKey($tags, $key);
+
         return Cache::remember($prefixedKey, $ttl, $callback);
     }
 
     /**
      * Flush cache tags with optional tags support
      *
-     * @param string|array $tags
-     * @return bool
+     * @param  string|array  $tags
      */
     public static function flush($tags): bool
     {
@@ -93,13 +90,12 @@ class CacheHelper
     /**
      * Create a prefixed key from tags
      *
-     * @param string|array $tags
-     * @param string $key
-     * @return string
+     * @param  string|array  $tags
      */
     protected static function getPrefixedKey($tags, string $key): string
     {
         $tagString = is_array($tags) ? implode(':', $tags) : $tags;
+
         return "{$tagString}:{$key}";
     }
 }

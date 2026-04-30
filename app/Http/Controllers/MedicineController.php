@@ -30,8 +30,7 @@ class MedicineController extends Controller
     public function edit(int $id): View
     {
         $medicine = Medicine::find($id);
-        $response = Gate::inspect('update',$medicine);
-
+        $response = Gate::inspect('update', $medicine);
 
         if ($response->denied()) {
             abort(403, 'No tienes permisos para acceder a esta página.');
