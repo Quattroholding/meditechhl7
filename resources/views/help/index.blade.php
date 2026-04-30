@@ -602,6 +602,19 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center p-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(26, 35, 126, 0.1); color: #1a237e;">
+                            <i class="fas fa-shield-alt fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Seguridad 2FA</h5>
+                        <p class="card-text text-muted">Aprende a configurar la autenticación de dos factores para proteger tu cuenta.</p>
+                        <a href="{{ route('help.2fa') }}" class="btn text-white" style="background: #1a237e;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
                         <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                             <i class="fas fa-building fa-2x text-success"></i>
                         </div>
@@ -776,18 +789,6 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(26, 35, 126, 0.1); color: #1a237e;">
-                            <i class="fas fa-shield-alt fa-2x"></i>
-                        </div>
-                        <h5 class="card-title">Seguridad 2FA</h5>
-                        <p class="card-text text-muted">Aprende a configurar la autenticación de dos factores para proteger tu cuenta.</p>
-                        <a href="{{ route('help.2fa') }}" class="btn text-white" style="background: #1a237e;"><i class="fas fa-arrow-right me-2"></i>Ver Guia</a>
-                    </div>
-                </div>
-            </div>
 
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
