@@ -1249,10 +1249,10 @@
                                         <i class="fas fa-calendar-alt"></i>
                                         <div><strong>Fecha Dx:</strong> Fecha exacta en la que el profesional de salud registró el diagnóstico.</div>
                                     </li>
-                                    <li>
+                                    <!--<li>
                                         <i class="fas fa-mouse-pointer"></i>
                                         <div><strong>Acciones:</strong> Botón de <strong>"Ver Detalles"</strong> (ícono de ojo) para consultar información extendida del registro.</div>
-                                    </li>
+                                    </li>-->
                                 </ul>
                             </div>
                         </div>
@@ -1296,11 +1296,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <!--<tr>
                                     <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8310-5</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">8310-5</span></td>
                                     <td data-label="Unidad">°C</td>
-                                </tr>
+                                </tr>-->
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
                                     <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
@@ -1321,31 +1321,31 @@
                                     <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
                                     <td data-label="Unidad">lpm</td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td data-label="Signo Vital"><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">2708-6</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">2708-6</span></td>
                                     <td data-label="Unidad">%</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-weight text-secondary me-2"></i> Peso</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">29463-7</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">29463-7</span></td>
                                     <td data-label="Unidad">kg</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Talla</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8302-2</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">8302-2</span></td>
                                     <td data-label="Unidad">cm</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-calculator text-success me-2"></i> IMC</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
                                     <td data-label="Unidad">kg/m²</td>
                                 </tr>
                                                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-droplet text-danger me-2"></i> Glucemia Capilar</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
                                     <td data-label="Unidad">mg/dL</td>
-                                </tr>
+                                </tr>-->
                             </tbody>
                         </table>
 
