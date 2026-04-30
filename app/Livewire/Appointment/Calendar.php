@@ -198,7 +198,7 @@ class Calendar extends Component
             $endOfWeek = $this->currentDate->copy()->endOfWeek(Carbon::SUNDAY);
             $query->whereBetween('start', [$startOfWeek, $endOfWeek]);
         } elseif ($this->currentView === 'daily') {
-            //$query->whereNotIn('status',['proposed']);
+            // $query->whereNotIn('status',['proposed']);
             $query->whereDate('start', $this->currentDate->format('Y-m-d'));
         }
 
@@ -300,8 +300,8 @@ class Calendar extends Component
 
                 if ($newStatus == 'checked-in') {
 
-                    if(auth()->user()->hasAnyRole(['admin', 'doctor']) or
-                        (auth()->user()->practitioner && $appointment->practitioner_id == auth()->user()->practitioner()->user_id)){
+                    if (auth()->user()->hasAnyRole(['admin', 'doctor']) or
+                        (auth()->user()->practitioner && $appointment->practitioner_id == auth()->user()->practitioner()->user_id)) {
 
                         $this->dispatch('showToastrAppointment',
                             type: 'success',
@@ -310,7 +310,7 @@ class Calendar extends Component
                             reditect_to_encounter: true,
                         );
 
-                    }else{
+                    } else {
                         broadcast(new AppointmentCheckedIn($appointment));
                     }
                 }

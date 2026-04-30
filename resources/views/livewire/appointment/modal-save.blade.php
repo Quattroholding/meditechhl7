@@ -119,6 +119,11 @@
                                 {{ $buttonSaveTitle }}
                             </button>
                         @endif
+                        @if($appointment && auth()->user()->can('cancelled',$appointment))
+                            <button type="button" wire:click="openCancelModal" class="btn btn-danger">
+                                <i class="fas fa-times-circle"></i> Cancelar Cita
+                            </button>
+                        @endif
                         <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>
                         {{--}}
                         @if(auth()->user()->can('cancelled',$appointment))
@@ -131,6 +136,14 @@
         </div>
         @endteleport
     @endif
+
+    {{-- Modal de Cancelación --}}
+    <x-appointment.cancellation-modal
+        :show="$showCancelModal"
+        :cancellation-reason="$cancellationReason"
+        :custom-cancellation-reason="$customCancellationReason"
+    />
+
         <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.store('debug', {

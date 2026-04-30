@@ -32,12 +32,17 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
     {
         $channels = ['database'];
 
+        // Obtener el teléfono y email que realmente se usarán (respetando testing mode)
+        $whatsappPhone = $notifiable->routeNotificationFor('whatsapp', $this);
+        $email = $notifiable->routeNotificationFor('mail', $this);
+
         // Priorizar WhatsApp si está disponible
-        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+        if ($whatsappPhone) {
             $channels[] = WhatsAppMetaChannel::class;
         }
+
         // Si no tiene WhatsApp, usar email
-        elseif ($this->isValidEmail($notifiable->email)) {
+        if ($this->isValidEmail($email)) {
             $channels[] = 'mail';
         }
 
@@ -47,7 +52,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
     public function toMail($notifiable)
     {
         $practitioner = $this->appointment->practitioner;
-        $appointmentDate = $this->appointment->start_datetime;
+        $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
         return (new MailMessage)
@@ -60,7 +65,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
                 'specialty' => $practitioner->specialty ?? 'Medicina General',
                 'clinicName' => $clinicName,
                 'cancellationReason' => $this->cancellationReason,
-                'rescheduleUrl' => route('appointment.calendar'),
+                'rescheduleUrl' => route('patients.landing'),
             ]);
     }
 
@@ -100,36 +105,39 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
 
     /**
      * Get the WhatsApp representation of the notification.
+     * Uses WhatsApp template: cancelar_cita
+     * Template: "Hola {{1}}, Tu próxima cita con {{2}} el {{3}} a las {{4}} ha sida cancelada.
+     *            Haganos saber si tiene una pregunta o necesecita reprogramarla."
      */
-    public function toWhatsApp(object $notifiable): string
+    public function toWhatsApp(object $notifiable): array
     {
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
-        $clinicName = $this->appointment->client->name ?? config('app.name');
 
-        $message = "❌ *Cita Médica Cancelada*\n\n";
-        $message .= "Hola {$notifiable->name},\n\n";
-        $message .= "Lamentamos informarle que su cita médica ha sido cancelada:\n\n";
+        // Build components for template
+        $components = [];
 
-        $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
-        $message .= "📅 *Fecha cancelada:* {$appointmentDate->format('d/m/Y')}\n";
-        $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
-        $message .= "🏢 *Clínica:* {$clinicName}\n";
+        // Body component with variables
+        // {{1}} = Nombre del paciente
+        // {{2}} = Nombre del doctor
+        // {{3}} = Fecha de la cita (formato: 15/01/2026)
+        // {{4}} = Hora de la cita (formato: 10:30)
+        $components[] = [
+            'type' => 'body',
+            'parameters' => [
+                ['type' => 'text', 'text' => $notifiable->name],
+                ['type' => 'text', 'text' => $practitioner->name],
+                ['type' => 'text', 'text' => $appointmentDate->format('d/m/Y')],
+                ['type' => 'text', 'text' => $appointmentDate->format('H:i')],
+            ],
+        ];
 
-        if ($this->appointment->consultingRoom->branch->name ?? null) {
-            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
-        }
-
-        if ($this->cancellationReason) {
-            $message .= "\n📝 *Motivo de la cancelación:*\n{$this->cancellationReason}\n";
-        }
-
-        $message .= "\n💡 Si desea reagendar su cita, puede hacerlo a través del chat de WhatsApp +507 831-6172.\n";
-        $message .= "\nDisculpe las molestias ocasionadas.\n";
-        $message .= "\nAtentamente,\n";
-        $message .= "Equipo de {$clinicName} 🏥";
-
-        return $message;
+        return [
+            'use_template' => true,
+            'template_name' => 'cancelar_cita',
+            'language_code' => 'es',
+            'components' => $components,
+        ];
     }
 
     /**

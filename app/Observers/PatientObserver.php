@@ -2,8 +2,6 @@
 
 namespace App\Observers;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\Patient;
 use Illuminate\Support\Facades\Cache;
 

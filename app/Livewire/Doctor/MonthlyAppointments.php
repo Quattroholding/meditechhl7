@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\Appointment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -59,24 +57,24 @@ class MonthlyAppointments extends Component
         $cacheKey = 'doctor_monthly_appointments_'.auth()->id().'_'.Carbon::now()->format('Y-m');
 
         $data = Cache::tags(['doctor_dashboard', 'appointments'])
-        ->remember($cacheKey, 300, function () use ($currentMonth, $currentYear, $lastMonth, $lastYear) {
-            $currentCount = Appointment::whereMonth('created_at', $currentMonth)
-                ->whereYear('created_at', $currentYear)
-                ->whereNull('deleted_at')
-                ->whereIn('client_id', $this->userclient)
-                ->count();
+            ->remember($cacheKey, 300, function () use ($currentMonth, $currentYear, $lastMonth, $lastYear) {
+                $currentCount = Appointment::whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereNull('deleted_at')
+                    ->whereIn('client_id', $this->userclient)
+                    ->count();
 
-            $lastMonthCount = Appointment::whereMonth('created_at', $lastMonth)
-                ->whereYear('created_at', $lastYear)
-                ->whereNull('deleted_at')
-                ->whereIn('client_id', $this->userclient)
-                ->count();
+                $lastMonthCount = Appointment::whereMonth('created_at', $lastMonth)
+                    ->whereYear('created_at', $lastYear)
+                    ->whereNull('deleted_at')
+                    ->whereIn('client_id', $this->userclient)
+                    ->count();
 
-            return [
-                'current' => $currentCount,
-                'lastMonth' => $lastMonthCount,
-            ];
-        });
+                return [
+                    'current' => $currentCount,
+                    'lastMonth' => $lastMonthCount,
+                ];
+            });
 
         $this->appointments = $data['current'];
         $lastMonthAppointments = $data['lastMonth'];

@@ -34,6 +34,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->integer('client_id')->nullable();
             $table->string('api_base_url',150)->nullable();
+            $table->string('phone_number',30)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

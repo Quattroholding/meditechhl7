@@ -78,7 +78,7 @@ return [
     'social_family_history' => 'Historia Social y Familiar',
     'surgery' => 'Cirugía',
     'symptoms' => 'Síntomas',
-    'allergy'=>'Alergias',
+    'allergy' => 'Alergias',
     'relationship_primary_secondary' => 'Relación entre el diagnóstico principal y secundario',
     't' => 'Temperatura',
     'timing' => 'Momento',

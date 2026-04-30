@@ -2,8 +2,6 @@
 
 namespace App\Observers;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\ClientSubscription;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\PatientClient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -93,7 +91,7 @@ class PatientsByAgeBlock extends Component
 
         // Cache por 1 hora - demografía cambia lentamente
         $data = Cache::tags(['doctor_dashboard', 'patients', 'demographics'])
-         ->remember($cacheKey, 3600, function () use ($userclient) {
+            ->remember($cacheKey, 3600, function () use ($userclient) {
                 return $this->fetchPatientsByAge($userclient);
             });
 

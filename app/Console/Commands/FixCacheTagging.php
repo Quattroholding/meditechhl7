@@ -44,8 +44,9 @@ class FixCacheTagging extends Command
         $this->info('Fixing cache tagging in files...');
 
         foreach ($files as $file) {
-            if (!File::exists($file)) {
+            if (! File::exists($file)) {
                 $this->warn("File not found: {$file}");
+
                 continue;
             }
 
@@ -53,7 +54,7 @@ class FixCacheTagging extends Command
             $originalContent = $content;
 
             // Add CacheHelper use statement if not present
-            if (!str_contains($content, 'use App\Helpers\CacheHelper;')) {
+            if (! str_contains($content, 'use App\Helpers\CacheHelper;')) {
                 $content = preg_replace(
                     '/(namespace [^;]+;)/m',
                     "$1\n\nuse App\Helpers\CacheHelper;",
