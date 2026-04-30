@@ -90,6 +90,41 @@
                                 class="form-control block w-full"
                             />
                         </div>
+
+                        @if($type === 'procedure')
+                            <div class="my-3 p-3 border rounded" style="background-color: #f8f9fa;" onclick="event.stopPropagation()">
+                                <div class="form-check form-switch mb-3">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        id="performed-{{ $s->id }}"
+                                        @if($performedInConsultation[$s->id] ?? false) checked @endif
+                                        wire:click="togglePerformedInConsultation({{ $s->id }})"
+                                        onclick="event.stopPropagation()"
+                                    >
+                                    <label class="form-check-label fw-bold" for="performed-{{ $s->id }}" style="cursor: pointer; color: #212529;">
+                                        ¿Este procedimiento se realizó en la consulta?
+                                    </label>
+                                </div>
+
+                                @if($performedInConsultation[$s->id] ?? false)
+                                    <div class="mt-3">
+                                        <label class="form-label fw-semibold" style="color: #212529;">Notas del procedimiento realizado:</label>
+                                        <x-autosave-input
+                                            type="textarea"
+                                            :value="$procedureNotes[$s->id] ?? ''"
+                                            wire:model.live.debounce.500ms="procedureNotes.{{ $s->id }}"
+                                            save-method="updateProcedureNotes"
+                                            save-key="procedure-notes-{{ $s->id }}"
+                                            class="form-control block w-full"
+                                            rows="4"
+                                            placeholder="Describa lo que se realizó durante el procedimiento..."
+                                        />
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>

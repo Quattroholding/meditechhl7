@@ -30,6 +30,10 @@ class ServiceRequest extends Component
 
     public $notes = [];
 
+    public $performedInConsultation = [];
+
+    public $procedureNotes = [];
+
     public $perPage = 50;
 
     public $totalResults = 0;
@@ -254,6 +258,11 @@ class ServiceRequest extends Component
         $this->updateNote($code);
     }
 
+    public function updatedProcedureNotes($value, $id)
+    {
+        $this->updateProcedureNotes($id);
+    }
+
     public function updateNote($id)
     {
         $key = "note_{$id}";
@@ -273,6 +282,84 @@ class ServiceRequest extends Component
         }
     }
 
+    public function togglePerformedInConsultation($id)
+    {
+        try {
+            $serviceRequest = \App\Models\ServiceRequest::find($id);
+
+            if (! $serviceRequest) {
+                throw new \Exception('Service request no encontrado');
+            }
+
+            // Leer el valor actual de la base de datos, no de la memoria
+            $currentValue = (bool) $serviceRequest->performed_in_consultation;
+            $newValue = ! $currentValue;
+
+            \Log::info('Toggle performed in consultation', [
+                'id' => $id,
+                'current_value' => $currentValue,
+                'new_value' => $newValue,
+            ]);
+
+            $serviceRequest->update(['performed_in_consultation' => $newValue]);
+            $this->performedInConsultation[$id] = $newValue;
+
+            // Si se desmarca, limpiar las notas del procedimiento
+            if (! $newValue) {
+                $serviceRequest->update(['procedure_notes' => null]);
+                $this->procedureNotes[$id] = null;
+            }
+
+            $this->dispatch('showToastrConsultation',
+                type: 'success',
+                message: $newValue ? 'Procedimiento marcado como realizado en la consulta' : 'Procedimiento desmarcado'
+            );
+
+        } catch (\Exception $e) {
+            \Log::error('Error toggle performed in consultation', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->dispatch('showToastrConsultation',
+                type: 'error',
+                message: 'Error al actualizar: '.$e->getMessage()
+            );
+        }
+    }
+
+    public function updateProcedureNotes($id)
+    {
+        try {
+            sleep(1);
+
+            $serviceRequest = \App\Models\ServiceRequest::find($id);
+
+            if (! $serviceRequest) {
+                throw new \Exception('Service request no encontrado');
+            }
+
+            $notes = $this->procedureNotes[$id] ?? null;
+
+            \Log::info('Updating procedure notes', [
+                'id' => $id,
+                'notes' => $notes,
+            ]);
+
+            $serviceRequest->update(['procedure_notes' => $notes]);
+
+            $this->dispatch('saved-procedure-notes-'.$id);
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating procedure notes', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->dispatch('error-procedure-notes-'.$id, $e->getMessage());
+        }
+    }
+
     private function loadSelectedLists()
     {
         $this->selectedLists = $this->encounter->serviceRequests()
@@ -282,6 +369,8 @@ class ServiceRequest extends Component
 
         foreach ($this->selectedLists as $key) {
             $this->notes[$key->id] = $key->note;
+            $this->performedInConsultation[$key->id] = (bool) $key->performed_in_consultation;
+            $this->procedureNotes[$key->id] = $key->procedure_notes;
         }
     }
 

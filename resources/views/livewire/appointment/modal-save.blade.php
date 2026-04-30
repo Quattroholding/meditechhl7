@@ -120,9 +120,11 @@
                             </button>
                         @endif
                         <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>
+                        {{--}}
                         @if(auth()->user()->can('cancelled',$appointment))
                             <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" wire:confirm="¿Está seguro de eliminar esta cita?">{{__('generic.delete')}}</button>
                         @endif
+                        {{--}}
                     </div>
                 </form>
             </div>
