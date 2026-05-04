@@ -147,38 +147,6 @@ Route::get('/reset-password', function () {
     return view('auth/reset-password');
 })->name('reset-password');
 
-/*
-Route::get('/autologin', function () {
-
-    if (request()->get('role') == 'admin') {
-        $route = route('admin.dashboard');
-    }
-    if (request()->get('role') == 'admin client') {
-        $route = route('client.dashboard');
-    }
-    if (request()->get('role') == 'doctor') {
-        $route = route('doctor.dashboard');
-    }
-    if (request()->get('role') == 'paciente') {
-        $route = route('patient.dashboard');
-    }
-    if (request()->get('role') == 'asistente' or request()->get('role') == 'recepcionista') {
-        $route = route('assistence.dashboard');
-    }
-    if (request()->get('role') == 'contabilidad') {
-        $route = route('accounting.dashboard');
-    }
-
-    $user = \App\Models\User::role(request()->get('role'))->whereActive(1)->inRandomOrder()->limit(1)->first();
-
-    if ($user) {
-        Auth::login($user);
-    }
-
-    return redirect($route.'?show_salute=true');
-
-})->name('autologin');
-*/
 
 Route::get('/dash', function () {
     if (auth()->user()->hasRole('admin')) {

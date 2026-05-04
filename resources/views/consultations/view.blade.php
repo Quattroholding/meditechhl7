@@ -178,7 +178,7 @@
                                                     <dt>{{ __('encounter.locations') }}</dt>
                                                     <dd>
 
-                                                        @if(is_array($encounter->presentIllnesses->locations) && count($encounter->presentIllnesses->locations)>1)
+                                                        @if(is_array($encounter->presentIllnesses->locations) && count($encounter->presentIllnesses->locations)>=1)
                                                             @foreach($encounter->presentIllnesses->locations as $v)
                                                                 @isset($v)
                                                                     {{__('present_illness.'.$v)}} <br/>

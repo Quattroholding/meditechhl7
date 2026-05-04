@@ -452,6 +452,27 @@ class RolePermissionSeeder extends Seeder
             'tickets.comment',
         ]);
 
+        $doctorRole = Role::firstOrCreate(['name' => 'registro medico']);
+        $doctorRole->givePermissionTo([
+            'dashboard.doctor',
+            'patients.view',
+            'patients.create',
+            'patients.edit',
+            'patients.update',
+            'patients.medical_history',
+            'patients.add_note',
+            'patients.insurance',
+            'consultations.view',
+            'consultations.show',
+            'consultations.download_resumen',
+            // 'settings.prescription_template',
+            'service_request.view',
+            'service_request.upload_result',
+            'practitioners.profile',
+            'practitioners.directory',
+            'practitioners.add_assistant',
+        ]);
+
         // Set 2FA requirement for specific roles
         $rolesToRequire2FA = [
             'admin' => 'Este rol requiere autenticación de dos factores por políticas de seguridad.',
@@ -464,6 +485,7 @@ class RolePermissionSeeder extends Seeder
             'admin client' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
             'asistente medico' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
             'paciente' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'registro medico' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
         ];
 
         foreach ($rolesToRequire2FA as $roleName => $description) {

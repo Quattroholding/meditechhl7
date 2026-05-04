@@ -100,11 +100,14 @@ class DashboardController extends Controller
             }
         }
 
+        $role = 'doctor';
+
+        if(auth()->user()->hasRole('registro medico'))  $role = 'registro medico';
         // Initialize default widgets if user has no preferences
-        $this->initializeDefaultWidgets(auth()->id(), 'doctor');
+        //$this->initializeDefaultWidgets(auth()->id(), $role);
 
         // Get visible widgets for this user
-        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), 'doctor');
+        $visibleWidgets = UserWidgetPreference::getVisibleWidgets(auth()->id(), $role);
 
         $widgetComponents = [
             'recent-appointment-list' => 'doctor.recent-appointment-list',
@@ -128,8 +131,7 @@ class DashboardController extends Controller
             'diagnostics-by-age-groups' => 'doctor.diagnostics-by-age-groups',
         ];
 
-        // dd($visibleWidgets);
-        return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents'));
+        return view('Dashboard.doctor-dashboard', compact('visibleWidgets', 'widgetComponents','role'));
     }
 
     public function patient(Request $request)
