@@ -825,7 +825,7 @@
                     <i class="fas fa-shield-alt text-primary"></i>
                     Permisos Requeridos
                 </div>
-                <p class="mb-0">Cada sección de configuración requiere permisos específicos y pueden variar dependiendo del rol que tenga el usuario. Si no puede ver alguna opcion, contacte al administrador de su organizacion para solicitar los permisos necesarios.</p>
+                <p class="mb-0">Cada sección de configuración requiere permisos específicos y pueden variar dependiendo del rol que tenga el usuario. Si tiene dudas sobre el acceso de cada rol, puede consultar el módulo de <a href="{{ route('help.roles') }}">Roles y Permisos</a> en el centro de ayuda.</p>
             </div>
         </section>
 
@@ -1714,6 +1714,14 @@
             <div>
                 <img src="{{ asset('images/tutorial/settings/setting_medleave.png') }}" alt="" style="width: 100%;">
             </div>
+            </div>
+
+            <div class="step-card">
+                <h4><span class="step-number">2</span><span class="step-title">Previsualizar y Seleccionar</span></h4>
+                <p>Haga clic en el botón de <strong>"Vista Previa Completa"</strong> para ver el diseño en tamaño completo con datos de ejemplo. Si le convence, haga clic en <strong>"Seleccionar"</strong>.</p>
+                <div>
+                    <img src="{{ asset('images/tutorial/settings/setting_ra3.png') }}" alt="" style="width: 100%;">
+                </div>
             </div>
         </section>
 

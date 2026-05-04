@@ -1555,6 +1555,23 @@ body {
                     <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por correo electrónico.</p>
                 </div>
 
+                <div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-calendar-alt text-warning"></i>
+                        Nota sobre Visualización y Estados
+                    </div>
+                    <p>Es importante notar que la visualización del estado puede variar según la vista del calendario:</p>
+                    <ul>
+                        <li><strong>Vistas Mensual y Semanal:</strong> Cuando el doctor, recepcionista o asistente crea la cita, esta se muestra con el estado <strong>"Reservado"</strong>.</li>
+                        <li><strong>Vista "Hoy":</strong> En esta vista, la cita no aparece como "Reservado", sino con el estado <strong>"Próxima Cita"</strong>. Adicionalmente:
+                            <ul>
+                                <li><strong>Próximos 15 mins:</strong> Cuando falten 15 minutos para el inicio de la cita, el color cambiará automáticamente a <strong>morado</strong> y el estado se actualizará a <strong>"Próximos 15 mins"</strong>.</li>
+                                <li><strong>Retrasada:</strong> Si la cita no se ha iniciado después del tiempo asignado, el sistema marcará automáticamente el estado como <strong>"Retrasada"</strong>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
             <div>
                 <img src="{{ asset('images/tutorial/appointments/appointment-created.png') }}" alt="" style="width: 100%;">
             </div>

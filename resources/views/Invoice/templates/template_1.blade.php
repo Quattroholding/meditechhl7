@@ -259,6 +259,32 @@
             <span class="green">Fecha Emisión:</span>{{ $invoice->issue_date->format('d/m/Y') }}<br>
             <span class="green">Fecha Vencimiento:</span> {{ $invoice->due_date->format('d/m/Y') }}<br>
             <span class="green">Estado:</span> {{ $invoice->payment_status->label() }}<br>
+            @php
+                $paymentMethod = $invoice->payment_method;
+                $paymentRef = $invoice->payment_reference;
+                $transactionId = null;
+                $paymentNotes = null;
+
+                if ($invoice->payments && $invoice->payments->count() > 0) {
+                    $lastPayment = $invoice->payments->first();
+                    if (!$paymentMethod) $paymentMethod = $lastPayment->payment_method_label;
+                    if (!$paymentRef) $paymentRef = $lastPayment->reference_number;
+                    $transactionId = $lastPayment->transaction_id;
+                    $paymentNotes = $lastPayment->notes;
+                }
+            @endphp
+            @if($paymentMethod)
+                <span class="green">Método de Pago:</span> {{ $paymentMethod }}<br>
+            @endif
+            @if($paymentRef)
+                <span class="green">Referencia:</span> {{ $paymentRef }}<br>
+            @endif
+            @if($transactionId)
+                <span class="green">Transacción ID:</span> {{ $transactionId }}<br>
+            @endif
+            @if($paymentNotes)
+                <span class="green">Notas de Pago:</span> {{ $paymentNotes }}<br>
+            @endif
             <span class="green">Moneda:</span> USD
         </td>
         <td width="40%">
