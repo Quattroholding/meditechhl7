@@ -35,7 +35,7 @@ Route::get('/countries/{country}/states', function ($countryId) {
 });
 
 // Twilio Webhook - Public route (Twilio will call this)
-Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
+//Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
 
 // Survey endpoints - Public routes (WhatsApp integration using survey response token)
 Route::prefix('surveys')->group(function () {

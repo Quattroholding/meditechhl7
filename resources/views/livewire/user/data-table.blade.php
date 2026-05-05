@@ -11,6 +11,12 @@
                                     <label>{{__('Estatus')}}</label>
                                     <x-select-input wire:model.live="statusFilter" id="statusFilter" name="metodo" :options="['active'=>'Activos','inactive'=>'Inactivos']" :selected="[]" class="form-select"/>
                                 </div>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <div class="input-block local-forms mb-0">
+                                        <label>{{__('Cliente')}}</label>
+                                        <x-select-input wire:model.live="clientFilter" id="clientFilter" name="cliente" :options="$clients" :selected="[]" class="form-select"/>
+                                    </div>
+                                @endif
                             </div>
                         @endslot
                     @endcomponent
