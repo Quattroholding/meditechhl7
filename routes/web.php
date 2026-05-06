@@ -147,8 +147,10 @@ Route::get('/reset-password', function () {
     return view('auth/reset-password');
 })->name('reset-password');
 
-
 Route::get('/dash', function () {
+    // Default fallback route
+    $route = route('login');
+
     if (auth()->user()->hasRole('admin')) {
         $route = route('admin.dashboard');
     }
@@ -169,6 +171,10 @@ Route::get('/dash', function () {
     }
     if (auth()->user()->hasRole('hemoscreen')) {
         $route = route('hemoscreen.dashboard');
+    }
+
+    if (auth()->user()->hasRole('ventas')) {
+        $route = route('quotations.index');
     }
 
     return redirect($route);
