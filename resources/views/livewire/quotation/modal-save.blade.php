@@ -72,7 +72,7 @@
                                         <div class="form-group">
                                             <label>Fecha de Emisión <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control @error('issue_date') is-invalid @enderror"
-                                                   wire:model="issue_date" wire:change="updatedIssueDate">
+                                                   wire:model.live="issue_date">
                                             @error('issue_date') <span class="invalid-feedback">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
