@@ -20,6 +20,45 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================================
+// DASHBOARD DISPATCHER - Redirige a dashboard según rol del usuario
+// ============================================================================
+
+Route::get('/dash', function () {
+    // Default fallback route
+    $route = route('login');
+
+    if (auth()->user()->hasRole('admin')) {
+        $route = route('admin.dashboard');
+    }
+    if (auth()->user()->hasRole('admin client')) {
+        $route = route('client.dashboard');
+    }
+    if (auth()->user()->hasRole('doctor')) {
+        $route = route('doctor.dashboard');
+    }
+    if (auth()->user()->hasRole('paciente')) {
+        $route = route('patient.dashboard');
+    }
+    if (auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico')) {
+        $route = route('assistence.dashboard');
+    }
+    if (auth()->user()->hasRole('contabilidad')) {
+        $route = route('accounting.dashboard');
+    }
+    if (auth()->user()->hasRole('hemoscreen')) {
+        $route = route('hemoscreen.dashboard');
+    }
+
+    dd(auth()->user()->hasRole('ventas'));
+
+    if (auth()->user()->hasRole('ventas')) {
+        $route = route('quotations.index');
+    }
+
+    return redirect($route);
+})->name('dash')->middleware(['auth', 'verified', 'first.login']);
+
+// ============================================================================
 // DASHBOARDS POR ROL
 // ============================================================================
 
