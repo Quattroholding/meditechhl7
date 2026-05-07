@@ -79,7 +79,7 @@ class ClientInvoice extends BaseModel
                 }
 
                 // Other users only see their client's invoices
-                $client = $user->getCurrentClient();
+                $client = Client::find($user->default_client_id);
                 if ($client) {
                     $builder->where('client_invoices.client_id', $client->id);
                 }
