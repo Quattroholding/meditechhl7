@@ -74,6 +74,52 @@ class DataTable extends Component
         }
     }
 
+    public function changeStatus($quotationId, $newStatus): void
+    {
+        $quotation = Quotation::find($quotationId);
+
+        if (! $quotation) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Cotización no encontrada'
+            );
+
+            return;
+        }
+
+        $validStatuses = ['draft', 'sent', 'accepted', 'rejected', 'cancelled'];
+
+        if (! in_array($newStatus, $validStatuses)) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Estado no válido'
+            );
+
+            return;
+        }
+
+        try {
+            match ($newStatus) {
+                'sent' => $quotation->markAsSent(),
+                'accepted' => $quotation->markAsAccepted(),
+                'rejected' => $quotation->markAsRejected(),
+                'cancelled' => $quotation->cancel(),
+                'draft' => $quotation->update(['status' => 'draft']),
+            };
+
+            $this->dispatch('showToastr',
+                type: 'success',
+                message: 'Estado actualizado exitosamente'
+            );
+            $this->dispatch('refreshQuotations');
+        } catch (\Exception $e) {
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Error al cambiar el estado: '.$e->getMessage()
+            );
+        }
+    }
+
     public function render()
     {
         $data = Quotation::query()

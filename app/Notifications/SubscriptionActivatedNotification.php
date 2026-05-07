@@ -83,7 +83,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
 
         // 2. Registrar consultorio (obligatorio)
         // if ($client->branches()->exists()) {
-        $hasConsultingRoom = ConsultingRoom::whereHas('branch', function ($query) use ($client) {
+        $hasConsultingRoom = ConsultingRoom::withoutGlobalScopes()->whereHas('branch', function ($query) use ($client) {
             $query->where('client_id', $client->id);
         })->exists();
 
@@ -110,7 +110,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
         }
 
         // 4. Catálogo de servicios (recomendado)
-        $hasServices = ServiceCatalog::where('client_id', $client->id)->exists();
+        $hasServices = ServiceCatalog::withoutGlobalScopes()->where('client_id', $client->id)->exists();
         if (! $hasServices) {
             $steps[] = [
                 'title' => 'Configurar catálogo de servicios',
@@ -123,7 +123,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
 
         // 5. Horarios de trabajo (recomendado)
         // if ($client->branches()->exists()) {
-        $hasWorkingHours = UserWorkingHour::whereHas('branch', function ($query) use ($client) {
+        $hasWorkingHours = UserWorkingHour::withoutGlobalScopes()->whereHas('branch', function ($query) use ($client) {
             $query->where('client_id', $client->id);
         })->exists();
 

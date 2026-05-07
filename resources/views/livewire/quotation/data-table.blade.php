@@ -85,32 +85,69 @@
                     <td class="text-right">${{ $quotation->formatted_total }}</td>
                     <td>{!! $quotation->status_badge !!}</td>
                     <td class="text-center">
-
-                                <a  href="{{ route('quotations.pdf.stream', $quotation->id) }}" class="btn btn-info btn-sm" title="Ver"
-                                   target="_blank">
-                                    <i class="fa fa-file-pdf"></i>
-                                </a>
-                                <a  href="{{ route('quotations.pdf.download', $quotation->id) }}" class="btn btn-warning btn-sm" title="Descargar">
-                                    <i class="fa fa-download"></i>
-                                </a>
-                                @can('quotations.edit')
-                                    @if($quotation->canBeEdited())
-                                    <a  href="javascript:void(0);"
-                                       wire:click="openEditModal({{ $quotation->id }})"  class="btn btn-primary btn-sm" title="Editar">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                        <a  href="{{ route('quotations.pdf.stream', $quotation->id) }}" class="btn btn-info btn-sm" title="Ver"
+                           target="_blank">
+                            <i class="fa fa-file-pdf"></i>
+                        </a>
+                        <a  href="{{ route('quotations.pdf.download', $quotation->id) }}" class="btn btn-warning btn-sm" title="Descargar">
+                            <i class="fa fa-download"></i>
+                        </a>
+                        @can('quotations.edit')
+                            @if($quotation->canBeEdited())
+                            <a  href="javascript:void(0);"
+                               wire:click="openEditModal({{ $quotation->id }})"  class="btn btn-primary btn-sm" title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            @endif
+                        @endcan
+                        @can('quotations.edit')
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false" title="Cambiar estado">
+                                    <i class="fa fa-exchange-alt"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    @if($quotation->status !== 'draft')
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                           wire:click="changeStatus({{ $quotation->id }}, 'draft')">
+                                            Marcar como Borrador
+                                        </a>
                                     @endif
-                                @endcan
-                                @can('quotations.delete')
-                                    @if($quotation->canBeEdited())
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm"
-                                       onclick="confirmDelete({{ $quotation->id }})" title="eliminar">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
+                                    @if($quotation->status !== 'sent')
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                           wire:click="changeStatus({{ $quotation->id }}, 'sent')">
+                                            Marcar como Enviada
+                                        </a>
                                     @endif
-                                @endcan
-
-                        </div>
+                                    @if($quotation->status !== 'accepted')
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                           wire:click="changeStatus({{ $quotation->id }}, 'accepted')">
+                                            Marcar como Aceptada
+                                        </a>
+                                    @endif
+                                    @if($quotation->status !== 'rejected')
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                           wire:click="changeStatus({{ $quotation->id }}, 'rejected')">
+                                            Marcar como Rechazada
+                                        </a>
+                                    @endif
+                                    @if($quotation->status !== 'cancelled')
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                           wire:click="changeStatus({{ $quotation->id }}, 'cancelled')">
+                                            Marcar como Cancelada
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @endcan
+                        @can('quotations.delete')
+                            @if($quotation->canBeEdited())
+                            <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                               onclick="confirmDelete({{ $quotation->id }})" title="eliminar">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                            @endif
+                        @endcan
                     </td>
                 </tr>
                 @empty

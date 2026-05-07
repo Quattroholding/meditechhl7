@@ -152,12 +152,12 @@ class Quotation extends BaseModel
     public function getStatusBadgeAttribute(): string
     {
         $badges = [
-            'draft' => '<span class="badge badge-secondary">Borrador</span>',
-            'sent' => '<span class="badge badge-info">Enviada</span>',
-            'accepted' => '<span class="badge badge-success">Aceptada</span>',
-            'rejected' => '<span class="badge badge-danger">Rechazada</span>',
-            'expired' => '<span class="badge badge-warning">Expirada</span>',
-            'cancelled' => '<span class="badge badge-dark">Cancelada</span>',
+            'draft' => '<span class="badge bg-secondary">Borrador</span>',
+            'sent' => '<span class="badge bg-info">Enviada</span>',
+            'accepted' => '<span class="badge bg-success">Aceptada</span>',
+            'rejected' => '<span class="badge bg-danger">Rechazada</span>',
+            'expired' => '<span class="badge bg-warning">Expirada</span>',
+            'cancelled' => '<span class="badge bg-dark">Cancelada</span>',
         ];
 
         return $badges[$this->status] ?? $this->status;
