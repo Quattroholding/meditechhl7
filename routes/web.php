@@ -475,6 +475,10 @@ Route::group(['prefix' => 'permissions', 'middleware' => ['auth', 'verified', 'f
     Route::delete('/{id}', [PermissionController::class, 'destroy'])->name('permission.destroy');
 });
 
+// ============================================================================
+// MIGRATED: Practitioner routes moved to routes/web/practitioners.php
+// ============================================================================
+/*
 Route::group(['prefix' => 'practitioners', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [PractitionerController::class, 'index'])->middleware('permission:practitioners.view')->name('practitioner.index');
@@ -494,6 +498,7 @@ Route::group(['prefix' => 'practitioners', 'middleware' => ['auth', 'verified', 
     Route::delete('/{id}', [PractitionerController::class, 'destroy'])->middleware('permission:practitioners.delete')->name('practitioner.destroy');
 
 });
+*/
 
 Route::group(['prefix' => 'medicines', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
@@ -586,12 +591,15 @@ Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/medical-leaves/{id}/download', [MedicalDocumentController::class, 'downloadMedicalLeavePdf'])
         ->name('medical-leaves.download-pdf');
 
+    // MIGRATED: Practitioner file routes moved to routes/web/practitioners.php
+    /*
     // Private File Serving Routes
     Route::get('/practitioner/{practitioner_id}/signature', [FileController::class, 'serveSignature'])
         ->name('practitioner.signature');
 
     Route::get('/practitioner/{practitioner_id}/seal', [FileController::class, 'serveSeal'])
         ->name('practitioner.seal');
+    */
 
     // Recepy Doctor Profile Private File Serving Routes
     Route::get('/recepy/doctor/file/{type}/{filename}', [RecepyDoctorProfileController::class, 'serveFile'])
