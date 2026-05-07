@@ -12,9 +12,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::get('/login', [LoginController::class, 'login'])->name('login');
 
-    Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::middleware('guest')->group(function () {
 
     Route::get('/forgot-password', function () {
         return view('Pages/forgot-password');

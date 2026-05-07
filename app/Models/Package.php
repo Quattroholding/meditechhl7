@@ -26,6 +26,7 @@ class Package extends BaseModel
         'agent_available',
         'appointments_limit',
         'show_on_web',
+        'role_payer',
     ];
 
     protected function casts(): array

@@ -36,6 +36,7 @@ class PackageController extends Controller
             'features' => 'nullable|string',
             'is_active' => 'boolean',
             'agent_available' => 'boolean',
+            'role_payer' => 'nullable|string|max:255',
         ]);
 
         // Generate slug if not provided
@@ -98,6 +99,7 @@ class PackageController extends Controller
                 'features' => 'nullable|string',
                 'is_active' => 'boolean',
                 'agent_available' => 'boolean',
+                'role_payer' => 'nullable|string|max:255',
             ]);
 
             // Generate slug if not provided
