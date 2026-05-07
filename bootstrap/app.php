@@ -34,6 +34,12 @@ return Application::configure(basePath: dirname(__DIR__))
             // Webhook Routes (accessed via webhooks.meditecpty.com subdomain)
             // No middleware - webhooks don't need authentication or session
             Route::group([], base_path('routes/webhooks.php'));
+
+            // === Web Routes Organizadas por Dominio ===
+            // Orden lógico: dashboards primero, luego features
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/dashboard.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {

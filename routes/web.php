@@ -200,6 +200,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/first-login', [FirstLoginController::class, 'update'])->name('first-login.update');
 });
 
+// ============================================================================
+// MIGRATED: Dashboard routes moved to routes/web/dashboard.php
+// ============================================================================
+/*
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/admin', [DashboardController::class, 'admin'])->middleware('permission:dashboard.admin')->name('admin.dashboard');
@@ -213,6 +217,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
     Route::get('/accounting', [DashboardController::class, 'accounting'])->middleware('permission:dashboard.accounting')->name('accounting.dashboard');
 
 });
+*/
 
 Route::middleware(['auth', 'first.login'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
