@@ -1,0 +1,120 @@
+ROUTES/WEB.PHP - PUBLIC ROUTES SUMMARY
+======================================
+
+File Size: 304 lines (reduced from 1005 lines)
+
+SECTIONS INCLUDED:
+==================
+
+1. AUTHENTICATION ROUTES
+   - Includes routes/auth.php
+
+2. SUBDOMAIN ROUTES
+   - sami.{domain} - SAMI landing and practitioner API
+   - hemoscreen.{domain} - HemoScreen landing
+   - samirx.{domain} - SAMIRX landing
+
+3. LANDING PAGES
+   - / (welcome)
+   - /sami
+   - /sami_recetas
+   - /api/practitioners
+   - /pacientes
+
+4. LEGAL PAGES
+   - /privacy-policy
+   - /terms-of-service
+
+5. PUBLIC REGISTRATION
+   - Client registration (/register/client)
+   - Patient registration (/register/patient/{client})
+   - Success pages
+
+6. ENTERPRISE CONTACT FORM
+   - /enterprise-contact
+
+7. TWO-FACTOR AUTHENTICATION CHALLENGE
+   - /two-factor-challenge (show/verify)
+   - Email backup code routes
+
+8. FIRST LOGIN (requires auth)
+   - /first-login (show/update)
+
+9. HELP CENTER (Public - 19 routes)
+   - Index, registration, branches, consulting-rooms
+   - Patients, medical-history, appointments, settings
+   - Consultation, billing, payments, subscriptions
+   - Doctor dashboard, profile, support, service-requests
+   - Medicines, medical-directory, doctors, users, 2fa, roles
+
+10. PUBLIC SURVEYS
+    - /survey/{token} (form and submit)
+
+11. APPOINTMENT ACTIONS (Public with token/signed URL)
+    - WhatsApp actions: /appointment-action/{id}/confirm/{token}
+    - WhatsApp actions: /appointment-action/{id}/cancel/{token}
+    - Email actions: /appointments/{id}/confirm
+    - Email actions: /appointments/{id}/cancel
+
+12. PUBLIC PRESCRIPTION DOWNLOADS
+    - prescriptions/{id}/pdf/download
+
+13. VIRTUAL CONSULTATION (Public with token)
+    - /join-consultation/{appointment}/{token}
+
+REMOVED SECTIONS (Migrated to routes/web/*.php):
+=================================================
+- All dashboard routes → routes/web/dashboard.php
+- All patient routes → routes/web/patients.php
+- All practitioner routes → routes/web/practitioners.php
+- All consultation routes → routes/web/clinical.php
+- All dermatology routes → routes/web/clinical.php
+- All invoice/payment routes → routes/web/accounting.php
+- All client/branch/room routes → routes/web/organization.php
+- All package routes → routes/web/organization.php
+- All user routes → routes/web/users.php
+- All appointment routes → routes/web/clinical.php
+- All settings routes → routes/web/settings.php
+- All role/permission routes → routes/web/admin.php
+- All medicine routes → routes/web/clinical.php
+- All service request routes → routes/web/clinical.php
+- All API routes → routes/web/clinical.php
+- All medical document routes → routes/web/clinical.php
+- All quotation routes → routes/web/organization.php
+- All subscription routes → routes/web/subscriptions.php
+- All insurance routes → routes/web/admin.php
+- All API token routes → routes/web/admin.php
+- All debug login routes → routes/web/admin.php
+- All report routes → routes/web/admin.php
+- All HemoScreen authenticated routes → routes/web/admin.php
+- All 2FA admin routes → routes/web/admin.php
+- All enterprise leads management → routes/web/admin.php
+- All referral code routes → routes/web/organization.php
+- All profile routes → routes/web/users.php
+- All notification routes → routes/web/users.php
+- All ticket routes → routes/web/users.php
+- Test broadcast route → removed
+- Commented test email route → removed
+
+CONTROLLER IMPORTS (cleaned):
+==============================
+Only the following controllers are imported (down from 50+):
+- RecepyPrescriptionController
+- AppointmentActionController
+- TwoFactorLoginController
+- EnterpriseLeadController
+- FirstLoginController
+- LandingController
+- PublicPatientRegistrationController
+- PublicRegistrationController
+- SurveyController
+- TwoFactorEmailBackupController
+
+VERIFICATION:
+=============
+✓ No MIGRATED comments found
+✓ No commented route blocks (/* ... */)
+✓ No authenticated route groups with ['auth', 'verified'] middleware
+✓ All routes are public or use only 'auth' for first-login
+✓ Code formatted with Laravel Pint
+✓ Clean, organized section headers
