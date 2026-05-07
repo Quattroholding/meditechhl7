@@ -359,6 +359,10 @@ Route::group(['prefix' => 'packages', 'middleware' => ['auth', 'verified', 'firs
 
 });
 
+// ============================================================================
+// MIGRATED: Patient routes moved to routes/web/patients.php
+// ============================================================================
+/*
 Route::group(['prefix' => 'patients', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     Route::get('/', [PatientController::class, 'index'])->middleware('permission:patients.view')->name('patient.index');
@@ -386,6 +390,7 @@ Route::group(['prefix' => 'patients', 'middleware' => ['auth', 'verified', 'firs
     Route::delete('/{id}', [PatientController::class, 'destroy'])->middleware('permission:patients.delete')->name('patient.destroy');
 
 });
+*/
 
 Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
@@ -964,6 +969,8 @@ Route::get('/test-email', function () {
 })->name('test.email');
 */
 
+// MIGRATED: Patient History routes moved to routes/web/patients.php
+/*
 // Patient History Download Routes
 Route::middleware(['auth'])->prefix('patient-history')->name('patient.history.')->group(function () {
     Route::post('/{patient}/generate', [PatientHistoryController::class, 'generate'])->name('generate');
@@ -971,6 +978,7 @@ Route::middleware(['auth'])->prefix('patient-history')->name('patient.history.')
     Route::get('/{id}/download', [PatientHistoryController::class, 'download'])->name('download');
     Route::post('/{id}/cancel', [PatientHistoryController::class, 'cancel'])->name('cancel');
 });
+*/
 
 // HemoScreen Standalone Routes
 Route::middleware(['auth', 'role:hemoscreen'])->prefix('hemoscreen')->name('hemoscreen.')->group(function () {

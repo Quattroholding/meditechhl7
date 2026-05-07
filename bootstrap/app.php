@@ -43,6 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
             Route::middleware('web')
                 ->group(base_path('routes/web/practitioners.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/patients.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
