@@ -109,9 +109,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Exclude webhooks from CSRF verification
         // These are accessed via webhooks.meditecpty.com subdomain
         $middleware->validateCsrfTokens(except: [
-            'api/webhooks/twilio/*',
-            'cybersource',
-            'cybersource/*',
             'whatsapp',
             'whatsapp/*',
         ]);

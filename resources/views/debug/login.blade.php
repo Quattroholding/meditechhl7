@@ -145,28 +145,11 @@
                                                 </td>
                                                 <td>
                                                     @php
-                                                        $subscription = $defaultClient?->currentSubscription;
-                                                        $statusColors = [
-                                                            'active' => 'success',
-                                                            'trial' => 'info',
-                                                            'suspended' => 'warning',
-                                                            'cancelled' => 'danger',
-                                                            'expired' => 'secondary',
-                                                        ];
-                                                        $statusLabels = [
-                                                            'active' => 'Activa',
-                                                            'trial' => 'Prueba',
-                                                            'suspended' => 'Suspendida',
-                                                            'cancelled' => 'Cancelada',
-                                                            'expired' => 'Expirada',
-                                                        ];
-                                                        $status = $subscription?->status ?? 'N/A';
-                                                        $color = $statusColors[$status] ?? 'secondary';
-                                                        $label = $statusLabels[$status] ?? $status;
+                                                        $subscription = $defaultClient?->subscription;
                                                     @endphp
-                                                    @if($subscription)
-                                                        <span class="badge bg-{{ $color }}">
-                                                            {{ $label }}
+                                                    @if($subscription && $subscription->status)
+                                                        <span class="badge bg-{{ $subscription->status->color() }}">
+                                                            {{ $subscription->status->label() }}
                                                         </span>
                                                     @else
                                                         <span class="text-muted">Sin suscripción</span>

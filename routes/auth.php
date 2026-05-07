@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
@@ -12,21 +13,29 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+
+    Route::get('/login', [LoginController::class, 'login'])->name('login');
+
+    Route::get('/forgot-password', function () {
+        return view('Pages/forgot-password');
+    })->name('forgot-password');
+
+    Route::get('/reset-password', function () {
+        return view('auth/reset-password');
+    })->name('reset-password');
+
+    Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
+
+    Route::get('/login/concurrent-session', [LoginController::class, 'showConcurrentSession'])->name('login.concurrent-session');
+
+    Route::post('/login/cancel', [LoginController::class, 'cancelLogin'])->name('login.cancel');
+
     Route::get('register', function () {
         return view('Pages.register');
     })->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('login', function () {
-        return view('Pages.login');
-    })->name('login');
-
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('forgot-password', function () {
-        return view('Pages.forgot-password');
-    })->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.email');
@@ -37,6 +46,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+
 });
 
 Route::middleware('auth')->group(function () {

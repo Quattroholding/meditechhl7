@@ -21,6 +21,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DebugLoginController;
 
 /**
  * ============================================================================
@@ -28,6 +29,15 @@ use Illuminate\Support\Facades\Route;
  * ============================================================================
  */
 require __DIR__.'/auth.php';
+
+// Debug Login Routes - Solo accesible desde IPs autorizadas
+Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function () {
+    Route::get('/login', [DebugLoginController::class, 'index'])
+        ->name('login');
+
+    Route::post('/login/{user}', [DebugLoginController::class, 'loginAs'])
+        ->name('login.as');
+});
 
 /**
  * ============================================================================

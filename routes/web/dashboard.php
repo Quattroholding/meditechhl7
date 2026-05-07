@@ -49,8 +49,6 @@ Route::get('/dash', function () {
         $route = route('hemoscreen.dashboard');
     }
 
-    dd(auth()->user()->hasRole('ventas'));
-
     if (auth()->user()->hasRole('ventas')) {
         $route = route('quotations.index');
     }

@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
-use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
