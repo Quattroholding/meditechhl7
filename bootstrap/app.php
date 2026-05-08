@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApiDocsIpRestriction;
 use App\Http\Middleware\ApiTokenMiddleware;
 use App\Http\Middleware\CanManageSubscription;
 use App\Http\Middleware\CheckActiveUserMiddleware;
@@ -89,6 +90,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'api.token' => ApiTokenMiddleware::class,
             'concurrent.session' => DetectConcurrentSession::class,
             'debug.ip' => DebugIpRestriction::class,
+            'api.docs.ip' => ApiDocsIpRestriction::class,
             'whatsapp.client' => WhatsappClientFilter::class,
             'can.manage.subscription' => CanManageSubscription::class,
             '2fa.enforce' => EnsureTwoFactorIsEnabled::class,

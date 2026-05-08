@@ -10,8 +10,10 @@
  */
 
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
+use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\AppointmentActionController;
 use App\Http\Controllers\Auth\TwoFactorLoginController;
+use App\Http\Controllers\DebugLoginController;
 use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\LandingController;
@@ -21,7 +23,6 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DebugLoginController;
 
 /**
  * ============================================================================
@@ -37,6 +38,13 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
 
     Route::post('/login/{user}', [DebugLoginController::class, 'loginAs'])
         ->name('login.as');
+});
+
+// API Documentation Routes - Solo accesible desde IPs autorizadas
+Route::middleware('api.docs.ip')->prefix('api-docs')->name('api.docs.')->group(function () {
+    Route::get('/', [ApiDocsController::class, 'show'])->name('index');
+    Route::get('/recepy', [ApiDocsController::class, 'recepyIndex'])->name('recepy');
+    Route::get('/{page}', [ApiDocsController::class, 'show'])->name('show');
 });
 
 /**

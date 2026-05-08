@@ -206,12 +206,12 @@
             </div>
             <ul class="nav-links">
                 <li><a href="#overview"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="auth.html"><i class="fas fa-key"></i> Autenticación</a></li>
-                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Citas</a></li>
-                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Pacientes</a></li>
-                <li><a href="practitioners.html"><i class="fas fa-user-md"></i> Médicos</a></li>
-                <li><a href="catalogs.html"><i class="fas fa-pills"></i> Catálogos</a></li>
-                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notificaciones</a></li>
+                <li><a href="auth"><i class="fas fa-key"></i> Autenticación</a></li>
+                <li><a href="appointments"><i class="fas fa-calendar-alt"></i> Citas</a></li>
+                <li><a href="patients"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+                <li><a href="practitioners"><i class="fas fa-user-md"></i> Médicos</a></li>
+                <li><a href="catalogs"><i class="fas fa-pills"></i> Catálogos</a></li>
+                <li><a href="notifications"><i class="fas fa-bell"></i> Notificaciones</a></li>
             </ul>
         </div>
     </nav>
