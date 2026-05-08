@@ -120,7 +120,7 @@
                                 <div class="col-sm-6 col-lg-6 m-b-20">
                                     <div style="font-size: 14px;font-weight: 600;">
                                         <p>{{ __('invoice.invoice_date') }}: <i class="fa fa-calendar-check-o"></i>
-                                            <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->issue_date ? $invoice->issue_date->format('d M Y') : $invoice->created_at->format('d M Y') }}</span>
+                                            <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->issue_date ? $invoice->issue_date->format('d M Y') : $invoice->created_at }}</span>
                                         </p>
                                         <p>{{ __('invoice.due_date') }}: <i class="fa fa-calendar-check-o"></i>
                                             <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->due_date ? $invoice->due_date->format('d M Y') : 'N/A' }}</span>

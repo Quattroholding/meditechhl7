@@ -158,7 +158,7 @@
                 @endif
                 <div class="detail-item">
                     <span class="detail-label">Fecha de Registro</span>
-                    <span class="detail-value">{{ $patient->created_at->format('d/m/Y H:i:s') }}</span>
+                    <span class="detail-value">{{ $patient->created_at }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Estado</span>

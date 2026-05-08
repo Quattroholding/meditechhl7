@@ -59,7 +59,7 @@
                                 @endif
                             </td>
                             <td>
-                                <div>{{ $condition->onset_date?->format('d/m/Y') ?: $condition->created_at->format('d/m/Y') }}</div>
+                                <div>{{ $condition->onset_date?->format('d/m/Y') ?: $condition->created_at }}</div>
                                 <small class="text-muted">{{ $condition->recorded_date->diffForHumans() }}</small>
                             </td>
                         </tr>

@@ -112,7 +112,7 @@
                                         @foreach($statusHistory as $log)
                                             <tr>
                                                 <td>
-                                                    <small>{{ $log->changed_at ? $log->changed_at->format('d/m/Y H:i') : $log->created_at->format('d/m/Y H:i') }}</small>
+                                                    <small>{{ $log->changed_at ? $log->changed_at->format('d/m/Y H:i') : $log->created_at }}</small>
                                                 </td>
                                                 <td>
                                                     @if($log->old_status)
