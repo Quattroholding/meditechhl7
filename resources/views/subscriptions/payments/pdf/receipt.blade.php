@@ -281,7 +281,6 @@
                 <td>{{ $payment->created_at }}</td>
             </tr>
         </table>
-
         @if($payment->notes)
         <div style="margin-top: 20px; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
             <strong>Notas:</strong><br>
