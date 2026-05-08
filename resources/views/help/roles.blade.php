@@ -1,432 +1,580 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roles y Permisos - Centro de Ayuda SAMI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #673ab7;
-            --roles-color: #673ab7;
-            --light-bg: #f8f9fa;
-            --dark-text: #212529;
-        }
+@extends('help.layout')
+@section('style')
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-text);
-        }
+html {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
 
-        .help-content {
-            margin-left: 280px;
-            padding: 30px;
-            min-height: 100vh;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark-text);
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-        .help-breadcrumb {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+/* Contenedor principal con límites estrictos */
+.help-content {
+    margin-left: 280px;
+    padding: 30px;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
 
-        .help-header {
-            background: linear-gradient(135deg, #673ab7 0%, #9575cd 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(103, 58, 183, 0.3);
-        }
+/* Corregir Bootstrap rows */
+.help-content .row {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+}
 
-        .content-section {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+.help-content .row > [class*="col-"] {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
-        .content-section h2 {
-            border-bottom: 2px solid #ede7f6;
-            padding-bottom: 10px;
-            color: var(--roles-color);
-        }
+/* Evitar que las imágenes fuercen scroll */
+.help-content img {
+    max-width: 100%;
+    height: auto;
+}
 
-        .step-card {
-            background: linear-gradient(135deg, #f3e5f5 0%, #fff 100%);
-            border-left: 4px solid var(--roles-color);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-        }
+/* Asegurar que tablas y contenido no desborden */
+.help-content table,
+.help-content .field-table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+}
 
-        .info-box {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            background: #f3e5f5;
-            border-left: 4px solid #673ab7;
-        }
+/* Sidebar */
+.help-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #673ab7 0%, #9575cd 100%);
+    padding: 20px 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-        .role-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
+.help-sidebar .logo {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
 
-        .badge-admin { background: #fee2e2; color: #991b1b; }
-        .badge-doctor { background: #dcfce7; color: #166534; }
-        .badge-assistant { background: #dbeafe; color: #1e40af; }
-        .badge-receptionist { background: #fef9c3; color: #854d0e; }
-        .badge-accounting { background: #f3e8ff; color: #6b21a8; }
-        .badge-patient { background: #e0f7fa; color: #006064; }
+.help-sidebar .logo img {
+    max-width: 150px;
+}
 
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--roles-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
+.help-sidebar .logo h4 {
+    color: #fff;
+    margin-top: 10px;
+    font-weight: 600;
+}
 
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+.help-sidebar .nav-section {
+    padding: 10px 20px;
+}
 
-        /* Matrix Table Styles */
-        .matrix-container {
-            margin-top: 30px;
-        }
+.help-sidebar .nav-section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
 
-        .search-container {
-            margin-bottom: 20px;
-            position: sticky;
-            top: 20px;
-            z-index: 100;
-        }
+.help-sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .search-input {
-            padding: 12px 20px 12px 45px;
-            border-radius: 30px;
-            border: 2px solid #ede7f6;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
+.help-sidebar .nav-link:hover,
+.help-sidebar .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
 
-        .search-input:focus {
-            border-color: var(--roles-color);
-            outline: none;
-            box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
-        }
+.help-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+}
 
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9575cd;
-        }
+/* Breadcrumb */
+.help-breadcrumb {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        .matrix-table-wrapper {
-            overflow-x: auto;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            background: white;
-        }
+/* Module Header */
+.module-header {
+    background: linear-gradient(135deg, #673ab7 0%, #9575cd 100%);
+    color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .matrix-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+.module-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
 
-        .matrix-table th {
-            background: #673ab7;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+.module-header h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+}
 
-        .matrix-table th:first-child {
-            text-align: left;
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            background: #512da8;
-        }
+.module-header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    position: relative;
+}
 
-        .matrix-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            text-align: center;
-        }
+/* Content Section */
+.content-section {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
 
-        .matrix-table td:first-child {
-            text-align: left;
-            position: sticky;
-            left: 0;
-            background: white;
-            font-weight: 500;
-            z-index: 1;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-            white-space: nowrap;
-        }
+.content-section h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #673ab7;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ede7f6;
+    padding-bottom: 10px;
+}
 
-        .module-row {
-            background: #f8f9fa;
-            font-weight: 700 !important;
-            color: #4527a0;
-            cursor: pointer;
-        }
+/* Info Boxes */
+.info-box {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: #f3e5f5;
+    border-left: 4px solid #673ab7;
+}
 
-        .module-row i {
-            transition: transform 0.3s;
-        }
+.info-box i {
+    font-size: 1.5rem;
+    margin-top: 3px;
+    color: #673ab7;
+}
 
-        .module-row.collapsed i {
-            transform: rotate(-90deg);
-        }
+/* Role Badges */
+.role-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
 
-        .module-group-header {
-            background: #ede7f6;
-            color: #5e35b1;
-            padding: 10px 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
+.badge-admin { background: #fee2e2; color: #991b1b; }
+.badge-doctor { background: #dcfce7; color: #166534; }
+.badge-assistant { background: #dbeafe; color: #1e40af; }
+.badge-receptionist { background: #fef9c3; color: #854d0e; }
+.badge-accounting { background: #f3e8ff; color: #6b21a8; }
+.badge-patient { background: #e0f7fa; color: #006064; }
 
-        .permission-allowed {
-            color: #2e7d32;
-            font-size: 1.2rem;
-        }
+/* Matrix Table Styles */
+.matrix-container {
+    margin-top: 30px;
+}
 
-        .permission-denied {
-            background-color: #ffebee !important;
-            color: #c62828;
-            font-size: 1.2rem;
-        }
+.search-container {
+    margin-bottom: 20px;
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+}
 
-        .matrix-table tr:hover td {
-            background-color: #f3e5f5;
-        }
+.search-input {
+    padding: 12px 20px 12px 45px;
+    border-radius: 30px;
+    border: 2px solid #ede7f6;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
 
-        @media (max-width: 992px) {
-            .help-content { margin-left: 0; }
-            .matrix-table td:first-child, .matrix-table th:first-child {
-                position: static;
-            }
-        }
-    </style>
-</head>
-<body>
+.search-input:focus {
+    border-color: #673ab7;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9575cd;
+}
+
+.matrix-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background: white;
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.matrix-table th {
+    background: #673ab7;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.matrix-table th:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #512da8;
+}
+
+.matrix-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+.matrix-table td:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: white;
+    font-weight: 500;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+    white-space: nowrap;
+}
+
+.module-row {
+    background: #f8f9fa;
+    font-weight: 700 !important;
+    color: #4527a0;
+    cursor: pointer;
+}
+
+.module-row i {
+    transition: transform 0.3s;
+}
+
+.module-row.collapsed i {
+    transform: rotate(-90deg);
+}
+
+.module-group-header {
+    background: #ede7f6;
+    color: #5e35b1;
+    padding: 10px 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.permission-allowed {
+    color: #2e7d32;
+    font-size: 1.2rem;
+}
+
+.permission-denied {
+    background-color: #ffebee !important;
+    color: #c62828;
+    font-size: 1.2rem;
+}
+
+.matrix-table tr:hover td {
+    background-color: #f3e5f5;
+}
+
+/* Back to Top */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #673ab7 0%, #9575cd 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(103, 58, 183, 0.4);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .help-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .help-content {
+        margin-left: 0;
+        max-width: 100vw;
+    }
+
+    .matrix-table td:first-child,
+    .matrix-table th:first-child {
+        position: static;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .help-sidebar,
+    .back-to-top {
+        display: none;
+    }
+
+    .help-content {
+        margin-left: 0;
+    }
+}
+
+@stop
+@section('sidebar')
     @include('help.sidebar', ['active' => 'roles'])
+@stop
+@section('breadcrumb')
+    <nav class="help-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="breadcrumb-item active">Roles y Permisos</li>
+        </ol>
+    </nav>
+@endsection
+@section('module-header')
+    <div class="module-header">
+        <h1><i class="fas fa-user-shield me-3"></i>Roles y Permisos</h1>
+        <p>Gestiona los niveles de acceso y responsabilidades de cada usuario en tu sistema.</p>
+    </div>
+@stop
+@section('table-content')
+    <div class="content-section">
+        <h2>Conceptos Básicos</h2>
+        <p>El sistema SAMI utiliza un modelo de control de acceso basado en roles (RBAC). Esto significa que los permisos no se asignan directamente a los usuarios, sino a roles, y luego los usuarios se vinculan a uno o más roles.</p>
 
-    <main class="help-content">
-        <nav class="help-breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('help.index') }}">Inicio</a></li>
-                <li class="breadcrumb-item active">Roles y Permisos</li>
-            </ol>
-        </nav>
-
-        <header class="help-header">
-            <h1><i class="fas fa-user-shield me-3"></i>Roles y Permisos</h1>
-            <p>Gestiona los niveles de acceso y responsabilidades de cada usuario en tu sistema.</p>
-        </header>
-
-        <div class="content-section">
-            <h2>Conceptos Básicos</h2>
-            <p>El sistema SAMI utiliza un modelo de control de acceso basado en roles (RBAC). Esto significa que los permisos no se asignan directamente a los usuarios, sino a roles, y luego los usuarios se vinculan a uno o más roles.</p>
-            
-            <div class="row mt-4">
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-0 shadow-sm bg-light">
-                        <div class="card-body">
-                            <h5><i class="fas fa-id-badge text-primary me-2"></i>¿Qué es un Rol?</h5>
-                            <p class="small mb-0">Un rol es una etiqueta que define un conjunto de responsabilidades. Ejemplo: "Doctor", "Asistente".</p>
-                        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 border-0 shadow-sm bg-light">
+                    <div class="card-body">
+                        <h5><i class="fas fa-id-badge text-primary me-2"></i>¿Qué es un Rol?</h5>
+                        <p class="small mb-0">Un rol es una etiqueta que define un conjunto de responsabilidades. Ejemplo: "Doctor", "Asistente".</p>
                     </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100 border-0 shadow-sm bg-light">
-                        <div class="card-body">
-                            <h5><i class="fas fa-key text-success me-2"></i>¿Qué es un Permiso?</h5>
-                            <p class="small mb-0">Un permiso es la capacidad técnica de realizar una acción específica. Ejemplo: "Crear Cita", "Ver Facturas".</p>
-                        </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 border-0 shadow-sm bg-light">
+                    <div class="card-body">
+                        <h5><i class="fas fa-key text-success me-2"></i>¿Qué es un Permiso?</h5>
+                        <p class="small mb-0">Un permiso es la capacidad técnica de realizar una acción específica. Ejemplo: "Crear Cita", "Ver Facturas".</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="content-section">
-            <h2>Roles Predeterminados</h2>
-            <p>SAMI incluye varios roles preconfigurados para facilitar la puesta en marcha:</p>
-            
-            <div class="list-group mb-4">
-                <div class="list-group-item border-0 border-bottom">
-                    <span class="role-badge badge-admin">Admin Client</span>
-                    <p class="small mb-0 text-muted">Acceso total a la configuración de la cuenta, sucursales y gestión de usuarios.</p>
-                </div>
-                <div class="list-group-item border-0 border-bottom">
-                    <span class="role-badge badge-doctor">Doctor</span>
-                    <p class="small mb-0 text-muted">Gestión de su agenda, atención de consultas y acceso a historias clínicas de sus pacientes.</p>
-                </div>
-                <div class="list-group-item border-0 border-bottom">
-                    <span class="role-badge badge-receptionist">Recepcionista</span>
-                    <p class="small mb-0 text-muted">Agendamiento de citas, registro de nuevos pacientes y cobros básicos.</p>
-                </div>
-                <div class="list-group-item border-0 border-bottom">
-                    <span class="role-badge badge-assistant">Asistente Médico</span>
-                    <p class="small mb-0 text-muted">Preparación de pacientes (signos vitales) y soporte en la agenda del doctor.</p>
-                </div>
-                <div class="list-group-item border-0 border-bottom">
-                    <span class="role-badge badge-patient">Paciente</span>
-                    <p class="small mb-0 text-muted">Acceso a su portal personal, visualización de sus citas, recetas médicas y resultados de exámenes.</p>
-                </div>
+    <div class="content-section">
+        <h2>Roles Predeterminados</h2>
+        <p>SAMI incluye varios roles preconfigurados para facilitar la puesta en marcha:</p>
+
+        <div class="list-group mb-4">
+            <div class="list-group-item border-0 border-bottom">
+                <span class="role-badge badge-admin">Admin Client</span>
+                <p class="small mb-0 text-muted">Acceso total a la configuración de la cuenta, sucursales y gestión de usuarios.</p>
+            </div>
+            <div class="list-group-item border-0 border-bottom">
+                <span class="role-badge badge-doctor">Doctor</span>
+                <p class="small mb-0 text-muted">Gestión de su agenda, atención de consultas y acceso a historias clínicas de sus pacientes.</p>
+            </div>
+            <div class="list-group-item border-0 border-bottom">
+                <span class="role-badge badge-receptionist">Recepcionista</span>
+                <p class="small mb-0 text-muted">Agendamiento de citas, registro de nuevos pacientes y cobros básicos.</p>
+            </div>
+            <div class="list-group-item border-0 border-bottom">
+                <span class="role-badge badge-assistant">Asistente Médico</span>
+                <p class="small mb-0 text-muted">Preparación de pacientes (signos vitales) y soporte en la agenda del doctor.</p>
+            </div>
+            <div class="list-group-item border-0 border-bottom">
+                <span class="role-badge badge-patient">Paciente</span>
+                <p class="small mb-0 text-muted">Acceso a su portal personal, visualización de sus citas, recetas médicas y resultados de exámenes.</p>
             </div>
         </div>
+    </div>
 
-        <div class="info-box">
-            <div class="info-box-title"><strong><i class="fas fa-info-circle me-2"></i>Nota sobre Planes y Administración</strong></div>
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <strong>Nota sobre Planes y Administración</strong>
             <p class="mb-2">La disponibilidad de roles y sus permisos específicos dependen directamente del plan seleccionado (Básico, Estándar o Premium).</p>
             <ul class="mb-0 small">
                 <li><strong>Planes Básico y Estándar:</strong> No existe un rol de "Admin Client" independiente. El Doctor que adquiere la suscripción actúa como administrador del sistema con acceso total.</li>
                 <li><strong>Plan Premium:</strong> El rol de "Admin Client" es independiente. Puede ser el mismo médico (creado como un usuario adicional con ese rol) o una persona distinta encargada exclusivamente de la administración.</li>
             </ul>
         </div>
+    </div>
 
-        <div class="content-section matrix-container">
-            <h2>Matriz de Permisos Detallada</h2>
-            <p>Consulta la comparativa completa de funciones permitidas según el plan y el rol asignado.</p>
+    <div class="content-section matrix-container">
+        <h2>Matriz de Permisos Detallada</h2>
+        <p>Consulta la comparativa completa de funciones permitidas según el plan y el rol asignado.</p>
 
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="matrixSearch" class="search-input" placeholder="Buscar permiso o función (ej: 'citas', 'facturas')...">
-            </div>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="matrixSearch" class="search-input" placeholder="Buscar permiso o función (ej: 'citas', 'facturas')...">
+        </div>
 
-            <div class="matrix-table-wrapper">
-                <table class="matrix-table" id="permissionsMatrix">
-                    <thead>
-                        <tr>
-                            <th>Módulo / Función</th>
-                            @foreach($roles as $role)
-                                <th>{{ ucwords($role->name) }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($permissions as $module => $modulePermissions)
-                            <tr class="module-group-header">
-                                <td colspan="{{ count($roles) + 1 }}">{{ ucwords($module) }}</td>
-                            </tr>
-                            @foreach($modulePermissions as $permission)
-                                <tr class="permission-row">
-                                    <td>{{ $permission->description ?? $permission->name }}</td>
-                                    @foreach($roles as $role)
-                                        @php
-                                            $hasPermission = isset($matrix[$permission->id]) && in_array($role->id, $matrix[$permission->id]);
-                                        @endphp
-                                        <td class="{{ $hasPermission ? 'permission-allowed' : 'permission-denied' }}">
-                                            <i class="fas {{ $hasPermission ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
-                                        </td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
+        <div class="matrix-table-wrapper">
+            <table class="matrix-table" id="permissionsMatrix">
+                <thead>
+                    <tr>
+                        <th>Módulo / Función</th>
+                        @foreach($roles as $role)
+                            <th>{{ ucwords($role->name) }}</th>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($permissions as $module => $modulePermissions)
+                        <tr class="module-group-header">
+                            <td colspan="{{ count($roles) + 1 }}">{{ ucwords($module) }}</td>
+                        </tr>
+                        @foreach($modulePermissions as $permission)
+                            <tr class="permission-row">
+                                <td>{{ $permission->description ?? $permission->name }}</td>
+                                @foreach($roles as $role)
+                                    @php
+                                        $hasPermission = isset($matrix[$permission->id]) && in_array($role->id, $matrix[$permission->id]);
+                                    @endphp
+                                    <td class="{{ $hasPermission ? 'permission-allowed' : 'permission-denied' }}">
+                                        <i class="fas {{ $hasPermission ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-            <!--<div class="info-box mt-4">
-                <div class="info-box-title"><strong><i class="fas fa-info-circle me-2"></i>Sobre esta matriz</strong></div>
+        <!--<div class="info-box mt-4">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Sobre esta matriz</strong>
                 <p class="small mb-0">Esta tabla representa la configuración estándar del sistema. Si necesitas un plan personalizado, contacte al departamento de ventas para evaluar tu caso.</p>
-            </div>-->
-        </div>
-
-        <!--<div class="content-section">
-            <h2>Gestión de Roles Personalizados</h2>
-            <p>Puedes crear roles nuevos para adaptar el sistema a las necesidades específicas de tu centro médico.</p>
-            
-            <div class="step-card">
-                <div class="step-title">1. Crear un Nuevo Rol</div>
-                <div class="step-content">
-                    <p>Dirígete a <strong>Configuraciones > Roles y Permisos</strong>. Haz clic en "Nuevo Rol", asígnale un nombre descriptivo y selecciona los permisos deseados agrupados por módulos.</p>
-                </div>
             </div>
-
-            <div class="step-card">
-                <div class="step-title">2. Asignar Permisos por Módulo</div>
-                <div class="step-content">
-                    <p>Los permisos están organizados por áreas de trabajo (Citas, Pacientes, Facturas, etc.). Puedes usar el botón "Seleccionar todos" de un módulo si el rol debe tener control total sobre esa sección.</p>
-                </div>
-            </div>
-
-            <div class="step-card">
-                <div class="step-title">3. Vincular Usuario a Rol</div>
-                <div class="step-content">
-                    <p>Una vez creado el rol, ve a la sección de <strong>Usuarios</strong>, selecciona un usuario y en su perfil asigna el rol que acabas de crear. Los cambios se aplicarán en su próximo inicio de sesión.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-box">
-            <div class="info-box-title"><strong><i class="fas fa-shield-alt"></i> Recomendación de Seguridad</strong></div>
-            <p class="mb-0">Aplica el "Principio de Menor Privilegio": otorga a los usuarios solo los permisos estrictamente necesarios para realizar su trabajo. Esto protege la privacidad de los datos de tus pacientes.</p>
         </div>-->
+    </div>
 
-        <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('help.index') }}" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-home me-2"></i>Volver al Inicio
-            </a>
-            <a href="{{ route('help.support') }}" class="btn btn-primary btn-lg">
-                Soporte y Contacto <i class="fas fa-arrow-right ms-2"></i>
-            </a>
+    <!--<div class="content-section">
+        <h2>Gestión de Roles Personalizados</h2>
+        <p>Puedes crear roles nuevos para adaptar el sistema a las necesidades específicas de tu centro médico.</p>
+
+        <div class="step-card">
+            <div class="step-title">1. Crear un Nuevo Rol</div>
+            <div class="step-content">
+                <p>Dirígete a <strong>Configuraciones > Roles y Permisos</strong>. Haz clic en "Nuevo Rol", asígnale un nombre descriptivo y selecciona los permisos deseados agrupados por módulos.</p>
+            </div>
         </div>
-    </main>
 
-    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+        <div class="step-card">
+            <div class="step-title">2. Asignar Permisos por Módulo</div>
+            <div class="step-content">
+                <p>Los permisos están organizados por áreas de trabajo (Citas, Pacientes, Facturas, etc.). Puedes usar el botón "Seleccionar todos" de un módulo si el rol debe tener control total sobre esa sección.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-title">3. Vincular Usuario a Rol</div>
+            <div class="step-content">
+                <p>Una vez creado el rol, ve a la sección de <strong>Usuarios</strong>, selecciona un usuario y en su perfil asigna el rol que acabas de crear. Los cambios se aplicarán en su próximo inicio de sesión.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <i class="fas fa-shield-alt"></i>
+        <div>
+            <strong>Recomendación de Seguridad</strong>
+            <p class="mb-0">Aplica el "Principio de Menor Privilegio": otorga a los usuarios solo los permisos estrictamente necesarios para realizar su trabajo. Esto protege la privacidad de los datos de tus pacientes.</p>
+        </div>
+    </div>-->
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ route('help.index') }}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-home me-2"></i>Volver al Inicio
+        </a>
+        <a href="{{ route('help.support') }}" class="btn btn-primary btn-lg">
+            Soporte y Contacto <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const btn = document.getElementById('backToTop');
-        window.onscroll = function() {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btn.classList.add('visible');
-            } else {
-                btn.classList.remove('visible');
-            }
-        };
-        btn.onclick = function() {
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-
         // Live Search for Permissions Matrix
         const searchInput = document.getElementById('matrixSearch');
         const table = document.getElementById('permissionsMatrix');
@@ -436,7 +584,7 @@
         searchInput.addEventListener('input', function() {
             const filter = searchInput.value.toLowerCase();
             const allElements = table.querySelectorAll('tr.permission-row, tr.module-group-header');
-            
+
             let currentHeader = null;
             let currentGroupHasMatch = false;
 
@@ -446,7 +594,7 @@
                     if (currentHeader && !currentGroupHasMatch && filter !== '') {
                         currentHeader.style.display = 'none';
                     }
-                    
+
                     currentHeader = row;
                     currentGroupHasMatch = false;
                     row.style.display = ''; // Reset display
@@ -467,5 +615,4 @@
             }
         });
     </script>
-</body>
-</html>
+@stop

@@ -1,171 +1,191 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía de Historia Médica - Centro de Ayuda SAMI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #0dcaf0;
-            --teal-color: #20c997;
-            --light-bg: #f8f9fa;
-            --dark-text: #212529;
-        }
+@extends('help.layout')
+@section('style')
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-text);
-        }
+html {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Sidebar */
-        .help-sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
-            padding: 20px 0;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark-text);
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-        .help-sidebar .logo {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
+/* Contenedor principal con límites estrictos */
+.help-content {
+    margin-left: 280px;
+    padding: 30px;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
 
-        .help-sidebar .logo img {
-            max-width: 150px;
-        }
+/* Corregir Bootstrap rows */
+    .help-content .row {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+    }
 
-        .help-sidebar .logo h4 {
-            color: #fff;
-            margin-top: 10px;
-            font-weight: 600;
-        }
+    .help-content .row > [class*="col-"] {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 
-        .help-sidebar .nav-section {
-            padding: 10px 20px;
-        }
+    /* Evitar que las imágenes fuercen scroll */
+    .help-content img {
+        max-width: 100%;
+        height: auto;
+    }
 
-        .help-sidebar .nav-section-title {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
+    /* Asegurar que tablas y contenido no desborden */
+    .help-content table,
+    .help-content .field-table {
+        max-width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
 
-        .help-sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+/* Sidebar */
+.help-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+    padding: 20px 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-        .help-sidebar .nav-link:hover,
-        .help-sidebar .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-        }
+.help-sidebar .logo {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
 
-        .help-sidebar .nav-link i {
-            width: 20px;
-            text-align: center;
-        }
+.help-sidebar .logo img {
+    max-width: 150px;
+}
 
-        .help-sidebar .nav-link .badge {
-            margin-left: auto;
-            font-size: 0.65rem;
-        }
+.help-sidebar .logo h4 {
+    color: #fff;
+    margin-top: 10px;
+    font-weight: 600;
+}
 
-        /* Main Content */
-        .help-content {
-            margin-left: 280px;
-            padding: 30px;
-            min-height: 100vh;
-        }
+.help-sidebar .nav-section {
+    padding: 10px 20px;
+}
 
-        /* Breadcrumb */
-        .help-breadcrumb {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+.help-sidebar .nav-section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
 
-        /* Module Header */
-        .module-header {
-            background: linear-gradient(135deg, #00897b 0%, #004d40 100%);
-            color: #fff;
-            padding: 40px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
+.help-sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .module-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        }
+.help-sidebar .nav-link:hover,
+.help-sidebar .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
 
-        .module-header h1 {
-            font-weight: 700;
-            margin-bottom: 15px;
-            position: relative;
-        }
+.help-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+}
 
-        .module-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            position: relative;
-        }
+.help-sidebar .nav-link .badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+}
 
-        /* Step Cards */
-        .step-card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid var(--teal-color);
-            position: relative;
-        }
+/* Breadcrumb */
+.help-breadcrumb {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        .step-card.step-important {
-            border-left-color: var(--warning-color);
-        }
+/* Module Header */
+.module-header {
+    background: linear-gradient(135deg, #00897b 0%, #004d40 100%);
+    color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .step-card.step-success {
-            border-left-color: var(--success-color);
-        }
+.module-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
 
-        .step-card.step-info {
-            border-left-color: var(--info-color);
-        }
+.module-header h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.module-header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+/* Step Cards */
+.step-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-left: 5px solid var(--teal-color);
+    position: relative;
+}
+
+.step-card.step-important {
+    border-left-color: var(--warning-color);
+}
+
+.step-card.step-success {
+    border-left-color: var(--success-color);
+}
+
+.step-card.step-info {
+    border-left-color: var(--info-color);
+}
 
         .step-card.step-primary {
             border-left-color: var(--primary-color);
@@ -625,7 +645,7 @@
             font-size: 0.8rem;
             padding: 2px 6px;
         }
-    }        
+    }
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -757,30 +777,29 @@
             .step-number{
                 left: 42%;
             }
-         }
-    </style>
-</head>
-<body>
+     }
+
+@stop
+@section('sidebar')
     @include('help.sidebar', ['active' => 'medical-history'])
-
-    <!-- Main Content -->
-    <main class="help-content">
-        <!-- Breadcrumb -->
-        <nav class="help-breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li class="breadcrumb-item"><a href="#">Gestion de Pacientes</a></li>
-                <li class="breadcrumb-item active">Historia Médica</li>
-            </ol>
-        </nav>
-
-        <!-- Module Header -->
-        <div class="module-header">
-            <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Médica</h1>
-            <p>Aprende a visualizar y gestionar la historia médica completa de tus pacientes, incluyendo antecedentes, diagnósticos, signos vitales y mas.</p>
-        </div>
-
-        <div class="row">
+@stop
+@section('breadcrumb')
+    <nav class="help-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="breadcrumb-item"><a href="#">Gestion de Pacientes</a></li>
+            <li class="breadcrumb-item active">Historia Médica</li>
+        </ol>
+    </nav>
+@endsection
+@section('module-header')
+    <div class="module-header">
+        <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Médica</h1>
+        <p>Aprende a visualizar y gestionar la historia médica completa de tus pacientes, incluyendo antecedentes, diagnósticos, signos vitales y mas.</p>
+    </div>
+@stop
+@section('table-content')
+    <div class="row">
             <!-- Table of Contents -->
             <div class="col-lg-4">
                 <div class="toc-card sticky-top" style="top: 20px;">
@@ -1061,7 +1080,7 @@
                     <h3 class="step-title">¿Cómo acceder a la Historia Médica?</h3>
                     <div class="step-content">
                         <p>Para acceder a la historia medica de un paciente:</p>
-                        
+
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-patient.png') }}" alt="" style="width: 100%;">
                         </div>
@@ -1128,8 +1147,8 @@
                                     <li>
                                         <i class="fas fa-allergies"></i>
                                         <div><strong>Antecedentes Médicos</strong></div>
-                                    </li> 
-                                    <li>                               
+                                    </li>
+                                    <li>
                                         <i class="fas fa-heartbeat"></i>
                                         <div><strong>Signos Vitales</strong></div>
                                     </li>
@@ -1184,7 +1203,7 @@
                         <div class="sub-step mt-4">
                             <h6><i class="fas fa-file-pdf me-2"></i>Resumen Médico</h6>
                             <p>El <strong>Resumen Médico</strong> es un documento consolidado que resume toda la información relevante de una consulta específica. Para acceder a él, diríjase a la columna de <strong>"Acciones"</strong> en la tabla de consultas y haga clic en el botón <strong>"Ver Detalles"</strong>.</p>
-                            
+
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-pdf.png') }}" alt="" style="width: 100%;">
                         </div>
@@ -1551,10 +1570,11 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </section>
 
 
-                <!-- Examenes Fisicos 
+                <!-- Examenes Fisicos
                 <section id="examenes" class="step-card">
                     <div class="step-number">6</div>
                     <h3 class="step-title">Examenes Fisicos</h3>
@@ -1766,7 +1786,7 @@
                                     <p>Primero deberá ir a <strong>"Lista Pacientes"</strong>, busca su paciente y haga clic en <strong>"Historial Médico"</strong>, en esta pantalla encontrará un botón que dice <strong>"Solicitar Acceso Completo al Historial"</strong>, haga clic.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-patient.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1786,7 +1806,7 @@
                                     <p>El Sistema enviará un correo con el <strong>Código de Autorización</strong> que deberá ingresar el Médico.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-email.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1796,7 +1816,7 @@
                                     <p>Luego de que el paciente le haya proporcionado el <strong>Código de Autorización</strong> deberá ingresarlo a la plataforma para validarlo.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-sendcode.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1806,13 +1826,13 @@
                                     <p>Luego de validar <strong>Código de Autorización</strong> podrá visualizar el <strong>Historial Médico</strong> completo del paciente.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-medhs.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                <!-- Filtros y Busqueda 
+                <!-- Filtros y Busqueda
                 <section id="filtros" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Filtros y Busqueda</h3>
@@ -1931,40 +1951,4 @@
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Back to Top functionality
-        const backToTop = document.getElementById('backToTop');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
-        });
-
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Smooth scroll for TOC links
-        document.querySelectorAll('.toc-list a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+@stop

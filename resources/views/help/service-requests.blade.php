@@ -1,281 +1,372 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repositorio de Estudios - Centro de Ayuda SAMI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #0dcaf0;
-            --study-color: #00897b;
-            --light-bg: #f8f9fa;
-            --dark-text: #212529;
-        }
+@extends('help.layout')
+@section('style')
 
-        html {
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
+:root {
+    --study-color: #00897b;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-text);
-            overflow-x: hidden;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
+html {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
 
-        .help-content {
-            margin-left: 280px;
-            padding: 30px;
-            max-width: calc(100vw - 280px);
-            overflow-x: hidden;
-            box-sizing: border-box;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark-text);
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-        @media (max-width: 992px) {
-            .help-content {
-                margin-left: 0;
-                max-width: 100%;
-            }
-        }
+.help-content {
+    margin-left: 280px;
+    padding: 30px;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
 
-        .module-header {
-            background: linear-gradient(135deg, var(--study-color) 0%, #4db6ac 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0, 137, 123, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
+.help-content .row {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+}
 
-        .module-header h1 {
-            font-weight: 700;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
+.help-content .row > [class*="col-"] {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
-        .module-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            position: relative;
-            z-index: 1;
-        }
+.help-content img {
+    max-width: 100%;
+    height: auto;
+}
 
-        .help-breadcrumb {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+.help-content table,
+.help-content .field-table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+}
 
-        .content-section {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+.help-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #e65100 0%, #ff6f00 100%);
+    padding: 20px 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-        .content-section h2 {
-            color: var(--study-color);
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0f2f1;
-        }
+.help-sidebar .logo {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
 
-        .field-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
+.help-sidebar .logo img {
+    max-width: 150px;
+}
 
-        .field-table th {
-            background: var(--study-color);
-            color: white;
-            padding: 12px 15px;
-            text-align: left;
-        }
+.help-sidebar .logo h4 {
+    color: #fff;
+    margin-top: 10px;
+    font-weight: 600;
+}
 
-        .field-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
+.help-sidebar .nav-section {
+    padding: 10px 20px;
+}
 
-        .status-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
+.help-sidebar .nav-section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
 
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--study-color);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 137, 123, 0.4);
-            transition: all 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 9999;
-        }
+.help-sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+.help-sidebar .nav-link:hover,
+.help-sidebar .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
 
-        .screenshot-placeholder {
-            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
-            border: 2px dashed var(--study-color);
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+.help-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+}
 
-        .screenshot-placeholder i {
-            font-size: 3rem;
-            color: var(--study-color);
-            margin-bottom: 15px;
-        }
+.help-breadcrumb {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        .screenshot-placeholder p {
-            color: #004d40;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
+.module-header {
+    background: linear-gradient(135deg, var(--study-color) 0%, #4db6ac 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 137, 123, 0.3);
+    position: relative;
+    overflow: hidden;
+}
 
-        .screenshot-placeholder small {
-            color: var(--study-color);
-        }
+.module-header h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
 
-        .step-card {
-            background: linear-gradient(135deg, #fff 0%, #f1f8e9 100%);
-            border-left: 4px solid var(--study-color);
-            padding: 20px;
-            border-radius: 0 8px 8px 0;
-            height: 100%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+.module-header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+}
 
-        .step-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
+.content-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
 
-        .step-content {
-            color: #555;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
+.content-section h2 {
+    color: var(--study-color);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0f2f1;
+}
 
-        .required-badge {
-            background: #dc3545;
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
+.field-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
 
-        .optional-badge {
-            background: #6c757d;
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
+.field-table th {
+    background: var(--study-color);
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+}
 
-        /* Responsive Tables */
-        @media (max-width: 768px) {
-            .field-table thead {
-                display: none;
-            }
+.field-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
 
-            .field-table tr {
-                display: block;
-                margin-bottom: 15px;
-                border: 1px solid #eee;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
 
-            .field-table td {
-                display: block;
-                text-align: right;
-                padding: 10px 15px;
-                position: relative;
-                border-bottom: 1px solid #f8f9fa;
-            }
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--study-color);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 137, 123, 0.4);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999;
+}
 
-            .field-table td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 15px;
-                font-weight: 700;
-                color: var(--study-color);
-            }
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
 
-            .field-table td:last-child {
-                border-bottom: none;
-            }
-        }
-    </style>
-</head>
-<body>
+.screenshot-placeholder {
+    background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+    border: 2px dashed var(--study-color);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
+.screenshot-placeholder i {
+    font-size: 3rem;
+    color: var(--study-color);
+    margin-bottom: 15px;
+}
+
+.screenshot-placeholder p {
+    color: #004d40;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.screenshot-placeholder small {
+    color: var(--study-color);
+}
+
+.step-card {
+    background: linear-gradient(135deg, #fff 0%, #f1f8e9 100%);
+    border-left: 4px solid var(--study-color);
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    height: 100%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.step-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.step-content {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.required-badge {
+    background: #dc3545;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.optional-badge {
+    background: #6c757d;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+@media (max-width: 992px) {
+    .help-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .help-content {
+        margin-left: 0;
+        max-width: 100vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .field-table thead {
+        display: none;
+    }
+
+    .field-table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .field-table td {
+        display: block;
+        text-align: right;
+        padding: 10px 15px;
+        position: relative;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .field-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        font-weight: 700;
+        color: var(--study-color);
+    }
+
+    .field-table td:last-child {
+        border-bottom: none;
+    }
+}
+
+@media print {
+    .help-sidebar,
+    .back-to-top {
+        display: none;
+    }
+
+    .help-content {
+        margin-left: 0;
+    }
+}
+
+@stop
+@section('sidebar')
     @include('help.sidebar', ['active' => 'service-requests'])
+@stop
+@section('breadcrumb')
+    <nav class="help-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="breadcrumb-item active">Repositorio de Estudios</li>
+        </ol>
+    </nav>
+@endsection
+@section('module-header')
+    <div class="module-header">
+        <h1><i class="fas fa-microscope me-3"></i>Repositorio de Estudios</h1>
+        <p>Módulo centralizado para la gestión y seguimiento de todas las solicitudes de estudios (Laboratorios, Imágenes y Procedimientos) realizadas en el sistema.</p>
+    </div>
+@stop
+@section('table-content')
 
-    <main class="help-content">
-        <nav class="help-breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li class="breadcrumb-item active">Repositorio de Estudios</li>
-            </ol>
-        </nav>
-
-        <div class="module-header">
-            <h1><i class="fas fa-microscope me-3"></i>Repositorio de Estudios</h1>
-            <p>Módulo centralizado para la gestión y seguimiento de todas las solicitudes de estudios (Laboratorios, Imágenes y Procedimientos) realizadas en el sistema.</p>
-        </div>
-
-        <div class="content-section">
+    <div class="content-section">
             <h2><i class="fas fa-list me-2"></i>Lista de Estudios</h2>
             <p>En esta sección podrá visualizar todas las solicitudes generadas. A continuación se explican los campos disponibles en la tabla de resultados:</p>
             
@@ -487,24 +578,4 @@
                 <li><span class="status-badge bg-black text-white">Ingresado por error</span>: El estudio ha sido ingresado por error.</li>
             </ul>
         </div>
-    </main>
-
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <script>
-        const backToTop = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
-        });
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    </script>
-</body>
-</html>
+@stop
