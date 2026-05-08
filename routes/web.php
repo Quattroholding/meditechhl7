@@ -47,6 +47,7 @@ Route::middleware('api.docs.ip')->prefix('api-docs')->name('api.docs.')->group(f
     Route::get('/{page}', [ApiDocsController::class, 'show'])->name('show');
 });
 
+
 /**
  * ============================================================================
  * SUBDOMAIN ROUTES
