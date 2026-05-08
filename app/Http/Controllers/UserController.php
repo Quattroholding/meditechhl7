@@ -55,11 +55,12 @@ class UserController extends Controller
             $model->created_by = auth()->user()->id;
             $temporaryPassword = $request->password;
             $model->default_client_id = $request->clients[0] ?? auth()->user()->default_client_id;
+            // SE ASIGNA EL ROL SEGÚN EL ID
+            $rol = Rol::find($request->rol);
 
-            if ($model->save()) {
+            if ($model->save() && $rol) {
 
-                // SE ASIGNA EL ROL SEGÚN EL ID
-                $rol = Rol::find($request->rol);
+
                 $model->assignRole($rol->name);
                 // SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
 

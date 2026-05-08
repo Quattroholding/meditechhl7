@@ -278,7 +278,7 @@
             @endif
             <tr>
                 <td>Fecha de Registro:</td>
-                <td>{{ $payment->created_at->format('d/m/Y H:i:s') }}</td>
+                <td>{{ $payment->created_at }}</td>
             </tr>
         </table>
 
