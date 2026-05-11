@@ -272,8 +272,7 @@
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('login') ? 'active' : '' }}" href="{{ url('login') }}">
                                 Login </a></li>
-                        <li><a class="{{ Request::is('register') ? 'active' : '' }}" href="{{ url('register') }}">
-                                Register </a></li>
+                        <!-- Register eliminado - usar rutas públicas específicas -->
                         <li><a class="{{ Request::is('forgot-password') ? 'active' : '' }}"
                                 href="{{ url('forgot-password') }}"> Forgot Password </a></li>
                         <li><a class="{{ Request::is('change-password2') ? 'active' : '' }}"
