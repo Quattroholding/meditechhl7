@@ -76,7 +76,19 @@ class PublicPatientRegistrationRequest extends FormRequest
             'policy_number' => 'nullable|required_if:has_insurance,1|string|max:100',
             'group_number' => 'nullable|string|max:100',
             'relationship_to_subscriber' => 'nullable|required_if:has_insurance,1|in:self,spouse,child,parent,other',
-            'subscriber_name' => 'nullable|required_unless:relationship_to_subscriber,self|string|max:255',
+            'subscriber_name' => [
+                'nullable',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    // Solo validar si tiene seguro Y la relación no es "self"
+                    if ($this->input('has_insurance') &&
+                        $this->input('relationship_to_subscriber') !== 'self' &&
+                        empty($value)) {
+                        $fail('El nombre del titular es obligatorio cuando no es el mismo paciente.');
+                    }
+                },
+            ],
         ];
     }
 
