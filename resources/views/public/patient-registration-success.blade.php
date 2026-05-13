@@ -145,6 +145,7 @@
             </small>
         </p>
     </div>
+    {{--}}
 
     <a href="{{ route('login') }}" class="btn btn-login">
         <i class="fas fa-sign-in-alt me-2"></i>Ir al Login
@@ -168,5 +169,6 @@
             </small>
         </p>
     </div>
+    {{--}}
 </div>
 @endsection
