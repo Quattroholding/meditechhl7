@@ -80,6 +80,7 @@ class PublicPatientRegistrationRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
+                /*
                 function ($attribute, $value, $fail) {
                     // Solo validar si tiene seguro Y la relación no es "self"
                     if ($this->input('has_insurance') &&
@@ -87,7 +88,7 @@ class PublicPatientRegistrationRequest extends FormRequest
                         empty($value)) {
                         $fail('El nombre del titular es obligatorio cuando no es el mismo paciente.');
                     }
-                },
+                },*/
             ],
         ];
     }

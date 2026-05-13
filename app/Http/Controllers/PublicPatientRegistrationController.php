@@ -47,6 +47,7 @@ class PublicPatientRegistrationController extends Controller
      */
     public function store(PublicPatientRegistrationRequest $request, Client $client)
     {
+
         try {
             // Verificar que el cliente existe y está activo
             if ($client->active != 1) {
