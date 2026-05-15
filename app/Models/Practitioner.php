@@ -16,6 +16,7 @@ class Practitioner extends BaseModel
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
         'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'is_standalone', 'registry', 'licence_code', 'identifier_type',
         'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
+        'has_individual_inventory',
     ];
 
     protected $casts = [
@@ -24,6 +25,7 @@ class Practitioner extends BaseModel
         'is_standalone' => 'boolean',
         'prescription_authorization' => 'boolean',
         'prescription_authorization_date' => 'datetime',
+        'has_individual_inventory' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -65,6 +67,11 @@ class Practitioner extends BaseModel
     public function medicationRequests(): HasMany
     {
         return $this->hasMany(MedicationRequest::class);
+    }
+
+    public function inventoryReports(): HasMany
+    {
+        return $this->hasMany(InventoryReport::class);
     }
 
     public function user()

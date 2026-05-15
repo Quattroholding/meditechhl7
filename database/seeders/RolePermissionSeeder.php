@@ -179,6 +179,15 @@ class RolePermissionSeeder extends Seeder
             // Dashboard access
             ['name' => 'dashboard.sales', 'description' => 'Acceso al dashboard de ventas', 'module' => 'dashboards'],
 
+            // Inventory management
+            ['name' => 'inventory.view', 'description' => 'Ver catálogo de inventario y niveles de stock', 'module' => 'inventario'],
+            ['name' => 'inventory.create', 'description' => 'Crear nuevos items de inventario', 'module' => 'inventario'],
+            ['name' => 'inventory.edit', 'description' => 'Editar items de inventario existentes', 'module' => 'inventario'],
+            ['name' => 'inventory.delete', 'description' => 'Eliminar items de inventario', 'module' => 'inventario'],
+            ['name' => 'inventory.manage_stock', 'description' => 'Gestionar stock (recibir, ajustar, transferir, dar de baja)', 'module' => 'inventario'],
+            ['name' => 'inventory.dispense_supplies', 'description' => 'Dispensar suministros durante consultas', 'module' => 'inventario'],
+            ['name' => 'inventory.view_reports', 'description' => 'Ver reportes de inventario y transacciones', 'module' => 'inventario'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -252,6 +261,8 @@ class RolePermissionSeeder extends Seeder
             'medicines.create',
             'medicines.edit',
             'medicines.delete',
+            'inventory.view',
+            'inventory.dispense_supplies',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',
@@ -354,6 +365,12 @@ class RolePermissionSeeder extends Seeder
             'tickets.index',
             'tickets.create',
             'tickets.comment',
+            'inventory.view',
+            'inventory.create',
+            'inventory.edit',
+            'inventory.delete',
+            'inventory.manage_stock',
+            'inventory.view_reports',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);

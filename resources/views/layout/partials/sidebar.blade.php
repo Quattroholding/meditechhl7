@@ -165,6 +165,30 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['inventory.view','inventory.create','inventory.manage_stock','inventory.view_reports'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <i class="fa fa-boxes"></i></span>
+                        <span> Inventario </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('inventory.view')
+                        <li><a class="{{ Request::is('inventory/items') ? 'active' : '' }}" href="{{ route('inventory.items.index') }}">Catálogo de Items</a></li>
+                        @endcan
+                        @can('inventory.create')
+                        <li><a class="{{ Request::is('inventory/items/create') ? 'active' : '' }}" href="{{ route('inventory.items.create') }}">Crear Item</a></li>
+                        @endcan
+                        @can('inventory.manage_stock')
+                        <li><a class="{{ Request::is('inventory/stock') ? 'active' : '' }}" href="{{ route('inventory.stock.index') }}">Gestión de Stock</a></li>
+                        @endcan
+                        @can('inventory.view_reports')
+                        <li><a class="{{ Request::is('inventory/reports/low-stock') ? 'active' : '' }}" href="{{ route('inventory.reports.low-stock') }}">Stock Bajo</a></li>
+                        <li><a class="{{ Request::is('inventory/reports/transactions') ? 'active' : '' }}" href="{{ route('inventory.reports.transactions') }}">Historial de Transacciones</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['surveys.view','surveys.create'])
                 <li class="submenu">
                     <a href="javascript:;">

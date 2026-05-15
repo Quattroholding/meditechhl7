@@ -92,6 +92,16 @@ class Encounter extends BaseModel
         return $this->hasMany(ServiceRequest::class);
     }
 
+    public function supplyRequests(): HasMany
+    {
+        return $this->hasMany(SupplyRequest::class);
+    }
+
+    public function supplyDeliveries(): HasMany
+    {
+        return $this->hasMany(SupplyDelivery::class);
+    }
+
     public function skinLesions(): HasMany
     {
         return $this->hasMany(SkinLesion::class);

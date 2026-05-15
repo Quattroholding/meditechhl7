@@ -1,6 +1,4 @@
-<?php $page = 'invoice-view'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -167,10 +165,36 @@
                                         @forelse($invoice->lineItems as $index => $lineItem)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td class="text-center">{{ $lineItem->service_code ?? 'N/A' }}</td>
+                                                <td class="text-center">
+                                                    @php
+                                                        $code = $lineItem->service_code ?? 'N/A';
+                                                        $description = $lineItem->service_description ?? 'N/A';
+                                                        $inventoryItem = null;
+
+                                                        // If description is generic and chargeItem has product_reference, get inventory item
+                                                        if (in_array($description, ['Servicio médico', 'N/A']) &&
+                                                            $lineItem->chargeItem &&
+                                                            is_array($lineItem->chargeItem->product_reference) &&
+                                                            isset($lineItem->chargeItem->product_reference['reference'])) {
+
+                                                            $reference = $lineItem->chargeItem->product_reference['reference'];
+                                                            if (str_contains($reference, 'InventoryItem/')) {
+                                                                $fhirId = str_replace('InventoryItem/', '', $reference);
+                                                                $inventoryItem = \App\Models\InventoryItem::where('fhir_id', $fhirId)->first();
+                                                                if ($inventoryItem) {
+                                                                    $description = $inventoryItem->name;
+                                                                    $code = $inventoryItem->sku;
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $code }}
+                                                </td>
                                                 <td>
-                                                    <strong>{{ $lineItem->service_description ?? 'N/A' }}</strong>
-                                                    @if($lineItem->chargeItem && $lineItem->chargeItem->note)
+                                                    <strong>{{ $description }}</strong>
+                                                    @if($inventoryItem && $inventoryItem->description)
+                                                        <br><small class="text-muted">{{ $inventoryItem->description }}</small>
+                                                    @elseif($lineItem->chargeItem && $lineItem->chargeItem->note)
                                                         <br><small class="text-muted">{{ $lineItem->chargeItem->note }}</small>
                                                     @endif
                                                 </td>
@@ -394,4 +418,4 @@
             }
         }
     </style>
-@endsection
+</x-app-layout>

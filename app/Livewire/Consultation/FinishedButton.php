@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Consultation;
 
+use App\Enums\SupplyRequestStatus;
 use App\Models\Encounter;
+use App\Models\InventoryReport;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -41,7 +43,7 @@ class FinishedButton extends Component
         if (auth()->user()->hasRole('asistente medico')) {
             $this->enabled = $this->validateGeneralNote();
         } else {
-            $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateReferrals();
+            $this->enabled = $this->validateReason() && $this->validatePresentIllnesses() && $this->validateCondition() && $this->validateMedicationRequests() && $this->validateSupplyRequests() && $this->validateReferrals();
         }
     }
 
@@ -207,6 +209,62 @@ class FinishedButton extends Component
             unset($this->messages[8]);
             unset($this->messageSections[8]);
             unset($this->messageTargets[8]);
+
+            return true;
+        }
+    }
+
+    public function validateSupplyRequests()
+    {
+        $supplyRequests = $this->encounter->supplyRequests()
+            ->where('status', SupplyRequestStatus::DRAFT)
+            ->with(['inventoryItem', 'practitioner']);
+
+        // Si no hay suministros agregados, la validación pasa
+        if ($supplyRequests->count() === 0) {
+            unset($this->messages[10]);
+            unset($this->messageSections[10]);
+            unset($this->messageTargets[10]);
+
+            return true;
+        }
+
+        $issues = [];
+
+        foreach ($supplyRequests->get() as $supply) {
+            // Validar cantidad
+            if ($supply->quantity <= 0) {
+                $issues[] = "{$supply->inventoryItem->name} (cantidad inválida)";
+
+                continue;
+            }
+
+            // Validar stock disponible
+            $practitioner = $supply->practitioner;
+            $branchId = $supply->branch_id;
+
+            $inventoryReport = InventoryReport::getForPractitioner(
+                inventoryItemId: $supply->inventory_item_id,
+                practitioner: $practitioner,
+                branchId: $branchId
+            );
+
+            if (! $inventoryReport || $inventoryReport->quantity_available < $supply->quantity) {
+                $available = $inventoryReport ? $inventoryReport->quantity_available : 0;
+                $issues[] = "{$supply->inventoryItem->name} (stock insuficiente: {$available} disponible, {$supply->quantity} solicitado)";
+            }
+        }
+
+        if (! empty($issues)) {
+            $this->messages[10] = '- Suministros con problemas: '.implode(', ', $issues);
+            $this->messageSections[10] = 17; // Section ID for "Suministros"
+            $this->messageTargets[10] = '.medicine-table'; // Supply table
+
+            return false;
+        } else {
+            unset($this->messages[10]);
+            unset($this->messageSections[10]);
+            unset($this->messageTargets[10]);
 
             return true;
         }
