@@ -20,7 +20,7 @@
                            <h6>{{$note->description}}</h6>
                         </td>
                         <td>
-                           <h6>{{$note->created_at->format('d-m-Y H:i')}}</h6>
+                           <h6>{{$note->created_at}}</h6>
                         </td>
                     </tr>
                 @endforeach

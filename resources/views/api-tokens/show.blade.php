@@ -92,7 +92,7 @@
                                             <dd>{{ $apiToken->created_by ?? 'Sistema' }}</dd>
 
                                             <dt>Fecha de creación:</dt>
-                                            <dd>{{ $apiToken->created_at->format('d/m/Y H:i:s') }}</dd>
+                                            <dd>{{ $apiToken->created_at }}</dd>
 
                                             <dt>Fecha de expiración:</dt>
                                             <dd>

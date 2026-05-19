@@ -51,6 +51,21 @@ class LoginController extends Controller
         if (Auth::attempt(array_merge($credentials, ['active' => 1]), $remember)) {
             $user = Auth::user();
 
+            // Check if user has 2FA enabled
+            if ($user->hasTwoFactorEnabled() && config('two-factor.enabled', true)) {
+                // Store user ID in session for 2FA challenge
+                $request->session()->put([
+                    'login.id' => $user->id,
+                    'login.remember' => $remember,
+                ]);
+
+                // Logout the user temporarily
+                Auth::logout();
+
+                // Redirect to 2FA challenge page
+                return redirect()->route('two-factor.login');
+            }
+
             // Verificar si el usuario tiene sesiones activas en otros dispositivos
             $activeSessions = $this->getActiveSessions($user->id);
 
@@ -226,6 +241,10 @@ class LoginController extends Controller
 
         if ($user->hasRole('validador')) {
             $route = route('user.pending-validations');
+        }
+
+        if ($user->hasRole('ventas')) {
+            $route = route('quotations.index');
         }
 
         return redirect()->intended($route.'?show_salute=true');

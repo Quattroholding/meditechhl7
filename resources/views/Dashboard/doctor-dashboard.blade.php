@@ -17,7 +17,7 @@
                     Doctor Dashboard
                 @endslot
                 @slot('actions')
-                    @livewire('widget-configuration', ['dashboardType' => 'doctor'])
+                    @livewire('widget-configuration', ['dashboardType' => $role])
                 @endslot
             @endcomponent
             <!-- /Page Header -->

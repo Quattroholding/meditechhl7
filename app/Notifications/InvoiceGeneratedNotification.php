@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Models\Client;
 use App\Models\ClientInvoice;
-use App\Models\ClientInvoicePayment;
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -21,19 +20,12 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
 
     public $backoff = [60, 300, 600];
 
-    protected ?ClientInvoicePayment $paymentAttempt = null;
+    public $deleteWhenMissingModels = true;
 
     public function __construct(
         public ClientInvoice $invoice
     ) {
         $this->onQueue('emails');
-    }
-
-    public function setPaymentAttempt(?ClientInvoicePayment $payment): self
-    {
-        $this->paymentAttempt = $payment;
-
-        return $this;
     }
 
     public function via($notifiable)
@@ -68,7 +60,6 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
                 'invoice' => $this->invoice,
                 'client' => $client,
                 'subscription' => $subscription,
-                'paymentAttempt' => $this->paymentAttempt,
             ])
             ->attachData($pdfContent, $fileName, [
                 'mime' => 'application/pdf',

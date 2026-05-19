@@ -17,6 +17,8 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public Ticket $ticket
     ) {
@@ -89,7 +91,7 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
             'ticket_status' => $this->ticket->status,
             'created_by_user_id' => $this->ticket->user_id,
             'created_by_user_name' => $this->ticket->user->full_name,
-            'created_at' => $this->ticket->created_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->ticket->created_at,
             'sent_at' => now()->toDateTimeString(),
         ];
     }

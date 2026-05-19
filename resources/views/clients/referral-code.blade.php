@@ -5,7 +5,7 @@
             <!-- Page Header -->
             @component('components.page-header')
                 @slot('title')
-                    {{ __('Cóodigo de Referidos') }}
+                    {{ __('Código de Referidos') }}
                 @endslot
                 @slot('li_1')
 

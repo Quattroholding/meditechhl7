@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Practitioner;
 use App\Models\ServiceCatalog;
 use App\Models\UserWorkingHour;
+use App\Models\WhatsappAgent;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,12 +18,55 @@ class PractitionerController extends Controller
 {
     public function index(Request $request)
     {
+        \DB::enableQueryLog(); // Debug: habilitar log de queries
+
         $perPage = $request->input('per_page', 10); // Default 10 items per page
         $perPage = min(max($perPage, 1), 50); // Limit between 1 and 50
 
         // Get current month date range
         $currentMonthStart = now()->startOfMonth();
         $currentMonthEnd = now()->endOfMonth();
+
+        // Get whatsapp_client_id from request attributes (set by WhatsappClientFilter middleware)
+        $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+
+        \Log::info('PractitionerController - Start', [
+            'speciality_id' => $request->speciality_id,
+            'whatsapp_client_id' => $whatsappClientId,
+        ]);
+
+        // Determine which client_ids to filter based on whatsapp agent type
+        $clientIdsToInclude = null;
+        $clientIdsToExclude = null;
+
+        if ($whatsappClientId) {
+            // Dedicated agent: only show practitioners from this specific client
+            $clientIdsToInclude = [$whatsappClientId];
+            \Log::info('PractitionerController - Dedicated agent', [
+                'client_id' => $whatsappClientId,
+            ]);
+        } else {
+            // Generic agent: show practitioners from all clients EXCEPT those with dedicated agents
+            $clientIdsToExclude = WhatsappAgent::where('active', true)
+                ->whereNotNull('client_id')
+                ->pluck('client_id')
+                ->toArray();
+
+            \Log::info('PractitionerController - Generic agent', [
+                'excluding_clients' => $clientIdsToExclude,
+            ]);
+        }
+
+        // Optimized: Get user IDs that have active consulting rooms using subquery
+        $userIdsWithConsultingRooms = \DB::table('users')
+            ->join('user_clients', 'users.id', '=', 'user_clients.user_id')
+            ->join('branches', 'user_clients.client_id', '=', 'branches.client_id')
+            ->join('consulting_rooms', 'branches.id', '=', 'consulting_rooms.branch_id')
+            ->where('consulting_rooms.active', true)
+            ->whereNull('consulting_rooms.deleted_at')
+            ->whereNull('branches.deleted_at')
+            ->distinct()
+            ->pluck('users.id');
 
         $practitioners = Practitioner::with([
             'specialties',
@@ -67,12 +111,33 @@ class PractitionerController extends Controller
             })
             ->activeAgent()
             ->userActive()
-            // Solo practitioners cuyo cliente tenga al menos un consulting room
-            ->whereHas('user.clients.branches.consultingRooms', function ($query) {
-                $query->where('active', true);
+            // Optimized: Use whereIn instead of nested whereHas
+            ->whereIn('user_id', $userIdsWithConsultingRooms)
+            // Filter by whatsapp agent type (generic vs dedicated)
+            ->when($clientIdsToInclude, function ($query) use ($clientIdsToInclude) {
+                // Dedicated agent: only practitioners from this client
+                return $query->whereHas('user.clients', function ($q) use ($clientIdsToInclude) {
+                    $q->whereIn('clients.id', $clientIdsToInclude);
+                });
+            })
+            ->when($clientIdsToExclude, function ($query) use ($clientIdsToExclude) {
+                // Generic agent: practitioners from all clients EXCEPT those with dedicated agents
+                if (! empty($clientIdsToExclude)) {
+                    return $query->whereHas('user.clients', function ($q) use ($clientIdsToExclude) {
+                        $q->whereNotIn('clients.id', $clientIdsToExclude);
+                    });
+                }
+
+                return $query;
             })
             ->orderBy('appointments_this_month', 'asc')
             ->paginate($perPage);
+
+        $queries = \DB::getQueryLog();
+        \Log::info('PractitionerController - Queries executed', [
+            'total_queries' => count($queries),
+            'queries' => $queries,
+        ]);
 
         // Calcular fechas de la próxima semana (lunes a domingo)
         $nextWeekStart = now();
@@ -334,7 +399,6 @@ class PractitionerController extends Controller
                 'total' => 0,
             ]);
         }
-
 
         // Obtener todos los consultorios de todas las sucursales de todos los clientes
         $consultingRooms = collect();

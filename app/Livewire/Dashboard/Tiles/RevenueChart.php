@@ -12,7 +12,7 @@ class RevenueChart extends Component
 
     public $data = [];
 
-    public $total_week = 0;
+    public $total_month = 0;
 
     public function mount()
     {
@@ -21,21 +21,25 @@ class RevenueChart extends Component
 
     public function loadData()
     {
-        $last7Days = collect();
+        $currentMonth = Carbon::now();
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $today = Carbon::today();
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-            $revenue = Invoice::whereDate('created_at', $date)->sum('total_net');
+        $monthDays = collect();
 
-            $last7Days->push([
+        // Iterar desde el día 1 del mes hasta hoy
+        for ($date = $startOfMonth->copy(); $date->lte($today); $date->addDay()) {
+            $revenue = Invoice::whereDate('created_at', $date)->sum('total_net') ?? 0;
+
+            $monthDays->push([
                 'date' => $date->format('d/m'),
                 'revenue' => round($revenue, 2),
             ]);
         }
 
-        $this->labels = $last7Days->pluck('date')->toArray();
-        $this->data = $last7Days->pluck('revenue')->toArray();
-        $this->total_week = round($last7Days->sum('revenue'), 2);
+        $this->labels = $monthDays->pluck('date')->toArray();
+        $this->data = $monthDays->pluck('revenue')->toArray();
+        $this->total_month = round($monthDays->sum('revenue'), 2);
     }
 
     public function render()

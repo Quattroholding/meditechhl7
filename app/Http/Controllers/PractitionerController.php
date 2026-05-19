@@ -50,23 +50,29 @@ class PractitionerController extends Controller
 
     public function store(Request $request, PractitionerService $practitionerService)
     {
+        $isDoctor = $request->input('role', 'doctor') === 'doctor';
 
-        $validated = $request->validate([
+        $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
             'identifier_type' => 'required',
             'id_number' => 'required',
-            'registry' => 'required',
-            'licence_code' => 'required',
             'email' => 'required|unique:practitioners',
             'gender' => 'required',
             'birth_date' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            // 'full_phone' => 'required',
-            // 'image' => 'required',
             'clients' => 'required',
-        ]);
+            'role' => 'required|in:doctor,asistente medico',
+        ];
+
+        // Solo requerir registry y licence_code para doctores
+        if ($isDoctor) {
+            $rules['registry'] = 'required';
+            $rules['licence_code'] = 'required';
+        }
+
+        $validated = $request->validate($rules);
 
         try {
 
@@ -95,7 +101,7 @@ class PractitionerController extends Controller
                     ];
                 }
                 $model->clients()->sync($sync);
-                $model->assignRole('doctor');
+                $model->assignRole($request->input('role', 'doctor'));
 
                 // Crear practitioner usando el servicio centralizado
                 $practitioner = $practitionerService->createOrUpdatePractitioner(
@@ -127,8 +133,10 @@ class PractitionerController extends Controller
 
         try {
 
-            $validated = $request->validate([
+            $practitioner = Practitioner::findOrFail($id);
+            $isDoctor = $practitioner->user && $practitioner->user->hasRole('doctor');
 
+            $rules = [
                 'id_type' => 'required',
                 'id_number' => 'required',
                 'first_name' => 'required',
@@ -142,16 +150,25 @@ class PractitionerController extends Controller
                     'max:50',
                     'regex:/^\+[1-9]\d{1,14}$/',
                 ],
-                'registry' => 'required',
-                'licence_code' => 'required',
                 'address' => 'required',
-                // 'image' => 'required',
                 'clients' => 'required',
-            ]);
+            ];
 
-            $practitioner = Practitioner::findOrFail($id);
+            // Si se envía el campo role en el request, validarlo y usarlo
+            if ($request->has('role')) {
+                $rules['role'] = 'required|in:doctor,asistente medico';
+                $isDoctor = $request->input('role') === 'doctor';
+            }
 
-            DB::transaction(function () use ($practitioner, $request) {
+            // Solo requerir registry y licence_code para doctores
+            if ($isDoctor) {
+                $rules['registry'] = 'required';
+                $rules['licence_code'] = 'required';
+            }
+
+            $validated = $request->validate($rules);
+
+            DB::transaction(function () use ($practitioner, $request, $isDoctor) {
 
                 if ($practitioner->user) {
                     $practitioner->user->fill($request->all());
@@ -165,6 +182,13 @@ class PractitionerController extends Controller
                         $sync[$client] = ['client_id' => $client, 'created_at' => now()->format('Y-m-d H:i:s'), 'updated_at' => now()->format('Y-m-d H:i:s'), 'user_id' => $practitioner->user_id];
                     }
                     $practitioner->user->clients()->sync($sync);
+
+                    // Actualizar el rol si se envió en el request
+                    if ($request->has('role')) {
+                        $newRole = $request->input('role');
+                        // Remover roles anteriores de practitioner
+                        $practitioner->user->syncRoles([$newRole]);
+                    }
                 }
 
                 // $model->assignRole('doctor');
@@ -179,8 +203,13 @@ class PractitionerController extends Controller
                 $practitioner->phone = $request->full_phone;
                 $practitioner->family_name = $request->last_name;
                 $practitioner->identifier_type = $request->id_type;
-                $practitioner->registry = $request->registry;
-                $practitioner->licence_code = $request->licence_code;
+
+                // Solo asignar registry y licence_code si es doctor
+                if ($isDoctor) {
+                    $practitioner->registry = $request->registry;
+                    $practitioner->licence_code = $request->licence_code;
+                }
+
                 $practitioner->identifier = $request->id_number;
                 $fecha = DateTime::createFromFormat('d/m/Y', $request->birth_date);
                 $fecha->setTime(0, 0, 0);

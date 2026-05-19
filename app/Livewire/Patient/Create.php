@@ -65,6 +65,8 @@ class Create extends Component
 
     public $patientDontExists = true;
 
+    public $existingPatientData = null;
+
     // Dependent patient fields
     public $is_dependent = false;
 
@@ -89,6 +91,8 @@ class Create extends Component
 
     // File upload fields
     public $archivos = [];
+
+    public $fileErrors = [];
 
     protected $rules = [
         'id_number' => 'required',
@@ -228,6 +232,8 @@ class Create extends Component
         $this->patientDontExists = true;
         $this->patientExists = false;
         $this->patients = [];
+        $this->existingPatientData = null;
+
         $query = DB::table('patients')
             ->whereRaw("(identifier ='".$this->id_number."' or identifier ='".$this->id_number."-SELF' or identifier ='".$this->id_number."-SPOUSE' or identifier ='".$this->id_number."-CHILD' or identifier ='".$this->id_number."-CHILDDISAB')")
             ->get();
@@ -237,6 +243,16 @@ class Create extends Component
             $this->patientExists = true;
             $this->patients = $query->pluck('id');
 
+            // Obtener los datos del primer paciente para mostrar
+            $firstPatient = $query->first();
+            $this->existingPatientData = [
+                'name' => $firstPatient->name,
+                'given_name' => $firstPatient->given_name,
+                'family_name' => $firstPatient->family_name,
+                'birth_date' => $firstPatient->birth_date,
+                'identifier' => $firstPatient->identifier,
+                'gender' => $firstPatient->gender,
+            ];
         }
     }
 
@@ -257,10 +273,21 @@ class Create extends Component
 
         $this->id_number = null;
         $this->patientExists = false;
+        $this->existingPatientData = null;
     }
 
     public function savePatient()
     {
+        // Verificar si hay errores de archivos antes de continuar
+        if (count($this->fileErrors) > 0) {
+            session()->flash('message.error', 'Por favor, elimine los archivos que exceden el tamaño máximo antes de continuar.');
+            $this->dispatch('showToastr',
+                type: 'error',
+                message: 'Por favor, elimine los archivos que exceden el tamaño máximo antes de continuar.',
+            );
+
+            return;
+        }
 
         $this->validate();
 
@@ -371,10 +398,33 @@ class Create extends Component
 
     }
 
+    public function removeFile($index)
+    {
+        if (isset($this->archivos[$index])) {
+            unset($this->archivos[$index]);
+            // Reindexar el array
+            $this->archivos = array_values($this->archivos);
+        }
+    }
+
+    public function updatedArchivos()
+    {
+        $this->fileErrors = [];
+
+        foreach ($this->archivos as $index => $archivo) {
+            $sizeInKB = $archivo->getSize() / 1024;
+
+            if ($sizeInKB > 1024) {
+                $this->fileErrors[$index] = 'El archivo "'.$archivo->getClientOriginalName().'" excede el tamaño máximo de 1 MB ('.number_format($sizeInKB, 2).' KB)';
+            }
+        }
+    }
+
     public function resetForm()
     {
         $this->patientExists = false;
         $this->patientDontExists = false;
+        $this->existingPatientData = null;
         $this->id_number = '';
         $this->first_name = '';
         $this->last_name = '';
@@ -398,23 +448,24 @@ class Create extends Component
         $this->state_id = null;
         $this->states = [];
         $this->archivos = [];
+        $this->fileErrors = [];
     }
 
     private function getIdPattern()
     {
         switch ($this->id_type) {
-            case 'CC': // Cédula de Ciudadanía (Panamá): 8-123-456 o PE-123-456
-                return '/^[0-9]+-[0-9]+-[0-9]+$/';
-            case 'CE': // Cédula Extranjera: Similar a CC
-                return '/^[A-Z]+-[0-9]+-[0-9]+$/';
-            case 'PA': // Pasaporte: N1234567
+            case 'CC': // Cédula de Ciudadanía: solo números y guiones
+                return '/^[0-9-]+$/';
+            case 'CE': // Cédula Extranjera: solo números y guiones
+                return '/^[0-9-]+$/';
+            case 'PA': // Pasaporte: alfanumérico
                 return '/^[A-Z0-9-]{5,20}$/';
-            case 'PT': // Permiso Temporal: Formato flexible
-                return '/^[A-Z0-9-]{8,15}$/';
-            case 'SS': // Seguro Social: XXX-XX-XXXX
-                return '/^\d{3}-?\d{2}-?\d{4}$/';
+            case 'PT': // Permiso Temporal: alfanumérico
+                return '/^[A-Z0-9-]{5,20}$/';
+            case 'SS': // Seguro Social: números y guiones
+                return '/^[0-9-]+$/';
             default:
-                return '/^[A-Z0-9-]{5,20}$/'; // Universal para cualquier tipo
+                return '/^[A-Z0-9-]{5,20}$/'; // Universal: alfanumérico
         }
     }
 
@@ -422,15 +473,15 @@ class Create extends Component
     {
         switch ($this->id_type) {
             case 'CC':
-                return 'Ej: 8-123-456 ';
+                return 'Números y guiones';
             case 'CE':
-                return 'Ej: E-8-123456 o PE-123456';
+                return 'Números y guiones';
             case 'PA':
                 return 'Ej: PA1234567';
             case 'PT':
                 return 'Ej: PT-12345678';
             case 'SS':
-                return 'Ej: 123-45-6789';
+                return 'Números y guiones';
             default:
                 return 'Ingrese el número de documento';
         }

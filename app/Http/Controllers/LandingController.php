@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
@@ -11,6 +12,14 @@ class LandingController extends Controller
 {
     public function welcome()
     {
+        // Si el usuario está autenticado, redirigir al dashboard
+        if (auth()->check()) {
+            $user = auth()->user();
+            $loginController = new LoginController;
+
+            return $loginController->redirectLoginByRole($user);
+        }
+
         return view('welcome');
     }
 

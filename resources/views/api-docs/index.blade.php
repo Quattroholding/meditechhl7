@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditec PTY API Documentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .intro {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .intro h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .api-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .api-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .api-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .api-card h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .api-card p {
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .api-card .endpoints {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .api-card .endpoints strong {
+            color: #2d3748;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-ready {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .api-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-stethoscope"></i> Meditec PTY API</h1>
+            <p>Documentación completa de la API del sistema de gestión médica</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container nav-container">
+            <div class="logo">
+                <strong>Meditec PTY API Docs</strong>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{route('api.docs.show','index')}}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="{{route('api.docs.show','auth')}}"><i class="fas fa-key"></i> Autenticación</a></li>
+                <li><a href="{{route('api.docs.show','appointments')}}"><i class="fas fa-calendar-alt"></i> Citas</a></li>
+                <li><a href="{{route('api.docs.show','patients')}}"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+                <li><a href="{{route('api.docs.show','practitioners')}}"><i class="fas fa-user-md"></i> Médicos</a></li>
+                <li><a href="{{route('api.docs.show','catalogs')}}"><i class="fas fa-pills"></i> Catálogos</a></li>
+                <li><a href="{{route('api.docs.show','notifications')}}"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="intro">
+                <h2 id="overview">Bienvenido a la API de Meditec PTY</h2>
+                <p>Esta documentación proporciona información completa sobre todos los endpoints disponibles en la API de Meditec PTY, un sistema completo de gestión médica multi-tenant.</p>
+
+                <h3>Características principales:</h3>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Sistema multi-tenant con aislamiento de datos por cliente</li>
+                    <li>Autenticación basada en tokens Sanctum y API Tokens</li>
+                    <li>Gestión completa de pacientes y médicos</li>
+                    <li>Sistema de citas médicas</li>
+                    <li>Cumplimiento con estándares FHIR</li>
+                    <li>Soporte para múltiples roles: pacientes, médicos, asistentes y administradores</li>
+                    <li>API v1 con tokens para integración externa</li>
+                </ul>
+
+                <h3>URLs Base:</h3>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>https://meditecpty.com/api      (Sanctum Auth)
+https://meditecpty.com/api/v1   (API Token Auth)</code></pre>
+
+                <h3>Autenticación:</h3>
+                <p><strong>Para usuarios autenticados (Sanctum):</strong></p>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>Authorization: Bearer {sanctum-token}</code></pre>
+
+                <p><strong>Para integraciones externas (API v1):</strong></p>
+                <pre style="background: #f7fafc; padding: 1rem; border-radius: 4px; margin: 1rem 0;"><code>Authorization: Bearer {api-token}</code></pre>
+                <p>Los tokens API incluyen restricciones por IP y scopes para mayor seguridad.</p>
+            </div>
+
+            <div class="api-sections">
+                <div class="api-card">
+                    <h3><i class="fas fa-key" style="color: #f56565;"></i> Autenticación <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Endpoints para login, registro, logout y recuperación de contraseña.</p>
+                    <div class="endpoints">
+                        <strong>Endpoints incluidos:</strong><br>
+                        • POST /auth/login<br>
+                        • POST /auth/register<br>
+                        • POST /auth/logout<br>
+                        • POST /auth/refresh<br>
+                        • GET /auth/user<br>
+                        • POST /auth/forgot-password<br>
+                        • POST /auth/reset-password
+                    </div>
+                    <br>
+                    <a href="auth.html" class="btn">Ver Documentación</a>
+                </div>
+
+                <div class="api-card">
+                    <h3><i class="fas fa-calendar-alt" style="color: #48bb78;"></i> Citas Médicas <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Gestión completa de citas médicas, incluyendo disponibilidad y programación.</p>
+                    <div class="endpoints">
+                        <strong>API Sanctum:</strong><br>
+                        • GET /appointments<br>
+                        • POST /appointments<br>
+                        • GET /appointments/{id}<br>
+                        • PUT /appointments/{id}<br>
+                        • DELETE /appointments/{id}<br>
+                        • GET /appointments/{id}/availability<br/><br/>
+                        <strong>API v1:</strong><br>
+                        • GET /v1/appointments<br>
+                        • POST /appointments<br>
+                        • GET /appointments/{id}<br>
+                        • PUT /appointments/{id}<br>
+                        • DELETE /appointments/{id}<br>
+                        • GET /appointments/{id}/availability
+                    </div>
+                    <br>
+                    <a href="appointments.html" class="btn">Ver Documentación</a>
+                </div>
+
+                <div class="api-card">
+                    <h3><i class="fas fa-user-injured" style="color: #ed8936;"></i> Pacientes <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Endpoints para gestión de pacientes, historial médico y datos personales.</p>
+                    <div class="endpoints">
+                        <strong>API Sanctum:</strong><br>
+                        • GET /patient/profile<br>
+                        • PUT /patient/personal-data<br>
+                        • PUT /patient/credentials<br>
+                        • GET /patient/medical-history<br>
+                        • POST /patient/profile-picture<br><br>
+                        <strong>API v1:</strong><br>
+                        • GET /v1/patients<br>
+                        • GET /v1/patients/{id}/medical-history
+                    </div>
+                    <br>
+                    <a href="patients.html" class="btn">Ver Documentación</a>
+                </div>
+
+                <div class="api-card">
+                    <h3><i class="fas fa-user-md" style="color: #9f7aea;"></i> Médicos <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Gestión de médicos, especialidades, disponibilidad y consultorios.</p>
+                    <div class="endpoints">
+                        <strong>API Sanctum:</strong><br>
+                        • GET /practitioners<br>
+                        • GET /practitioners/{id}/availability<br>
+                        • GET /practitioners/{id}/consulting-rooms<br>
+                        • GET /medical-specialities<br><br>
+                        <strong>API v1:</strong><br>
+                        • GET /v1/practitioners<br>
+                        • GET /v1/practitioners/{id}/availability<br>
+                        • GET /v1/practitioners/{id}/consulting-rooms<br>
+                        • GET /v1/practitioners/{id}/service-catalog<br>
+                        • GET /v1/medical-specialities
+                    </div>
+                    <br>
+                    <a href="practitioners.html" class="btn">Ver Documentación</a>
+                </div>
+
+                <div class="api-card">
+                    <h3><i class="fas fa-pills" style="color: #38b2ac;"></i> Catálogos <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Endpoints para acceder a catálogos médicos: medicamentos, CPTs, diagnósticos.</p>
+                    <div class="endpoints">
+                        <strong>Endpoints incluidos:</strong><br>
+                        • GET /medicines<br>
+                        • GET /cpts/{type}<br>
+                        • GET /diagnostics<br>
+                        • GET /services_catalog<br>
+                        • GET /medical_speciality
+                    </div>
+                    <br>
+                    <a href="catalogs.html" class="btn">Ver Documentación</a>
+                </div>
+
+                <div class="api-card">
+                    <h3><i class="fas fa-bell" style="color: #f093fb;"></i> Notificaciones <span class="status-badge status-ready">Listo</span></h3>
+                    <p>Sistema de notificaciones para médicos y usuarios del sistema.</p>
+                    <div class="endpoints">
+                        <strong>Endpoints incluidos:</strong><br>
+                        • GET /doctor-notifications/{doctor_id}<br>
+                        • GET /users (notificaciones generales)
+                    </div>
+                    <br>
+                    <a href="notifications.html" class="btn">Ver Documentación</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2025 Meditec PTY. Documentación de API.</p>
+            <p>Última actualización: <span id="last-update"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar fecha de última actualización
+        document.getElementById('last-update').textContent = new Date().toLocaleDateString('es-ES');
+
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

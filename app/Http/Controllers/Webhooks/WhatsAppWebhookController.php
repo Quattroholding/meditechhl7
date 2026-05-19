@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Webhooks;
 
 use App\Http\Controllers\Controller;
+use App\Models\WhatsappAgent;
 use App\Models\WhatsAppWebhook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\WhatsAppAgent;
 
 class WhatsAppWebhookController extends Controller
 {
-
     /**
      * Verify webhook (Meta requires this for initial setup)
      */
@@ -54,7 +53,7 @@ class WhatsAppWebhookController extends Controller
             $payload = $request->all();
 
             Log::info('WhatsApp webhook received', [
-                'payload' => $payload
+                'payload' => $payload,
             ]);
 
             // Guardar webhook para debugging
@@ -66,7 +65,7 @@ class WhatsAppWebhookController extends Controller
                 'entry.0.changes.0.value.metadata.phone_number_id'
             );
 
-            if (!$phoneNumberId) {
+            if (! $phoneNumberId) {
 
                 Log::warning('phone_number_id not found in webhook');
 
@@ -74,11 +73,11 @@ class WhatsAppWebhookController extends Controller
             }
 
             Log::info('Webhook phone_number_id detected', [
-                'phone_number_id' => $phoneNumberId
+                'phone_number_id' => $phoneNumberId,
             ]);
 
             Log::info('Webhook value', [
-                'value' => data_get($payload,'entry.0.changes.0.value')
+                'value' => data_get($payload, 'entry.0.changes.0.value'),
             ]);
 
             /**
@@ -87,15 +86,14 @@ class WhatsAppWebhookController extends Controller
              * Aquí decides qué números van a n8n
              * y cuáles procesa Laravel
              */
-
-            $agent = WhatsAppAgent::where('phone_number_id', $phoneNumberId)
+            $agent = WhatsappAgent::where('phone_number_id', $phoneNumberId)
                 ->where('active', true)
                 ->first();
 
-            if (!$agent) {
+            if (! $agent) {
 
                 Log::warning('No agent configured for phone_number_id', [
-                    'phone_number_id' => $phoneNumberId
+                    'phone_number_id' => $phoneNumberId,
                 ]);
 
                 return response()->json(['status' => 'ok']);
@@ -103,14 +101,13 @@ class WhatsAppWebhookController extends Controller
 
             if ($agent->type === 'n8n') {
 
-                /*Http::timeout(10)->post(
-                    $agent->webhook_url,
-                    $payload
-                );*/
+                // Usar el api_base_url configurado en el agent, con fallback al app.url actual
+                $apiBaseUrl = $agent->api_base_url ?? config('app.url').'/api/v1/';
 
                 Http::post($agent->webhook_url, [
                     'phone_number_id' => $phoneNumberId,
                     'payload' => $payload,   // opcional: todo el payload original
+                    'api_base_url' => $apiBaseUrl, // URL base del API para que n8n la use
                 ]);
             }
 
@@ -125,13 +122,12 @@ class WhatsAppWebhookController extends Controller
 
             Log::error('Error processing WhatsApp webhook', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json(['status' => 'error'], 200);
         }
     }
-
 
     /**
      * Store webhook in database for debugging
@@ -165,11 +161,10 @@ class WhatsAppWebhookController extends Controller
         } catch (\Exception $e) {
 
             Log::error('Error storing webhook', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
-
 
     /**
      * Process webhook for Laravel logic
@@ -181,7 +176,7 @@ class WhatsAppWebhookController extends Controller
         $changes = $entry['changes'][0] ?? null;
         $value = $changes['value'] ?? null;
 
-        if (!$value) {
+        if (! $value) {
             return;
         }
 
@@ -198,7 +193,6 @@ class WhatsAppWebhookController extends Controller
         }
     }
 
-
     protected function handleStatusUpdate(array $statuses): void
     {
 
@@ -206,11 +200,10 @@ class WhatsAppWebhookController extends Controller
 
             Log::info('WhatsApp message status update', [
                 'message_id' => $status['id'] ?? null,
-                'status' => $status['status'] ?? null
+                'status' => $status['status'] ?? null,
             ]);
         }
     }
-
 
     protected function handleIncomingMessage(array $messages): void
     {
@@ -219,11 +212,10 @@ class WhatsAppWebhookController extends Controller
 
             Log::info('Incoming WhatsApp message (Laravel)', [
                 'from' => $message['from'] ?? null,
-                'text' => $message['text']['body'] ?? null
+                'text' => $message['text']['body'] ?? null,
             ]);
         }
     }
-
 
     protected function handleError(array $errors): void
     {
@@ -232,31 +224,39 @@ class WhatsAppWebhookController extends Controller
 
             Log::error('WhatsApp webhook error', [
                 'code' => $error['code'] ?? null,
-                'message' => $error['message'] ?? null
+                'message' => $error['message'] ?? null,
             ]);
         }
     }
 
-
     protected function determineEventType(?array $value): string
     {
 
-        if (!$value) return 'unknown';
+        if (! $value) {
+            return 'unknown';
+        }
 
-        if (isset($value['statuses'])) return 'status';
+        if (isset($value['statuses'])) {
+            return 'status';
+        }
 
-        if (isset($value['messages'])) return 'message';
+        if (isset($value['messages'])) {
+            return 'message';
+        }
 
-        if (isset($value['errors'])) return 'error';
+        if (isset($value['errors'])) {
+            return 'error';
+        }
 
         return 'other';
     }
 
-
     protected function extractMessageData(?array $value): array
     {
 
-        if (!$value) return [];
+        if (! $value) {
+            return [];
+        }
 
         $data = [];
 
@@ -277,5 +277,4 @@ class WhatsAppWebhookController extends Controller
 
         return $data;
     }
-
 }

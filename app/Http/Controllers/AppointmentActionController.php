@@ -27,10 +27,10 @@ class AppointmentActionController extends Controller
             }
 
             // Check if appointment can be confirmed
-            if (! in_array($appointment->status, ['proposed', 'pending', 'booked'])) {
+            if (! in_array($appointment->status->value, ['proposed', 'pending', 'booked'])) {
                 return view('appointments.action-result', [
                     'success' => false,
-                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status,
+                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status->value,
                     'appointment' => $appointment,
                 ]);
             }
@@ -170,5 +170,143 @@ class AppointmentActionController extends Controller
     protected function verifyToken(Appointment $appointment, string $token): bool
     {
         return hash_equals(self::generateToken($appointment), $token);
+    }
+
+    /**
+     * Confirm appointment via signed email link (for practitioners)
+     */
+    public function confirmSigned(Request $request, Appointment $appointment)
+    {
+        try {
+            // Validate signed URL
+            if (! $request->hasValidSignature()) {
+                return view('appointments.action-result', [
+                    'success' => false,
+                    'message' => 'Enlace inválido o expirado. Por favor contacte a la clínica.',
+                    'appointment' => null,
+                ]);
+            }
+
+            // Check if appointment can be confirmed
+            if (! in_array($appointment->status->value, ['proposed', 'pending', 'booked'])) {
+                return view('appointments.action-result', [
+                    'success' => false,
+                    'message' => 'Esta cita no puede ser confirmada. Estado actual: '.$appointment->status->value,
+                    'appointment' => $appointment,
+                ]);
+            }
+
+            // Update appointment status
+            $oldStatus = $appointment->status;
+            $appointment->status = 'booked';
+            $appointment->save();
+
+            // Log status change
+            AppointmentStatus::create([
+                'appointment_id' => $appointment->id,
+                'status' => 'booked',
+                'user_id' => $appointment->practitioner->user_id ?? null,
+                'comment' => 'Confirmado por el médico vía email',
+            ]);
+
+            // Notify patient about confirmation
+            if ($oldStatus !== 'booked') {
+                $appointment->notifyPatientAboutConfirmation();
+            }
+
+            Log::info('Appointment confirmed via email by practitioner', [
+                'appointment_id' => $appointment->id,
+                'practitioner_id' => $appointment->practitioner_id,
+                'old_status' => $oldStatus,
+                'new_status' => 'booked',
+            ]);
+
+            return view('appointments.action-result', [
+                'success' => true,
+                'message' => '¡Cita confirmada exitosamente! El paciente recibirá una notificación.',
+                'appointment' => $appointment,
+                'action' => 'confirmed',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error confirming appointment via email', [
+                'appointment_id' => $appointment->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+
+            return view('appointments.action-result', [
+                'success' => false,
+                'message' => 'Ocurrió un error al confirmar la cita. Por favor contacte al administrador.',
+                'appointment' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Cancel appointment via signed email link (for practitioners)
+     */
+    public function cancelSigned(Request $request, Appointment $appointment)
+    {
+        try {
+            // Validate signed URL
+            if (! $request->hasValidSignature()) {
+                return view('appointments.action-result', [
+                    'success' => false,
+                    'message' => 'Enlace inválido o expirado. Por favor contacte a la clínica.',
+                    'appointment' => null,
+                ]);
+            }
+
+            // Check if appointment can be cancelled
+            if (in_array($appointment->status, ['cancelled', 'fulfilled', 'entered-in-error'])) {
+                return view('appointments.action-result', [
+                    'success' => false,
+                    'message' => 'Esta cita ya fue cancelada o completada',
+                    'appointment' => $appointment,
+                ]);
+            }
+
+            // Update appointment status
+            $oldStatus = $appointment->status;
+            $appointment->status = 'cancelled';
+            $appointment->save();
+
+            // Log status change
+            AppointmentStatus::create([
+                'appointment_id' => $appointment->id,
+                'status' => 'cancelled',
+                'user_id' => $appointment->practitioner->user_id ?? null,
+                'comment' => 'Cancelado por el médico vía email',
+            ]);
+
+            // Notify patient about cancellation
+            $appointment->notifyPatientAboutCancellation('El médico canceló la cita');
+
+            Log::info('Appointment cancelled via email by practitioner', [
+                'appointment_id' => $appointment->id,
+                'practitioner_id' => $appointment->practitioner_id,
+                'old_status' => $oldStatus,
+                'new_status' => 'cancelled',
+            ]);
+
+            return view('appointments.action-result', [
+                'success' => true,
+                'message' => 'Cita cancelada exitosamente. El paciente recibirá una notificación.',
+                'appointment' => $appointment,
+                'action' => 'cancelled',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error cancelling appointment via email', [
+                'appointment_id' => $appointment->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+
+            return view('appointments.action-result', [
+                'success' => false,
+                'message' => 'Ocurrió un error al cancelar la cita. Por favor contacte al administrador.',
+                'appointment' => null,
+            ]);
+        }
     }
 }

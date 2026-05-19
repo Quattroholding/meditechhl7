@@ -176,6 +176,18 @@
                                             <small class="text-muted">Vacio significa citas infinitas</small>
                                         </div>
                                     </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- ROLE PAYER -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="role_payer" :value="__('Roles que Pueden Pagar Suscripción')" />
+                                        <x-text-input id="role_payer" class="block mt-1 w-full" type="text" name="role_payer" :value="old('role_payer', 'admin client,doctor')" placeholder="admin client,doctor"/>
+                                        <x-input-error :messages="$errors->get('role_payer')" class="mt-2" />
+                                        <small class="text-muted">Roles separados por comas (ej: admin client,doctor,contabilidad). Si se deja vacío, por defecto solo 'doctor' podrá acceder.</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="flex items-center justify-end mt-4">
                                 <div class="doctor-submit text-end">
                                     <button type="submit" class="btn btn-primary submit-form me-2">Crear</button>

@@ -140,9 +140,9 @@
                     @if($nextAppointment)
                         <div class="d-flex align-items-center mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar appointment appointment-{{$nextAppointment->status}} text-white rounded-circle d-flex align-items-center justify-content-center"
+                                <div class="avatar appointment appointment-{{$nextAppointment->status->value}} text-white rounded-circle d-flex align-items-center justify-content-center"
                                      style="width: 50px; height: 50px;position: relative"
-                                     title="{{ __('appointment.status.' . $nextAppointment->status) }}">
+                                     title="{{ __('appointment.status.' . $nextAppointment->status->value) }}">
                                     <i class="fas fa-user-md"></i>
                                 </div>
                             </div>
@@ -166,8 +166,8 @@
                             <p class="mb-0">{{ $nextAppointment->service_type ?? 'Consulta general' }}</p>
                         </div>
                         <div class="mt-3">
-                            <span class="appointment appointment-{{$nextAppointment->status}}" style="position:relative;">
-                                {{ ucfirst(__('appointment.status.' . $nextAppointment->status)) }}
+                            <span class="appointment appointment-{{$nextAppointment->status->label()}}" style="position:relative;">
+                                {{ ucfirst(__('appointment.status.' . $nextAppointment->status->label())) }}
                             </span>
                         </div>
                     @else

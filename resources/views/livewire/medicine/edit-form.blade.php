@@ -123,4 +123,16 @@
             </div>
         </div>
     </form>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrUpdateMEdication', (event) => {
+                toastr[event.type](event.message, '', {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                });
+            });
+        });
+    </script>
 </div>

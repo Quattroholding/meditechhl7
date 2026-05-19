@@ -65,7 +65,7 @@
                                                         </span>
                                                     @endif
                                                 </div>
-                                                <small class="text-muted">{{ $comment->created_at->format('d/m/Y H:i') }}</small>
+                                                <small class="text-muted">{{ $comment->created_at }}</small>
                                             </div>
                                             <p class="mb-0">{{ $comment->comment }}</p>
                                         </div>
@@ -238,7 +238,7 @@
                                             @foreach($statusHistory as $history)
                                                 <li class="mb-3">
                                                     <div class="d-flex justify-content-between">
-                                                        <small class="text-muted">{{ $history->created_at->format('d/m/Y H:i') }}</small>
+                                                        <small class="text-muted">{{ $history->created_at }}</small>
                                                     </div>
                                                     <div>
                                                         @if($history->old_status)

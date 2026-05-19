@@ -39,7 +39,7 @@
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Estado</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Severidad</th>
                             <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Fecha Dx</th>
-                            <th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Acciones</th>
+                            <!--<th style="padding: 15px; font-weight: 600; border: none; text-align: center;">Acciones</th>-->
                         </tr>
                     </thead>
                     <tbody>
@@ -120,13 +120,13 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td style="padding: 15px; vertical-align: middle; text-align: center;">
+                                {{--}}<td style="padding: 15px; vertical-align: middle; text-align: center;">
                                     <button type="button" class="btn btn-sm" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; padding: 6px 12px; border-radius: 6px;"
                                             data-bs-toggle="modal" data-bs-target="#conditionModal{{ $condition->id }}"
                                             title="Ver detalles">
                                         <i class="fa fa-eye"></i>
                                     </button>
-                                </td>
+                                </td>{{--}}
                             </tr>
 
                             <!-- Modal de detalles -->

@@ -19,9 +19,11 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title mb-0">{{ $survey->title }}</h4>
                                 <div>
+                                    @can('surveys.edit')
                                     <a href="{{ route('surveys.edit', $survey->id) }}" class="btn btn-warning btn-sm">
                                         <i class="fa fa-edit"></i> Editar
                                     </a>
+                                    @endcan
                                     <a href="{{ route('surveys.index') }}" class="btn btn-secondary btn-sm">
                                         <i class="fa fa-arrow-left"></i> Volver
                                     </a>

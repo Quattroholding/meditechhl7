@@ -10,7 +10,7 @@
 @endphp
 
 <div style="text-align: center; margin: 30px 0;">
-    <a href="{{ $href }}" class="btn {{ $typeClass }}">
+    <a href="{!! $href !!}" class="btn {{ $typeClass }}">
         @if($icon) {{ $icon }} @endif
         {{ $slot }}
     </a>

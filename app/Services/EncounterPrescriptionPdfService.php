@@ -9,6 +9,7 @@ use App\Models\Encounter;
 use App\Models\MedicationRequest;
 use App\Models\Practitioner;
 use App\Models\Recepy\RecepyDoctorProfile;
+use App\Models\Referral;
 use App\Models\ServiceRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -205,6 +206,51 @@ class EncounterPrescriptionPdfService
         $pdf->setPaper('letter', 'portrait');
 
         $fileName = 'orden_medica_'.($encounter->patient->identifier ?? $encounter->id).'_'.date('Ymd_His').'.pdf';
+
+        return $pdf->stream($fileName);
+    }
+
+    /**
+     * Stream referral order PDF for an encounter
+     */
+    public function streamReferralOrderPdf(Encounter $encounter, $referrals = null): Response
+    {
+        $encounter = $this->loadEncounterWithRelations($encounter, 'referral');
+
+        if ($referrals === null) {
+            $referrals = $encounter->referrals()->with([
+                'referredTo',
+                'speciality',
+            ])->get();
+        } elseif (is_array($referrals)) {
+            $referrals = Referral::with([
+                'referredTo',
+                'speciality',
+            ])
+                ->whereIn('id', $referrals)
+                ->get();
+        }
+
+        $client = $this->getClientFromEncounter($encounter);
+
+        $data = [
+            'encounter' => $encounter,
+            'patient' => $encounter->patient,
+            'practitioner' => $encounter->practitioner,
+            'referrals' => $referrals,
+            'diagnoses' => $encounter->diagnoses,
+            'date' => Carbon::parse($encounter->end ?? now()),
+            'orderNumber' => 'REF-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT).'-'.date('Ymd'),
+            'clientThemeCSS' => $this->getClientThemeCSS($client),
+            'client' => $client,
+            'doctorProfile' => $this->getDoctorProfile($encounter->practitioner),
+            'pdfService' => new PrescriptionPdfService,
+        ];
+
+        $pdf = Pdf::loadView('documents.referral-order', $data);
+        $pdf->setPaper('letter', 'portrait');
+
+        $fileName = 'orden_referencia_'.($encounter->patient->identifier ?? $encounter->id).'_'.date('Ymd_His').'.pdf';
 
         return $pdf->stream($fileName);
     }

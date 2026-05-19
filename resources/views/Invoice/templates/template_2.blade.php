@@ -177,10 +177,31 @@ body {
     </thead>
     <tbody>
     @foreach($lineItems as $item)
+    @php
+        $code = $item->service_code ?? 'N/A';
+        $description = $item->service_description ?? 'N/A';
+
+        // If description is generic and chargeItem has product_reference, get inventory item
+        if (in_array($description, ['Servicio médico', 'N/A']) &&
+            $item->chargeItem &&
+            is_array($item->chargeItem->product_reference) &&
+            isset($item->chargeItem->product_reference['reference'])) {
+
+            $reference = $item->chargeItem->product_reference['reference'];
+            if (str_contains($reference, 'InventoryItem/')) {
+                $fhirId = str_replace('InventoryItem/', '', $reference);
+                $inventoryItem = \App\Models\InventoryItem::where('fhir_id', $fhirId)->first();
+                if ($inventoryItem) {
+                    $description = $inventoryItem->name;
+                    $code = $inventoryItem->sku;
+                }
+            }
+        }
+    @endphp
         <tr>
             <td class="cyan">{{$item->sequence}}</td>
-            <td class="cyan">{{ $item->service_code ?? 'N/A' }}</td>
-            <td class="cyan">{{ $item->service_description }}</td>
+            <td class="cyan">{{ $code }}</td>
+            <td class="cyan">{{ $description }}</td>
             <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>
             <td class="right cyan">{{$item->quantity}}</td>
             <td class="right cyan">${{ number_format($item->line_total_gross, 2) }}</td>

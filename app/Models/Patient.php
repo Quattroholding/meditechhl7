@@ -22,7 +22,7 @@ class Patient extends BaseModel
         'address', 'city', 'state', 'postal_code', 'country', 'phone', 'email',
         'marital_status', 'multiple_birth', 'multiple_birth_count', 'blood_type', 'whatsapp_phone',
         'country_id', 'state_id', 'contact_name', 'contact_email', 'contact_phone', 'creation_source',
-        'scb_id',
+        'scb_id', 'communication',
     ];
 
     protected $casts = [
@@ -53,8 +53,8 @@ class Patient extends BaseModel
     public function routeNotificationForWhatsApp($notification = null)
     {
         // Si estamos en modo testing, usar número de WhatsApp específico
-        if (config('app.env') === 'local' || config('services.twilio.testing_mode')) {
-            return config('services.twilio.testing_patient_whatsapp');
+        if (config('app.env') === 'local' || config('services.meta.testing_mode')) {
+            return config('services.meta.testing_phone');
         }
 
         // Devolver whatsapp_phone si existe, sino usar phone
@@ -275,7 +275,7 @@ class Patient extends BaseModel
             $path = url('storage/'.$this->avatar()->path);
         }
 
-        if (auth()->user() && auth()->user()->hasRole('doctor')) {
+        if (auth()->user() && auth()->user()->can('patients.medical_history')) {
             $title = 'Ver historial medico';
             $route = route('patient.medical_history', $this->id);
         }

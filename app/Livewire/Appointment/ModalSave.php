@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Appointment;
 
+use App\Enums\AppointmentCancelledReason;
 use App\Models\Appointment;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
@@ -63,6 +64,12 @@ class ModalSave extends Component
 
     public $clients = [];
 
+    public $showCancelModal = false;
+
+    public $cancellationReason = '';
+
+    public $customCancellationReason = '';
+
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
         'doctor_id' => 'required|exists:practitioners,id',
@@ -109,7 +116,9 @@ class ModalSave extends Component
             $this->client_id = auth()->user()->getCurrentClient()->id;
         }
 
-        return view('livewire.appointment.modal-save');
+        return view('livewire.appointment.modal-save', [
+            'cancellationReasons' => AppointmentCancelledReason::toArray(),
+        ]);
     }
 
     public function closeModal()
@@ -133,6 +142,21 @@ class ModalSave extends Component
                 'doctor_id' => $this->doctor_id,
                 'appointment_date' => $this->appointment_date,
             ]);
+            $this->loadConsultorios();
+        }
+    }
+
+    #[On('openAppointmentModalWithPatient')]
+    public function openModalWithPatient($patientId, $title = 'Nueva Cita', $date = null, $time = null)
+    {
+        $this->resetForm($date, $time);
+        $this->patient_id = $patientId;
+        $this->showModal = true;
+        $this->title = $title;
+        $this->buttonSaveTitle = 'Guardar Cita';
+
+        // Cargar consultorios si ya hay doctor y fecha
+        if ($this->doctor_id && $this->appointment_date) {
             $this->loadConsultorios();
         }
     }
@@ -177,6 +201,11 @@ class ModalSave extends Component
                     $q->where('medical_speciality_id', $this->medical_speciality_id);
                 });
             })
+                ->whereHas('user', function ($q) {
+                    $q->whereHas('roles', function ($q) {
+                        $q->where('name', 'doctor');
+                    });
+                })
                 ->withActiveSubscription()
                 ->get()
                 ->pluck('name', 'id')
@@ -489,14 +518,54 @@ class ModalSave extends Component
 
             if ($this->appointment) {
                 // Actualizar cita existente
-                // $appointment = Appointment::find($this->editingAppointment);
+                // Detectar si cambió la fecha/hora antes de actualizar
+                $originalStart = $this->appointment->start->copy();
+                $newStart = $start->copy();
+                $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
+
+                // Actualizar la cita
                 $this->appointment->update($appointmentData);
+
                 if ($this->confirm) {
                     $this->appointment->notifyPatientAboutConfirmation();
                 }
 
-                // Si la cita está confirmada (booked), enviar notificaciones
-                if ($this->appointment->status === 'booked') {
+                // Si cambió la fecha/hora y la cita está confirmada, notificar al paciente
+                if ($hasDateTimeChanged && $this->appointment->status->value === 'booked') {
+
+                    $this->appointment->notifyPatientAboutReschedule($originalStart, $this->notes);
+
+                    // Si el usuario que cambia la cita no es el médico, notificar también al médico
+                    $currentUser = auth()->user();
+                    $isPractitioner = $currentUser->hasRole('doctor') &&
+                                    $this->appointment->practitioner->user_id === $currentUser->id;
+
+                    if (! $isPractitioner) {
+                        $changedBy = $currentUser->first_name.' '.$currentUser->last_name;
+                        $this->appointment->notifyPractitionerAboutReschedule($originalStart, $this->notes, $changedBy);
+
+                        \Log::info('Médico notificado sobre reprogramación de cita por otro usuario', [
+                            'appointment_id' => $this->appointment->id,
+                            'practitioner_id' => $this->appointment->practitioner_id,
+                            'changed_by' => $changedBy,
+                            'changed_by_user_id' => $currentUser->id,
+                        ]);
+                    }
+
+                    // Clear reminder tracking to allow new reminder for rescheduled datetime
+                    $this->appointment->clearReminderTracking();
+
+                    // Schedule new reminder with the new datetime
+                    $this->appointment->notifyPatientAboutAppointment();
+
+                    \Log::info('Cita reprogramada - notificación enviada y recordatorio reprogramado', [
+                        'appointment_id' => $this->appointment->id,
+                        'original_datetime' => $originalStart->format('Y-m-d H:i:s'),
+                        'new_datetime' => $newStart->format('Y-m-d H:i:s'),
+                    ]);
+                }
+                // Si la cita está confirmada (booked) pero no cambió la hora, enviar notificaciones normales
+                elseif ($this->appointment->status === 'booked' && ! $hasDateTimeChanged) {
                     // Notificación inmediata de confirmación
                     $this->appointment->notifyPatientAboutBooking();
                     // Programar recordatorio para 2 horas antes
@@ -520,8 +589,10 @@ class ModalSave extends Component
                 } elseif ($this->status === 'booked') {
                     // Si la cita se crea directamente como confirmada, enviar notificaciones
                     $app->addPatientToPractitionerClient();
-                    // Notificación inmediata de confirmación
+                    // Notificación al paciente
                     $app->notifyPatientAboutBooking();
+                    // Notificación al médico con botones de acción
+                    $app->notifyPractitionerAboutBooking();
                     // Programar recordatorio para 2 horas antes
                     $app->notifyPatientAboutAppointment();
                 }
@@ -595,7 +666,13 @@ class ModalSave extends Component
 
             $this->practitioners = Practitioner::whereHas('qualifications', function ($q) {
                 $q->where('medical_speciality_id', $this->appointment->medical_speciality_id);
-            })->get()->pluck('name', 'id')->toArray();
+            })
+                ->whereHas('user', function ($q) {
+                    $q->whereHas('roles', function ($q) {
+                        $q->where('name', 'doctor');
+                    });
+                })
+                ->get()->pluck('name', 'id')->toArray();
 
             $this->editingAppointment = $appointment_id;
             $this->modalTitle = 'Editar Cita';
@@ -638,6 +715,71 @@ class ModalSave extends Component
                 message: 'Error al eliminar la cita. '.$e->getMessage(),
             );
         }
+    }
+
+    public function openCancelModal()
+    {
+        $this->showModal = false; // Cerrar el modal principal
+        $this->showCancelModal = true;
+    }
+
+    public function confirmCancellation()
+    {
+
+        $this->validate([
+            'cancellationReason' => 'required',
+            'customCancellationReason' => 'required_if:cancellationReason,OTHER',
+        ], [
+            'cancellationReason.required' => 'Debe seleccionar una razón de cancelación',
+            'customCancellationReason.required_if' => 'Debe especificar la razón cuando selecciona "Otra razón"',
+        ]);
+
+        try {
+            if (! $this->appointment) {
+                throw new \Exception('No se encontró la cita para cancelar');
+            }
+
+            $this->appointment->status = 'cancelled';
+            $this->appointment->save();
+
+            // Determinar la razón final a enviar
+            $finalReason = $this->cancellationReason === 'OTHER'
+                ? $this->customCancellationReason
+                : AppointmentCancelledReason::{$this->cancellationReason}->value;
+
+            // Enviar notificación con la razón
+            $this->appointment->notifyPatientAboutCancellation($finalReason);
+
+            // Emitir evento para actualizar el calendario
+            $this->dispatch('loadAppointments');
+            $this->dispatch('appointmentStatusChanged',
+                appointment_id: $this->appointment->id,
+                new_status: 'cancelled'
+            );
+
+            $this->dispatch('showToastr', [
+                'type' => 'warning',
+                'message' => '¡Cita cancelada, se envió notificación al paciente!',
+            ]);
+
+            // Cerrar modales y limpiar
+            $this->closeCancelModal();
+            $this->closeModal();
+
+        } catch (\Exception $e) {
+            $this->dispatch('showToastr', [
+                'type' => 'error',
+                'message' => 'Error al cancelar la cita: '.$e->getMessage(),
+            ]);
+        }
+    }
+
+    public function closeCancelModal()
+    {
+        $this->showCancelModal = false;
+        $this->cancellationReason = '';
+        $this->customCancellationReason = '';
+        $this->resetValidation();
     }
 
     private function checkAvailability()

@@ -34,112 +34,128 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-9">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    @can('users.profile')
-                        <li class="nav-item" role="presentation">
-                            <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
-                                {{__('patient.account_settings')}}
-                            </a>
-                        </li>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @can('users.profile')
+                            <li class="nav-item" role="presentation">
+                                <a href="#account_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" aria-selected="false" tabindex="-1" role="tab">
+                                    {{__('patient.account_settings')}}
+                                </a>
+                            </li>
 
-                        <li class="nav-item" role="presentation">
-                            <a href="#security_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
-                                {{__('patient.security_settings')}}
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-                <div class="tab-content">
-                    @can('users.profile')
-                        <div class="tab-pane active" id="account_settings" role="tabpanel">
-                            <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-                                @csrf
-                            </form>
+                            <li class="nav-item" role="presentation">
+                                <a href="#security_settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link " aria-selected="true" role="tab">
+                                    {{__('patient.security_settings')}}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                    <div class="tab-content">
+                        @can('users.profile')
+                            <div class="tab-pane active" id="account_settings" role="tabpanel">
+                                <form id="send-verification" method="post" action="{{ route('verification.send') }}">
+                                    @csrf
+                                </form>
 
-                            <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-                                @csrf
-                                @method('patch')
+                                <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+                                    @csrf
+                                    @method('patch')
 
-                                <div class="input-block local-forms">
-                                    <x-input-label for="first_name" :value="__('user.first_name')" required/>
-                                    <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('name', $data->first_name)" required autofocus autocomplete="first_name" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
-                                </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="first_name" :value="__('user.first_name')" required/>
+                                        <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('name', $data->first_name)" required autofocus autocomplete="first_name" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
+                                    </div>
 
-                                <div class="input-block local-forms">
-                                    <x-input-label for="last_name" :value="__('user.last_name')" required/>
-                                    <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('name', $data->last_name)" required autofocus autocomplete="last_name" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
-                                </div>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="last_name" :value="__('user.last_name')" required/>
+                                        <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('name', $data->last_name)" required autofocus autocomplete="last_name" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
+                                    </div>
 
-                                <div class="input-block local-forms">
-                                    <x-input-label for="email" :value="__('user.email')" required/>
-                                    <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $data->email)" required autocomplete="username" />
-                                    <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="email" :value="__('user.email')" required/>
+                                        <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $data->email)" readonly required autocomplete="username" />
+                                        <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-                                    @if ($data instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $data->hasVerifiedEmail())
-                                        <div>
-                                            <p class="text-sm mt-2 text-gray-800">
-                                                {{ __('Your email address is unverified.') }}
+                                        @if ($data instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $data->hasVerifiedEmail())
+                                            <div>
+                                                <p class="text-sm mt-2 text-gray-800">
+                                                    {{ __('Your email address is unverified.') }}
 
-                                                <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                    {{ __('Click here to re-send the verification email.') }}
-                                                </button>
-                                            </p>
-
-                                            @if (session('status') === 'verification-link-sent')
-                                                <p class="mt-2 font-medium text-sm text-green-600">
-                                                    {{ __('A new verification link has been sent to your email address.') }}
+                                                    <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                        {{ __('Click here to re-send the verification email.') }}
+                                                    </button>
                                                 </p>
-                                            @endif
+
+                                                @if (session('status') === 'verification-link-sent')
+                                                    <p class="mt-2 font-medium text-sm text-green-600">
+                                                        {{ __('A new verification link has been sent to your email address.') }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="client" :value="__('user.client')" required/>
+                                        <x-select-input name="client" :options="$clients" :selected="$client_selected" class="block  w-full"/>
+                                        <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
+                                    </div>
+
+                                    <div class="flex items-center justify-end mt-4">
+                                        <div class="doctor-submit text-end">
+                                            <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
                                         </div>
-                                    @endif
-                                </div>
-
-                                <div class="input-block local-forms">
-                                    <x-input-label for="client" :value="__('user.client')" required/>
-                                    <x-select-input name="client" :options="$clients" :selected="$client_selected" class="block  w-full"/>
-                                    <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
-                                </div>
-
-                                <div class="flex items-center justify-end mt-4">
-                                    <div class="doctor-submit text-end">
-                                        <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="tab-pane" id="security_settings" role="tabpanel">
-                            <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
-                                @csrf
-                                @method('put')
+                                </form>
+                            </div>
+                            <div class="tab-pane" id="security_settings" role="tabpanel">
+                                <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+                                    @csrf
+                                    @method('put')
 
 
-                                <div class="input-block local-forms">
-                                    <x-input-label for="update_password_password" :value="__('user.new_password')" required/>
-                                    <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                    <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-                                </div>
-
-                                <div class="input-block local-forms">
-                                    <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" required/>
-                                    <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-                                    <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-                                </div>
-
-                                <div class="flex items-center justify-end mt-4">
-                                    <div class="doctor-submit text-end">
-                                        <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="update_password_password" :value="__('user.new_password')" required/>
+                                        <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
                                     </div>
-                                </div>
-                            </form>
-                        </div>
-                    @endcan
+
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="update_password_password_confirmation" :value="__('user.confirm_password')" required/>
+                                        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+                                        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+                                    </div>
+
+                                    <div class="flex items-center justify-end mt-4">
+                                        <div class="doctor-submit text-end">
+                                            <button type="submit" class="btn btn-primary submit-form me-2">  {{ __('button.update') }}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        @endcan
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header text-white">
+                    <i class="fas fa-shield-alt"></i> Autenticación 2FA
+                    @if(auth()->user()->requiresTwoFactor() && !auth()->user()->hasTwoFactorEnabled())
+                        <span class="badge bg-danger ms-1">Requerido</span>
+                    @endif
+                </div>
+                <div class="card-body">
+                    <livewire:user.two-factor-authentication />
                 </div>
             </div>
         </div>
     </div>
+
 </div>

@@ -2,6 +2,9 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Helpers\CacheHelper;
+
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -13,13 +16,21 @@ class TopSpecialties extends Component
 
     public function mount()
     {
-        $total = DB::table('practitioner_qualifications')->count();
-        $this->top_specialties = DB::table('practitioner_qualifications')
-            ->select('medical_speciality_id', DB::raw('COUNT(*) as total'), DB::raw("ROUND(COUNT(*) / $total * 100, 2) as percentage"))
-            ->groupBy('medical_speciality_id')
-            ->orderByDesc('total')
-            ->limit(5)
-            ->get();
+        // Cache por 24 horas - las especialidades raramente cambian
+        $this->top_specialties = Cache::tags(['dashboard', 'specialties'])->remember('top_specialties', 86400, function () {
+            $total = DB::table('practitioner_qualifications')->count();
+
+            if ($total === 0) {
+                return collect([]);
+            }
+
+            return DB::table('practitioner_qualifications')
+                ->select('medical_speciality_id', DB::raw('COUNT(*) as total'), DB::raw("ROUND(COUNT(*) / $total * 100, 2) as percentage"))
+                ->groupBy('medical_speciality_id')
+                ->orderByDesc('total')
+                ->limit(5)
+                ->get();
+        });
 
     }
 

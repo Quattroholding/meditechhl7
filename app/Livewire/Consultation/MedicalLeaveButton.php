@@ -56,9 +56,9 @@ class MedicalLeaveButton extends Component
 
         $this->checkDiagnoses();
 
-        // Inicializar fechas por defecto (hoy a las 8am hasta mañana a las 8am)
-        $this->start_datetime = now()->setTime(8, 0)->format('Y-m-d\TH:i');
-        $this->end_datetime = now()->addDay()->setTime(8, 0)->format('Y-m-d\TH:i');
+        // Inicializar fechas en null
+        $this->start_datetime = null;
+        $this->end_datetime = null;
     }
 
     #[On('findFinishedButtonStatus')]
@@ -185,6 +185,12 @@ class MedicalLeaveButton extends Component
             }
 
             $this->closeModal();
+
+            // Resetear las fechas a null después de guardar
+            $this->start_datetime = null;
+            $this->end_datetime = null;
+            $this->notes = '';
+            $this->selected_condition_id = null;
 
             // Refrescar la página para ver la licencia
             $this->dispatch('$refresh');

@@ -1,171 +1,191 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía de Historia Médica - Centro de Ayuda SAMI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #0dcaf0;
-            --teal-color: #20c997;
-            --light-bg: #f8f9fa;
-            --dark-text: #212529;
-        }
+@extends('help.layout')
+@section('style')
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-text);
-        }
+html {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Sidebar */
-        .help-sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
-            padding: 20px 0;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark-text);
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-        .help-sidebar .logo {
-            text-align: center;
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
+/* Contenedor principal con límites estrictos */
+.help-content {
+    margin-left: 280px;
+    padding: 30px;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
 
-        .help-sidebar .logo img {
-            max-width: 150px;
-        }
+/* Corregir Bootstrap rows */
+    .help-content .row {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+    }
 
-        .help-sidebar .logo h4 {
-            color: #fff;
-            margin-top: 10px;
-            font-weight: 600;
-        }
+    .help-content .row > [class*="col-"] {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 
-        .help-sidebar .nav-section {
-            padding: 10px 20px;
-        }
+    /* Evitar que las imágenes fuercen scroll */
+    .help-content img {
+        max-width: 100%;
+        height: auto;
+    }
 
-        .help-sidebar .nav-section-title {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
+    /* Asegurar que tablas y contenido no desborden */
+    .help-content table,
+    .help-content .field-table {
+        max-width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
 
-        .help-sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+/* Sidebar */
+.help-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+    padding: 20px 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
-        .help-sidebar .nav-link:hover,
-        .help-sidebar .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-        }
+.help-sidebar .logo {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
 
-        .help-sidebar .nav-link i {
-            width: 20px;
-            text-align: center;
-        }
+.help-sidebar .logo img {
+    max-width: 150px;
+}
 
-        .help-sidebar .nav-link .badge {
-            margin-left: auto;
-            font-size: 0.65rem;
-        }
+.help-sidebar .logo h4 {
+    color: #fff;
+    margin-top: 10px;
+    font-weight: 600;
+}
 
-        /* Main Content */
-        .help-content {
-            margin-left: 280px;
-            padding: 30px;
-            min-height: 100vh;
-        }
+.help-sidebar .nav-section {
+    padding: 10px 20px;
+}
 
-        /* Breadcrumb */
-        .help-breadcrumb {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+.help-sidebar .nav-section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
 
-        /* Module Header */
-        .module-header {
-            background: linear-gradient(135deg, #00897b 0%, #004d40 100%);
-            color: #fff;
-            padding: 40px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
+.help-sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .module-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        }
+.help-sidebar .nav-link:hover,
+.help-sidebar .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
 
-        .module-header h1 {
-            font-weight: 700;
-            margin-bottom: 15px;
-            position: relative;
-        }
+.help-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+}
 
-        .module-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            position: relative;
-        }
+.help-sidebar .nav-link .badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+}
 
-        /* Step Cards */
-        .step-card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid var(--teal-color);
-            position: relative;
-        }
+/* Breadcrumb */
+.help-breadcrumb {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
 
-        .step-card.step-important {
-            border-left-color: var(--warning-color);
-        }
+/* Module Header */
+.module-header {
+    background: linear-gradient(135deg, #00897b 0%, #004d40 100%);
+    color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .step-card.step-success {
-            border-left-color: var(--success-color);
-        }
+.module-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
 
-        .step-card.step-info {
-            border-left-color: var(--info-color);
-        }
+.module-header h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.module-header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+/* Step Cards */
+.step-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-left: 5px solid var(--teal-color);
+    position: relative;
+}
+
+.step-card.step-important {
+    border-left-color: var(--warning-color);
+}
+
+.step-card.step-success {
+    border-left-color: var(--success-color);
+}
+
+.step-card.step-info {
+    border-left-color: var(--info-color);
+}
 
         .step-card.step-primary {
             border-left-color: var(--primary-color);
@@ -625,7 +645,7 @@
             font-size: 0.8rem;
             padding: 2px 6px;
         }
-    }        
+    }
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -757,30 +777,29 @@
             .step-number{
                 left: 42%;
             }
-         }
-    </style>
-</head>
-<body>
+     }
+
+@stop
+@section('sidebar')
     @include('help.sidebar', ['active' => 'medical-history'])
-
-    <!-- Main Content -->
-    <main class="help-content">
-        <!-- Breadcrumb -->
-        <nav class="help-breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li class="breadcrumb-item"><a href="#">Gestion de Pacientes</a></li>
-                <li class="breadcrumb-item active">Historia Médica</li>
-            </ol>
-        </nav>
-
-        <!-- Module Header -->
-        <div class="module-header">
-            <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Médica</h1>
-            <p>Aprende a visualizar y gestionar la historia médica completa de tus pacientes, incluyendo antecedentes, diagnósticos, signos vitales y mas.</p>
-        </div>
-
-        <div class="row">
+@stop
+@section('breadcrumb')
+    <nav class="help-breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="breadcrumb-item"><a href="#">Gestion de Pacientes</a></li>
+            <li class="breadcrumb-item active">Historia Médica</li>
+        </ol>
+    </nav>
+@endsection
+@section('module-header')
+    <div class="module-header">
+        <h1><i class="fas fa-notes-medical me-3"></i>Guia de Historia Médica</h1>
+        <p>Aprende a visualizar y gestionar la historia médica completa de tus pacientes, incluyendo antecedentes, diagnósticos, signos vitales y mas.</p>
+    </div>
+@stop
+@section('table-content')
+    <div class="row">
             <!-- Table of Contents -->
             <div class="col-lg-4">
                 <div class="toc-card sticky-top" style="top: 20px;">
@@ -870,12 +889,12 @@
                                 Notas Privadas
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#agregar">
                                 <i class="fas fa-plus-circle"></i>
                                 Agregar Antecedentes
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="#seguros">
                                 <i class="fas fa-shield-alt"></i>
@@ -969,6 +988,13 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
+                                    <i class="fas fa-diagnoses"></i>
+                                    <h6>Diagnósticos</h6>
+                                    <p>Diagnósticos ICD-10</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="section-card">
                                     <i class="fas fa-heartbeat"></i>
                                     <h6>Signos Vitales</h6>
                                     <p>Mediciones vitales</p>
@@ -986,13 +1012,6 @@
                                     <i class="fas fa-notes-medical"></i>
                                     <h6>Enfermedades Actuales</h6>
                                     <p>Motivo de consulta</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="section-card">
-                                    <i class="fas fa-diagnoses"></i>
-                                    <h6>Diagnósticos</h6>
-                                    <p>Diagnósticos ICD-10</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1025,13 +1044,6 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
-                                    <i class="fas fa-sticky-note"></i>
-                                    <h6>Notas Privadas</h6>
-                                    <p>Notas del médico</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="section-card">
                                     <i class="fas fa-comment-medical"></i>
                                     <h6>Notas Médicas</h6>
                                     <p>Impresiones médicas</p>
@@ -1042,6 +1054,13 @@
                                     <i class="fas fa-file-medical"></i>
                                     <h6>Incapacidades</h6>
                                     <p>Incapacidades Médicas</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="section-card">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <h6>Notas Privadas</h6>
+                                    <p>Notas del médico</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1061,7 +1080,7 @@
                     <h3 class="step-title">¿Cómo acceder a la Historia Médica?</h3>
                     <div class="step-content">
                         <p>Para acceder a la historia medica de un paciente:</p>
-                        
+
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-patient.png') }}" alt="" style="width: 100%;">
                         </div>
@@ -1127,9 +1146,9 @@
                                     </li>
                                     <li>
                                         <i class="fas fa-allergies"></i>
-                                        <div><strong>Alergias conocidas</strong></div>
-                                    </li> 
-                                    <li>                               
+                                        <div><strong>Antecedentes Médicos</strong></div>
+                                    </li>
+                                    <li>
                                         <i class="fas fa-heartbeat"></i>
                                         <div><strong>Signos Vitales</strong></div>
                                     </li>
@@ -1184,20 +1203,24 @@
                         <div class="sub-step mt-4">
                             <h6><i class="fas fa-file-pdf me-2"></i>Resumen Médico</h6>
                             <p>El <strong>Resumen Médico</strong> es un documento consolidado que resume toda la información relevante de una consulta específica. Para acceder a él, diríjase a la columna de <strong>"Acciones"</strong> en la tabla de consultas y haga clic en el botón <strong>"Ver Detalles"</strong>.</p>
-                            
+
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-pdf.png') }}" alt="" style="width: 100%;">
                         </div>
                             <p>Este documento incluye:</p>
                             <ul class="checklist">
-                                <li><i class="fas fa-check-circle"></i> <div><strong>Datos del Paciente:</strong> Nombre completo, edad y número de identificación.</div></li>
-                                <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora y nombre del médico que atendió.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Datos del Paciente:</strong> Nombre completo, edad, género, fecha de nacimiento, estado civil, dirección, número de identificación, teléfono de casa y lugar de residencia.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora, nombre del médico que atendió y número de consulta.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Motivo de Consulta y Enfermedad Actual:</strong> Descripción detallada de los síntomas y motivo de la visita.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Signos Vitales:</strong> Registro de las mediciones tomadas durante la consulta.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Diagnósticos:</strong> Conclusiones médicas codificadas bajo ICD-10.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Órdenes Médicas:</strong> Medicamentos recetados con sus dosis e instrucciones, y estudios solicitados.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Notas Médicas:</strong> Recomendaciones y observaciones adicionales del profesional de salud.</div></li>
                             </ul>
+                        </div>
+                        <div class="info-box info-note">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Nota:</strong> Las secciones dependen de la plantilla de consulta configurada por el medico. Algunas pueden o no aparecer en el resumen médico.
                         </div>
                     </div>
                 </section>
@@ -1245,10 +1268,10 @@
                                         <i class="fas fa-calendar-alt"></i>
                                         <div><strong>Fecha Dx:</strong> Fecha exacta en la que el profesional de salud registró el diagnóstico.</div>
                                     </li>
-                                    <li>
+                                    <!--<li>
                                         <i class="fas fa-mouse-pointer"></i>
                                         <div><strong>Acciones:</strong> Botón de <strong>"Ver Detalles"</strong> (ícono de ojo) para consultar información extendida del registro.</div>
-                                    </li>
+                                    </li>-->
                                 </ul>
                             </div>
                         </div>
@@ -1279,7 +1302,7 @@
                         <p>Los <strong>signos vitales</strong> son las mediciones fisiológicas tomadas durante las consultas:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/vital-signs.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-vs.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Campos de la Sección de Signos Vitales:</h5>
@@ -1292,46 +1315,56 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Sistolica</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8480-6</span></td>-->
-                                    <td data-label="Unidad">mmHg</td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Diastolica</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8462-4</span></td>-->
-                                    <td data-label="Unidad">mmHg</td>
-                                </tr>
+                                <!--<tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8310-5</span></td>
+                                    <td data-label="Unidad">°C</td>
+                                </tr>-->
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-heartbeat text-danger me-2"></i> Frecuencia Cardiaca</td>
                                     <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
                                     <td data-label="Unidad">lpm</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-thermometer-half text-warning me-2"></i> Temperatura</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8310-5</span></td>-->
-                                    <td data-label="Unidad">°C</td>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Arterial Sistólica</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8480-6</span></td>-->
+                                    <td data-label="Unidad">mmHg</td>
                                 </tr>
                                 <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-heart text-danger me-2"></i> Presion Arterial Diastólica</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8462-4</span></td>-->
+                                    <td data-label="Unidad">mmHg</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-lungs-virus text-info me-2"></i> Frecuencia Respiratoria</td>
+                                    <!--<td data-label="Codigo LOINC"><span class="code">8867-4</span></td>-->
+                                    <td data-label="Unidad">lpm</td>
+                                </tr>
+                                <!--<tr>
                                     <td data-label="Signo Vital"><i class="fas fa-lungs text-info me-2"></i> Saturacion O2</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">2708-6</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">2708-6</span></td>
                                     <td data-label="Unidad">%</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-weight text-secondary me-2"></i> Peso</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">29463-7</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">29463-7</span></td>
                                     <td data-label="Unidad">kg</td>
                                 </tr>
                                 <tr>
-                                    <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Altura</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">8302-2</span></td>-->
+                                    <td data-label="Signo Vital"><i class="fas fa-ruler-vertical text-secondary me-2"></i> Talla</td>
+                                    <td data-label="Codigo LOINC"><span class="code">8302-2</span></td>
                                     <td data-label="Unidad">cm</td>
                                 </tr>
                                 <tr>
                                     <td data-label="Signo Vital"><i class="fas fa-calculator text-success me-2"></i> IMC</td>
-                                    <!--<td data-label="Codigo LOINC"><span class="code">39156-5</span></td>-->
+                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
                                     <td data-label="Unidad">kg/m²</td>
                                 </tr>
+                                                                <tr>
+                                    <td data-label="Signo Vital"><i class="fas fa-droplet text-danger me-2"></i> Glucemia Capilar</td>
+                                    <td data-label="Codigo LOINC"><span class="code">39156-5</span></td>
+                                    <td data-label="Unidad">mg/dL</td>
+                                </tr>-->
                             </tbody>
                         </table>
 
@@ -1352,7 +1385,7 @@
                         <p>La Sección de <strong>Enfermedad Actual</strong> posee los registros detallado de los padecimientos registrados en las citas:</p>
 
                         <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-actillness.png') }}" alt="" style="width: 100%;">
+                            <img src="{{ asset('images/tutorial/medical_history/med-ai.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <h5 class="mt-4">Información mostrada del padecimiento:</h5>
@@ -1506,11 +1539,42 @@
                                 </div>
                             </div>
                         </div>
+
+                    <!-- Agregar Antecedentes -->
+                    <h3 class="step-title" style="padding-left: 0;">Agregar Antecedentes Médicos</h3>
+                    <div class="step-content">
+                        <p>Puedes agregar manualmente antecedentes médicos históricos del paciente:</p>
+
+                        <div class="sub-step">
+                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
+                            <ol>
+                                <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
+                                <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
+                                <li>En el encabezado, en la parte derecha haga clic en <strong>"Antecedentes Médicos"</strong></li>
+                                <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
+                                <li>Ingresa el <strong>título</strong> descriptivo</li>
+                                <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
+                                <li>Agrega una <strong>descripción</strong> detallada</li>
+                                <li>Haz clic en <strong>"Guardar"</strong></li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/modal-prev.png') }}" alt="" style="width: 100%;">
+                        </div>
+
+                        <div class="info-box info-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar información precisa.
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </section>
 
 
-                <!-- Examenes Fisicos 
+                <!-- Examenes Fisicos
                 <section id="examenes" class="step-card">
                     <div class="step-number">6</div>
                     <h3 class="step-title">Examenes Fisicos</h3>
@@ -1576,7 +1640,7 @@
                     <div class="step-number">10</div>
                     <h3 class="step-title">Incapacidades Médicas</h3>
                     <div class="step-content">
-                        <p>Las <strong>Incapacidades médicas</strong> (incapacidades) emitidas al paciente:</p>
+                        <p>La Sección de <strong>Incapacidades médicas</strong> contiene el historial de las incapacidades médicas emitidas al paciente.</p>
 
                         <div>
                             <img src="{{ asset('images/tutorial/medical_history/med-license.png') }}" alt="" style="width: 100%;">
@@ -1587,7 +1651,7 @@
                                  <ul class="checklist">
                                      <li>
                                          <i class="fas fa-id-card"></i>
-                                         <div><strong>Número del Seguro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
+                                         <div><strong>Número de Registro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
                                      </li>
                                      <li>
                                          <i class="fas fa-calendar-alt"></i>
@@ -1637,11 +1701,11 @@
                 <section id="notas-privadas" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Notas Privadas</h3>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnote.png') }}" alt="" style="width: 100%;">
+                        </div>
                     <div class="step-content">
                         <p>La sección de <strong>Notas Privadas</strong> son notas que solo están habilitidas para el médico y sólo pueden ser visualizadas por el mismo.</p>
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/med-pvnote.png') }}" alt="" style="width: 100%;">
-                        </div>
                         <div class="sub-step">
                             <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
                             <ol>
@@ -1652,45 +1716,15 @@
                                 <li>Haz clic en <strong>"Guardar"</strong></li>
                             </ol>
                         </div>
+                        <div>
+                            <img src="{{ asset('images/tutorial/medical_history/med-pnoterecord.png') }}" alt="" style="width: 100%;">
+                        </div>
                         <!--<div class="info-box info-tip">
                             <i class="fas fa-file-download"></i>
                             <div>
                                 <strong>Descarga:</strong> Las licencias médicas pueden descargarse en formato PDF para entregar al paciente o a su empleador.
                             </div>
                         </div>-->
-                    </div>
-                </section>
-
-                <!-- Agregar Antecedentes -->
-                <section id="agregar" class="step-card step-success">
-                    <h3 class="step-title" style="padding-left: 0;">Agregar Antecedentes Médicos</h3>
-                    <div class="step-content">
-                        <p>Puedes agregar manualmente antecedentes médicos históricos del paciente:</p>
-
-                        <div class="sub-step">
-                            <h6><i class="fas fa-plus-circle me-2"></i>Pasos para Agregar</h6>
-                            <ol>
-                                <li>En la sección de "Pacientes", haz clic en "Lista Pacientes"</li>
-                                <li>Elige el paciente al cuál deseas agregarle el antecedente y haga clic al botón de Historial Médico (botón en la columna de acciones de color negro)</li>
-                                <li>En la seccion de <strong>"Antecedentes Médicos"</strong>, haz clic en <strong>"Agregar"</strong></li>
-                                <li>Selecciona la <strong>categoría</strong> (alergía, cirugía, etc.)</li>
-                                <li>Ingresa el <strong>título</strong> descriptivo</li>
-                                <li>Agrega una <strong>descripción</strong> detallada</li>
-                                <li>Selecciona la <strong>fecha de ocurrencia</strong></li>
-                                <li>Haz clic en <strong>"Guardar"</strong></li>
-                            </ol>
-                        </div>
-
-                        <div>
-                            <img src="{{ asset('images/tutorial/medical_history/modal-prev.png') }}" alt="" style="width: 100%;">
-                        </div>
-
-                        <div class="info-box info-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div>
-                                <strong>Importante:</strong> Los antecedentes agregados manualmente se registran con estado "activo" y verificacion "confirmada". Asegurate de ingresar información precisa.
-                            </div>
-                        </div>
                     </div>
                 </section>
 
@@ -1708,6 +1742,8 @@
                                 <li>En la sección de <strong>"Pacientes"</strong>, haz clic en <strong>"Lista Pacientes"</strong>.</li>
                                 <li>Busca al paciente y haz clic en su nombre o en el botón de <strong>"Historial Médico"</strong>.</li>
                                 <li>En el encabezado del historial, haz clic en el botón 🛡️ <strong>"Gestionar Seguros"</strong>.</li>
+                                <li>Llena los datos correspondientes en el formulario</li>
+                                <li>Haz clic en el botón <strong>"Agregar Seguro"</strong> para completar el registro.</li>
                             </ol>
                         </div>
 
@@ -1723,11 +1759,11 @@
                             </li>
                             <li>
                                 <i class="fas fa-plus-circle"></i>
-                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura y fechas de vigencia.</div>
+                                <div><strong>Agregar Nuevo:</strong> Completa el formulario con la compañía de seguros, número de póliza, titular, cobertura, fechas de vigencia, etc.</div>
                             </li>
                             <li>
                                 <i class="fas fa-toggle-on"></i>
-                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de estado para habilitar o inhabilitar una póliza sin eliminarla.</div>
+                                <div><strong>Activar/Desactivar:</strong> Utiliza el botón de acciones para activar o desactivar una póliza sin eliminarla.</div>
                             </li>
                             <li>
                                 <i class="fas fa-trash-alt"></i>
@@ -1750,7 +1786,7 @@
                                     <p>Primero deberá ir a <strong>"Lista Pacientes"</strong>, busca su paciente y haga clic en <strong>"Historial Médico"</strong>, en esta pantalla encontrará un botón que dice <strong>"Solicitar Acceso Completo al Historial"</strong>, haga clic.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-patient.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1770,7 +1806,7 @@
                                     <p>El Sistema enviará un correo con el <strong>Código de Autorización</strong> que deberá ingresar el Médico.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-email.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1780,7 +1816,7 @@
                                     <p>Luego de que el paciente le haya proporcionado el <strong>Código de Autorización</strong> deberá ingresarlo a la plataforma para validarlo.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-sendcode.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
 
@@ -1790,13 +1826,13 @@
                                     <p>Luego de validar <strong>Código de Autorización</strong> podrá visualizar el <strong>Historial Médico</strong> completo del paciente.</p>
                                     <div>
                                         <img src="{{ asset('images/tutorial/medical_history/info-medhs.jpeg') }}" alt="" style="width: 100%;">
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                <!-- Filtros y Busqueda 
+                <!-- Filtros y Busqueda
                 <section id="filtros" class="step-card">
                     <div class="step-number">11</div>
                     <h3 class="step-title">Filtros y Busqueda</h3>
@@ -1915,40 +1951,4 @@
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Back to Top functionality
-        const backToTop = document.getElementById('backToTop');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
-        });
-
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Smooth scroll for TOC links
-        document.querySelectorAll('.toc-list a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+@stop

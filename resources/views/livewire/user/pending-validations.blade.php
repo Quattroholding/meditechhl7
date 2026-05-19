@@ -59,7 +59,7 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->practitioner->phone ?? 'N/A' }}</td>
                                         <td>{{ $user->practitioner->registry ?? 'N/A' }}</td>
-                                        <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $user->created_at }}</td>
                                         <td>
                                             @if ($user->files->count() >= 2)
                                                 <span class="badge bg-success">
@@ -135,7 +135,7 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Fecha Registro:</strong></td>
-                                                <td>{{ $selectedUser->created_at->format('d/m/Y H:i') }}</td>
+                                                <td>{{ $selectedUser->created_at }}</td>
                                             </tr>
                                         </table>
                                     </div>

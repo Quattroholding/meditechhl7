@@ -3,11 +3,18 @@
 namespace App\Providers;
 
 use App\Models\Appointment;
+use App\Models\ClientSubscription;
 use App\Models\Encounter;
+use App\Models\Invoice;
+use App\Models\MedicationRequest;
 use App\Models\Patient;
 use App\Models\User;
 use App\Observers\AppointmentObserver;
+use App\Observers\ClientSubscriptionObserver;
 use App\Observers\EncounterObserver;
+use App\Observers\InvoiceObserver;
+use App\Observers\MedicationRequestObserver;
+use App\Observers\PatientObserver;
 use App\Observers\UserObserver;
 use App\Policies\AppointmentPolicy;
 use App\Policies\ConsultationPolicy;
@@ -34,7 +41,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Paginator::useTailwind();
         Appointment::observe(AppointmentObserver::class);
+        ClientSubscription::observe(ClientSubscriptionObserver::class);
         Encounter::observe(EncounterObserver::class);
+        Invoice::observe(InvoiceObserver::class);
+        MedicationRequest::observe(MedicationRequestObserver::class);
+        Patient::observe(PatientObserver::class);
         User::observe(UserObserver::class);
         Gate::policy(Appointment::class, AppointmentPolicy::class);
         Gate::policy(Patient::class, PatientPolicy::class);

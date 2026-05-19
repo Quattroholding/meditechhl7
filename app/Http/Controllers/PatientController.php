@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
@@ -211,59 +212,71 @@ class PatientController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        $validated = $request->validate([
-            'identifier' => 'required',
-            'identifier_type' => 'required',
-            'given_name' => 'required',
-            'family_name' => 'required',
-            'gender' => 'required',
-            'birth_date' => 'required',
-            'address' => 'required',
-            'marital_status' => 'required',
-            // 'billing_address' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'blood_type' => 'required',
-            'contact_name' => 'nullable|string|max:255',
-            'contact_email' => 'nullable|email|max:255',
-            'contact_phone' => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'identifier' => 'required',
+                'identifier_type' => 'required',
+                'given_name' => 'required',
+                'family_name' => 'required',
+                'gender' => 'required',
+                'birth_date' => 'required',
+                'address' => 'required',
+                'marital_status' => 'required',
+                // 'billing_address' => 'required',
+                'email' => 'required|email',
+                'phone' => 'required',
+                'blood_type' => 'nullable',
+                'contact_name' => 'nullable|string|max:255',
+                'contact_email' => 'nullable|email|max:255',
+                'contact_phone' => 'nullable|string|max:255',
+            ]);
 
-        $model = Patient::findOrFail($id);
-        $model->fill($request->except('birth_date', 'id_type', 'phone'));
-        $model->name = $request->given_name.' '.$request->family_name;
-        $model->identifier_type = $request->identifier_type;
-        $model->phone = $request->full_phone;
-        $model->birth_date = substr($request->birth_date, 6, 4).'-'.substr($request->birth_date, 3, 2).'-'.substr($request->birth_date, 0, 2);
-        $model->country_id = $request->country_id;
-        $model->state_id = $request->state_id;
+            $model = Patient::findOrFail($id);
+            $model->fill($request->except('birth_date', 'id_type', 'phone'));
+            $model->name = $request->given_name.' '.$request->family_name;
+            $model->identifier_type = $request->id_type ?? $request->identifier_type;
+            $model->phone = $request->full_phone ?? $request->phone;
+            $model->birth_date = substr($request->birth_date, 6, 4).'-'.substr($request->birth_date, 3, 2).'-'.substr($request->birth_date, 0, 2);
+            $model->country_id = $request->country_id;
+            $model->state_id = $request->state_id;
 
-        $user = User::findOrFail($model->user_id);
-        $user->first_name = $request->given_name;
-        $user->last_name = $request->family_name;
-        $user->email = $request->email;
+            $user = User::findOrFail($model->user_id);
+            $user->first_name = $request->given_name;
+            $user->last_name = $request->family_name;
+            $user->email = $request->email;
 
-        if ($user->save()) {
-            if ($model->save()) {
-                // Handle relationship updates
-                $this->updatePatientRelationships($request, $model);
+            if ($user->save()) {
+                if ($model->save()) {
+                    // Handle relationship updates
+                    $this->updatePatientRelationships($request, $model);
 
-                if ($request->file('image')) {
-                    $service = new FileService;
-                    $data['record_id'] = $model->id;
-                    $data['folder'] = 'patients';
-                    $data['type'] = 'avatar';
-                    $service->guardarArchivos([$request->file('image')], $data);
+                    if ($request->file('image')) {
+                        $service = new FileService;
+                        $data['record_id'] = $model->id;
+                        $data['folder'] = 'patients';
+                        $data['type'] = 'avatar';
+                        $service->guardarArchivos([$request->file('image')], $data);
+                    }
+                    session()->flash('message.success', 'Actualización con exito.');
                 }
-                session()->flash('message.success', 'Actualización con exito.');
+            } else {
+                session()->flash('message.success', 'Hubo un error y no se pudo actualizar.');
             }
-        } else {
-            session()->flash('message.success', 'Hubo un error y no se pudo actualizar.');
-        }
 
-        if ($request->has('redirect')) {
-            return redirect($request->redirect);
+            if ($request->has('redirect')) {
+                return redirect($request->redirect);
+            }
+
+        } catch (ValidationException $e) {
+            // Log validation errors for debugging
+            \Log::error('Patient Update Validation Failed', [
+                'patient_id' => $id,
+                'errors' => $e->errors(),
+                'input' => $request->except(['password', 'image']),
+            ]);
+
+            // Re-throw the exception to let Laravel handle the redirect with errors
+            session()->flash('message.error', $e->getMessage());
         }
 
         return redirect(route('patient.edit', [$id]));

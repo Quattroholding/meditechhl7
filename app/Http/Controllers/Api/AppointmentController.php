@@ -640,6 +640,7 @@ class AppointmentController extends Controller
                 'client_id' => $client_id,
                 'created_at' => now(),
                 'updated_at' => now(),
+                'source_creation' => 'whatsapp',
             ]);
 
             if ($appointment) {
@@ -649,8 +650,11 @@ class AppointmentController extends Controller
                     'user_id' => 1, // Asume que estás usando autenticación
                 ]);
                 $appointment->addPatientToPractitionerClient();
-                $appointment->notifyPatientAboutConfirmation();
-                // Schedule reminder notification 2 hours before appointment
+                // Notificación al paciente sobre cita agendada
+                $appointment->notifyPatientAboutBooking();
+                // Notificación al médico con botones de acción
+                $appointment->notifyPractitionerAboutBooking();
+                // Programar recordatorio 2 horas antes de la cita
                 $appointment->notifyPatientAboutAppointment();
             }
 

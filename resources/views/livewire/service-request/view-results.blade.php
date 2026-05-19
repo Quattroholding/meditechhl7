@@ -164,11 +164,12 @@
                                                 {{ __('service_request_result.download') }}
                                             </button>
                                         @endif
-                                        
-                                        <button 
-                                            type="button" 
-                                            class="btn btn-danger btn-sm" 
-                                            onclick="confirm('{{ __('service_request_result.delete_confirmation') }}') && $wire.deleteResult({{ $selectedResult->id }})"
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger btn-sm"
+                                            wire:click="deleteResult({{ $selectedResult->id }})"
+                                            wire:confirm="{{ __('service_request_result.delete_confirmation') }}"
                                         >
                                             <i class="fas fa-trash me-1"></i>
                                             {{ __('service_request_result.delete') }}
@@ -265,4 +266,16 @@
             </div>
         </div>
     @endif
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('showToastrSrViewResult', (event) => {
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                });
+            });
+        </script>
 </div>

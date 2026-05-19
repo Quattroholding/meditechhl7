@@ -155,7 +155,14 @@
                                                             @endif
                                                         </div>
                                                     @endif
-
+                                                    <br/><br/>
+                                                    @if($service->performed_in_consultation || $service->procedure_notes)
+                                                        <div style="background: white; padding: 10px; border-radius: 8px; font-size: 13px; color: #374151; border: 1px solid #bae6fd;">
+                                                            @if($service->performed_in_consultation)
+                                                                <div><strong>📝 Notas del procedimiento realizado:</strong> {{ $service->procedure_notes }}</div>
+                                                            @endif
+                                                        </div>
+                                                    @endif
                                                     <!-- Resultados de Laboratorio (Observaciones) -->
                                                     @if($service->observations()->count() > 0)
                                                         <div style="background: white; padding: 15px; border-radius: 10px; margin-top: 12px; border: 2px solid #3b82f6;">
@@ -255,10 +262,35 @@
                                         </a>
                                     @endif
                                     @if($services->count() > 0)
-                                        <a href="{{route('medical-order.download',$encounter->id)}}" target="_blank"
-                                           class="btn btn-sm" style="background: #0891b2; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                            📋 Descargar Orden Médica
-                                        </a>
+                                        @php
+                                            // Agrupar service requests por tipo
+                                            $servicesByType = $services->groupBy('service_type');
+                                        @endphp
+
+                                        @foreach($servicesByType as $serviceType => $serviceGroup)
+                                            <a href="{{route('medical-order.download',$encounter->id)}}?service_type={{$serviceType}}"
+                                               target="_blank"
+                                               class="btn btn-sm"
+                                               style="background: #0891b2; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                                                @switch($serviceType)
+                                                    @case('laboratory')
+                                                        🧪
+                                                        @break
+                                                    @case('imaging')
+                                                        📸
+                                                        @break
+                                                    @case('radiology')
+                                                        ☢️
+                                                        @break
+                                                    @case('procedure')
+                                                        🩺
+                                                        @break
+                                                    @default
+                                                        📋
+                                                @endswitch
+                                                Descargar Orden {{ \App\Enums\ServiceType::pluralLabelFromValue($serviceType) }}
+                                            </a>
+                                        @endforeach
                                     @endif
                                 </div>
                             </div>

@@ -195,7 +195,7 @@
                         </dd>
 
                         <dt>Creado:</dt>
-                        <dd>{{ $apiToken->created_at->format('d/m/Y H:i') }}</dd>
+                        <dd>{{ $apiToken->created_at }}</dd>
 
                         <dt>Último uso:</dt>
                         <dd>

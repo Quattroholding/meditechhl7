@@ -32,10 +32,63 @@
                 </div>
             </div>
         </div>
-        @if($patientExists)
+        @if($patientExists && $existingPatientData)
         <div class="row">
-            <p>Este usuario ya se encuentra registrado en el sistema, ¿Desea asociarlo a su empresa?</p>
-            <a class="btn btn-primary cancel-form" id="associate-yes" wire:click.stop="asociar()">  Asociar </a>
+            <div class="col-12">
+                <div class="alert alert-info" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; padding: 20px; color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: start; gap: 15px;">
+                        <div style="font-size: 40px; opacity: 0.9;">👤</div>
+                        <div style="flex: 1;">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 15px; font-size: 18px;">
+                                ⚠️ Paciente Ya Registrado
+                            </h5>
+                            <p style="margin-bottom: 15px; opacity: 0.95; font-size: 14px;">
+                                Este paciente ya se encuentra registrado en el sistema. Por favor verifique que sea el mismo paciente antes de asociarlo a su empresa.
+                            </p>
+
+                            <div style="background: rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 15px; backdrop-filter: blur(10px);">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Nombre Completo</div>
+                                        <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['name'] ?? 'N/A' }}</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Documento</div>
+                                        <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['identifier'] ?? 'N/A' }}</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Fecha de Nacimiento</div>
+                                        <div style="font-weight: 600; font-size: 15px;">
+                                            {{ $existingPatientData['birth_date'] ? \Carbon\Carbon::parse($existingPatientData['birth_date'])->format('d/m/Y') : 'N/A' }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Género</div>
+                                        <div style="font-weight: 600; font-size: 15px;">
+                                            @if($existingPatientData['gender'] === 'male')
+                                                👨 Masculino
+                                            @elseif($existingPatientData['gender'] === 'female')
+                                                👩 Femenino
+                                            @else
+                                                {{ ucfirst($existingPatientData['gender'] ?? 'N/A') }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button type="button" class="btn btn-light" wire:click.stop="asociar()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid white;">
+                                    ✅ Sí, Asociar este Paciente
+                                </button>
+                                <button type="button" class="btn btn-outline-light" wire:click="resetForm()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5);">
+                                    ❌ No es el mismo paciente
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         @endif
         @if($patientDontExists)
@@ -195,11 +248,15 @@
                             class="form-control @error('archivos.*') is-invalid @enderror"
                             id="archivos"
                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            onchange="validateFiles(this)"
                         >
                         <small class="text-muted">Puede subir múltiples archivos (máx. 1MB por archivo). Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small>
                         @error('archivos.*')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+
+                        <!-- Mensajes de error del cliente -->
+                        <div id="client-file-errors" class="mt-2"></div>
 
                         <!-- Indicador de carga -->
                         <div wire:loading wire:target="archivos" class="mt-2">
@@ -211,25 +268,110 @@
                 </div>
             </div>
 
+            <script>
+                function validateFiles(input) {
+                    const maxSize = 1024 * 1024; // 1MB en bytes
+                    const errorContainer = document.getElementById('client-file-errors');
+                    errorContainer.innerHTML = '';
+
+                    let hasErrors = false;
+                    const files = Array.from(input.files);
+
+                    files.forEach((file, index) => {
+                        if (file.size > maxSize) {
+                            hasErrors = true;
+                            const sizeInKB = (file.size / 1024).toFixed(2);
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-2';
+                            errorDiv.innerHTML = `
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Error:</strong> El archivo "${file.name}" excede el tamaño máximo de 1 MB (${sizeInKB} KB)
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            `;
+                            errorContainer.appendChild(errorDiv);
+                        }
+                    });
+
+                    if (hasErrors) {
+                        input.value = ''; // Limpiar la selección
+                        // Mostrar notificación adicional
+                        const notification = document.createElement('div');
+                        notification.className = 'alert alert-warning mt-2';
+                        notification.innerHTML = `
+                            <i class="fas fa-info-circle me-2"></i>
+                            Los archivos no se cargaron. Por favor, seleccione archivos que no excedan 1 MB.
+                        `;
+                        errorContainer.appendChild(notification);
+                    }
+                }
+            </script>
+
             <!-- Vista previa de archivos seleccionados -->
-            @if($archivos)
+            @if($archivos && count($archivos) > 0)
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">Archivos seleccionados ({{ count($archivos) }})</h6>
+                                @if(count($fileErrors) > 0)
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        {{ count($fileErrors) }} error(es)
+                                    </span>
+                                @endif
                             </div>
                             <div class="card-body">
+                                <!-- Mostrar errores de validación de Livewire -->
+                                @if(count($fileErrors) > 0)
+                                    <div class="alert alert-danger mb-3">
+                                        <h6 class="alert-heading">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Archivos con errores:
+                                        </h6>
+                                        <ul class="mb-0">
+                                            @foreach($fileErrors as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                        <hr>
+                                        <p class="mb-0 small">Por favor, elimine los archivos con errores antes de enviar el formulario.</p>
+                                    </div>
+                                @endif
+
                                 <ul class="list-group">
                                     @foreach($archivos as $index => $archivo)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>
-                                                <i class="fas fa-file me-2"></i>
-                                                {{ $archivo->getClientOriginalName() }}
-                                            </span>
-                                            <span class="badge bg-secondary">
-                                                {{ number_format($archivo->getSize() / 1024, 2) }} KB
-                                            </span>
+                                        @php
+                                            $sizeInKB = $archivo->getSize() / 1024;
+                                            $hasError = $sizeInKB > 1024;
+                                        @endphp
+                                        <li class="list-group-item d-flex justify-content-between align-items-center {{ $hasError ? 'border-danger' : '' }}">
+                                            <div class="d-flex align-items-center flex-grow-1">
+                                                <i class="fas fa-file me-2 {{ $hasError ? 'text-danger' : 'text-muted' }}"></i>
+                                                <div>
+                                                    <div class="{{ $hasError ? 'text-danger fw-bold' : '' }}">
+                                                        {{ $archivo->getClientOriginalName() }}
+                                                    </div>
+                                                    @if($hasError)
+                                                        <small class="text-danger">
+                                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                                            Excede el tamaño máximo permitido
+                                                        </small>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge {{ $hasError ? 'bg-danger' : 'bg-secondary' }}">
+                                                    {{ number_format($sizeInKB, 2) }} KB
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    wire:click="removeFile({{ $index }})"
+                                                    class="btn btn-sm {{ $hasError ? 'btn-danger' : 'btn-outline-danger' }}"
+                                                    title="Eliminar archivo"
+                                                >
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </li>
                                     @endforeach
                                 </ul>

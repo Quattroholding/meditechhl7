@@ -25,7 +25,7 @@ class BranchScope implements Scope
                 or $user->hasRole('asistente medico')
                 or $user->hasRole('admin client')) {  // el doctor solo ve los clientes que tiene asociados
 
-            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
+            $builder->whereIn('branches.client_id', $user->clients()->pluck('client_id'));
         }
     }
 }

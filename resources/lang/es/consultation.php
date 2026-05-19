@@ -49,7 +49,7 @@ return [
     'location' => 'Ubicación',
     'lymphatic' => 'Linfático',
     'medicine' => 'Medicamentos',
-    'medical_history' => 'Historia médico',
+    'medical_history' => 'Historial médico',
     'medical_indication' => 'Indicación médica',
     'medical_necessity' => 'Necesidad médica',
     'medical_prescriptions' => 'Recetas médicas',
@@ -78,6 +78,7 @@ return [
     'social_family_history' => 'Historia Social y Familiar',
     'surgery' => 'Cirugía',
     'symptoms' => 'Síntomas',
+    'allergy' => 'Alergias',
     'relationship_primary_secondary' => 'Relación entre el diagnóstico principal y secundario',
     't' => 'Temperatura',
     'timing' => 'Momento',
@@ -116,4 +117,5 @@ return [
     'diagnostic_note' => 'Nota',
     'instruction' => 'Instrucciones adicionales',
     'diagnostic_clinical_status' => 'Estatus Clinico',
+    'changes_history' => 'Historial de Cambios',
 ];

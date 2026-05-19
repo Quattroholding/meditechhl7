@@ -1,4 +1,4 @@
-<div class="col-lg-8">
+<div class="col-lg-7">
     <div class="doctor-personals-grp">
         <div class="card">
             <div class="card-body">
@@ -112,6 +112,7 @@
                                     class="btn btn-primary cancel-form">Cancel</button>
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>

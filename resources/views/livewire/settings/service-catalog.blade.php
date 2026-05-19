@@ -348,7 +348,7 @@
                                                     <input type="number" step="0.01" wire:model="editingService.base_price" class="form-control form-control-sm">
                                                     @if(!empty($editingService['is_cpt_service']))
                                                         <small class="text-info d-block mt-1">
-                                                            Solo precio y complejidad editables
+                                                            Sólo el precio es editable
                                                         </small>
                                                     @endif
                                                 @else
@@ -400,7 +400,7 @@
                                                         <button wire:click="deleteService({{ $service->id }})"
                                                                 class="btn btn-danger btn-sm"
                                                                 title="Eliminar"
-                                                                onclick="return confirm('¿Está seguro de eliminar este servicio?')">
+                                                                 wire:confirm="¿Está seguro de eliminar este servicio?">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>

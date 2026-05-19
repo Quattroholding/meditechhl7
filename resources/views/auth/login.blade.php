@@ -66,8 +66,7 @@
                                 <!-- /Form -->
 
                                 <div class="next-sign">
-                                    <p class="account-subtitle">Need an account? <a href="{{ url('register') }}">Sign Up</a>
-                                    </p>
+                                    <!-- Registro eliminado - usar rutas públicas específicas -->
                                     <!-- Social Login -->
                                     <div class="social-login">
                                         <a href="javascript:;"><img

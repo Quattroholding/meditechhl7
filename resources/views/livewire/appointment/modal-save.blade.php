@@ -119,16 +119,31 @@
                                 {{ $buttonSaveTitle }}
                             </button>
                         @endif
-                        <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>
-                        @if(auth()->user()->can('cancelled',$appointment))
-                            <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" onclick="return confirm('¿Está seguro de eliminar esta cita?')">{{__('generic.delete')}}</button>
+                        @if($appointment && auth()->user()->can('cancelled',$appointment))
+                            <button type="button" wire:click="openCancelModal" class="btn btn-danger">
+                                <i class="fas fa-times-circle"></i> Cancelar Cita
+                            </button>
                         @endif
+                        <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>
+                        {{--}}
+                        @if(auth()->user()->can('cancelled',$appointment))
+                            <button type="button" wire:click="deleteAppointment({{ $appointment->id }})" class="btn" style="background: #dc3545; color: white;" wire:confirm="¿Está seguro de eliminar esta cita?">{{__('generic.delete')}}</button>
+                        @endif
+                        {{--}}
                     </div>
                 </form>
             </div>
         </div>
         @endteleport
     @endif
+
+    {{-- Modal de Cancelación --}}
+    <x-appointment.cancellation-modal
+        :show="$showCancelModal"
+        :cancellation-reason="$cancellationReason"
+        :custom-cancellation-reason="$customCancellationReason"
+    />
+
         <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.store('debug', {

@@ -165,6 +165,30 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['inventory.view','inventory.create','inventory.manage_stock','inventory.view_reports'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side">
+                            <i class="fa fa-boxes"></i></span>
+                        <span> Inventario </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('inventory.view')
+                        <li><a class="{{ Request::is('inventory/items') ? 'active' : '' }}" href="{{ route('inventory.items.index') }}">Catálogo de Items</a></li>
+                        @endcan
+                        @can('inventory.create')
+                        <li><a class="{{ Request::is('inventory/items/create') ? 'active' : '' }}" href="{{ route('inventory.items.create') }}">Crear Item</a></li>
+                        @endcan
+                        @can('inventory.manage_stock')
+                        <li><a class="{{ Request::is('inventory/stock') ? 'active' : '' }}" href="{{ route('inventory.stock.index') }}">Gestión de Stock</a></li>
+                        @endcan
+                        @can('inventory.view_reports')
+                        <li><a class="{{ Request::is('inventory/reports/low-stock') ? 'active' : '' }}" href="{{ route('inventory.reports.low-stock') }}">Stock Bajo</a></li>
+                        <li><a class="{{ Request::is('inventory/reports/transactions') ? 'active' : '' }}" href="{{ route('inventory.reports.transactions') }}">Historial de Transacciones</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['surveys.view','surveys.create'])
                 <li class="submenu">
                     <a href="javascript:;">
@@ -208,6 +232,11 @@
                         @can('settings.create_user_procedures')
                         <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('Servicios') }}</a></li>
                         @endcan
+                        @can('settings.signature_and_seal')
+                            @if(auth()->user()->practitioner)
+                            <li><a class="{{ Request::is('settings/{id}/signature_and_seal') ? 'active' : '' }}"  href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('Firma y Sello') }}</a></li>
+                            @endif
+                        @endcan
                         @can('settings.create_consultation_template')
                         <li><a class="{{ Request::is('settings/create_consultation_template') ? 'active' : '' }}"  href="{{ route('setting.create_template') }}">{{ __('Plantilla Consulta') }}</a></li>
                         @endcan
@@ -217,29 +246,25 @@
                         @can('settings.create_working_hour_user')
                         <li><a class="{{ Request::is('settings/create_working_hour_user') ? 'active' : '' }}"  href="{{ route('setting.create_working_hour_user') }}">{{ __('Horario Laboral') }}</a></li>
                         @endcan
+                        @if(auth()->user()->canPaySubscription())
                         @can('settings.prescription_template')
-
                             <li><a class="{{ Request::is('settings/prescription-template') ? 'active' : '' }}"  href="{{ route('setting.prescription_template') }}">{{ __('Plantilla Recetas Medicas') }}</a></li>
                         @endcan
                         @can('settings.invoice_template')
                         <li><a class="{{ Request::is('settings/invoice-template') ? 'active' : '' }}"  href="{{ route('setting.invoice_template') }}">{{ __('Plantilla de Factura') }}</a></li>
-                        @endcan
                         <li><a class="{{ Request::is('settings/medical-leave-template') ? 'active' : '' }}"  href="{{ route('setting.medical_leave_template') }}">{{ __('Plantilla de Incapacidad Médica') }}</a></li>
+                        @endcan
+                        @endif
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
                         @endcan
+                        @if(auth()->user()->canPaySubscription())
                             <li><a class="{{ Request::is('client/referral_code/') ? 'active' : '' }}"   href="{{ route('client.referral_code') }}">{{ __('Código de referidos') }}</a></li>
+                        @endif
                     </ul>
                 </li>
                 @endcanany
-                @can('practitioners.directory')
-                <li>
-                    <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
-                        <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
-                        <span>{{ __('patient.medical_directory') }}</span>
-                    </a>
-                </li>
-                @endcan
+
                 @if(auth()->user()->can('patients.medical_history') && auth()->user()->patient)
                 <li>
                     <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
@@ -258,7 +283,9 @@
                         <li><a class="{{ Request::is('users') ? 'active' : '' }}"  href="{{ route('user.index') }}">{{ __('generic.list') }} {{ __('user.titles') }}</a></li>
                         @endcan
                         @can('users.create')
-                        <li><a class="{{ Request::is('users/create') ? 'active' : '' }}"  href="{{ route('user.create') }}">{{ __('generic.create') }} {{ __('user.title') }}</a></li>
+                            @if(auth()->user()->canPaySubscription())
+                                <li><a class="{{ Request::is('users/create') ? 'active' : '' }}"  href="{{ route('user.create') }}">{{ __('generic.create') }} {{ __('user.title') }}</a></li>
+                            @endif
                         @endcan
                         @can('users.validate')
                             <li><a class="{{ Request::is('users/pending-validations') ? 'active' : '' }}"  href="{{ route('user.pending-validations') }}">{{ __('Validar Documentación') }}</a></li>
@@ -266,6 +293,44 @@
                     </ul>
                 </li>
                 @endcanany
+                @role('admin')
+                <li class="submenu">
+                    <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-key"></i></span>
+                        <span> Tokens API </span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <li><a class="{{ Request::is('api-tokens') ? 'active' : '' }}"  href="{{ route('api-tokens.index') }}">Gestionar Tokens</a></li>
+                        <li><a class="{{ Request::is('api-tokens/create') ? 'active' : '' }}"  href="{{ route('api-tokens.create') }}">Crear Token</a></li>
+                    </ul>
+                </li>
+                @endrole
+
+                @canany(['manage-roles', 'manage-permissions'])
+                    <li class="submenu">
+                        <a href="javascript:;"><span class="menu-side">
+                            <i class="fa fa-shield-alt"></i></span>
+                            <span> Roles y Permisos </span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            @can('manage-roles')
+                                <li><a class="{{ Request::is('roles') ? 'active' : '' }}"  href="{{ route('role.index') }}">Gestionar Roles</a></li>
+                            @endcan
+                            @can('manage-permissions')
+                                <li><a class="{{ Request::is('permissions') ? 'active' : '' }}"  href="{{ route('permission.index') }}">Gestionar Permisos</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany
+
+                @can('manage insurances')
+                    <li class="menu-side">
+                        <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">
+                        <span class="menu-side">
+                            <i class="fa fa-shield"></i>
+                        </span>
+                            <span>Aseguradoras</span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['manage-packages'])
                     <li class="submenu">
                         <a href="javascript:;"><span class="menu-side">
@@ -277,6 +342,7 @@
                         </ul>
                     </li>
                 @endcanany
+                @if(auth()->user()->canPaySubscription())
                 @canany(['suscriptions.show', 'suscriptions.manage', 'suscriptions.invoices.index','suscriptions.payments.index', 'suscriptions.payments.settings'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -304,6 +370,25 @@
                     </ul>
                 </li>
                 @endcan
+                @endif
+                @canany(['quotations.view', 'service_types.view'])
+                <li class="submenu">
+                    <a href="javascript:;">
+                        <span class="menu-side"><i class="fa fa-file-invoice-dollar"></i></span>
+                        <span> Cotizaciones </span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul style="display: none;">
+                        @can('quotations.view')
+                        <li><a class="{{ Request::is('quotations') ? 'active' : '' }}"
+                               href="{{ route('quotations.index') }}">Lista de Cotizaciones</a></li>
+                        @endcan
+                        @can('service_types.view')
+                        <li><a class="{{ Request::is('service-types') ? 'active' : '' }}"
+                               href="{{ route('service-types.index') }}">Tipos de Servicio</a></li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
                 @canany(['reports.appointments.view','reports.invoices-payments.view'])
                 <li class="submenu">
                     <a class="{{ Request::is('reports/*') ? 'active' : '' }}" href="#"><i class="fa fa-file-excel"></i> <span>Reportes</span> <span class="menu-arrow"></span></a>
@@ -312,6 +397,14 @@
                     </ul>
                 </li>
                 @endcanany
+                @can('practitioners.directory')
+                    <li>
+                        <a class="{{ Request::is('practitioners/directory') ? 'active' : '' }}"  href="{{ route('practitioner.directory') }}">
+                            <span class="menu-side"><i class="fa fa-user-md"></i></span>&nbsp;
+                            <span>{{ __('patient.medical_directory') }}</span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['tickets.index'])
                 <li>
                     <a class="{{ Request::is('tickets') ? 'active' : '' }}"  href="{{ route('tickets.index') }}">
@@ -344,44 +437,7 @@
                         </a>
                     </li>
                 @endcan
-                @role('admin')
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <i class="fa fa-key"></i></span>
-                        <span> Tokens API </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a class="{{ Request::is('api-tokens') ? 'active' : '' }}"  href="{{ route('api-tokens.index') }}">Gestionar Tokens</a></li>
-                        <li><a class="{{ Request::is('api-tokens/create') ? 'active' : '' }}"  href="{{ route('api-tokens.create') }}">Crear Token</a></li>
-                    </ul>
-                </li>
-                @endrole
 
-                @canany(['manage-roles', 'manage-permissions'])
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
-                            <i class="fa fa-shield-alt"></i></span>
-                        <span> Roles y Permisos </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        @can('manage-roles')
-                        <li><a class="{{ Request::is('roles') ? 'active' : '' }}"  href="{{ route('role.index') }}">Gestionar Roles</a></li>
-                        @endcan
-                        @can('manage-permissions')
-                        <li><a class="{{ Request::is('permissions') ? 'active' : '' }}"  href="{{ route('permission.index') }}">Gestionar Permisos</a></li>
-                        @endcan
-                    </ul>
-                </li>
-                @endcanany
-
-                @can('manage insurances')
-                <li class="menu-side">
-                    <a class="{{ Request::is('insurances*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">
-                        <span class="menu-side">
-                            <i class="fa fa-shield"></i>
-                        </span>
-                        <span>Aseguradoras</span>
-                    </a>
-                </li>
-                @endcan
             </ul>
             <div class="logout-btn">
                 <a href="{{ url('logout') }}">

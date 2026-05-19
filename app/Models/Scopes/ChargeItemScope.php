@@ -22,7 +22,7 @@ class ChargeItemScope implements Scope
 
         if ($user->hasRole('doctor') || $user->hasRole('recepcionista')) {
             // Filter by client_id based on user's associated clients
-            $builder->whereIn('client_id', $user->clients()->pluck('client_id'));
+            $builder->whereIn('charge_items.client_id', $user->clients()->pluck('client_id'));
         } elseif ($user->hasRole('paciente')) {
             // Filter by patient - through the patient relationship
             $builder->whereHas('patient', function ($q) use ($user) {

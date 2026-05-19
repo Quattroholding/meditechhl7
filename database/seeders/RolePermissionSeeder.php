@@ -44,6 +44,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'patients.medical_history', 'description' => 'Ver historial medico de pacientes', 'module' => 'pacientes'],
             ['name' => 'patients.add_note', 'description' => 'Agregar nota general de pacientes', 'module' => 'pacientes'],
             ['name' => 'patients.insurance', 'description' => 'Gerstionar seguros de pacientes', 'module' => 'pacientes'],
+            ['name' => 'patients.see_conditions', 'description' => 'Ver condiciones medicas de pacientes', 'module' => 'pacientes'],
 
             // Practitioner management
             ['name' => 'practitioners.view', 'description' => 'Ver lista de médicos y profesionales', 'module' => 'medicos'],
@@ -64,9 +65,11 @@ class RolePermissionSeeder extends Seeder
 
             // Consultation management
             ['name' => 'consultations.view', 'description' => 'Ver historial de consultas', 'module' => 'consultas'],
+            ['name' => 'consultations.show', 'description' => 'Ver detalle de consultas', 'module' => 'consultas'],
             ['name' => 'consultations.create', 'description' => 'Crear nuevas consultas médicas', 'module' => 'consultas'],
             ['name' => 'consultations.edit', 'description' => 'Editar consultas existentes', 'module' => 'consultas'],
             ['name' => 'consultations.delete', 'description' => 'Eliminar registros de consultas', 'module' => 'consultas'],
+            ['name' => 'consultations.download_resumen', 'description' => 'Descargar Resumen de consulta', 'module' => 'consultas'],
 
             // Branches management
             ['name' => 'branches.view', 'description' => 'Ver lista de sucursales', 'module' => 'sucursales'],
@@ -160,6 +163,31 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'tickets.change_status', 'description' => 'Comentar cambiar estauts', 'module' => 'tickets'],
             ['name' => 'tickets.assign', 'description' => 'Asignar ticket', 'module' => 'tickets'],
 
+            // Quotation management
+            ['name' => 'quotations.view', 'description' => 'Ver lista de cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.create', 'description' => 'Crear nuevas cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.edit', 'description' => 'Editar cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.delete', 'description' => 'Eliminar cotizaciones', 'module' => 'cotizaciones'],
+            ['name' => 'quotations.pdf', 'description' => 'Descargar PDF de cotizaciones', 'module' => 'cotizaciones'],
+
+            // Service Type management
+            ['name' => 'service_types.view', 'description' => 'Ver tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.create', 'description' => 'Crear tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.edit', 'description' => 'Editar tipos de servicio', 'module' => 'cotizaciones'],
+            ['name' => 'service_types.delete', 'description' => 'Eliminar tipos de servicio', 'module' => 'cotizaciones'],
+
+            // Dashboard access
+            ['name' => 'dashboard.sales', 'description' => 'Acceso al dashboard de ventas', 'module' => 'dashboards'],
+
+            // Inventory management
+            ['name' => 'inventory.view', 'description' => 'Ver catálogo de inventario y niveles de stock', 'module' => 'inventario'],
+            ['name' => 'inventory.create', 'description' => 'Crear nuevos items de inventario', 'module' => 'inventario'],
+            ['name' => 'inventory.edit', 'description' => 'Editar items de inventario existentes', 'module' => 'inventario'],
+            ['name' => 'inventory.delete', 'description' => 'Eliminar items de inventario', 'module' => 'inventario'],
+            ['name' => 'inventory.manage_stock', 'description' => 'Gestionar stock (recibir, ajustar, transferir, dar de baja)', 'module' => 'inventario'],
+            ['name' => 'inventory.dispense_supplies', 'description' => 'Dispensar suministros durante consultas', 'module' => 'inventario'],
+            ['name' => 'inventory.view_reports', 'description' => 'Ver reportes de inventario y transacciones', 'module' => 'inventario'],
+
         ];
 
         foreach ($permissions as $permissionData) {
@@ -200,8 +228,10 @@ class RolePermissionSeeder extends Seeder
             'patients.add_note',
             'patients.insurance',
             'consultations.view',
+            'consultations.show',
             'consultations.create',
             'consultations.edit',
+            'consultations.download_resumen',
             'invoices.view',
             'invoices.create',
             'invoices.edit',
@@ -229,6 +259,10 @@ class RolePermissionSeeder extends Seeder
             'rooms.delete',
             'medicines.view',
             'medicines.create',
+            'medicines.edit',
+            'medicines.delete',
+            'inventory.view',
+            'inventory.dispense_supplies',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',
@@ -253,7 +287,6 @@ class RolePermissionSeeder extends Seeder
             'patients.view',
             'patients.create',
             'patients.edit',
-            'patients.add_note',
             'patients.insurance',
             'appointments.view',
             'appointments.create',
@@ -332,12 +365,17 @@ class RolePermissionSeeder extends Seeder
             'tickets.index',
             'tickets.create',
             'tickets.comment',
+            'inventory.view',
+            'inventory.create',
+            'inventory.edit',
+            'inventory.delete',
+            'inventory.manage_stock',
+            'inventory.view_reports',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'asistente medico']);
         $doctorRole->givePermissionTo([
             'dashboard.doctor',
-            'users.view',
             'appointments.view',
             'appointments.create',
             'appointments.edit',
@@ -350,6 +388,7 @@ class RolePermissionSeeder extends Seeder
             'patients.add_note',
             'patients.insurance',
             'consultations.view',
+            'consultations.show',
             'consultations.create',
             'consultations.edit',
             'invoices.view',
@@ -361,7 +400,6 @@ class RolePermissionSeeder extends Seeder
             'payments.edit',
             'payments.delete',
             'settings.create_user_procedures',
-            'settings.create_working_hour_user',
             'service_request.view',
             'service_request.upload_result',
             'branches.view',
@@ -372,7 +410,6 @@ class RolePermissionSeeder extends Seeder
             'rooms.create',
             'rooms.edit',
             'rooms.delete',
-            'medicines.view',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',
@@ -412,6 +449,71 @@ class RolePermissionSeeder extends Seeder
 
         $adminRole = Role::firstOrCreate(['name' => 'soporte']);
         $adminRole->givePermissionTo(Permission::whereNotIn('name', ['manage-roles', 'manage-permissions', 'manage-packages', 'dashboard.doctor', 'dashboard.patient', 'dashboard.client', 'dashboard.assistence', 'dashboard.accounting'])->get());
+
+        // Ventas role - Solo acceso a cotizaciones
+        $salesRole = Role::firstOrCreate(['name' => 'ventas']);
+        $salesRole->givePermissionTo([
+            'dashboard.sales',
+            'quotations.view',
+            'quotations.create',
+            'quotations.edit',
+            'quotations.delete',
+            'quotations.pdf',
+            'service_types.view',
+            'service_types.create',
+            'service_types.edit',
+            'service_types.delete',
+            'users.profile',
+            'tickets.index',
+            'tickets.create',
+            'tickets.comment',
+        ]);
+
+        $doctorRole = Role::firstOrCreate(['name' => 'registro medico']);
+        $doctorRole->givePermissionTo([
+            'dashboard.doctor',
+            'patients.view',
+            'patients.create',
+            'patients.edit',
+            'patients.update',
+            'patients.medical_history',
+            'patients.add_note',
+            'patients.insurance',
+            'consultations.view',
+            'consultations.show',
+            'consultations.download_resumen',
+            // 'settings.prescription_template',
+            'service_request.view',
+            'service_request.upload_result',
+            'practitioners.profile',
+            'practitioners.directory',
+            'practitioners.add_assistant',
+        ]);
+
+        // Set 2FA requirement for specific roles
+        $rolesToRequire2FA = [
+            'admin' => 'Este rol requiere autenticación de dos factores por políticas de seguridad.',
+            'contabilidad' => 'Este rol maneja información financiera sensible y requiere 2FA.',
+            'validador' => 'Este rol valida usuarios y requiere 2FA para mayor seguridad.',
+            'soporte' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'ventas' => 'Este rol maneja datos de clientes y requiere 2FA.',
+            'doctor' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'recepcionista' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'admin client' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'asistente medico' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'paciente' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+            'registro medico' => 'Este rol tiene acceso a información sensible y requiere 2FA.',
+        ];
+
+        foreach ($rolesToRequire2FA as $roleName => $description) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->update([
+                    'requires_2fa' => true,
+                    'requires_2fa_description' => $description,
+                ]);
+            }
+        }
 
     }
 }

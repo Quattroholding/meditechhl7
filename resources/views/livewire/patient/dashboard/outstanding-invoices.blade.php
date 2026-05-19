@@ -182,11 +182,13 @@
                                 Puedes pagar tus facturas de forma individual o contactar con administración para un plan de pagos.
                             </p>
                         </div>
+                        {{--}}
                         <div class="flex-shrink-0">
                             <a href="{{ route('patient.payment.multiple') }}" class="btn btn-success btn-sm">
                                 <i class="fas fa-credit-card me-1"></i>Pagar Todo
                             </a>
                         </div>
+                        {{--}}
                     </div>
                 </div>
             @endif
@@ -202,19 +204,19 @@
         @endif
     </div>
     @livewire('invoice.payment-modal')
-    
+
     <style>
         /* Loading skeleton styles for invoices */
         .loading-skeleton {
             animation: pulse 1.5s ease-in-out infinite;
         }
-        
+
         .skeleton-invoice-item {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 20px;
         }
-        
+
         .skeleton-invoice-icon {
             width: 40px;
             height: 40px;
@@ -222,63 +224,63 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
-        
+
         .skeleton-invoice-number {
             height: 16px;
             background: #e9ecef;
             border-radius: 4px;
             width: 120px;
         }
-        
+
         .skeleton-invoice-date {
             height: 12px;
             background: #e9ecef;
             border-radius: 4px;
             width: 80px;
         }
-        
+
         .skeleton-invoice-description {
             height: 12px;
             background: #e9ecef;
             border-radius: 4px;
             width: 60px;
         }
-        
+
         .skeleton-invoice-service {
             height: 16px;
             background: #e9ecef;
             border-radius: 4px;
             width: 140px;
         }
-        
+
         .skeleton-amount {
             height: 12px;
             background: #e9ecef;
             border-radius: 4px;
             width: 40px;
         }
-        
+
         .skeleton-amount-value {
             height: 18px;
             background: #e9ecef;
             border-radius: 4px;
             width: 70px;
         }
-        
+
         .skeleton-pending {
             height: 12px;
             background: #e9ecef;
             border-radius: 4px;
             width: 60px;
         }
-        
+
         .skeleton-pending-value {
             height: 18px;
             background: #e9ecef;
             border-radius: 4px;
             width: 70px;
         }
-        
+
         .skeleton-badge {
             height: 24px;
             background: #e9ecef;
@@ -286,7 +288,7 @@
             width: 100px;
             margin-left: auto;
         }
-        
+
         .skeleton-actions {
             width: 30px;
             height: 30px;
@@ -294,7 +296,7 @@
             border-radius: 4px;
             margin-left: auto;
         }
-        
+
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }

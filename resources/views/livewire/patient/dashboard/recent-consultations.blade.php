@@ -94,6 +94,7 @@
                             <!-- Status and Actions -->
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 {!! $consultation->status !!}
+                                {{--}}
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('consultation.view', $consultation->id) }}"
                                        class="btn btn-outline-primary btn-sm">
@@ -107,6 +108,7 @@
                                         </a>
                                     @endif
                                 </div>
+                                {{--}}
                             </div>
                         </div>
                     </div>

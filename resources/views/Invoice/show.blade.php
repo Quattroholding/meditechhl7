@@ -1,6 +1,4 @@
-<?php $page = 'invoice-view'; ?>
-@extends('layout.mainlayout')
-@section('content')
+<x-app-layout>
     <div class="page-wrapper">
         <div class="content">
             <!-- Page Header -->
@@ -15,7 +13,6 @@
             <!-- /Page Header -->
 
             @include('partials.message')
-
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
@@ -120,7 +117,7 @@
                                 <div class="col-sm-6 col-lg-6 m-b-20">
                                     <div style="font-size: 14px;font-weight: 600;">
                                         <p>{{ __('invoice.invoice_date') }}: <i class="fa fa-calendar-check-o"></i>
-                                            <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->issue_date ? $invoice->issue_date->format('d M Y') : $invoice->created_at->format('d M Y') }}</span>
+                                            <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->issue_date ? $invoice->issue_date->format('d M Y') : $invoice->created_at }}</span>
                                         </p>
                                         <p>{{ __('invoice.due_date') }}: <i class="fa fa-calendar-check-o"></i>
                                             <span style="font-weight: 500;color: rgba(51, 53, 72, 0.5);">{{ $invoice->due_date ? $invoice->due_date->format('d M Y') : 'N/A' }}</span>
@@ -167,10 +164,36 @@
                                         @forelse($invoice->lineItems as $index => $lineItem)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td class="text-center">{{ $lineItem->service_code ?? 'N/A' }}</td>
+                                                <td class="text-center">
+                                                    @php
+                                                        $code = $lineItem->service_code ?? 'N/A';
+                                                        $description = $lineItem->service_description ?? 'N/A';
+                                                        $inventoryItem = null;
+
+                                                        // If description is generic and chargeItem has product_reference, get inventory item
+                                                        if (in_array($description, ['Servicio médico', 'N/A']) &&
+                                                            $lineItem->chargeItem &&
+                                                            is_array($lineItem->chargeItem->product_reference) &&
+                                                            isset($lineItem->chargeItem->product_reference['reference'])) {
+
+                                                            $reference = $lineItem->chargeItem->product_reference['reference'];
+                                                            if (str_contains($reference, 'InventoryItem/')) {
+                                                                $fhirId = str_replace('InventoryItem/', '', $reference);
+                                                                $inventoryItem = \App\Models\InventoryItem::where('fhir_id', $fhirId)->first();
+                                                                if ($inventoryItem) {
+                                                                    $description = $inventoryItem->name;
+                                                                    $code = $inventoryItem->sku;
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $code }}
+                                                </td>
                                                 <td>
-                                                    <strong>{{ $lineItem->service_description ?? 'N/A' }}</strong>
-                                                    @if($lineItem->chargeItem && $lineItem->chargeItem->note)
+                                                    <strong>{{ $description }}</strong>
+                                                    @if($inventoryItem && $inventoryItem->description)
+                                                        <br><small class="text-muted">{{ $inventoryItem->description }}</small>
+                                                    @elseif($lineItem->chargeItem && $lineItem->chargeItem->note)
                                                         <br><small class="text-muted">{{ $lineItem->chargeItem->note }}</small>
                                                     @endif
                                                 </td>
@@ -251,7 +274,26 @@
                                 @endif
 
                                 <!-- Payment Information -->
-                                @if($invoice->payment_date || $invoice->payment_method || $invoice->payment_reference)
+                                @php
+                                    $paymentMethod = $invoice->payment_method;
+                                    $paymentRef = $invoice->payment_reference;
+                                    $transactionId = null;
+                                    $paymentNotes = null;
+
+                                    if ($invoice->payments && $invoice->payments->count() > 0) {
+                                        $lastPayment = $invoice->payments->first();
+                                        if (!$paymentMethod) {
+                                            $paymentMethod = $lastPayment->payment_method_label;
+                                        }
+                                        if (!$paymentRef) {
+                                            $paymentRef = $lastPayment->reference_number;
+                                        }
+                                        $transactionId = $lastPayment->transaction_id;
+                                        $paymentNotes = $lastPayment->notes;
+                                    }
+                                @endphp
+
+                                @if($invoice->payment_date || $paymentMethod || $paymentRef || $transactionId || $paymentNotes)
                                     <div class="invoice-info">
                                         <h5>{{ __('invoice.payment_information') }}</h5>
                                         <div class="row">
@@ -260,14 +302,24 @@
                                                     <p><strong>{{ __('invoice.payment_date') }}:</strong><br>{{ $invoice->payment_date->format('d/m/Y') }}</p>
                                                 </div>
                                             @endif
-                                            @if($invoice->payment_method)
+                                            @if($paymentMethod)
                                                 <div class="col-md-4">
-                                                    <p><strong>{{ __('invoice.payment_method') }}:</strong><br>{{ $invoice->payment_method }}</p>
+                                                    <p><strong>{{ __('invoice.payment_method') }}:</strong><br>{{ $paymentMethod }}</p>
                                                 </div>
                                             @endif
-                                            @if($invoice->payment_reference)
+                                            @if($paymentRef)
                                                 <div class="col-md-4">
-                                                    <p><strong>{{ __('invoice.payment_reference') }}:</strong><br>{{ $invoice->payment_reference }}</p>
+                                                    <p><strong>{{ __('invoice.payment_reference') }}:</strong><br>{{ $paymentRef }}</p>
+                                                </div>
+                                            @endif
+                                            @if($transactionId)
+                                                <div class="col-md-4">
+                                                    <p><strong>{{ __('invoice.transaction_id') }}:</strong><br>{{ $transactionId }}</p>
+                                                </div>
+                                            @endif
+                                            @if($paymentNotes)
+                                                <div class="col-12">
+                                                    <p><strong>{{ __('invoice.payment_notes') }}:</strong><br>{{ $paymentNotes }}</p>
                                                 </div>
                                             @endif
                                         </div>
@@ -365,4 +417,4 @@
             }
         }
     </style>
-@endsection
+</x-app-layout>

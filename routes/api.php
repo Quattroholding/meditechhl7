@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
-use App\Http\Controllers\Api\TwilioWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -27,8 +26,15 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
+// Public data endpoints
+Route::get('/countries/{country}/states', function ($countryId) {
+    return \App\Models\State::where('country_id', $countryId)
+        ->orderBy('name')
+        ->get(['id', 'name']);
+});
+
 // Twilio Webhook - Public route (Twilio will call this)
-Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
+//Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
 
 // Survey endpoints - Public routes (WhatsApp integration using survey response token)
 Route::prefix('surveys')->group(function () {
@@ -133,7 +139,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // API Token routes - Full access with IP restrictions
-Route::middleware('api.token')->prefix('v1')->group(function () {
+Route::middleware(['api.token', 'whatsapp.client'])->prefix('v1')->group(function () {
     // All endpoints with full access
     Route::get('/practitioners', [PractitionerController::class, 'index']);
     Route::get('/practitioners/{practitioner}/availability', [PractitionerController::class, 'availability']);

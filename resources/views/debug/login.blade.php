@@ -100,6 +100,7 @@
                                             <th>Roles</th>
                                             <th>Cliente</th>
                                             <th>Plan</th>
+                                            <th>Estado Suscripción</th>
                                             <th class="text-end">Acciones</th>
                                         </tr>
                                     </thead>
@@ -142,6 +143,18 @@
                                                 <td>
                                                     {{$defaultClient?->package->name}}
                                                 </td>
+                                                <td>
+                                                    @php
+                                                        $subscription = $defaultClient?->subscription;
+                                                    @endphp
+                                                    @if($subscription && $subscription->status)
+                                                        <span class="badge bg-{{ $subscription->status->color() }}">
+                                                            {{ $subscription->status->label() }}
+                                                        </span>
+                                                    @else
+                                                        <span class="text-muted">Sin suscripción</span>
+                                                    @endif
+                                                </td>
                                                 <td class="text-end">
                                                     <form method="POST"
                                                           action="{{ route('debug.login.as', $user) }}"
@@ -156,7 +169,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="text-center py-4">
+                                                <td colspan="8" class="text-center py-4">
                                                     <p class="text-muted mb-0">No se encontraron usuarios</p>
                                                 </td>
                                             </tr>

@@ -117,14 +117,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6 col-md-6 col-xl-6">
-                                        <!-- SPECIALTY -->
-                                        <div class="input-block  local-forms">
-                                            <x-input-label for="medical_speciality" :value="__('doctor.qualifications')" required/>
-                                            <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()"
-                                                            class="block  w-full" multiple aria-label="multiple select example" :selected="[old('medical_speciality')]"/>
-                                            <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                        <!-- ROL -->
+                                        <div class="input-block local-forms">
+                                            <x-input-label for="role" :value="__('user.role')" required="true"/>
+                                            <x-select-input name="role" :options="['doctor' => 'Doctor', 'asistente medico' => 'Asistente Médico']" :selected="[old('role', 'doctor')]" class="block w-full" id="practitioner_role"/>
+                                            <x-input-error :messages="$errors->get('role')" class="mt-2" />
                                         </div>
-
                                     </div>
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- CLIENTS -->
@@ -133,6 +131,18 @@
                                             <x-select-input name="clients[]" :options="$clients" class="block  w-full" multiple aria-label="multiple select example" :selected="[old('clients')]"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('clients')" /><p>&nbsp;</p>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-12 col-xl-12">
+                                        <!-- SPECIALTY -->
+                                        <div class="input-block  local-forms">
+                                            <x-input-label for="medical_speciality" :value="__('doctor.qualifications')" required/>
+                                            <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()"
+                                                            class="block  w-full" multiple aria-label="multiple select example" :selected="[old('medical_speciality')]"/>
+                                            <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" /><p>&nbsp;</p>
+                                        </div>
+
                                     </div>
                                     <!-- BILLING ADDRESS -->
                                    {{--}} <div class=" col-12 col-md-6 col-xl-6">
@@ -165,12 +175,12 @@
 
                                     </div>
                                     {{--}}
-                                <div class="row">
+                                <div class="row" id="doctor-fields" style="display: none;">
                                     <div class="col-6 col-md-6 col-xl-6">
                                         <!-- REGISTRY -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="registry" value="{{__('doctor.registry')}}" required="true"/>
-                                            <x-text-input id="registry" class="block mt-1 w-full" type="registry" name="registry" :value="old('registry')" maxlength="60"/>
+                                            <x-text-input id="registry" class="block mt-1 w-full" type="text" name="registry" :value="old('registry')" maxlength="60"/>
                                             <x-input-error :messages="$errors->get('registry')" class="mt-2" />
                                         </div>
                                     </div>
@@ -178,7 +188,7 @@
                                         <!-- LICENSE CODE -->
                                         <div class="input-block local-forms">
                                             <x-input-label for="licence_code" value="{{__('doctor.licence_code')}}" required="true"/>
-                                            <x-text-input id="licence_code" class="block mt-1 w-full" type="licence_code" name="licence_code" :value="old('licence_code')" maxlength="60"/>
+                                            <x-text-input id="licence_code" class="block mt-1 w-full" type="text" name="licence_code" :value="old('licence_code')" maxlength="60"/>
                                             <x-input-error :messages="$errors->get('licence_code')" class="mt-2" />
                                         </div>
                                     </div>
@@ -199,4 +209,29 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('practitioner_role');
+            const doctorFields = document.getElementById('doctor-fields');
+
+            function toggleDoctorFields() {
+                const selectedRole = roleSelect.value;
+                if (selectedRole === 'doctor') {
+                    doctorFields.style.display = 'flex';
+                    document.getElementById('registry').required = true;
+                    document.getElementById('licence_code').required = true;
+                } else {
+                    doctorFields.style.display = 'none';
+                    document.getElementById('registry').required = false;
+                    document.getElementById('licence_code').required = false;
+                }
+            }
+
+            roleSelect.addEventListener('change', toggleDoctorFields);
+            toggleDoctorFields(); // Ejecutar al cargar la página
+        });
+    </script>
+    @endpush
 </x-app-layout>

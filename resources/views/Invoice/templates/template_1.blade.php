@@ -204,10 +204,31 @@
     </thead>
     <tbody>
     @foreach($lineItems as $item)
+    @php
+        $code = $item->service_code ?? 'N/A';
+        $description = $item->service_description ?? 'N/A';
+
+        // If description is generic and chargeItem has product_reference, get inventory item
+        if (in_array($description, ['Servicio médico', 'N/A']) &&
+            $item->chargeItem &&
+            is_array($item->chargeItem->product_reference) &&
+            isset($item->chargeItem->product_reference['reference'])) {
+
+            $reference = $item->chargeItem->product_reference['reference'];
+            if (str_contains($reference, 'InventoryItem/')) {
+                $fhirId = str_replace('InventoryItem/', '', $reference);
+                $inventoryItem = \App\Models\InventoryItem::where('fhir_id', $fhirId)->first();
+                if ($inventoryItem) {
+                    $description = $inventoryItem->name;
+                    $code = $inventoryItem->sku;
+                }
+            }
+        }
+    @endphp
     <tr>
         <td class="center">{{$item->sequence}}</td>
-        <td class="code">{{ $item->service_code ?? 'N/A' }}</td>
-        <td class="center">{{ $item->service_description }} </td>
+        <td class="code">{{ $code }}</td>
+        <td class="center">{{ $description }} </td>
         <td class="right">${{ number_format($item->line_total_gross, 2) }}</td>
         <td class="center">{{$item->quantity}}</td>
         <td class="right">${{ number_format($item->line_total_gross, 2) }}</td>
@@ -259,6 +280,32 @@
             <span class="green">Fecha Emisión:</span>{{ $invoice->issue_date->format('d/m/Y') }}<br>
             <span class="green">Fecha Vencimiento:</span> {{ $invoice->due_date->format('d/m/Y') }}<br>
             <span class="green">Estado:</span> {{ $invoice->payment_status->label() }}<br>
+            @php
+                $paymentMethod = $invoice->payment_method;
+                $paymentRef = $invoice->payment_reference;
+                $transactionId = null;
+                $paymentNotes = null;
+
+                if ($invoice->payments && $invoice->payments->count() > 0) {
+                    $lastPayment = $invoice->payments->first();
+                    if (!$paymentMethod) $paymentMethod = $lastPayment->payment_method_label;
+                    if (!$paymentRef) $paymentRef = $lastPayment->reference_number;
+                    $transactionId = $lastPayment->transaction_id;
+                    $paymentNotes = $lastPayment->notes;
+                }
+            @endphp
+            @if($paymentMethod)
+                <span class="green">Método de Pago:</span> {{ $paymentMethod }}<br>
+            @endif
+            @if($paymentRef)
+                <span class="green">Referencia:</span> {{ $paymentRef }}<br>
+            @endif
+            @if($transactionId)
+                <span class="green">Transacción ID:</span> {{ $transactionId }}<br>
+            @endif
+            @if($paymentNotes)
+                <span class="green">Notas de Pago:</span> {{ $paymentNotes }}<br>
+            @endif
             <span class="green">Moneda:</span> USD
         </td>
         <td width="40%">

@@ -8,20 +8,138 @@ use App\Models\SurveyResponse;
 use App\Notifications\EncounterPrescriptionNotification;
 use App\Notifications\SendPatientSatisfactionSurvey;
 use App\Services\EncounterPrescriptionPdfService;
+use App\Services\EncounterSnapshotService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class EncounterObserver
 {
     /**
+     * Safe logging that doesn't throw exceptions
+     */
+    private function safeLog(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::$level($message, $context);
+        } catch (\Exception $e) {
+            // Silently fail - logging should never stop execution
+        }
+    }
+
+    /**
+     * Handle the Encounter "created" event.
+     */
+    public function created(Encounter $encounter): void
+    {
+        $this->clearDashboardCache();
+    }
+
+    /**
      * Handle the Encounter "updated" event.
      */
     public function updated(Encounter $encounter): void
     {
-        if ($encounter->isDirty('status') && $encounter->getRawOriginal('status') == 'in-progress') {
-            $this->sendSatisfactionSurvey($encounter);
+        // Handle snapshots first (critical functionality)
+        try {
+            $this->handleEncounterSnapshots($encounter);
+        } catch (\Exception $e) {
+            $this->safeLog('error', 'Error crítico al crear snapshot', [
+                'encounter_id' => $encounter->id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        $this->sendPrescriptionNotification($encounter);
+        // Handle satisfaction survey
+        if ($encounter->isDirty('status') && $encounter->getRawOriginal('status') == 'in-progress') {
+            try {
+                $this->sendSatisfactionSurvey($encounter);
+            } catch (\Exception $e) {
+                // Log error but don't stop execution
+                $this->safeLog('error', 'Error al enviar encuesta (no crítico)', [
+                    'encounter_id' => $encounter->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Handle prescription notification
+        try {
+            $this->sendPrescriptionNotification($encounter);
+        } catch (\Exception $e) {
+            $this->safeLog('error', 'Error al enviar notificación de prescripción', [
+                'encounter_id' => $encounter->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        $this->clearDashboardCache();
+    }
+
+    /**
+     * Handle the Encounter "deleted" event.
+     */
+    public function deleted(Encounter $encounter): void
+    {
+        $this->clearDashboardCache();
+    }
+
+    /**
+     * Handle encounter snapshot creation
+     */
+    private function handleEncounterSnapshots(Encounter $encounter): void
+    {
+        try {
+            $snapshotService = app(EncounterSnapshotService::class);
+
+            // Get RAW status values (without accessors)
+            $currentStatus = $encounter->getRawOriginal('status') ?? $encounter->getAttributes()['status'] ?? null;
+            $previousStatus = $encounter->getOriginal('status');
+
+            // Case 1: Status changed to "finished" - Create initial snapshot
+
+            if ($encounter->wasChanged('status') && $currentStatus === 'finished') {
+                $snapshotService->createSnapshot(
+                    $encounter,
+                    'initial_finish',
+                    'Encounter marked as finished'
+                );
+
+                $this->safeLog('info', 'Snapshot inicial creado al finalizar encounter', [
+                    'encounter_id' => $encounter->id,
+                    'previous_status' => $previousStatus,
+                    'current_status' => $currentStatus,
+                ]);
+
+                return;
+            }
+
+            // Case 2: Encounter already finished but was modified - Create post-modification snapshot
+            if ($currentStatus === 'finished' && $encounter->wasChanged()) {
+                // Check if there are actual changes worth snapshotting
+                if ($snapshotService->hasChangedSinceLastSnapshot($encounter)) {
+                    $changedFields = array_keys($encounter->getChanges());
+                    $changeSummary = 'Modified fields: '.implode(', ', $changedFields);
+
+                    $snapshotService->createSnapshot(
+                        $encounter,
+                        'post_modification',
+                        $changeSummary
+                    );
+
+                    $this->safeLog('info', 'Snapshot post-modificación creado', [
+                        'encounter_id' => $encounter->id,
+                        'changed_fields' => $changedFields,
+                    ]);
+                }
+            }
+
+        } catch (\Exception $e) {
+            $this->safeLog('error', 'Error al crear snapshot de encounter', [
+                'encounter_id' => $encounter->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
 
     /**
@@ -37,7 +155,7 @@ class EncounterObserver
 
             // Validate practitioner has signature and seal
             if (! $pdfService->practitionerHasSignatureAndSeal($practitioner)) {
-                Log::info('Practitioner no tiene firma y sello configurados, no se envian recetas', [
+                $this->safeLog('info', 'Practitioner no tiene firma y sello configurados, no se envian recetas', [
                     'encounter_id' => $encounter->id,
                     'practitioner_id' => $practitioner->id,
                 ]);
@@ -47,7 +165,7 @@ class EncounterObserver
 
             // Validate patient has email
             if (! $patient || ! $patient->email) {
-                Log::info('Paciente sin email para envio de recetas', [
+                $this->safeLog('info', 'Paciente sin email para envio de recetas', [
                     'encounter_id' => $encounter->id,
                     'patient_id' => $patient?->id,
                 ]);
@@ -66,7 +184,7 @@ class EncounterObserver
 
             // If no unsent prescriptions, skip
             if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
-                Log::info('No hay recetas pendientes de envio para este encounter', [
+                $this->safeLog('info', 'No hay recetas pendientes de envio para este encounter', [
                     'encounter_id' => $encounter->id,
                     'patient_id' => $patient->id,
                 ]);
@@ -90,7 +208,7 @@ class EncounterObserver
                 $pdfService->markServiceRequestsAsSent($encounter);
             }
 
-            Log::info('Notificacion de recetas medicas enviada', [
+            $this->safeLog('info', 'Notificacion de recetas medicas enviada', [
                 'encounter_id' => $encounter->id,
                 'patient_id' => $patient->id,
                 'practitioner_id' => $practitioner->id,
@@ -100,7 +218,7 @@ class EncounterObserver
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error al enviar notificacion de recetas medicas', [
+            $this->safeLog('error', 'Error al enviar notificacion de recetas medicas', [
                 'encounter_id' => $encounter->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -118,7 +236,7 @@ class EncounterObserver
                 ->first();
 
             if (! $activeSurvey || $activeSurvey->questions->isEmpty()) {
-                Log::info('No hay encuesta activa disponible para enviar', [
+                $this->safeLog('info', 'No hay encuesta activa disponible para enviar', [
                     'encounter_id' => $encounter->id,
                 ]);
 
@@ -127,7 +245,7 @@ class EncounterObserver
 
             $patient = $encounter->patient;
             if (! $patient || ! $patient->email) {
-                Log::info('Paciente sin email para envío de encuesta', [
+                $this->safeLog('info', 'Paciente sin email para envío de encuesta', [
                     'encounter_id' => $encounter->id,
                     'patient_id' => $patient?->id,
                 ]);
@@ -143,7 +261,7 @@ class EncounterObserver
                 ->first();
 
             if ($existingResponse) {
-                Log::info('Ya existe una respuesta de encuesta para este paciente', [
+                $this->safeLog('info', 'Ya existe una respuesta de encuesta para este paciente', [
                     'encounter_id' => $encounter->id,
                     'patient_id' => $patient->id,
                     'survey_response_id' => $existingResponse->id,
@@ -165,7 +283,7 @@ class EncounterObserver
             // Send survey notification via email, WhatsApp, and database (delayed 15 minutes)
             $patient->notify((new SendPatientSatisfactionSurvey($surveyResponse, $encounter, $activeSurvey))->delay(now()->addMinutes(15)));
 
-            Log::info('Encuesta de satisfacción enviada', [
+            $this->safeLog('info', 'Encuesta de satisfacción enviada', [
                 'encounter_id' => $encounter->id,
                 'patient_id' => $patient->id,
                 'survey_id' => $activeSurvey->id,
@@ -175,11 +293,19 @@ class EncounterObserver
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error al enviar encuesta de satisfacción', [
+            $this->safeLog('error', 'Error al enviar encuesta de satisfacción', [
                 'encounter_id' => $encounter->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+    }
+
+    /**
+     * Clear dashboard cache for encounters
+     */
+    private function clearDashboardCache(): void
+    {
+        Cache::tags(['dashboard', 'encounters'])->flush();
     }
 }

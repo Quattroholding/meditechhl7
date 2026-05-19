@@ -4,13 +4,19 @@
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
-                    @component('components.table-header',array('show_create'=>$show_create,'title'=>'','li_1'=>route('user.create')))
+                    @component('components.table-header',array('show_create'=>auth()->user()->canPaySubscription(),'title'=>'','li_1'=>route('user.create')))
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">
                                     <label>{{__('Estatus')}}</label>
                                     <x-select-input wire:model.live="statusFilter" id="statusFilter" name="metodo" :options="['active'=>'Activos','inactive'=>'Inactivos']" :selected="[]" class="form-select"/>
                                 </div>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <div class="input-block local-forms mb-0">
+                                        <label>{{__('Cliente')}}</label>
+                                        <x-select-input wire:model.live="clientFilter" id="clientFilter" name="cliente" :options="$clients" :selected="[]" class="form-select"/>
+                                    </div>
+                                @endif
                             </div>
                         @endslot
                     @endcomponent
@@ -60,7 +66,9 @@
                                         <span class="cell-content">{{$user->id}}</span>
                                     </td>
                                     <td data-column="full_name" data-priority="2" data-label="{{__('user.full_name')}}">
-                                        <span class="cell-content">{!!  $user->profile_name !!}</span>
+                                        <span class="cell-content">
+                                            {!!  $user->profile_name !!}
+                                        </span>
                                     </td>
                                     <td data-column="email" data-priority="3" data-label="{{__('user.email')}}">
                                         <span class="cell-content">{{ $user->email }}</span>

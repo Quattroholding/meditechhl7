@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Middleware\ApiDocsIpRestriction;
 use App\Http\Middleware\ApiTokenMiddleware;
+use App\Http\Middleware\CanManageSubscription;
 use App\Http\Middleware\CheckActiveUserMiddleware;
 use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
+use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use App\Http\Middleware\FirstLoginMiddleware;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\WhatsappClientFilter;
 use App\Jobs\RetryFailedSubscriptionPayments;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -31,6 +35,45 @@ return Application::configure(basePath: dirname(__DIR__))
             // Webhook Routes (accessed via webhooks.meditecpty.com subdomain)
             // No middleware - webhooks don't need authentication or session
             Route::group([], base_path('routes/webhooks.php'));
+
+            // === Web Routes Organizadas por Dominio ===
+            // Orden lógico: dashboards primero, luego features
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/dashboard.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/practitioners.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/patients.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/clinical.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/inventory.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/users.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/organization.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/accounting.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/subscriptions.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/settings.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/admin.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web/help.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -50,20 +93,27 @@ return Application::configure(basePath: dirname(__DIR__))
             'api.token' => ApiTokenMiddleware::class,
             'concurrent.session' => DetectConcurrentSession::class,
             'debug.ip' => DebugIpRestriction::class,
+            'api.docs.ip' => ApiDocsIpRestriction::class,
+            'whatsapp.client' => WhatsappClientFilter::class,
+            'can.manage.subscription' => CanManageSubscription::class,
+            '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
 
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
         $middleware->web(append: [
             CheckActiveUserMiddleware::class,
+            EnsureTwoFactorIsEnabled::class,
+        ]);
+
+        // Add WhatsApp client filter to API routes
+        $middleware->api(append: [
+            WhatsappClientFilter::class,
         ]);
 
         // Exclude webhooks from CSRF verification
         // These are accessed via webhooks.meditecpty.com subdomain
         $middleware->validateCsrfTokens(except: [
-            'api/webhooks/twilio/*',
-            'cybersource',
-            'cybersource/*',
             'whatsapp',
             'whatsapp/*',
         ]);

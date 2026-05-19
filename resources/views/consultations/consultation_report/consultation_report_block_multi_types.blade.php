@@ -10,7 +10,12 @@
             @foreach($data->serviceRequests()->whereServiceType($type)->get() as $sr)
                 <tr class="table-contents">
                     <td>{{$sr->code}}</td>
-                    <td>{{$sr->cpt->description_es}}</td>
+                    <td>
+                        {{$sr->cpt->description_es}}
+                        @if($sr->performed_in_consultation || $sr->procedure_notes)
+                            <br/>Nota :{{$sr->procedure_notes}}
+                       @endif
+                    </td>
                 </tr>
             @endforeach
         </table>

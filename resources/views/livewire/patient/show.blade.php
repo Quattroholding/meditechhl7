@@ -21,6 +21,7 @@
                         <i class="feather-users me-2"></i>Relaciones Familiares
                     </button>
                 </li>
+                @can('consultations.download_resumen')
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'conditions' ? 'active' : '' }}"
                             wire:click="switchTab('conditions')"
@@ -28,6 +29,7 @@
                         <i class="feather-activity me-2"></i>Condiciones
                     </button>
                 </li>
+                @endcan
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'insurance' ? 'active' : '' }}"
                             wire:click="switchTab('insurance')"
@@ -74,7 +76,7 @@
                         @endif
                     </div>
                 @endif
-
+                @can('consultations.download_resumen')
                 <!-- Conditions Tab -->
                 @if($activeTab === 'conditions')
                     <div class="tab-pane fade show active">
@@ -85,7 +87,7 @@
                         @endif
                     </div>
                 @endif
-
+                @endcan
                 <!-- Insurance Tab -->
                 @if($activeTab === 'insurance')
                     <div class="tab-pane fade show active">

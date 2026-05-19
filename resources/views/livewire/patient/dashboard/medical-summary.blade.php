@@ -122,24 +122,24 @@
                     <i class="fas fa-pills text-primary me-2"></i>
                     Medicamentos Recientes
                 </div>
-
                 @if($currentMedications->count() > 0)
                     <div class="list-group list-group-flush">
                         @foreach($currentMedications as $encounter)
-
                             <div class="list-group-item px-0 py-2">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
                                         <small class="text-muted d-block">{{ $encounter->start->format('d/m/Y') }}</small>
                                         <div class="mt-1">
                                             @foreach($encounter->medicationRequests as $m)
-                                                {{ Str::limit($m->medicine->full_name, 80) }}<br/>
+                                                {{ Str::limit($m->medication2->display, 80) }}<br/>
                                             @endforeach
                                         </div>
                                     </div>
+                                    {{--}}
                                     <a href="{{ route('consultation.view', $encounter->id) }}" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    {{--}}
                                 </div>
                             </div>
                         @endforeach

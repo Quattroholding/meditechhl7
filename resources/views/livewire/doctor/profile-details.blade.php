@@ -1,4 +1,4 @@
-<div class="col-lg-8">
+<div class="col-lg-5">
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
@@ -59,6 +59,7 @@
                                 </div>
                             </div>
                         </div>
+                        @if($data->user && $data->user->hasRole('doctor'))
                         <div class="row">
                             <div class="col-12 col-md-6 col-xl-6">
                                 <!-- Registry -->
@@ -69,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-6">
-                                <!-- Registry -->
+                                <!-- Licence Code -->
                                 <div class="input-block local-forms">
                                     <x-input-label for="licence_code" :value="__('doctor.licence_code')" required="true"/>
                                     <x-text-input id="licence_code" class="block mt-1 w-full" type="text" name="licence_code" :value="$data->licence_code" />
@@ -77,6 +78,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                         <div class="row">
                             <!-- GENDER -->
                             <div class="col-12 col-md-6 col-xl-6">

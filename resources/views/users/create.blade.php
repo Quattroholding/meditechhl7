@@ -81,14 +81,14 @@
                                 <div class="col-6 col-md-6 col-xl-6" style="display: none" id="id_type">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="id_type" :value="__('doctor.id_type')" />
-                                        <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="['CC']" class="block mt-1 w-full"/>
+                                        <x-select-input name="id_type" :options="\App\Models\Lista::documentType()" :selected="[old('id_type')]" class="block mt-1 w-full" id_type/>
                                         <x-input-error :messages="$errors->get('id_type')" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-6 col-xl-6" style="display: none" id="id_number">
                                     <div class=" input-block  local-forms ">
                                         <x-input-label for="id_number" :value="__('doctor.full_id_number')" />
-                                        <x-text-input class="block mt-1 w-full" type="text" name="id_number" value="" autofocus/>
+                                        <x-text-input class="block mt-1 w-full" type="text" name="id_number" value="{{old('id_number')}}" autofocus/>
                                         <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
                                     <!-- SPECIALTY -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="medical_speciality" :value="__('doctor.qualification')" />
-                                        <x-select-input name="medical_speciality[]" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block  w-full"/>
+                                        <x-select-input name="medical_speciality[]" :selected="old('medical_speciality', [])" :options="\App\Models\MedicalSpeciality::pluck('name','id')->toArray()" class="block  w-full"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" />
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@
                                     <!-- MARITAL STATUS -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="marital_status" :value="__('patient.marital_status')" />
-                                        <x-select-input name="marital_status" :options="App\Enums\MaritalStatus::options()" class="block  w-full"/>
+                                        <x-select-input name="marital_status" :options="App\Enums\MaritalStatus::options()" class="block  w-full" :selected="[old('marital_status')]"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('marital_status')" />
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
                                     <!-- GENDER -->
                                     <div class="input-block  local-forms">
                                         <x-input-label for="gender" :value="__('user.gender')" />
-                                        <x-select-input name="gender" :options="App\Enums\Gender::options()" class="block  w-full"/>
+                                        <x-select-input name="gender" :options="App\Enums\Gender::options()" class="block  w-full" :selected="old('gender') ? [old('gender')] : []"/>
                                         <x-input-error class="mt-2" :messages="$errors->get('gender')" />
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                     <div class="input-block local-forms">
                                         <div class="form-group local-forms cal-icon">
                                             <x-input-label for="birthdate" :value="__('user.birthdate')" />
-                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="old('birthdate')"/>
+                                            <x-text-input id="birthdate" class="block mt-1 w-full datetimepicker" type="text" name="birth_date" :value="old('birth_date')"/>
                                             <x-input-error class="mt-2" :messages="$errors->get('birth_date')" />
                                         </div>
                                     </div>
@@ -271,7 +271,7 @@
 
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
-                    case 2: 
+                    case 2:
                         $("#medical_speciality").show();
                         $("#registry_field").show();
                         $("#licensecode_field").show();
@@ -305,8 +305,12 @@
                 }
         }
 
-            changeByType({{old('rol')}})
-            changeByType({{request()->get('role_id')}})
+            // Ejecutar changeByType automáticamente si hay un rol seleccionado (por ejemplo, después de un error de validación)
+            @if(old('rol'))
+                changeByType({{ old('rol') }});
+            @elseif(request()->get('role_id'))
+                changeByType({{ request()->get('role_id') }});
+            @endif
 
             // Forzar submit del formulario evitando interferencia de Livewire
             $('.submit-form').on('click', function(e) {

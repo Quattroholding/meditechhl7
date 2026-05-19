@@ -2,7 +2,9 @@
 
 namespace App\Livewire\User;
 
+use App\Models\Client;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -27,9 +29,12 @@ class DataTable extends Component
 
     public $statusFilter = 'active'; // all, active, inactive
 
+    public $clientFilter = 'all'; // all, or client_id
+
     protected $queryString = [
         'search' => ['except' => ''],
         'statusFilter' => ['except' => 'all'],
+        'clientFilter' => ['except' => 'all'],
     ];
 
     public function sortBy($field)
@@ -54,6 +59,11 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatingClientFilter()
+    {
+        $this->resetPage();
+    }
+
     /*public function activateUser($userId)
      {
          try {
@@ -68,7 +78,7 @@ class DataTable extends Component
          }
      }*/
 
-    public function render()
+    public function render(): View
     {
         $data = User::when(auth()->user()->hasRole('admin client') or auth()->user()->hasRole('doctor') or auth()->user()->hasRole('asistente medico'), function ($q) {
             $q->whereHas('clients', function ($q2) {
@@ -87,10 +97,24 @@ class DataTable extends Component
             ->when($this->statusFilter !== 'all', function (Builder $query) {
                 $query->where('active', $this->statusFilter === 'active' ? 1 : 0);
             })
+            ->when($this->clientFilter !== 'all', function (Builder $query) {
+                $query->whereHas('clients', function ($q) {
+                    $q->where('user_clients.client_id', $this->clientFilter);
+                });
+            })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
 
-        return view('livewire.user.data-table', ['data' => $data]);
+        $clients = ['all' => 'Todos'] + Client::select('id', 'name')
+            ->orderBy('name')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('livewire.user.data-table', [
+            'data' => $data,
+            'clients' => $clients,
+        ]);
 
     }
 

@@ -5,11 +5,14 @@ namespace App\Models;
 use App\Enums\AppointmentStatusEnum;
 use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Scopes\AppointmentScope;
+use App\Notifications\AppointmentBookedForPractitionerNotification;
 use App\Notifications\AppointmentBookedNotification;
 use App\Notifications\AppointmentCancelledNotification;
 use App\Notifications\AppointmentConfirmedNotification;
 use App\Notifications\AppointmentProposedNotification;
 use App\Notifications\AppointmentRejectedNotification;
+use App\Notifications\AppointmentRescheduledForPractitionerNotification;
+use App\Notifications\AppointmentRescheduledNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +30,7 @@ class Appointment extends BaseModel
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
         'consultation_type', 'virtual_room_id', 'virtual_room_url',
         'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata', 'source_creation',
+        'reminder_scheduled_at', 'reminder_sent_at',
     ];
 
     protected $casts = [
@@ -39,6 +43,8 @@ class Appointment extends BaseModel
         'virtual_session_ended_at' => 'datetime',
         'virtual_session_metadata' => 'array',
         'status' => AppointmentStatusEnum::class,
+        'reminder_scheduled_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -282,6 +288,14 @@ class Appointment extends BaseModel
         );
     }
 
+    // Notificación al practitioner sobre cita agendada
+    public function notifyPractitionerAboutBooking()
+    {
+        $this->practitioner->notify(
+            new AppointmentBookedForPractitionerNotification($this)
+        );
+    }
+
     public function notifyPatientAboutConfirmation()
     {
         $this->patient->notify(
@@ -311,6 +325,50 @@ class Appointment extends BaseModel
     }
 
     /**
+     * Notify the patient about appointment reschedule (date/time change)
+     *
+     * @param  Carbon  $originalDateTime  The original date/time before the change
+     * @param  string|null  $reason  Optional reason for the reschedule
+     */
+    public function notifyPatientAboutReschedule(Carbon $originalDateTime, ?string $reason = null)
+    {
+        $this->patient->notify(
+            new AppointmentRescheduledNotification($this, $originalDateTime, $reason)
+        );
+
+        \Log::info('Patient notified about appointment reschedule', [
+            'appointment_id' => $this->id,
+            'patient_id' => $this->patient_id,
+            'original_datetime' => $originalDateTime->format('Y-m-d H:i:s'),
+            'new_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'reason' => $reason,
+        ]);
+    }
+
+    /**
+     * Notify the practitioner about appointment reschedule (date/time change)
+     *
+     * @param  Carbon  $originalDateTime  The original date/time before the change
+     * @param  string|null  $reason  Optional reason for the reschedule
+     * @param  string|null  $changedBy  Name of the person who made the change
+     */
+    public function notifyPractitionerAboutReschedule(Carbon $originalDateTime, ?string $reason = null, ?string $changedBy = null)
+    {
+        $this->practitioner->notify(
+            new AppointmentRescheduledForPractitionerNotification($this, $originalDateTime, $reason, $changedBy)
+        );
+
+        \Log::info('Practitioner notified about appointment reschedule', [
+            'appointment_id' => $this->id,
+            'practitioner_id' => $this->practitioner_id,
+            'original_datetime' => $originalDateTime->format('Y-m-d H:i:s'),
+            'new_datetime' => $this->start->format('Y-m-d H:i:s'),
+            'reason' => $reason,
+            'changed_by' => $changedBy,
+        ]);
+    }
+
+    /**
      * Schedule a reminder notification for the patient 2 hours before the appointment
      * Only schedules if the appointment is more than 2 hours in the future
      */
@@ -329,8 +387,32 @@ class Appointment extends BaseModel
             return false;
         }
 
+        // Skip if reminder already sent
+        if ($this->reminder_sent_at) {
+            \Log::info('Appointment reminder already sent, skipping duplicate', [
+                'appointment_id' => $this->id,
+                'reminder_sent_at' => $this->reminder_sent_at->format('Y-m-d H:i:s'),
+            ]);
+
+            return false;
+        }
+
+        // Skip if reminder already scheduled (prevents re-scheduling)
+        if ($this->reminder_scheduled_at) {
+            \Log::info('Appointment reminder already scheduled, skipping', [
+                'appointment_id' => $this->id,
+                'reminder_scheduled_at' => $this->reminder_scheduled_at->format('Y-m-d H:i:s'),
+            ]);
+
+            return false;
+        }
+
         // Schedule the reminder job to run 2 hours before the appointment
         $reminderTime = $this->start->copy()->subHours(2);
+
+        // Mark reminder as scheduled BEFORE dispatching
+        $this->reminder_scheduled_at = now();
+        $this->saveQuietly(); // Use saveQuietly to avoid triggering model events
 
         SendAppointmentReminderJob::dispatch($this)->delay($reminderTime);
 
@@ -410,5 +492,20 @@ class Appointment extends BaseModel
     public function scopePresencial($query)
     {
         return $query->where('consultation_type', 'presencial');
+    }
+
+    /**
+     * Clear reminder tracking when appointment is rescheduled
+     * Allows a new reminder to be scheduled for the new datetime
+     */
+    public function clearReminderTracking(): void
+    {
+        $this->reminder_scheduled_at = null;
+        $this->reminder_sent_at = null;
+        $this->saveQuietly();
+
+        \Log::info('Reminder tracking cleared for rescheduled appointment', [
+            'appointment_id' => $this->id,
+        ]);
     }
 }

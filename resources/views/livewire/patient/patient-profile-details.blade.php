@@ -1,4 +1,4 @@
-<div class="col-lg-9">
+<div class="col-lg-8">
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
@@ -22,6 +22,7 @@
                 <div class="tab-pane active" id="account_settings" role="tabpanel">
                     <form method="POST" action="{{ route('patient.update',$patient->id) }}" id="form">
                         @csrf
+                        @method('PUT')
                         <input type="hidden" name="redirect" value="{{route('patient.profile',$patient->id)}}">
                         <div class="form-heading">
                             <h4>{{__('patient.account_settings')}}</h4>
@@ -63,8 +64,8 @@
                             <div class="col-12 col-md-6 col-xl-4">
                                 <!-- EMAIL -->
                                 <div class="input-block local-forms">
-                                    <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true"/>
-                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$patient->email"/>
+                                    <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true" />
+                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="$patient->email" readonly/>
                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
                             </div>
@@ -74,7 +75,7 @@
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
                                     <x-input-label for="gender" :value="__('patient.gender')" required="true"/>
-                                    <x-select-input name="gender" :options="\App\Models\Lista::gender()" :selected="[$patient->gender]" class="block w-full"/>
+                                    <x-select-input name="gender" :options="\App\Models\Lista::gender()" :selected="[$patient->getRawOriginal('gender')]" class="block w-full"/>
                                     <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                                 </div>
                             </div>

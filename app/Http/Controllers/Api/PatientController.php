@@ -9,6 +9,7 @@ use App\Mail\PatientWelcomeMail;
 use App\Models\Client;
 use App\Models\File;
 use App\Models\Patient;
+use App\Models\PatientClient;
 use App\Models\User;
 use App\Services\FileService;
 use Carbon\Carbon;
@@ -228,6 +229,7 @@ class PatientController extends Controller
                 'gender' => $gender,
                 'active' => true,
                 'creation_source' => 'whatsapp',
+                'communication' => '{"language": "es", "preferred": true}',
             ]);
 
             if ($patient->save()) {
@@ -370,11 +372,38 @@ class PatientController extends Controller
                     'password' => $password,
                 ];
                 if ($request->has('email') && ! config('mail.testing_mode')) {
-                    Mail::to($request->get('email'))->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
+                    Mail::to($request->email)->bcc('business@meditecpty.com')->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 } else {
                     Mail::to(config('mail.testing_patient_email'))->send(new PatientWelcomeMail($patient, $client, $registrationData));
                 }
 
+            }
+
+            // Asociar paciente al cliente si viene desde WhatsApp con cliente configurado
+            $whatsappClientId = request()->attributes->get('whatsapp_client_id');
+            if ($whatsappClientId) {
+                // Verificar que el cliente existe
+                $client = Client::find($whatsappClientId);
+                if ($client) {
+                    // Verificar si la asociación ya existe
+                    $existingAssociation = PatientClient::where('patient_id', $patient->id)
+                        ->where('client_id', $whatsappClientId)
+                        ->first();
+
+                    // Si no existe, crear la asociación
+                    if (! $existingAssociation) {
+                        PatientClient::create([
+                            'patient_id' => $patient->id,
+                            'client_id' => $whatsappClientId,
+                        ]);
+
+                        \Log::info('Paciente asociado automáticamente al cliente desde WhatsApp', [
+                            'patient_id' => $patient->id,
+                            'client_id' => $whatsappClientId,
+                            'patient_name' => $patient->name,
+                        ]);
+                    }
+                }
             }
 
             return response()->json([

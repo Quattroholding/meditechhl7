@@ -46,7 +46,8 @@ class UserProcedureCreate extends Component
             return;
         }
 
-        $response = Http::get(url('api/cpts/procedure'), [
+        $http = app()->environment('local') ? Http::withoutVerifying() : Http::asForm();
+        $response = $http->get(url('api/cpts/procedure'), [
             'dropdown' => true,
             'q' => $this->query,
         ]);

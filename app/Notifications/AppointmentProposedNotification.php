@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\WhatsAppMetaChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use Illuminate\Bus\Queueable;
@@ -17,6 +18,8 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
 
     public $backoff = [60, 300, 600];
 
+    public $deleteWhenMissingModels = true;
+
     public function __construct(
         public Appointment $appointment
     ) {
@@ -25,10 +28,18 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
 
     public function via($notifiable)
     {
-        return array_filter([
-            'database',
-            $this->getMailChannelIfValid($notifiable->email),
-        ]);
+        $channels = ['database'];
+
+        // Priorizar WhatsApp si está disponible
+        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+            $channels[] = WhatsAppMetaChannel::class;
+        }
+        // Si no tiene WhatsApp, usar email
+        elseif ($this->isValidEmail($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     public function toMail($notifiable)
@@ -39,6 +50,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
 
         return (new MailMessage)
             ->subject('Nueva Solicitud de Cita Médica - '.$clinicName)
+            ->bcc('business@meditecpty.com')
             ->view('emails.appointment-proposed', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
@@ -97,6 +109,48 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
             'comment' => $this->appointment->comment,
             'sent_at' => now()->toDateTimeString(),
         ];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     */
+    public function toWhatsApp(object $notifiable): string
+    {
+        $patient = $this->appointment->patient;
+        $requestedDate = $this->appointment->original_requested_datetime;
+        $clinicName = $this->appointment->client->name ?? config('app.name');
+
+        $message = "📋 *Nueva Solicitud de Cita*\n\n";
+        $message .= "Hola Dr. {$notifiable->name},\n\n";
+        $message .= "Ha recibido una nueva solicitud de cita:\n\n";
+
+        $message .= "👤 *Paciente:* {$patient->name}\n";
+        $message .= "📅 *Fecha solicitada:* {$requestedDate->format('d/m/Y')}\n";
+        $message .= "🕐 *Hora solicitada:* {$requestedDate->format('H:i a')}\n";
+        $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
+
+        if ($this->appointment->service_type) {
+            $message .= "🩺 *Tipo de consulta:* {$this->appointment->service_type}\n";
+        }
+
+        $message .= "🏢 *Clínica:* {$clinicName}\n";
+
+        if ($this->appointment->consultingRoom->branch->name ?? null) {
+            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
+        }
+
+        if ($this->appointment->consultingRoom->name ?? null) {
+            $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
+        }
+
+        if ($this->appointment->comment) {
+            $message .= "\n💬 *Comentario del paciente:*\n{$this->appointment->comment}\n";
+        }
+
+        $message .= "\n📱 Por favor revise la solicitud en el sistema para confirmar o proponer un nuevo horario.\n";
+        $message .= "\nGracias por su atención.";
+
+        return $message;
     }
 
     /**

@@ -7,13 +7,14 @@ use App\Models\Encounter;
 use App\Models\Invoice;
 use App\Models\Patient;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class Counter extends Component
 {
     public $function;
 
-    public $count;
+    public $count = 0;
 
     public $icon;
 
@@ -21,11 +22,11 @@ class Counter extends Component
 
     public $title;
 
-    public $change;
+    public $change = '0%';
 
     public $arrowClass;
 
-    public $symbol;
+    public $symbol = '';
 
     public function render()
     {
@@ -59,11 +60,28 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $this->count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-        $lastMonth = Appointment::whereRaw("start>='".$curr_month->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
+        $cacheKey = 'dashboard_appointments_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
 
-        // $this->change = round($lastMonth+100/$this->count,2).'%';
-        $this->change = ($this->count > 0) ? round($lastMonth + 100 / $this->count, 2).'%' : '0%';
+        $data = Cache::tags(['dashboard', 'appointments'])
+            ->remember($cacheKey, 300, function () use ($curr_month) {
+                $count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Appointment::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+
+                return ['count' => $count, 'lastMonth' => $lastMonth];
+            });
+
+        $this->count = $data['count'];
+        $lastMonth = $data['lastMonth'];
+
+        // Calcular el cambio porcentual correctamente
+        if ($lastMonth > 0) {
+            $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
+            $this->change = round($percentageChange, 2).'%';
+        } elseif ($this->count > 0) {
+            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+        } else {
+            $this->change = '0%'; // Ambos son 0
+        }
 
         if ($this->count > $lastMonth) {
             $this->class = 'passive-view';
@@ -87,11 +105,28 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $this->count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
-        $lastMonth = Patient::whereRaw("created_at>='".$curr_month->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
-        // dd($this->count);
-        // $this->change = round($lastMonth+100/$this->count).'%';
-        $this->change = ($this->count > 0) ? round($lastMonth + 100 / $this->count, 2).'%' : '0%';
+        $cacheKey = 'dashboard_patients_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
+
+        $data = Cache::tags(['dashboard', 'patients'])
+            ->remember($cacheKey, 300, function () use ($curr_month) {
+                $count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Patient::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+
+                return ['count' => $count, 'lastMonth' => $lastMonth];
+            });
+
+        $this->count = $data['count'];
+        $lastMonth = $data['lastMonth'];
+
+        // Calcular el cambio porcentual correctamente
+        if ($lastMonth > 0) {
+            $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
+            $this->change = round($percentageChange, 2).'%';
+        } elseif ($this->count > 0) {
+            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+        } else {
+            $this->change = '0%'; // Ambos son 0
+        }
 
         if ($this->count > $lastMonth) {
             $this->class = 'passive-view';
@@ -115,11 +150,29 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $this->count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-        $lastMonth = Encounter::whereRaw("start>='".$curr_month->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->count();
-        // d($this->count);
-        // $this->change = round($lastMonth+100/$this->count,2).'%';
-        $this->change = ($this->count > 0) ? round($lastMonth + 100 / $this->count, 2).'%' : '0%';
+        $cacheKey = 'dashboard_encounters_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
+
+        $data = Cache::tags(['dashboard', 'encounters'])
+            ->remember($cacheKey, 300, function () use ($curr_month) {
+                $count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Encounter::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+
+                return ['count' => $count, 'lastMonth' => $lastMonth];
+            });
+
+        $this->count = $data['count'];
+        $lastMonth = $data['lastMonth'];
+
+        // Calcular el cambio porcentual correctamente
+        if ($lastMonth > 0) {
+            $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
+            $this->change = round($percentageChange, 2).'%';
+        } elseif ($this->count > 0) {
+            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+        } else {
+            $this->change = '0%'; // Ambos son 0
+        }
+
         if ($this->count > $lastMonth) {
             $this->class = 'passive-view';
         } else {
@@ -144,23 +197,34 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $this->count = Invoice::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total_net');
-        $lastMonth = Invoice::whereRaw("created_at>='".$curr_month->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->subMonth(1)->format('Y-m-t')."'")->sum('total_net');
+        $cacheKey = 'dashboard_invoices_'.auth()->user()->client_id.'_'.$curr_month->format('Y-m');
+
+        $data = Cache::tags(['dashboard', 'invoices'])
+            ->remember($cacheKey, 300, function () use ($curr_month) {
+                $count = Invoice::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total_net') ?? 0;
+                $lastMonth = Invoice::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total_net') ?? 0;
+
+                return ['count' => $count, 'lastMonth' => $lastMonth];
+            });
+
+        $this->count = $data['count'];
+        $lastMonth = $data['lastMonth'];
 
         if ($this->count > $lastMonth) {
             $this->class = 'passive-view';
         } else {
             $this->class = 'negative-view';
         }
-        // dd($this->class);
-        /*dd($this->count);
-        if($this->count>0){
-            $this->change = round($lastMonth+100/$this->count,2).'%';
-        }else{
-            $this->change = '0%';
-        }*/
-        $this->change = ($this->count > 0) ? round($lastMonth + 100 / $this->count, 2).'%' : '0%';
-        // dd($this->change);
+
+        // Calcular el cambio porcentual correctamente
+        if ($lastMonth > 0) {
+            $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
+            $this->change = round($percentageChange, 2).'%';
+        } elseif ($this->count > 0) {
+            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+        } else {
+            $this->change = '0%'; // Ambos son 0
+        }
 
     }
 }
