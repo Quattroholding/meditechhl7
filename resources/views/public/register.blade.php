@@ -509,7 +509,6 @@
                             @enderror
                         </div>
                     </div>
-
                     @if(config('services.neopayments.enabled'))
                     <div class="card-payment-section" style="margin-top: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border: 2px solid #e0e0e0;">
                         <h3 style="color: #2D1B69; margin-bottom: 10px;"><i class="fas fa-credit-card"></i> Información de Tarjeta de Crédito</h3>
