@@ -22,6 +22,7 @@
                 </div>
             </div>
         </div>
+
         @component('components.notification-box')
         @endcomponent
     </div>
