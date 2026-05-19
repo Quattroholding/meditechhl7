@@ -478,7 +478,7 @@ class ClientInvoiceService
 
             $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
                 'gateway' => 'neopayments',
-                'transaction_id' => $result['transaction_id'] ?? null,
+                'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
                 'metadata' => $result,
                 'processed_by' => null,
             ]);
@@ -489,7 +489,7 @@ class ClientInvoiceService
                 Log::info('Automatic credit card payment successful', [
                     'invoice_id' => $invoice->id,
                     'payment_id' => $payment->id,
-                    'transaction_id' => $result['transaction_id'] ?? null,
+                    'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
                 ]);
             } else {
                 $payment->markAsFailed("Payment {$status->label()}: " . ($result['message'] ?? 'Unknown error'));

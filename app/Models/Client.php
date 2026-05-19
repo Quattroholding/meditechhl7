@@ -24,6 +24,7 @@ class Client extends Model
         'referred_by_client_id',
         'referral_code_used',
         'hemoscreen_only',
+        'neopayments_customer_id',
     ];
 
     public static function boot()

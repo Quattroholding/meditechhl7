@@ -46,12 +46,21 @@
                                         <p>USAR EL BÓTON PAGAR CON YAPPY EN EL DETALLE DE LA FACTURA</p>
                                     </div>
                                 </div>
-                                <div class="mb-4">
-                                    <h5 class="mb-3">Tarjeta de Crédito</h5>
-                                    <div class="ps-4">
-                                        <p class="text-muted">Próximamente disponible</p>
+                                @if(config('services.neopayments.enabled'))
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Tarjetas de Crédito</h5>
+                                        <div class="ps-4">
+                                            @livewire('payment.neo-credit-card-manager')
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Tarjeta de Crédito</h5>
+                                        <div class="ps-4">
+                                            <p class="text-muted">Próximamente disponible</p>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <div class="text-end">
                                     <button type="button" class="btn btn-secondary" onclick="window.history.back()">

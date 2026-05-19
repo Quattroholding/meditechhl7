@@ -23,7 +23,7 @@ class NeoPaymentsService
 
     public function __construct()
     {
-        $this->host = config('services.neopayments.host');
+        $this->host = rtrim(config('services.neopayments.host'), '/');
         $this->clientId = config('services.neopayments.client_id');
         $this->clientSecret = config('services.neopayments.client_secret');
         $this->retryAttempts = config('services.neopayments.retry_attempts', 2);
@@ -92,7 +92,7 @@ class NeoPaymentsService
                 'first_surname' => explode(' ', $client->name)[1] ?? '',
                 'doc_id_type' => 'C',
                 'doc_id' => $client->email,
-                'customer_type' => 'business',
+                'customer_type' => 'legal_person',
                 'status' => 'active',
             ]);
 
@@ -110,10 +110,10 @@ class NeoPaymentsService
 
             Log::info('NeoPayments customer created', [
                 'client_id' => $client->id,
-                'customer_id' => $data['id'] ?? null,
+                'customer_id' => $data['data']['id'] ?? null,
             ]);
 
-            return $data;
+            return $data['data'] ?? $data;
         } catch (\Exception $e) {
             Log::error('NeoPayments customer creation exception', [
                 'client_id' => $client->id,
@@ -148,15 +148,18 @@ class NeoPaymentsService
             }
 
             $data = $response->json();
-            $data['card_last_four'] = $lastFour;
 
             Log::info('NeoPayments card tokenized', [
                 'customer_id' => $customerId,
-                'card_id' => $data['card_id'] ?? null,
+                'card_id' => $cardData['id'] ?? null,
                 'card_last_four' => $lastFour,
             ]);
 
-            return $data;
+            // Extract data from nested response structure if present
+            $cardData = $data['data'] ?? $data;
+            $cardData['card_last_four'] = $lastFour;
+
+            return $cardData;
         } catch (\Exception $e) {
             Log::error('NeoPayments card tokenization exception', [
                 'customer_id' => $customerId,
@@ -225,13 +228,16 @@ class NeoPaymentsService
 
             $data = $response->json();
 
+            // Extract transaction data from nested response
+            $transactionData = $data['data'] ?? $data;
+
             Log::info('NeoPayments payment processed', [
-                'transaction_id' => $data['transaction_id'] ?? null,
+                'transaction_id' => $transactionData['id'] ?? $transactionData['identifier'] ?? null,
                 'amount' => $amount,
-                'status' => $data['status'] ?? null,
+                'status' => $transactionData['status'] ?? null,
             ]);
 
-            return $data;
+            return $transactionData;
         } catch (\Exception $e) {
             Log::error('NeoPayments payment processing exception', [
                 'amount' => $amount,
@@ -331,7 +337,7 @@ class NeoPaymentsService
     {
         return match (strtoupper($status)) {
             'PENDING' => NeoPaymentStatus::PENDING,
-            'AUTHORIZED', 'APPROVED', 'SUCCESS' => NeoPaymentStatus::AUTHORIZED,
+            'AUTHORIZED', 'APPROVED', 'SUCCESS', 'OK' => NeoPaymentStatus::AUTHORIZED,
             'DENIED', 'DECLINED' => NeoPaymentStatus::DENIED,
             'REFUSED', 'REJECTED' => NeoPaymentStatus::REFUSED,
             default => NeoPaymentStatus::FAILED,

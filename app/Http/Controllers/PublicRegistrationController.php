@@ -46,6 +46,7 @@ class PublicRegistrationController extends Controller
         ?NeoPaymentsService $neoPaymentsService = null
     ) {
         try {
+
             /*
             // Validar Turnstile solo en producción (excepto cuando viene de force_login)
             if (config('app.env') === 'production' && ! $request->has('force_login')) {
@@ -59,7 +60,7 @@ class PublicRegistrationController extends Controller
             }
             */
 
-            return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService) {
+            return DB::transaction(function () use ($request, $subscriptionService, $fileService, $practitionerService, $referralService, $neoPaymentsService) {
 
                 // Verificar si es un usuario existente que puede completar registro:
                 // 1. Usuario de SAMI Recetas (sin client asociado)
@@ -318,11 +319,11 @@ class PublicRegistrationController extends Controller
                         $creditCard = new ClientCreditCard;
                         $creditCard->client_id = $client->id;
                         $creditCard->neopayments_customer_id = $neoCustomer['id'];
-                        $creditCard->neopayments_card_id = $tokenizedCard['card_id'] ?? null;
+                        $creditCard->neopayments_card_id = $tokenizedCard['id'] ?? null;
                         $creditCard->card_token = $tokenizedCard['token'];
                         $creditCard->card_holder = $request->input('card_holder');
                         $creditCard->card_last_four = $tokenizedCard['card_last_four'];
-                        $creditCard->card_brand = $tokenizedCard['account_type'] ?? null;
+                        $creditCard->card_brand = $tokenizedCard['card_brand'] ?? $tokenizedCard['account_type'] ?? null;
                         $creditCard->exp_month = $request->input('exp_month');
                         $creditCard->exp_year = $request->input('exp_year');
                         $creditCard->is_default = true; // First card is always default
@@ -379,7 +380,7 @@ class PublicRegistrationController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Hubo un error al procesar tu registro. Por favor intenta nuevamente.');
+                ->with('error', 'Hubo un error al procesar tu registro. Por favor intenta nuevamente.' .$e->getMessage());
         }
     }
 
