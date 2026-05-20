@@ -47,6 +47,8 @@ class PublicRegistrationController extends Controller
         ?NeoPaymentsService $neoPaymentsService = null
     ) {
         try {
+            // Clear any previous 3DS challenge session data
+            session()->forget(['neopayments_3ds_challenge_url', 'neopayments_3ds_transaction_id', 'registration_client_id']);
 
             /*
             // Validar Turnstile solo en producción (excepto cuando viene de force_login)
@@ -367,9 +369,9 @@ class PublicRegistrationController extends Controller
                 // Check if payment was successful during registration (subscription is active)
                 $paymentSuccessfulDuringRegistration = $subscription->status->value === 'active';
 
-                // Check if 3DS challenge is required
+                // Check if 3DS challenge is required (only if payment is not already successful)
                 $challengeUrl = session('neopayments_3ds_challenge_url');
-                if ($challengeUrl) {
+                if ($challengeUrl && ! $paymentSuccessfulDuringRegistration) {
                     Log::info('3DS challenge required, redirecting user', [
                         'client_id' => $client->id,
                         'challenge_url' => $challengeUrl,
@@ -380,6 +382,11 @@ class PublicRegistrationController extends Controller
 
                     // Redirect to 3DS challenge
                     return redirect($challengeUrl);
+                }
+
+                // Clear 3DS session data if payment was successful (no challenge needed)
+                if ($paymentSuccessfulDuringRegistration) {
+                    session()->forget(['neopayments_3ds_challenge_url', 'neopayments_3ds_transaction_id']);
                 }
 
                 // Send consolidated notification if payment was successful, otherwise send credentials only

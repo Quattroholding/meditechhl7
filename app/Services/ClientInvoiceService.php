@@ -279,9 +279,9 @@ class ClientInvoiceService
         }
     }
 
-    public function recordPayment(ClientInvoice $invoice, float $amount, string $method, array $details = []): ClientInvoicePayment
+    public function recordPayment(ClientInvoice $invoice, float $amount, string $method, array $details = [], bool $autoComplete = true): ClientInvoicePayment
     {
-        return DB::transaction(function () use ($invoice, $amount, $method, $details) {
+        return DB::transaction(function () use ($invoice, $amount, $method, $details, $autoComplete) {
             $payment = new ClientInvoicePayment;
             $payment->client_invoice_id = $invoice->id;
             $payment->amount = $amount;
@@ -296,7 +296,9 @@ class ClientInvoiceService
             $payment->metadata = $details['metadata'] ?? null;
             $payment->save();
 
-            if ($payment->payment_method !== PaymentMethod::ACH->value) {
+            // Only auto-complete non-ACH payments if explicitly allowed
+            // For 3DS payments, we need to wait for challenge completion
+            if ($autoComplete && $payment->payment_method !== PaymentMethod::ACH->value) {
                 $payment->markAsCompleted();
             }
 
@@ -307,6 +309,7 @@ class ClientInvoiceService
                 'payment_id' => $payment->id,
                 'amount' => $amount,
                 'method' => $method,
+                'auto_completed' => $autoComplete && $payment->payment_method !== PaymentMethod::ACH->value,
             ]);
 
             return $payment->fresh();
@@ -529,14 +532,14 @@ class ClientInvoiceService
 
             // Check if 3DS authentication is required
             if (($result['status'] ?? null) === 'authenticating') {
-                // 3DS Challenge required
+                // 3DS Challenge required - Do NOT auto-complete, wait for webhook confirmation
                 $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
                     'gateway' => 'neopayments',
                     'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
                     'metadata' => $result,
                     'processed_by' => null,
                     'status' => PaymentStatus::PENDING->value,
-                ]);
+                ], autoComplete: false);
 
                 $payment->status = PaymentStatus::PENDING;
                 $payment->save();
