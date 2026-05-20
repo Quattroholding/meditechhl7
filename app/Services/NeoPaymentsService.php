@@ -258,7 +258,12 @@ class NeoPaymentsService
             // Include 3DS parameters if enabled and browser data is provided
             if (config('services.neopayments.3ds_enabled', false) && $browserData) {
                 $payload['3ds_params'] = $this->build3dsParams($browserData);
-                $payload['webhook'] = route('webhooks.neopayments');
+
+                // Use WEBHOOK_BASE_PATH if configured, otherwise use route helper
+                $webhookBasePath = config('services.neopayments.webhook_base_path');
+                $payload['webhook'] = $webhookBasePath
+                    ? rtrim($webhookBasePath, '/').'/neopayments'
+                    : route('webhooks.neopayments');
 
                 // Optional: Add return URL for redirecting user after challenge
                 $payload['return_url'] = $browserData['return_url'] ?? config('app.url').'/payment/result';

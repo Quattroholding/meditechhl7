@@ -90,6 +90,7 @@ return [
         'client_secret' => env('NEOPAYMENTS_CLIENT_SECRET'),
         'retry_attempts' => env('NEOPAYMENTS_RETRY_ATTEMPTS', 2),
         '3ds_enabled' => env('NEOPAYMENTS_3DS_ENABLED', false),
+        'webhook_base_path' => env('WEBHOOK_BASE_PATH'),
     ],
 
 ];

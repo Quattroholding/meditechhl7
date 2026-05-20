@@ -116,6 +116,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'whatsapp',
             'whatsapp/*',
+            'neopayments',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
