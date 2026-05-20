@@ -42,10 +42,9 @@ class NeoPaymentsWebhookController extends Controller
             }
 
             // Find the payment by NeoPayments transaction ID
-            // Check multiple possible fields where transaction ID might be stored
-            $payment = ClientInvoicePayment::where('transaction_id', $transactionId)
-                ->orWhere('neopayments_transaction_id', $transactionId)
-                ->orWhere('gateway_transaction_id', $transactionId)
+            // Search in gateway_transaction_id and network_transaction_id (actual DB columns)
+            $payment = ClientInvoicePayment::where('gateway_transaction_id', $transactionId)
+                ->orWhere('network_transaction_id', $transactionId)
                 ->first();
 
             if (! $payment) {
