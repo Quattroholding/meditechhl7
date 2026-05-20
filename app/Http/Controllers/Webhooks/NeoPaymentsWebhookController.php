@@ -69,9 +69,10 @@ class NeoPaymentsWebhookController extends Controller
             // Update payment based on transaction status
             if ($status === 'authorized') {
                 // Payment successful after 3DS challenge
-                $payment->response_code = $responseCode;
-                $payment->authorization_number = $authorizationNumber;
-                $payment->neopayments_transaction_id = $transactionId;
+                // Use actual DB column names: processor_response, auth_code, network_transaction_id
+                $payment->processor_response = $responseCode;
+                $payment->auth_code = $authorizationNumber;
+                $payment->network_transaction_id = $transactionId;
 
                 // Mark as completed (this will also update invoice status)
                 $payment->markAsCompleted();
@@ -83,7 +84,7 @@ class NeoPaymentsWebhookController extends Controller
             } elseif (in_array($status, ['denied', 'refused'])) {
                 // Payment failed after 3DS challenge
                 $payment->status = PaymentStatus::FAILED;
-                $payment->response_code = $responseCode;
+                $payment->processor_response = $responseCode;
                 $payment->notes = 'Payment failed after 3DS authentication: '.$status;
                 $payment->save();
 
@@ -91,7 +92,7 @@ class NeoPaymentsWebhookController extends Controller
                     'payment_id' => $payment->id,
                     'invoice_id' => $payment->invoice_id,
                     'status' => $status,
-                    'response_code' => $responseCode,
+                    'processor_response' => $responseCode,
                 ]);
             } else {
                 // Unknown status
