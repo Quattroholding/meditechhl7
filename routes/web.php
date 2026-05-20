@@ -108,6 +108,8 @@ Route::post('/register/client', [PublicRegistrationController::class, 'store'])
     ->name('public.register.store');
 Route::get('/register/success', [PublicRegistrationController::class, 'success'])
     ->name('public.register.success');
+Route::get('/payment/result', [PublicRegistrationController::class, 'paymentResult'])
+    ->name('payment.result');
 
 // Patient Registration (IMPORTANTE: success route debe ir ANTES de {client} para evitar conflictos)
 Route::get('/register/patient/success', [PublicPatientRegistrationController::class, 'success'])

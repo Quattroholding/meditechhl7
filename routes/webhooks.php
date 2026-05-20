@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\HemoScreenController;
 use App\Http\Controllers\Api\HemoScreenStandaloneController;
 use App\Http\Controllers\SuscriptionPaymentController;
+use App\Http\Controllers\Webhooks\NeoPaymentsWebhookController;
 use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,11 @@ Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {
     // POST: Webhook handler (Meta sends webhook data here)
     Route::post('/', [WhatsAppWebhookController::class, 'handle'])->name('handle');
 });
+
+// NeoPayments Webhooks (3DS Challenge results)
+// URL: webhooks.meditecpty.com/neopayments
+Route::post('/neopayments', [NeoPaymentsWebhookController::class, 'handle'])
+    ->name('webhooks.neopayments');
 
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
 

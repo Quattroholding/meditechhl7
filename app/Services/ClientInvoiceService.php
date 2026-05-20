@@ -16,6 +16,7 @@ use App\Notifications\InvoiceGeneratedNotification;
 use App\Notifications\PaymentFailedNotification;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -485,27 +486,75 @@ class ClientInvoiceService
                 'registration' => $isRegistration,
             ];
 
+            // Retrieve browser data from cache for 3DS authentication (if available)
+            $browserData = null;
+            if (config('services.neopayments.3ds_enabled')) {
+                $browserData = Cache::pull("neopayments_browser_data_{$invoice->client_id}");
+
+                if ($browserData) {
+                    Log::info('Browser data retrieved from cache for 3DS', [
+                        'invoice_id' => $invoice->id,
+                        'client_id' => $invoice->client_id,
+                        'has_browser_data' => true,
+                    ]);
+                }
+            }
+
             // During registration, use single attempt without retries for faster feedback
             if ($isRegistration) {
                 Log::info('Using single payment attempt (registration mode)', [
                     'invoice_id' => $invoice->id,
+                    '3ds_enabled' => ! empty($browserData),
                 ]);
 
                 $result = $this->neoPaymentsService->processPayment(
                     $defaultCard->card_token,
                     $invoice->total,
-                    $metadata
+                    $metadata,
+                    $browserData
                 );
             } else {
                 Log::info('Using payment with retry (normal mode)', [
                     'invoice_id' => $invoice->id,
+                    '3ds_enabled' => ! empty($browserData),
                 ]);
 
                 $result = $this->neoPaymentsService->processPaymentWithRetry(
                     $defaultCard->card_token,
                     $invoice->total,
-                    $metadata
+                    $metadata,
+                    $browserData
                 );
+            }
+
+            // Check if 3DS authentication is required
+            if (($result['status'] ?? null) === 'authenticating') {
+                // 3DS Challenge required
+                $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
+                    'gateway' => 'neopayments',
+                    'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
+                    'metadata' => $result,
+                    'processed_by' => null,
+                    'status' => PaymentStatus::PENDING->value,
+                ]);
+
+                $payment->status = PaymentStatus::PENDING;
+                $payment->save();
+
+                Log::info('3DS authentication required, payment pending challenge', [
+                    'invoice_id' => $invoice->id,
+                    'payment_id' => $payment->id,
+                    'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
+                    'challenge_url' => $result['metadatas']['3ds_authentication_form'] ?? null,
+                ]);
+
+                // Store challenge URL in session for redirect
+                if (isset($result['metadatas']['3ds_authentication_form'])) {
+                    session(['neopayments_3ds_challenge_url' => $result['metadatas']['3ds_authentication_form']]);
+                    session(['neopayments_3ds_transaction_id' => $result['id'] ?? $result['identifier'] ?? null]);
+                }
+
+                return $payment;
             }
 
             $status = $this->neoPaymentsService->mapTransactionStatus($result['status'] ?? 'FAILED');

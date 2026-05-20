@@ -18,6 +18,7 @@ use App\Services\PractitionerService;
 use App\Services\ReferralService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -337,6 +338,20 @@ class PublicRegistrationController extends Controller
                         'card_last_four' => $creditCard->card_last_four,
                         'neopayments_customer_id' => $neoCustomer['id'],
                     ]);
+
+                    // Store browser data for 3DS authentication (if available)
+                    if ($request->has('browser_data') && config('services.neopayments.3ds_enabled')) {
+                        $browserData = $request->input('browser_data');
+                        $browserData['ip'] = $request->ip(); // Add real IP from server side
+
+                        // Cache browser data for 5 minutes (will be used during payment processing)
+                        Cache::put("neopayments_browser_data_{$client->id}", $browserData, now()->addMinutes(5));
+
+                        Log::info('Browser data cached for 3DS authentication', [
+                            'client_id' => $client->id,
+                            'has_browser_data' => true,
+                        ]);
+                    }
                 }
 
                 // 8. Crear suscripción (la factura se generará y se intentará pago automático)
@@ -351,6 +366,21 @@ class PublicRegistrationController extends Controller
 
                 // Check if payment was successful during registration (subscription is active)
                 $paymentSuccessfulDuringRegistration = $subscription->status->value === 'active';
+
+                // Check if 3DS challenge is required
+                $challengeUrl = session('neopayments_3ds_challenge_url');
+                if ($challengeUrl) {
+                    Log::info('3DS challenge required, redirecting user', [
+                        'client_id' => $client->id,
+                        'challenge_url' => $challengeUrl,
+                    ]);
+
+                    // Store client_id for after challenge redirect
+                    session(['registration_client_id' => $client->id]);
+
+                    // Redirect to 3DS challenge
+                    return redirect($challengeUrl);
+                }
 
                 // Send consolidated notification if payment was successful, otherwise send credentials only
                 $delay = now()->plus(minutes: 1);
@@ -424,6 +454,51 @@ class PublicRegistrationController extends Controller
         }
 
         return view('public.registration-success', compact('invoicePending', 'pendingInvoice'));
+    }
+
+    /**
+     * Handle redirect after 3DS challenge completion
+     */
+    public function paymentResult()
+    {
+        $clientId = session('registration_client_id');
+
+        if (! $clientId) {
+            return redirect()->route('welcome');
+        }
+
+        // Clear the registration client ID from session
+        session()->forget('registration_client_id');
+
+        // Check if payment was completed (webhook will have updated payment status)
+        $client = Client::find($clientId);
+
+        if ($client) {
+            $latestInvoice = $client->invoices()->latest()->first();
+
+            if ($latestInvoice && $latestInvoice->is_paid) {
+                // Payment successful
+                Log::info('3DS challenge completed successfully', [
+                    'client_id' => $clientId,
+                    'invoice_id' => $latestInvoice->id,
+                ]);
+
+                return redirect()->route('public.register.success')
+                    ->with('client_id', $clientId)
+                    ->with('invoice_pending', false)
+                    ->with('payment_3ds_completed', true);
+            }
+        }
+
+        // Payment still pending or failed
+        Log::info('3DS challenge completed but payment not confirmed yet', [
+            'client_id' => $clientId,
+        ]);
+
+        return redirect()->route('public.register.success')
+            ->with('client_id', $clientId)
+            ->with('invoice_pending', true)
+            ->with('payment_3ds_pending', true);
     }
 
     private function validateTurnstile(string $token): bool

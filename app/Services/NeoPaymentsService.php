@@ -203,17 +203,33 @@ class NeoPaymentsService
         }
     }
 
-    public function processPayment(string $cardToken, float $amount, array $metadata = []): array
+    public function processPayment(string $cardToken, float $amount, array $metadata = [], ?array $browserData = null): array
     {
         try {
             $amountInCents = (int) ($amount * 100);
 
-            $response = $this->httpClient()->post($this->host.'/api/v2/recurrent_payment/sale', [
+            $payload = [
                 'customer_token' => $cardToken,
                 'currency_code' => 'USD',
                 'amount' => $amountInCents,
                 'metadatas' => $metadata,
-            ]);
+            ];
+
+            // Include 3DS parameters if enabled and browser data is provided
+            if (config('services.neopayments.3ds_enabled', false) && $browserData) {
+                $payload['3ds_params'] = $this->build3dsParams($browserData);
+                $payload['webhook'] = route('webhooks.neopayments');
+
+                // Optional: Add return URL for redirecting user after challenge
+                $payload['return_url'] = $browserData['return_url'] ?? config('app.url').'/payment/result';
+
+                Log::info('NeoPayments: 3DS enabled, including 3DS params', [
+                    'has_browser_data' => ! empty($browserData),
+                    'webhook' => $payload['webhook'],
+                ]);
+            }
+
+            $response = $this->httpClient()->post($this->host.'/api/v2/recurrent_payment/sale', $payload);
 
             if ($response->failed()) {
                 Log::error('NeoPayments payment processing failed', [
@@ -221,6 +237,7 @@ class NeoPaymentsService
                     'status' => $response->status(),
                     'body' => $response->body(),
                     'metadata' => $metadata,
+                    '3ds_enabled' => ! empty($payload['3ds_params']),
                 ]);
 
                 throw new \Exception('Payment processing failed: '.$response->body());
@@ -235,6 +252,7 @@ class NeoPaymentsService
                 'transaction_id' => $transactionData['id'] ?? $transactionData['identifier'] ?? null,
                 'amount' => $amount,
                 'status' => $transactionData['status'] ?? null,
+                '3ds_authentication_required' => ($transactionData['status'] ?? null) === 'authenticating',
             ]);
 
             return $transactionData;
@@ -247,6 +265,32 @@ class NeoPaymentsService
 
             throw $e;
         }
+    }
+
+    /**
+     * Build 3DS parameters from browser data
+     */
+    private function build3dsParams(array $browserData): array
+    {
+        // Convert java_enabled to boolean (comes as string from POST)
+        $javaEnabled = false;
+        if (isset($browserData['java_enabled'])) {
+            $javaEnabled = filter_var($browserData['java_enabled'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return [
+            'deviceChannel' => 'browser',
+            'browserIP' => $browserData['ip'] ?? '127.0.0.1',
+            'browserJavaEnabled' => $javaEnabled,
+            'browserJavascriptEnabled' => true,
+            'browserLanguage' => $browserData['language'] ?? 'es',
+            'browserColorDepth' => (int) ($browserData['color_depth'] ?? 24),
+            'browserScreenHeight' => (int) ($browserData['screen_height'] ?? 1080),
+            'browserScreenWidth' => (int) ($browserData['screen_width'] ?? 1920),
+            'browserTZ' => (string) ($browserData['timezone_offset'] ?? '0'),
+            'browserUserAgent' => $browserData['user_agent'] ?? request()->userAgent(),
+            'challengeWindowSize' => (int) ($browserData['window_size'] ?? $browserData['screen_width'] ?? 1920),
+        ];
     }
 
     public function getTransaction(string $transactionId): array
@@ -275,18 +319,25 @@ class NeoPaymentsService
         }
     }
 
-    public function processPaymentWithRetry(string $cardToken, float $amount, array $metadata = []): array
+    public function processPaymentWithRetry(string $cardToken, float $amount, array $metadata = [], ?array $browserData = null): array
     {
         $attempts = 0;
         $lastException = null;
 
         while ($attempts <= $this->retryAttempts) {
             try {
-                $result = $this->processPayment($cardToken, $amount, $metadata);
+                $result = $this->processPayment($cardToken, $amount, $metadata, $browserData);
 
                 $status = $this->mapTransactionStatus($result['status'] ?? 'FAILED');
 
                 if ($status->isSuccess()) {
+                    return $result;
+                }
+
+                // If status is "authenticating", return immediately (3DS challenge required)
+                if (($result['status'] ?? null) === 'authenticating') {
+                    Log::info('NeoPayments: 3DS authentication required, returning for user challenge');
+
                     return $result;
                 }
 

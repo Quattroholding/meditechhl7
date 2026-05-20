@@ -690,6 +690,49 @@
                 });
             }
 
+            // Collect browser data for 3DS
+            function collectBrowserData() {
+                // Ensure javaEnabled is always a boolean
+                let javaEnabled = false;
+                try {
+                    javaEnabled = navigator.javaEnabled ? Boolean(navigator.javaEnabled()) : false;
+                } catch (e) {
+                    javaEnabled = false;
+                }
+
+                const browserData = {
+                    ip: '', // Will be set by backend
+                    java_enabled: javaEnabled,
+                    language: navigator.language || 'es',
+                    color_depth: screen.colorDepth || 24,
+                    screen_height: screen.height || 1080,
+                    screen_width: screen.width || 1920,
+                    timezone_offset: new Date().getTimezoneOffset().toString(),
+                    user_agent: navigator.userAgent || '',
+                    window_size: screen.width || 1920
+                };
+
+                return browserData;
+            }
+
+            // Add browser data as hidden fields to form
+            function addBrowserDataToForm(form) {
+                const browserData = collectBrowserData();
+
+                // Debug: Log browser data to console
+                console.log('Browser Data for 3DS:', browserData);
+                console.log('Java Enabled Type:', typeof browserData.java_enabled);
+
+                // Add each browser data field as hidden input
+                Object.keys(browserData).forEach(key => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = `browser_data[${key}]`;
+                    input.value = browserData[key];
+                    form.appendChild(input);
+                });
+            }
+
             // Handle form submission - disable button and show loading state
             const registrationForm = document.getElementById('registrationForm');
             const submitButton = document.getElementById('submitButton');
@@ -698,6 +741,9 @@
 
             if (registrationForm && submitButton) {
                 registrationForm.addEventListener('submit', function(e) {
+                    // Add browser data to form for 3DS
+                    addBrowserDataToForm(registrationForm);
+
                     // Disable the button to prevent multiple submissions
                     submitButton.disabled = true;
 

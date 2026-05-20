@@ -89,6 +89,7 @@ return [
         'client_id' => env('NEOPAYMENTS_CLIENT_ID'),
         'client_secret' => env('NEOPAYMENTS_CLIENT_SECRET'),
         'retry_attempts' => env('NEOPAYMENTS_RETRY_ATTEMPTS', 2),
+        '3ds_enabled' => env('NEOPAYMENTS_3DS_ENABLED', false),
     ],
 
 ];
