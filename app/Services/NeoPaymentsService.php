@@ -84,17 +84,53 @@ class NeoPaymentsService
             ->timeout(30);
     }
 
+    /**
+     * Refresh access token by clearing cache and re-authenticating
+     */
+    private function refreshAccessToken(): void
+    {
+        Log::info('NeoPayments: Refreshing expired access token');
+
+        Cache::forget('neopayments_access_token');
+        $this->accessToken = null;
+        $this->accessToken = $this->authenticate();
+    }
+
+    /**
+     * Make an authenticated HTTP request with automatic token refresh on 401
+     */
+    private function makeAuthenticatedRequest(callable $requestCallback, int $retryCount = 0): mixed
+    {
+        $response = $requestCallback($this->httpClient());
+
+        // If we get a 401 Unauthenticated error and haven't retried yet, refresh token and retry
+        if ($response->status() === 401 && $retryCount === 0) {
+            Log::warning('NeoPayments: Received 401 Unauthenticated, refreshing token and retrying', [
+                'body' => $response->body(),
+            ]);
+
+            $this->refreshAccessToken();
+
+            // Retry the request with the new token
+            return $this->makeAuthenticatedRequest($requestCallback, $retryCount + 1);
+        }
+
+        return $response;
+    }
+
     public function createCustomer(Client $client): array
     {
         try {
-            $response = $this->httpClient()->post($this->host.'/api/v2/customers', [
-                'name' => explode(' ', $client->name)[0] ?? $client->name,
-                'first_surname' => explode(' ', $client->name)[1] ?? '',
-                'doc_id_type' => 'C',
-                'doc_id' => $client->email,
-                'customer_type' => 'legal_person',
-                'status' => 'active',
-            ]);
+            $response = $this->makeAuthenticatedRequest(function ($http) use ($client) {
+                return $http->post($this->host.'/api/v2/customers', [
+                    'name' => explode(' ', $client->name)[0] ?? $client->name,
+                    'first_surname' => explode(' ', $client->name)[1] ?? '',
+                    'doc_id_type' => 'C',
+                    'doc_id' => $client->email,
+                    'customer_type' => 'legal_person',
+                    'status' => 'active',
+                ]);
+            });
 
             if ($response->failed()) {
                 Log::error('NeoPayments customer creation failed', [
@@ -130,12 +166,14 @@ class NeoPaymentsService
             $cardNumber = preg_replace('/\s+/', '', $cardData['card_number']);
             $lastFour = substr($cardNumber, -4);
 
-            $response = $this->httpClient()->post($this->host."/api/v2/customers/{$customerId}/card", [
-                'card_holder' => $cardData['card_holder'],
-                'card_number' => $cardNumber,
-                'exp_date' => $cardData['exp_date'],
-                'status' => 'active',
-            ]);
+            $response = $this->makeAuthenticatedRequest(function ($http) use ($customerId, $cardData, $cardNumber) {
+                return $http->post($this->host."/api/v2/customers/{$customerId}/card", [
+                    'card_holder' => $cardData['card_holder'],
+                    'card_number' => $cardNumber,
+                    'exp_date' => $cardData['exp_date'],
+                    'status' => 'active',
+                ]);
+            });
 
             if ($response->failed()) {
                 Log::error('NeoPayments card tokenization failed', [
@@ -173,7 +211,9 @@ class NeoPaymentsService
     public function deleteCard(string $customerId, string $cardId): bool
     {
         try {
-            $response = $this->httpClient()->delete($this->host."/api/v2/customers/{$customerId}/card/{$cardId}");
+            $response = $this->makeAuthenticatedRequest(function ($http) use ($customerId, $cardId) {
+                return $http->delete($this->host."/api/v2/customers/{$customerId}/card/{$cardId}");
+            });
 
             if ($response->failed()) {
                 Log::error('NeoPayments card deletion failed', [
@@ -229,7 +269,9 @@ class NeoPaymentsService
                 ]);
             }
 
-            $response = $this->httpClient()->post($this->host.'/api/v2/recurrent_payment/sale', $payload);
+            $response = $this->makeAuthenticatedRequest(function ($http) use ($payload) {
+                return $http->post($this->host.'/api/v2/recurrent_payment/sale', $payload);
+            });
 
             if ($response->failed()) {
                 Log::error('NeoPayments payment processing failed', [
@@ -296,7 +338,9 @@ class NeoPaymentsService
     public function getTransaction(string $transactionId): array
     {
         try {
-            $response = $this->httpClient()->get($this->host."/api/v2/transactions/{$transactionId}");
+            $response = $this->makeAuthenticatedRequest(function ($http) use ($transactionId) {
+                return $http->get($this->host."/api/v2/transactions/{$transactionId}");
+            });
 
             if ($response->failed()) {
                 Log::error('NeoPayments transaction query failed', [
