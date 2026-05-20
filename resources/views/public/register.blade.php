@@ -155,9 +155,14 @@
             margin-top: 30px;
         }
 
-        .submit-button:hover {
+        .submit-button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(45, 27, 105, 0.3);
+        }
+
+        .submit-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         .back-link {
@@ -597,8 +602,13 @@
                     </div>
                 @endif
                 {{--}}
-                <button type="submit" class="submit-button">
-                    <i class="fas fa-user-plus"></i> Registrarse
+                <button type="submit" class="submit-button" id="submitButton">
+                    <span id="buttonText">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </span>
+                    <span id="buttonLoading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Procesando registro...
+                    </span>
                 </button>
             </form>
 
@@ -677,6 +687,27 @@
                     let value = e.target.value.replace(/\s/g, '');
                     let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
                     e.target.value = formattedValue;
+                });
+            }
+
+            // Handle form submission - disable button and show loading state
+            const registrationForm = document.getElementById('registrationForm');
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const buttonLoading = document.getElementById('buttonLoading');
+
+            if (registrationForm && submitButton) {
+                registrationForm.addEventListener('submit', function(e) {
+                    // Disable the button to prevent multiple submissions
+                    submitButton.disabled = true;
+
+                    // Show loading state
+                    buttonText.style.display = 'none';
+                    buttonLoading.style.display = 'inline';
+
+                    // Change button appearance
+                    submitButton.style.cursor = 'not-allowed';
+                    submitButton.style.opacity = '0.7';
                 });
             }
         });

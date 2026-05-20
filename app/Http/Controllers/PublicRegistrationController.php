@@ -297,64 +297,75 @@ class PublicRegistrationController extends Controller
                 }
 
                 // 7.5. Tokenize Credit Card (if NeoPayments enabled and card data provided)
+                // Payment will be automatically processed when subscription invoice is generated
                 if (config('services.neopayments.enabled') && $request->filled('card_number')) {
-                    try {
-                        if (!$neoPaymentsService) {
-                            $neoPaymentsService = app(NeoPaymentsService::class);
-                        }
-
-                        // Create NeoPayments customer
-                        $neoCustomer = $neoPaymentsService->createCustomer($client);
-
-                        // Tokenize card
-                        $cardData = [
-                            'card_holder' => $request->input('card_holder'),
-                            'card_number' => $request->input('card_number'),
-                            'exp_date' => $request->input('exp_month') . '/' . $request->input('exp_year'),
-                        ];
-
-                        $tokenizedCard = $neoPaymentsService->addCard($neoCustomer['id'], $cardData);
-
-                        // Store card in database
-                        $creditCard = new ClientCreditCard;
-                        $creditCard->client_id = $client->id;
-                        $creditCard->neopayments_customer_id = $neoCustomer['id'];
-                        $creditCard->neopayments_card_id = $tokenizedCard['id'] ?? null;
-                        $creditCard->card_token = $tokenizedCard['token'];
-                        $creditCard->card_holder = $request->input('card_holder');
-                        $creditCard->card_last_four = $tokenizedCard['card_last_four'];
-                        $creditCard->card_brand = $tokenizedCard['card_brand'] ?? $tokenizedCard['account_type'] ?? null;
-                        $creditCard->exp_month = $request->input('exp_month');
-                        $creditCard->exp_year = $request->input('exp_year');
-                        $creditCard->is_default = true; // First card is always default
-                        $creditCard->metadata = $tokenizedCard;
-                        $creditCard->save();
-
-                        Log::info('Credit card tokenized during registration', [
-                            'client_id' => $client->id,
-                            'card_last_four' => $creditCard->card_last_four,
-                            'neopayments_customer_id' => $neoCustomer['id'],
-                        ]);
-                    } catch (\Exception $e) {
-                        Log::error('Credit card tokenization failed during registration', [
-                            'client_id' => $client->id,
-                            'error' => $e->getMessage(),
-                        ]);
-
-                        // Continue registration without card - user can add later
-                        // Don't throw exception to avoid breaking registration flow
+                    if (! $neoPaymentsService) {
+                        $neoPaymentsService = app(NeoPaymentsService::class);
                     }
+
+                    // Create NeoPayments customer
+                    $neoCustomer = $neoPaymentsService->createCustomer($client);
+                    $client->update(['neopayments_customer_id' => $neoCustomer['id']]);
+
+                    // Tokenize card
+                    $cardData = [
+                        'card_holder' => $request->input('card_holder'),
+                        'card_number' => $request->input('card_number'),
+                        'exp_date' => $request->input('exp_month').'/'.$request->input('exp_year'),
+                    ];
+
+                    $tokenizedCard = $neoPaymentsService->addCard($neoCustomer['id'], $cardData);
+
+                    // Store card in database
+                    $creditCard = new ClientCreditCard;
+                    $creditCard->client_id = $client->id;
+                    $creditCard->neopayments_customer_id = $neoCustomer['id'];
+                    $creditCard->neopayments_card_id = $tokenizedCard['id'] ?? null;
+                    $creditCard->card_token = $tokenizedCard['token'];
+                    $creditCard->card_holder = $request->input('card_holder');
+                    $creditCard->card_last_four = $tokenizedCard['card_last_four'];
+                    $creditCard->card_brand = $tokenizedCard['card_brand'] ?? $tokenizedCard['account_type'] ?? null;
+                    $creditCard->exp_month = $request->input('exp_month');
+                    $creditCard->exp_year = $request->input('exp_year');
+                    $creditCard->is_default = true;
+                    $creditCard->is_active = true;
+                    $creditCard->metadata = $tokenizedCard;
+                    $creditCard->save();
+
+                    Log::info('Credit card tokenized during registration', [
+                        'client_id' => $client->id,
+                        'card_last_four' => $creditCard->card_last_four,
+                        'neopayments_customer_id' => $neoCustomer['id'],
+                    ]);
                 }
 
-                // 8. Crear suscripción (la factura se generará con el descuento ya aplicado)
+                // 8. Crear suscripción (la factura se generará y se intentará pago automático)
+                // The subscription service will create the invoice, which will trigger automatic payment
+                // If payment fails during registration, it will throw exception and rollback everything
                 $subscription = $subscriptionService->create($client, $package, [
                     'trial_days' => 0,
                     'free_months' => 0,
                     'extra_doctors' => 0,
                     'billing_day' => now()->day,
                 ]);
-                // Enviar notificación con credenciales temporales
+
+                // Check if payment was successful during registration (subscription is active)
+                $paymentSuccessfulDuringRegistration = $subscription->status->value === 'active';
+
+                // Send consolidated notification if payment was successful, otherwise send credentials only
                 $delay = now()->plus(minutes: 1);
+                if ($paymentSuccessfulDuringRegistration) {
+                    // Payment successful: Send consolidated welcome notification
+                    // This is handled by suppressing individual notifications
+                    // The credentials notification will be sent, and the SubscriptionActivated and Invoice notifications will be suppressed
+                    Log::info('Payment successful during registration - sending consolidated notification', [
+                        'client_id' => $client->id,
+                        'user_id' => $user->id,
+                    ]);
+                }
+
+                // Always send credentials notification
+                // If payment was successful, the SubscriptionActivatedNotification will include invoice details
                 $user->notify((new PractitionerCredentialsNotification($user, $request->password, false))->delay($delay));
                 Log::info('Public client registration successful', [
                     'client_id' => $client->id,
@@ -378,9 +389,16 @@ class PublicRegistrationController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
+            // Check if it's a payment-related error
+            if (str_contains($e->getMessage(), 'pago') || str_contains($e->getMessage(), 'tarjeta')) {
+                $errorMessage = $e->getMessage();
+            } else {
+                $errorMessage = 'Hubo un error al procesar tu registro. Por favor intenta nuevamente.';
+            }
+
             return redirect()->back()
-                ->withInput()
-                ->with('error', 'Hubo un error al procesar tu registro. Por favor intenta nuevamente.' .$e->getMessage());
+                ->withInput($request->except(['card_number', 'card_cvv']))
+                ->with('error', $errorMessage);
         }
     }
 

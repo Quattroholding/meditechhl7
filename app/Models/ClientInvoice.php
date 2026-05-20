@@ -338,10 +338,23 @@ class ClientInvoice extends BaseModel
                     // Confirmar referral si el cliente fue referido y es su primera factura pagada
                     $this->confirmReferralIfApplicable();
 
-                    // Enviar notificación de agradecimiento al cliente
-                    $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($this);
-                    if ($notifiableUser) {
-                        $notifiableUser->notify(new SubscriptionActivatedNotification($subscription));
+                    // Enviar notificación de suscripción activada solo si NO es registro con pago inmediato
+                    // (Durante registro, el usuario recibe credenciales que incluyen info de activación)
+                    $rawCreatedAt = $subscription->getRawOriginal('created_at');
+                    $subscriptionCreatedAt = Carbon::parse($rawCreatedAt);
+                    $secondsSinceCreation = $subscriptionCreatedAt->diffInSeconds(now());
+                    $isDuringRegistration = $secondsSinceCreation <= 120; // Within last 2 minutes
+
+                    if (! $isDuringRegistration) {
+                        $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($this);
+                        if ($notifiableUser) {
+                            $notifiableUser->notify(new SubscriptionActivatedNotification($subscription));
+                        }
+                    } else {
+                        \Log::info('Subscription activation notification skipped (paid during registration)', [
+                            'subscription_id' => $subscription->id,
+                            'invoice_id' => $this->id,
+                        ]);
                     }
                 } elseif ($subscription->status === SubscriptionStatus::SUSPENDED) {
                     // Reactivate from suspended status

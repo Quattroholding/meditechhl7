@@ -25,7 +25,7 @@ class ClientInvoiceService
         protected DiscountService $discountService,
         protected ?NeoPaymentsService $neoPaymentsService = null
     ) {
-        if (config('services.neopayments.enabled') && !$this->neoPaymentsService) {
+        if (config('services.neopayments.enabled') && ! $this->neoPaymentsService) {
             $this->neoPaymentsService = app(NeoPaymentsService::class);
         }
     }
@@ -97,28 +97,30 @@ class ClientInvoiceService
             // Attempt automatic credit card payment
             $payment = $this->attemptAutomaticPayment($invoice);
 
-            // Send notification to admin client or doctor
-            $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
-            if ($notifiableUser) {
-                $delay = now()->plus(minutes: 1);
-                $notification = new InvoiceGeneratedNotification($invoice);
+            // Check if payment was successful during registration
+            $paymentSuccessDuringRegistration = $payment && $payment->status->value === 'completed' && $invoice->status->value === 'paid';
 
-                if ($payment) {
-                    $notification->setPaymentAttempt($payment);
+            // Send invoice notification only if payment was NOT successful during registration
+            // (If paid immediately, the user will get welcome + subscription active notification instead)
+            if (! $paymentSuccessDuringRegistration) {
+                $notifiableUser = InvoiceGeneratedNotification::getNotifiableUser($invoice);
+                if ($notifiableUser) {
+                    $delay = now()->plus(minutes: 1);
+                    $notification = new InvoiceGeneratedNotification($invoice);
+
+                    $notifiableUser->notify($notification->delay($delay));
+
+                    Log::info('Invoice notification sent', [
+                        'invoice_id' => $invoice->id,
+                        'user_id' => $notifiableUser->id,
+                        'user_email' => $notifiableUser->email,
+                        'payment_attempted' => $payment !== null,
+                    ]);
                 }
-
-                $notifiableUser->notify($notification->delay($delay));
-
-                Log::info('Invoice notification sent', [
-                    'invoice_id' => $invoice->id,
-                    'user_id' => $notifiableUser->id,
-                    'user_email' => $notifiableUser->email,
-                    'payment_attempted' => $payment !== null,
-                ]);
             } else {
-                Log::warning('No notifiable user found for invoice', [
+                Log::info('Invoice notification skipped (paid during registration)', [
                     'invoice_id' => $invoice->id,
-                    'client_id' => $invoice->client_id,
+                    'payment_id' => $payment->id,
                 ]);
             }
 
@@ -434,13 +436,13 @@ class ClientInvoiceService
 
     public function attemptAutomaticPayment(ClientInvoice $invoice): ?ClientInvoicePayment
     {
-        if (!config('services.neopayments.enabled') || !$this->neoPaymentsService) {
+        if (! config('services.neopayments.enabled') || ! $this->neoPaymentsService) {
             return null;
         }
 
         $defaultCard = $invoice->client->defaultCreditCard;
 
-        if (!$defaultCard) {
+        if (! $defaultCard) {
             Log::info('No default credit card found for automatic payment', [
                 'invoice_id' => $invoice->id,
                 'client_id' => $invoice->client_id,
@@ -462,17 +464,49 @@ class ClientInvoiceService
         }
 
         try {
+            // Check if this is during registration (invoice just created, within last minute)
+            // Use getRawOriginal to bypass BaseModel date mutator
+            $rawCreatedAt = $invoice->getRawOriginal('created_at');
+            $invoiceCreatedAt = Carbon::parse($rawCreatedAt);
+            $secondsSinceCreation = $invoiceCreatedAt->diffInSeconds(now());
+            $isRegistration = $secondsSinceCreation <= 60; // Within last 60 seconds
+
+            Log::info('Checking if during registration', [
+                'invoice_id' => $invoice->id,
+                'raw_created_at' => $rawCreatedAt,
+                'seconds_since_creation' => $secondsSinceCreation,
+                'is_registration' => $isRegistration,
+            ]);
+
             $metadata = [
                 'invoice_id' => $invoice->id,
                 'client_id' => $invoice->client_id,
                 'subscription_id' => $invoice->subscription_id,
+                'registration' => $isRegistration,
             ];
 
-            $result = $this->neoPaymentsService->processPaymentWithRetry(
-                $defaultCard->card_token,
-                $invoice->total,
-                $metadata
-            );
+            // During registration, use single attempt without retries for faster feedback
+            if ($isRegistration) {
+                Log::info('Using single payment attempt (registration mode)', [
+                    'invoice_id' => $invoice->id,
+                ]);
+
+                $result = $this->neoPaymentsService->processPayment(
+                    $defaultCard->card_token,
+                    $invoice->total,
+                    $metadata
+                );
+            } else {
+                Log::info('Using payment with retry (normal mode)', [
+                    'invoice_id' => $invoice->id,
+                ]);
+
+                $result = $this->neoPaymentsService->processPaymentWithRetry(
+                    $defaultCard->card_token,
+                    $invoice->total,
+                    $metadata
+                );
+            }
 
             $status = $this->neoPaymentsService->mapTransactionStatus($result['status'] ?? 'FAILED');
 
@@ -484,6 +518,8 @@ class ClientInvoiceService
             ]);
 
             if ($status->isSuccess()) {
+                // Load invoice relationship before marking as completed
+                $payment->load('invoice');
                 $payment->markAsCompleted();
 
                 Log::info('Automatic credit card payment successful', [
@@ -492,7 +528,7 @@ class ClientInvoiceService
                     'transaction_id' => $result['id'] ?? $result['identifier'] ?? null,
                 ]);
             } else {
-                $payment->markAsFailed("Payment {$status->label()}: " . ($result['message'] ?? 'Unknown error'));
+                $payment->markAsFailed("Payment {$status->label()}: ".($result['message'] ?? 'Unknown error'));
 
                 Log::warning('Automatic credit card payment failed', [
                     'invoice_id' => $invoice->id,
@@ -502,6 +538,17 @@ class ClientInvoiceService
                 ]);
 
                 $this->notifyPaymentFailed($invoice, $payment, $status);
+
+                // If this is during registration, throw exception to rollback everything
+                if (isset($metadata['registration']) && $metadata['registration'] === true) {
+                    $errorMessage = 'No se pudo procesar el pago con la tarjeta proporcionada.';
+                    if (isset($result['metadatas']['response_text'])) {
+                        $errorMessage .= ' '.$result['metadatas']['response_text'].'.';
+                    }
+                    $errorMessage .= ' Por favor, verifica los datos de tu tarjeta e intenta nuevamente.';
+
+                    throw new \Exception($errorMessage);
+                }
             }
 
             return $payment;
@@ -510,7 +557,13 @@ class ClientInvoiceService
                 'invoice_id' => $invoice->id,
                 'client_id' => $invoice->client_id,
                 'error' => $e->getMessage(),
+                'is_registration' => $isRegistration ?? false,
             ]);
+
+            // If this is during registration, rethrow the exception to rollback everything
+            if (isset($isRegistration) && $isRegistration === true) {
+                throw $e;
+            }
 
             $payment = $this->recordPayment($invoice, $invoice->total, PaymentMethod::CREDIT_CARD->value, [
                 'gateway' => 'neopayments',
@@ -518,7 +571,7 @@ class ClientInvoiceService
                 'processed_by' => null,
             ]);
 
-            $payment->markAsFailed('Exception: ' . $e->getMessage());
+            $payment->markAsFailed('Exception: '.$e->getMessage());
 
             $this->notifyPaymentFailed($invoice, $payment, NeoPaymentStatus::FAILED);
 
@@ -528,14 +581,14 @@ class ClientInvoiceService
 
     public function retryFailedPayment(ClientInvoicePayment $payment): bool
     {
-        if (!config('services.neopayments.enabled') || !$this->neoPaymentsService) {
+        if (! config('services.neopayments.enabled') || ! $this->neoPaymentsService) {
             return false;
         }
 
         $invoice = $payment->invoice;
         $defaultCard = $invoice->client->defaultCreditCard;
 
-        if (!$defaultCard || $defaultCard->isExpired()) {
+        if (! $defaultCard || $defaultCard->isExpired()) {
             return false;
         }
 
@@ -583,7 +636,7 @@ class ClientInvoiceService
                 return true;
             } else {
                 $retryNumber = $retryCount + 1;
-                $payment->markAsFailed("Retry {$retryNumber} - {$status->label()}: " . ($result['message'] ?? 'Unknown error'));
+                $payment->markAsFailed("Retry {$retryNumber} - {$status->label()}: ".($result['message'] ?? 'Unknown error'));
 
                 Log::warning('Payment retry failed', [
                     'payment_id' => $payment->id,
