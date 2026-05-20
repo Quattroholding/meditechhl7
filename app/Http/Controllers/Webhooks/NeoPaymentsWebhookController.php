@@ -22,15 +22,18 @@ class NeoPaymentsWebhookController extends Controller
         ]);
 
         try {
-            $data = $request->input('data');
+            // NeoPayments sends data in 'payload' field, fallback to 'data' for compatibility
+            $data = $request->input('payload') ?? $request->input('data');
 
             if (! $data) {
-                Log::error('NeoPayments webhook: No data field in payload');
+                Log::error('NeoPayments webhook: No payload or data field in request', [
+                    'all_input' => $request->all(),
+                ]);
 
-                return response()->json(['status' => 'error', 'message' => 'No data field'], 400);
+                return response()->json(['status' => 'error', 'message' => 'No payload or data field'], 400);
             }
 
-            $transactionId = $data['id'] ?? null;
+            $transactionId = $data['id'] ?? $data['identifier'] ?? null;
             $status = $data['status'] ?? null;
             $responseCode = $data['response_code'] ?? null;
             $authorizationNumber = $data['authorization_number'] ?? null;
