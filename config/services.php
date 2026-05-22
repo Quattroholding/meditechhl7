@@ -93,4 +93,14 @@ return [
         'webhook_base_path' => env('WEBHOOK_BASE_PATH'),
     ],
 
+    'claude' => [
+        'api_key' => env('CLAUDE_API_KEY'),
+        'api_url' => env('CLAUDE_API_URL', 'https://api.anthropic.com/v1'),
+        'api_version' => env('CLAUDE_API_VERSION', '2023-06-01'),
+        'default_model' => env('CLAUDE_DEFAULT_MODEL', 'claude-sonnet-4-6'),
+        'default_max_tokens' => env('CLAUDE_DEFAULT_MAX_TOKENS', 4096),
+        'timeout' => env('CLAUDE_TIMEOUT', 60),
+        'diagnostics_suggestions_enabled' => env('CLAUDE_DIAGNOSTICS_SUGGESTIONS_ENABLED', true),
+    ],
+
 ];

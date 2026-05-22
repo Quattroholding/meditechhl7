@@ -6,6 +6,8 @@ use App\Models\Condition;
 use App\Models\Encounter;
 use App\Models\EncounterDiagnosis;
 use App\Models\Icd10Code;
+use App\Services\ClaudeService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -37,10 +39,102 @@ class Diagnostics extends Component
 
     public $isCodeSearch = false;
 
+    public $aiSuggestions = [];
+
+    public $loadingAiSuggestions = false;
+
+    public $aiSuggestionsError = null;
+
+    public $showAiSuggestions = false;
+
+    public $showValidationMessage = false;
+
+    public $validationMessage = '';
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->loadSelectedLists();
+    }
+
+    /**
+     * Check if AI diagnostics suggestions feature is enabled
+     */
+    public function getAiSuggestionsEnabledProperty(): bool
+    {
+        // Global feature toggle
+        if (! config('services.claude.diagnostics_suggestions_enabled', true)) {
+            return false;
+        }
+
+        // API key must be configured
+        if (empty(config('services.claude.api_key'))) {
+            return false;
+        }
+
+        // Get practitioner's user and their clients
+        $practitioner = $this->encounter->practitioner;
+        if (! $practitioner || ! $practitioner->user) {
+            return false;
+        }
+
+        $user = $practitioner->user;
+        $clients = $user->clients;
+
+        // Check if any of the user's clients have AI suggestions enabled
+        if ($clients->isEmpty()) {
+            return false;
+        }
+
+        return $clients->contains(function ($client) {
+            return $client->diagnostic_ai_suggestions === true;
+        });
+    }
+
+    /**
+     * Check if AI suggestions can be requested
+     */
+    public function getCanRequestAiSuggestionsProperty(): bool
+    {
+        if (! $this->aiSuggestionsEnabled) {
+            return false;
+        }
+
+        $this->encounter->refresh();
+
+        return ! empty($this->encounter->reason) &&
+               $this->encounter->presentIllnesses &&
+               ! empty($this->encounter->presentIllnesses->description);
+    }
+
+    /**
+     * Validate required fields before requesting AI suggestions
+     */
+    private function validateRequiredFields(): bool
+    {
+        $this->encounter->refresh();
+
+        $missingFields = [];
+
+        if (empty($this->encounter->reason)) {
+            $missingFields[] = 'Motivo de consulta';
+        }
+
+        if (! $this->encounter->presentIllnesses || empty($this->encounter->presentIllnesses->description)) {
+            $missingFields[] = 'Enfermedad actual';
+        }
+
+        if (! empty($missingFields)) {
+            $this->validationMessage = 'Por favor complete los siguientes campos antes de solicitar sugerencias de IA: '.implode(', ', $missingFields);
+            $this->showValidationMessage = true;
+
+            // Auto-hide message after 5 seconds
+            $this->dispatch('validation-message-shown');
+
+            return false;
+        }
+
+        return true;
     }
 
     private function loadSelectedLists()
@@ -337,6 +431,113 @@ class Diagnostics extends Component
 
             session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
+    }
+
+    public function getAiSuggestions()
+    {
+        // Check if feature is enabled
+        if (! $this->aiSuggestionsEnabled) {
+            $this->validationMessage = 'La funcionalidad de sugerencias de IA está deshabilitada. Contacte al administrador del sistema.';
+            $this->showValidationMessage = true;
+
+            return;
+        }
+
+        // Hide any previous validation message
+        $this->showValidationMessage = false;
+
+        // Validate required fields BEFORE making API call
+        if (! $this->validateRequiredFields()) {
+            return; // Stop execution, don't call API
+        }
+
+        // Reset state
+        $this->aiSuggestions = [];
+        $this->aiSuggestionsError = null;
+        $this->loadingAiSuggestions = true;
+        $this->showAiSuggestions = true;
+
+        try {
+            $presentIllness = $this->encounter->presentIllnesses;
+
+            // Get vital signs
+            $vitalSigns = [];
+            $vitalSignsRecords = $this->encounter->vitalSigns;
+            foreach ($vitalSignsRecords as $vs) {
+                $vitalSigns[] = [
+                    'name' => $vs->display_name ?? 'N/A',
+                    'value' => $vs->value ?? 'N/A',
+                    'unit' => $vs->unit ?? '',
+                ];
+            }
+
+            // Get available ICD-10 codes from database
+            $availableCodes = Icd10Code::select('code', 'description_es')
+                ->where('active', true)
+                ->orderBy('code')
+                ->get()
+                ->toArray();
+
+            // Call Claude service
+            $claudeService = app(ClaudeService::class);
+            $suggestions = $claudeService->suggestDiagnostics(
+                $this->encounter->reason,
+                $presentIllness->description,
+                $vitalSigns,
+                $availableCodes
+            );
+
+            // Validate and enrich suggestions with actual database records
+            $enrichedSuggestions = [];
+            foreach ($suggestions as $suggestion) {
+                $icd10Code = Icd10Code::where('code', $suggestion['code'])->first();
+
+                if ($icd10Code) {
+                    $enrichedSuggestions[] = [
+                        'id' => $icd10Code->id,
+                        'code' => $icd10Code->code,
+                        'name' => $icd10Code->code.'|'.$icd10Code->description_es,
+                        'description_es' => $icd10Code->description_es,
+                        'confidence' => $suggestion['confidence'] ?? 'medium',
+                        'reasoning' => $suggestion['reasoning'] ?? '',
+                    ];
+                }
+            }
+
+            $this->aiSuggestions = $enrichedSuggestions;
+
+            if (empty($this->aiSuggestions)) {
+                $this->aiSuggestionsError = 'La IA no encontró diagnósticos sugeridos en la base de datos. Intenta buscar manualmente.';
+            }
+
+            Log::info('AI diagnostic suggestions generated', [
+                'encounter_id' => $this->encounter_id,
+                'suggestions_count' => count($this->aiSuggestions),
+            ]);
+
+        } catch (\Exception $e) {
+            $this->aiSuggestionsError = 'Error al obtener sugerencias: '.$e->getMessage();
+
+            Log::error('Error getting AI diagnostic suggestions', [
+                'encounter_id' => $this->encounter_id,
+                'error' => $e->getMessage(),
+            ]);
+        } finally {
+            $this->loadingAiSuggestions = false;
+        }
+    }
+
+    public function closeAiSuggestions()
+    {
+        $this->showAiSuggestions = false;
+        $this->aiSuggestions = [];
+        $this->aiSuggestionsError = null;
+    }
+
+    public function closeValidationMessage()
+    {
+        $this->showValidationMessage = false;
+        $this->validationMessage = '';
     }
 
     public function render()

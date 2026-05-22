@@ -12,6 +12,7 @@ class Client extends Model
 
     protected $fillable = [
         'name',
+        'diagnostic_ai_suggestions',
         'group',
         'ruc',
         'dv',
@@ -25,6 +26,11 @@ class Client extends Model
         'referral_code_used',
         'hemoscreen_only',
         'neopayments_customer_id',
+    ];
+
+    protected $casts = [
+        'diagnostic_ai_suggestions' => 'boolean',
+        'hemoscreen_only' => 'boolean',
     ];
 
     public static function boot()
