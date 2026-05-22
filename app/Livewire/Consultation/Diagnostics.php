@@ -9,6 +9,7 @@ use App\Models\Icd10Code;
 use App\Services\ClaudeService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Diagnostics extends Component
@@ -538,6 +539,20 @@ class Diagnostics extends Component
     {
         $this->showValidationMessage = false;
         $this->validationMessage = '';
+    }
+
+    /**
+     * Listen for changes in reason or present illness to refresh button state
+     */
+    #[On('findFinishedButtonStatus')]
+    public function refreshAiButtonState()
+    {
+        // Refresh encounter data to get latest reason and present illness
+        $this->encounter->refresh();
+
+        // This will trigger re-evaluation of computed properties
+        // canRequestAiSuggestions and aiSuggestionsEnabled
+        $this->dispatch('$refresh');
     }
 
     public function render()
