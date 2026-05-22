@@ -16,6 +16,8 @@ class ItemTransfer extends Component
 
     public $category = null;
 
+    public $sectionConfigs = []; // Almacena configuraciones de cada sección
+
     public function mount()
     {
         // Get user's practitioner and their specialties
@@ -99,6 +101,9 @@ class ItemTransfer extends Component
 
         // Merge obligatory sections with user selected sections
         $selecionados = $selecionados->merge($obligatorySections)->unique();
+
+        // Cargar configuraciones de las secciones
+        $this->loadSectionConfigs();
 
         if (count($selecionados) == 0) {
             $this->availableItems = $sectionsQuery->get()->toArray();
@@ -195,6 +200,40 @@ class ItemTransfer extends Component
         $this->selectedItems = collect($orderedIds)->map(function ($id) {
             return collect($this->selectedItems)->firstWhere('id', $id);
         })->toArray();
+    }
+
+    public function loadSectionConfigs()
+    {
+        $templates = EncounterTemplate::whereClientId($this->client_id)
+            ->whereUserId(auth()->user()->id)
+            ->whereType('client')
+            ->get();
+
+        foreach ($templates as $template) {
+            $this->sectionConfigs[$template->encounter_section_id] = $template->encounter_section_fields ?? [];
+        }
+    }
+
+    public function updatePresentIllnessMode($sectionId, $mode)
+    {
+        $template = EncounterTemplate::whereClientId($this->client_id)
+            ->whereUserId(auth()->user()->id)
+            ->whereEncounterSectionId($sectionId)
+            ->first();
+
+        if ($template) {
+            $fields = $template->encounter_section_fields ?? [];
+            $fields['present_illness_mode'] = $mode;
+            $template->encounter_section_fields = $fields;
+            $template->save();
+
+            $this->sectionConfigs[$sectionId] = $fields;
+
+            $this->dispatch('showToastrItemTransfer',
+                type: 'success',
+                message: 'Modo de Present Illness actualizado con éxito.'
+            );
+        }
     }
 
     public function render()

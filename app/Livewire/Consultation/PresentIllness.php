@@ -3,7 +3,10 @@
 namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
+use App\Models\EncounterSection;
+use App\Models\EncounterTemplate;
 use App\Models\PresentIllnesType;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -35,11 +38,32 @@ class PresentIllness extends Component
 
     public $items = [];
 
+    public $mode = 'full'; // 'full' or 'simplified'
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->present_illness = $this->encounter->presentIllnesses;
+        $this->loadPresentIllnessMode();
         $this->loadPressentIllness();
+    }
+
+    public function loadPresentIllnessMode()
+    {
+        // Obtener la sección de Present Illness
+        $presentIllnessSection = EncounterSection::where('name', 'Present Illness')->first();
+
+        if ($presentIllnessSection) {
+            // Buscar el template del usuario para esta sección
+            $template = EncounterTemplate::where('user_id', Auth::id())
+                ->where('encounter_section_id', $presentIllnessSection->id)
+                ->first();
+
+            // Si existe template y tiene configuración de modo, usarla
+            if ($template && isset($template->encounter_section_fields['present_illness_mode'])) {
+                $this->mode = $template->encounter_section_fields['present_illness_mode'];
+            }
+        }
     }
 
     public function loadPressentIllness()

@@ -4,7 +4,10 @@ namespace App\Livewire\Consultation;
 
 use App\Enums\SupplyRequestStatus;
 use App\Models\Encounter;
+use App\Models\EncounterSection;
+use App\Models\EncounterTemplate;
 use App\Models\InventoryReport;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -68,79 +71,139 @@ class FinishedButton extends Component
 
     public function validatePresentIllnesses()
     {
+        // Verificar el modo de Present Illness del usuario
+        $mode = $this->getPresentIllnessMode();
 
         $return = true;
+
         if (! $this->encounter->presentIllnesses) {
             $return = false;
-            $this->messages[2] = '- Ubicación';
-            $this->messages[3] = '- Gravedad';
-            $this->messages[4] = '- Duración';
-            $this->messages[5] = '- Momento';
-            $this->messages[6] = '- Descripción';
-            $this->messageSections[2] = 3;
-            $this->messageSections[3] = 3;
-            $this->messageSections[4] = 3;
-            $this->messageSections[5] = 3;
-            $this->messageSections[6] = 3;
-            $this->messageTargets[2] = '#marker-id-3\\.0'; // Location selector
-            $this->messageTargets[3] = '#marker-id-3\\.1'; // Severity selector
-            $this->messageTargets[4] = '#marker-id-3\\.2'; // Duration selector
-            $this->messageTargets[5] = '#marker-id-3\\.3'; // Timing selector
-            $this->messageTargets[6] = '#marker-id-3\\.5 textarea'; // Description textarea
-        } else {
-            if (empty($this->encounter->presentIllnesses->locations)) {
-                $this->messages[2] = '- Ubicación';
-                $this->messageSections[2] = 3;
-                $this->messageTargets[2] = '#marker-id-3\\.0';
-                $return = false;
-            } else {
-                unset($this->messages[2]);
-                unset($this->messageSections[2]);
-                unset($this->messageTargets[2]);
-            }
-            if (empty($this->encounter->presentIllnesses->severity)) {
-                $this->messages[3] = '- Gravedad';
-                $this->messageSections[3] = 3;
-                $this->messageTargets[3] = '#marker-id-3\\.1';
-                $return = false;
-            } else {
-                unset($this->messages[3]);
-                unset($this->messageSections[3]);
-                unset($this->messageTargets[3]);
-            }
-            if (empty($this->encounter->presentIllnesses->duration)) {
-                $this->messages[4] = '- Duración';
-                $this->messageSections[4] = 3;
-                $this->messageTargets[4] = '#marker-id-3\\.2';
-                $return = false;
-            } else {
-                unset($this->messages[4]);
-                unset($this->messageSections[4]);
-                unset($this->messageTargets[4]);
-            }
-            if (empty($this->encounter->presentIllnesses->timing)) {
-                $this->messages[5] = '- Momento';
-                $this->messageSections[5] = 3;
-                $this->messageTargets[5] = '#marker-id-3\\.3';
-                $return = false;
-            } else {
-                unset($this->messages[5]);
-                unset($this->messageSections[5]);
-                unset($this->messageTargets[5]);
-            }
-            if (empty($this->encounter->presentIllnesses->description)) {
+
+            if ($mode === 'simplified') {
+                // Solo validar descripción en modo simplificado
                 $this->messages[6] = '- Descripción';
                 $this->messageSections[6] = 3;
                 $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
-                $return = false;
             } else {
-                unset($this->messages[6]);
-                unset($this->messageSections[6]);
-                unset($this->messageTargets[6]);
+                // Validar todos los campos en modo completo
+                $this->messages[2] = '- Ubicación';
+                $this->messages[3] = '- Gravedad';
+                $this->messages[4] = '- Duración';
+                $this->messages[5] = '- Momento';
+                $this->messages[6] = '- Descripción';
+                $this->messageSections[2] = 3;
+                $this->messageSections[3] = 3;
+                $this->messageSections[4] = 3;
+                $this->messageSections[5] = 3;
+                $this->messageSections[6] = 3;
+                $this->messageTargets[2] = '#marker-id-3\\.0'; // Location selector
+                $this->messageTargets[3] = '#marker-id-3\\.1'; // Severity selector
+                $this->messageTargets[4] = '#marker-id-3\\.2'; // Duration selector
+                $this->messageTargets[5] = '#marker-id-3\\.3'; // Timing selector
+                $this->messageTargets[6] = '#marker-id-3\\.5 textarea'; // Description textarea
+            }
+        } else {
+            if ($mode === 'simplified') {
+                // Solo validar descripción en modo simplificado
+                // Limpiar mensajes de otros campos
+                unset($this->messages[2]);
+                unset($this->messageSections[2]);
+                unset($this->messageTargets[2]);
+                unset($this->messages[3]);
+                unset($this->messageSections[3]);
+                unset($this->messageTargets[3]);
+                unset($this->messages[4]);
+                unset($this->messageSections[4]);
+                unset($this->messageTargets[4]);
+                unset($this->messages[5]);
+                unset($this->messageSections[5]);
+                unset($this->messageTargets[5]);
+
+                if (empty($this->encounter->presentIllnesses->description)) {
+                    $this->messages[6] = '- Descripción';
+                    $this->messageSections[6] = 3;
+                    $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
+                    $return = false;
+                } else {
+                    unset($this->messages[6]);
+                    unset($this->messageSections[6]);
+                    unset($this->messageTargets[6]);
+                }
+            } else {
+                // Validar todos los campos en modo completo
+                if (empty($this->encounter->presentIllnesses->locations)) {
+                    $this->messages[2] = '- Ubicación';
+                    $this->messageSections[2] = 3;
+                    $this->messageTargets[2] = '#marker-id-3\\.0';
+                    $return = false;
+                } else {
+                    unset($this->messages[2]);
+                    unset($this->messageSections[2]);
+                    unset($this->messageTargets[2]);
+                }
+                if (empty($this->encounter->presentIllnesses->severity)) {
+                    $this->messages[3] = '- Gravedad';
+                    $this->messageSections[3] = 3;
+                    $this->messageTargets[3] = '#marker-id-3\\.1';
+                    $return = false;
+                } else {
+                    unset($this->messages[3]);
+                    unset($this->messageSections[3]);
+                    unset($this->messageTargets[3]);
+                }
+                if (empty($this->encounter->presentIllnesses->duration)) {
+                    $this->messages[4] = '- Duración';
+                    $this->messageSections[4] = 3;
+                    $this->messageTargets[4] = '#marker-id-3\\.2';
+                    $return = false;
+                } else {
+                    unset($this->messages[4]);
+                    unset($this->messageSections[4]);
+                    unset($this->messageTargets[4]);
+                }
+                if (empty($this->encounter->presentIllnesses->timing)) {
+                    $this->messages[5] = '- Momento';
+                    $this->messageSections[5] = 3;
+                    $this->messageTargets[5] = '#marker-id-3\\.3';
+                    $return = false;
+                } else {
+                    unset($this->messages[5]);
+                    unset($this->messageSections[5]);
+                    unset($this->messageTargets[5]);
+                }
+                if (empty($this->encounter->presentIllnesses->description)) {
+                    $this->messages[6] = '- Descripción';
+                    $this->messageSections[6] = 3;
+                    $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
+                    $return = false;
+                } else {
+                    unset($this->messages[6]);
+                    unset($this->messageSections[6]);
+                    unset($this->messageTargets[6]);
+                }
             }
         }
 
         return $return;
+    }
+
+    protected function getPresentIllnessMode(): string
+    {
+        $presentIllnessSection = EncounterSection::where('name', 'Present Illness')->first();
+
+        if (! $presentIllnessSection) {
+            return 'full';
+        }
+
+        $template = EncounterTemplate::where('user_id', Auth::id())
+            ->where('encounter_section_id', $presentIllnessSection->id)
+            ->first();
+
+        if ($template && isset($template->encounter_section_fields['present_illness_mode'])) {
+            return $template->encounter_section_fields['present_illness_mode'];
+        }
+
+        return 'full';
     }
 
     public function validateCondition()

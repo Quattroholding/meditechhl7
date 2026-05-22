@@ -79,6 +79,33 @@
                                 @endforeach
                             </small>
                         @endif
+
+                        {{-- Configuración específica para Present Illness --}}
+                        @if($item['name'] === 'Present Illness')
+                            <div class="mt-3 p-2" style="background-color: #f8f9fa; border-radius: 4px;">
+                                <label class="form-label mb-2">
+                                    <i class="fas fa-cog"></i> <strong>Modo de visualización:</strong>
+                                </label>
+                                <select
+                                    wire:change="updatePresentIllnessMode({{ $item['id'] }}, $event.target.value)"
+                                    class="form-select form-select-sm">
+                                    <option value="full"
+                                        @if(isset($sectionConfigs[$item['id']]['present_illness_mode']) && $sectionConfigs[$item['id']]['present_illness_mode'] === 'full') selected
+                                        @elseif(!isset($sectionConfigs[$item['id']]['present_illness_mode'])) selected
+                                        @endif>
+                                        Completo (Ubicación, Gravedad, Duración, etc.)
+                                    </option>
+                                    <option value="simplified"
+                                        @if(isset($sectionConfigs[$item['id']]['present_illness_mode']) && $sectionConfigs[$item['id']]['present_illness_mode'] === 'simplified') selected @endif>
+                                        Simplificado (Solo descripción)
+                                    </option>
+                                </select>
+                                <small class="text-muted d-block mt-1">
+                                    <i class="fas fa-info-circle"></i>
+                                    Elige cómo deseas ver la sección de Enfermedad Actual
+                                </small>
+                            </div>
+                        @endif
                     </li>
                 @endforeach
             </ul>
