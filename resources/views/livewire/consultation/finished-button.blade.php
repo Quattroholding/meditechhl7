@@ -1,4 +1,7 @@
 <div>
+    <!-- Botón Flotante de Dictado por Voz -->
+    @livewire('consultation.voice-dictation-button', ['encounter_id' => $encounter_id])
+
     <form method="POST" action="{{ route('consultation.finished',$this->encounter->appointment_id) }}">
         @csrf
         <div class="text-end">

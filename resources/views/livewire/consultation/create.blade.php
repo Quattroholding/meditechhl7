@@ -38,6 +38,9 @@
     <!-- Botón Flotante de Licencia Médica -->
     @livewire('consultation.medical-leave-button', ['encounter_id' => $encounter_id])
 
+    <!-- Botón Flotante de Dictado por Voz -->
+    @livewire('consultation.voice-dictation-button', ['encounter_id' => $encounter_id])
+
     @include('consultations.partials.side_menu',array('appointment_id'=>$appointment->id,'patient_id'=>$patient->id,'encounter_id'=>$encounter_id))
     @include('consultations.partials.patient_info',array('id'=>$patient->id))
     @if($appointment->isVirtual())
@@ -51,12 +54,21 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastrConsultation', (event) => {
-                toastr[event.type](event.message, '', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000,
-                });
+                // Livewire 3 passes array parameters as first argument
+                const data = Array.isArray(event) ? event[0] : event;
+                const type = data.type || 'info';
+                const message = data.message || 'Operación completada';
+
+                if (typeof toastr !== 'undefined' && typeof toastr[type] === 'function') {
+                    toastr[type](message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                } else {
+                    console.error('Toastr not available or invalid type:', type);
+                }
             });
         });
     </script>

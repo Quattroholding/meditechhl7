@@ -93,6 +93,12 @@ return [
         'webhook_base_path' => env('WEBHOOK_BASE_PATH'),
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'api_url' => env('OPENAI_API_URL', 'https://api.openai.com/v1'),
+        'timeout' => env('OPENAI_TIMEOUT', 60),
+    ],
+
     'claude' => [
         'api_key' => env('CLAUDE_API_KEY'),
         'api_url' => env('CLAUDE_API_URL', 'https://api.anthropic.com/v1'),
@@ -101,6 +107,9 @@ return [
         'default_max_tokens' => env('CLAUDE_DEFAULT_MAX_TOKENS', 4096),
         'timeout' => env('CLAUDE_TIMEOUT', 60),
         'diagnostics_suggestions_enabled' => env('CLAUDE_DIAGNOSTICS_SUGGESTIONS_ENABLED', true),
+        'voice_dictation_enabled' => env('CLAUDE_VOICE_DICTATION_ENABLED', true),
+        'voice_dictation_max_duration' => env('CLAUDE_VOICE_DICTATION_MAX_DURATION', 300),
+        'voice_dictation_max_file_size' => env('CLAUDE_VOICE_DICTATION_MAX_FILE_SIZE', 10485760),
     ],
 
 ];

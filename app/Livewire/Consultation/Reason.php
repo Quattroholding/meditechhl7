@@ -17,11 +17,37 @@ class Reason extends Component
 
     public $section_id;
 
+    protected $listeners = ['voice-dictation-reason' => 'updateFromVoice'];
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->reason = $this->encounter->reason;
 
+    }
+
+    /**
+     * Update reason from voice dictation
+     * Only updates if reason is currently empty to preserve original reason
+     */
+    public function updateFromVoice($data)
+    {
+        // Only update if current reason is empty (preserve original reason)
+        if (empty($this->reason) && isset($data['reason']) && ! empty($data['reason'])) {
+            $this->reason = $data['reason'];
+            $this->save();
+
+            \Log::info('Reason updated from voice dictation', [
+                'encounter_id' => $this->encounter_id,
+                'reason' => $this->reason,
+            ]);
+        } else {
+            \Log::info('Reason NOT updated - already exists', [
+                'encounter_id' => $this->encounter_id,
+                'existing_reason' => $this->reason,
+                'dictated_reason' => $data['reason'] ?? null,
+            ]);
+        }
     }
 
     public function render()

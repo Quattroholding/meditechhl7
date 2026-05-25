@@ -361,3 +361,17 @@
    <!-- Componente del historial de medicamentos -->
    <livewire:patient.medication-history />
 </div>
+
+@script
+<script>
+    // Listen for voice dictation events
+    console.log('MedicationRequests: Listener initialized');
+
+    $wire.on('voice-dictation-medications', (event) => {
+        console.log('MedicationRequests: Event received', event);
+
+        // Call the updateFromVoice method
+        $wire.updateFromVoice(event);
+    });
+</script>
+@endscript

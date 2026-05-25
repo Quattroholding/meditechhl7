@@ -22,6 +22,8 @@ class PhysicalExam extends Component
 
     public $suggestedAnswered = '';
 
+    protected $listeners = ['voice-dictation-physical-exam' => 'updateFromVoice'];
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
@@ -38,6 +40,20 @@ class PhysicalExam extends Component
                         $this->values[$i->code] .= $value;
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Update physical exam findings from voice dictation
+     */
+    public function updateFromVoice($data)
+    {
+        foreach ($data as $code => $finding) {
+            // Validate that the code exists in our items
+            if (isset($this->values[$code]) && ! empty($finding)) {
+                $this->values[$code] = $finding;
+                $this->save($code);
             }
         }
     }

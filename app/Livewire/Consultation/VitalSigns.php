@@ -19,6 +19,8 @@ class VitalSigns extends Component
 
     public $values = [];
 
+    protected $listeners = ['voice-dictation-vital-signs' => 'updateFromVoice'];
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
@@ -27,6 +29,29 @@ class VitalSigns extends Component
 
         foreach ($this->items as $i) {
             $this->values[$i->code] = $this->encounter->vitalSigns()->whereCode($i->code)->first()?->value ?? '';
+        }
+    }
+
+    /**
+     * Update vital signs from voice dictation
+     */
+    public function updateFromVoice($data)
+    {
+        foreach ($data as $code => $value) {
+            // Validate that the code exists in our items and value is numeric
+            if (isset($this->values[$code]) && ! empty($value) && is_numeric($value)) {
+                $this->values[$code] = $value;
+                $this->save($code);
+            } else {
+                // Log skipped non-numeric values for debugging
+                if (isset($this->values[$code]) && ! empty($value) && ! is_numeric($value)) {
+                    \Log::info('Skipped non-numeric vital sign from voice dictation', [
+                        'code' => $code,
+                        'value' => $value,
+                        'encounter_id' => $this->encounter_id,
+                    ]);
+                }
+            }
         }
     }
 
@@ -44,6 +69,13 @@ class VitalSigns extends Component
     {
         $key = "vital_sign_{$code}";
         try {
+            // Validate that value is numeric before attempting to save
+            if (! empty($this->values[$code]) && ! is_numeric($this->values[$code])) {
+                throw new \InvalidArgumentException(
+                    "El valor del signo vital debe ser numérico. Valor recibido: {$this->values[$code]}"
+                );
+            }
+
             $vs = $this->encounter->vitalSigns()->whereEncounterId($this->encounter_id)->whereCode($code)->first();
 
             if (! empty($this->values[$code])) {

@@ -45,7 +45,10 @@ class MedicationRequests extends Component
 
     public $isCodeSearch = false;
 
-    protected $listeners = ['copyMedicationsToCurrentRecipe'];
+    protected $listeners = [
+        'copyMedicationsToCurrentRecipe',
+        'voice-dictation-medications' => 'updateFromVoice',
+    ];
 
     public function mount()
     {
@@ -53,6 +56,266 @@ class MedicationRequests extends Component
 
         $this->getMedicationRequestsProperty();
         $this->loadRapidAccess();
+    }
+
+    /**
+     * Update medication requests from voice dictation
+     */
+    public function updateFromVoice($medications)
+    {
+        \Log::info('MedicationRequests: updateFromVoice called', [
+            'encounter_id' => $this->encounter_id,
+            'is_array' => is_array($medications),
+            'medications_count' => is_array($medications) ? count($medications) : 0,
+        ]);
+
+        if (! is_array($medications)) {
+            \Log::warning('Voice dictation: medications parameter is not an array', [
+                'encounter_id' => $this->encounter_id,
+                'medications_type' => gettype($medications),
+                'medications_value' => $medications,
+            ]);
+
+            return;
+        }
+
+        $addedCount = 0;
+        $notFoundCount = 0;
+        $notFoundMedications = [];
+
+        \Log::info('MedicationRequests: Processing medications', [
+            'medications' => $medications,
+        ]);
+
+        foreach ($medications as $medData) {
+            if (! isset($medData['medication_name']) || empty($medData['medication_name'])) {
+                continue;
+            }
+
+            // Search for medication in database
+            $medication = $this->findMedicationByName($medData['medication_name']);
+
+            if ($medication) {
+                // Check if medication already exists in this encounter
+                $existingRequest = $this->encounter->medicationRequests()
+                    ->where('medication_id2', $medication->id)
+                    ->first();
+
+                if (! $existingRequest) {
+                    // Parse dosage to extract numeric quantity
+                    $quantity = $this->parseQuantity($medData['dosage'] ?? null);
+
+                    // Create new medication request
+                    $medicationRequest = $this->encounter->medicationRequests()->create([
+                        'fhir_id' => 'medicationrequest-'.Str::uuid(),
+                        'identifier' => 'RX-'.strtoupper(Str::random(7)),
+                        'status' => 'active',
+                        'intent' => 'order',
+                        'medication_id2' => $medication->id,
+                        'quantity' => $quantity,
+                        'frequency' => $this->parseFrequency($medData['frequency'] ?? null),
+                        'duration' => $this->parseDuration($medData['duration'] ?? null),
+                        'route' => $this->parseRoute($medData['route'] ?? 'oral'),
+                        'dosage_text' => $medData['instructions'] ?? $medData['dosage'] ?? null,
+                        'valid_from' => now(),
+                        'valid_to' => now()->addDays(30),
+                        'patient_id' => $this->encounter->patient_id,
+                        'practitioner_id' => $this->encounter->practitioner_id,
+                    ]);
+
+                    // Update local arrays
+                    $this->frecuencies[$medicationRequest->id] = $medicationRequest->frequency;
+                    $this->routes[$medicationRequest->id] = $medicationRequest->route;
+                    $this->durations[$medicationRequest->id] = $medicationRequest->duration;
+                    $this->quantitys[$medicationRequest->id] = $medicationRequest->quantity;
+
+                    // Generate dosage instruction
+                    $this->generateDosageInstruction($medicationRequest->id);
+
+                    $addedCount++;
+
+                    \Log::info('Voice dictation: Medication added', [
+                        'medication_name' => $medData['medication_name'],
+                        'medication_id' => $medication->id,
+                        'encounter_id' => $this->encounter_id,
+                    ]);
+                } else {
+                    \Log::info('Voice dictation: Medication already exists in encounter', [
+                        'medication_name' => $medData['medication_name'],
+                        'encounter_id' => $this->encounter_id,
+                    ]);
+                }
+            } else {
+                $notFoundCount++;
+                $notFoundMedications[] = $medData['medication_name'];
+
+                \Log::warning('Voice dictation: Medication not found in database', [
+                    'medication_name' => $medData['medication_name'],
+                    'encounter_id' => $this->encounter_id,
+                ]);
+            }
+        }
+
+        // Refresh medication list
+        $this->getMedicationRequestsProperty();
+
+        // Show notification to user
+        if ($addedCount > 0 && $notFoundCount > 0) {
+            $this->dispatch('showToastrConsultation', [
+                'type' => 'warning',
+                'message' => "{$addedCount} medicamento(s) agregado(s). {$notFoundCount} no encontrado(s): ".implode(', ', $notFoundMedications),
+            ]);
+        } elseif ($addedCount > 0) {
+            $this->dispatch('showToastrConsultation', [
+                'type' => 'success',
+                'message' => "{$addedCount} medicamento(s) agregado(s) correctamente desde el dictado.",
+            ]);
+        } elseif ($notFoundCount > 0) {
+            $this->dispatch('showToastrConsultation', [
+                'type' => 'error',
+                'message' => 'Medicamento(s) no encontrado(s) en la base de datos: '.implode(', ', $notFoundMedications),
+            ]);
+        }
+
+        // Update finish button status
+        $this->dispatch('findFinishedButtonStatus');
+    }
+
+    /**
+     * Find medication in database by name (fuzzy matching)
+     */
+    private function findMedicationByName(string $name): ?Medication
+    {
+        $searchTerm = trim($name);
+
+        // Try exact match first
+        $medication = Medication::where('status', 'active')
+            ->where(function ($q) use ($searchTerm) {
+                $q->where('display', $searchTerm)
+                    ->orWhere('generic_name', $searchTerm)
+                    ->orWhere('home_name', $searchTerm);
+            })
+            ->first();
+
+        if ($medication) {
+            return $medication;
+        }
+
+        // Try fuzzy matching (LIKE search)
+        $medication = Medication::where('status', 'active')
+            ->where(function ($q) use ($searchTerm) {
+                $q->where('display', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('generic_name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('home_name', 'like', '%'.$searchTerm.'%');
+            })
+            ->orderByRaw('
+                CASE
+                    WHEN display = ? THEN 1
+                    WHEN generic_name = ? THEN 2
+                    WHEN home_name = ? THEN 3
+                    WHEN display LIKE ? THEN 4
+                    WHEN generic_name LIKE ? THEN 5
+                    WHEN home_name LIKE ? THEN 6
+                    ELSE 7
+                END
+            ', [$searchTerm, $searchTerm, $searchTerm, "{$searchTerm}%", "{$searchTerm}%", "{$searchTerm}%"])
+            ->first();
+
+        return $medication;
+    }
+
+    /**
+     * Parse quantity from voice dictation to extract numeric value
+     */
+    private function parseQuantity(?string $quantity): ?int
+    {
+        if (empty($quantity)) {
+            return null;
+        }
+
+        // Extract first numeric value (handles "1 tableta", "400 miligramos", etc.)
+        if (preg_match('/(\d+(?:\.\d+)?)/', $quantity, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Parse frequency from voice dictation (in hours) to hours
+     */
+    private function parseFrequency(?string $frequency): ?string
+    {
+        if (empty($frequency)) {
+            return null;
+        }
+
+        // Extract numeric value
+        if (preg_match('/(\d+)/', $frequency, $matches)) {
+            return $matches[1];
+        }
+
+        return $frequency;
+    }
+
+    /**
+     * Parse duration from voice dictation to days
+     */
+    private function parseDuration(?string $duration): ?string
+    {
+        if (empty($duration)) {
+            return null;
+        }
+
+        // Extract numeric value
+        if (preg_match('/(\d+)/', $duration, $matches)) {
+            return $matches[1];
+        }
+
+        return $duration;
+    }
+
+    /**
+     * Parse route from voice dictation to standardized route
+     */
+    private function parseRoute(?string $route): string
+    {
+        if (empty($route)) {
+            return 'oral';
+        }
+
+        $routeMap = [
+            'oral' => 'oral',
+            'bucal' => 'oral',
+            'boca' => 'oral',
+            'intravenoso' => 'intravenoso',
+            'intravenosa' => 'intravenoso',
+            'iv' => 'intravenoso',
+            'intramuscular' => 'intramuscular',
+            'im' => 'intramuscular',
+            'subcutáneo' => 'subcutaneo',
+            'subcutanea' => 'subcutaneo',
+            'sc' => 'subcutaneo',
+            'tópico' => 'topico',
+            'topica' => 'topico',
+            'piel' => 'topico',
+            'rectal' => 'rectal',
+            'vaginal' => 'vaginal',
+            'oftálmico' => 'oftalmico',
+            'oftalmica' => 'oftalmico',
+            'ojo' => 'oftalmico',
+            'ótico' => 'otico',
+            'otica' => 'otico',
+            'oído' => 'otico',
+            'nasal' => 'nasal',
+            'nariz' => 'nasal',
+            'inhalación' => 'inhalacion',
+            'inhalacion' => 'inhalacion',
+        ];
+
+        $normalized = strtolower(trim($route));
+
+        return $routeMap[$normalized] ?? 'oral';
     }
 
     public function getMedicationRequestsProperty()
