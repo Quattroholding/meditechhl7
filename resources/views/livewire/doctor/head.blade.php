@@ -48,8 +48,8 @@
                     <span>🆔 {{$data->identifier_type}}:{{ $data->identifier ?? 'N/A' }}</span>
                     <span>📧 {{ $data->email ?? 'N/A' }}</span>
                     <span>📞 {{ $data->phone ?? 'N/A' }}</span>
-                    <span>📅 Citas Agendadas : {{$data->appointments()->count()}}</span>
-                    <span>🏥  Consultas Finalizadas : {{$data->encounters()->whereStatus('fulfilled')->count()}}</span>
+                    <span>📅 {{ __('doctor.dashboard.appointments_scheduled') }}: {{$data->appointments()->count()}}</span>
+                    <span>🏥 {{ __('doctor.dashboard.completed_consultations') }}: {{$data->encounters()->whereStatus('fulfilled')->count()}}</span>
 
 
                 </div>

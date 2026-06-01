@@ -1,14 +1,14 @@
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title d-inline-block text-white">{{__('Citas completadas')}}</h4> <a href="{{ url('appointments') }}"
-            class="patient-views float-end">{{__('Ver todas')}}</a>
+        <h4 class="card-title d-inline-block text-white">{{ __('doctor.dashboard.completed_appointments') }}</h4> <a href="{{ url('appointments') }}"
+            class="patient-views float-end">{{ __('doctor.dashboard.view_all') }}</a>
     </div>
     <div class="card-body p-0 table-dash">
         <div class="table-responsive">
             <table class="table mb-0 border-0 custom-table">
                 <tbody>
                 @if ($completedAppointments->isEmpty())
-                    <p class="px-2 py-2">{{__('No hay citas completadas el dia de hoy')}}</p>
+                    <p class="px-2 py-2">{{ __('doctor.dashboard.no_completed_appointments_today') }}</p>
                 @else
                     @foreach ($completedAppointments as $appointment)
                     <tr>

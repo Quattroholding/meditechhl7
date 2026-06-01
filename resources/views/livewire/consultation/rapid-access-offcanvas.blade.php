@@ -8,7 +8,7 @@
             <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
                 <img src="/images/close-floating.png" alt="">
             </div>
-            <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
+            <div class="sel-item-list-category">{{ strtoupper(__('rapid_access.title')) }}</div>
 
             <div id="rapid-access-items-{{$encounterId}}-{{$section_id}}">
                 @if(count($rapidAccess) > 0)
@@ -19,17 +19,17 @@
                              data-cpt-id="{{$item->cpt_id}}"
                              data-cpt-code="{{$item->cpt->code}}">
                             <div class="sel-list-item-code fw-bold">{{$item->cpt->code}}</div>
-                            <div class="sel-list-item-content">{{$item->cpt->description_es}}</div>
+                            <div class="sel-list-item-content">{{ app()->getLocale() === 'es' ? $item->cpt->description_es : $item->cpt->description }}</div>
                             @if($item->is_selected)
                                 <div class="mt-1 selected-indicator">
-                                    <small><i class="fas fa-check-circle" title=" Ya seleccionado"></i></small>
+                                    <small><i class="fas fa-check-circle" title=" {{ __('rapid_access.selected') }}"></i></small>
                                 </div>
                             @endif
                         </div>
                     @endforeach
                 @else
                     <div class="text-center text-muted py-4">
-                        <p>No hay accesos rápidos configurados</p>
+                        <p>{{ __('rapid_access.none_config') }}</p>
                     </div>
                 @endif
             </div>
@@ -51,7 +51,7 @@
                                 document.querySelectorAll('.offcanvas-backdrop').forEach(b => b.remove());
                             }, 300);
                         ">
-                    <i class="fas fa-times"></i> Cerrar Panel
+                    <i class="fas fa-times"></i> {{ __('generic.close') }} Panel
                 </button>
             </div>
         </div>
@@ -75,7 +75,7 @@
                     if (!item.querySelector('.selected-indicator')) {
                         const indicator = document.createElement('div');
                         indicator.className = 'mt-1 selected-indicator';
-                        indicator.innerHTML = '<small><i class="fas fa-check-circle" title=" Ya seleccionado"></i></small>';
+                        indicator.innerHTML = '<small><i class="fas fa-check-circle" title=" {{ __('rapid_access.selected') }}"></i></small>';
                         item.appendChild(indicator);
                     }
                 });

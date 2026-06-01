@@ -1,11 +1,11 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0" style="color: #fff;">
-            <i class="fas fa-stethoscope me-2"></i>Consultas Recientes
+            <i class="fas fa-stethoscope me-2"></i>{{ __('patient.dashboard.recent_consultations') }}
         </h5>
         {{--}}
         <a href="{{ route('consultation.index') }}" class="btn btn-outline-primary btn-sm">
-            Ver Todas
+            {{ __('patient.dashboard.view_all') }}
         </a>
         {{--}}
     </div>
@@ -43,10 +43,10 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h6 class="mb-1">
-                                        {{ $consultation->practitioner->name ?? 'Doctor' }}
+                                        {{ $consultation->practitioner->name ?? __('patient.dashboard.doctor') }}
                                     </h6>
                                     <small class="text-muted">
-                                        {{ $consultation->appointment->medicalSpeciality->name ?? 'Medicina General' }}
+                                        {{ $consultation->appointment->medicalSpeciality->name ?? __('patient.dashboard.general_medicine') }}
                                     </small>
                                 </div>
                                 <small class="text-muted">
@@ -56,21 +56,21 @@
 
                             @if($consultation->chief_complaint)
                                 <div class="mb-2">
-                                    <strong class="text-primary">Nota Adicional:</strong>
+                                    <strong class="text-primary">{{ __('patient.dashboard.additional_note') }}:</strong>
                                     <p class="mb-1">{{ Str::limit($consultation->chief_complaint, 100) }}</p>
                                 </div>
                             @endif
 
                             @if($consultation->diagnosis)
                                 <div class="mb-2">
-                                    <strong class="text-success">Diagnóstico:</strong>
+                                    <strong class="text-success">{{ __('patient.dashboard.diagnosis') }}:</strong>
                                     <p class="mb-1">{{ Str::limit($consultation->diagnosis, 100) }}</p>
                                 </div>
                             @endif
 
                             @if($consultation->treatment_plan)
                                 <div class="mb-2">
-                                    <strong class="text-info">Plan de tratamiento:</strong>
+                                    <strong class="text-info">{{ __('patient.dashboard.treatment_plan') }}:</strong>
                                     <p class="mb-1">{{ Str::limit($consultation->treatment_plan, 100) }}</p>
                                 </div>
                             @endif
@@ -79,11 +79,11 @@
                             @if($consultation->vitalSigns && $consultation->vitalSigns->count() > 0)
                                 <div class="row mt-3">
                                     <div class="col-12">
-                                        <small class="text-muted"><strong>Signos vitales:</strong></small>
+                                        <small class="text-muted"><strong>{{ __('patient.vital-signs') }}:</strong></small>
                                         <div class="d-flex flex-wrap gap-2 mt-1">
                                             @foreach($consultation->vitalSigns->take(4) as $vitalSign)
                                                 <span class="badge bg-light text-dark">
-                                                    {{ $vitalSign->observationType?->name ?? 'Signo' }}: {{ $vitalSign->value }} {{ $vitalSign->unit ?? '' }}
+                                                    {{ $vitalSign->observationType?->name ?? __('patient.dashboard.sign') }}: {{ $vitalSign->value }} {{ $vitalSign->unit ?? '' }}
                                                 </span>
                                             @endforeach
                                         </div>
@@ -98,13 +98,13 @@
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('consultation.view', $consultation->id) }}"
                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye me-1"></i>Ver Detalles
+                                        <i class="fas fa-eye me-1"></i>{{ __('patient.dashboard.view_details') }}
                                     </a>
 
                                     @if($consultation->prescription_notes)
                                         <a href="{{ route('patient.prescription', $consultation->id) }}"
                                            class="btn btn-outline-success btn-sm">
-                                            <i class="fas fa-prescription me-1"></i>Receta
+                                            <i class="fas fa-prescription me-1"></i>{{ __('patient.dashboard.prescription') }}
                                         </a>
                                     @endif
                                 </div>
@@ -118,15 +118,15 @@
             @if($recentConsultations->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('consultation.index') }}" class="btn btn-outline-primary btn-sm">
-                        Ver Historial Completo
+                        {{ __('patient.dashboard.view_full_history') }}
                     </a>
                 </div>
             @endif
         @else
             <div class="text-center py-4">
                 <i class="fas fa-stethoscope fa-3x text-muted mb-3"></i>
-                <h6 class="text-muted">No hay consultas registradas</h6>
-                <p class="text-muted mb-3">Tus consultas médicas aparecerán aquí</p>
+                <h6 class="text-muted">{{ __('patient.dashboard.no_consultations_registered') }}</h6>
+                <p class="text-muted mb-3">{{ __('patient.dashboard.consultations_will_appear_here') }}</p>
 
             </div>
         @endif

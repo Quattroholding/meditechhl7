@@ -8,8 +8,8 @@
                         @slot('filters')
                             <div class="d-flex flex-wrap gap-2">
                                 <div class="input-block local-forms mb-0">
-                                    <label>{{__('Estatus')}}</label>
-                                    <x-select-input wire:model.live="methodFilter" name="metodo" :options="['in-progress'=>'En Progreso','finished'=>'Finalizado']" :selected="[]" class="form-select"/>
+                                    <label>{{__('consultation.data_table.status')}}</label>
+                                    <x-select-input wire:model.live="methodFilter" name="metodo" :options="['in-progress'=>__('consultation.data_table.in_progress'),'finished'=>__('consultation.data_table.finished')]" :selected="[]" class="form-select"/>
                                 </div>
                             </div>
                         @endslot
@@ -40,7 +40,7 @@
                                     {{__('encounter.time')}}
                                 </th>
                                 <th data-column="acciones" data-priority="1" class="text-end">
-                                    <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
+                                    <x-table-sort-button title="{{__('consultation.data_table.actions')}}" columnName=""/>
                                 </th>
                             </tr>
                             </thead>
@@ -70,7 +70,7 @@
                                     <td data-column="time" data-priority="6" data-label="{{__('encounter.time')}}">
                                         <span class="cell-content">{{ $dato->time }}</span>
                                     </td>
-                                    <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
+                                    <td data-column="acciones" data-priority="1" data-label="{{__('consultation.data_table.actions')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                                 @if(auth()->user()->can('view',$dato))
                                                 <a href="{{ route('consultation.view',$dato->id) }}" class="btn btn-info btn-sm" title="{{__('generic.detail')}}">

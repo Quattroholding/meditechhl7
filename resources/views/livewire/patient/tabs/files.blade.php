@@ -1,7 +1,7 @@
 <div>
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title mb-0">Archivos del Paciente</h5>
+            <h5 class="card-title mb-0">{{ __('patient.files.title') }}</h5>
         </div>
         <div class="card-body">
 
@@ -11,11 +11,11 @@
                 <div class="col-12">
                     <div class="card bg-light">
                         <div class="card-body">
-                            <h6 class="mb-3">Subir Nuevos Archivos</h6>
+                            <h6 class="mb-3">{{ __('patient.files.upload_new') }}</h6>
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="input-block">
-                                        <label for="archivos" class="form-label">Seleccionar Archivos</label>
+                                        <label for="archivos" class="form-label">{{ __('patient.files.select_files') }}</label>
                                         <input
                                             type="file"
                                             wire:model="archivos"
@@ -24,7 +24,7 @@
                                             id="archivos"
                                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                         >
-                                        <small class="text-muted d-block mt-1">Máx. 1MB por archivo. Formatos: PDF, DOC, DOCX, JPG, PNG</small>
+                                        <small class="text-muted d-block mt-1">{{ __('patient.files.upload_help_short') }}</small>
                                         @error('archivos.*')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -32,7 +32,7 @@
                                         <!-- Loading Indicator -->
                                         <div wire:loading wire:target="archivos" class="mt-2">
                                             <span class="text-primary">
-                                                <i class="fas fa-spinner fa-spin"></i> Cargando archivos...
+                                                <i class="fas fa-spinner fa-spin"></i> {{ __('patient.files.loading') }}
                                             </span>
                                         </div>
                                     </div>
@@ -47,10 +47,10 @@
                                         @if(empty($archivos)) disabled @endif
                                     >
                                         <span wire:loading.remove wire:target="uploadFiles">
-                                            <i class="feather-upload me-2"></i>Subir Archivos
+                                            <i class="feather-upload me-2"></i>{{ __('patient.files.upload_button') }}
                                         </span>
                                         <span wire:loading wire:target="uploadFiles">
-                                            <i class="fas fa-spinner fa-spin me-2"></i>Subiendo...
+                                            <i class="fas fa-spinner fa-spin me-2"></i>{{ __('patient.files.uploading') }}
                                         </span>
                                     </button>
                                 </div>
@@ -59,7 +59,7 @@
                             <!-- Preview Selected Files -->
                             @if($archivos)
                                 <div class="mt-3">
-                                    <h6 class="mb-2">Archivos Seleccionados ({{ count($archivos) }})</h6>
+                                    <h6 class="mb-2">{{ __('patient.files.selected_files', ['count' => count($archivos)]) }}</h6>
                                     <ul class="list-group">
                                         @foreach($archivos as $index => $archivo)
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -83,18 +83,18 @@
             <!-- Files List -->
             <div class="row">
                 <div class="col-12">
-                    <h6 class="mb-3">Archivos Guardados ({{ $files->count() }})</h6>
+                    <h6 class="mb-3">{{ __('patient.files.saved_files', ['count' => $files->count()]) }}</h6>
 
                     @if($files->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 50px;">Tipo</th>
-                                        <th>Nombre del Archivo</th>
-                                        <th style="width: 120px;">Tamaño</th>
-                                        <th style="width: 150px;">Fecha de Subida</th>
-                                        <th style="width: 150px;" class="text-center">Acciones</th>
+                                        <th style="width: 50px;">{{ __('patient.files.type') }}</th>
+                                        <th>{{ __('patient.files.file_name') }}</th>
+                                        <th style="width: 120px;">{{ __('patient.files.size') }}</th>
+                                        <th style="width: 150px;">{{ __('patient.files.upload_date') }}</th>
+                                        <th style="width: 150px;" class="text-center">{{ __('patient.files.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,7 +116,7 @@
                                             <td>
                                                 <strong>{{ $file->name }}</strong>
                                                 @if($file->type)
-                                                    <br><small class="text-muted">Tipo: {{ ucfirst($file->type) }}</small>
+                                                    <br><small class="text-muted">{{ __('patient.files.type') }}: {{ ucfirst($file->type) }}</small>
                                                 @endif
                                             </td>
                                             <td>
@@ -137,16 +137,16 @@
                                                         href="{{ Storage::disk('public')->url($file->path) }}"
                                                         target="_blank"
                                                         class="btn btn-sm btn-outline-primary"
-                                                        title="Ver/Descargar"
+                                                        title="{{ __('patient.files.view_download') }}"
                                                     >
                                                         <i class="fa fa-eye"></i>
                                                     </a>
                                                     <button
                                                         type="button"
                                                         wire:click="deleteFile({{ $file->id }})"
-                                                        wire:confirm="¿Está seguro de eliminar este archivo?"
+                                                        wire:confirm="{{ __('patient.files.confirm_delete') }}"
                                                         class="btn btn-sm btn-outline-danger"
-                                                        title="Eliminar"
+                                                        title="{{ __('button.delete') }}"
                                                         wire:loading.attr="disabled"
                                                     >
                                                         <span wire:loading.remove wire:target="deleteFile({{ $file->id }})">
@@ -166,7 +166,7 @@
                     @else
                         <div class="alert alert-info" role="alert">
                             <i class="feather-info me-2"></i>
-                            No hay archivos subidos para este paciente.
+                            {{ __('patient.files.no_files') }}
                         </div>
                     @endif
                 </div>

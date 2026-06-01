@@ -4,23 +4,23 @@
             <!-- Personal Information -->
             <div class="col-md-6">
                 <h5 class="mb-3">
-                    <i class="feather-user me-2 text-primary"></i>Información Personal
+                    <i class="feather-user me-2 text-primary"></i>{{ __('patient.info.personal_info') }}
                 </h5>
                 <div class="info-group">
                     <div class="info-item mb-3">
-                        <label class="info-label">Nombre Completo</label>
+                        <label class="info-label">{{ __('patient.full_name') }}</label>
                         <p class="info-value">{{ $patient->name }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Nombre</label>
+                        <label class="info-label">{{ __('patient.first_name') }}</label>
                         <p class="info-value">{{ $patient->given_name }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Apellido</label>
+                        <label class="info-label">{{ __('patient.last_name') }}</label>
                         <p class="info-value">{{ $patient->family_name }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Género</label>
+                        <label class="info-label">{{ __('patient.gender') }}</label>
                         <p class="info-value">
                             <span class="badge bg-info">
                                 {{ ucfirst($patient->gender) }}
@@ -28,20 +28,20 @@
                         </p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Fecha de Nacimiento</label>
-                        <p class="info-value">{{ $patient->birth_date }} ({{ $patient->age }} años)</p>
+                        <label class="info-label">{{ __('patient.birthdate') }}</label>
+                        <p class="info-value">{{ $patient->birth_date }} ({{ $patient->age }} {{ __('patient.years') }})</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Estado Civil</label>
-                        <p class="info-value">{{ ucfirst($patient->marital_status ?? 'No especificado') }}</p>
+                        <label class="info-label">{{ __('patient.marital_status') }}</label>
+                        <p class="info-value">{{ ucfirst($patient->marital_status ?? __('patient.info.not_specified')) }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Tipo de Sangre</label>
+                        <label class="info-label">{{ __('patient.blood_type') }}</label>
                         <p class="info-value">
                             @if($patient->blood_type)
                                 <span class="badge bg-danger">{{ $patient->blood_type }}</span>
                             @else
-                                <span class="text-muted">No especificado</span>
+                                <span class="text-muted">{{ __('patient.info.not_specified') }}</span>
                             @endif
                         </p>
                     </div>
@@ -51,19 +51,19 @@
             <!-- Identification & Contact -->
             <div class="col-md-6">
                 <h5 class="mb-3">
-                    <i class="feather-phone me-2 text-primary"></i>Identificación y Contacto
+                    <i class="feather-phone me-2 text-primary"></i>{{ __('patient.info.identification_contact') }}
                 </h5>
                 <div class="info-group">
                     <div class="info-item mb-3">
-                        <label class="info-label">Tipo de Documento</label>
+                        <label class="info-label">{{ __('patient.id_type') }}</label>
                         <p class="info-value">{{ $patient->identifier_type }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Número de Documento</label>
+                        <label class="info-label">{{ __('patient.full_id_number') }}</label>
                         <p class="info-value">{{ $patient->identifier }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Email</label>
+                        <label class="info-label">{{ __('patient.email') }}</label>
                         <p class="info-value">
                             <a href="mailto:{{ $patient->email }}" class="text-decoration-none">
                                 {{ $patient->email }}
@@ -71,7 +71,7 @@
                         </p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Teléfono</label>
+                        <label class="info-label">{{ __('patient.phone') }}</label>
                         <p class="info-value">
                             <a href="tel:{{ $patient->phone }}" class="text-decoration-none">
                                 {{ $patient->phone }}
@@ -80,7 +80,7 @@
                     </div>
                     @if($patient->whatsapp_phone)
                     <div class="info-item mb-3">
-                        <label class="info-label">WhatsApp</label>
+                        <label class="info-label">{{ __('patient.whatsapp') }}</label>
                         <p class="info-value">
                             <a href="https://wa.me/{{ str_replace(['+', '-', ' '], '', $patient->whatsapp_phone) }}"
                                target="_blank" class="text-decoration-none text-success">
@@ -90,16 +90,16 @@
                     </div>
                     @endif
                     <div class="info-item mb-3">
-                        <label class="info-label">Dirección</label>
-                        <p class="info-value">{{ $patient->address ?: 'No especificada' }}</p>
+                        <label class="info-label">{{ __('patient.physical_address') }}</label>
+                        <p class="info-value">{{ $patient->address ?: __('patient.info.not_specified') }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">País</label>
-                        <p class="info-value">{{ $patient->countryRelation->name ?: 'No especificada' }}</p>
+                        <label class="info-label">{{ __('patient.country') }}</label>
+                        <p class="info-value">{{ $patient->countryRelation->name ?: __('patient.info.not_specified') }}</p>
                     </div>
                     <div class="info-item mb-3">
-                        <label class="info-label">Provincia/Estado</label>
-                        <p class="info-value">{{ $patient->stateRelation->name ?: 'No especificada' }}</p>
+                        <label class="info-label">{{ __('patient.state') }}</label>
+                        <p class="info-value">{{ $patient->stateRelation->name ?: __('patient.info.not_specified') }}</p>
                     </div>
                 </div>
             </div>
@@ -110,14 +110,14 @@
         <div class="row mt-4">
             <div class="col-12">
                 <h5 class="mb-3">
-                    <i class="feather-alert-circle me-2 text-danger"></i>Contacto de Emergencia
+                    <i class="feather-alert-circle me-2 text-danger"></i>{{ __('patient.info.emergency_contact') }}
                 </h5>
                 <div class="info-group">
                     <div class="row">
                         @if($patient->contact_name)
                         <div class="col-md-4">
                             <div class="info-item mb-3">
-                                <label class="info-label">Nombre del Contacto</label>
+                                <label class="info-label">{{ __('patient.emergency_contact.name') }}</label>
                                 <p class="info-value">{{ $patient->contact_name }}</p>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                         @if($patient->contact_email)
                         <div class="col-md-4">
                             <div class="info-item mb-3">
-                                <label class="info-label">Email del Contacto</label>
+                                <label class="info-label">{{ __('patient.emergency_contact.email') }}</label>
                                 <p class="info-value">
                                     <a href="mailto:{{ $patient->contact_email }}" class="text-decoration-none">
                                         {{ $patient->contact_email }}
@@ -137,7 +137,7 @@
                         @if($patient->contact_phone)
                         <div class="col-md-4">
                             <div class="info-item mb-3">
-                                <label class="info-label">Teléfono del Contacto</label>
+                                <label class="info-label">{{ __('patient.emergency_contact.phone') }}</label>
                                 <p class="info-value">
                                     <a href="tel:{{ $patient->contact_phone }}" class="text-decoration-none">
                                         {{ $patient->contact_phone }}
@@ -156,7 +156,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <h5 class="mb-3">
-                    <i class="feather-activity me-2 text-primary"></i>Información Médica
+                    <i class="feather-activity me-2 text-primary"></i>{{ __('patient.info.medical_info') }}
                 </h5>
                 <div class="row">
                     {{--}}
@@ -171,22 +171,22 @@
                     {{--}}
                     <div class="col-md-4">
                         <div class="info-item mb-3">
-                            <label class="info-label">Estado</label>
+                            <label class="info-label">{{ __('patient.status') }}</label>
                             <p class="info-value">
                                 @if($patient->deceased)
-                                    <span class="badge bg-dark">Fallecido</span>
+                                    <span class="badge bg-dark">{{ __('patient.info.deceased') }}</span>
                                     @if($patient->deceased_date)
                                         <br><small class="text-muted">{{ $patient->deceased_date->format('d/m/Y') }}</small>
                                     @endif
                                 @else
-                                    <span class="badge bg-success">Activo</span>
+                                    <span class="badge bg-success">{{ __('patient.active') }}</span>
                                 @endif
                             </p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="info-item mb-3">
-                            <label class="info-label">Fecha de Registro</label>
+                            <label class="info-label">{{ __('patient.info.registration_date') }}</label>
                             <p class="info-value">{{ $patient->created_at }}</p>
                         </div>
                     </div>

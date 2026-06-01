@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Branch;
 use App\Models\Client;
 use App\Models\InventoryItem;
 use Illuminate\Database\Seeder;
@@ -14,7 +15,7 @@ class InventoryItemSeeder extends Seeder
     public function run(): void
     {
         // Get first branch (which has a client_id)
-        $branch = \App\Models\Branch::withoutGlobalScopes()->whereId(2)->first();
+        $branch = Branch::withoutGlobalScopes()->whereId(2)->first();
 
         if (! $branch) {
             $this->command->warn('No branch found. Creating inventory for first client.');

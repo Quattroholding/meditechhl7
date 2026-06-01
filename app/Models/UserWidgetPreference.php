@@ -77,12 +77,12 @@ class UserWidgetPreference extends Model
                 'consultation-duration-time' => ['name' => 'Consultation Duration Time', 'order' => 7, 'description' => 'Duración Promedio de Consultas', 'width' => 'col-lg-3', 'position' => 'd3:f3'],
                 'patients-by-gender' => ['name' => 'Patients by Gender', 'order' => 10, 'description' => 'Pacientes por género', 'width' => 'col-lg-3', 'position' => 'g3:i3'],
                 'patients-by-age-block' => ['name' => 'Patients by Age Block', 'order' => 11, 'description' => 'Pacientes por Rango de Edad', 'width' => 'col-lg-3', 'position' => 'j3:l3'],
-                //'top-active-conditions' => ['name' => 'Top Active Conditions', 'order' => 12, 'description' => 'Top 5 condicones activas', 'width' => 'col-lg-6', 'position' => 'a4:f4'],
-                //'top-prescribed-medications' => ['name' => 'Top Prescribed Medications', 'order' => 13, 'description' => 'Top 5 medicamentos prescritos', 'width' => 'col-lg-6', 'position' => 'g4:l4'],
+                // 'top-active-conditions' => ['name' => 'Top Active Conditions', 'order' => 12, 'description' => 'Top 5 condicones activas', 'width' => 'col-lg-6', 'position' => 'a4:f4'],
+                // 'top-prescribed-medications' => ['name' => 'Top Prescribed Medications', 'order' => 13, 'description' => 'Top 5 medicamentos prescritos', 'width' => 'col-lg-6', 'position' => 'g4:l4'],
                 'consultation-effectiveness' => ['name' => 'Consultation Effectiveness', 'order' => 14, 'description' => 'Efectividad de Atención', 'width' => 'col-lg-6', 'position' => 'a5:f5'],
                 'activity-heatmap' => ['name' => 'Activity Heatmap', 'order' => 15, 'description' => 'Horarios de Mayor Actividad', 'width' => 'col-lg-6', 'position' => 'g5:l5'],
-                //'branch-billing-chart' => ['name' => 'Branch Billing Chart', 'order' => 16, 'description' => 'Facturación por Sede', 'width' => 'col-lg-12', 'position' => 'a6:l6'],
-                //'billing-collection-rate' => ['name' => 'Billing Collection Rate', 'order' => 17, 'description' => 'Tasa de Facturación vs Cobros', 'width' => 'col-lg-12', 'position' => 'a7:l7'],
+                // 'branch-billing-chart' => ['name' => 'Branch Billing Chart', 'order' => 16, 'description' => 'Facturación por Sede', 'width' => 'col-lg-12', 'position' => 'a6:l6'],
+                // 'billing-collection-rate' => ['name' => 'Billing Collection Rate', 'order' => 17, 'description' => 'Tasa de Facturación vs Cobros', 'width' => 'col-lg-12', 'position' => 'a7:l7'],
 
             ],
         ];

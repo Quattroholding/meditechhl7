@@ -16,7 +16,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px;">
-                                    🤒 Consulta Médica - Enfermedad Actual
+                                    🤒 {{ __('patient.medical_history.present_illnesses_grouped.consultation_illness') }}
                                     @if($encounter)
                                         {!! $encounter->status !!}
                                     @endif
@@ -46,7 +46,7 @@
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 24px; font-weight: 700;">{{ $totalIllnesses }}</div>
-                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalIllnesses == 1 ? 'padecimiento' : 'padecimientos' }}</div>
+                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalIllnesses == 1 ? __('patient.medical_history.present_illnesses_grouped.illness_condition') : __('patient.medical_history.present_illnesses_grouped.illnesses') }}</div>
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
                                     <div>
                                         <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin: 0 0 8px 0;">
-                                            🩺 Padecimiento Actual
+                                            🩺 {{ __('patient.medical_history.present_illnesses_grouped.current_condition') }}
                                         </h3>
                                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                             @if($illness->severity)
@@ -90,7 +90,7 @@
                                 @if($illness->history_present_illness)
                                     <div style="margin-bottom: 15px;">
                                         <div style="font-size: 13px; font-weight: 600; color: #6d28d9; margin-bottom: 8px;">
-                                            📖 Historia de la Enfermedad Actual
+                                            📖 {{ __('patient.medical_history.present_illnesses.history_present_illness') }}
                                         </div>
                                         <div style="background: white; padding: 12px; border-radius: 8px; line-height: 1.6; font-size: 13px; color: #374151;">
                                             {{ $illness->history_present_illness }}
@@ -102,7 +102,7 @@
                                 @if($illness->description)
                                     <div style="margin-bottom: 15px;">
                                         <div style="font-size: 13px; font-weight: 600; color: #6d28d9; margin-bottom: 8px;">
-                                            🎯 Descripción
+                                            🎯 {{ __('patient.medical_history.present_illnesses.description') }}
                                         </div>
                                         <div style="background: white; padding: 12px; border-radius: 8px; line-height: 1.6; font-size: 13px; color: #374151;">
                                             {{ $illness->description }}
@@ -114,37 +114,37 @@
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                                     @if($illness->onset_date)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏱️ Inicio</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏱️ {{ __('patient.medical_history.present_illnesses.onset') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ Carbon\Carbon::parse($illness->onset_date)->format('d/m/Y') }}</div>
                                         </div>
                                     @endif
                                     @if($illness->duration)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏳ Duración</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏳ {{ __('patient.medical_history.present_illnesses.duration') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{  __('present_illness.'.$illness->duration) }}</div>
                                         </div>
                                     @endif
                                     @if($illness->location)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">📍 Localización</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">📍 {{ __('patient.medical_history.present_illnesses.location') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->location)}}</div>
                                         </div>
                                     @endif
                                     @if($illness->quality)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">🔍 Calidad</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">🔍 {{ __('patient.medical_history.present_illnesses.quality') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->quality)  }}</div>
                                         </div>
                                     @endif
                                     @if($illness->radiation)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">↗️ Irradiación</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">↗️ {{ __('patient.medical_history.present_illnesses.irradiation') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ $illness->radiation }}</div>
                                         </div>
                                     @endif
                                     @if($illness->timing)
                                         <div style="background: white; padding: 10px; border-radius: 8px;">
-                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏰ Cronología</div>
+                                            <div style="font-size: 11px; color: #8b5cf6; font-weight: 600; margin-bottom: 3px;">⏰ {{ __('patient.medical_history.present_illnesses.timing') }}</div>
                                             <div style="font-size: 13px; color: #1e293b; font-weight: 500;">{{ __('present_illness.'.$illness->timing) }}</div>
                                         </div>
                                     @endif
@@ -154,7 +154,7 @@
                                 @if($illness->pain_scale)
                                     <div style="margin-bottom: 15px;">
                                         <div style="font-size: 13px; font-weight: 600; color: #6d28d9; margin-bottom: 8px;">
-                                            🌡️ Escala de Dolor
+                                            🌡️ {{ __('patient.medical_history.present_illnesses.pain_scale') }}
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 12px; border-radius: 8px;">
                                             <div style="display: flex; gap: 4px;">
@@ -179,7 +179,7 @@
                                         @if($illness->aggravating_factors)
                                             <div>
                                                 <div style="font-size: 12px; color: #be185d; font-weight: 600; margin-bottom: 6px;">
-                                                    ⚠️ Factores Agravantes
+                                                    ⚠️ {{ __('patient.medical_history.present_illnesses.aggravating_factors') }}
                                                 </div>
                                                 <div style="background: #fdf2f8; padding: 10px; border-radius: 8px; font-size: 12px; color: #374151;">
                                                     {{ $illness->aggravating_factors }}
@@ -189,7 +189,7 @@
                                         @if($illness->associated_symptoms)
                                             <div>
                                                 <div style="font-size: 12px; color: #d97706; font-weight: 600; margin-bottom: 6px;">
-                                                    🔗 Síntomas Asociados
+                                                    🔗 {{ __('patient.medical_history.present_illnesses.associated_symptoms') }}
                                                 </div>
                                                 <div style="background: #fffbeb; padding: 10px; border-radius: 8px; font-size: 12px; color: #374151;">
                                                     {{ $illness->associated_symptoms }}
@@ -209,7 +209,7 @@
                                 </div>
                                 <div>
                                     <span style="background: #8b5cf6; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                                        🤒 {{ $totalIllnesses }} Padecimiento{{ $totalIllnesses != 1 ? 's' : '' }}
+                                        🤒 {{ $totalIllnesses }} {{ $totalIllnesses != 1 ? ucfirst(__('patient.medical_history.present_illnesses_grouped.illnesses')) : ucfirst(__('patient.medical_history.present_illnesses_grouped.illness_condition')) }}
                                     </span>
                                 </div>
                             </div>
@@ -228,11 +228,11 @@
                         <button wire:click="previousPresentIllnessPage"
                                 class="pagination-btn"
                                 style="background: #8b5cf6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.present_illnesses.previous') }}
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.present_illnesses.previous') }}
                         </span>
                     @endif
 
@@ -257,11 +257,11 @@
                         <button wire:click="nextPresentIllnessPage"
                                 class="pagination-btn"
                                 style="background: #8b5cf6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            Siguiente →
+                            {{ __('patient.medical_history.present_illnesses.next') }} →
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            Siguiente →
+                            {{ __('patient.medical_history.present_illnesses.next') }} →
                         </span>
                     @endif
                 </nav>
@@ -269,8 +269,11 @@
 
             <!-- Pagination Info -->
             <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #64748b;">
-                Mostrando consultas {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
-                de {{ $sectionData['total'] ?? 0 }} total
+                {{ __('patient.medical_history.present_illnesses_grouped.showing_consultations_range', [
+                    'from' => $sectionData['from'] ?? 0,
+                    'to' => $sectionData['to'] ?? 0,
+                    'total' => $sectionData['total'] ?? 0
+                ]) }}
             </div>
         @endif
     @elseif($sectionData && (isset($sectionData['data']) ? count($sectionData['data']) > 0 : (is_countable($sectionData) ? count($sectionData) > 0 : !empty($sectionData))))
@@ -279,8 +282,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🤒</div>
-            <h3>No hay enfermedades actuales registradas</h3>
-            <p>Este paciente no tiene enfermedades actuales en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.present_illnesses.no_present_illnesses') }}</h3>
+            <p>{{ __('patient.medical_history.present_illnesses.no_present_illnesses_message') }}</p>
         </div>
     @endif
 </div>

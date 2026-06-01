@@ -3,7 +3,7 @@
     <!-- Botón puede ser usado como acción o componente independiente -->
     @if(!isset($hideButton) || !$hideButton)
         <button wire:click="openModal()" class="btn-head btn-head-light">
-            🛡️ {{__('Gestionar Seguros')}}
+            🛡️ {{ __('patient.insurance.manage_insurance') }}
         </button>
     @endif
 
@@ -14,7 +14,7 @@
         <div class="modal-content" wire:click.stop style="max-width: 900px;">
             <div class="modal-header">
                 <h2 class="modal-title" style="color: #000;">
-                    {{__('Gestionar Seguros Médicos')}} : {{ $patient->name }}
+                    {{ __('patient.insurance.manage_medical_insurance') }} : {{ $patient->name }}
                 </h2>
                 <button wire:click="closeModal()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -25,21 +25,21 @@
                 @if($existingPolicies->count() > 0)
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Seguros Actuales</h5>
+                        <h5 class="card-title mb-0">{{ __('patient.insurance.current_insurance') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Prioridad</th>
-                                        <th>Compañía</th>
-                                        <th>Póliza</th>
-                                        <th>Titular</th>
-                                        <th>Cobertura</th>
-                                        <th>Estado</th>
-                                        <th>Vigencia</th>
-                                        <th>Acciones</th>
+                                        <th>{{ __('patient.insurance.priority') }}</th>
+                                        <th>{{ __('patient.insurance.company') }}</th>
+                                        <th>{{ __('patient.insurance.policy_number') }}</th>
+                                        <th>{{ __('patient.insurance.holder') }}</th>
+                                        <th>{{ __('patient.insurance.coverage') }}</th>
+                                        <th>{{ __('patient.insurance.status') }}</th>
+                                        <th>{{ __('patient.insurance.validity') }}</th>
+                                        <th>{{ __('patient.acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,31 +56,31 @@
                                         <td>{{ $policy->coverage_percentage ?? 0 }}%</td>
                                         <td>
                                             @if($policy->is_active && !$policy->isExpired())
-                                                <span class="badge bg-success">Activo</span>
+                                                <span class="badge bg-success">{{ __('patient.insurance.active') }}</span>
                                             @elseif($policy->isExpired())
-                                                <span class="badge bg-warning">Expirado</span>
+                                                <span class="badge bg-warning">{{ __('patient.insurance.expired') }}</span>
                                             @else
-                                                <span class="badge bg-secondary">Inactivo</span>
+                                                <span class="badge bg-secondary">{{ __('patient.insurance.inactive') }}</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if($policy->expiration_date)
                                                 {{ $policy->expiration_date->format('d/m/Y') }}
                                             @else
-                                                Sin vencimiento
+                                                {{ __('patient.insurance.no_expiration') }}
                                             @endif
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <button wire:click="togglePolicyStatus({{ $policy->id }})"
                                                         class="btn btn-sm {{ $policy->is_active ? 'btn-warning' : 'btn-success' }}"
-                                                        title="{{ $policy->is_active ? 'Desactivar' : 'Activar' }}">
+                                                        :title="$policy->is_active ? __('patient.insurance.deactivate') : __('patient.insurance.activate')">
                                                     <i class="fas fa-{{ $policy->is_active ? 'pause' : 'play' }}"></i>
                                                 </button>
                                                 <button wire:click="deletePolicy({{ $policy->id }})"
                                                         class="btn btn-sm btn-danger"
-                                                        title="Eliminar"
-                                                        onclick="return confirm('¿Está seguro de eliminar este seguro?')">
+                                                        :title="__('button.delete')"
+                                                        onclick="return confirm('{{ __('patient.insurance.confirm_delete') }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -98,7 +98,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-plus"></i> Agregar Nuevo Seguro
+                            <i class="fas fa-plus"></i> {{ __('patient.insurance.add_new_insurance') }}
                         </h5>
                     </div>
                     <div class="card-body py-4">
@@ -113,9 +113,9 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="input-block local-forms">
-                            <x-input-label for="insurance_company_id" :value="__('Compañía de Seguros')" required="true"/>
+                            <x-input-label for="insurance_company_id" :value="__('patient.insurance.company')" required="true"/>
                             <select wire:model="insurance_company_id" class="form-control" name="insurance_company_id">
-                                <option value="">Seleccione una compañía</option>
+                                <option value="">{{ __('patient.insurance.select_company') }}</option>
                                 @foreach($insuranceCompanies as $company)
                                     <option value="{{ $company->id }}">{{ $company->name }}</option>
                                 @endforeach
@@ -125,7 +125,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="input-block local-forms">
-                            <x-input-label for="priority" :value="__('Prioridad')" required="true"/>
+                            <x-input-label for="priority" :value="__('patient.insurance.priority')" required="true"/>
                             <select wire:model.live="priority" class="form-control" name="priority">
                                 @foreach($this->getPriorityOptions() as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
@@ -140,15 +140,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="policy_number" :value="__('Número de Póliza')" required="true"/>
-                            <x-text-input wire:model="policy_number" class="block mt-1 w-full" type="text" name="policy_number" placeholder="Ej: ABC123456"/>
+                            <x-input-label for="policy_number" :value="__('patient.insurance.policy_number')" required="true"/>
+                            <x-text-input wire:model="policy_number" class="block mt-1 w-full" type="text" name="policy_number" :placeholder="__('patient.insurance.policy_number_placeholder')"/>
                             <x-input-error :messages="$errors->get('policy_number')"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="group_number" :value="__('Número de Grupo')"/>
-                            <x-text-input wire:model="group_number" class="block mt-1 w-full" type="text" name="group_number" placeholder="Ej: GRP001"/>
+                            <x-input-label for="group_number" :value="__('patient.insurance.group_number')"/>
+                            <x-text-input wire:model="group_number" class="block mt-1 w-full" type="text" name="group_number" :placeholder="__('patient.insurance.group_number_placeholder')"/>
                             <x-input-error :messages="$errors->get('group_number')"/>
                         </div>
                     </div>
@@ -158,15 +158,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="subscriber_id" :value="__('ID del Titular')" required="true"/>
-                            <x-text-input wire:model="subscriber_id" class="block mt-1 w-full" type="text" name="subscriber_id" placeholder="Ej: 8-123-456"/>
+                            <x-input-label for="subscriber_id" :value="__('patient.insurance.subscriber_id')" required="true"/>
+                            <x-text-input wire:model="subscriber_id" class="block mt-1 w-full" type="text" name="subscriber_id" :placeholder="__('patient.insurance.subscriber_id_placeholder')"/>
                             <x-input-error :messages="$errors->get('subscriber_id')"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="input-block local-forms">
-                            <x-input-label for="subscriber_name" :value="__('Nombre del Titular')" required="true"/>
-                            <x-text-input wire:model="subscriber_name" class="block mt-1 w-full" type="text" name="subscriber_name" placeholder="Nombre completo del titular"/>
+                            <x-input-label for="subscriber_name" :value="__('patient.insurance.subscriber_name')" required="true"/>
+                            <x-text-input wire:model="subscriber_name" class="block mt-1 w-full" type="text" name="subscriber_name" :placeholder="__('patient.insurance.subscriber_name_placeholder')"/>
                             <x-input-error :messages="$errors->get('subscriber_name')"/>
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="input-block local-forms">
-                            <x-input-label for="relationship_to_subscriber" :value="__('Relación')" required="true"/>
+                            <x-input-label for="relationship_to_subscriber" :value="__('patient.insurance.relationship')" required="true"/>
                             <select wire:model="relationship_to_subscriber" class="form-control" name="relationship_to_subscriber">
                                 @foreach($this->getRelationshipOptions() as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
@@ -187,14 +187,14 @@
                     </div>
                     <div class="col-md-4">
                         <div class="input-block local-forms">
-                            <x-input-label for="effective_date" :value="__('Fecha de Inicio')" required="true"/>
+                            <x-input-label for="effective_date" :value="__('patient.insurance.effective_date')" required="true"/>
                             <x-text-input wire:model="effective_date" class="block mt-1 w-full" type="date" name="effective_date"/>
                             <x-input-error :messages="$errors->get('effective_date')"/>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="input-block local-forms">
-                            <x-input-label for="expiration_date" :value="__('Fecha de Vencimiento')"/>
+                            <x-input-label for="expiration_date" :value="__('patient.insurance.expiration_date')"/>
                             <x-text-input wire:model="expiration_date" class="block mt-1 w-full" type="date" name="expiration_date"/>
                             <x-input-error :messages="$errors->get('expiration_date')"/>
                         </div>
@@ -205,14 +205,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="input-block local-forms">
-                            <x-input-label for="coverage_percentage" :value="__('Cobertura %')"/>
+                            <x-input-label for="coverage_percentage" :value="__('patient.insurance.coverage_percentage')"/>
                             <x-text-input wire:model="coverage_percentage" class="block mt-1 w-full" type="number" name="coverage_percentage" min="0" max="100" placeholder="80"/>
                             <x-input-error :messages="$errors->get('coverage_percentage')"/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="input-block local-forms">
-                            <x-input-label for="copay_amount" :value="__('Copago')"/>
+                            <x-input-label for="copay_amount" :value="__('patient.insurance.copay')"/>
                             <x-text-input wire:model="copay_amount" class="block mt-1 w-full" type="number" name="copay_amount" min="0" step="0.01" placeholder="25.00"/>
                             <x-input-error :messages="$errors->get('copay_amount')"/>
                         </div>
@@ -242,15 +242,15 @@
                             <div class="form-check">
                                 <input wire:model="is_active" class="form-check-input" type="checkbox" id="is_active">
                                 <label class="form-check-label" for="is_active">
-                                    Seguro Activo
+                                    {{ __('patient.insurance.active_insurance') }}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="input-block local-forms">
-                            <x-input-label for="notes" :value="__('Notas')"/>
-                            <x-textarea-input wire:model="notes" class="block mt-1 w-full" name="notes" rows="2" placeholder="Notas adicionales sobre el seguro..."/>
+                            <x-input-label for="notes" :value="__('patient.insurance.notes')"/>
+                            <x-textarea-input wire:model="notes" class="block mt-1 w-full" name="notes" rows="2" :placeholder="__('patient.insurance.notes_placeholder')"/>
                             <x-input-error :messages="$errors->get('notes')"/>
                         </div>
                         </div>
@@ -260,10 +260,10 @@
 
             <div class="modal-footer" style="margin-top: 20px; display: flex; gap: 15px;">
                 <button wire:click="save" class="btn btn-primary" style="flex: 1;">
-                    <i class="fas fa-save"></i> {{ __('Agregar Seguro') }}
+                    <i class="fas fa-save"></i> {{ __('patient.insurance.add_insurance') }}
                 </button>
                 <button type="button" wire:click="closeModal()" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> {{ __('Cerrar') }}
+                    <i class="fas fa-times"></i> {{ __('generic.close') }}
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -285,7 +285,7 @@
 
             // Close modal on successful insurance addition
             Livewire.on('insurance-added', () => {
-                toastr.success('Seguro agregado exitosamente', '', {
+                toastr.success('{{ __('patient.insurance.insurance_added_successfully') }}', '', {
                     closeButton: true,
                     progressBar: true,
                     positionClass: 'toast-top-right',

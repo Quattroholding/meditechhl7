@@ -6,17 +6,17 @@
             <div class="offcanvas-header border-bottom">
                 <h5 class="offcanvas-title" id="medicationHistoryOffcanvasLabel">
                     <i class="fas fa-pills me-2"></i>
-                    Historial de Medicamentos - {{ $patient->name ?? 'Paciente' }}
+                    {{ __('patient.medication_history.title') }} - {{ $patient->name ?? __('patient.title') }}
                 </h5>
-                <button type="button" class="btn-close" wire:click="hideMedicationHistory" aria-label="Close"></button>
+                <button type="button" class="btn-close" wire:click="hideMedicationHistory" aria-label="{{ __('generic.close') }}"></button>
             </div>
 
             <div class="offcanvas-body p-0">
                 @if($groupedByEncounter->isEmpty())
                     <div class="text-center p-4">
                         <i class="fas fa-pills fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No hay medicamentos registrados</h5>
-                        <p class="text-muted">En los últimos 6 meses no se encontraron medicamentos para este paciente.</p>
+                        <h5 class="text-muted">{{ __('patient.medication_history.no_medications') }}</h5>
+                        <p class="text-muted">{{ __('patient.medication_history.no_medications_message') }}</p>
                     </div>
                 @else
                     <!-- Botones de acción -->
@@ -25,7 +25,7 @@
                             <button class="btn btn-primary btn-sm flex-fill" wire:click="copySelectedMedications"
                                     @if(empty($selectedMedicationIds)) disabled @endif>
                                 <i class="fas fa-copy me-1"></i>
-                                Copiar Seleccionados ({{ count($selectedMedicationIds) }})
+                                {{ __('patient.medication_history.copy_selected', ['count' => count($selectedMedicationIds)]) }}
                             </button>
                         </div>
                     </div>
@@ -41,19 +41,19 @@
                                     <div>
                                         <h6 class="mb-1 text-white">
                                             <i class="fas fa-calendar-alt me-2"></i>
-                                            {{ $encounter->created_at ?? 'Fecha no disponible' }}
+                                            {{ $encounter->created_at ?? __('patient.medication_history.date_not_available') }}
                                         </h6>
                                         <small class="text-white">
                                             <i class="fa fa-user-md me-2"></i>
-                                            {{ $encounter->practitioner->name ?? 'No especificado' }}
+                                            {{ $encounter->practitioner->name ?? __('patient.info.not_specified') }}
                                         </small>
                                     </div>
                                     <button class="btn btn-outline-primary btn-sm"
                                             wire:click="selectEntireRecipe({{ $encounterId }})">
                                         @if($selectedEncounterId === $encounterId && !empty(array_intersect($encounterData['medications']->pluck('id')->toArray(), $selectedMedicationIds)))
-                                            <i class="fas fa-check-square me-1"></i>Deseleccionar Receta
+                                            <i class="fas fa-check-square me-1"></i>{{ __('patient.medication_history.deselect_recipe') }}
                                         @else
-                                            <i class="far fa-square me-1"></i>Seleccionar Receta
+                                            <i class="far fa-square me-1"></i>{{ __('patient.medication_history.select_recipe') }}
                                         @endif
                                     </button>
                                 </div>
@@ -74,35 +74,35 @@
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-1">
                                                         <i class="fas fa-capsules me-2 text-primary"></i>
-                                                        {{ $medication->medicine->full_name ?? 'Medicamento no especificado' }}
+                                                        {{ $medication->medicine->full_name ?? __('patient.medication_history.medication_not_specified') }}
                                                     </h6>
 
                                                     <div class="medication-details">
                                                         @if($medication->dosage_text)
                                                             <p class="mb-1">
-                                                                <strong>Indicaciones:</strong> {{ $medication->dosage_text }}
+                                                                <strong>{{ __('patient.medication_history.instructions') }}:</strong> {{ $medication->dosage_text }}
                                                             </p>
                                                         @endif
 
                                                         <div class="row text-sm">
                                                             @if($medication->quantity)
                                                                 <div class="col-6">
-                                                                    <small><strong>Cantidad:</strong> {{ $medication->quantity }}</small>
+                                                                    <small><strong>{{ __('patient.medication_history.quantity') }}:</strong> {{ $medication->quantity }}</small>
                                                                 </div>
                                                             @endif
                                                             @if($medication->frequency)
                                                                 <div class="col-6">
-                                                                    <small><strong>Frecuencia:</strong> Cada {{ $medication->frequency }} horas</small>
+                                                                    <small><strong>{{ __('patient.medication_history.frequency') }}:</strong> {{ __('patient.medication_history.every_hours', ['hours' => $medication->frequency]) }}</small>
                                                                 </div>
                                                             @endif
                                                             @if($medication->route)
                                                                 <div class="col-6">
-                                                                    <small><strong>Vía:</strong> {{ $medication->route }}</small>
+                                                                    <small><strong>{{ __('patient.medication_history.route') }}:</strong> {{ $medication->route }}</small>
                                                                 </div>
                                                             @endif
                                                             @if($medication->duration)
                                                                 <div class="col-6">
-                                                                    <small><strong>Duración:</strong> {{ $medication->duration }} días</small>
+                                                                    <small><strong>{{ __('patient.medication_history.duration') }}:</strong> {{ __('patient.medication_history.days', ['days' => $medication->duration]) }}</small>
                                                                 </div>
                                                             @endif
                                                         </div>
@@ -111,7 +111,7 @@
                                                             <div class="mt-2">
                                                                 <span class="badge bg-info">
                                                                     <i class="fas fa-repeat me-1"></i>
-                                                                    {{ $medication->refills }} meses de refill
+                                                                    {{ __('patient.medication_history.refills_months', ['months' => $medication->refills]) }}
                                                                 </span>
                                                             </div>
                                                         @endif

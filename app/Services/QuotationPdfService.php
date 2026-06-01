@@ -12,8 +12,6 @@ class QuotationPdfService
     {
         $quotation->load('items.serviceType');
 
-
-
         $pdf = Pdf::loadView('documents.quotation', [
             'quotation' => $quotation,
             'pdfService' => $this,

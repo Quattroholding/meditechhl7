@@ -2,15 +2,15 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
             <i class="fas fa-calendar-alt me-2" ></i>
-            Horarios de Mayor Actividad
+            {{ __('doctor.dashboard.peak_activity_hours') }}
         </h4>
         <div class="dropdown">
             <select wire:model.live="timeFrame" class="form-select form-select-sm">
-                <option value="7">Últimos 7 días</option>
-                <option value="30">Últimos 30 días</option>
-                <option value="90">Últimos 3 meses</option>
-                <option value="365">Último año</option>
-                <option value="0">Todos los registros</option>
+                <option value="7">{{ __('doctor.dashboard.last_7_days') }}</option>
+                <option value="30">{{ __('doctor.dashboard.last_30_days') }}</option>
+                <option value="90">{{ __('doctor.dashboard.last_3_months') }}</option>
+                <option value="365">{{ __('doctor.dashboard.last_year') }}</option>
+                <option value="0">{{ __('doctor.dashboard.all_records') }}</option>
             </select>
         </div>
     </div>
@@ -65,7 +65,7 @@
                 <div class="col-md-4">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-primary">{{ $totalAppointments }}</h5>
-                        <small class="text-muted">Total Citas</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.total_appointments') }}</small>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -77,7 +77,7 @@
                                 N/A
                             @endif
                         </h5>
-                        <small class="text-muted">Hora Pico</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.peak_hour') }}</small>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -89,7 +89,7 @@
                                 N/A
                             @endif
                         </h5>
-                        <small class="text-muted">Día Pico</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.peak_day') }}</small>
                     </div>
                 </div>
             </div>
@@ -115,12 +115,12 @@
                         </div>
                         @for($day = 1; $day <= 6; $day++)
                             <div class="heatmap-cell {{ $this->getIntensityClass($heatmapData[$hour][$day]) }}"
-                                 title="{{ $this->getDayName($day) }} {{ $this->getFormattedHour($hour) }}: {{ $heatmapData[$hour][$day] }} citas">
+                                 title="{{ $this->getDayName($day) }} {{ $this->getFormattedHour($hour) }}: {{ $heatmapData[$hour][$day] }} {{ __('doctor.dashboard.appointments_lowercase') }}">
                                 {{ $heatmapData[$hour][$day] > 0 ? $heatmapData[$hour][$day] : '' }}
                             </div>
                         @endfor
                         <div class="heatmap-cell {{ $this->getIntensityClass($heatmapData[$hour][0]) }}"
-                             title="{{ $this->getDayName(0) }} {{ $this->getFormattedHour($hour) }}: {{ $heatmapData[$hour][0] }} citas">
+                             title="{{ $this->getDayName(0) }} {{ $this->getFormattedHour($hour) }}: {{ $heatmapData[$hour][0] }} {{ __('doctor.dashboard.appointments_lowercase') }}">
                             {{ $heatmapData[$hour][0] > 0 ? $heatmapData[$hour][0] : '' }}
                         </div>
                     </div>
@@ -130,7 +130,7 @@
 
             <!-- Leyenda -->
             <div class="heatmap-legend mt-3">
-                <small class="text-muted me-2">Menos</small>
+                <small class="text-muted me-2">{{ __('doctor.dashboard.less') }}</small>
                 <div class="legend-colors">
                     <div class="legend-square intensity-0"></div>
                     <div class="legend-square intensity-1"></div>
@@ -139,7 +139,7 @@
                     <div class="legend-square intensity-4"></div>
                     <div class="legend-square intensity-5"></div>
                 </div>
-                <small class="text-muted ms-2">Más</small>
+                <small class="text-muted ms-2">{{ __('doctor.dashboard.more') }}</small>
             </div>
 
             <!-- Top horas y días -->
@@ -147,24 +147,24 @@
                 <div class="col-md-6">
                     <h6 class="mb-2">
                         <i class="fas fa-clock me-1"></i>
-                        Top Horas
+                        {{ __('doctor.dashboard.top_hours') }}
                     </h6>
                     @foreach($peakHours as $hour => $count)
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="badge bg-primary">{{ $this->getFormattedHour($hour) }}</span>
-                            <span class="text-muted">{{ $count }} citas</span>
+                            <span class="text-muted">{{ $count }} {{ __('doctor.dashboard.appointments_lowercase') }}</span>
                         </div>
                     @endforeach
                 </div>
                 <div class="col-md-6">
                     <h6 class="mb-2">
                         <i class="fas fa-calendar-day me-1"></i>
-                        Top Días
+                        {{ __('doctor.dashboard.top_days') }}
                     </h6>
                     @foreach($peakDays as $day => $count)
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="badge bg-success">{{ $this->getDayName($day) }}</span>
-                            <span class="text-muted">{{ $count }} citas</span>
+                            <span class="text-muted">{{ $count }} {{ __('doctor.dashboard.appointments_lowercase') }}</span>
                         </div>
                     @endforeach
                 </div>
@@ -172,12 +172,12 @@
         @else
             <div class="empty-state text-center py-4">
                 <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay datos de actividad</h5>
+                <h5 class="text-muted">{{ __('doctor.dashboard.no_activity_data') }}</h5>
                 <p class="text-muted mb-0">
                     @if($timeFrame == '0')
-                        No se encontraron citas en el período seleccionado.
+                        {{ __('doctor.dashboard.no_appointments_found_period') }}
                     @else
-                        No se encontraron citas en los últimos {{ $timeFrame }} días.
+                        {{ __('doctor.dashboard.no_appointments_found_in_days', ['days' => $timeFrame]) }}
                     @endif
                 </p>
             </div>
@@ -187,7 +187,7 @@
     <div class="card-footer text-muted text-center">
         <small>
             <i class="fas fa-info-circle me-1"></i>
-            Basado en citas confirmadas y finalizadas
+            {{ __('doctor.dashboard.based_on_confirmed_completed') }}
         </small>
     </div>
     <style>

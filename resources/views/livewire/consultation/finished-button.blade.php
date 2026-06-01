@@ -5,13 +5,13 @@
     <form method="POST" action="{{ route('consultation.finished',$this->encounter->appointment_id) }}">
         @csrf
         <div class="text-end">
-            <button type="submit" class="btn btn-success" id="finishedButton" @if(!$enabled) disabled @endif>{{__('Finalizar Consulta')}}</button>
+            <button type="submit" class="btn btn-success" id="finishedButton" @if(!$enabled) disabled @endif>{{ __('consultation.finished_button.finish_consultation') }}</button>
         </div>
     </form>
     @if(count($messages)>0)
     <div id="menu-right-info" class="menu-right-item">
         <div class="campos-obligatorios-label" style="">
-            <b>Para finalizar consulta agregue la siguiente información:</b>
+            <b>{{ __('consultation.finished_button.add_required_info') }}</b>
         </div>
         <div class="btn-enviar-by-diagnostic-tester">
             <div class="campos-obligatorios-scroll">

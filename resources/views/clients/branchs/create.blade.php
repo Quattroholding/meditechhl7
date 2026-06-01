@@ -39,19 +39,19 @@
                             @endif
                             <!-- TYPE -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="type" :value="__('Tipo')" required/>
+                                <x-input-label for="type" :value="__('client.branch.type')" required/>
                                 <x-select-input name="type" :options="\App\Models\Lista::branchType()" :selected="[old('type')]" class="block w-full"/>
                                 <x-input-error :messages="$errors->get('type')" class="mt-2" />
                             </div>
                             <!-- Name -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="name" :value="__('Nombre')" required/>
+                                <x-input-label for="name" :value="__('client.branch.name')" required/>
                                 <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
                             <!-- PHONE -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="phone" :value="__('Teléfono')" required/>
+                                <x-input-label for="phone" :value="__('client.branch.phone')" required/>
                                 <x-phone-input
                                     name="phone"
                                     id="phone"
@@ -63,15 +63,15 @@
                             </div>
                             <!-- ADDRESS -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="address" :value="__('Dirección')" />
+                                <x-input-label for="address" :value="__('client.branch.address')" />
                                 <x-textarea-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')"/>
                                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
                             </div>
                             <!-- COUNTRY -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="country_id" value="País"/>
+                                <x-input-label for="country_id" value="{{__('client.branch.country_name')}}"/>
                                 <select name="country_id" id="country_id" class="form-control">
-                                    <option value="">Seleccione un país...</option>
+                                    <option value="">{{ __('generic.select') }} {{__('client.branch.country_name')}}...</option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}" {{ old('country_id') == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
                                     @endforeach
@@ -80,9 +80,9 @@
                             </div>
                             <!-- STATE -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="state_id" value="Provincia/Estado"/>
+                                <x-input-label for="state_id" value="{{__('client.branch.state_name')}}"/>
                                 <select name="state_id" id="state_id" class="form-control" disabled>
-                                    <option value="">Seleccione una provincia...</option>
+                                    <option value="">{{ __('generic.select') }} {{__('client.branch.state_name')}}...</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('state_id')" class="mt-2" />
                             </div>

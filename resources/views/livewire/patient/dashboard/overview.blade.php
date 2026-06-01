@@ -71,7 +71,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h4 class="mb-0">{{ $stats['appointments']['upcoming'] ?? 0 }}</h4>
-                                <small>Próximas Citas</small>
+                                <small>{{ __('patient.dashboard.upcoming_appointments') }}</small>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h4 class="mb-0">{{ $stats['consultations']['total'] ?? 0 }}</h4>
-                                <small>Total Consultas</small>
+                                <small>{{ __('patient.dashboard.total_consultations') }}</small>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h4 class="mb-0">{{ $stats['invoices']['outstanding'] ?? 0 }}</h4>
-                                <small>Facturas Pendientes</small>
+                                <small>{{ __('patient.dashboard.pending_invoices') }}</small>
                             </div>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h4 class="mb-0">{{ $stats['medical_conditions']['active'] ?? 0 }}</h4>
-                                <small>Condiciones Activas</small>
+                                <small>{{ __('patient.dashboard.active_conditions') }}</small>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0" style="color: #fff;">
-                        <i class="fas fa-calendar-alt me-2"></i>Próxima Cita
+                        <i class="fas fa-calendar-alt me-2"></i>{{ __('patient.dashboard.next_appointment') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -147,23 +147,23 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">{{ $nextAppointment->practitioner->name ?? 'Doctor asignado' }}</h6>
-                                <p class="mb-0 text-muted">{{ $nextAppointment->medicalSpeciality->name ?? 'Especialidad' }}</p>
+                                <h6 class="mb-1">{{ $nextAppointment->practitioner->name ?? __('patient.dashboard.assigned_doctor') }}</h6>
+                                <p class="mb-0 text-muted">{{ $nextAppointment->medicalSpeciality->name ?? __('patient.dashboard.specialty') }}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <strong>Fecha:</strong>
+                                <strong>{{ __('generic.date') }}:</strong>
                                 <p class="mb-0">{{ $nextAppointment->start->format('d/m/Y') }}</p>
                             </div>
                             <div class="col-6">
-                                <strong>Hora:</strong>
-                                <p class="mb-0">{{ $nextAppointment->start->format('h:i') ?? 'Por confirmar' }}</p>
+                                <strong>{{ __('appointment.time') }}:</strong>
+                                <p class="mb-0">{{ $nextAppointment->start->format('h:i') ?? __('patient.dashboard.to_confirm') }}</p>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <strong>Tipo Servicio:</strong>
-                            <p class="mb-0">{{ $nextAppointment->service_type ?? 'Consulta general' }}</p>
+                            <strong>{{ __('appointment.service_type') }}:</strong>
+                            <p class="mb-0">{{ $nextAppointment->service_type ?? __('patient.dashboard.general_consultation') }}</p>
                         </div>
                         <div class="mt-3">
                             <span class="appointment appointment-{{$nextAppointment->status->label()}}" style="position:relative;">
@@ -173,10 +173,10 @@
                     @else
                         <div class="text-center py-3">
                             <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">No tienes citas programadas próximamente.</p>
+                            <p class="text-muted">{{ __('patient.dashboard.no_upcoming_appointments') }}</p>
 
                             <button  wire:click="openModal" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus me-1"></i>Programar Cita
+                                <i class="fas fa-plus me-1"></i>{{ __('patient.dashboard.schedule_appointment') }}
                             </button>
                         </div>
                     @endif
@@ -189,7 +189,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0" style="color: #fff;">
-                        <i class="fas fa-heartbeat me-2"></i>Últimos Signos Vitales
+                        <i class="fas fa-heartbeat me-2"></i>{{ __('patient.dashboard.latest_vital_signs') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -240,7 +240,7 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1 ms-2">
-                                            <small class="text-muted">{{ $vitalSign->observationType?->name ?? 'Signo Vital' }}</small>
+                                            <small class="text-muted">{{ $vitalSign->observationType?->name ?? __('patient.dashboard.vital_sign') }}</small>
                                             <h6 class="mb-0">{{ $vitalSign->value }} {{ $vitalSign->unit ?? '' }}</h6>
                                             <small class="text-muted">{{ $vitalSign->effective_date->format('d/m') }}</small>
                                         </div>
@@ -251,7 +251,7 @@
                     @else
                         <div class="text-center py-3">
                             <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">No hay signos vitales registrados recientemente.</p>
+                            <p class="text-muted">{{ __('patient.dashboard.no_vital_signs_recorded') }}</p>
                         </div>
                     @endif
                 </div>
@@ -270,11 +270,10 @@
                             <i class="fas fa-exclamation-triangle fa-2x"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1">Facturas Pendientes de Pago</h6>
+                            <h6 class="mb-1">{{ __('patient.dashboard.pending_payment_invoices') }}</h6>
                             <p class="mb-0">
-                                Tienes {{ $stats['invoices']['outstanding'] ?? 0 }} facturas pendientes
-                                por un total de ${{ number_format($stats['invoices']['total_debt'] ?? 0, 2) }}.
-                                <a href="{{ route('invoice.index') }}" class="alert-link">Ver facturas</a>
+                                {{ __('patient.dashboard.you_have_invoices_pending', ['count' => $stats['invoices']['outstanding'] ?? 0, 'total' => number_format($stats['invoices']['total_debt'] ?? 0, 2)]) }}
+                                <a href="{{ route('invoice.index') }}" class="alert-link">{{ __('patient.dashboard.view_invoices') }}</a>
                             </p>
                         </div>
                     </div>

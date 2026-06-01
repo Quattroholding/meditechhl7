@@ -62,26 +62,26 @@
                         @if($workingHour)
                             <div class="alert alert-info" style="margin-top: 10px;">
                                 <i class="fas fa-info-circle"></i>
-                                <strong>Horario laboral:</strong>
-                                El doctor trabaja de {{ substr($workingHour->start_time, 0, 5) }} a {{ substr($workingHour->end_time, 0, 5) }}
-                                en {{ $workingHour->consultingRoom->full_name_branch ?? 'N/A' }}
+                                <strong>{{ __('appointment.working_hours') }}:</strong>
+                                {{ __('appointment.doctor_works') }} {{ substr($workingHour->start_time, 0, 5) }} {{ __('appointment.to') }} {{ substr($workingHour->end_time, 0, 5) }}
+                                {{ __('appointment.in') }} {{ $workingHour->consultingRoom->full_name_branch ?? 'N/A' }}
                             </div>
                         @elseif($this->isDoctorWorkingOnDate($appointment_date) === false)
                             <div class="alert alert-warning" style="margin-top: 10px;">
                                 <i class="fas fa-exclamation-triangle"></i>
-                                <strong>Atención:</strong>
-                                El doctor no tiene horario configurado para este día de la semana.
+                                <strong>{{ __('appointment.attention') }}:</strong>
+                                {{ __('appointment.doctor_no_schedule') }}
                             </div>
                         @endif
                     @endif
                     <div  class="input-block local-forms">
                         <x-input-label class="form-label" required>{{__('appointment.duration')}}</x-input-label>
                         <select wire:model="duration" class="form-control-full" required>
-                            <option value="15">15 minutos</option>
-                            <option value="30">30 minutos</option>
-                            <option value="45">45 minutos</option>
-                            <option value="60">60 minutos</option>
-                            <option value="90">90 minutos</option>
+                            <option value="15">{{ __('appointment.duration_15') }}</option>
+                            <option value="30">{{ __('appointment.duration_30') }}</option>
+                            <option value="45">{{ __('appointment.duration_45') }}</option>
+                            <option value="60">{{ __('appointment.duration_60') }}</option>
+                            <option value="90">{{ __('appointment.duration_90') }}</option>
                         </select>
                         <x-input-error :messages="$errors->get('duration')"/>
                     </div>
@@ -102,12 +102,12 @@
                     </div>
                     <div class="input-block local-forms">
                         <x-input-label for="service_type" :value="__('appointment.service_type')" required/>
-                        <x-text-input wire:model="service_type" id="service_type" class="block mt-1 w-full" type="text" name="service_type" placeholder="EJ:Consulta Especializada"/>
+                        <x-text-input wire:model="service_type" id="service_type" class="block mt-1 w-full" type="text" name="service_type" placeholder="{{ __('appointment.service_type_placeholder') }}"/>
                         <x-input-error :messages="$errors->get('service_type')"/>
                     </div>
                     <div class="input-block local-forms">
                         <label class="form-label">{{__('appointment.reason')}}</label>
-                        <textarea wire:model="description" class="form-control-full" rows="3" placeholder="Describir el motivo de la consulta">{{$description}}</textarea>
+                        <textarea wire:model="description" class="form-control-full" rows="3" placeholder="{{ __('appointment.reason_placeholder') }}">{{$description}}</textarea>
                         <x-input-error :messages="$errors->get('description')"/>
                     </div>
                     @if(!auth()->user()->canScheduleAppointments())
@@ -121,7 +121,7 @@
                         @endif
                         @if($appointment && auth()->user()->can('cancelled',$appointment))
                             <button type="button" wire:click="openCancelModal" class="btn btn-danger">
-                                <i class="fas fa-times-circle"></i> Cancelar Cita
+                                <i class="fas fa-times-circle"></i> {{ __('appointment.cancel_appointment') }}
                             </button>
                         @endif
                         <button type="button" wire:click="closeModal" class="btn btn-secondary">{{__('generic.cancel')}}</button>

@@ -34,7 +34,7 @@ class ViewResults extends Component
 
             $this->dispatch('showToastrSrViewResult',
                 type: 'error',
-                message:  __('service_request.not_found'),
+                message: __('service_request.not_found'),
             );
 
             return;
@@ -90,7 +90,7 @@ class ViewResults extends Component
 
             $this->dispatch('showToastrSrViewResult',
                 type: 'error',
-                message:   __('service_request_result.file_not_found'),
+                message: __('service_request_result.file_not_found'),
             );
 
             return;
@@ -108,7 +108,7 @@ class ViewResults extends Component
 
             $this->dispatch('showToastrSrViewResult',
                 type: 'error',
-                message:  __('service_request_result.not_found'),
+                message: __('service_request_result.not_found'),
             );
 
             return;
@@ -126,7 +126,7 @@ class ViewResults extends Component
 
         $this->dispatch('showToastrSrViewResult',
             type: 'success',
-            message:  __('service_request_result.deleted_successfully'),
+            message: __('service_request_result.deleted_successfully'),
         );
 
         $this->loadResults(); // Recargar la lista

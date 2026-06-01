@@ -4,9 +4,9 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Doctor</th>
-                    <th>Descripción</th>
-                    <th>Fecha de Creación</th>
+                    <th>{{ __('patient.medical_history.doctor_label') }}</th>
+                    <th>{{ __('patient.medical_history.description_label') }}</th>
+                    <th>{{ __('patient.medical_history.creation_date') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,8 +30,8 @@
     @else
     <div style="text-align: center; padding: 60px; color: #64748b;">
         <div style="font-size: 48px; margin-bottom: 20px;">📒</div>
-        <h3>No hay Notas Registradas</h3>
-        <p>Este paciente no tiene notas médicas registradas en el período seleccionado.</p>
+        <h3>{{ __('patient.medical_history.no_notes_registered') }}</h3>
+        <p>{{ __('patient.medical_history.no_notes_message') }}</p>
     </div>
     @endif
 </div>

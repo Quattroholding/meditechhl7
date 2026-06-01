@@ -1,6 +1,6 @@
 <div>
     @if(count($selectedLists)>0)
-        <x-input-label  :value="__('Diagnosticos')" />
+        <x-input-label  :value="__('consultation.diagnostics')" />
         <div id="" class="multiple-field-values mb-3">
             <div class="multivalue-item-container">
                 @foreach($selectedLists as $s)
@@ -15,7 +15,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path></svg>
                                     </span>
-                                    <span>Borrar</span>
+                                    <span>{{ __('general.delete') }}</span>
                                 </div>
                                 </span>
                                 </td>
@@ -69,7 +69,7 @@
                             <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
                         <div>
-                            <strong>Campos requeridos faltantes</strong>
+                            <strong>{{ __('consultation.diagnostics_ai.required_fields_missing') }}</strong>
                             <div style="font-size: 0.9rem;">{{ $validationMessage }}</div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
         {{-- Search Input and AI Button --}}
         <div style="width:100%;padding:20px;">
             <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text"  wire:model.live="query" class="form-control" placeholder="Escribir el diagnostico" style="padding: 0 20px; flex: 1;">
+                <input type="text"  wire:model.live="query" class="form-control" placeholder="{{ __('general.write_diagnosis') }}" style="padding: 0 20px; flex: 1;">
 
                 @if($this->aiSuggestionsEnabled)
                 <button
@@ -91,19 +91,19 @@
                     class="btn btn-primary"
                     style="white-space: nowrap; padding: 10px 20px; display: flex; align-items: center; gap: 8px;"
                     @if(!$this->canRequestAiSuggestions)
-                        title="Complete primero el Motivo de consulta y la Enfermedad actual para usar esta función"
+                        title="{{ __('consultation.diagnostics_ai.complete_required_fields') }}"
                         disabled
                         style="opacity: 0.6; cursor: not-allowed; white-space: nowrap; padding: 10px 20px; display: flex; align-items: center; gap: 8px;"
                     @else
-                        title="Obtener sugerencias de diagnósticos basadas en IA"
+                        title="{{ __('consultation.diagnostics_ai.suggest_with_ai') }}"
                     @endif
                 >
                     <svg wire:loading.remove wire:target="getAiSuggestions" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
                     </svg>
                     <span class="spinner-border spinner-border-sm" wire:loading wire:target="getAiSuggestions"></span>
-                    <span wire:loading.remove wire:target="getAiSuggestions">Sugerir con IA</span>
-                    <span wire:loading wire:target="getAiSuggestions">Analizando...</span>
+                    <span wire:loading.remove wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.suggest_with_ai') }}</span>
+                    <span wire:loading wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.analyzing') }}</span>
                 </button>
                 @endif
             </div>
@@ -116,7 +116,7 @@
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                         <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                     </svg>
-                    <span>Complete el <strong>Motivo de consulta</strong> y la <strong>Enfermedad actual</strong> para habilitar las sugerencias de IA</span>
+                    <span>{{ __('consultation.diagnostics_ai.complete_required_fields') }}</span>
                 </div>
             @endif
             @endif
@@ -145,15 +145,14 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
                             </svg>
-                            <strong style="font-size: 1.1rem;">Sugerencias de Diagnósticos por IA</strong>
+                            <strong style="font-size: 1.1rem;">{{ __('consultation.diagnostics_ai.ai_suggestions') }}</strong>
                         </div>
                         <button wire:click="closeAiSuggestions" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem; line-height: 1;">&times;</button>
                     </div>
 
                     {{-- Disclaimer --}}
                     <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.85rem;">
-                        <strong>⚠️ Importante:</strong> Estas son solo sugerencias generadas por inteligencia artificial.
-                        Su criterio clínico y evaluación del paciente son fundamentales para el diagnóstico final.
+                        <strong>⚠️ {{ __('general.important') }}:</strong> {{ __('consultation.diagnostics_ai.important_disclaimer') }}
                     </div>
                 </div>
 
@@ -161,9 +160,9 @@
                 @if($loadingAiSuggestions)
                     <div style="padding: 40px; text-align: center;">
                         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">Cargando...</span>
+                            <span class="visually-hidden">{{ __('general.loading') }}</span>
                         </div>
-                        <p style="margin-top: 15px; color: #6c757d;">Analizando información clínica y generando sugerencias...</p>
+                        <p style="margin-top: 15px; color: #6c757d;">{{ __('consultation.diagnostics_ai.loading_suggestions') }}</p>
                     </div>
                 @endif
 
@@ -180,7 +179,7 @@
                 @if(!$loadingAiSuggestions && !empty($aiSuggestions))
                     <div style="padding: 15px;max-height: 250px;overflow: auto;">
                         <p style="color: #6c757d; font-size: 0.9rem; margin-bottom: 15px;">
-                            <strong>{{ count($aiSuggestions) }}</strong> diagnósticos sugeridos. Haga clic en una sugerencia para agregarla.
+                            <strong>{{ count($aiSuggestions) }}</strong> {{ __('consultation.diagnostics_ai.suggested_diagnoses') }}
                         </p>
 
                         @foreach($aiSuggestions as $suggestion)
@@ -211,7 +210,7 @@
                                                 font-size: 0.75rem;
                                                 padding: 3px 6px;
                                             ">
-                                                {{ $suggestion['confidence'] === 'high' ? 'Alta confianza' : ($suggestion['confidence'] === 'medium' ? 'Confianza media' : 'Baja confianza') }}
+                                                {{ $suggestion['confidence'] === 'high' ? __('consultation.diagnostics_ai.high_confidence') : ($suggestion['confidence'] === 'medium' ? __('consultation.diagnostics_ai.medium_confidence') : __('consultation.diagnostics_ai.low_confidence')) }}
                                             </span>
                                         </div>
                                         <div style="font-weight: 600; color: #212529; margin-bottom: 5px;">
@@ -246,9 +245,9 @@
                             <i class="fas fa-search text-primary"></i>
                             <strong>
                                 @if($isCodeSearch)
-                                    Búsqueda por código
+                                    {{ __('consultation.diagnostics_ai.search_by_code') }}
                                 @else
-                                    Búsqueda por descripción
+                                    {{ __('consultation.diagnostics_ai.search_by_description') }}
                                 @endif
                             </strong>
                         </div>
@@ -274,7 +273,7 @@
                             onmouseout="this.style.background='white'"
                         >
                             <span class="badge bg-primary" style="font-size: 0.75rem; padding: 2px 6px; min-width: 60px; text-align: center;">{{ $result['code'] }}</span>
-                            <span style="font-size: 0.85rem; color: #212529; flex: 1;">{{ $result['description_es'] }}</span>
+                            <span style="font-size: 0.85rem; color: #212529; flex: 1;">{{  app()->getLocale() === 'es' ? $result['description_es'] : $result['description']  }}</span>
                         </div>
                     @endforeach
 
@@ -289,17 +288,17 @@
                             <div wire:loading.remove wire:target="loadMore">
                                 <i class="fas fa-chevron-down" style="font-size: 1.2rem;"></i>
                                 <div style="font-size: 1rem; margin-top: 4px;">
-                                    <strong>CARGAR MÁS RESULTADOS</strong>
+                                    <strong>{{ strtoupper(__('consultation.diagnostics_ai.load_more_results')) }}</strong>
                                 </div>
                                 <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
-                                    Hay {{ $totalResults - count($results) }} resultados más disponibles
+                                    {{ __('general.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.diagnostics_ai.results_available') }}
                                 </div>
                             </div>
                             <div wire:loading wire:target="loadMore">
                                 <div class="spinner-border text-white" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
+                                    <span class="visually-hidden">{{ __('consultation.diagnostics_ai.loading_results') }}</span>
                                 </div>
-                                <div style="margin-top: 8px;">Cargando resultados...</div>
+                                <div style="margin-top: 8px;">{{ __('consultation.diagnostics_ai.loading_results') }}</div>
                             </div>
                         </div>
                     @endif
@@ -308,7 +307,7 @@
                     @if(!$hasMoreResults && count($results) > 0)
                         <div style="padding: 10px 12px; text-align: center; color: #6c757d; font-size: 0.85rem; background: #f8f9fa;">
                             <i class="fas fa-check-circle text-success"></i>
-                            Todos los resultados mostrados
+                            {{ __('consultation.diagnostics_ai.all_results_shown') }}
                         </div>
                     @endif
                 </div>

@@ -3,7 +3,7 @@
         <table style="width:100%" class="medicine-table">
             <tbody>
             <tr>
-                <td>Especialista</td>
+                <td>{{ __('consultation.referral_section.specialist') }}</td>
                 <td></td>
             </tr>
             @foreach($selectedLists as $s)
@@ -11,7 +11,7 @@
                 <td>{{$s->speciality->name}}</td>
                 <td>
                     <div class="input-block local-forms">
-                        <x-input-label for="physical_address" :value="__('Nota de Referencia')" />
+                        <x-input-label for="physical_address" :value="__('consultation.referral_section.referral_note')" />
                         <x-autosave-input
                             type="textarea"
                             :value="$selectedReason[$s->id]"
@@ -29,7 +29,7 @@
                         <div class="input-block local-forms">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
 
-                                <x-input-label for="especialist" :value="__('Especialista')" />
+                                <x-input-label for="especialist" :value="__('consultation.referral_section.specialist')" />
 
 
                             </div>
@@ -39,7 +39,7 @@
                                 <div style="padding: 15px; background: #fff; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 10px;">
                                     <div style="margin-bottom: 8px;">
                                         <i class="fa fa-external-link-alt text-warning"></i>
-                                        <strong>Especialista Externo</strong><br/>
+                                        <strong>{{ __('consultation.referral_section.external_specialist') }}</strong><br/>
                                     </div><br/>
 
                                     <div class="row">
@@ -48,7 +48,7 @@
                                             <x-text-input  wire:model.live.debounce.500ms="externalSpecialistName.{{$s->id}}" class="block mt-1 w-full" type="text"  placeholder="Dr. Juan Pérez"/>
                                         </div>
                                         <div class="col-md-4 mb-2 input-block local-forms">
-                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">Teléfono</label>
+                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">{{ __('consultation.referral_section.phone') }}</label>
                                             <input
                                                 type="text"
                                                 class="form-control form-control-sm"
@@ -56,7 +56,7 @@
                                                 placeholder="+507 6000-0000">
                                         </div>
                                         <div class="col-md-4 mb-2 input-block local-forms">
-                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">Clínica</label>
+                                            <label class="form-label" style="font-size: 12px; font-weight: 600;">{{ __('consultation.referral_section.clinic') }}</label>
                                             <input
                                                 type="text"
                                                 class="form-control form-control-sm"
@@ -70,7 +70,7 @@
                                                 class="btn btn-sm {{ ($useExternalSpecialist[$s->id] ?? false) ? 'btn-warning' : 'btn-info' }}"
                                                 style="white-space: nowrap;">
                                                 <i class="fa {{ ($useExternalSpecialist[$s->id] ?? false) ? 'fa-users' : 'fa-user-edit' }}"></i>
-                                                {{ ($useExternalSpecialist[$s->id] ?? false) ? 'Usar Directorio' : 'Especialista Externo' }}
+                                                {{ ($useExternalSpecialist[$s->id] ?? false) ? __('consultation.referral_section.use_directory') : __('consultation.referral_section.external_specialist_toggle') }}
                                             </button>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@
                                                 </div>
                                             </div>
                                             <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-sm btn-outline-primary" style="white-space: nowrap;">
-                                                <i class="fa fa-exchange-alt"></i> Cambiar
+                                                <i class="fa fa-exchange-alt"></i> {{ __('consultation.referral_section.change') }}
                                             </button>
                                         </div>
                                     @endif
@@ -103,9 +103,9 @@
                                     <!-- No hay médico seleccionado -->
                                     <div style="text-align: center; padding: 20px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px;">
                                         <i class="fa fa-user-md" style="font-size: 32px; color: #ccc; margin-bottom: 10px;"></i>
-                                        <div style="color: #666; margin-bottom: 15px; font-size: 14px;">No hay médico seleccionado</div>
+                                        <div style="color: #666; margin-bottom: 15px; font-size: 14px;">{{ __('consultation.referral_section.no_specialist_selected') }}</div>
                                         <button type="button" wire:click="openMedicalDirectory({{$s->code}}, {{$s->id}})" class="btn btn-primary">
-                                            <i class="fa fa-users"></i> Ver Directorio Médico
+                                            <i class="fa fa-users"></i> {{ __('consultation.referral_section.view_medical_directory') }}
                                         </button>
                                         <!-- Toggle entre Directorio e Externo -->
                                         <button
@@ -114,7 +114,7 @@
                                             class="btn btn-sm {{ ($useExternalSpecialist[$s->id] ?? false) ? 'btn-warning' : 'btn-info' }}"
                                             style="white-space: nowrap;">
                                             <i class="fa {{ ($useExternalSpecialist[$s->id] ?? false) ? 'fa-users' : 'fa-user-edit' }}"></i>
-                                            {{ ($useExternalSpecialist[$s->id] ?? false) ? 'Usar Directorio' : 'Especialista Externo' }}
+                                            {{ ($useExternalSpecialist[$s->id] ?? false) ? __('consultation.referral_section.use_directory') : __('consultation.referral_section.external_specialist_toggle') }}
                                         </button>
                                     </div>
                                 @endif
@@ -130,7 +130,7 @@
                 <td>
                     <div class="sprite-trash-container" ani="1" style="cursor:pointer" wire:click="delete({{$s->id}})">
                         <div class="sprite-trash"></div>
-                        <div>Borrar</div>
+                        <div>{{ __('consultation.referral_section.delete') }}</div>
                     </div>
                 </td>
             </tr>
@@ -142,7 +142,7 @@
     <div class="selector-field selector-field-on">
     <x-autosave-action save-key="speciality-search" />
     <div style="width:100%;padding:20px;">
-        <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar especialidad." >
+        <input type="text"  wire:model.live="query"   class="form-control" placeholder="{{ __('consultation.referral_section.search_specialty') }}" >
     </div>
     @if(!empty($results))
         <div style="position: absolute; z-index: 1000; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -152,7 +152,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div style="font-size: 0.9rem;">
                         <i class="fas fa-search text-primary"></i>
-                        <strong>Especialidades Médicas</strong>
+                        <strong>{{ __('consultation.referral_section.medical_specialties') }}</strong>
                     </div>
                     <div class="text-muted" style="font-size: 0.85rem;">
                         <i class="fas fa-list"></i>
@@ -174,11 +174,11 @@
                         >
                             <span wire:loading.remove wire:target="loadMore">
                                 <i class="fas fa-plus-circle"></i>
-                                Cargar {{ $totalResults - count($results) }} resultados más
+                                {{ __('consultation.referral_section.load_more') }} {{ $totalResults - count($results) }} {{ __('consultation.referral_section.more_results') }}
                             </span>
                             <span wire:loading wire:target="loadMore">
                                 <span class="spinner-border spinner-border-sm" role="status"></span>
-                                Cargando...
+                                {{ __('consultation.referral_section.loading') }}
                             </span>
                         </button>
                     </div>
@@ -213,17 +213,17 @@
                         <div wire:loading.remove wire:target="loadMore">
                             <i class="fas fa-chevron-down" style="font-size: 1.2rem;"></i>
                             <div style="font-size: 1rem; margin-top: 4px;">
-                                <strong>CARGAR MÁS RESULTADOS</strong>
+                                <strong>{{ __('consultation.referral_section.load_more_results') }}</strong>
                             </div>
                             <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
-                                Hay {{ $totalResults - count($results) }} resultados más disponibles
+                                {{ __('consultation.referral_section.results_available_prefix') }} {{ $totalResults - count($results) }} {{ __('consultation.referral_section.results_available') }}
                             </div>
                         </div>
                         <div wire:loading wire:target="loadMore">
                             <div class="spinner-border text-white" role="status">
-                                <span class="visually-hidden">Cargando...</span>
+                                <span class="visually-hidden">{{ __('consultation.referral_section.loading') }}</span>
                             </div>
-                            <div style="margin-top: 8px;">Cargando resultados...</div>
+                            <div style="margin-top: 8px;">{{ __('consultation.referral_section.loading_results') }}</div>
                         </div>
                     </div>
                 @endif
@@ -232,7 +232,7 @@
                 @if(!$hasMoreResults && count($results) > 0)
                     <div style="padding: 10px 12px; text-align: center; color: #6c757d; font-size: 0.85rem; background: #f8f9fa;">
                         <i class="fas fa-check-circle text-success"></i>
-                        Todos los resultados mostrados
+                        {{ __('consultation.referral_section.all_results_shown') }}
                     </div>
                 @endif
             </div>
@@ -247,21 +247,21 @@
         <div class="modal-overlay" wire:click="closeMedicalDirectory" style="z-index: 10000;">
             <div class="modal-content" wire:click.stop style="max-width: 1200px; max-height: 90vh; overflow-y: auto;">
                 <div class="modal-header">
-                    <h2 class="modal-title">Directorio Médico - {{ $currentSpecialityName }}</h2>
+                    <h2 class="modal-title">{{ __('consultation.referral_section.medical_directory') }} - {{ $currentSpecialityName }}</h2>
                     <button wire:click="closeMedicalDirectory" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
 
                 <div style="padding: 20px;">
                     <!-- Buscador -->
                     <div style="margin-bottom: 20px;">
-                        <input type="text" wire:model.live.debounce.300ms="searchPractitioner" class="form-control" placeholder="Buscar por nombre o cédula...">
+                        <input type="text" wire:model.live.debounce.300ms="searchPractitioner" class="form-control" placeholder="{{ __('consultation.referral_section.search_by_name_or_id') }}">
                     </div>
 
                     <!-- Loading state -->
                     <div wire:loading.delay wire:target="searchPractitioner,loadPractitioners" style="text-align: center; padding: 20px;">
                         <div style="display: inline-flex; align-items: center; gap: 10px;">
                             <div class="spinner-border spinner-border-sm" role="status"></div>
-                            <span>Cargando...</span>
+                            <span>{{ __('consultation.referral_section.loading') }}</span>
                         </div>
                     </div>
 
@@ -288,11 +288,11 @@
                                                     {{ $practitioner->name }}
                                                 </h3>
                                                 <p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">
-                                                    ID: {{ $practitioner->identifier }}
+                                                    {{ __('consultation.referral_section.id') }}: {{ $practitioner->identifier }}
                                                 </p>
                                                 <span style="display: inline-flex; align-items: center; padding: 4px 10px; background: #d4edda; color: #155724; border-radius: 12px; font-size: 11px; font-weight: 500;">
                                                     <span style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-right: 5px;"></span>
-                                                    Activo
+                                                    {{ __('consultation.referral_section.active') }}
                                                 </span>
                                             </div>
                                         </div>
@@ -321,7 +321,7 @@
                                     <!-- Horario Laboral -->
                                     @if($practitioner->user && $practitioner->user->workingHours->count() > 0)
                                         <div style="padding: 15px 20px; border-top: 1px solid #f0f0f0;">
-                                            <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #333;">Horario Laboral</h4>
+                                            <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #333;">{{ __('consultation.referral_section.working_hours') }}</h4>
                                             <div style="display: flex; flex-direction: column; gap: 6px;">
                                                 @foreach($practitioner->user->workingHours()->limit(3)->get() as $wh)
                                                     <div style="font-size: 12px; color: #666;">
@@ -329,7 +329,7 @@
                                                     </div>
                                                 @endforeach
                                                 @if($practitioner->user->workingHours->count() > 3)
-                                                    <span style="font-size: 11px; color: #999;">+{{ $practitioner->user->workingHours->count() - 3 }} días más</span>
+                                                    <span style="font-size: 11px; color: #999;">+{{ $practitioner->user->workingHours->count() - 3 }} {{ __('consultation.referral_section.more_days') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -338,7 +338,7 @@
                                     <!-- Especialidades -->
                                     @if($practitioner->qualifications->count() > 0)
                                         <div style="padding: 15px 20px; border-top: 1px solid #f0f0f0;">
-                                            <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #333;">Especialidades</h4>
+                                            <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #333;">{{ __('consultation.referral_section.specialties') }}</h4>
                                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                                 @foreach($practitioner->qualifications->take(2) as $qualification)
                                                     <div>
@@ -353,7 +353,7 @@
                                                     </div>
                                                 @endforeach
                                                 @if($practitioner->qualifications->count() > 2)
-                                                    <span style="font-size: 11px; color: #999;">+{{ $practitioner->qualifications->count() - 2 }} especialidades más</span>
+                                                    <span style="font-size: 11px; color: #999;">+{{ $practitioner->qualifications->count() - 2 }} {{ __('consultation.referral_section.more_specialties') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -362,7 +362,7 @@
                                     <!-- Botón de selección -->
                                     <div style="padding: 15px 20px; background: #f8f9fa; border-top: 1px solid #e0e0e0;">
                                         <button wire:click="selectPractitioner({{ $practitioner->id }})" class="btn btn-primary" style="width: 100%;">
-                                            <i class="fa fa-check"></i> Seleccionar Médico
+                                            <i class="fa fa-check"></i> {{ __('consultation.referral_section.select_doctor') }}
                                         </button>
                                     </div>
                                 </div>
@@ -371,12 +371,12 @@
                     @else
                         <div style="text-align: center; padding: 40px 20px;">
                             <i class="fa fa-user-md" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
-                            <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #666;">No se encontraron profesionales</h3>
+                            <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #666;">{{ __('consultation.referral_section.no_professionals_found') }}</h3>
                             <p style="margin: 0; font-size: 14px; color: #999;">
                                 @if($searchPractitioner)
-                                    Intenta ajustar los filtros de búsqueda.
+                                    {{ __('consultation.referral_section.adjust_search') }}
                                 @else
-                                    No hay profesionales con esta especialidad.
+                                    {{ __('consultation.referral_section.no_professionals_specialty') }}
                                 @endif
                             </p>
                         </div>

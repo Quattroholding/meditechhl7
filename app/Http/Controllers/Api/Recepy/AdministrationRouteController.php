@@ -7,7 +7,6 @@ use App\Models\AdministrationRoute;
 
 class AdministrationRouteController extends Controller
 {
-
     public function index()
     {
         $routes = AdministrationRoute::orderBy('name')->get();

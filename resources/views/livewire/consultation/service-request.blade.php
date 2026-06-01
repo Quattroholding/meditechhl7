@@ -19,7 +19,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path></svg>
                                     </span>
-                                    <span>Borrar</span>
+                                    <span>{{ __('consultation.service_request_section.delete') }}</span>
                                 </div>
                                 </span>
                                 </td>
@@ -33,7 +33,7 @@
                                                 <path d="M7.507 1.17a.5.5 0 0 1 .986 0v.726a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 1 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V1.17ZM6 4.5a.5.5 0 0 1 .5.5v.776a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 1 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V5a.5.5 0 0 1 .5-.5"/>
                                             </svg>
                                             <div>
-                                                <strong class="text-white">Código HemoScreen:</strong>
+                                                <strong class="text-white">{{ __('consultation.service_request_section.hemoscreen_code') }}:</strong>
                                                 <span class="text-white fs-5 fw-bold ms-2 font-monospace" style="letter-spacing: 3px;">{{ $s->hemo_identification }}</span>
                                             </div>
                                         </div>
@@ -44,10 +44,10 @@
                                         <div class="mt-3" style="background: white; padding: 15px; border-radius: 10px; border: 2px solid #059669; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
                                                 <div style="font-size: 14px; font-weight: 700; color: #065f46;">
-                                                    🧪 Resultados de Laboratorio
+                                                    🧪 {{ __('consultation.service_request_section.lab_results') }}
                                                 </div>
                                                 <span style="background: #d1fae5; color: #065f46; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
-                                                    {{ $s->observations()->count() }} resultados
+                                                    {{ $s->observations()->count() }} {{ __('consultation.service_request_section.results') }}
                                                 </span>
                                             </div>
 
@@ -62,7 +62,7 @@
                                                             <span style="font-size: 11px; color: #64748b; font-weight: 500;">{{ $observation->unit }}</span>
                                                         </div>
                                                         @if($observation->status === 'final')
-                                                            <div style="font-size: 9px; color: #059669;">✓ Final</div>
+                                                            <div style="font-size: 9px; color: #059669;">✓ {{ __('consultation.service_request_section.final') }}</div>
                                                         @endif
                                                     </div>
                                                 @endforeach
@@ -70,7 +70,7 @@
 
                                             @if($s->observations->first() && $s->observations->first()->issued_date)
                                                 <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #bbf7d0; font-size: 10px; color: #64748b;">
-                                                    <strong>Resultados emitidos:</strong> {{ \Carbon\Carbon::parse($s->observations->first()->issued_date)->format('d/m/Y H:i') }}
+                                                    <strong>{{ __('consultation.service_request_section.results_issued') }}:</strong> {{ \Carbon\Carbon::parse($s->observations->first()->issued_date)->format('d/m/Y H:i') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -80,7 +80,7 @@
                             </tbody>
                         </table>
                         <div class="my-3">
-                            {{__('consultation.instruction')}}
+                            {{ __('consultation.service_request_section.instruction') }}
                             <x-autosave-input
                                 type="text"
                                 :value="$notes[$s->id]"
@@ -104,13 +104,13 @@
                                         onclick="event.stopPropagation()"
                                     >
                                     <label class="form-check-label fw-bold" for="performed-{{ $s->id }}" style="cursor: pointer; color: #212529;">
-                                        ¿Este procedimiento se realizó en la consulta?
+                                        {{ __('consultation.service_request_section.procedure_performed') }}
                                     </label>
                                 </div>
 
                                 @if($performedInConsultation[$s->id] ?? false)
                                     <div class="mt-3">
-                                        <label class="form-label fw-semibold" style="color: #212529;">Notas del procedimiento realizado:</label>
+                                        <label class="form-label fw-semibold" style="color: #212529;">{{ __('consultation.service_request_section.procedure_notes') }}</label>
                                         <x-autosave-input
                                             type="textarea"
                                             :value="$procedureNotes[$s->id] ?? ''"
@@ -119,7 +119,7 @@
                                             save-key="procedure-notes-{{ $s->id }}"
                                             class="form-control block w-full"
                                             rows="4"
-                                            placeholder="Describa lo que se realizó durante el procedimiento..."
+                                            placeholder="{{ __('consultation.service_request_section.procedure_notes_placeholder') }}"
                                         />
                                     </div>
                                 @endif
@@ -137,7 +137,7 @@
             <tbody>
             <tr>
                 <td style="width:80%;padding:20px;">
-                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar por descripcion o codigo cpt" >
+                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="{{ __('consultation.service_request_section.search_placeholder') }}" >
                 </td>
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
                     <div class="general-btn-small"
@@ -145,8 +145,8 @@
                             style="cursor: pointer;"
                             data-offcanvas-target="offcanvasRight-{{$encounter_id}}-{{$section_id}}"
                             onclick="openRapidAccessOffcanvas(this.getAttribute('data-offcanvas-target'))">
-                        <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
-                        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+                        <div class="general-btn-small-text general-btn-small-text-a">{{ __('consultation.service_request_section.rapid_access_list') }}</div>
+                        <div class="general-btn-small-text general-btn-small-text-b">{{ __('consultation.service_request_section.view_list') }}</div>
                     </div>
                 </td>
             </tr>
@@ -201,7 +201,7 @@
                             onmouseout="this.style.background='white'"
                         >
                             <span class="badge bg-primary" style="font-size: 0.75rem; padding: 2px 6px; min-width: 60px; text-align: center;">{{ $result['code'] }}</span>
-                            <span style="font-size: 0.85rem; color: #212529; flex: 1;">{{ $result['description_es'] }}</span>
+                            <span style="font-size: 0.85rem; color: #212529; flex: 1;">{{ app()->getLocale() === 'es' ? $result['description_es'] : $result['description']  }}</span>
                             <button
                                 type="button"
                                 class="btn btn-sm btn-outline-primary"

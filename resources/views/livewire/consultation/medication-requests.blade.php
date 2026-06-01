@@ -70,7 +70,7 @@
                         <tr>
                             <td >
                                 <div class="input-block local-forms">
-                                    <x-input-label for="quantity" :value="__('Cantidad')" />
+                                    <x-input-label for="quantity" :value="__('consultation.medication_requests_section.quantity')" />
                                     <x-autosave-input
                                         type="number"
                                         :value="$quantitys[$m->id]"
@@ -85,7 +85,7 @@
 
                                 </div>
                                 <div class="input-block local-forms">
-                                    <x-input-label for="frecuency" :value="__('Frecuencia (Horas)')" />
+                                    <x-input-label for="frecuency" :value="__('consultation.medication_requests_section.frequency')" />
                                     <x-autosave-input
                                         type="number"
                                         :value="$frecuencies[$m->id]"
@@ -102,7 +102,7 @@
                             </td>
                             <td>
                                 <div class="input-block local-forms">
-                                    <x-input-label for="route" :value="__('Via')" />
+                                    <x-input-label for="route" :value="__('consultation.medication_requests_section.route')" />
                                     <x-autosave-input
                                         type="select"
                                         :value="$routes[$m->id]"
@@ -116,7 +116,7 @@
                                 </div>
 
                                 <div class="input-block local-forms">
-                                    <x-input-label for="duration" :value="__('Duración (Días)')" />
+                                    <x-input-label for="duration" :value="__('consultation.medication_requests_section.duration')" />
                                     <x-autosave-input
                                         type="number"
                                         :value="$durations[$m->id]"
@@ -134,7 +134,7 @@
                         <tr>
                             <td colspan="2">
                                 <div class="input-block local-forms">
-                                    <x-input-label for="dosage_text" :value="__('Indicaciones')"/>
+                                    <x-input-label for="dosage_text" :value="__('consultation.medication_requests_section.indications')"/>
                                     <x-autosave-input
                                         type="textarea"
                                         :value="$dosage_texts[$m->id]"
@@ -168,7 +168,7 @@
                 <td>
                     <div class="sprite-trash-container" ani="1" style="cursor:pointer" wire:click="delete({{$m->id}})">
                         <div class="sprite-trash"></div>
-                        <div>Borrar</div>
+                        <div>{{ __('consultation.medication_requests_section.delete') }}</div>
                     </div>
                 </td>
             </tr>
@@ -178,8 +178,8 @@
     @endif
     <div class="my-3"></div>
     <div class="general-btn-small" wire:click="medical_request_history">
-        <div class="general-btn-small-text general-btn-small-text-a">Historial de Medicamentos</div>
-        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+        <div class="general-btn-small-text general-btn-small-text-a">{{ __('consultation.medication_requests_section.medication_history') }}</div>
+        <div class="general-btn-small-text general-btn-small-text-b">{{ __('consultation.medication_requests_section.view_list') }}</div>
     </div>
     <p>&nbsp;</p>
     @php $id =\Illuminate\Support\Str::uuid();@endphp
@@ -190,7 +190,7 @@
             <tbody>
             <tr>
                 <td style="width:80%;padding:20px;">
-                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar medicamento por nombre, código NDC o nombre genérico" >
+                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="{{ __('consultation.medication_requests_section.search_placeholder') }}" >
                 </td>
                 <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
                     <div class="general-btn-small"
@@ -198,8 +198,8 @@
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasRight{{$id}}"
                             aria-controls="offcanvasRight">
-                        <div class="general-btn-small-text general-btn-small-text-a">Listado de Acceso Rápido</div>
-                        <div class="general-btn-small-text general-btn-small-text-b">Ver listado</div>
+                        <div class="general-btn-small-text general-btn-small-text-a">{{ __('consultation.medication_requests_section.rapid_access_list') }}</div>
+                        <div class="general-btn-small-text general-btn-small-text-b">{{ __('consultation.medication_requests_section.view_list') }}</div>
                     </div>
                 </td>
             </tr>
@@ -207,10 +207,10 @@
         </table>
         <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel" >
             <div class="offcanvas-body  quick-items-content">
-                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar">
+                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{{ __('consultation.medication_requests_section.close_panel') }}">
                     <img src="/images/close-floating.png" alt="">
                 </div>
-                <div class="sel-item-list-category">ACCESOS RAPIDOS</div>
+                <div class="sel-item-list-category">{{ strtoupper(__('consultation.rapid_access.title')) }}</div>
                 @if(count($rapidAccess) > 0)
                     @foreach($rapidAccess as $i)
                         <div class="sel-list-item mb-2"
@@ -238,7 +238,7 @@
                     @endforeach
                 @else
                     <div class="text-center text-muted py-4">
-                        <p>No hay accesos rápidos configurados</p>
+                        <p>{{ __('consultation.medication_requests_section.no_rapid_access') }}</p>
                     </div>
                 @endif
                 {{-- Botones de control del panel --}}
@@ -246,13 +246,13 @@
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary"
                             wire:click="clearSearch">
-                        <i class="fas fa-eraser"></i> Limpiar búsqueda
+                        <i class="fas fa-eraser"></i> {{ __('consultation.medication_requests_section.clear_search') }}
                     </button>
 
                     <button type="button"
                             class="btn btn-sm btn-secondary"
                             data-bs-dismiss="offcanvas">
-                        <i class="fas fa-times"></i> Cerrar Panel
+                        <i class="fas fa-times"></i> {{ __('consultation.medication_requests_section.close_panel') }}
                     </button>
                 </div>
             </div>
@@ -269,9 +269,9 @@
                             <i class="fas fa-search text-primary"></i>
                             <strong>
                                 @if($isCodeSearch)
-                                    Búsqueda por código
+                                    {{ __('consultation.medication_requests_section.search_by_code') }}
                                 @else
-                                    Búsqueda por nombre
+                                    {{ __('consultation.medication_requests_section.search_by_name') }}
                                 @endif
                             </strong>
                         </div>
@@ -310,7 +310,7 @@
                                 type="button"
                                 class="btn btn-sm btn-outline-primary"
                                 wire:click.stop="addToRapidAccess({{ $result['id'] }})"
-                                title="Agregar a accesos rápidos"
+                                title="{{ __('consultation.medication_requests_section.add_to_rapid_access') }}"
                                 style="padding: 2px 8px; font-size: 0.75rem;"
                             >
                                 <i class="fas fa-star"></i>
@@ -329,17 +329,17 @@
                             <div wire:loading.remove wire:target="loadMore">
                                 <i class="fas fa-chevron-down" style="font-size: 1.2rem;"></i>
                                 <div style="font-size: 1rem; margin-top: 4px;">
-                                    <strong>CARGAR MÁS RESULTADOS</strong>
+                                    <strong>{{ strtoupper(__('consultation.medication_requests_section.load_more_results')) }}</strong>
                                 </div>
                                 <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
-                                    Hay {{ $totalResults - count($results) }} resultados más disponibles
+                                    {{ __('general.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.medication_requests_section.results_available') }}
                                 </div>
                             </div>
                             <div wire:loading wire:target="loadMore">
                                 <div class="spinner-border text-white" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
+                                    <span class="visually-hidden">{{ __('consultation.medication_requests_section.loading') }}</span>
                                 </div>
-                                <div style="margin-top: 8px;">Cargando resultados...</div>
+                                <div style="margin-top: 8px;">{{ __('consultation.medication_requests_section.loading') }}</div>
                             </div>
                         </div>
                     @endif
@@ -348,7 +348,7 @@
                     @if(!$hasMoreResults && count($results) > 0)
                         <div style="padding: 10px 12px; text-align: center; color: #6c757d; font-size: 0.85rem; background: #f8f9fa;">
                             <i class="fas fa-check-circle text-success"></i>
-                            Todos los resultados mostrados
+                            {{ __('consultation.medication_requests_section.all_results_shown') }}
                         </div>
                     @endif
                 </div>

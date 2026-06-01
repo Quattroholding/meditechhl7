@@ -20,9 +20,9 @@
                             </div>
                         </div>
                         <div style="text-align: right; font-size: 12px; color: #64748b;">
-                            <div><strong>Fecha:</strong> {{ Carbon\Carbon::parse($exam->effective_date)->format('d/m/Y H:i') }}</div>
+                            <div><strong>"{{ __('patient.medical_history.physical_exams.date') }}":</strong> {{ Carbon\Carbon::parse($exam->effective_date)->format('d/m/Y H:i') }}</div>
                             @if($exam->practitioner)
-                                <div><strong>Examinador:</strong> {{ $exam->practitioner->name }}</div>
+                                <div><strong>"{{ __('patient.medical_history.physical_exams.examiner') }}":</strong> {{ $exam->practitioner->name }}</div>
                             @endif
                         </div>
                     </div>
@@ -162,8 +162,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
-            <h3>No hay exámenes físicos registrados</h3>
-            <p>Este paciente no tiene exámenes físicos en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.physical_exams.no_physical_exams') }}</h3>
+            <p>{{ __('patient.medical_history.physical_exams.no_physical_exams_message') }}</p>
         </div>
     @endif
 </div>

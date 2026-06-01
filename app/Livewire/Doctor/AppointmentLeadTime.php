@@ -100,8 +100,8 @@ class AppointmentLeadTime extends Component
 
         foreach ($appointments as $appointment) {
             // Ensure Carbon instances (parse if string, use directly if already Carbon)
-            $requestTime =Carbon::parse($appointment->getRawOriginal('created_at'));
-            $attentionTime =  Carbon::parse($appointment->start);
+            $requestTime = Carbon::parse($appointment->getRawOriginal('created_at'));
+            $attentionTime = Carbon::parse($appointment->start);
             $diffInMinutes = $requestTime->diffInMinutes($attentionTime);
             $totalMinutes += $diffInMinutes;
             $count++;
@@ -188,7 +188,7 @@ class AppointmentLeadTime extends Component
                 if ($appointments->isNotEmpty()) {
                     $totalMinutes = 0;
                     foreach ($appointments as $appointment) {
-                        $requestTime =  Carbon::parse($appointment->getRawOriginal('created_at'));
+                        $requestTime = Carbon::parse($appointment->getRawOriginal('created_at'));
                         $attentionTime = Carbon::parse($appointment->start);
                         $totalMinutes += $requestTime->diffInMinutes($attentionTime);
                     }

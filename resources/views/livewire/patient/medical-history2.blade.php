@@ -522,14 +522,14 @@
                     <div wire:click="changeSection('overview')"
                          class="nav-link {{ $activeSection === 'overview' ? 'active' : '' }}">
                         <span class="nav-icon">📚</span>
-                        <span class="nav-text">General</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.general') }}</span>
                     </div>
                 </li>
                 <li class="nav-item">
                     <div wire:click="changeSection('encounters')"
                          class="nav-link {{ $activeSection === 'encounters' ? 'active' : '' }}">
                         <span class="nav-icon">🏥</span>
-                        <span class="nav-text">Consultas</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.consultations') }}</span>
                         <span class="nav-count">{{ $overviewData['total_encounters'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -537,7 +537,7 @@
                     <div wire:click="changeSection('conditions')"
                          class="nav-link {{ $activeSection === 'conditions' ? 'active' : '' }}">
                         <span class="nav-icon">🩺</span>
-                        <span class="nav-text">Diagnosticos</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.diagnoses') }}</span>
                         <span class="nav-count">{{ $overviewData['active_conditions'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -546,7 +546,7 @@
                     <div wire:click="changeSection('physical-exams')"
                          class="nav-link {{ $activeSection === 'physical-exams' ? 'active' : '' }}">
                         <span class="nav-icon">🔍</span>
-                        <span class="nav-text">Exámenes Físicos</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.physical_exams') }}</span>
                     </div>
                 </li>
                 {{--}}
@@ -554,21 +554,21 @@
                     <div wire:click="changeSection('vital-signs')"
                          class="nav-link {{ $activeSection === 'vital-signs' ? 'active' : '' }}">
                         <span class="nav-icon">❤️</span>
-                        <span class="nav-text">Signos Vitales</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.vital_signs') }}</span>
                     </div>
                 </li>
                 <li class="nav-item">
                     <div wire:click="changeSection('present-illnesses')"
                          class="nav-link {{ $activeSection === 'present-illnesses' ? 'active' : '' }}">
                         <span class="nav-icon">🤒</span>
-                        <span class="nav-text">Enfermedad Actual</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.present_illness') }}</span>
                     </div>
                 </li>
                 <li class="nav-item">
                     <div wire:click="changeSection('medical-requests')"
                          class="nav-link {{ $activeSection === 'medical-requests' ? 'active' : '' }}">
                         <span class="nav-icon">📋</span>
-                        <span class="nav-text">Órdenes Médicas</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.medical_orders') }}</span>
                         <span class="nav-count">{{ $overviewData['total_requests'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -577,7 +577,7 @@
                     <div wire:click="changeSection('service-requests')"
                          class="nav-link {{ $activeSection === 'service-requests' ? 'active' : '' }}">
                         <span class="nav-icon">🧪</span>
-                        <span class="nav-text">Solicitudes de Servicios</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.service_requests') }}</span>
                     </div>
                 </li>
                 {{--}}
@@ -585,14 +585,14 @@
                     <div wire:click="changeSection('medical-histories')"
                          class="nav-link {{ $activeSection === 'medical-histories' ? 'active' : '' }}">
                         <span class="nav-icon">📚</span>
-                        <span class="nav-text">Antecedentes Médicos</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.medical_background') }}</span>
                     </div>
                 </li>
                 <li class="nav-item">
                     <div wire:click="changeSection('medical-notes')"
                          class="nav-link {{ $activeSection === 'medical-notes' ? 'active' : '' }}">
                         <span class="nav-icon">📒</span>
-                        <span class="nav-text">Notas Médicas</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.medical_notes') }}</span>
                          <span class="nav-count">{{ $overviewData['total_notes'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -600,7 +600,7 @@
                     <div wire:click="changeSection('medical-leaves')"
                          class="nav-link {{ $activeSection === 'medical-leaves' ? 'active' : '' }}">
                         <span class="nav-icon">📄</span>
-                        <span class="nav-text">Incapacidades Médicas</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.medical_leaves') }}</span>
                         <span class="nav-count">{{ $overviewData['total_medical_leaves'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -609,7 +609,7 @@
                     <div wire:click="changeSection('personal-notes')"
                          class="nav-link {{ $activeSection === 'personal-notes' ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fa fa-lock"></i> </span>
-                        <span class="nav-text">Notas Privadas</span>
+                        <span class="nav-text">{{ __('patient.medical_history.navigation.private_notes') }}</span>
                         <span class="nav-count">{{ $overviewData['total_personal_notes'] ?? 0 }}</span>
                     </div>
                 </li>
@@ -624,40 +624,40 @@
                     <h2 class="section-title">
                         @switch($activeSection)
                             @case('overview')
-                                📊 Resumen General
+                                📊 {{ __('patient.medical_history.sections.general_summary') }}
                                 @break
                             @case('encounters')
-                                🏥 Consultas Médicas
+                                🏥 {{ __('patient.medical_history.sections.medical_consultations') }}
                                 @break
                             @case('vital-signs')
-                                ❤️ Signos Vitales
+                                ❤️ {{ __('patient.medical_history.sections.vital_signs') }}
                                 @break
                             @case('conditions')
-                                🩺 Condiciones Médicas
+                                🩺 {{ __('patient.medical_history.sections.medical_conditions') }}
                                 @break
                             @case('physical-exams')
-                                🔍 Exámenes Físicos
+                                🔍 {{ __('patient.medical_history.sections.physical_exams') }}
                                 @break
                             @case('present-illnesses')
-                                🤒 Enfermedad Actual
+                                🤒 {{ __('patient.medical_history.sections.present_illness') }}
                                 @break
                             @case('medical-requests')
-                                📋 Órdenes Médicas
+                                📋 {{ __('patient.medical_history.sections.medical_orders') }}
                                 @break
                             @case('service-requests')
-                                🧪 Solicitudes de Servicios
+                                🧪 {{ __('patient.medical_history.sections.service_requests') }}
                                 @break
                             @case('medical-histories')
-                                📚 Historial Médico Previo
+                                📚 {{ __('patient.medical_history.sections.prior_medical_history') }}
                                 @break
                             @case('medical-notes')
-                                📒 Notas Médicas
+                                📒 {{ __('patient.medical_history.sections.medical_notes') }}
                                 @break
                             @case('personal-notes')
-                                 Notas Privadas
+                                 {{ __('patient.medical_history.sections.private_notes') }}
                             @break
                             @case('medical-leaves')
-                                📄 Incapacidades Médicas
+                                📄 {{ __('patient.medical_history.sections.medical_leaves') }}
                             @break
                         @endswitch
                     </h2>
@@ -675,40 +675,40 @@
                 @if($showFilters && $activeSection !== 'overview')
                     <div class="filters-section">
                         <div class="filter-group">
-                            <label class="filter-label">Período</label>
+                            <label class="filter-label">{{ __('patient.medical_history.filters.period') }}</label>
                             <select wire:model.live="selectedTimeRange" class="form-control">
-                                <option value="all">Todos</option>
-                                <option value="today">Hoy</option>
-                                <option value="week">Esta Semana</option>
-                                <option value="month">Este Mes</option>
-                                <option value="year">Este Año</option>
-                                <option value="custom">Personalizado</option>
+                                <option value="all">{{ __('patient.medical_history.filters.all') }}</option>
+                                <option value="today">{{ __('patient.medical_history.filters.today') }}</option>
+                                <option value="week">{{ __('patient.medical_history.filters.this_week') }}</option>
+                                <option value="month">{{ __('patient.medical_history.filters.this_month') }}</option>
+                                <option value="year">{{ __('patient.medical_history.filters.this_year') }}</option>
+                                <option value="custom">{{ __('patient.medical_history.filters.custom') }}</option>
                             </select>
                         </div>
 
                         @if($selectedTimeRange === 'custom')
                             <div class="filter-group">
-                                <label class="filter-label">Desde</label>
+                                <label class="filter-label">{{ __('patient.medical_history.filters.from') }}</label>
                                 <input wire:model.live="dateFrom" type="date" class="form-control">
                             </div>
                             <div class="filter-group">
-                                <label class="filter-label">Hasta</label>
+                                <label class="filter-label">{{ __('patient.medical_history.filters.to') }}</label>
                                 <input wire:model.live="dateTo" type="date" class="form-control">
                             </div>
                         @endif
 
                         <div class="filter-group">
-                            <label class="filter-label">Buscar</label>
+                            <label class="filter-label">{{ __('patient.medical_history.filters.search') }}</label>
                             <input wire:model.live.debounce.300ms="searchTerm"
                                    type="text"
-                                   placeholder="Buscar en registros..."
+                                   placeholder="{{ __('patient.medical_history.filters.search_in_records') }}"
                                    class="form-control">
                         </div>
 
                         <div class="filter-group">
                             <label class="filter-label">&nbsp;</label>
                             <button wire:click="clearFilters" class="btn" style="background: #f59e0b; color: white;">
-                                🗑️ Limpiar
+                                🗑️ {{ __('patient.medical_history.filters.clear') }}
                             </button>
                         </div>
                     </div>
@@ -718,7 +718,7 @@
                 @if($isLoading)
                     <div class="loading-state">
                         <div class="loading-spinner"></div>
-                        <span>Cargando información médica...</span>
+                        <span>{{ __('patient.medical_history.loading.loading_medical_info') }}</span>
                     </div>
                 @else
                     @switch($activeSection)
@@ -728,15 +728,15 @@
                         @case('encounters')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Consultas Médicas</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.encounters.title') }}</h3>
                                     @if(isset($sectionData['total']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total'] }} consultas médicas registradas
+                                            {{ $sectionData['total'] }} {{ __('patient.medical_history.encounters.consultations_registered') }}
                                         </p>
                                     @endif
                                 </div>
                                 <span style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                    🏥 {{ $encountersPerPage }} por página
+                                    🏥 {{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }}
                                 </span>
                             </div>
                             @include('patients.medicalHistory.encounters')
@@ -744,10 +744,10 @@
                         @case('vital-signs')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Signos Vitales</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.vital_signs_info.title') }}</h3>
                                     @if($groupVitalSignsByEncounter && isset($sectionData['total_encounters']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total_encounters'] }} consultas con signos vitales
+                                            {{ $sectionData['total_encounters'] }} {{ __('patient.medical_history.vital_signs_info.consultations_with_vitals') }}
                                         </p>
                                     @endif
                                 </div>
@@ -761,15 +761,15 @@
                         @case('conditions')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Condiciones Médicas</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.conditions.title') }}</h3>
                                     @if(isset($sectionData['total']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total'] }} condiciones médicas registradas
+                                            {{ $sectionData['total'] }} {{ __('patient.medical_history.conditions.conditions_registered') }}
                                         </p>
                                     @endif
                                 </div>
                                 <span style="background: #7c3aed; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                    🩹 {{ $encountersPerPage }} por página
+                                    🩹 {{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }}
                                 </span>
                             </div>
                             @include('patients.medicalHistory.conditions')
@@ -777,10 +777,10 @@
                         @case('physical-exams')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Exámenes Físicos</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.physical_exams.title') }}</h3>
                                     @if($groupPhysicalExamsByEncounter && isset($sectionData['total_encounters']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total_encounters'] }} consultas con exámenes físicos
+                                            {{ $sectionData['total_encounters'] }} {{ __('patient.medical_history.physical_exams.consultations_with_exams') }}
                                         </p>
                                     @endif
                                 </div>
@@ -788,9 +788,9 @@
                                         class="btn btn-sm"
                                         style="background: {{ $groupPhysicalExamsByEncounter ? '#f59e0b' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
                                     @if($groupPhysicalExamsByEncounter)
-                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
+                                        🏥 {{ __('patient.medical_history.view_options.grouped_by_consultation') }} ({{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }})
                                     @else
-                                        🔍 Vista Individual
+                                        🔍 {{ __('patient.medical_history.view_options.individual_view') }}
                                     @endif
                                 </button>
                             </div>
@@ -803,15 +803,15 @@
                         @case('present-illnesses')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Enfermedad Actual</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.present_illnesses_info.title') }}</h3>
                                     @if(isset($sectionData['total']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total'] }} enfermedades actuales registradas
+                                            {{ $sectionData['total'] }} {{ __('patient.medical_history.present_illnesses_info.current_illnesses_registered') }}
                                         </p>
                                     @endif
                                 </div>
                                 <span style="background: #8b5cf6; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                    🤒 {{ $encountersPerPage }} por página
+                                    🤒 {{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }}
                                 </span>
                             </div>
                             @include('patients.medicalHistory.present-illnesses-grouped')
@@ -819,10 +819,10 @@
                         @case('medical-requests')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Órdenes Médicas</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.medical_orders_section.title') }}</h3>
                                     @if($groupByEncounter && isset($sectionData['total_encounters']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total_encounters'] }} consultas con órdenes médicas
+                                            {{ $sectionData['total_encounters'] }} {{ __('patient.medical_history.medical_orders_section.consultations_with_orders') }}
                                         </p>
                                     @endif
                                 </div>
@@ -830,9 +830,9 @@
                                         class="btn btn-sm"
                                         style="background: {{ $groupByEncounter ? '#059669' : '#6b7280' }}; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; transition: all 0.3s ease;">
                                     @if($groupByEncounter)
-                                        🏥 Agrupado por Consulta ({{ $encountersPerPage }} por página)
+                                        🏥 {{ __('patient.medical_history.view_options.grouped_by_consultation') }} ({{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }})
                                     @else
-                                        📋 Vista Individual
+                                        📋 {{ __('patient.medical_history.view_options.individual_view') }}
                                     @endif
                                 </button>
                             </div>
@@ -859,15 +859,15 @@
                         @case('medical-leaves')
                             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">Incapacidades Médicas</h3>
+                                    <h3 style="margin: 0; color: #374151; font-weight: 600;">{{ __('patient.medical_history.medical_leaves.title') }}</h3>
                                     @if(isset($sectionData['total']))
                                         <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">
-                                            {{ $sectionData['total'] }} incapacidades médicas emitidas
+                                            {{ $sectionData['total'] }} {{ __('patient.medical_history.medical_leaves.leaves_issued') }}
                                         </p>
                                     @endif
                                 </div>
                                 <span style="background: #10b981; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                                    📄 {{ $encountersPerPage }} por página
+                                    📄 {{ $encountersPerPage }} {{ __('patient.medical_history.pagination.per_page') }}
                                 </span>
                             </div>
                             @include('patients.medicalHistory.medical-leaves')
@@ -956,11 +956,11 @@
 
                     const options = {
                         series: [{
-                            name: 'Sistólica',
+                            name: '{{ __("patient.medical_history.charts.systolic") }}',
                             data: this.chartData.bloodPressure.systolic,
                             color: '#dc2626'
                         }, {
-                            name: 'Diastólica',
+                            name: '{{ __("patient.medical_history.charts.diastolic") }}',
                             data: this.chartData.bloodPressure.diastolic,
                             color: '#f59e0b'
                         }],
@@ -970,21 +970,21 @@
                         markers: { size: 5, hover: { size: 7 } },
                         xaxis: {
                             categories: this.chartData.bloodPressure.dates,
-                            title: { text: 'Fecha de Consulta' },
+                            title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
                                 }
                             }
                         },
-                        yaxis: { title: { text: 'Presión (mmHg)' }, min: 40, max: 200 },
+                        yaxis: { title: { text: '{{ __("patient.medical_history.charts.pressure_mmhg") }}' }, min: 40, max: 200 },
                         legend: { position: 'top', horizontalAlign: 'left' },
                         tooltip: {
                             x: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
                                 }
                             },
                             y: { formatter: function(value) { return value + ' mmHg'; } }
@@ -1012,7 +1012,7 @@
 
                     const options = {
                         series: [{
-                            name: 'Frecuencia Cardíaca',
+                            name: '{{ __("patient.medical_history.charts.heart_rate") }}',
                             data: this.chartData.heartRate.values,
                             color: '#dc2626'
                         }],
@@ -1022,20 +1022,20 @@
                         markers: { size: 5, hover: { size: 7 } },
                         xaxis: {
                             categories: this.chartData.heartRate.dates,
-                            title: { text: 'Fecha de Consulta' },
+                            title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
                                 }
                             }
                         },
-                        yaxis: { title: { text: 'Frecuencia (bpm)' }, min: 40, max: 160 },
+                        yaxis: { title: { text: '{{ __("patient.medical_history.charts.frequency_bpm") }}' }, min: 40, max: 160 },
                         tooltip: {
                             x: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
                                 }
                             },
                             y: { formatter: function(value) { return value + ' bpm'; } }
@@ -1063,7 +1063,7 @@
 
                     const options = {
                         series: [{
-                            name: 'Frecuencia Respiratoria',
+                            name: '{{ __("patient.medical_history.charts.respiratory_rate") }}',
                             data: this.chartData.respiratoryRate.values,
                             color: '#3b82f6'
                         }],
@@ -1073,20 +1073,20 @@
                         markers: { size: 5, hover: { size: 7 } },
                         xaxis: {
                             categories: this.chartData.respiratoryRate.dates,
-                            title: { text: 'Fecha de Consulta' },
+                            title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
                                 }
                             }
                         },
-                        yaxis: { title: { text: 'Frecuencia (rpm)' }, min: 8, max: 40 },
+                        yaxis: { title: { text: '{{ __("patient.medical_history.charts.frequency_rpm") }}' }, min: 8, max: 40 },
                         tooltip: {
                             x: {
                                 formatter: function(value) {
                                     const date = new Date(value);
-                                    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
                                 }
                             },
                             y: { formatter: function(value) { return value + ' rpm'; } }

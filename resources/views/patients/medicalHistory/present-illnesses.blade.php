@@ -244,8 +244,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🤒</div>
-            <h3>No hay enfermedades actuales registradas</h3>
-            <p>Este paciente no tiene enfermedades actuales en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.present_illnesses.no_present_illnesses') }}</h3>
+            <p>{{ __('patient.medical_history.present_illnesses.no_present_illnesses_message') }}</p>
         </div>
     @endif
 </div>

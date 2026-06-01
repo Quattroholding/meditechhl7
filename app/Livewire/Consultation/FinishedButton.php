@@ -61,7 +61,7 @@ class FinishedButton extends Component
             unset($this->messageTargets[1]);
         } else {
             $return = false;
-            $this->messages[1] = '- Motivo de Consulta';
+            $this->messages[1] = '- '.__('consultation.finished_button.reason_for_visit');
             $this->messageSections[1] = 1; // Section ID for "Motivo de Consulta"
             $this->messageTargets[1] = '#marker-id-1 textarea'; // Specific textarea selector
         }
@@ -81,16 +81,16 @@ class FinishedButton extends Component
 
             if ($mode === 'simplified') {
                 // Solo validar descripción en modo simplificado
-                $this->messages[6] = '- Descripción';
+                $this->messages[6] = '- '.__('consultation.finished_button.description');
                 $this->messageSections[6] = 3;
                 $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
             } else {
                 // Validar todos los campos en modo completo
-                $this->messages[2] = '- Ubicación';
-                $this->messages[3] = '- Gravedad';
-                $this->messages[4] = '- Duración';
-                $this->messages[5] = '- Momento';
-                $this->messages[6] = '- Descripción';
+                $this->messages[2] = '- '.__('consultation.finished_button.location');
+                $this->messages[3] = '- '.__('consultation.finished_button.severity');
+                $this->messages[4] = '- '.__('consultation.finished_button.duration');
+                $this->messages[5] = '- '.__('consultation.finished_button.timing');
+                $this->messages[6] = '- '.__('consultation.finished_button.description');
                 $this->messageSections[2] = 3;
                 $this->messageSections[3] = 3;
                 $this->messageSections[4] = 3;
@@ -120,7 +120,7 @@ class FinishedButton extends Component
                 unset($this->messageTargets[5]);
 
                 if (empty($this->encounter->presentIllnesses->description)) {
-                    $this->messages[6] = '- Descripción';
+                    $this->messages[6] = '- '.__('consultation.finished_button.description');
                     $this->messageSections[6] = 3;
                     $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
                     $return = false;
@@ -132,7 +132,7 @@ class FinishedButton extends Component
             } else {
                 // Validar todos los campos en modo completo
                 if (empty($this->encounter->presentIllnesses->locations)) {
-                    $this->messages[2] = '- Ubicación';
+                    $this->messages[2] = '- '.__('consultation.finished_button.location');
                     $this->messageSections[2] = 3;
                     $this->messageTargets[2] = '#marker-id-3\\.0';
                     $return = false;
@@ -142,7 +142,7 @@ class FinishedButton extends Component
                     unset($this->messageTargets[2]);
                 }
                 if (empty($this->encounter->presentIllnesses->severity)) {
-                    $this->messages[3] = '- Gravedad';
+                    $this->messages[3] = '- '.__('consultation.finished_button.severity');
                     $this->messageSections[3] = 3;
                     $this->messageTargets[3] = '#marker-id-3\\.1';
                     $return = false;
@@ -152,7 +152,7 @@ class FinishedButton extends Component
                     unset($this->messageTargets[3]);
                 }
                 if (empty($this->encounter->presentIllnesses->duration)) {
-                    $this->messages[4] = '- Duración';
+                    $this->messages[4] = '- '.__('consultation.finished_button.duration');
                     $this->messageSections[4] = 3;
                     $this->messageTargets[4] = '#marker-id-3\\.2';
                     $return = false;
@@ -162,7 +162,7 @@ class FinishedButton extends Component
                     unset($this->messageTargets[4]);
                 }
                 if (empty($this->encounter->presentIllnesses->timing)) {
-                    $this->messages[5] = '- Momento';
+                    $this->messages[5] = '- '.__('consultation.finished_button.timing');
                     $this->messageSections[5] = 3;
                     $this->messageTargets[5] = '#marker-id-3\\.3';
                     $return = false;
@@ -172,7 +172,7 @@ class FinishedButton extends Component
                     unset($this->messageTargets[5]);
                 }
                 if (empty($this->encounter->presentIllnesses->description)) {
-                    $this->messages[6] = '- Descripción';
+                    $this->messages[6] = '- '.__('consultation.finished_button.description');
                     $this->messageSections[6] = 3;
                     $this->messageTargets[6] = '#marker-id-3\\.5 textarea';
                     $return = false;
@@ -216,7 +216,7 @@ class FinishedButton extends Component
 
             return true;
         } else {
-            $this->messages[7] = '- Al menos un diagnostico';
+            $this->messages[7] = '- '.__('consultation.finished_button.at_least_one_diagnosis');
             $this->messageSections[7] = 5; // Section ID for "Diagnosticos"
             $this->messageTargets[7] = '.selector-field input[placeholder*="diagnostico"]'; // Diagnostic search input
 
@@ -241,29 +241,29 @@ class FinishedButton extends Component
             $missingFields = [];
 
             if (empty($medication->route)) {
-                $missingFields[] = 'vía';
+                $missingFields[] = __('consultation.finished_button.route');
             }
 
             if (empty($medication->frequency)) {
-                $missingFields[] = 'frecuencia';
+                $missingFields[] = __('consultation.finished_button.frequency');
             }
 
             if (empty($medication->quantity)) {
-                $missingFields[] = 'cantidad';
+                $missingFields[] = __('consultation.finished_button.quantity');
             }
 
             if (empty($medication->duration)) {
-                $missingFields[] = 'duración';
+                $missingFields[] = __('consultation.finished_button.duration_lowercase');
             }
 
             if (! empty($missingFields)) {
-                $medicationName = $medication->medicine->full_name ?? 'Medicamento';
+                $medicationName = $medication->medicine->full_name ?? __('consultation.finished_button.medication');
                 $incompleMedications[] = $medicationName.' ('.implode(', ', $missingFields).')';
             }
         }
 
         if (! empty($incompleMedications)) {
-            $this->messages[8] = '- Medicamentos incompletos: '.implode(', ', $incompleMedications);
+            $this->messages[8] = '- '.__('consultation.finished_button.incomplete_medications').' '.implode(', ', $incompleMedications);
             $this->messageSections[8] = 11; // Section ID for "Medicamentos"
             $this->messageTargets[8] = '.medicine-table'; // Medication table
 
@@ -297,7 +297,7 @@ class FinishedButton extends Component
         foreach ($supplyRequests->get() as $supply) {
             // Validar cantidad
             if ($supply->quantity <= 0) {
-                $issues[] = "{$supply->inventoryItem->name} (cantidad inválida)";
+                $issues[] = "{$supply->inventoryItem->name} (".__('consultation.finished_button.invalid_quantity').')';
 
                 continue;
             }
@@ -314,12 +314,12 @@ class FinishedButton extends Component
 
             if (! $inventoryReport || $inventoryReport->quantity_available < $supply->quantity) {
                 $available = $inventoryReport ? $inventoryReport->quantity_available : 0;
-                $issues[] = "{$supply->inventoryItem->name} (stock insuficiente: {$available} disponible, {$supply->quantity} solicitado)";
+                $issues[] = "{$supply->inventoryItem->name} (".__('consultation.finished_button.insufficient_stock', ['available' => $available, 'requested' => $supply->quantity]).')';
             }
         }
 
         if (! empty($issues)) {
-            $this->messages[10] = '- Suministros con problemas: '.implode(', ', $issues);
+            $this->messages[10] = '- '.__('consultation.finished_button.supplies_with_issues').' '.implode(', ', $issues);
             $this->messageSections[10] = 17; // Section ID for "Suministros"
             $this->messageTargets[10] = '.medicine-table'; // Supply table
 
@@ -350,7 +350,7 @@ class FinishedButton extends Component
             $missingFields = [];
 
             if (empty($referral->reason)) {
-                $missingFields[] = 'motivo de referencia';
+                $missingFields[] = __('consultation.finished_button.referral_reason');
             }
 
             /*if (empty($referral->referred_to_id)) {
@@ -358,13 +358,13 @@ class FinishedButton extends Component
             }*/
 
             if (! empty($missingFields)) {
-                $specialtyName = $referral->speciality->name ?? 'Especialidad desconocida';
+                $specialtyName = $referral->speciality->name ?? __('consultation.finished_button.unknown_specialty');
                 $incompleteReferrals[] = $specialtyName.' ('.implode(', ', $missingFields).')';
             }
         }
 
         if (! empty($incompleteReferrals)) {
-            $this->messages[9] = '- Referencias incompletas: '.implode(', ', $incompleteReferrals);
+            $this->messages[9] = '- '.__('consultation.finished_button.incomplete_referrals').' '.implode(', ', $incompleteReferrals);
             $this->messageSections[9] = 10; // Section ID for "Referencia Especialista"
             $this->messageTargets[9] = '.medicine-table textarea'; // Referral note textarea (first one in table)
 
@@ -389,7 +389,7 @@ class FinishedButton extends Component
             unset($this->messageTargets[1]);
         } else {
             $return = false;
-            $this->messages[1] = '- Nota General';
+            $this->messages[1] = '- '.__('consultation.finished_button.general_note');
             $this->messageSections[1] = 13; // Section ID for "Nota General"
             $this->messageTargets[1] = '#marker-id-13 textarea'; // General note textarea
         }

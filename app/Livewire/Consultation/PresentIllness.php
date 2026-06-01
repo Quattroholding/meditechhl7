@@ -55,98 +55,92 @@ class PresentIllness extends Component
      */
     public function updateFromVoice($data)
     {
-        $updated = false;
+        \Log::info('PresentIllness: updateFromVoice called', [
+            'encounter_id' => $this->encounter_id,
+            'data' => $data,
+        ]);
 
-        // Update locations (array)
-        if (isset($data['locations']) && is_array($data['locations']) && ! empty($data['locations'])) {
-            // Map Spanish location names to database values
-            $mappedLocations = $this->mapLocationsFromVoice($data['locations']);
-            if (! empty($mappedLocations)) {
-                $this->location = ['location' => $mappedLocations];
-                $updated = true;
-            }
+        // Create or get present illness record FIRST
+        if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
+            \Log::info('PresentIllness: Creating new record');
+            $this->create();
+            $this->encounter->refresh();
         }
+
+        $presentIllness = $this->encounter->presentIllnesses;
 
         // Update description
         if (isset($data['description']) && ! empty($data['description'])) {
-            $this->description = $data['description'];
-            $updated = true;
+            $presentIllness->description = $data['description'];
         }
 
         // Update severity (map Spanish to English)
         if (isset($data['severity']) && ! empty($data['severity'])) {
-            $this->severity = $this->mapSeverityFromVoice($data['severity']);
-            $updated = true;
+            $presentIllness->severity = $this->mapSeverityFromVoice($data['severity']);
         }
 
-        // Update duration (map Spanish to English)
+        // Update duration (map Spanish to English OR keep as is if no mapping found)
         if (isset($data['duration']) && ! empty($data['duration'])) {
-            $this->duration = $this->mapDurationFromVoice($data['duration']);
-            $updated = true;
+            $mappedDuration = $this->mapDurationFromVoice($data['duration']);
+            // If mapping returns null, keep the original Spanish text
+            $presentIllness->duration = $mappedDuration ?? $data['duration'];
+
+            \Log::info('PresentIllness: Duration mapped', [
+                'original' => $data['duration'],
+                'mapped' => $presentIllness->duration,
+            ]);
         }
 
         // Update timing (map Spanish to English)
         if (isset($data['timing']) && ! empty($data['timing'])) {
-            $this->timing = $this->mapTimingFromVoice($data['timing']);
-            $updated = true;
+            $presentIllness->timing = $this->mapTimingFromVoice($data['timing']);
+        }
+
+        // Update locations (map Spanish to English and merge with existing)
+        if (isset($data['locations']) && is_array($data['locations']) && ! empty($data['locations'])) {
+            $mappedLocations = $this->mapLocationsFromVoice($data['locations']);
+
+            // Get existing locations
+            $existingLocations = is_array($presentIllness->locations) ? $presentIllness->locations : [];
+
+            // Merge and deduplicate
+            $allLocations = array_unique(array_merge($existingLocations, $mappedLocations));
+            $presentIllness->locations = array_values($allLocations);
+
+            \Log::info('PresentIllness: Locations mapped', [
+                'original' => $data['locations'],
+                'mapped' => $mappedLocations,
+                'saved' => $presentIllness->locations,
+            ]);
         }
 
         // Update aggravating factors
         if (isset($data['aggravating_factors']) && ! empty($data['aggravating_factors'])) {
-            $this->aggravating_factors = $data['aggravating_factors'];
-            $updated = true;
+            $presentIllness->aggravating_factors = $data['aggravating_factors'];
         }
 
         // Update alleviating factors
         if (isset($data['alleviating_factors']) && ! empty($data['alleviating_factors'])) {
-            $this->alleviating_factors = $data['alleviating_factors'];
-            $updated = true;
+            $presentIllness->alleviating_factors = $data['alleviating_factors'];
         }
 
         // Update associated symptoms
         if (isset($data['associated_symptoms']) && ! empty($data['associated_symptoms'])) {
-            $this->associated_symptoms = $data['associated_symptoms'];
-            $updated = true;
+            $presentIllness->associated_symptoms = $data['associated_symptoms'];
         }
 
-        // Save if any field was updated
-        if ($updated) {
-            // Create present illness if it doesn't exist
-            if (! $this->encounter->presentIllnesses->id) {
-                $this->create();
-            }
+        // Save all changes in one go
+        $presentIllness->save();
 
-            // Save all fields
-            if ($this->description) {
-                $this->saveDescription();
-            }
-            if ($this->aggravating_factors) {
-                $this->saveAggravatingFactors();
-            }
-            if ($this->alleviating_factors) {
-                $this->saveAlleviatingFactors();
-            }
-            if ($this->associated_symptoms) {
-                $this->saveAssociatedSymptoms();
-            }
+        \Log::info('PresentIllness: Record saved', [
+            'id' => $presentIllness->id,
+            'locations' => $presentIllness->locations,
+            'duration' => $presentIllness->duration,
+            'severity' => $presentIllness->severity,
+        ]);
 
-            // Save locations
-            if (isset($this->location['location']) && ! empty($this->location['location'])) {
-                foreach ($this->location['location'] as $loc) {
-                    $this->save('location', $loc);
-                }
-            }
-
-            // Save severity, duration, timing
-            if ($this->severity || $this->duration || $this->timing) {
-                $this->encounter->presentIllnesses->severity = $this->severity;
-                $this->encounter->presentIllnesses->duration = $this->duration;
-                $this->encounter->presentIllnesses->timing = $this->timing;
-                $this->encounter->presentIllnesses->save();
-            }
-
-            $this->loadPressentIllness();
-        }
+        // Reload for display
+        $this->loadPressentIllness();
     }
 
     /**
@@ -183,18 +177,52 @@ class PresentIllness extends Component
     private function getLocationMapping(): array
     {
         return [
+            // Head and neck
             'cabeza' => 'head',
             'cuello' => 'neck',
             'garganta' => 'throat',
+            'ojo' => 'eye(s)',
+            'ojos' => 'eye(s)',
+            'oído' => 'ear(s)',
+            'oido' => 'ear(s)',
+            'oídos' => 'ear(s)',
+            'oidos' => 'ear(s)',
+            'nariz' => 'nose',
+            'boca' => 'mouth',
+
+            // Chest and respiratory
             'pecho' => 'chest',
+            'tórax' => 'chest',
+            'torax' => 'chest',
+            'hemitórax' => 'chest',
+            'hemitorax' => 'chest',
+            'hemitórax derecho' => 'right chest',
+            'hemitorax derecho' => 'right chest',
+            'hemitórax izquierdo' => 'left chest',
+            'hemitorax izquierdo' => 'left chest',
+            'pulmones' => 'lungs',
+            'pulmón derecho' => 'right lung',
+            'pulmon derecho' => 'right lung',
+            'pulmón izquierdo' => 'left lung',
+            'pulmon izquierdo' => 'left lung',
+            'base pulmonar' => 'lung base',
+            'base pulmonar derecha' => 'right lung base',
+            'base pulmonar izquierda' => 'left lung base',
+
+            // Cardiovascular
+            'corazón' => 'heart',
+            'corazon' => 'heart',
+
+            // Abdomen
             'abdomen' => 'abdomen',
             'estómago' => 'stomach',
             'estomago' => 'stomach',
-            'corazón' => 'heart',
-            'corazon' => 'heart',
-            'pulmones' => 'lungs',
+
+            // Extremities
             'brazo' => 'arm(s)',
             'brazos' => 'arm(s)',
+            'brazo derecho' => 'right arm',
+            'brazo izquierdo' => 'left arm',
             'mano' => 'hand(s)',
             'manos' => 'hand(s)',
             'pierna' => 'leg(s)',
@@ -205,16 +233,6 @@ class PresentIllness extends Component
             'rodillas' => 'knee(s)',
             'hombro' => 'shoulder(s)',
             'hombros' => 'shoulder(s)',
-            'espalda' => 'dorsal spine',
-            'lumbar' => 'lumbar spine',
-            'ojo' => 'eye(s)',
-            'ojos' => 'eye(s)',
-            'oído' => 'ear(s)',
-            'oido' => 'ear(s)',
-            'oídos' => 'ear(s)',
-            'oidos' => 'ear(s)',
-            'nariz' => 'nose',
-            'boca' => 'mouth',
             'tobillo' => 'ankle(s)',
             'tobillos' => 'ankle(s)',
             'muñeca' => 'wrist(s)',
@@ -224,6 +242,12 @@ class PresentIllness extends Component
             'cadera' => 'hip',
             'muslo' => 'thighs',
             'muslos' => 'thighs',
+
+            // Back
+            'espalda' => 'dorsal spine',
+            'lumbar' => 'lumbar spine',
+
+            // General
             'todo el cuerpo' => 'full body',
             'cuerpo completo' => 'full body',
         ];
@@ -286,22 +310,45 @@ class PresentIllness extends Component
     private function mapDurationFromVoice(string $duration): ?string
     {
         $durationMap = [
+            // Days
+            'un día' => 'a few days ago',
+            'un dia' => 'a few days ago',
+            'dos días' => 'a few days ago',
+            'dos dias' => 'a few days ago',
+            'tres días' => 'a few days ago',
+            'tres dias' => 'a few days ago',
+            'cuatro días' => 'a few days ago',
+            'cuatro dias' => 'a few days ago',
+            'cinco días' => 'a few days ago',
+            'cinco dias' => 'a few days ago',
             'unos días' => 'a few days ago',
             'unos dias' => 'a few days ago',
             'hace unos días' => 'a few days ago',
             'hace unos dias' => 'a few days ago',
+            'desde hace un día' => 'a few days ago',
+            'desde hace dos días' => 'a few days ago',
+            'desde hace tres días' => 'a few days ago',
+            'desde hace cuatro días' => 'a few days ago',
+            'desde hace cinco días' => 'a few days ago',
+
+            // Weeks
             'una semana' => 'since a week ago',
             'hace una semana' => 'since a week ago',
+            'desde hace una semana' => 'since a week ago',
             'dos semanas' => 'since two weeks ago',
             'hace dos semanas' => 'since two weeks ago',
             'tres semanas' => 'since three weeks ago',
             'hace tres semanas' => 'since three weeks ago',
+
+            // Months
             'un mes' => 'a month ago',
             'hace un mes' => 'a month ago',
             'algunos meses' => 'a couple of months',
             'hace algunos meses' => 'a couple of months',
             'seis meses' => 'past 6 months',
             'hace seis meses' => 'past 6 months',
+
+            // Years
             'un año' => 'a year or so',
             'un ano' => 'a year or so',
             'hace un año' => 'a year or so',
@@ -321,13 +368,27 @@ class PresentIllness extends Component
             return $durationMap[$normalized];
         }
 
-        // Try fuzzy matching
+        // Try partial matching for common patterns
+        if (preg_match('/(un|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\s+(día|dias|dia)/i', $normalized)) {
+            return 'a few days ago';
+        }
+
+        if (preg_match('/(una|dos|tres|cuatro)\s+semana/i', $normalized)) {
+            return 'since a week ago';
+        }
+
+        if (preg_match('/(uno|un|dos|tres|cuatro|cinco|seis)\s+(mes|meses)/i', $normalized)) {
+            return 'a couple of months';
+        }
+
+        // Try fuzzy matching as last resort
         foreach ($durationMap as $key => $value) {
-            if (str_contains($normalized, $key) || str_contains($key, $normalized)) {
+            if (str_contains($normalized, $key)) {
                 return $value;
             }
         }
 
+        // Return null to keep original Spanish text
         return null;
     }
 
@@ -474,9 +535,13 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses->id) {
+            if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
                 $this->create();
-            } else {
+                // Refresh to get the newly created record
+                $this->encounter->refresh();
+            }
+
+            if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->aggravating_factors = $this->aggravating_factors;
                 $this->present_illness->save();
             }
@@ -496,9 +561,13 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses->id) {
+            if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
                 $this->create();
-            } else {
+                // Refresh to get the newly created record
+                $this->encounter->refresh();
+            }
+
+            if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->alleviating_factors = $this->alleviating_factors;
                 $this->present_illness->save();
             }
@@ -516,9 +585,13 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses->id) {
+            if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
                 $this->create();
-            } else {
+                // Refresh to get the newly created record
+                $this->encounter->refresh();
+            }
+
+            if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->associated_symptoms = $this->associated_symptoms;
                 $this->present_illness->save();
             }
@@ -537,9 +610,13 @@ class PresentIllness extends Component
             // Delay para que el usuario vea el spinner "Guardando..."
             sleep(1);
 
-            if (! $this->encounter->presentIllnesses->id) {
+            if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
                 $this->create();
-            } else {
+                // Refresh to get the newly created record
+                $this->encounter->refresh();
+            }
+
+            if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->description = $this->description;
                 $this->present_illness->save();
             }

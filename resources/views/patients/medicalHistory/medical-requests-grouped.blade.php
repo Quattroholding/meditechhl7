@@ -17,7 +17,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px;">
-                                    🏥 Consulta Médica
+                                    🏥 {{ __('patient.medical_history.medical_requests_grouped.medical_consultation') }}
                                     @if($encounter)
                                         {!!  $encounter->status !!}
                                     @endif
@@ -42,7 +42,7 @@
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 24px; font-weight: 700;">{{ $totalItems }}</div>
-                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalItems == 1 ? 'orden' : 'órdenes' }}</div>
+                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalItems == 1 ? __('patient.medical_history.medical_requests_grouped.order') : __('patient.medical_history.medical_requests_grouped.orders') }}</div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                                                                     🧪 Resultados de Laboratorio
                                                                 </div>
                                                                 <span style="background: #dbeafe; color: #1e40af; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
-                                                                    {{ $service->observations()->count() }} resultados
+                                                                    {{ $service->observations()->count() }} {{ __('patient.medical_history.medical_requests_grouped.results') }}
                                                                 </span>
                                                             </div>
 
@@ -202,7 +202,7 @@
                                                                             <span style="font-size: 11px; color: #64748b; font-weight: 500;">{{ $observation->unit }}</span>
                                                                         </div>
                                                                         @if($observation->status === 'final')
-                                                                            <div style="font-size: 9px; color: #059669;">✓ Final</div>
+                                                                            <div style="font-size: 9px; color: #059669;">✓ {{ __('patient.medical_history.medical_requests_grouped.final') }}</div>
                                                                         @endif
                                                                     </div>
                                                                 @endforeach
@@ -210,7 +210,7 @@
 
                                                             @if($service->observations->first() && $service->observations->first()->issued_date)
                                                                 <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b;">
-                                                                    <strong>Resultados emitidos:</strong> {{ \Carbon\Carbon::parse($service->observations->first()->issued_date)->format('d/m/Y H:i') }}
+                                                                    <strong>"{{ __('patient.medical_history.medical_requests_grouped.results_issued') }}":</strong> {{ \Carbon\Carbon::parse($service->observations->first()->issued_date)->format('d/m/Y H:i') }}
                                                                 </div>
                                                             @endif
                                                         </div>
@@ -350,7 +350,7 @@
 
             <!-- Pagination Info -->
             <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #64748b;">
-                Mostrando consultas {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
+                {{ __('patient.medical_history.medical_requests_grouped.showing_consultations') }} {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
                 de {{ $sectionData['total_encounters'] ?? 0 }} total
             </div>
         @endif

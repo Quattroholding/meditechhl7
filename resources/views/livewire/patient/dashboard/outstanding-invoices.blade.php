@@ -1,11 +1,11 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0" style="color: #fff">
-            <i class="fas fa-file-invoice-dollar me-2"></i>Facturas Pendientes
+            <i class="fas fa-file-invoice-dollar me-2"></i>{{ __('patient.dashboard.pending_invoices') }}
         </h5>
         @if($totalDebt > 0)
             <span class="badge bg-warning text-dark">
-                Deuda Total: ${{ number_format($totalDebt, 2) }}
+                {{ __('patient.dashboard.total_debt') }}: ${{ number_format($totalDebt, 2) }}
             </span>
         @endif
     </div>
@@ -59,7 +59,7 @@
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="mb-0">{{ $invoice->invoice_number }}</h6>
                                         <small class="text-muted">
-                                            {{ $invoice->issue_date ? $invoice->issue_date->format('d/m/Y') : 'Sin fecha' }}
+                                            {{ $invoice->issue_date ? $invoice->issue_date->format('d/m/Y') : __('patient.dashboard.no_date') }}
                                         </small>
                                     </div>
                                 </div>
@@ -67,20 +67,20 @@
 
                             <div class="col-md-3">
                                 @if($invoice->encounter)
-                                    <small class="text-muted d-block">Consulta:</small>
-                                    <span class="fw-bold">{{ $invoice->encounter->chief_complaint ?? 'Consulta médica' }}</span>
+                                    <small class="text-muted d-block">{{ __('patient.dashboard.consultation') }}:</small>
+                                    <span class="fw-bold">{{ $invoice->encounter->chief_complaint ?? __('patient.dashboard.medical_consultation') }}</span>
                                 @else
-                                    <span class="text-muted">Servicios médicos</span>
+                                    <span class="text-muted">{{ __('patient.dashboard.medical_services') }}</span>
                                 @endif
                             </div>
 
                             <div class="col-md-2">
-                                <small class="text-muted d-block">Total:</small>
+                                <small class="text-muted d-block">{{ __('patient.dashboard.total') }}:</small>
                                 <span class="h6 text-primary">${{ number_format($invoice->total_net, 2) }}</span>
                             </div>
 
                             <div class="col-md-2">
-                                <small class="text-muted d-block">Pendiente:</small>
+                                <small class="text-muted d-block">{{ __('patient.dashboard.pending') }}:</small>
                                 <span class="h6 text-danger">${{ number_format($invoice->amount_due, 2) }}</span>
                             </div>
 
@@ -93,15 +93,15 @@
 
                                     @if($daysOverdue < 0)
                                         <span class="badge bg-danger mb-2">
-                                            Vencida ({{ abs($daysOverdue) }} días)
+                                            {{ __('patient.dashboard.overdue_days', ['days' => abs($daysOverdue)]) }}
                                         </span>
                                     @elseif($daysOverdue <= 7)
                                         <span class="badge bg-warning text-dark mb-2">
-                                            Vence en {{ $daysOverdue }} días
+                                            {{ __('patient.dashboard.due_in_days', ['days' => $daysOverdue]) }}
                                         </span>
                                     @else
                                         <span class="badge bg-success mb-2">
-                                            Vence: {{ $invoice->due_date->format('d/m') }}
+                                            {{ __('patient.dashboard.due_date') }}: {{ $invoice->due_date->format('d/m') }}
                                         </span>
                                     @endif
                                 @endif
@@ -113,18 +113,18 @@
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
                                             <a class="dropdown-item" href="{{ route('invoice.show', $invoice->id) }}">
-                                                <i class="fas fa-eye me-2"></i>Ver Factura
+                                                <i class="fas fa-eye me-2"></i>{{ __('patient.dashboard.view_invoice') }}
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="{{ route('invoice.download', $invoice->id) }}" target="_blank">
-                                                <i class="fas fa-download me-2"></i>Descargar PDF
+                                                <i class="fas fa-download me-2"></i>{{ __('patient.dashboard.download_pdf') }}
                                             </a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a class="dropdown-item" href="javascript:;" wire:click="openPaymentModal({{ $invoice->id }})">
-                                                <i class="fas fa-credit-card me-2"></i>{{ __('Pagar Ahora') }}
+                                                <i class="fas fa-credit-card me-2"></i>{{ __('patient.dashboard.pay_now') }}
                                             </a>
                                         </li>
                                     </ul>
@@ -139,16 +139,16 @@
                             @endphp
                             <div class="row mt-3">
                                 <div class="col-12">
-                                    <small class="text-muted">Progreso de pago:</small>
+                                    <small class="text-muted">{{ __('patient.dashboard.payment_progress') }}:</small>
                                     <div class="progress mt-1" style="height: 6px;">
                                         <div class="progress-bar bg-success"
                                              style="width: {{ $paymentPercentage }}%"
-                                             title="Pagado: ${{ number_format($invoice->amount_paid, 2) }}">
+                                             title="{{ __('patient.dashboard.paid') }}: ${{ number_format($invoice->amount_paid, 2) }}">
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between mt-1">
                                         <small class="text-success">
-                                            Pagado: ${{ number_format($invoice->amount_paid, 2) }}
+                                            {{ __('patient.dashboard.paid') }}: ${{ number_format($invoice->amount_paid, 2) }}
                                         </small>
                                         <small class="text-muted">
                                             {{ number_format($paymentPercentage, 1) }}%
@@ -164,7 +164,7 @@
             @if($outstandingInvoices->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('patient.invoices') }}" class="btn btn-outline-primary btn-sm">
-                        Ver Todas las Facturas
+                        {{ __('patient.dashboard.view_all_invoices') }}
                     </a>
                 </div>
             @endif
@@ -177,15 +177,15 @@
                             <i class="fas fa-info-circle fa-lg"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <strong>Total a pagar: ${{ number_format($totalDebt, 2) }}</strong>
+                            <strong>{{ __('patient.dashboard.total_to_pay') }}: ${{ number_format($totalDebt, 2) }}</strong>
                             <p class="mb-0">
-                                Puedes pagar tus facturas de forma individual o contactar con administración para un plan de pagos.
+                                {{ __('patient.dashboard.payment_options_message') }}
                             </p>
                         </div>
                         {{--}}
                         <div class="flex-shrink-0">
                             <a href="{{ route('patient.payment.multiple') }}" class="btn btn-success btn-sm">
-                                <i class="fas fa-credit-card me-1"></i>Pagar Todo
+                                <i class="fas fa-credit-card me-1"></i>{{ __('patient.dashboard.pay_all') }}
                             </a>
                         </div>
                         {{--}}
@@ -195,10 +195,10 @@
         @else
             <div class="text-center py-4">
                 <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                <h6 class="text-success">¡Todas las facturas están al día!</h6>
-                <p class="text-muted mb-3">No tienes facturas pendientes de pago</p>
+                <h6 class="text-success">{{ __('patient.dashboard.all_invoices_up_to_date') }}</h6>
+                <p class="text-muted mb-3">{{ __('patient.dashboard.no_pending_invoices') }}</p>
                 <a href="{{ route('invoice.index') }}" class="btn btn-outline-primary">
-                    Ver Historial de Facturas
+                    {{ __('patient.dashboard.view_invoice_history') }}
                 </a>
             </div>
         @endif

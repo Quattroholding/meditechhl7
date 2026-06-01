@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Helpers\CacheHelper;
-
 use App\Models\MedicationRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +44,7 @@ class TopPrescribedMedications extends Component
 
         // Cache por 10 minutos - query muy pesado
         $this->topMedications = Cache::tags(['doctor_dashboard', 'medications', 'practitioner_'.$practitionerId])
-        ->remember($cacheKey, 600, function () use ($practitionerId, $days) {
+            ->remember($cacheKey, 600, function () use ($practitionerId, $days) {
                 return $this->fetchTopMedications($practitionerId, $days);
             });
     }

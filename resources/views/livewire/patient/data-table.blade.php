@@ -36,7 +36,7 @@
                                 <th data-column="patients.email" data-priority="5"><x-table-sort-button title="{{__('patient.email')}}" columnName="patients.email" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 <th data-column="patients.phone" data-priority="6"><x-table-sort-button title="{{__('patient.whatsapp')}}" columnName="patients.phone" :sortField="$sortField" :sortDirection="$sortDirection"/></th>
                                 @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
-                                <th data-column="acciones" data-priority="7" class="text-end"><x-table-sort-button title="{{__('Acciones')}}" columnName=""/></th>
+                                <th data-column="acciones" data-priority="7" class="text-end"><x-table-sort-button title="{{__('patient.acciones')}}" columnName=""/></th>
                                 @endcanany
                             </tr>
                             </thead>
@@ -55,7 +55,7 @@
                                     <td data-column="email" data-priority="5" data-label="{{__('patient.email')}}"><span class="cell-content">{{ $patient->email }}</span></td>
                                     <td data-column="whatsapp" data-priority="6" data-label="{{__('patient.whatsapp')}}"><span class="cell-content">{{ $patient->phone }}</span></td>
                                     @canany(['patient.profile','patient.edit','patient.delete','patient.medical_history','patients.add_note','patients.insurance'])
-                                    <td data-column="name" data-priority="7" data-label="{{__('Acciones')}}" class="text-end">
+                                    <td data-column="name" data-priority="7" data-label="{{__('patient.acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                                 @can('patients.edit')
                                                     <a  href="{{ route('patient.show',$patient->id) }}" class="btn btn-info btn-sm" title="{{__('generic.show')}}">
@@ -66,17 +66,17 @@
                                                     </a>
                                                 @endcan
                                                 @can('patients.medical_history')
-                                                    <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-dark btn-sm" title="{{__('patient.medical_history')}}">
+                                                    <a href="{{route('patient.medical_history',$patient->id)}}" class="btn btn-dark btn-sm" title="{{ __('patient.medical_history_title') }}">
                                                         <i  class="fa fa-file-text-o m-r-5"></i>
                                                     </a>
                                                 @endcan
                                                 @if(auth()->user()->can('profile',$patient))
-                                                <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{__('patient.profile')}}">
+                                                <a href="{{route('patient.profile',$patient->id)}}"  class="btn btn-success btn-sm" title="{{ __('patient.profile')}}">
                                                     <i  class="fa-solid fa-cog m-r-5"></i>
                                                 </a>
                                                 @endif
                                                 @can('patients.insurance')
-                                                    <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{__('Gestionar Seguros')}}">
+                                                    <a  wire:click="openInsuranceModal({{ $patient->id }})" class="btn btn-secondary btn-sm" title="{{ __('Gestionar Seguros')}}">
                                                         <i  class="fa-solid fa-shield-halved m-r-5  text-white"></i>
                                                     </a>
                                                 @endcan

@@ -6,7 +6,7 @@
                 <div class="skeleton-number"></div>
             </div>
         @else
-            <h5 class="text-base">{{__('Pacientes activos')}}</h5>
+            <h5 class="text-base">{{ __('doctor.dashboard.active_patients') }}</h5>
             <h3>{{ $allpatients }}</h3>
         @endif
     </div>

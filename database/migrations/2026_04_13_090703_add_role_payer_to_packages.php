@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('packages', function (Blueprint $table) {
             //
-            $table->string('role_payer')->nullable(); 
+            $table->string('role_payer')->nullable();
         });
     }
 

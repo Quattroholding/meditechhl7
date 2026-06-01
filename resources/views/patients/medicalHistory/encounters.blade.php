@@ -10,7 +10,7 @@
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                <span id="downloadHistoryText">Descargar Historial Completo</span>
+                <span id="downloadHistoryText">{{ __('patient.medical_history.download_full_history') }}</span>
             </button>
         </div>
 
@@ -18,17 +18,17 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Fecha</th>
+                    <th>{{ __('patient.medical_history.date') }}</th>
                     {{--}}
-                    <th>Tipo</th>
+                    <th>{{ __('patient.medical_history.type') }}</th>
                     {{--}}
-                    <th>Profesional</th>
-                    <th>Diagnóstico</th>
-                    <th>Estado</th>
+                    <th>{{ __('patient.medical_history.professional') }}</th>
+                    <th>{{ __('patient.medical_history.diagnosis') }}</th>
+                    <th>{{ __('patient.medical_history.status') }}</th>
                     {{--}}
-                    <th>Ubicación</th>
+                    <th>{{ __('patient.medical_history.location') }}</th>
                     {{--}}
-                    <th>Acciones</th>
+                    <th>{{ __('patient.medical_history.actions') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -63,7 +63,7 @@
                         <td>
                             @if(auth()->user()->can('view',$encounter) && $encounter->appointment_id)
                             <a  href="{{route('consultation.download_resumen',$encounter->appointment_id)}}" target="_blank" class="btn" style="background: #3b82f6; color: white; padding: 6px 12px; font-size: 12px;">
-                                👁️ Ver Detalles
+                                👁️ {{ __('patient.medical_history.view_details') }}
                             </a>
                             @endif
                         </td>
@@ -82,11 +82,11 @@
                         <button wire:click="previousEncountersPage"
                                 class="pagination-btn"
                                 style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.previous') }}
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.previous') }}
                         </span>
                     @endif
 
@@ -111,11 +111,11 @@
                         <button wire:click="nextEncountersPage"
                                 class="pagination-btn"
                                 style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            Siguiente →
+                            {{ __('patient.medical_history.next') }} →
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            Siguiente →
+                            {{ __('patient.medical_history.next') }} →
                         </span>
                     @endif
                 </nav>
@@ -123,15 +123,15 @@
 
             <!-- Pagination Info -->
             <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #64748b;">
-                Mostrando consultas {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
-                de {{ $sectionData['total'] ?? 0 }} total
+                {{ __('patient.medical_history.showing_consultations') }} {{ $sectionData['from'] ?? 0 }} {{ __('patient.medical_history.to') }} {{ $sectionData['to'] ?? 0 }}
+                {{ __('patient.medical_history.of') }} {{ $sectionData['total'] ?? 0 }} {{ __('patient.medical_history.total') }}
             </div>
         @endif
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🏥</div>
-            <h3>No hay consultas registradas</h3>
-            <p>Este paciente no tiene consultas médicas en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.no_consultations_registered') }}</h3>
+            <p>{{ __('patient.medical_history.no_consultations_message') }}</p>
         </div>
     @endif
 </div>
@@ -153,7 +153,7 @@ window.requestFullHistory = async function(patientId) {
     btn.disabled = true;
     btn.style.opacity = '0.6';
     btn.style.cursor = 'not-allowed';
-    btnText.textContent = 'Iniciando generación...';
+    btnText.textContent = '{{ __('patient.medical_history.initiating_generation') }}';
 
     try {
         const response = await fetch(`/patient-history/${patientId}/generate`, {
@@ -168,9 +168,9 @@ window.requestFullHistory = async function(patientId) {
 
         if (data.success) {
             window.historyDownloadId = data.history_download_id;
-            btnText.textContent = 'Generando... 0%';
+            btnText.textContent = '{{ __('patient.medical_history.generating') }} 0%';
             window.startPolling();
-            window.showNotification('Generación iniciada. Te notificaremos cuando esté listo.', 'success');
+            window.showNotification('{{ __('patient.medical_history.initiating_generation') }}', 'success');
         } else {
             throw new Error(data.message || 'Error al iniciar generación');
         }
@@ -204,21 +204,21 @@ window.checkStatus = async function() {
 
             if (data.status === 'completed') {
                 window.stopPolling();
-                btnText.textContent = 'Listo - Haz clic para descargar';
+                btnText.textContent = '{{ __('patient.medical_history.ready_click_download') }}';
                 const btn = document.getElementById('downloadHistoryBtn');
                 btn.style.background = '#10b981';
                 btn.style.opacity = '1';
                 btn.style.cursor = 'pointer';
                 btn.disabled = false;
                 btn.onclick = () => window.location.href = data.download_url;
-                window.showNotification(`Historial listo (${data.total_encounters} consultas)`, 'success');
+                window.showNotification(`{{ __('patient.medical_history.ready_click_download') }} (${data.total_encounters})`, 'success');
             } else if (data.status === 'failed') {
                 window.stopPolling();
-                btnText.textContent = 'Error en generación';
-                window.showNotification(data.error_message || 'Error al generar historial', 'error');
+                btnText.textContent = '{{ __('patient.medical_history.generation_error') }}';
+                window.showNotification(data.error_message || '{{ __('patient.medical_history.generation_error') }}', 'error');
                 setTimeout(window.resetButton, 3000);
             } else if (data.status === 'processing') {
-                btnText.textContent = `Generando... ${data.progress}% (${data.processed_encounters}/${data.total_encounters})`;
+                btnText.textContent = `{{ __('patient.medical_history.generating') }} ${data.progress}% (${data.processed_encounters}/${data.total_encounters})`;
             }
         }
     } catch (error) {
@@ -234,7 +234,7 @@ window.resetButton = function() {
     btn.style.opacity = '1';
     btn.style.cursor = 'pointer';
     btn.style.background = '#10b981';
-    btnText.textContent = 'Descargar Historial Completo';
+    btnText.textContent = '{{ __('patient.medical_history.download_full_history') }}';
     btn.onclick = () => window.requestFullHistory({{ $patient->id }});
 
     window.historyDownloadId = null;

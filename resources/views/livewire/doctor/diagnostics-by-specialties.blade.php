@@ -1,6 +1,6 @@
 <div class="card top-departments">
     <div class="card-header">
-        <h4 class="card-title mb-0" style="color: #fff;">{{__('Diagnósticos por Especialidades')}}</h4>
+        <h4 class="card-title mb-0" style="color: #fff;">{{ __('doctor.dashboard.diagnoses_by_specialties') }}</h4>
     </div>
     <div class="card-body">
         @foreach($top_specialties as $speciality)

@@ -12,8 +12,8 @@
         @else
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
-                    <h5 class="text-base mb-1">Duración Promedio de Consultas</h5>
-                    <small class="text-muted">Tiempo real de consulta (inicio → fin)</small>
+                    <h5 class="text-base mb-1">{{ __('doctor.dashboard.average_consultation_duration') }}</h5>
+                    <small class="text-muted">{{ __('doctor.dashboard.actual_consultation_time') }}</small>
                 </div>
             </div>
 
@@ -27,19 +27,19 @@
                         class="btn {{ $filter === 'daily' ? 'btn-success' : 'btn-outline-success' }}"
                         wire:click="$set('filter', 'daily')"
                         wire:loading.attr="disabled">
-                    Hoy
+                    {{ __('doctor.dashboard.today') }}
                 </button>
                 <button type="button"
                         class="btn {{ $filter === 'weekly' ? 'btn-success' : 'btn-outline-success' }}"
                         wire:click="$set('filter', 'weekly')"
                         wire:loading.attr="disabled">
-                    Semanal
+                    {{ __('doctor.dashboard.weekly') }}
                 </button>
                 <button type="button"
                         class="btn {{ $filter === 'monthly' ? 'btn-success' : 'btn-outline-success' }}"
                         wire:click="$set('filter', 'monthly')"
                         wire:loading.attr="disabled">
-                    Mensual
+                    {{ __('doctor.dashboard.monthly') }}
                 </button>
             </div>
 
@@ -53,11 +53,11 @@
                 <small class="text-muted">
                     <i class="fa fa-info-circle"></i>
                     @if($filter === 'daily')
-                        Datos de hoy
+                        {{ __('doctor.dashboard.data_today') }}
                     @elseif($filter === 'weekly')
-                        Últimos 7 días
+                        {{ __('doctor.dashboard.last_7_days') }}
                     @else
-                        Últimos 30 días
+                        {{ __('doctor.dashboard.last_30_days') }}
                     @endif
                 </small>
             </div>
@@ -96,7 +96,7 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Duración Promedio (minutos)',
+                                label: '{{ __('doctor.dashboard.average_duration_minutes') }}',
                                 data: values,
                                 borderColor: 'rgb(75, 192, 192)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.1)',
@@ -119,7 +119,7 @@
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            return context.parsed.y + ' minutos';
+                                            return context.parsed.y + ' {{ __('doctor.dashboard.minutes') }}';
                                         }
                                     }
                                 }

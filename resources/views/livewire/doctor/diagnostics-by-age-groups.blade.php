@@ -1,10 +1,10 @@
 <div class="card top-departments">
     <div class="card-header">
-        <h4 class="card-title mb-0" style="color: #fff;">{{__('Diagnósticos por Grupo Etario')}}</h4>
+        <h4 class="card-title mb-0" style="color: #fff;">{{ __('doctor.dashboard.diagnoses_by_age_group') }}</h4>
     </div>
     <div class="card-body">
         @if($diagnostics->isEmpty())
-            <p class="px-4 pt-3">No se encontraron registros de diagnósticos dentro de consultas para esta especialidad</p>
+            <p class="px-4 pt-3">{{ __('doctor.dashboard.no_diagnoses_found_specialty') }}</p>
         @else
             @foreach($diagnostics as $speciality)
                     <div class="activity-top">
@@ -38,15 +38,15 @@
                             <!-- Detalles adicionales -->
                             <div class="row text-center">
                                 <div class="col-4">
-                                    <small class="text-muted d-block">{{__('Especialidad')}}</small>
+                                    <small class="text-muted d-block">{{ __('doctor.dashboard.specialty') }}</small>
                                     <span class="fw-bold">{{ $speciality->specialty }}</span>
                                 </div>
                                 <div class="col-4">
-                                    <small class="text-muted d-block">{{__('Total')}}</small>
+                                    <small class="text-muted d-block">{{ __('doctor.dashboard.total') }}</small>
                                     <span class="fw-bold">{{ $speciality->total }}</span>
                                 </div>
                                 <div class="col-4">
-                                    <small class="text-muted d-block">{{__('Grupo Etario')}}</small>
+                                    <small class="text-muted d-block">{{ __('doctor.dashboard.age_group') }}</small>
                                     <span class="fw-bold">{{ $speciality->age_group }}</span>
                                 </div>
                                 {{--}}<div class="col-4">

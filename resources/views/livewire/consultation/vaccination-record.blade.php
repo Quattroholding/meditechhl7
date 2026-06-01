@@ -3,15 +3,15 @@
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
                 <i class="fas fa-syringe me-2"></i>
-                Registro de Vacunación
+                {{ __('consultation.vaccination.title') }}
             </h5>
         </div>
         <div class="card-body">
             {{-- Patient Age Info --}}
             <div class="alert alert-info mb-3">
                 <i class="fas fa-info-circle me-2"></i>
-                <strong>Paciente:</strong> {{ $patient->name ?? 'N/A' }} |
-                <strong>Edad:</strong> {{ round($patientAgeMonths,0) }} meses ({{ floor($patientAgeMonths / 12) }} años, {{ $patientAgeMonths % 12 }} meses)
+                <strong>{{ __('consultation.vaccination.patient') }}:</strong> {{ $patient->name ?? 'N/A' }} |
+                <strong>{{ __('consultation.vaccination.age') }}:</strong> {{ round($patientAgeMonths,0) }} {{ __('consultation.vaccination.months') }} ({{ floor($patientAgeMonths / 12) }} {{ __('consultation.vaccination.years') }}, {{ $patientAgeMonths % 12 }} {{ __('consultation.vaccination.months') }})
             </div>
 
             {{-- Vaccination Schedule Table --}}
@@ -19,12 +19,12 @@
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 25%;">Vacuna</th>
-                            <th style="width: 15%;">Enfermedad</th>
-                            <th style="width: 10%;">Edad Mín.</th>
-                            <th style="width: 10%;">Dosis Req.</th>
-                            <th style="width: 30%;">Dosis Administradas</th>
-                            <th style="width: 10%;">Estado</th>
+                            <th style="width: 25%;">{{ __('consultation.vaccination.vaccine') }}</th>
+                            <th style="width: 15%;">{{ __('consultation.vaccination.disease') }}</th>
+                            <th style="width: 10%;">{{ __('consultation.vaccination.min_age') }}</th>
+                            <th style="width: 10%;">{{ __('consultation.vaccination.required_doses') }}</th>
+                            <th style="width: 30%;">{{ __('consultation.vaccination.administered_doses') }}</th>
+                            <th style="width: 10%;">{{ __('consultation.vaccination.status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,7 +59,7 @@
                                             </span>
                                         @endforeach
                                     @else
-                                        <span class="text-muted">Sin dosis registradas</span>
+                                        <span class="text-muted">{{ __('consultation.vaccination.no_doses') }}</span>
                                     @endif
 
                                     {{-- Add dose button --}}
@@ -68,31 +68,31 @@
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-primary ms-2"
                                                     wire:click="addVaccine({{ $item['vaccine_type']->id }})">
-                                                <i class="fas fa-plus"></i> Agregar Dosis {{ $item['next_dose_number'] }}
+                                                <i class="fas fa-plus"></i> {{ __('consultation.vaccination.add_dose') }} {{ $item['next_dose_number'] }}
                                             </button>
                                         @else
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-secondary ms-2"
                                                     wire:click="addVaccine({{ $item['vaccine_type']->id }})"
-                                                    title="Registrar dosis histórica administrada fuera del rango de edad recomendado">
-                                                <i class="fas fa-history"></i> Registrar Dosis {{ $item['next_dose_number'] }}
+                                                    title="{{ __('consultation.vaccination.register_historical_dose') }}">
+                                                <i class="fas fa-history"></i> {{ __('consultation.vaccination.register_dose') }} {{ $item['next_dose_number'] }}
                                             </button>
                                         @endif
                                     @endif
                                 </td>
                                 <td>
                                     @if($item['status'] === 'complete')
-                                        <span class="badge bg-success">Completo</span>
+                                        <span class="badge bg-success">{{ __('consultation.vaccination.status_complete') }}</span>
                                     @elseif($item['status'] === 'overdue')
-                                        <span class="badge bg-danger">Atrasado</span>
+                                        <span class="badge bg-danger">{{ __('consultation.vaccination.status_overdue') }}</span>
                                     @elseif($item['status'] === 'due')
-                                        <span class="badge bg-warning">Pendiente</span>
+                                        <span class="badge bg-warning">{{ __('consultation.vaccination.status_due') }}</span>
                                     @elseif($item['status'] === 'partial')
-                                        <span class="badge bg-info">Parcial</span>
+                                        <span class="badge bg-info">{{ __('consultation.vaccination.status_partial') }}</span>
                                     @elseif($item['status'] === 'pending')
-                                        <span class="badge bg-secondary">Próximo</span>
+                                        <span class="badge bg-secondary">{{ __('consultation.vaccination.status_pending') }}</span>
                                     @else
-                                        <span class="badge bg-light text-dark">No aplica</span>
+                                        <span class="badge bg-light text-dark">{{ __('consultation.vaccination.status_not_applicable') }}</span>
                                     @endif
                                 </td>
                             </tr>

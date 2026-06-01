@@ -11,14 +11,14 @@
                     <button class="nav-link {{ $activeTab === 'general' ? 'active' : '' }}"
                             wire:click="switchTab('general')"
                             type="button" role="tab">
-                        <i class="feather-user me-2"></i>General
+                        <i class="feather-user me-2"></i>{{ __('patient.tabs.general') }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'dependents' ? 'active' : '' }}"
                             wire:click="switchTab('dependents')"
                             type="button" role="tab">
-                        <i class="feather-users me-2"></i>Relaciones Familiares
+                        <i class="feather-users me-2"></i>{{ __('patient.tabs.dependents') }}
                     </button>
                 </li>
                 @can('consultations.download_resumen')
@@ -26,7 +26,7 @@
                     <button class="nav-link {{ $activeTab === 'conditions' ? 'active' : '' }}"
                             wire:click="switchTab('conditions')"
                             type="button" role="tab">
-                        <i class="feather-activity me-2"></i>Condiciones
+                        <i class="feather-activity me-2"></i>{{ __('patient.tabs.conditions') }}
                     </button>
                 </li>
                 @endcan
@@ -34,21 +34,21 @@
                     <button class="nav-link {{ $activeTab === 'insurance' ? 'active' : '' }}"
                             wire:click="switchTab('insurance')"
                             type="button" role="tab">
-                        <i class="feather-shield me-2"></i>Seguros
+                        <i class="feather-shield me-2"></i>{{ __('patient.tabs.insurance') }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'appointments' ? 'active' : '' }}"
                             wire:click="switchTab('appointments')"
                             type="button" role="tab">
-                        <i class="feather-calendar me-2"></i>Citas
+                        <i class="feather-calendar me-2"></i>{{ __('patient.tabs.appointments') }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'files' ? 'active' : '' }}"
                             wire:click="switchTab('files')"
                             type="button" role="tab">
-                        <i class="feather-file-text me-2"></i>Archivos
+                        <i class="feather-file-text me-2"></i>{{ __('patient.tabs.files') }}
                     </button>
                 </li>
             </ul>

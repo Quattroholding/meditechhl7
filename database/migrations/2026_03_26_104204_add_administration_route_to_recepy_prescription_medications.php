@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('recepy_prescription_medications', function (Blueprint $table) {
-            $table->string('administration_route')->nullable(); 
+            $table->string('administration_route')->nullable();
         });
     }
 

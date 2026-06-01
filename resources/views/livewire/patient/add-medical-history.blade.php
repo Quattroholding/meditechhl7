@@ -1,11 +1,11 @@
 <div>
-    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{__('Antecedente Médico')}}</button>
+    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{ __('patient.medical-history')}}</button>
     @if($showModal)
     <!-- Modal -->
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
             <div class="modal-content" wire:click.stop style="max-width: 400px;">
                 <div class="modal-header">
-                    <h2 class="modal-title" id="myLargeModalLabel" style="color: #000;">{{__('Agregar Antecedente Médico')}} : {{ $patient->name }}</h2>
+                    <h2 class="modal-title" id="myLargeModalLabel" style="color: #000;">{{ __('patient.medical_history_form.add_modal_title') }} : {{ $patient->name }}</h2>
                     <button wire:click="$set('showModal', false)" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="input-block  local-forms">
@@ -16,7 +16,7 @@
                 <div class="input-block local-forms">
                     <div class="form-group local-forms">
                         <x-input-label for="titulo" :value="__('patient.history_title')" required="true"/>
-                        <x-text-input wire:model="title" class="block mt-1 w-full datetimepicker" type="text" name="title" placeholder="Ejemplo : Mariscos,Apendicitis,Tabquismo,etc."/>
+                        <x-text-input wire:model="title" class="block mt-1 w-full datetimepicker" type="text" name="title" :placeholder="__('patient.medical_history_form.title_placeholder')"/>
                         <x-input-error :messages="$errors->get('title')"/>
                     </div>
                 </div>

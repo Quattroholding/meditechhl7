@@ -2,15 +2,15 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
             <i class="fas fa-chart-line me-2"></i>
-            Efectividad de Atención
+            {{ __('doctor.dashboard.consultation_effectiveness') }}
         </h4>
         <div class="dropdown">
             <select wire:model.live="timeFrame" class="form-select form-select-sm">
-                <option value="7">Últimos 7 días</option>
-                <option value="30">Últimos 30 días</option>
-                <option value="90">Últimos 3 meses</option>
-                <option value="365">Último año</option>
-                <option value="0">Todos los registros</option>
+                <option value="7">{{ __('doctor.dashboard.last_7_days') }}</option>
+                <option value="30">{{ __('doctor.dashboard.last_30_days') }}</option>
+                <option value="90">{{ __('doctor.dashboard.last_3_months') }}</option>
+                <option value="365">{{ __('doctor.dashboard.last_year') }}</option>
+                <option value="0">{{ __('doctor.dashboard.all_records') }}</option>
             </select>
         </div>
     </div>
@@ -61,25 +61,25 @@
                 <div class="col-md-3">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-primary">{{ $totalAppointments }}</h5>
-                        <small class="text-muted">Total Citas</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.total_appointments') }}</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-success">{{ $conversionRate }}%</h5>
-                        <small class="text-muted">Tasa Completadas</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.completion_rate') }}</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-info">{{ $this->getFormattedTime($averageCompletionTime) }}</h5>
-                        <small class="text-muted">Tiempo Promedio</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.average_time') }}</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-item text-center">
                         <h5 class="mb-1 text-warning">{{ $statusCounts['fulfilled'] ?? 0 }}</h5>
-                        <small class="text-muted">Citas Completadas</small>
+                        <small class="text-muted">{{ __('doctor.dashboard.completed_appointments') }}</small>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="col-12">
                     <h6 class="mb-3">
                         <i class="fas fa-route me-1"></i>
-                        Flujo de Conversión
+                        {{ __('doctor.dashboard.conversion_flow') }}
                     </h6>
                     <div class="conversion-flow">
                         <div class="flow-step">
@@ -97,7 +97,7 @@
                                 <i class="fas fa-calendar-plus"></i>
                             </div>
                             <div class="step-content">
-                                <h6>Agendada</h6>
+                                <h6>{{ __('doctor.dashboard.status_booked') }}</h6>
                                 <span class="count">{{ $statusCounts['booked'] ?? 0 }}</span>
                                 <span class="percentage">{{ $this->getStatusPercentage('booked') }}%</span>
                             </div>
@@ -113,7 +113,7 @@
                                 <i class="fas fa-user-check"></i>
                             </div>
                             <div class="step-content">
-                                <h6>Llegó</h6>
+                                <h6>{{ __('doctor.dashboard.status_arrived') }}</h6>
                                 <span class="count">{{ $statusCounts['arrived'] ?? 0 }}</span>
                                 <span class="percentage">{{ $this->getStatusPercentage('arrived') }}%</span>
                             </div>
@@ -129,7 +129,7 @@
                                 <i class="fas fa-clipboard-check"></i>
                             </div>
                             <div class="step-content">
-                                <h6>Registrado</h6>
+                                <h6>{{ __('doctor.dashboard.status_checked_in') }}</h6>
                                 <span class="count">{{ $statusCounts['checked-in'] ?? 0 }}</span>
                                 <span class="percentage">{{ $this->getStatusPercentage('checked-in') }}%</span>
                             </div>
@@ -145,7 +145,7 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                             <div class="step-content">
-                                <h6>Completada</h6>
+                                <h6>{{ __('doctor.dashboard.status_completed') }}</h6>
                                 <span class="count">{{ $statusCounts['fulfilled'] ?? 0 }}</span>
                                 <span class="percentage">{{ $this->getStatusPercentage('fulfilled') }}%</span>
                             </div>
@@ -160,7 +160,7 @@
                 <div class="col-12">
                     <h6 class="mb-3">
                         <i class="fas fa-exclamation-triangle me-1"></i>
-                        Puntos de Abandono
+                        {{ __('doctor.dashboard.dropoff_points') }}
                     </h6>
                     <div class="row">
                         @foreach($dropoffPoints as $transition => $data)
@@ -171,15 +171,15 @@
                                         @switch($transition)
                                             @case('booked_to_arrived')
                                                 <i class="fas fa-calendar-times text-danger"></i>
-                                                <span>No llegaron</span>
+                                                <span>{{ __('doctor.dashboard.did_not_arrive') }}</span>
                                                 @break
                                             @case('arrived_to_checked_in')
                                                 <i class="fas fa-user-times text-warning"></i>
-                                                <span>No se registraron</span>
+                                                <span>{{ __('doctor.dashboard.did_not_check_in') }}</span>
                                                 @break
                                             @case('checked_in_to_fulfilled')
                                                 <i class="fas fa-times-circle text-info"></i>
-                                                <span>No completaron</span>
+                                                <span>{{ __('doctor.dashboard.did_not_complete') }}</span>
                                                 @break
                                         @endswitch
                                     </div>
@@ -201,7 +201,7 @@
                 <div class="col-12">
                     <h6 class="mb-3">
                         <i class="fas fa-chart-bar me-1"></i>
-                        Progreso por Estado
+                        {{ __('doctor.dashboard.progress_by_status') }}
                     </h6>
                     @foreach(['booked', 'arrived', 'checked-in', 'fulfilled'] as $status)
                         @php
@@ -214,19 +214,19 @@
                                     @switch($status)
                                         @case('booked')
                                             <i class="fas fa-calendar-plus text-primary me-1"></i>
-                                            Agendadas
+                                            {{ __('doctor.dashboard.status_booked_plural') }}
                                             @break
                                         @case('arrived')
                                             <i class="fas fa-user-check text-info me-1"></i>
-                                            Llegaron
+                                            {{ __('doctor.dashboard.status_arrived_plural') }}
                                             @break
                                         @case('checked-in')
                                             <i class="fas fa-clipboard-check text-warning me-1"></i>
-                                            Registradas
+                                            {{ __('doctor.dashboard.status_checked_in_plural') }}
                                             @break
                                         @case('fulfilled')
                                             <i class="fas fa-check-circle text-success me-1"></i>
-                                            Completadas
+                                            {{ __('doctor.dashboard.status_completed_plural') }}
                                             @break
                                     @endswitch
                                 </span>
@@ -250,12 +250,12 @@
         @else
             <div class="empty-state text-center py-4">
                 <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay datos de efectividad</h5>
+                <h5 class="text-muted">{{ __('doctor.dashboard.no_effectiveness_data') }}</h5>
                 <p class="text-muted mb-0">
                     @if($timeFrame == '0')
-                        No se encontraron citas en el período seleccionado.
+                        {{ __('doctor.dashboard.no_appointments_found_period') }}
                     @else
-                        No se encontraron citas en los últimos {{ $timeFrame }} días.
+                        {{ __('doctor.dashboard.no_appointments_found_in_days', ['days' => $timeFrame]) }}
                     @endif
                 </p>
             </div>
@@ -265,7 +265,7 @@
     <div class="card-footer text-muted text-center">
         <small>
             <i class="fas fa-info-circle me-1"></i>
-            Basado en el historial de estados de las citas
+            {{ __('doctor.dashboard.based_on_appointment_status_history') }}
         </small>
     </div>
 

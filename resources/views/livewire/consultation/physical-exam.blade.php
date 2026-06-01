@@ -28,7 +28,7 @@
                                 margin-bottom: 5px;
                                 margin-right:10px;
                                 transition: 0.2s all;">
-                        Usar Sugerencia
+                        {{ __('general.use_suggestion') }}
                     </div>
                     <span class="text-sm font-medium">{{$suggestedAnswered}}</span>
                 </div>

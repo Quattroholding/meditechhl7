@@ -6,7 +6,7 @@
                 <div class="skeleton-chart"></div>
             </div>
         @else
-            <h5 class="text-base">{{__('Pacientes por género')}}</h5>
+            <h5 class="text-base">{{ __('doctor.dashboard.patients_by_gender') }}</h5>
             <div id="radial-patients-active"></div>
         @endif
     </div>
@@ -104,9 +104,9 @@
                             //parseFloat(unknownPercentage) || 0
                         ],
                         labels: [
-                            'Male (' + (malePercentageCount || 0) + ')',
-                            'Female (' + (femalePercentageCount || 0) + ')',
-                           // 'Unknown (' + (unknownPercentageCount || 0) + ')'
+                            '{{ __('doctor.dashboard.male') }} (' + (malePercentageCount || 0) + ')',
+                            '{{ __('doctor.dashboard.female') }} (' + (femalePercentageCount || 0) + ')',
+                           // '{{ __('doctor.dashboard.unknown') }} (' + (unknownPercentageCount || 0) + ')'
                         ],
                         colors: ['#4F8EF7', '#FF6B9D', '#FFC107'],
                         responsive: [{

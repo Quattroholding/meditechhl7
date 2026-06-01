@@ -65,6 +65,17 @@ class VoiceDictationButton extends Component
             // Store transcription for display
             $this->transcription = $extractedData['transcription'] ?? null;
 
+            // Save transcription to encounter general_note
+            if ($this->transcription) {
+                $this->encounter->general_note = $this->transcription;
+                $this->encounter->save();
+
+                Log::info('VoiceDictationButton: Transcription saved to general_note', [
+                    'encounter_id' => $this->encounter_id,
+                    'transcription_length' => strlen($this->transcription),
+                ]);
+            }
+
             // Dispatch events to update each component with extracted data
             $this->dispatchFieldUpdates($extractedData);
 
@@ -131,8 +142,17 @@ class VoiceDictationButton extends Component
 
         // Dispatch present illness
         if (isset($extractedData['present_illness']) && ! empty($extractedData['present_illness'])) {
+            Log::info('VoiceDictationButton: About to dispatch present illness', [
+                'present_illness' => $extractedData['present_illness'],
+            ]);
+
             $this->dispatch('voice-dictation-present-illness', $extractedData['present_illness']);
             Log::debug('Dispatched voice-dictation-present-illness event');
+        } else {
+            Log::warning('VoiceDictationButton: No present illness data to dispatch', [
+                'has_key' => isset($extractedData['present_illness']),
+                'is_empty' => isset($extractedData['present_illness']) ? empty($extractedData['present_illness']) : 'N/A',
+            ]);
         }
 
         // Dispatch vital signs
@@ -168,6 +188,21 @@ class VoiceDictationButton extends Component
             );
 
             Log::info('VoiceDictationButton: Medications event dispatched');
+        }
+
+        // Dispatch service requests (laboratory, images, procedures)
+        if (isset($extractedData['service_requests']) && ! empty($extractedData['service_requests'])) {
+            Log::info('VoiceDictationButton: About to dispatch service requests', [
+                'count' => count($extractedData['service_requests']),
+                'service_requests' => $extractedData['service_requests'],
+            ]);
+
+            // Dispatch to service request components
+            $this->dispatch('voice-dictation-service-requests',
+                serviceRequests: $extractedData['service_requests']
+            );
+
+            Log::info('VoiceDictationButton: Service requests event dispatched');
         }
     }
 

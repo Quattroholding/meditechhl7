@@ -7,10 +7,10 @@
     <!-- Header -->
     <div style="margin-bottom: 25px;">
         <h3 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 600;">
-            📊 Evolución de Signos Vitales (Últimos 5 años)
+            📊 {{ __('patient.medical_history.vital_signs_grouped.vital_signs_evolution') }} ({{ __('patient.medical_history.vital_signs_grouped.last_5_years') }})
         </h3>
         <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">
-            Visualización de la evolución de los signos vitales del paciente
+            {{ __('patient.medical_history.vital_signs_grouped.patient_evolution_visualization') }}
         </p>
     </div>
 
@@ -49,7 +49,7 @@
                  id="bp-chart-container-{{ $vitalSignsChartPeriod }}">
                 <h4 style="margin: 0 0 20px 0; color: #dc2626; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 20px;">💓</span>
-                    Evolución de la Presión Arterial
+                    {{ __('patient.medical_history.vital_signs_grouped.blood_pressure_evolution') }}
                 </h4>
                 <div id="bloodPressureChart-{{ $vitalSignsChartPeriod }}" wire:ignore></div>
             </div>
@@ -61,7 +61,7 @@
                  id="hr-chart-container-{{ $vitalSignsChartPeriod }}">
                 <h4 style="margin: 0 0 20px 0; color: #dc2626; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 20px;">❤️</span>
-                    Evolución de la Frecuencia Cardíaca
+                    {{ __('patient.medical_history.vital_signs_grouped.heart_rate_evolution') }}
                 </h4>
                 <div id="heartRateChart-{{ $vitalSignsChartPeriod }}" wire:ignore></div>
             </div>
@@ -73,7 +73,7 @@
                  id="rr-chart-container-{{ $vitalSignsChartPeriod }}">
                 <h4 style="margin: 0 0 20px 0; color: #3b82f6; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 20px;">🫁</span>
-                    Evolución de la Frecuencia Respiratoria
+                    {{ __('patient.medical_history.vital_signs_grouped.respiratory_rate_evolution') }}
                 </h4>
                 <div id="respiratoryRateChart-{{ $vitalSignsChartPeriod }}" wire:ignore></div>
             </div>
@@ -92,8 +92,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-            <h4>No hay signos vitales registrados</h4>
-            <p>Este paciente no tiene signos vitales en el período seleccionado.</p>
+            <h4>{{ __('patient.medical_history.vital_signs_grouped.no_vital_signs') }}</h4>
+            <p>{{ __('patient.medical_history.vital_signs_grouped.no_vital_signs_message') }}</p>
         </div>
     @endif
 </div>

@@ -7,15 +7,15 @@
     <!-- Filter Toggle -->
     <div style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
         <h3 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 600;">
-            📊 Evolución de Signos Vitales
+            📊 {{ __('patient.medical_history.vital_signs_section.vital_signs_evolution') }}
         </h3>
 
         <div style="display: flex; gap: 10px; align-items: center;">
-            <label style="font-size: 14px; color: #64748b; font-weight: 500;">Período:</label>
+            <label style="font-size: 14px; color: #64748b; font-weight: 500;">{{ __('patient.medical_history.vital_signs_section.period') }}:</label>
             <select wire:model.live="vitalSignsChartPeriod"
                     style="padding: 8px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; background: white;">
-                <option value="last_year">Último año</option>
-                <option value="all">Histórico completo</option>
+                <option value="last_year">{{ __('patient.medical_history.vital_signs_section.last_year') }}</option>
+                <option value="all">{{ __('patient.medical_history.vital_signs_section.historical_complete') }}</option>
             </select>
         </div>
     </div>
@@ -27,7 +27,7 @@
         <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 25px;">
             <h4 style="margin: 0 0 20px 0; color: #dc2626; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 20px;">💓</span>
-                Evolución de la Presión Arterial
+                {{ __('patient.medical_history.vital_signs_section.blood_pressure_evolution') }}
             </h4>
             <div id="bloodPressureChart_{{ $chartId }}"></div>
         </div>
@@ -38,7 +38,7 @@
         <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 25px;">
             <h4 style="margin: 0 0 20px 0; color: #dc2626; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 20px;">❤️</span>
-                Evolución de la Frecuencia Cardíaca
+                {{ __('patient.medical_history.vital_signs_section.heart_rate_evolution') }}
             </h4>
             <div id="heartRateChart_{{ $chartId }}"></div>
         </div>
@@ -49,7 +49,7 @@
         <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 25px;">
             <h4 style="margin: 0 0 20px 0; color: #3b82f6; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 20px;">🫁</span>
-                Evolución de la Frecuencia Respiratoria
+                {{ __('patient.medical_history.vital_signs_section.respiratory_rate_evolution') }}
             </h4>
             <div id="respiratoryRateChart_{{ $chartId }}"></div>
         </div>
@@ -59,8 +59,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-            <h3>No hay signos vitales registrados</h3>
-            <p>Este paciente no tiene signos vitales en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.vital_signs_section.no_vital_signs') }}</h3>
+            <p>{{ __('patient.medical_history.vital_signs_section.no_vital_signs_message') }}</p>
         </div>
     @endif
 </div>
@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 bpEl.setAttribute('data-chart-rendered', 'true');
                 new ApexCharts(bpEl, {
                     series: [
-                        { name: 'Sistólica', data: chartData.bloodPressure.systolic, color: '#dc2626' },
-                        { name: 'Diastólica', data: chartData.bloodPressure.diastolic, color: '#f59e0b' }
+                        { name: '{{ __("patient.medical_history.vital_signs_section.systolic") }}', data: chartData.bloodPressure.systolic, color: '#dc2626' },
+                        { name: '{{ __("patient.medical_history.vital_signs_section.diastolic") }}', data: chartData.bloodPressure.diastolic, color: '#f59e0b' }
                     ],
                     chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
                     dataLabels: { enabled: false },
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!hrEl.hasAttribute('data-chart-rendered')) {
                 hrEl.setAttribute('data-chart-rendered', 'true');
                 new ApexCharts(hrEl, {
-                    series: [{ name: 'Frecuencia Cardíaca', data: chartData.heartRate.values, color: '#dc2626' }],
+                    series: [{ name: '{{ __("patient.medical_history.vital_signs_section.heart_rate_evolution") }}', data: chartData.heartRate.values, color: '#dc2626' }],
                     chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
                     dataLabels: { enabled: false },
                     stroke: { curve: 'smooth', width: 3 },
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!rrEl.hasAttribute('data-chart-rendered')) {
                 rrEl.setAttribute('data-chart-rendered', 'true');
                 new ApexCharts(rrEl, {
-                    series: [{ name: 'Frecuencia Respiratoria', data: chartData.respiratoryRate.values, color: '#3b82f6' }],
+                    series: [{ name: '{{ __("patient.medical_history.vital_signs_section.respiratory_rate_evolution") }}', data: chartData.respiratoryRate.values, color: '#3b82f6' }],
                     chart: { height: 350, type: 'line', toolbar: { show: true }, zoom: { enabled: true } },
                     dataLabels: { enabled: false },
                     stroke: { curve: 'smooth', width: 3 },

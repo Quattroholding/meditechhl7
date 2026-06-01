@@ -47,7 +47,7 @@
                                     <x-table-sort-button title="{{__('appointment.time')}}" columnName=""/>
                                 </th>
                                 <th data-column="acciones" data-priority="1" class="text-end">
-                                    <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
+                                    <x-table-sort-button title="{{ __('appointment.actions') }}" columnName=""/>
                                 </th>
                             </tr>
                             </thead>
@@ -84,12 +84,12 @@
                                     <td data-column="time" data-priority="9" data-label="{{__('appointment.time')}}">
                                         <span class="cell-content">{{ \Carbon\Carbon::parse($appointment->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end)->format('H:i') }}</span>
                                     </td>
-                                    <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
+                                    <td data-column="acciones" data-priority="1" data-label="{{ __('appointment.actions') }}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             <button
                                                 wire:click="$dispatch('showStatusHistory', { appointmentId: {{ $appointment->id }} })"
                                                 class="btn btn-info btn-sm"
-                                                title="Ver historial de estatus"
+                                                title="{{ __('appointment.view_status_history') }}"
                                                 type="button">
                                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                             </button>

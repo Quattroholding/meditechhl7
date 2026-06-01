@@ -30,4 +30,7 @@ return [
     'user' => 'Usuario',
     'before' => 'antes',
     'after' => 'despues',
+    'no_client_selected' => 'No hay cliente seleccionado',
+    'error' => 'Error',
+    'are_you_sure' => '¿Está seguro?',
 ];

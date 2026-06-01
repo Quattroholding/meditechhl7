@@ -4,14 +4,14 @@
         <div class="stat-card">
             <div class="stat-header">
                 <div class="stat-icon">🏥</div>
-                <div class="stat-title">Total Consultas</div>
+                <div class="stat-title">{{ __('patient.medical_history.total_consultations') }}</div>
             </div>
             <div class="stat-value">{{ $overviewData['total_encounters'] ?? 0 }}</div>
             <div class="stat-subtitle">
                 @if($overviewData['last_visit'])
-                    Última: {{ Carbon\Carbon::parse($overviewData['last_visit'])->diffForHumans() }}
+                    {{ __('patient.medical_history.last') }}: {{ Carbon\Carbon::parse($overviewData['last_visit'])->diffForHumans() }}
                 @else
-                    Sin consultas registradas
+                    {{ __('patient.medical_history.no_consultations_recorded') }}
                 @endif
             </div>
         </div>
@@ -19,28 +19,28 @@
         <div class="stat-card">
             <div class="stat-header">
                 <div class="stat-icon">🩺</div>
-                <div class="stat-title">Condiciones Activas</div>
+                <div class="stat-title">{{ __('patient.medical_history.active_conditions') }}</div>
             </div>
             <div class="stat-value">{{ $overviewData['active_conditions'] ?? 0 }}</div>
-            <div class="stat-subtitle">Requieren seguimiento</div>
+            <div class="stat-subtitle">{{ __('patient.medical_history.require_followup') }}</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-header">
                 <div class="stat-icon">📋</div>
-                <div class="stat-title">Órdenes Médicas</div>
+                <div class="stat-title">{{ __('patient.medical_history.medical_orders') }}</div>
             </div>
             <div class="stat-value">{{ $overviewData['total_requests'] ?? 0 }}</div>
-            <div class="stat-subtitle">Solicitudes realizadas</div>
+            <div class="stat-subtitle">{{ __('patient.medical_history.requests_made') }}</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-header">
                 <div class="stat-icon">❤️</div>
-                <div class="stat-title">Signos Vitales</div>
+                <div class="stat-title">{{ __('patient.medical_history.vital_signs') }}</div>
             </div>
             <div class="stat-value">{{ $overviewData['vital_signs_count'] ?? 0 }}</div>
-            <div class="stat-subtitle">Registros capturados</div>
+            <div class="stat-subtitle">{{ __('patient.medical_history.records_captured') }}</div>
         </div>
     </div>
 
@@ -50,7 +50,7 @@
             <div class="stat-card" style="border-left: 5px solid #dc3545;">
                 <div class="stat-header">
                     <div class="stat-icon" style="background: #dc3545;">⚠️</div>
-                    <div class="stat-title">Alergias</div>
+                    <div class="stat-title">{{ __('patient.medical_history.allergies') }}</div>
                 </div>
                 <div style="margin-top: 15px;">
                     @foreach($overviewData['allergies'] as $allergy)
@@ -65,7 +65,7 @@
             <div class="stat-card" style="border-left: 5px solid #059669;">
                 <div class="stat-header">
                     <div class="stat-icon" style="background: #059669;">💊</div>
-                    <div class="stat-title">Medicamentos Actuales</div>
+                    <div class="stat-title">{{ __('patient.medical_history.current_medications') }}</div>
                 </div>
                 <div style="margin-top: 15px;">
                     @foreach($overviewData['medications'] as $medication)
@@ -84,15 +84,15 @@
         <div class="overview-grid">
             @php
                 $categoryConfig = [
-                    //'allergy' => ['icon' => '⚠️', 'title' => 'Alergias Registradas', 'color' => '#dc3545'],
-                    'medication' => ['icon' => '💊', 'title' => 'Medicamentos Previos', 'color' => '#059669'],
-                    'surgery' => ['icon' => '🔪', 'title' => 'Cirugías', 'color' => '#7c3aed'],
-                    'chronic-illness' => ['icon' => '🩺', 'title' => 'Enfermedades Crónicas', 'color' => '#ea580c'],
-                    'hospitalization' => ['icon' => '🏥', 'title' => 'Hospitalizaciones', 'color' => '#0ea5e9'],
-                    'immunization' => ['icon' => '💉', 'title' => 'Vacunas', 'color' => '#10b981'],
-                    'family-history' => ['icon' => '👨‍👩‍👧‍👦', 'title' => 'Antecedentes Familiares', 'color' => '#8b5cf6'],
-                    'social-history' => ['icon' => '🚬', 'title' => 'Historia Social', 'color' => '#f59e0b'],
-                    'other' => ['icon' => '📝', 'title' => 'Otros', 'color' => '#6b7280']
+                    //'allergy' => ['icon' => '⚠️', 'title' => __('patient.medical_history.allergies'), 'color' => '#dc3545'],
+                    'medication' => ['icon' => '💊', 'title' => __('patient.medical_history.previous_medications'), 'color' => '#059669'],
+                    'surgery' => ['icon' => '🔪', 'title' => __('patient.medical_history.surgeries'), 'color' => '#7c3aed'],
+                    'chronic-illness' => ['icon' => '🩺', 'title' => __('patient.medical_history.chronic_diseases'), 'color' => '#ea580c'],
+                    'hospitalization' => ['icon' => '🏥', 'title' => __('patient.medical_history.hospitalizations'), 'color' => '#0ea5e9'],
+                    'immunization' => ['icon' => '💉', 'title' => __('patient.medical_history.vaccines'), 'color' => '#10b981'],
+                    'family-history' => ['icon' => '👨‍👩‍👧‍👦', 'title' => __('patient.medical_history.family_history'), 'color' => '#8b5cf6'],
+                    'social-history' => ['icon' => '🚬', 'title' => __('patient.medical_history.social_history'), 'color' => '#f59e0b'],
+                    'other' => ['icon' => '📝', 'title' => __('patient.medical_history.others'), 'color' => '#6b7280']
                 ];
             @endphp
 
@@ -118,7 +118,7 @@
                         @endforeach
                         @if(count($histories) > 5)
                             <div style="text-align: center; padding: 8px;">
-                                <small style="color: #6b7280;">{{ count($histories) - 5 }} más...</small>
+                                <small style="color: #6b7280;">{{ count($histories) - 5 }} {{ __('patient.medical_history.more') }}</small>
                             </div>
                         @endif
                     </div>
@@ -131,7 +131,7 @@
     @if(!empty($overviewData['recent_activity']))
         <div class="timeline-section">
             <h3 class="timeline-title">
-                ⏰ Actividad Reciente
+                ⏰ {{ __('patient.medical_history.recent_activity') }}
             </h3>
             <div class="timeline">
                 @foreach($overviewData['recent_activity'] as $activity)
@@ -147,7 +147,7 @@
                         <div class="timeline-content">
                             <strong>{{ $activity['description'] }}</strong>
                             @if(isset($activity['provider']))
-                                <br><small>Por: {{ $activity['provider'] }}</small>
+                                <br><small>{{ __('patient.medical_history.by') }}: {{ $activity['provider'] }}</small>
                             @endif
                             @if(isset($activity['severity']))
                                 <span class="badge badge-{{ $activity['severity'] }}" style="margin-left: 10px;">

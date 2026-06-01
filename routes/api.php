@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
+use App\Models\State;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -28,13 +29,13 @@ Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // Public data endpoints
 Route::get('/countries/{country}/states', function ($countryId) {
-    return \App\Models\State::where('country_id', $countryId)
+    return State::where('country_id', $countryId)
         ->orderBy('name')
         ->get(['id', 'name']);
 });
 
 // Twilio Webhook - Public route (Twilio will call this)
-//Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
+// Route::post('/webhooks/twilio/whatsapp', [TwilioWebhookController::class, 'handleIncomingMessage']);
 
 // Survey endpoints - Public routes (WhatsApp integration using survey response token)
 Route::prefix('surveys')->group(function () {

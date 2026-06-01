@@ -3,10 +3,10 @@
         <!-- Header -->
         <div style="margin-bottom: 25px;">
             <h3 style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 600;">
-                📒 Notas Personales del Paciente
+                📒 {{ __('patient.medical_history.personal_notes.personal_notes') }}
             </h3>
             <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">
-                Registro de notas privadas sobre el paciente ({{ count($sectionData) }} {{ count($sectionData) == 1 ? 'nota' : 'notas' }})
+                {{ __('patient.medical_history.personal_notes.record_of_notes') }} ({{ count($sectionData) }} {{ count($sectionData) == 1 ? __('patient.medical_history.personal_notes.note_singular') : __('patient.medical_history.personal_notes.notes_plural') }})
             </p>
         </div>
 
@@ -17,13 +17,13 @@
                     <thead style="background: #f8fafc; border-bottom: 2px solid #e5e7eb;">
                         <tr>
                             <th style="padding: 16px; font-weight: 600; color: #374151; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; width: 150px;">
-                                Fecha
+                                {{ __('patient.medical_history.personal_notes.date') }}
                             </th>
                             <th style="padding: 16px; font-weight: 600; color: #374151; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Nota
+                                {{ __('patient.medical_history.personal_notes.note') }}
                             </th>
                             <th style="padding: 16px; font-weight: 600; color: #374151; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; width: 150px;">
-                                Creado por
+                                {{ __('patient.medical_history.personal_notes.created_by') }}
                             </th>
                         </tr>
                     </thead>
@@ -52,7 +52,7 @@
                                                         style="margin-top: 8px; color: #3b82f6; background: none; border: none; padding: 0; font-size: 13px; cursor: pointer; font-weight: 500;"
                                                         onmouseover="this.style.textDecoration='underline'"
                                                         onmouseout="this.style.textDecoration='none'">
-                                                    Ver más →
+                                                    {{ __('patient.medical_history.personal_notes.see_more') }} →
                                                 </button>
                                             </div>
                                             <div x-show="expanded" x-cloak>
@@ -61,7 +61,7 @@
                                                         style="margin-top: 8px; color: #3b82f6; background: none; border: none; padding: 0; font-size: 13px; cursor: pointer; font-weight: 500;"
                                                         onmouseover="this.style.textDecoration='underline'"
                                                         onmouseout="this.style.textDecoration='none'">
-                                                    Ver menos ←
+                                                    {{ __('patient.medical_history.personal_notes.see_less') }} ←
                                                 </button>
                                             </div>
                                         </div>
@@ -83,11 +83,11 @@
                                                 {{ $personalNote->user->name }}
                                             </span>
                                             <span style="color: #64748b; font-size: 11px;">
-                                                {{ $personalNote->user->getRoleNames()->first() ?? 'Usuario' }}
+                                                {{ $personalNote->user->getRoleNames()->first() ?? __('patient.medical_history.personal_notes.system') }}
                                             </span>
                                         </div>
                                     @else
-                                        <span style="color: #9ca3af; font-size: 13px;">Sistema</span>
+                                        <span style="color: #9ca3af; font-size: 13px;">{{ __('patient.medical_history.personal_notes.system') }}</span>
                                     @endif
                                 </div>
                             </td>
@@ -100,10 +100,10 @@
             <!-- Pagination Info -->
             <div style="padding: 16px; background: #f8fafc; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
                 <div style="color: #64748b; font-size: 14px;">
-                    Mostrando <strong>{{ count($sectionData) }}</strong> {{ count($sectionData) == 1 ? 'nota' : 'notas' }}
+                    {{ __('patient.medical_history.personal_notes.showing') }} <strong>{{ count($sectionData) }}</strong> {{ count($sectionData) == 1 ? __('patient.medical_history.personal_notes.note_singular') : __('patient.medical_history.personal_notes.notes_plural') }}
                 </div>
                 <div style="color: #64748b; font-size: 12px;">
-                    💡 Notas privadas solo visibles para usted
+                    💡 {{ __('patient.medical_history.personal_notes.private_notes_info') }}
                 </div>
             </div>
         </div>
@@ -118,10 +118,10 @@
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">📒</div>
             <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 20px; font-weight: 600;">
-                No hay Notas Personales Registradas
+                {{ __('patient.medical_history.personal_notes.no_personal_notes') }}
             </h3>
             <p style="margin: 0; font-size: 14px;">
-                Este paciente no tiene notas personales registradas en el período seleccionado.
+                {{ __('patient.medical_history.personal_notes.no_personal_notes_message') }}
             </p>
         </div>
     @endif

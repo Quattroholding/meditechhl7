@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="main-limit">
-            <p>{{__('Próxima cita')}}</p>
+            <p>{{ __('doctor.dashboard.next_appointment') }}</p>
             <h4>{{ $nextAppointmentTime }}</h4>
         </div>
     </div>

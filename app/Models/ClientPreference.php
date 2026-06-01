@@ -146,4 +146,28 @@ class ClientPreference extends Model
             'Plantilla de prescripción médica seleccionada por el cliente'
         );
     }
+
+    public static function getLanguage(int $clientId, string $default = 'es'): string
+    {
+        $value = static::get($clientId, PreferenceType::LANGUAGE_SETTINGS, 'locale');
+
+        return $value['locale'] ?? $default;
+    }
+
+    public static function setLanguage(int $clientId, string $locale): self
+    {
+        // Validate locale
+        $validLocales = ['es', 'en'];
+        if (! in_array($locale, $validLocales)) {
+            throw new \InvalidArgumentException("Invalid locale: {$locale}");
+        }
+
+        return static::set(
+            $clientId,
+            PreferenceType::LANGUAGE_SETTINGS,
+            'locale',
+            ['locale' => $locale],
+            'Application language preference'
+        );
+    }
 }

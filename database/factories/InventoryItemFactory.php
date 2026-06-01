@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
 use App\Models\InventoryItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -84,7 +85,7 @@ class InventoryItemFactory extends Factory
             'reorder_point' => fake()->numberBetween(10, 50),
             'reorder_quantity' => fake()->numberBetween(50, 200),
             'characteristic' => null,
-            'client_id' => \App\Models\Client::factory(),
+            'client_id' => Client::factory(),
         ];
     }
 }

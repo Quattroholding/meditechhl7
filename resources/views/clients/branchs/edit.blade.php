@@ -60,9 +60,9 @@
                                 </div>
                                 <!-- COUNTRY -->
                                 <div class="input-block  local-forms">
-                                    <x-input-label for="country_id" value="País"/>
+                                    <x-input-label for="country_id" value="{{__('client.branch.country_name')}}"/>
                                     <select name="country_id" id="country_id" class="form-control">
-                                        <option value="">Seleccione un país...</option>
+                                        <option value="">{{ __('generic.select') }} {{__('client.branch.country_name')}}...</option>
                                         @foreach($countries as $country)
                                             <option value="{{ $country->id }}" {{ $data->country_id == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
                                         @endforeach
@@ -71,9 +71,9 @@
                                 </div>
                                 <!-- STATE -->
                                 <div class="input-block  local-forms">
-                                    <x-input-label for="state_id" value="Provincia/Estado"/>
+                                    <x-input-label for="state_id" value="{{__('client.branch.state_name')}}"/>
                                     <select name="state_id" id="state_id" class="form-control" {{ $data->country_id ? '' : 'disabled' }}>
-                                        <option value="">Seleccione una provincia...</option>
+                                        <option value="">{{ __('generic.select') }} {{__('client.branch.state_name')}}...</option>
                                         @foreach($states as $state)
                                             <option value="{{ $state->id }}" {{ $data->state_id == $state->id ? 'selected' : '' }}>{{ $state->name }}</option>
                                         @endforeach

@@ -1,7 +1,7 @@
 @props(['options' => [], 'selected' => null, 'name'])
 
 <select name="{{ $name }}" {{ $attributes->merge(['class' => 'form-control']) }}>
-    <option value="">Seleccione</option>
+    <option value="">{{__('generic.select')}}</option>
     @foreach ($options as $key => $option)
         @php
             // Handle Enum instances

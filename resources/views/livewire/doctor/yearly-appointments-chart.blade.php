@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
-            <i class="fas fa-calendar"></i> {{ __('Citas del Año ') . date('Y') }}
+            <i class="fas fa-calendar"></i> {{ __('doctor.dashboard.appointments_of_year', ['year' => date('Y')]) }}
         </h4>
-        <p class="text-muted small" style="color: #fff !important;">Citas registradas de Enero a {{ now()->translatedFormat('F') }}</p>
+        <p class="text-muted small" style="color: #fff !important;">{{ __('doctor.dashboard.appointments_from_january_to', ['month' => now()->translatedFormat('F')]) }}</p>
     </div>
 
     <div class="card-body">
@@ -245,7 +245,7 @@
                         },
                         yaxis: {
                             title: {
-                                text: 'Número de Citas'
+                                text: '{{ __('doctor.dashboard.number_of_appointments') }}'
                             },
                             labels: {
                                 formatter: function(value) {
@@ -261,7 +261,7 @@
                             intersect: false,
                             y: {
                                 formatter: function (val) {
-                                    return val + " cita(s)"
+                                    return val + " {{ __('doctor.dashboard.appointments_count') }}"
                                 }
                             }
                         },
@@ -285,7 +285,7 @@
                             strokeDashArray: 3
                         },
                         noData: {
-                            text: 'No hay datos disponibles',
+                            text: '{{ __('doctor.dashboard.no_data_available') }}',
                             align: 'center',
                             verticalAlign: 'middle',
                             style: {

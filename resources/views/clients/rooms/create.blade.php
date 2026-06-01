@@ -25,25 +25,25 @@
                             @csrf
                             <!-- Branch -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="branch_id" :value="__('client.branch')" required/>
+                                <x-input-label for="branch_id" :value="__('client.room.branch_name')" required/>
                                 <x-select-input name="branch_id" :options="\App\Models\Branch::pluck('name','id')->toArray()" :selected="[null]" class="block w-full" autofocus/>
                                 <x-input-error :messages="$errors->get('branch_id')"/>
                             </div>
                             <!-- Name -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="name" :value="__('Nombre')" required/>
+                                <x-input-label for="name" :value="__('client.room.name')" required/>
                                 <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"  />
                                 <x-input-error :messages="$errors->get('name')"/>
                             </div>
                             <!-- NUMBER -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="ruc" :value="__('Número')" />
+                                <x-input-label for="ruc" :value="__('client.room.number')" />
                                 <x-text-input id="number" class="block mt-1 w-full" type="text" name="number" :value="old('number')"/>
                                 <x-input-error :messages="$errors->get('number')"/>
                             </div>
                             <!-- FLOOR -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="floor" :value="__('Piso')" />
+                                <x-input-label for="floor" :value="__('client.room.floor')" />
                                 <x-text-input id="floor" class="block mt-1 w-full" type="text" name="floor" :value="old('floor')"/>
                                 <x-input-error :messages="$errors->get('floor')"/>
                             </div>

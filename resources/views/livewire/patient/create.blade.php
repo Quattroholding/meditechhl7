@@ -40,35 +40,35 @@
                         <div style="font-size: 40px; opacity: 0.9;">👤</div>
                         <div style="flex: 1;">
                             <h5 style="color: white; font-weight: 700; margin-bottom: 15px; font-size: 18px;">
-                                ⚠️ Paciente Ya Registrado
+                                ⚠️ {{ __('patient.existing_patient.title') }}
                             </h5>
                             <p style="margin-bottom: 15px; opacity: 0.95; font-size: 14px;">
-                                Este paciente ya se encuentra registrado en el sistema. Por favor verifique que sea el mismo paciente antes de asociarlo a su empresa.
+                                {{ __('patient.existing_patient.message') }}
                             </p>
 
                             <div style="background: rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 15px; backdrop-filter: blur(10px);">
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                                     <div>
-                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Nombre Completo</div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">{{ __('patient.full_name') }}</div>
                                         <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['name'] ?? 'N/A' }}</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Documento</div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">{{ __('patient.full_id_number') }}</div>
                                         <div style="font-weight: 600; font-size: 15px;">{{ $existingPatientData['identifier'] ?? 'N/A' }}</div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Fecha de Nacimiento</div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">{{ __('patient.birthdate') }}</div>
                                         <div style="font-weight: 600; font-size: 15px;">
                                             {{ $existingPatientData['birth_date'] ? \Carbon\Carbon::parse($existingPatientData['birth_date'])->format('d/m/Y') : 'N/A' }}
                                         </div>
                                     </div>
                                     <div>
-                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Género</div>
+                                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">{{ __('patient.gender') }}</div>
                                         <div style="font-weight: 600; font-size: 15px;">
                                             @if($existingPatientData['gender'] === 'male')
-                                                👨 Masculino
+                                                👨 {{ __('patient.male') }}
                                             @elseif($existingPatientData['gender'] === 'female')
-                                                👩 Femenino
+                                                👩 {{ __('patient.female') }}
                                             @else
                                                 {{ ucfirst($existingPatientData['gender'] ?? 'N/A') }}
                                             @endif
@@ -79,10 +79,10 @@
 
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <button type="button" class="btn btn-light" wire:click.stop="asociar()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid white;">
-                                    ✅ Sí, Asociar este Paciente
+                                    ✅ {{ __('patient.existing_patient.associate_button') }}
                                 </button>
                                 <button type="button" class="btn btn-outline-light" wire:click="resetForm()" style="font-weight: 600; padding: 8px 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5);">
-                                    ❌ No es el mismo paciente
+                                    ❌ {{ __('patient.existing_patient.not_same_button') }}
                                 </button>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                 <div class="col-12 col-md-6 col-xl-4">
                     <!-- EMAIL -->
                     <div class="input-block local-forms">
-                        <x-input-label for="email" value="{{__('patient.email').'/usuario'}}" required="true"/>
+                        <x-input-label for="email" :value="__('patient.email_username')" required="true"/>
                         <x-text-input wire:model="email" class="block mt-1 w-full" type="email" name="email" autocomplete="off"/>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -173,9 +173,9 @@
                 <!-- COUNTRY -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
-                        <x-input-label for="country_id" value="País"/>
+                        <x-input-label for="country_id" :value="__('patient.country')"/>
                         <select wire:model.live="country_id" id="country_id" class="form-control">
-                            <option value="">Seleccione un país...</option>
+                            <option value="">{{ __('patient.select_country') }}</option>
                             @foreach($countries as $country)
                                 <option value="{{ $country['id'] }}">{{ $country['name'] }}</option>
                             @endforeach
@@ -186,9 +186,9 @@
                 <!-- STATE -->
                 <div class=" col-12 col-md-6 col-xl-6">
                     <div class="input-block local-forms">
-                        <x-input-label for="state_id" value="Provincia/Estado"/>
+                        <x-input-label for="state_id" :value="__('patient.state')"/>
                         <select wire:model="state_id" id="state_id" class="form-control" @if(empty($states)) disabled @endif>
-                            <option value="">Seleccione una provincia...</option>
+                            <option value="">{{ __('patient.select_state') }}</option>
                             @foreach($states as $state)
                                 <option value="{{ $state['id'] }}">{{ $state['name'] }}</option>
                             @endforeach
@@ -202,14 +202,14 @@
             <!-- Emergency Contact Section -->
             <div class="row">
                 <div class="col-12">
-                    <h6 class="mt-3 mb-2">Contacto de Emergencia (Opcional)</h6>
+                    <h6 class="mt-3 mb-2">{{ __('patient.emergency_contact.title') }}</h6>
                 </div>
             </div>
             <div class="row">
                 <!-- CONTACT NAME -->
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
-                        <x-input-label for="contact_name" value="Nombre del Contacto"/>
+                        <x-input-label for="contact_name" :value="__('patient.emergency_contact.name')"/>
                         <x-text-input wire:model="contact_name" id="contact_name" class="block mt-1 w-full" type="text" name="contact_name"/>
                         <x-input-error :messages="$errors->get('contact_name')" class="mt-2" />
                     </div>
@@ -217,7 +217,7 @@
                 <!-- CONTACT EMAIL -->
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
-                        <x-input-label for="contact_email" value="Email del Contacto"/>
+                        <x-input-label for="contact_email" :value="__('patient.emergency_contact.email')"/>
                         <x-text-input wire:model="contact_email" id="contact_email" class="block mt-1 w-full" type="email" name="contact_email"/>
                         <x-input-error :messages="$errors->get('contact_email')" class="mt-2" />
                     </div>
@@ -225,7 +225,7 @@
                 <!-- CONTACT PHONE -->
                 <div class="col-12 col-md-4 col-xl-4">
                     <div class="input-block local-forms">
-                        <x-input-label for="contact_phone" value="Teléfono del Contacto"/>
+                        <x-input-label for="contact_phone" :value="__('patient.emergency_contact.phone')"/>
                         <x-phone-input
                             name="contact_phone"
                             id="contact_phone"
@@ -240,7 +240,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="input-block local-forms">
-                        <x-input-label for="archivos" value="Archivos del Paciente"/>
+                        <x-input-label for="archivos" :value="__('patient.files.title')"/>
                         <input
                             type="file"
                             wire:model="archivos"
@@ -250,7 +250,7 @@
                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                             onchange="validateFiles(this)"
                         >
-                        <small class="text-muted">Puede subir múltiples archivos (máx. 1MB por archivo). Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small>
+                        <small class="text-muted">{{ __('patient.files.upload_help') }}</small>
                         @error('archivos.*')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -261,7 +261,7 @@
                         <!-- Indicador de carga -->
                         <div wire:loading wire:target="archivos" class="mt-2">
                             <span class="text-primary">
-                                <i class="fas fa-spinner fa-spin"></i> Cargando archivos...
+                                <i class="fas fa-spinner fa-spin"></i> {{ __('patient.files.loading') }}
                             </span>
                         </div>
                     </div>
@@ -285,7 +285,7 @@
                             errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-2';
                             errorDiv.innerHTML = `
                                 <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Error:</strong> El archivo "${file.name}" excede el tamaño máximo de 1 MB (${sizeInKB} KB)
+                                <strong>{{ __('generic.error') }}:</strong> {{ __('patient.files.error_file_size', ['name' => '${file.name}', 'size' => '${sizeInKB}']) }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             `;
                             errorContainer.appendChild(errorDiv);
@@ -293,13 +293,12 @@
                     });
 
                     if (hasErrors) {
-                        input.value = ''; // Limpiar la selección
-                        // Mostrar notificación adicional
+                        input.value = '';
                         const notification = document.createElement('div');
                         notification.className = 'alert alert-warning mt-2';
                         notification.innerHTML = `
                             <i class="fas fa-info-circle me-2"></i>
-                            Los archivos no se cargaron. Por favor, seleccione archivos que no excedan 1 MB.
+                            {{ __('patient.files.error_not_loaded') }}
                         `;
                         errorContainer.appendChild(notification);
                     }
@@ -312,11 +311,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0">Archivos seleccionados ({{ count($archivos) }})</h6>
+                                <h6 class="mb-0">{{ __('patient.files.selected_files', ['count' => count($archivos)]) }}</h6>
                                 @if(count($fileErrors) > 0)
                                     <span class="badge bg-danger">
                                         <i class="fas fa-exclamation-triangle me-1"></i>
-                                        {{ count($fileErrors) }} error(es)
+                                        {{ __('patient.files.error_count', ['count' => count($fileErrors)]) }}
                                     </span>
                                 @endif
                             </div>
@@ -326,7 +325,7 @@
                                     <div class="alert alert-danger mb-3">
                                         <h6 class="alert-heading">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                            Archivos con errores:
+                                            {{ __('patient.files.files_with_errors') }}
                                         </h6>
                                         <ul class="mb-0">
                                             @foreach($fileErrors as $error)
@@ -334,7 +333,7 @@
                                             @endforeach
                                         </ul>
                                         <hr>
-                                        <p class="mb-0 small">Por favor, elimine los archivos con errores antes de enviar el formulario.</p>
+                                        <p class="mb-0 small">{{ __('patient.files.remove_errors_before_submit') }}</p>
                                     </div>
                                 @endif
 
@@ -354,7 +353,7 @@
                                                     @if($hasError)
                                                         <small class="text-danger">
                                                             <i class="fas fa-exclamation-circle me-1"></i>
-                                                            Excede el tamaño máximo permitido
+                                                            {{ __('patient.files.exceeds_max_size') }}
                                                         </small>
                                                     @endif
                                                 </div>
@@ -367,7 +366,7 @@
                                                     type="button"
                                                     wire:click="removeFile({{ $index }})"
                                                     class="btn btn-sm {{ $hasError ? 'btn-danger' : 'btn-outline-danger' }}"
-                                                    title="Eliminar archivo"
+                                                    title="{{ __('patient.files.remove_file') }}"
                                                 >
                                                     <i class="fas fa-trash"></i>
                                                 </button>

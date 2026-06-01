@@ -8,53 +8,53 @@
                             <h3 style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
                                 @switch($serviceRequest->service_type)
                                     @case('rehabilitation')
-                                        🏃‍♂️ Rehabilitación
+                                        🏃‍♂️ {{ __('patient.medical_history.service_requests.rehabilitation') }}
                                         @break
                                     @case('nursing')
-                                        👩‍⚕️ Enfermería
+                                        👩‍⚕️ {{ __('patient.medical_history.service_requests.nursing') }}
                                         @break
                                     @case('nutrition')
-                                        🥗 Nutrición
+                                        🥗 {{ __('patient.medical_history.service_requests.nutrition') }}
                                         @break
                                     @case('psychology')
-                                        🧠 Psicología
+                                        🧠 {{ __('patient.medical_history.service_requests.psychology') }}
                                         @break
                                     @case('social_work')
-                                        🤝 Trabajo Social
+                                        🤝 {{ __('patient.medical_history.service_requests.social_work') }}
                                         @break
                                     @case('physiotherapy')
-                                        💪 Fisioterapia
+                                        💪 {{ __('patient.medical_history.service_requests.physiotherapy') }}
                                         @break
                                     @case('occupational_therapy')
-                                        🎯 Terapia Ocupacional
+                                        🎯 {{ __('patient.medical_history.service_requests.occupational_therapy') }}
                                         @break
                                     @case('speech_therapy')
-                                        🗣️ Fonoaudiología
+                                        🗣️ {{ __('patient.medical_history.service_requests.speech_therapy') }}
                                         @break
                                     @default
-                                        🧪 Servicio Especializado
+                                        🧪 {{ __('patient.medical_history.service_requests.service_specialized') }}
                                 @endswitch
                             </h3>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                 <span class="badge badge-{{ $serviceRequest->status === 'completed' ? 'resolved' : ($serviceRequest->status === 'cancelled' ? 'inactive' : ($serviceRequest->status === 'in-progress' ? 'active' : 'pending')) }}">
                                     @switch($serviceRequest->status)
                                         @case('requested')
-                                            📝 Solicitado
+                                            📝 {{ __('patient.medical_history.service_requests.requested') }}
                                             @break
                                         @case('scheduled')
-                                            📅 Programado
+                                            📅 {{ __('patient.medical_history.service_requests.scheduled') }}
                                             @break
                                         @case('in-progress')
-                                            🔄 En Progreso
+                                            🔄 {{ __('patient.medical_history.service_requests.in_progress') }}
                                             @break
                                         @case('completed')
-                                            ✅ Completado
+                                            ✅ {{ __('patient.medical_history.service_requests.completed') }}
                                             @break
                                         @case('cancelled')
-                                            ❌ Cancelado
+                                            ❌ {{ __('patient.medical_history.service_requests.cancelled') }}
                                             @break
                                         @case('on-hold')
-                                            ⏸️ En Espera
+                                            ⏸️ {{ __('patient.medical_history.service_requests.on_hold') }}
                                             @break
                                         @default
                                             {{ ucfirst($serviceRequest->status) }}
@@ -67,13 +67,13 @@
                                         @else #f0fdf4; color: #166534; @endif">
                                         @switch($serviceRequest->urgency)
                                             @case('urgent')
-                                                🚨 Urgente
+                                                🚨 {{ __('patient.medical_history.service_requests.urgent') }}
                                                 @break
                                             @case('high')
-                                                ⚡ Alta
+                                                ⚡ {{ __('patient.medical_history.service_requests.high_urgency') }}
                                                 @break
                                             @case('routine')
-                                                📅 Rutina
+                                                📅 {{ __('patient.medical_history.service_requests.routine_urgency') }}
                                                 @break
                                             @default
                                                 {{ ucfirst($serviceRequest->urgency) }}
@@ -83,9 +83,9 @@
                             </div>
                         </div>
                         <div style="text-align: right; font-size: 12px; color: #64748b;">
-                            <div><strong>Solicitado:</strong> {{ Carbon\Carbon::parse($serviceRequest->request_date)->format('d/m/Y H:i') }}</div>
+                            <div><strong>{{ __('patient.medical_history.service_requests.requested_date') }}:</strong> {{ Carbon\Carbon::parse($serviceRequest->request_date)->format('d/m/Y H:i') }}</div>
                             @if($serviceRequest->practitioner)
-                                <div><strong>Por:</strong> {{ $serviceRequest->practitioner->name }}</div>
+                                <div><strong>{{ __('patient.medical_history.service_requests.requested_by') }}:</strong> {{ $serviceRequest->practitioner->name }}</div>
                             @endif
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                     <!-- Razón del Servicio -->
                     <div class="service-reason" style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
                         <div style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 10px;">
-                            📝 Razón del Servicio
+                            📝 {{ __('patient.medical_history.service_requests.reason_service') }}
                         </div>
                         <div style="color: #1e293b; line-height: 1.6;">
                             {{ $serviceRequest->reason ?? $serviceRequest->description }}
@@ -105,10 +105,10 @@
                         <div class="lab-results" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #3b82f6;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                                 <div style="font-size: 16px; font-weight: 700; color: #1e40af;">
-                                    🧪 Resultados de Laboratorio
+                                    🧪 {{ __('patient.medical_history.service_requests.laboratory_results') }}
                                 </div>
                                 <span class="badge" style="background: #dbeafe; color: #1e40af; font-size: 12px; padding: 4px 10px;">
-                                    {{ $serviceRequest->observations->count() }} resultados
+                                    {{ $serviceRequest->observations->count() }} {{ __('patient.medical_history.service_requests.results_count') }}
                                 </span>
                             </div>
 
@@ -120,7 +120,7 @@
                                         <path d="M6.06 7a2 2 0 1 1 4 0 .5.5 0 1 1-1 0 1 1 0 1 0-2 0v.332q0 .613-.066 1.221A.5.5 0 0 1 6 8.447q.06-.555.06-1.115zm3.509 1a.5.5 0 0 1 .5.5v.67q0 .613-.066 1.221a.5.5 0 1 1-.994-.112q.06-.555.06-1.109V8.5a.5.5 0 0 1 .5-.5"/>
                                     </svg>
                                     <div>
-                                        <div style="color: white; font-size: 11px; opacity: 0.9;">Código HemoScreen</div>
+                                        <div style="color: white; font-size: 11px; opacity: 0.9;">{{ __('patient.medical_history.service_requests.code_hemoscreen') }}</div>
                                         <div style="color: white; font-size: 16px; font-weight: 700; letter-spacing: 2px; font-family: monospace;">
                                             {{ $serviceRequest->hemo_identification ?? 'N/A' }}
                                         </div>
@@ -137,7 +137,7 @@
                                             </div>
                                             @if($observation->status === 'final')
                                                 <span style="font-size: 10px; background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; margin-left: auto;">
-                                                    ✓ Final
+                                                    ✓ {{ __('patient.medical_history.service_requests.final_status') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -159,7 +159,7 @@
 
                             @if($serviceRequest->observations->first() && $serviceRequest->observations->first()->issued_date)
                                 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bfdbfe; font-size: 11px; color: #64748b;">
-                                    <strong>Resultados emitidos:</strong> {{ Carbon\Carbon::parse($serviceRequest->observations->first()->issued_date)->format('d/m/Y H:i') }}
+                                    <strong>{{ __('patient.medical_history.service_requests.results_issued') }}:</strong> {{ Carbon\Carbon::parse($serviceRequest->observations->first()->issued_date)->format('d/m/Y H:i') }}
                                 </div>
                             @endif
                         </div>
@@ -169,16 +169,16 @@
                     <div class="service-details" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
                         @if($serviceRequest->sessions_requested)
                             <div>
-                                <div style="font-size: 12px; color: #3b82f6; font-weight: 600; margin-bottom: 5px;">🔢 Sesiones Solicitadas</div>
+                                <div style="font-size: 12px; color: #3b82f6; font-weight: 600; margin-bottom: 5px;">🔢 {{ __('patient.medical_history.service_requests.sessions_requested') }}</div>
                                 <div style="background: #dbeafe; padding: 10px; border-radius: 8px; font-size: 13px; color: #1e40af;">
-                                    {{ $serviceRequest->sessions_requested }} sesiones
+                                    {{ $serviceRequest->sessions_requested }} {{ __('patient.medical_history.service_requests.sessions') }}
                                 </div>
                             </div>
                         @endif
 
                         @if($serviceRequest->frequency)
                             <div>
-                                <div style="font-size: 12px; color: #059669; font-weight: 600; margin-bottom: 5px;">📅 Frecuencia</div>
+                                <div style="font-size: 12px; color: #059669; font-weight: 600; margin-bottom: 5px;">📅 {{ __('patient.medical_history.service_requests.frequency') }}</div>
                                 <div style="background: #d1fae5; padding: 10px; border-radius: 8px; font-size: 13px; color: #065f46;">
                                     {{ $serviceRequest->frequency }}
                                 </div>
@@ -187,16 +187,16 @@
 
                         @if($serviceRequest->duration_per_session)
                             <div>
-                                <div style="font-size: 12px; color: #7c3aed; font-weight: 600; margin-bottom: 5px;">⏱️ Duración por Sesión</div>
+                                <div style="font-size: 12px; color: #7c3aed; font-weight: 600; margin-bottom: 5px;">⏱️ {{ __('patient.medical_history.service_requests.duration_per_session') }}</div>
                                 <div style="background: #ede9fe; padding: 10px; border-radius: 8px; font-size: 13px; color: #5b21b6;">
-                                    {{ $serviceRequest->duration_per_session }} minutos
+                                    {{ $serviceRequest->duration_per_session }} {{ __('patient.medical_history.service_requests.minutes') }}
                                 </div>
                             </div>
                         @endif
 
                         @if($serviceRequest->location_preference)
                             <div>
-                                <div style="font-size: 12px; color: #ea580c; font-weight: 600; margin-bottom: 5px;">📍 Ubicación Preferida</div>
+                                <div style="font-size: 12px; color: #ea580c; font-weight: 600; margin-bottom: 5px;">📍 {{ __('patient.medical_history.service_requests.location_preference') }}</div>
                                 <div style="background: #fed7aa; padding: 10px; border-radius: 8px; font-size: 13px; color: #9a3412;">
                                     {{ $serviceRequest->location_preference }}
                                 </div>
@@ -208,7 +208,7 @@
                     @if($serviceRequest->treatment_goals)
                         <div style="margin-bottom: 15px;">
                             <div style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                🎯 Objetivos del Tratamiento
+                                🎯 {{ __('patient.medical_history.service_requests.treatment_goals') }}
                             </div>
                             <div style="background: linear-gradient(135deg, #fef3c7, #fcd34d); padding: 15px; border-radius: 10px; color: #92400e;">
                                 {{ $serviceRequest->treatment_goals }}
@@ -220,24 +220,24 @@
                     @if($serviceRequest->scheduled_date || $serviceRequest->assigned_provider)
                         <div class="scheduling-info" style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #3b82f6;">
                             <div style="font-size: 14px; font-weight: 600; color: #1e40af; margin-bottom: 10px;">
-                                📅 Información de Programación
+                                📅 {{ __('patient.medical_history.service_requests.scheduling_info') }}
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                                 @if($serviceRequest->scheduled_date)
                                     <div>
-                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">Fecha Programada</div>
+                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">{{ __('patient.medical_history.service_requests.scheduled_date') }}</div>
                                         <div style="color: #1e293b;">{{ Carbon\Carbon::parse($serviceRequest->scheduled_date)->format('d/m/Y H:i') }}</div>
                                     </div>
                                 @endif
                                 @if($serviceRequest->assigned_provider)
                                     <div>
-                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">Profesional Asignado</div>
+                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">{{ __('patient.medical_history.service_requests.assigned_provider') }}</div>
                                         <div style="color: #1e293b;">{{ $serviceRequest->assigned_provider }}</div>
                                     </div>
                                 @endif
                                 @if($serviceRequest->estimated_duration)
                                     <div>
-                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">Duración Estimada</div>
+                                        <div style="font-size: 12px; color: #1e40af; font-weight: 600;">{{ __('patient.medical_history.service_requests.estimated_duration') }}</div>
                                         <div style="color: #1e293b;">{{ $serviceRequest->estimated_duration }}</div>
                                     </div>
                                 @endif
@@ -249,12 +249,12 @@
                     @if($serviceRequest->sessions_completed || $serviceRequest->progress_notes)
                         <div class="treatment-progress" style="background: #f0fdf4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #059669;">
                             <div style="font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 10px;">
-                                📊 Progreso del Tratamiento
+                                📊 {{ __('patient.medical_history.service_requests.treatment_progress') }}
                             </div>
                             @if($serviceRequest->sessions_completed && $serviceRequest->sessions_requested)
                                 <div style="margin-bottom: 10px;">
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                        <span style="font-size: 12px; color: #065f46; font-weight: 600;">Sesiones Completadas</span>
+                                        <span style="font-size: 12px; color: #065f46; font-weight: 600;">{{ __('patient.medical_history.service_requests.sessions_completed') }}</span>
                                         <span style="font-size: 12px; color: #065f46;">{{ $serviceRequest->sessions_completed }}/{{ $serviceRequest->sessions_requested }}</span>
                                     </div>
                                     <div style="background: #dcfce7; height: 8px; border-radius: 4px; overflow: hidden;">
@@ -264,7 +264,7 @@
                             @endif
                             @if($serviceRequest->progress_notes)
                                 <div>
-                                    <div style="font-size: 12px; color: #065f46; font-weight: 600; margin-bottom: 5px;">Notas de Progreso</div>
+                                    <div style="font-size: 12px; color: #065f46; font-weight: 600; margin-bottom: 5px;">{{ __('patient.medical_history.service_requests.progress_notes') }}</div>
                                     <div style="color: #374151; font-size: 13px; line-height: 1.5;">{{ $serviceRequest->progress_notes }}</div>
                                 </div>
                             @endif
@@ -275,7 +275,7 @@
                     @if($serviceRequest->outcome || $serviceRequest->final_assessment)
                         <div style="margin-bottom: 15px;">
                             <div style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                📋 Evaluación Final
+                                📋 {{ __('patient.medical_history.service_requests.final_assessment') }}
                             </div>
                             <div style="background: linear-gradient(135d, #d1fae5, #a7f3d0); padding: 15px; border-radius: 10px; color: #065f46;">
                                 {{ $serviceRequest->outcome ?? $serviceRequest->final_assessment }}
@@ -287,12 +287,12 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b;">
                         <div>
                             @if($serviceRequest->encounter)
-                                <span>📅 Consulta: {{ Carbon\Carbon::parse($serviceRequest->encounter->encounter_date)->format('d/m/Y') }}</span>
+                                <span>📅 {{ __('patient.medical_history.service_requests.consultation_date') }}: {{ Carbon\Carbon::parse($serviceRequest->encounter->encounter_date)->format('d/m/Y') }}</span>
                             @endif
                         </div>
                         <div>
                             @if($serviceRequest->reference_id)
-                                <span>🔖 ID: {{ $serviceRequest->reference_id }}</span>
+                                <span>🔖 {{ __('patient.medical_history.service_requests.id_reference') }}: {{ $serviceRequest->reference_id }}</span>
                             @endif
                         </div>
                     </div>
@@ -307,8 +307,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🧪</div>
-            <h3>No hay solicitudes de servicios registradas</h3>
-            <p>Este paciente no tiene solicitudes de servicios en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.service_requests.no_service_requests') }}</h3>
+            <p>{{ __('patient.medical_history.service_requests.no_service_requests_message') }}</p>
         </div>
     @endif
 </div>

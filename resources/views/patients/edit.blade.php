@@ -107,9 +107,9 @@
                                     <!-- COUNTRY -->
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="country_id" value="País"/>
+                                            <x-input-label for="country_id" value="{{__('patient.country')}}"/>
                                             <select name="country_id" id="country_id" class="form-control">
-                                                <option value="">Seleccione un país...</option>
+                                                <option value="">{{__('patient.select_country')}}...</option>
                                                 @foreach($countries as $country)
                                                     <option value="{{ $country->id }}" {{ $data->country_id == $country->id ? 'selected' : '' }}>
                                                         {{ $country->name }}
@@ -122,9 +122,9 @@
                                     <!-- STATE -->
                                     <div class=" col-12 col-md-6 col-xl-6">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="state_id" value="Provincia/Estado"/>
+                                            <x-input-label for="state_id" value="{{__('patient.state')}}"/>
                                             <select name="state_id" id="state_id" class="form-control">
-                                                <option value="">Seleccione una provincia...</option>
+                                                <option value="">{{__('patient.select_state')}}...</option>
                                                 @foreach($states as $state)
                                                     <option value="{{ $state->id }}" {{ $data->state_id == $state->id ? 'selected' : '' }}>
                                                         {{ $state->name }}
@@ -161,14 +161,14 @@
                                 <!-- Emergency Contact Section -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <h6 class="mt-3 mb-2">Contacto de Emergencia (Opcional)</h6>
+                                        <h6 class="mt-3 mb-2">{{__('patient.emergency_contact.title') }}</h6>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <!-- CONTACT NAME -->
                                     <div class="col-12 col-md-4 col-xl-4">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="contact_name" value="Nombre del Contacto"/>
+                                            <x-input-label for="contact_name" value="{{__('patient.emergency_contact.name') }}"/>
                                             <x-text-input id="contact_name" class="block mt-1 w-full" type="text" name="contact_name" :value="$data->contact_name"/>
                                             <x-input-error :messages="$errors->get('contact_name')" class="mt-2" />
                                         </div>
@@ -176,7 +176,7 @@
                                     <!-- CONTACT EMAIL -->
                                     <div class="col-12 col-md-4 col-xl-4">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="contact_email" value="Email del Contacto"/>
+                                            <x-input-label for="contact_email" value="{{__('patient.emergency_contact.email') }}"/>
                                             <x-text-input id="contact_email" class="block mt-1 w-full" type="email" name="contact_email" :value="$data->contact_email"/>
                                             <x-input-error :messages="$errors->get('contact_email')" class="mt-2" />
                                         </div>
@@ -184,7 +184,7 @@
                                     <!-- CONTACT PHONE -->
                                     <div class="col-12 col-md-4 col-xl-4">
                                         <div class="input-block local-forms">
-                                            <x-input-label for="contact_phone" value="Teléfono del Contacto"/>
+                                            <x-input-label for="contact_phone" value="{{__('patient.emergency_contact.phone') }}"/>
                                             <x-phone-input
                                                 name="contact_phone"
                                                 id="contact_phone"
@@ -208,7 +208,7 @@
 
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="form-group local-top-form">
-                                            <label class="local-top">Foto de perfil <span class="login-danger">*</span></label>
+                                            <label class="local-top">{{ __('patient.profile_pic') }} <span class="login-danger">*</span></label>
                                             <div class="settings-btn upload-files-avator">
                                                 <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" class="hide-input">
                                                 <label for="file" class="upload">{{__('generic.Choose File')}}</label>

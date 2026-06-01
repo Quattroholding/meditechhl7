@@ -5,19 +5,19 @@
     <div class="consultation-ficha-contenido">
         <div class="consultation-ficha-item">
             <i class="fas fa-file-medical consultation-ficha-icon"></i>
-            <b>Consulta #</b> {{ $encounter->id }}
+            <b>{{ __('consultation.header.consultation_number') }}</b> {{ $encounter->id }}
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-calendar-alt consultation-ficha-icon"></i>
-            <b>Fecha de Atención:</b> {{ $encounter->created_at }}
+            <b>{{ __('consultation.header.date_of_service') }}</b> {{ $encounter->created_at }}
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-building consultation-ficha-icon"></i>
-            <b>Consultorio:</b> {{ $encounter->appointment->consultingRoom->name }}
+            <b>{{ __('consultation.header.consulting_room') }}</b> {{ $encounter->appointment->consultingRoom->name }}
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-cocktail consultation-ficha-icon"></i>
-            <b>Tipo de Servicio:</b> {{ $encounter->appointment->service_type }}
+            <b>{{ __('consultation.header.service_type') }}</b> {{ $encounter->appointment->service_type }}
         </div>
     </div>
 
@@ -25,16 +25,16 @@
     <div class="consultation-ficha-contenido">
         <div class="consultation-ficha-item">
             <i class="fas fa-user consultation-ficha-icon"></i>
-                <b>Paciente:</b>
+                <b>{{ __('consultation.header.patient') }}</b>
                 <span class="profile-image">{!!  $patient->profile_name!!}</span>
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-birthday-cake consultation-ficha-icon"></i>
-                <b>Edad:</b> {{ \Carbon\Carbon::parse($patient->birth_date)->age }} años
+                <b>{{ __('consultation.header.age') }}</b> {{ \Carbon\Carbon::parse($patient->birth_date)->age }} {{ __('consultation.header.years') }}
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-venus-mars consultation-ficha-icon"></i>
-                <b>Género:</b> {{ $patient->gender }}
+                <b>{{ __('consultation.header.gender') }}</b> {{ $patient->gender }}
         </div>
         {{--}}
         <div class="consultation-ficha-item">
@@ -46,7 +46,7 @@
         {{--}}
         <div class="consultation-ficha-item">
             <i class="fas fa-calendar consultation-ficha-icon"></i>
-                <b>Fecha Nacimiento:</b> {{ \Carbon\Carbon::parse($patient->birthdate)->format('d-m-Y') }}
+                <b>{{ __('consultation.header.birth_date') }}</b> {{ \Carbon\Carbon::parse($patient->birthdate)->format('d-m-Y') }}
         </div>
         <div class="consultation-ficha-item">
             <i class="fas fa-id-card consultation-ficha-icon"></i>
@@ -58,13 +58,13 @@
     <div class="consultation-ficha-contenido">
         <div class="consultation-ficha-item">
             <i class="fas fa-user-md consultation-ficha-icon"></i>
-                <b>Doctor:</b>
+                <b>{{ __('consultation.header.doctor') }}</b>
                 <span class="profile-image">{!! $encounter->practitioner->profile_name  !!}</span>
         </div>
         @if( $appointment->practitioner->qualifications()->first())
         <div class="consultation-ficha-item">
             <i class="fas fa-stethoscope consultation-ficha-icon"></i>
-                <b>Especialidad:</b> {{ $appointment->medicalSpeciality->name }}
+                <b>{{ __('consultation.header.speciality') }}</b> {{ $appointment->medicalSpeciality->name }}
         </div>
         @endif
     </div>

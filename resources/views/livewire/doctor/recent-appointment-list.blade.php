@@ -78,10 +78,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="card-title mb-0">
                 <i class="fas fa-calendar-alt me-2"></i>
-                {{__('Citas para hoy')}}
+                {{ __('doctor.dashboard.todays_appointments') }}
             </h4>
             <div class="dropdown">
-                <button wire:click="openModal" class="btn btn-success float-end">+ Nueva Cita</button>
+                <button wire:click="openModal" class="btn btn-success float-end">+ {{ __('doctor.dashboard.new_appointment') }}</button>
             </div>
         </div>
 
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             @elseif ($appointments->isEmpty())
-            <p class="px-2">{{__('Sin citas programadas para hoy')}}</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+            <p class="px-2">{{ __('doctor.dashboard.no_appointments_today') }}</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
             @else
             <ul class="teaching-card">
                 <ul class="steps-history">
@@ -151,7 +151,7 @@
                                             <span class='mx-2' >{{ $appointment->patient->name }}</span>
 
                                             <span   class="ongoing-drapt">
-                                              {{__('En Curso')}}
+                                              {{ __('doctor.dashboard.ongoing') }}
                                                 <i class="fa fa-chevron-down ms-2"></i>
                                             </span>
                                         </a>
@@ -168,7 +168,7 @@
                                                 <a href="javascript:;"></a>
                                             </li>
                                             <li class="dropdown-item">
-                                                {{__('Hora')}}
+                                                {{ __('doctor.dashboard.time') }}
                                                 <span>
                                                     {{ \Carbon\Carbon::parse($appointment->start)->format('h:i')  }} -
                                                     {{ \Carbon\Carbon::parse($appointment->end)->format('h:i A') }}({{ $appointment->minutes_duration }} min)
@@ -189,29 +189,29 @@
                                                 </ul>
                                                 @if(auth()->user()->can('arrived',$appointment))
                                                     <button wire:click.stop="updateStatus({{ $appointment->id }}, 'arrived')" class="action-btn btn-start">
-                                                        🚪 Registrar Llegada
+                                                        🚪 {{ __('doctor.dashboard.register_arrival') }}
                                                     </button>
                                                 @endif
                                                 @if(auth()->user()->can('checked_in',$appointment))
                                                     <button wire:click.stop="updateStatus({{ $appointment->id }}, 'checked-in')" class="action-btn btn-start">
-                                                        ▶️ Iniciar Consulta
+                                                        ▶️ {{ __('doctor.dashboard.start_consultation') }}
                                                     </button>
                                                 @endif
                                                 @if(auth()->user()->can('viewConsultation',$appointment))
                                                     <a href="{{route('consultation.show',$appointment->id)}}" class="action-btn btn-confirm">
-                                                         @if($appointment->encounter) {{__('Editar Consulta')}} @else ✏️ {{__(' Llenar Consulta')}}@endif
+                                                         @if($appointment->encounter) {{ __('doctor.dashboard.edit_consultation') }} @else ✏️ {{ __('doctor.dashboard.fill_consultation') }}@endif
 
                                                     </a>
                                                 @endif
                                                 @if(auth()->user()->can('cancelled',$appointment))
                                                     <button wire:click.stop="updateStatus({{ $appointment->id }}, 'canceled')"  class="action-btn btn-cancel">
-                                                        ❌ Cancelar
+                                                        ❌ {{ __('doctor.dashboard.cancel') }}
                                                     </button>
                                                 @endif
 
                                                 @if(auth()->user()->can('noshow',$appointment))
                                                     <button wire:click.stop="updateStatus({{ $appointment->id }}, 'noshow')"  class="action-btn btn-cancel">
-                                                        👻 No aparecio
+                                                        👻 {{ __('doctor.dashboard.no_show') }}
                                                     </button>
                                                 @endif
                                             </li>

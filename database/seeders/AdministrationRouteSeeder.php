@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\AdministrationRoute;
 use Illuminate\Database\Seeder;
 
 class AdministrationRouteSeeder extends Seeder
@@ -29,7 +29,7 @@ class AdministrationRouteSeeder extends Seeder
         ];
 
         foreach ($routes as $route) {
-            \App\Models\AdministrationRoute::updateOrCreate($route);
+            AdministrationRoute::updateOrCreate($route);
         }
     }
 }

@@ -10,9 +10,8 @@ use App\Services\PractitionerService;
 use App\Services\ReferralService;
 use App\Services\SubscriptionService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class TestPublicRegistration extends Command
 {
@@ -138,7 +137,7 @@ class TestPublicRegistration extends Command
             $this->info('tail -f storage/logs/laravel-'.now()->format('Y-m-d').'.log');
 
             return Command::SUCCESS;
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             $this->error('❌ Validation failed!');
             $this->newLine();
             foreach ($e->errors() as $field => $messages) {

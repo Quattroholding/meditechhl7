@@ -37,7 +37,7 @@
     <div class="p-3 text-gray-900" style="min-height: 100px;" id="marker-id-3.5">
         @if($mode === 'full')
             <div class="input-block local-forms">
-                <x-input-label  value="{{__('Factores Agravantes')}}" />
+                <x-input-label  value="{{ __('consultation.present_illness_section.aggravating_factors') }}" />
                 <x-autosave-input
                     type="text"
                     :value="$aggravating_factors"
@@ -48,7 +48,7 @@
                 />
             </div>
             <div class="input-block local-forms">
-                <x-input-label  value="{{__('Factores Atenuantes')}}" />
+                <x-input-label  value="{{ __('consultation.present_illness_section.alleviating_factors') }}" />
                 <x-autosave-input
                     type="text"
                     :value="$alleviating_factors"
@@ -59,7 +59,7 @@
                 />
             </div>
             <div class="input-block local-forms">
-                <x-input-label  value="{{__('Sintomas Asociados')}}" />
+                <x-input-label  value="{{ __('consultation.present_illness_section.associated_symptoms') }}" />
                 <x-autosave-input
                     type="text"
                     :value="$associated_symptoms"
@@ -72,7 +72,7 @@
         @endif
 
         <div class="input-block local-forms">
-            <x-input-label  value="{{__('Descripcion')}}" />
+            <x-input-label  value="{{ __('consultation.present_illness_section.description') }}" />
             <x-autosave-input
                 type="textarea"
                 :value="$description"

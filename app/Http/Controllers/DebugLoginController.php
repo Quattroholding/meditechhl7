@@ -86,7 +86,7 @@ class DebugLoginController extends Controller
             $route = route('client.dashboard');
         } elseif ($user->hasRole('validador')) {
             $route = route('user.pending-validations');
-        }elseif ($user->hasRole('ventas')) {
+        } elseif ($user->hasRole('ventas')) {
             $route = route('quotations.index');
         }
 

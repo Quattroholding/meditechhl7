@@ -11,10 +11,10 @@
                         <div x-data="{ loaded: false }"
                              x-intersect="setTimeout(() => { loaded = true }, {{ $section->id * 200 }})"
                         >
-                            <x-accordion-item data-id="{{$section->id}}" title="{{$section->name_esp}}" :isOpen="false" >
+                            <x-accordion-item data-id="{{$section->id}}" title="{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}" :isOpen="false" >
                                 <template x-if="loaded">
                                     <div x-transition:enter="transition ease-out duration-300">
-                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=>$section->name_esp, 'medical_specialty_id'=>$section->medical_speciality_id])
+                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=> app()->getLocale() === 'es' ? $section->name_esp : $section->name, 'medical_specialty_id'=>$section->medical_speciality_id])
                                     </div>
                                 </template>
                                 <template x-if="!loaded">
@@ -57,7 +57,7 @@
                 // Livewire 3 passes array parameters as first argument
                 const data = Array.isArray(event) ? event[0] : event;
                 const type = data.type || 'info';
-                const message = data.message || 'Operación completada';
+                const message = data.message || '{{ __('consultation.operation_completed') }}';
 
                 if (typeof toastr !== 'undefined' && typeof toastr[type] === 'function') {
                     toastr[type](message, '', {

@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0" style="color: #fff;">
-            <i class="fas fa-calendar-alt me-2"></i>Próximas Citas
+            <i class="fas fa-calendar-alt me-2"></i>{{ __('patient.dashboard.upcoming_appointments') }}
         </h5>
 
     </div>
@@ -53,14 +53,14 @@
 
                             <div class="col-md-6">
                                 <h6 class="mb-1">
-                                    {{ $appointment->practitioner->name ?? 'Doctor asignado' }}
+                                    {{ $appointment->practitioner->name ?? __('patient.dashboard.assigned_doctor') }}
                                 </h6>
                                 <p class="mb-1 text-muted">
-                                    {{ $appointment->medicalSpeciality->name ?? 'Especialidad' }}
+                                    {{ $appointment->medicalSpeciality->name ?? __('patient.dashboard.specialty') }}
                                 </p>
                                 <small class="text-muted">
                                     <i class="fas fa-clock me-1"></i>
-                                    {{ $appointment->start->format('h:i') ?? 'Hora por confirmar' }}
+                                    {{ $appointment->start->format('h:i') ?? __('patient.dashboard.time_to_confirm') }}
                                 </small>
                                 @if($appointment->consultingRoom)
                                     <br>
@@ -82,7 +82,7 @@
                                 @if($appointment->service_type)
                                     <div class="mt-2">
                                         <small class="text-muted">
-                                            <strong>Motivo:</strong> {{ Str::limit($appointment->service_type, 50) }}
+                                            <strong>{{ __('generic.reason') }}:</strong> {{ Str::limit($appointment->service_type, 50) }}
                                         </small>
                                     </div>
                                 @endif
@@ -97,14 +97,14 @@
                                         {{--}}
                                         <li>
                                             <a class="dropdown-item" href="{{ route('appointment.show', $appointment->id) }}">
-                                                <i class="fas fa-eye me-2"></i>Ver Detalles
+                                                <i class="fas fa-eye me-2"></i>{{ __('patient.dashboard.view_details') }}
                                             </a>
                                         </li>
                                         {{--}}
 
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('appointment.edit', $appointment->id) }}">
-                                                    <i class="fas fa-edit me-2"></i>Editar
+                                                    <i class="fas fa-edit me-2"></i>{{ __('generic.edit') }}
                                                 </a>
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
@@ -112,8 +112,8 @@
                                                 <a class="dropdown-item text-danger"
                                                    href="javascript:;"
                                                    wire:click="cancelAppointment({{ $appointment->id }})"
-                                                   onclick="return confirm('¿Está seguro de cancelar esta cita?')">
-                                                    <i class="fas fa-times me-2"></i>Cancelar
+                                                   onclick="return confirm('{{ __('patient.dashboard.confirm_cancel_appointment') }}')">
+                                                    <i class="fas fa-times me-2"></i>{{ __('generic.cancel') }}
                                                 </a>
                                             </li>
 
@@ -129,17 +129,17 @@
             @if($upcomingAppointments->count() >= $limit)
                 <div class="text-center mt-3">
                     <a href="{{ route('patient.appointments') }}" class="btn btn-outline-primary btn-sm">
-                        Ver Todas las Citas
+                        {{ __('patient.dashboard.view_all_appointments') }}
                     </a>
                 </div>
             @endif
         @else
             <div class="text-center py-4">
                 <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
-                <h6 class="text-muted">No tienes citas programadas</h6>
-                <p class="text-muted mb-3">Programa tu próxima cita médica</p>
+                <h6 class="text-muted">{{ __('patient.dashboard.no_scheduled_appointments') }}</h6>
+                <p class="text-muted mb-3">{{ __('patient.dashboard.schedule_next_appointment') }}</p>
                 <button  wire:click="openModal" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus me-1"></i>Programar Cita
+                    <i class="fas fa-plus me-1"></i>{{ __('patient.dashboard.schedule_appointment') }}
                 </button>
             </div>
         @endif

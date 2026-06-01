@@ -7,7 +7,7 @@
                 <div class="skeleton-percentage"></div>
             </div>
         @else
-            <h5 class="text-base">{{__('Citas del mes')}}</h5>
+            <h5 class="text-base">{{ __('doctor.dashboard.monthly_appointments') }}</h5>
             <h3>{{ $appointments }}<span class="{{ $statusClass }}"><img src="{{ URL::asset('/assets/img/icons/' . $icon) }}"
                         alt="" class="me-1">{{ number_format($percentageChange, 1) }}%</span></h3>
         @endif

@@ -4,14 +4,14 @@
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>No. Registro</th>
-                    <th>Fecha Emisión</th>
-                    <th>Período de Incapacidad</th>
-                    <th>Días</th>
-                    <th>Diagnóstico</th>
-                    <th>Médico</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th>{{ __('patient.medical_history.record_number') }}</th>
+                    <th>{{ __('patient.medical_history.issue_date') }}</th>
+                    <th>{{ __('patient.medical_history.disability_period') }}</th>
+                    <th>{{ __('patient.medical_history.days') }}</th>
+                    <th>{{ __('patient.medical_history.diagnosis') }}</th>
+                    <th>{{ __('patient.medical_history.doctor') }}</th>
+                    <th>{{ __('patient.medical_history.status') }}</th>
+                    <th>{{ __('patient.medical_history.actions') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -24,12 +24,12 @@
                             <strong>{{ $medicalLeave->issue_date->format('d/m/Y') }}</strong>
                         </td>
                         <td>
-                            <strong>Desde:</strong> {{ $medicalLeave->start_datetime->format('d/m/Y H:i') }}<br>
-                            <strong>Hasta:</strong> {{ $medicalLeave->end_datetime->format('d/m/Y H:i') }}
+                            <strong>{{ __('patient.medical_history.from') }}:</strong> {{ $medicalLeave->start_datetime->format('d/m/Y H:i') }}<br>
+                            <strong>{{ __('patient.medical_history.until') }}:</strong> {{ $medicalLeave->end_datetime->format('d/m/Y H:i') }}
                         </td>
                         <td>
                             <span class="badge badge-info" style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
-                                {{ $medicalLeave->total_days }} día(s)
+                                {{ $medicalLeave->total_days }} {{ __('patient.medical_history.day_s') }}
                             </span>
                         </td>
                         <td>
@@ -41,7 +41,7 @@
                         <td>
                             <strong>{{ $medicalLeave->practitioner_name }}</strong>
                             @if($medicalLeave->practitioner_license_number)
-                                <br><small>Código: {{ $medicalLeave->practitioner_license_number }}</small>
+                                <br><small>{{ __('patient.medical_history.code_label') }}: {{ $medicalLeave->practitioner_license_number }}</small>
                             @endif
                         </td>
                         <td>
@@ -53,10 +53,10 @@
                                     'draft' => '#f59e0b',
                                 ];
                                 $statusLabels = [
-                                    'active' => 'Activa',
-                                    'completed' => 'Completada',
-                                    'cancelled' => 'Cancelada',
-                                    'draft' => 'Borrador',
+                                    'active' => __('patient.medical_history.active_leave'),
+                                    'completed' => __('patient.medical_history.completed_leave'),
+                                    'cancelled' => __('patient.medical_history.cancelled_leave'),
+                                    'draft' => __('patient.medical_history.draft_leave'),
                                 ];
                                 $statusColor = $statusColors[$medicalLeave->status] ?? '#6b7280';
                                 $statusLabel = $statusLabels[$medicalLeave->status] ?? ucfirst($medicalLeave->status);
@@ -70,7 +70,7 @@
                                target="_blank"
                                class="btn"
                                style="background: #3b82f6; color: white; padding: 6px 12px; font-size: 12px; border-radius: 6px; text-decoration: none; display: inline-block;">
-                                📄 Descargar PDF
+                                📄 {{ __('patient.medical_history.download_pdf') }}
                             </a>
                         </td>
                     </tr>
@@ -88,11 +88,11 @@
                         <button wire:click="previousMedicalLeavesPage"
                                 class="pagination-btn"
                                 style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.previous') }}
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            ← Anterior
+                            ← {{ __('patient.medical_history.previous') }}
                         </span>
                     @endif
 
@@ -117,11 +117,11 @@
                         <button wire:click="nextMedicalLeavesPage"
                                 class="pagination-btn"
                                 style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.3s ease;">
-                            Siguiente →
+                            {{ __('patient.medical_history.next') }} →
                         </button>
                     @else
                         <span style="background: #e2e8f0; color: #9ca3af; padding: 8px 16px; border-radius: 8px; font-size: 14px;">
-                            Siguiente →
+                            {{ __('patient.medical_history.next') }} →
                         </span>
                     @endif
                 </nav>
@@ -129,15 +129,15 @@
 
             <!-- Pagination Info -->
             <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #64748b;">
-                Mostrando licencias {{ $sectionData['from'] ?? 0 }} a {{ $sectionData['to'] ?? 0 }}
-                de {{ $sectionData['total'] ?? 0 }} total
+                {{ __('patient.medical_history.showing_leaves') }} {{ $sectionData['from'] ?? 0 }} {{ __('patient.medical_history.to') }} {{ $sectionData['to'] ?? 0 }}
+                {{ __('patient.medical_history.of') }} {{ $sectionData['total'] ?? 0 }} {{ __('patient.medical_history.total') }}
             </div>
         @endif
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">📄</div>
-            <h3>No hay incapacidades médicas registradas</h3>
-            <p>Este paciente no tiene incapacidades médicas emitidas en el período seleccionado.</p>
+            <h3>{{ __('patient.medical_history.no_leaves_registered') }}</h3>
+            <p>{{ __('patient.medical_history.no_leaves_message') }}</p>
         </div>
     @endif
 </div>

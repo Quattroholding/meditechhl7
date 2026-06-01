@@ -11,6 +11,7 @@ use App\Models\Appointment;
 use App\Models\ChargeItem;
 use App\Models\Encounter;
 use App\Models\File;
+use App\Models\InventoryItem;
 use App\Models\InventoryReport;
 use App\Models\InventoryTransaction;
 use App\Models\Invoice;
@@ -374,7 +375,7 @@ class ConsultationController extends Controller
                             $reference = $chargeItem->product_reference['reference'];
                             if (str_contains($reference, 'InventoryItem/')) {
                                 $fhirId = str_replace('InventoryItem/', '', $reference);
-                                $inventoryItem = \App\Models\InventoryItem::where('fhir_id', $fhirId)->first();
+                                $inventoryItem = InventoryItem::where('fhir_id', $fhirId)->first();
                                 if ($inventoryItem) {
                                     $serviceDescription = $inventoryItem->name;
                                     $serviceCode = $inventoryItem->sku;

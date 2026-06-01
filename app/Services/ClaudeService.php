@@ -569,6 +569,7 @@ EOT;
                 'vital_signs_count' => count($normalizedData['vital_signs'] ?? []),
                 'diagnostics_count' => count($normalizedData['diagnostics'] ?? []),
                 'medications_count' => count($normalizedData['medications'] ?? []),
+                'service_requests_count' => count($normalizedData['service_requests'] ?? []),
             ]);
 
             return $normalizedData;
@@ -597,6 +598,9 @@ Identifica y extrae:
 4. Hallazgos del examen físico
 5. Diagnósticos
 6. Medicamentos prescritos
+7. Exámenes de laboratorio solicitados
+8. Imágenes diagnósticas solicitadas
+9. Procedimientos solicitados
 
 IMPORTANTE:
 - Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional
@@ -604,6 +608,7 @@ IMPORTANTE:
 - Si no detectas información para un campo, omítelo del JSON
 - Para signos vitales, usa códigos LOINC estándar
 - Para diagnósticos, incluye código ICD-10 si es mencionado
+- Para service requests (laboratorios, imágenes, procedimientos), extrae el nombre descriptivo exacto mencionado
 
 CRÍTICO - SIGNOS VITALES:
 - SOLO extrae signos vitales con valores NUMÉRICOS explícitos
@@ -613,13 +618,26 @@ CRÍTICO - SIGNOS VITALES:
 - Ejemplos INVÁLIDOS: "normal", "estable", "bueno", "sin alteraciones" - estos NO deben incluirse
 
 CRÍTICO - ENFERMEDAD ACTUAL (present_illness):
-- **locations**: Array de ubicaciones anatómicas mencionadas (ej: ["cabeza", "cuello"])
-  - Dolor de cabeza → locations: ["cabeza"]
-  - Dolor abdominal → locations: ["abdomen"]
-  - Dolor de pecho y brazo → locations: ["pecho", "brazo"]
+- **description**: Descripción completa de la enfermedad actual tal como se menciona en el dictado
+- **locations**: Array de ubicaciones anatómicas mencionadas (ej: ["hemitórax derecho", "cabeza", "cuello"])
+  - "Dolor en hemitórax derecho" → locations: ["hemitórax derecho"]
+  - "Dolor de cabeza" → locations: ["cabeza"]
+  - "Dolor abdominal" → locations: ["abdomen"]
+  - "Dolor de pecho y brazo" → locations: ["pecho", "brazo"]
+  - IMPORTANTE: Extrae la ubicación EXACTA mencionada (ej: "hemitórax derecho", no solo "tórax")
 - **severity**: Usa EXACTAMENTE uno de estos valores en español: "leve", "moderado", "severo", "incapacitante"
+  - "intensidad 6 sobre 10" o "moderado" → "moderado"
+  - "intensidad 8 sobre 10" o "intenso" → "severo"
 - **timing**: Usa uno de estos valores: "constante", "intermitente", "en la mañana", "en la tarde", "en la noche", "todo el día"
-- **duration**: Extrae la duración mencionada (ej: "hace 3 días", "hace una semana", "hace un mes")
+  - "duración continua" o "constante" → "constante"
+  - "de vez en cuando" → "intermitente"
+- **duration**: Extrae la duración EXACTA mencionada (ej: "hace 3 días", "desde hace cuatro días", "hace una semana")
+  - "desde hace tres días" → "desde hace tres días"
+  - "hace cuatro días" → "hace cuatro días"
+  - NO inventes la duración si no está mencionada
+- **aggravating_factors**: Factores que empeoran los síntomas (ej: "empeora con la inspiración profunda")
+- **alleviating_factors**: Factores que alivian (ej: "mejora con acetaminofén")
+- **associated_symptoms**: Síntomas asociados (ej: "expectoración amarillenta, sensación febril")
 - Si NO se menciona explícitamente algún campo, omítelo del JSON
 
 SCHEMA JSON DE RESPUESTA:
@@ -659,12 +677,20 @@ SCHEMA JSON DE RESPUESTA:
   ],
   "medications": [
     {
-      "medication_name": "Nombre completo del medicamento con dosis",
-      "dosage": "Dosis específica",
+      "medication_name": "Nombre del medicamento SIN la dosis",
+      "dosage": "Cantidad de unidades por toma (ej: '1 tableta', '2 cápsulas', '10 ml')",
       "frequency": "Frecuencia en horas (ej: 8, 12, 24)",
       "route": "Vía de administración",
-      "duration": "Duración del tratamiento (opcional)",
-      "instructions": "Instrucciones adicionales (opcional)"
+      "duration": "Duración del tratamiento en días (ej: '5', '7', '10')",
+      "instructions": "Instrucciones completas incluyendo dosis en miligramos"
+    }
+  ],
+  "service_requests": [
+    {
+      "service_type": "laboratory|images|procedure",
+      "description": "Descripción del examen/imagen/procedimiento solicitado",
+      "priority": "routine|urgent|asap|stat",
+      "note": "Indicaciones o notas adicionales (opcional)"
     }
   ]
 }
@@ -685,6 +711,72 @@ CÓDIGOS LOINC COMUNES PARA EXAMEN FÍSICO:
 - 11394-4: Examen de extremidades
 - 11395-1: Examen neurológico
 - 11396-9: Examen de piel
+
+CRÍTICO - SERVICE REQUESTS (EXÁMENES, IMÁGENES, PROCEDIMIENTOS):
+- Extrae TODOS los exámenes de laboratorio mencionados (ej: "hemograma completo", "glucosa", "perfil lipídico", "pruebas de función hepática")
+- Extrae TODAS las imágenes diagnósticas solicitadas (ej: "radiografía de tórax", "ecografía abdominal", "tomografía", "resonancia magnética")
+- Extrae TODOS los procedimientos solicitados (ej: "electrocardiograma", "espirometría", "biopsia")
+- Clasifica cada uno en el service_type correcto:
+  - "laboratory": análisis de sangre, orina, heces, cultivos, química sanguínea, hematología, etc.
+  - "images": rayos X, ecografías, TAC, resonancias magnéticas, mamografías, etc.
+  - "procedure": ECG, espirometrías, biopsias, endoscopias, colonoscopias, pruebas de esfuerzo, etc.
+- Para priority, usa:
+  - "routine": exámenes de rutina o control
+  - "urgent": requiere atención pronta
+  - "asap": lo antes posible
+  - "stat": inmediato/emergencia
+
+EJEMPLOS DE SERVICE REQUESTS:
+- "solicitar hemograma completo" → {"service_type": "laboratory", "description": "Hemograma completo", "priority": "routine"}
+- "proteína C reactiva" o "PCR" → {"service_type": "laboratory", "description": "Proteína C reactiva", "priority": "routine"}
+- "radiografía de tórax PA y lateral" → {"service_type": "images", "description": "Radiografía de tórax", "priority": "routine", "note": "PA y lateral"}
+- "realizar electrocardiograma" → {"service_type": "procedure", "description": "Electrocardiograma", "priority": "routine"}
+- "nebulización con salbutamol" → {"service_type": "procedure", "description": "Nebulización", "priority": "routine", "note": "Con salbutamol"}
+
+IMPORTANTE para descripciones:
+- Usa nombres GENÉRICOS y SIMPLES (ej: "Hemograma completo", NO "hemograma completo con diferencial")
+- Para radiografías, usa solo "Radiografía de [parte del cuerpo]" (ej: "Radiografía de tórax")
+- Detalles específicos (PA, lateral, con contraste, etc.) van en el campo "note"
+
+EJEMPLOS DE MEDICAMENTOS (CRÍTICO):
+1. "azitromicina quinientos miligramos día uno y luego doscientos cincuenta miligramos diarios por cuatro días"
+   → {
+       "medication_name": "Azitromicina",
+       "dosage": "1 tableta",
+       "frequency": "24",
+       "route": "oral",
+       "duration": "5",
+       "instructions": "500 mg el primer día, luego 250 mg diarios por 4 días"
+     }
+
+2. "acetaminofén quinientos miligramos cada seis horas si fiebre"
+   → {
+       "medication_name": "Acetaminofén",
+       "dosage": "1 tableta",
+       "frequency": "6",
+       "route": "oral",
+       "duration": "",
+       "instructions": "500 mg cada 6 horas si presenta fiebre"
+     }
+
+3. "nebulización con salbutamol"
+   → {
+       "medication_name": "Salbutamol",
+       "dosage": "1 dosis",
+       "frequency": "",
+       "route": "inhalado",
+       "duration": "",
+       "instructions": "Nebulización"
+     }
+
+REGLAS IMPORTANTES PARA MEDICAMENTOS:
+- **medication_name**: Solo el nombre del medicamento, SIN dosis en miligramos
+- **dosage**: Cantidad de UNIDADES físicas (tabletas, cápsulas, ml), NO miligramos
+  - Si se mencion "500 mg" → dosage debe ser "1 tableta" (asumiendo presentación estándar)
+  - Si no se especifica la forma, usa "1 dosis"
+- **frequency**: Solo el NÚMERO de horas entre cada toma (6, 8, 12, 24)
+- **duration**: Solo el NÚMERO de días, NO incluir "días"
+- **instructions**: Aquí SÍ incluye todas las dosis en miligramos y detalles completos
 
 RESPONDE SOLO CON EL JSON (sin ```json ni markdown):
 EOT;
@@ -749,6 +841,19 @@ EOT;
             $normalized['medications'] = array_filter($data['medications'], function ($item) {
                 return isset($item['medication_name']);
             });
+        }
+
+        // Service Requests (laboratory, images, procedures)
+        if (isset($data['service_requests']) && is_array($data['service_requests'])) {
+            $normalized['service_requests'] = array_values(array_filter($data['service_requests'], function ($item) {
+                // Validate required fields and service_type
+                $validServiceTypes = ['laboratory', 'images', 'procedure'];
+
+                return isset($item['service_type'])
+                    && in_array($item['service_type'], $validServiceTypes)
+                    && isset($item['description'])
+                    && ! empty($item['description']);
+            }));
         }
 
         return $normalized;

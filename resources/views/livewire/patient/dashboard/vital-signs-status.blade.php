@@ -18,10 +18,10 @@
                 <div class="flex items-center space-x-4">
                     <select wire:model.live="selectedPeriod"
                             class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                        <option value="1">Último día</option>
-                        <option value="7">Última semana</option>
-                        <option value="30">Último mes</option>
-                        <option value="90">Últimos 3 meses</option>
+                        <option value="1">{{ __('patient.dashboard.last_day') }}</option>
+                        <option value="7">{{ __('patient.dashboard.last_week') }}</option>
+                        <option value="30">{{ __('patient.dashboard.last_month') }}</option>
+                        <option value="90">{{ __('patient.dashboard.last_3_months') }}</option>
                     </select>
 
                     <button wire:click="refreshData"
@@ -29,7 +29,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        Actualizar
+                        {{ __('generic.refresh') }}
                     </button>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                             @elseif($overallStatus['color'] === 'red') text-red-800
                             @else text-gray-800
                             @endif">
-                            Estado General: {{ ucfirst($overallStatus['status']) }}
+                            {{ __('patient.dashboard.overall_status') }}: {{ ucfirst($overallStatus['status']) }}
                         </h2>
                         <p class="text-gray-600">{{ $overallStatus['message'] }}</p>
                     </div>
@@ -81,7 +81,7 @@
                         @endif">
                         {{ number_format($overallStatus['score'], 0) }}%
                     </div>
-                    <p class="text-sm text-gray-500">Score de Salud</p>
+                    <p class="text-sm text-gray-500">{{ __('patient.dashboard.health_score') }}</p>
                 </div>
             </div>
 
@@ -169,11 +169,11 @@
 
                                 @if($vitalSign['config']['normal_range'] && $vitalSign['config']['loinc_code'] !== '85354-9')
                                     <span class="text-xs text-gray-500">
-                                        Normal: {{$vitalSign['config']['normal_range'][0]}} - {{$vitalSign['config']['normal_range'][1]}} {{ $vitalSign['config']['unit'] }}
+                                        {{ __('patient.dashboard.normal') }}: {{$vitalSign['config']['normal_range'][0]}} - {{$vitalSign['config']['normal_range'][1]}} {{ $vitalSign['config']['unit'] }}
                                     </span>
                                 @elseif($vitalSign['config']['loinc_code'] === '85354-9')
                                     <span class="text-xs text-gray-500">
-                                        Normal: &lt;140/90 mmHg
+                                        {{ __('patient.dashboard.normal') }}: &lt;140/90 mmHg
                                     </span>
                                 @endif
 
@@ -183,11 +183,11 @@
                             @if($vitalSign['config']['loinc_code'] === '85354-9' && isset($vitalSign['value']['systolic']))
                                 <div class="mt-3 space-y-1">
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-gray-600">Sistólica:</span>
+                                        <span class="text-gray-600">{{ __('patient.dashboard.systolic') }}:</span>
                                         <span class="font-medium">{{ $vitalSign['value']['systolic'] }} mmHg</span>
                                     </div>
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-gray-600">Diastólica:</span>
+                                        <span class="text-gray-600">{{ __('patient.dashboard.diastolic') }}:</span>
                                         <span class="font-medium">{{ $vitalSign['value']['diastolic'] }} mmHg</span>
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@
                         <!-- Acciones -->
                         <div class="bg-gray-50 px-6 py-3 rounded-b-lg">
                             <button class="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                                Ver historial
+                                {{ __('patient.dashboard.view_history') }}
                             </button>
                         </div>
                     </div>
@@ -212,11 +212,11 @@
 
             @if($criticalSigns->count() > 0 || $abnormalSigns->count() > 0)
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">🚨 Alertas de Salud</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">🚨 {{ __('patient.dashboard.health_alerts') }}</h3>
 
                     @if($criticalSigns->count() > 0)
                         <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 class="font-medium text-red-800 mb-2">Valores Críticos - Requiere Atención Inmediata</h4>
+                            <h4 class="font-medium text-red-800 mb-2">{{ __('patient.dashboard.critical_values_immediate_attention') }}</h4>
                             <ul class="space-y-1">
                                 @foreach($criticalSigns as $sign)
                                     <li class="text-sm text-red-700">
@@ -229,7 +229,7 @@
 
                     @if($abnormalSigns->count() > 0)
                         <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <h4 class="font-medium text-yellow-800 mb-2">Valores Fuera del Rango Normal</h4>
+                            <h4 class="font-medium text-yellow-800 mb-2">{{ __('patient.dashboard.values_out_of_normal_range') }}</h4>
                             <ul class="space-y-1">
                                 @foreach($abnormalSigns as $sign)
                                     <li class="text-sm text-yellow-700">
@@ -242,10 +242,10 @@
 
                     <div class="mt-4 flex justify-end space-x-3">
                         <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                            Contactar Médico
+                            {{ __('patient.dashboard.contact_doctor') }}
                         </button>
                         <button class="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                            Programar Cita
+                            {{ __('patient.dashboard.schedule_appointment') }}
                         </button>
                     </div>
                 </div>
@@ -258,15 +258,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay signos vitales registrados</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('patient.dashboard.no_vital_signs_recorded') }}</h3>
                 <p class="text-gray-500 mb-4">
-                    No se encontraron mediciones de signos vitales en el período seleccionado.
+                    {{ __('patient.dashboard.no_vital_signs_found_period') }}
                 </p>
                 <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
-                    Registrar Signos Vitales
+                    {{ __('patient.dashboard.register_vital_signs') }}
                 </button>
             </div>
         @endif
@@ -279,8 +279,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Paciente no encontrado</h3>
-            <p class="text-gray-500">No se pudo cargar la información del paciente.</p>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('patient.dashboard.patient_not_found') }}</h3>
+            <p class="text-gray-500">{{ __('patient.dashboard.could_not_load_patient_info') }}</p>
         </div>
     @endif
 
@@ -290,7 +290,7 @@
         <div class="bg-white rounded-lg p-6 shadow-xl">
             <div class="flex items-center space-x-3">
                 <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                <span class="text-gray-700">Actualizando signos vitales...</span>
+                <span class="text-gray-700">{{ __('patient.dashboard.updating_vital_signs') }}</span>
             </div>
         </div>
     </div>

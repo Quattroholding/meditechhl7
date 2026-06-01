@@ -8,6 +8,7 @@ use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
 use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use App\Http\Middleware\FirstLoginMiddleware;
+use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\WhatsappClientFilter;
 use App\Jobs\RetryFailedSubscriptionPayments;
@@ -102,6 +103,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Agregar middleware de tema del cliente a todas las rutas web
         $middleware->web(append: [
+            SetLocaleMiddleware::class,
             CheckActiveUserMiddleware::class,
             EnsureTwoFactorIsEnabled::class,
         ]);

@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0" style="color: #fff;">
-            <i class="fas fa-file-medical me-2"></i>Resumen Médico
+            <i class="fas fa-file-medical me-2"></i>{{ __('patient.dashboard.medical_summary') }}
         </h5>
     </div>
     <div class="card-body">
@@ -33,7 +33,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="h6 mb-3">
                         <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                        Condiciones Médicas Activas
+                        {{ __('patient.dashboard.active_medical_conditions') }}
                     </div>
 
                     @if($activeMedicalConditions->count() > 0)
@@ -47,7 +47,7 @@
                                             <p class="mb-1 text-muted small">{{ Str::limit($condition->icd10Code->description_es, 60) }}</p>
                                         @endif
                                         <small class="text-muted">
-                                            Desde: {{ $condition->onset_date ? $condition->onset_date->format('m/Y') : 'No especificado' }}
+                                            {{ __('patient.dashboard.since') }}: {{ $condition->onset_date ? $condition->onset_date->format('m/Y') : __('patient.dashboard.not_specified') }}
                                         </small>
                                     </div>
                                     <div class="flex-shrink-0">
@@ -66,7 +66,7 @@
                                                     bg-secondary
                                             @endswitch
                                         ">
-                                            {{ ucfirst($condition->severity ?? 'No especificado') }}
+                                            {{ ucfirst($condition->severity ?? __('patient.dashboard.not_specified')) }}
                                         </span>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                 @else
                     <div class="text-center py-3">
                         <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                        <p class="text-muted mb-0">No hay condiciones médicas activas registradas</p>
+                        <p class="text-muted mb-0">{{ __('patient.dashboard.no_active_conditions_registered') }}</p>
                     </div>
                 @endif
             </div>
@@ -85,7 +85,7 @@
             <div class="col-md-6 mb-4">
                 <div class="h6 mb-3">
                     <i class="fas fa-allergies text-danger me-2"></i>
-                    Alergias
+                    {{ __('patient.dashboard.allergies') }}
                 </div>
 
                 @if($allergies->count() > 0)
@@ -100,7 +100,7 @@
                                         @endif
                                     </div>
                                     <span class="badge bg-danger">
-                                        {{ ucfirst($allergy->severity ?? 'Moderada') }}
+                                        {{ ucfirst($allergy->severity ?? __('patient.dashboard.moderate')) }}
                                     </span>
                                 </div>
                             </div>
@@ -109,7 +109,7 @@
                 @else
                     <div class="text-center py-3">
                         <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
-                        <p class="text-muted mb-0">No hay alergias registradas</p>
+                        <p class="text-muted mb-0">{{ __('patient.dashboard.no_allergies_registered') }}</p>
                     </div>
                 @endif
             </div>
@@ -120,7 +120,7 @@
             <div class="col-md-6 mb-4">
                 <div class="h6 mb-3">
                     <i class="fas fa-pills text-primary me-2"></i>
-                    Medicamentos Recientes
+                    {{ __('patient.dashboard.recent_medications') }}
                 </div>
                 @if($currentMedications->count() > 0)
                     <div class="list-group list-group-flush">
@@ -147,7 +147,7 @@
                 @else
                     <div class="text-center py-3">
                         <i class="fas fa-prescription fa-2x text-muted mb-2"></i>
-                        <p class="text-muted mb-0">No hay medicamentos recientes</p>
+                        <p class="text-muted mb-0">{{ __('patient.dashboard.no_recent_medications') }}</p>
                     </div>
                 @endif
             </div>
@@ -156,7 +156,7 @@
             <div class="col-md-6 mb-4">
                 <div class="h6 mb-3">
                     <i class="fas fa-heartbeat text-danger me-2"></i>
-                    Últimos Signos Vitales
+                    {{ __('patient.dashboard.latest_vital_signs') }}
                 </div>
 
                 @if($lastVitalSigns)
@@ -169,7 +169,7 @@
                             @foreach($lastVitalSigns['vital_signs'] as $vitalSign)
                                 <div class="col-6">
                                     <div class="text-center p-2 bg-white rounded">
-                                        <small class="text-muted d-block">{{ $vitalSign->observationType?->name ?? 'Signo Vital' }}</small>
+                                        <small class="text-muted d-block">{{ $vitalSign->observationType?->name ?? __('patient.dashboard.vital_sign') }}</small>
                                         <strong class="
                                             @switch($vitalSign->observationType?->code ?? '')
                                                 @case('8480-6')
@@ -197,7 +197,7 @@
                 @else
                     <div class="text-center py-3">
                         <i class="fas fa-chart-line fa-2x text-muted mb-2"></i>
-                        <p class="text-muted mb-0">No hay signos vitales registrados</p>
+                        <p class="text-muted mb-0">{{ __('patient.dashboard.no_vital_signs_registered') }}</p>
                     </div>
                 @endif
             </div>
@@ -208,17 +208,17 @@
             <div class="col-12">
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{{ route('patient.medical_history',auth()->user()->patient->id) }}" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-history me-1"></i>Historial Médico Completo
+                        <i class="fas fa-history me-1"></i>{{ __('patient.dashboard.full_medical_history') }}
                     </a>
                     {{--}}
                     <a href="{{ route('patient.allergies') }}" class="btn btn-outline-danger btn-sm">
-                        <i class="fas fa-allergies me-1"></i>Gestionar Alergias
+                        <i class="fas fa-allergies me-1"></i>{{ __('patient.dashboard.manage_allergies') }}
                     </a>
                     <a href="{{ route('patient.medications') }}" class="btn btn-outline-success btn-sm">
-                        <i class="fas fa-pills me-1"></i>Mis Medicamentos
+                        <i class="fas fa-pills me-1"></i>{{ __('patient.dashboard.my_medications') }}
                     </a>
                     <a href="{{ route('patient.vital-signs') }}" class="btn btn-outline-info btn-sm">
-                        <i class="fas fa-heartbeat me-1"></i>Signos Vitales
+                        <i class="fas fa-heartbeat me-1"></i>{{ __('patient.vital-signs') }}
                     </a>
                     {{--}}
                 </div>

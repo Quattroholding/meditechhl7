@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="input-group mb-3">
-            <input type="text"  wire:model.live="query"   class="form-control" placeholder="Buscar {{$type}}" >
-            <button class="input-group-text btn btn-primary submit-form me-2" id="basic-addon2" wire:click="clearInput()"><i class="fa fa-close"></i> {{__('Limpiar')}}</button>
+            <input type="text"  wire:model.live="query"   class="form-control" placeholder="{{ __('consultation.search_cpt.search') }} {{$type}}" >
+            <button class="input-group-text btn btn-primary submit-form me-2" id="basic-addon2" wire:click="clearInput()"><i class="fa fa-close"></i> {{ __('consultation.search_cpt.clear') }}</button>
         </div>
 
         <!-- Spinner de Carga -->
@@ -24,7 +24,7 @@
         @endif
     </div>
     <div class="col-md-6">
-        <b>Seleccionados</b>
+        <b>{{ __('consultation.search_cpt.selected') }}</b>
         @foreach($selected as $r)
             <div class="row mb-3">
                 <div class="col-md-8">

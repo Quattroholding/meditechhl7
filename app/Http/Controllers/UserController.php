@@ -60,7 +60,6 @@ class UserController extends Controller
 
             if ($model->save() && $rol) {
 
-
                 $model->assignRole($rol->name);
                 // SE ASOCIA EL USUARIO CON EL CLIENTE QUE SELECCIONÓ EN EL FORMULARIO
 

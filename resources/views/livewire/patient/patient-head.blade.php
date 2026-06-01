@@ -33,7 +33,7 @@
             </div>
             <div class="data-actions">
                 @if(auth()->user()->hasRole('doctor') && $typeNote=='medical')
-                <button wire:click="openModalNote({{ $data->id }},'medical')" class="btn-head btn-head-light"> 📄  {{__('patient.add_note')}}</button>
+                <button wire:click="openModalNote({{ $data->id }},'medical')" class="btn-head btn-head-light"> 📄  {{ __('patient.add_private_note')}}</button>
                 @elseif(auth()->user()->hasRole('doctor') && $typeNote=='private')
                 <button wire:click="openModalNote({{ $data->id }},'private')" class="btn-head btn-head-light"> <i class="fa fa-unlock"></i>  {{__('patient.add_note_private')}}</button>
                 @endif

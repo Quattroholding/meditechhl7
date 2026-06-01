@@ -2,15 +2,15 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
             <i class="fas fa-prescription-bottle me-2"></i>
-            Top 5 Medicamentos Prescritos
+            {{ __('doctor.dashboard.top_5_prescribed_medications') }}
         </h4>
         <div class="dropdown">
             <select wire:model.live="timeFrame" class="form-select form-select-sm">
-                <option value="7">Últimos 7 días</option>
-                <option value="30">Últimos 30 días</option>
-                <option value="90">Últimos 3 meses</option>
-                <option value="365">Último año</option>
-                <option value="0">Todos los registros</option>
+                <option value="7">{{ __('doctor.dashboard.last_7_days') }}</option>
+                <option value="30">{{ __('doctor.dashboard.last_30_days') }}</option>
+                <option value="90">{{ __('doctor.dashboard.last_3_months') }}</option>
+                <option value="365">{{ __('doctor.dashboard.last_year') }}</option>
+                <option value="0">{{ __('doctor.dashboard.all_records') }}</option>
             </select>
         </div>
     </div>
@@ -74,7 +74,7 @@
                             </div>
                             <div class="medication-stats-text text-end">
                                 <span class="medication-count">{{ $medication['prescription_count'] }}</span>
-                                <small class="text-muted d-block">prescripciones</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.prescriptions') }}</small>
                             </div>
                         </div>
 
@@ -92,21 +92,21 @@
                         <!-- Detalles de prescripción -->
                         <div class="row text-center">
                             <div class="col-3">
-                                <small class="text-muted d-block">Consultas</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.consultations') }}</small>
                                 <span class="fw-bold">{{ $medication['encounter_count'] }}</span>
                             </div>
                             <div class="col-3">
-                                <small class="text-muted d-block">Pacientes</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.patients') }}</small>
                                 <span class="fw-bold">{{ $medication['patient_count'] }}</span>
                             </div>
                             <div class="col-3">
-                                <small class="text-muted d-block">Freq. Común</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.common_freq') }}</small>
                                 <span class="fw-bold text-truncate" title="{{ $medication['frequency'] }}">
                                     {{ Str::limit($medication['frequency'], 8) }}
                                 </span>
                             </div>
                             <div class="col-3">
-                                <small class="text-muted d-block">Cant. Prom.</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.avg_quantity') }}</small>
                                 <span class="fw-bold">{{ $medication['avg_quantity'] }}</span>
                             </div>
                         </div>
@@ -122,11 +122,11 @@
             <div class="total-summary mt-3 pt-3 border-top">
                 <div class="row text-center">
                     <div class="col-6">
-                        <h6 class="mb-1">Total Prescripciones</h6>
+                        <h6 class="mb-1">{{ __('doctor.dashboard.total_prescriptions') }}</h6>
                         <span class="h4 text-primary">{{ collect($topMedications)->sum('prescription_count') }}</span>
                     </div>
                     <div class="col-6">
-                        <h6 class="mb-1">Pacientes Únicos</h6>
+                        <h6 class="mb-1">{{ __('doctor.dashboard.unique_patients') }}</h6>
                         <span class="h4 text-success">{{ collect($topMedications)->sum('patient_count') }}</span>
                     </div>
                 </div>
@@ -134,12 +134,12 @@
         @else
             <div class="empty-state text-center py-4">
                 <i class="fas fa-prescription-bottle fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay medicamentos prescritos</h5>
+                <h5 class="text-muted">{{ __('doctor.dashboard.no_prescribed_medications') }}</h5>
                 <p class="text-muted mb-0">
                     @if($timeFrame == '0')
-                        No se encontraron prescripciones médicas.
+                        {{ __('doctor.dashboard.no_prescriptions_found') }}
                     @else
-                        No se encontraron prescripciones en los últimos {{ $timeFrame }} días.
+                        {{ __('doctor.dashboard.no_prescriptions_in_days', ['days' => $timeFrame]) }}
                     @endif
                 </p>
             </div>
@@ -149,7 +149,7 @@
     <div class="card-footer text-muted text-center">
         <small>
             <i class="fas fa-info-circle me-1"></i>
-            Basado en prescripciones activas del doctor
+            {{ __('doctor.dashboard.based_on_doctor_prescriptions') }}
         </small>
     </div>
     <style>

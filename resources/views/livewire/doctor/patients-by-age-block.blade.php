@@ -6,7 +6,7 @@
                 <div class="skeleton-chart"></div>
             </div>
         @else
-            <h5 class="text-base">Pacientes por Rango de Edad</h5>
+            <h5 class="text-base">{{ __('doctor.dashboard.patients_by_age_range') }}</h5>
             <div id="radial-patients-age-block"></div>
         @endif
     </div>
@@ -105,11 +105,11 @@
                             parseFloat(age60PlusPercentage) || 0
                         ],
                         labels: [
-                            '0-12 años (' + (age0to12Count || 0) + ')',
-                            '13-17 años (' + (age13to17Count || 0) + ')',
-                            '18-25 años (' + (age18to25Count || 0) + ')',
-                            '26-59 años (' + (age26to59Count || 0) + ')',
-                            '60+ años (' + (age60PlusCount || 0) + ')'
+                            '{{ __('doctor.dashboard.age_0_12') }} (' + (age0to12Count || 0) + ')',
+                            '{{ __('doctor.dashboard.age_13_17') }} (' + (age13to17Count || 0) + ')',
+                            '{{ __('doctor.dashboard.age_18_25') }} (' + (age18to25Count || 0) + ')',
+                            '{{ __('doctor.dashboard.age_26_59') }} (' + (age26to59Count || 0) + ')',
+                            '{{ __('doctor.dashboard.age_60_plus') }} (' + (age60PlusCount || 0) + ')'
                         ],
                         colors: ['#36A2EB', '#4BC0C0', '#FFCE56', '#FF6384', '#36EB42'],
                         responsive: [{

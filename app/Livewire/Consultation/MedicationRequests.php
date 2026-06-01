@@ -163,17 +163,21 @@ class MedicationRequests extends Component
         if ($addedCount > 0 && $notFoundCount > 0) {
             $this->dispatch('showToastrConsultation', [
                 'type' => 'warning',
-                'message' => "{$addedCount} medicamento(s) agregado(s). {$notFoundCount} no encontrado(s): ".implode(', ', $notFoundMedications),
+                'message' => __('consultation.medication_requests.medications_added_not_found', [
+                    'added_count' => $addedCount,
+                    'not_found_count' => $notFoundCount,
+                    'medications' => implode(', ', $notFoundMedications),
+                ]),
             ]);
         } elseif ($addedCount > 0) {
             $this->dispatch('showToastrConsultation', [
                 'type' => 'success',
-                'message' => "{$addedCount} medicamento(s) agregado(s) correctamente desde el dictado.",
+                'message' => __('consultation.medication_requests.medications_added_from_dictation', ['count' => $addedCount]),
             ]);
         } elseif ($notFoundCount > 0) {
             $this->dispatch('showToastrConsultation', [
                 'type' => 'error',
-                'message' => 'Medicamento(s) no encontrado(s) en la base de datos: '.implode(', ', $notFoundMedications),
+                'message' => __('consultation.medication_requests.medications_not_found_in_database', ['medications' => implode(', ', $notFoundMedications)]),
             ]);
         }
 
@@ -226,6 +230,7 @@ class MedicationRequests extends Component
 
     /**
      * Parse quantity from voice dictation to extract numeric value
+     * Extracts the number of physical units (tablets, capsules, ml), NOT milligrams
      */
     private function parseQuantity(?string $quantity): ?int
     {
@@ -233,12 +238,42 @@ class MedicationRequests extends Component
             return null;
         }
 
-        // Extract first numeric value (handles "1 tableta", "400 miligramos", etc.)
-        if (preg_match('/(\d+(?:\.\d+)?)/', $quantity, $matches)) {
+        $normalized = strtolower(trim($quantity));
+
+        // Check for unit keywords to extract correct quantity
+        $unitKeywords = ['tableta', 'cápsula', 'capsula', 'comprimido', 'gragea', 'sobre', 'ampolla', 'dosis', 'aplicación', 'aplicacion'];
+
+        foreach ($unitKeywords as $unit) {
+            // Look for patterns like "1 tableta", "2 cápsulas", etc.
+            if (preg_match('/(\d+(?:\.\d+)?)\s*'.$unit.'/', $normalized, $matches)) {
+                return (int) $matches[1];
+            }
+        }
+
+        // Check for ml/cc patterns
+        if (preg_match('/(\d+(?:\.\d+)?)\s*(ml|cc)/', $normalized, $matches)) {
             return (int) $matches[1];
         }
 
-        return null;
+        // If dosage contains "mg" or "miligramos", assume 1 unit
+        // (e.g., "500 mg" → 1 tablet of 500mg)
+        if (str_contains($normalized, 'mg') || str_contains($normalized, 'miligramo')) {
+            return 1;
+        }
+
+        // Extract first numeric value as fallback
+        if (preg_match('/(\d+(?:\.\d+)?)/', $quantity, $matches)) {
+            $value = (int) $matches[1];
+
+            // If value is very high (>100), it's probably mg, so return 1
+            if ($value > 100) {
+                return 1;
+            }
+
+            return $value;
+        }
+
+        return 1; // Default to 1 unit if nothing else works
     }
 
     /**
@@ -456,7 +491,7 @@ class MedicationRequests extends Component
                 $this->dispatch('saved-'.$key);
 
             } else {
-                $this->dispatch('error-'.$key, '¡Medicamento ('.$option['name'].') ya esta agregado a la  consulta.!');
+                $this->dispatch('error-'.$key, __('consultation.medication_requests.medication_already_added', ['name' => $option['name']]));
             }
 
             $this->getMedicationRequestsProperty();
@@ -693,9 +728,9 @@ class MedicationRequests extends Component
         $this->selectedLists = $this->encounter->medicationRequests()->get();
 
         if ($copiedCount > 0) {
-            session()->flash('message.success', "{$copiedCount} medicamento(s) copiado(s) exitosamente.");
+            session()->flash('message.success', __('consultation.medication_requests.medications_copied_successfully', ['count' => $copiedCount]));
         } else {
-            session()->flash('message.info', 'Los medicamentos seleccionados ya están en la receta actual.');
+            session()->flash('message.info', __('consultation.medication_requests.selected_medications_already_in_current_prescription'));
         }
 
         // Disparar evento para actualizar el estado del botón de finalizar
@@ -747,18 +782,18 @@ class MedicationRequests extends Component
 
                 $this->dispatch('showToastrConsultation',
                     type: 'success',
-                    message: 'Agregado a accesos rápidos'
+                    message: __('consultation.service_request.added_to_rapid_access')
                 );
             } else {
                 $this->dispatch('showToastrConsultation',
                     type: 'error',
-                    message: 'Ya está en accesos rápidos'
+                    message: __('consultation.service_request.already_in_rapid_access')
                 );
             }
         } catch (\Exception $e) {
             $this->dispatch('showToastrConsultation',
                 type: 'error',
-                message: 'Error al agregar a accesos rápidos'
+                message: __('consultation.service_request.error_adding_to_rapid_access')
             );
         }
     }

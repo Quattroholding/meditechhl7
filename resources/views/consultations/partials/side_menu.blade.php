@@ -3,13 +3,13 @@
          type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$patient_id}}" aria-controls="offcanvasRight"
          role="button" tabindex="0">
 
-        Ver Información del Paciente
+        {{ __('consultation.sidebar.view_patient_info') }}
     </div>
 </div>
 <div class="consultation-close-menu" onclick="change_menu_visibility()"
      role="button" tabindex="0" aria-label="Toggle menu visibility">
     <i class="fas fa-times me-1"></i>
-    <span class="menu-text">CERRAR MENÚ</span>
+    <span class="menu-text">{{ __('consultation.sidebar.close_menu') }}</span>
 </div>
 <div class="menu-right" role="navigation" aria-label="Consultation sections menu">
 
@@ -40,7 +40,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (!menu_visibility) {
             $('.menu-right').addClass('menu-right-off');
-            $('.menu-text').html('ABRIR MENÚ');
+            $('.menu-text').html('{{ __('consultation.sidebar.open_menu') }}');
         }
     });
 
@@ -48,11 +48,11 @@
         if (menu_visibility) {
             menu_visibility = false;
             $('.menu-right').addClass('menu-right-off');
-            $('.menu-text').html('ABRIR MENÚ');
+            $('.menu-text').html('{{ __('consultation.sidebar.open_menu') }}');
         } else {
             menu_visibility = true;
             $('.menu-right').removeClass('menu-right-off');
-            $('.menu-text').html('CERRAR MENÚ');
+            $('.menu-text').html('{{ __('consultation.sidebar.close_menu') }}');
         }
     }
 
@@ -77,12 +77,12 @@
             // Si cambió a móvil y el menú está abierto, cerrarlo
             menu_visibility = false;
             $('.menu-right').addClass('menu-right-off');
-            $('.menu-text').html('ABRIR MENÚ');
+            $('.menu-text').html('{{ __('consultation.sidebar.open_menu') }}');
         } else if (!isMobileDevice() && !menu_visibility) {
             // Si cambió a escritorio y el menú está cerrado, abrirlo
             menu_visibility = true;
             $('.menu-right').removeClass('menu-right-off');
-            $('.menu-text').html('CERRAR MENÚ');
+            $('.menu-text').html('{{ __('consultation.sidebar.close_menu') }}');
         }
     });
 </script>

@@ -10,6 +10,8 @@ class Icd10Code extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->code.' | '.$this->description_es;
+        $display = app()->getLocale() === 'es' ? $this->description_es : $this->description;
+
+        return $this->code.' | '.$display;
     }
 }

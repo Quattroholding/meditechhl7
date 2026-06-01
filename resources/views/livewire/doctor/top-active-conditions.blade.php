@@ -2,15 +2,15 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0">
             <i class="fas fa-chart-bar me-2" ></i>
-            Top 5 Condiciones Activas
+            {{ __('doctor.dashboard.top_5_active_conditions') }}
         </h4>
         <div class="dropdown">
             <select wire:model.live="timeFrame" class="form-select form-select-sm">
-                <option value="7">Últimos 7 días</option>
-                <option value="30">Últimos 30 días</option>
-                <option value="90">Últimos 3 meses</option>
-                <option value="365">Último año</option>
-                <option value="0">Todos los registros</option>
+                <option value="7">{{ __('doctor.dashboard.last_7_days') }}</option>
+                <option value="30">{{ __('doctor.dashboard.last_30_days') }}</option>
+                <option value="90">{{ __('doctor.dashboard.last_3_months') }}</option>
+                <option value="365">{{ __('doctor.dashboard.last_year') }}</option>
+                <option value="0">{{ __('doctor.dashboard.all_records') }}</option>
             </select>
         </div>
     </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="condition-stats-text">
                                 <span class="condition-count">{{ $condition['count'] }}</span>
-                                <small class="text-muted">casos</small>
+                                <small class="text-muted">{{ __('doctor.dashboard.cases') }}</small>
                             </div>
                         </div>
 
@@ -77,7 +77,7 @@
                                 <span class="fw-bold">{{ $condition['patient_count'] }}</span>
                             </div>
                             <div class="col-4">
-                                <small class="text-muted d-block">{{__('Porcentaje')}}</small>
+                                <small class="text-muted d-block">{{ __('doctor.dashboard.percentage') }}</small>
                                 <span class="fw-bold">{{ $condition['percentage'] }}%</span>
                             </div>
                         </div>
@@ -93,10 +93,10 @@
             <div class="total-summary mt-3 pt-3 border-top">
                 <div class="row text-center">
                     <div class="col-12">
-                        <h6 class="mb-1">Total de Diagnósticos</h6>
+                        <h6 class="mb-1">{{ __('doctor.dashboard.total_diagnoses') }}</h6>
                         <span class="h4 text-primary">{{ collect($topConditions)->sum('count') }}</span>
                         <small class="text-muted d-block">
-                            en {{ collect($topConditions)->sum('encounter_count') }} consultas
+                            {{ __('doctor.dashboard.in_consultations', ['count' => collect($topConditions)->sum('encounter_count')]) }}
                         </small>
                     </div>
                 </div>
@@ -104,12 +104,12 @@
         @else
             <div class="empty-state text-center py-4">
                 <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay datos disponibles</h5>
+                <h5 class="text-muted">{{ __('doctor.dashboard.no_data_available') }}</h5>
                 <p class="text-muted mb-0">
                     @if($timeFrame == '0')
-                        No se encontraron diagnósticos en las consultas finalizadas.
+                        {{ __('doctor.dashboard.no_diagnoses_found_completed') }}
                     @else
-                        No se encontraron diagnósticos en los últimos {{ $timeFrame }} días.
+                        {{ __('doctor.dashboard.no_diagnoses_in_days', ['days' => $timeFrame]) }}
                     @endif
                 </p>
             </div>
@@ -119,7 +119,7 @@
     <div class="card-footer text-muted text-center">
         <small>
             <i class="fas fa-info-circle me-1"></i>
-            Basado en consultas finalizados del doctor
+            {{ __('doctor.dashboard.based_on_doctor_consultations') }}
         </small>
     </div>
     <style>

@@ -41,7 +41,12 @@ class Create extends Component
             $this->encounter_sections = EncounterSection::whereNull('category')->orderBy('order')->get();
         }
 
-        $this->secciones = $this->encounter_sections->pluck('name_esp', 'id');
+        if (app()->getLocale() === 'es') {
+            $this->secciones = $this->encounter_sections->pluck('name_esp', 'id');
+
+        } else {
+            $this->secciones = $this->encounter_sections->pluck('name', 'id');
+        }
 
         $this->encounter = Encounter::withoutGlobalScope(EncouterScope::class)->find($this->encounter_id);
 

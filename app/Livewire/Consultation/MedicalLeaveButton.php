@@ -41,13 +41,16 @@ class MedicalLeaveButton extends Component
         ];
     }
 
-    protected $messages = [
-        'start_datetime.required' => 'La fecha y hora de inicio es obligatoria',
-        'end_datetime.required' => 'La fecha y hora de fin es obligatoria',
-        'end_datetime.after' => 'La fecha de fin debe ser posterior a la fecha de inicio',
-        'selected_condition_id.required' => 'Debe seleccionar un diagnóstico',
-        'selected_condition_id.exists' => 'El diagnóstico seleccionado no existe',
-    ];
+    protected function messages()
+    {
+        return [
+            'start_datetime.required' => __('consultation.medical_leave.start_datetime_required'),
+            'end_datetime.required' => __('consultation.medical_leave.end_datetime_required'),
+            'end_datetime.after' => __('consultation.medical_leave.end_datetime_after_start'),
+            'selected_condition_id.required' => __('consultation.medical_leave.condition_required'),
+            'selected_condition_id.exists' => __('consultation.medical_leave.condition_exists'),
+        ];
+    }
 
     public function mount()
     {
@@ -80,7 +83,7 @@ class MedicalLeaveButton extends Component
         if (! $this->hasDiagnoses) {
             $this->dispatch('showToastrConsultation', [
                 'type' => 'warning',
-                'message' => 'Debe agregar al menos un diagnóstico antes de crear una incapacidad médica',
+                'message' => __('consultation.medical_leave.must_add_diagnosis_first'),
             ]);
 
             return;
@@ -110,7 +113,7 @@ class MedicalLeaveButton extends Component
         } catch (ValidationException $e) {
             \Log::error('Validación falló', ['errors' => $e->errors()]);
             // La validación falló - Livewire muestra los errores automáticamente
-            session()->flash('error', 'Por favor corrija los errores en el formulario');
+            session()->flash('error', __('consultation.medical_leave.please_correct_form_errors'));
 
             return;
         }
@@ -175,12 +178,17 @@ class MedicalLeaveButton extends Component
 
                 $this->dispatch('showToastrConsultation',
                     type: 'success',
-                    message: "Incapacidad médica #{$medicalLeave->identifier} creada exitosamente. Se enviará por email a {$email}"
+                    message: __('consultation.medical_leave.created_successfully_email_sent', [
+                        'identifier' => $medicalLeave->identifier,
+                        'email' => $email,
+                    ])
                 );
             } else {
                 $this->dispatch('showToastrConsultation',
                     type: 'success',
-                    message: "Incapacidad médica #{$medicalLeave->identifier} creada exitosamente. El paciente no tiene email registrado."
+                    message: __('consultation.medical_leave.created_successfully_no_email', [
+                        'identifier' => $medicalLeave->identifier,
+                    ])
                 );
             }
 
@@ -205,7 +213,7 @@ class MedicalLeaveButton extends Component
 
             $this->dispatch('showToastrConsultation',
                 type: 'error',
-                message: 'Error al crear la incapacidad médica: '.$e->getMessage()
+                message: __('consultation.medical_leave.error_creating').' '.$e->getMessage()
             );
 
         }

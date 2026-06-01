@@ -8,16 +8,16 @@
             <div class="view-buttons">
 
                 <button wire:click="changeView('monthly')" class="btn {{ $currentView === 'monthly' ? 'btn-primary active' : 'btn-secondary' }} btn-fonts">
-                    {{__('Mensual')}}
+                    {{ __('appointment.view.monthly') }}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
 
                 <button wire:click="changeView('weekly')" class="btn {{ $currentView === 'weekly' ? 'btn-primary active' : 'btn-secondary' }}">
-                    {{__('Semanal')}}
+                    {{ __('appointment.view.weekly') }}
                 </button>
 
                 <button wire:click="changeView('daily')" class="btn {{ $currentView === 'daily' ? 'btn-primary active' : 'btn-secondary' }} btn-fonts">
-                    {{__('Hoy')}}
+                    {{ __('appointment.view.daily') }}
                 </button>
                 @endif
             </div>
@@ -32,11 +32,11 @@
             </div>
             <div class="view-buttons">
                 <button wire:click="openModal" class="btn btn-primary btn-fonts">
-                   <i class="fa fa-calendar"></i> Nueva Cita
+                   <i class="fa fa-calendar"></i> {{ __('appointment.new_appointment') }}
                 </button>
                 @if(!auth()->user()->hasRole('paciente'))
                 <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary btn-fonts">
-                    <i class="fa fa-user-injured"></i> Registrar Paciente
+                    <i class="fa fa-user-injured"></i> {{ __('appointment.register_patient') }}
                 </button>
                 @endif
             </div>
@@ -65,12 +65,12 @@
         <!-- Filtros -->
         <div class="filters-section">
             <div>
-                <input wire:model.live="searchTerm" type="text" placeholder="Buscar paciente, doctor..." class="form-control btn-fonts">
+                <input wire:model.live="searchTerm" type="text" placeholder="{{ __('appointment.search_placeholder') }}" class="form-control btn-fonts">
             </div>
             <div>
                 @if(!auth()->user()->hasRole('doctor'))
                 <select wire:model.live="selectedDoctor" class="form-control btn-fonts">
-                    <option value="">Todos los doctores</option>
+                    <option value="">{{ __('appointment.all_doctors') }}</option>
                     @foreach($doctors as $key=>$val)
                         <option value="{{ $key }}">{{ $val }}</option>
                     @endforeach
@@ -79,17 +79,17 @@
             </div>
             <div>
                 <select wire:model.live="selectedStatus" class="form-control btn-fonts">
-                    <option value="">Todos los estados</option>
-                    <option value="booked">Programada</option>
-                    <option value="arrived">Llegada</option>
-                    <option value="checked-in">En Progreso</option>
-                    <option value="fullfilled">Completada</option>
-                    <option value="cancelled">Cancelada</option>
-                    <option value="noshow">No Asistió</option>
+                    <option value="">{{ __('appointment.all_statuses') }}</option>
+                    <option value="booked">{{ __('appointment.status_booked') }}</option>
+                    <option value="arrived">{{ __('appointment.status_arrived') }}</option>
+                    <option value="checked-in">{{ __('appointment.status_checked_in') }}</option>
+                    <option value="fullfilled">{{ __('appointment.status_fulfilled') }}</option>
+                    <option value="cancelled">{{ __('appointment.status_cancelled') }}</option>
+                    <option value="noshow">{{ __('appointment.status_noshow') }}</option>
                 </select>
             </div>
             <div class="col-xl-3 col-md-6">
-                <button wire:click="clearFilters" class="btn btn-secondary w-full btn-fonts">Limpiar Filtros</button>
+                <button wire:click="clearFilters" class="btn btn-secondary w-full btn-fonts">{{ __('appointment.clear_filters') }}</button>
             </div>
             {{--}}
             <div>
@@ -98,7 +98,7 @@
 
             <div class="col-xl-3 col-md-6 text-end">
                 <button wire:click="toggleTimeBlockConfig" class="btn btn-secondary w-full btn-fonts">
-                    ⚙️ Configurar Bloques
+                    ⚙️ {{ __('appointment.configure_blocks') }}
                 </button>
             </div>
            {{--}}
@@ -186,13 +186,13 @@
         <div class="modal-overlay" wire:click="toggleTimeBlockConfig">
             <div class="modal-content" wire:click.stop style="max-width: 400px;">
                 <div class="modal-header">
-                    <h2 class="modal-title">Configuración de Bloques de Tiempo</h2>
+                    <h2 class="modal-title">{{ __('appointment.time_block_config') }}</h2>
                     <button wire:click="toggleTimeBlockConfig" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
 
                 <form wire:submit="updateTimeBlockConfig">
                     <div class="form-group">
-                        <label class="form-label">Tamaño de Bloques</label>
+                        <label class="form-label">{{ __('appointment.block_size') }}</label>
                         <select wire:model="timeBlockMinutes" class="form-control-full">
                             @foreach($timeBlockOptions as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
@@ -203,7 +203,7 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="form-group">
-                            <label class="form-label">Hora de Inicio</label>
+                            <label class="form-label">{{ __('appointment.start_hour') }}</label>
                             <select wire:model="startHour" class="form-control-full">
                                 @for($hour = 0; $hour <= 23; $hour++)
                                     <option value="{{ $hour }}">{{ sprintf('%02d:00', $hour) }}</option>
@@ -213,7 +213,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Hora de Fin</label>
+                            <label class="form-label">{{ __('appointment.end_hour') }}</label>
                             <select wire:model="endHour" class="form-control-full">
                                 @for($hour = 1; $hour <= 24; $hour++)
                                     <option value="{{ $hour }}">{{ sprintf('%02d:00', $hour) }}</option>
@@ -225,16 +225,16 @@
 
                     <div class="form-group">
                         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 14px;">
-                            <strong>Vista Previa:</strong><br>
-                            • Bloques de {{ $timeBlockMinutes }} minutos<br>
-                            • Horario: {{ sprintf('%02d:00', $startHour) }} - {{ sprintf('%02d:00', $endHour) }}<br>
-                            • Total: {{ (($endHour - $startHour) * 60) / $timeBlockMinutes }} bloques por día
+                            <strong>{{ __('appointment.preview') }}:</strong><br>
+                            • {{ __('appointment.blocks_of') }} {{ $timeBlockMinutes }} {{ __('appointment.minutes') }}<br>
+                            • {{ __('appointment.schedule') }}: {{ sprintf('%02d:00', $startHour) }} - {{ sprintf('%02d:00', $endHour) }}<br>
+                            • {{ __('appointment.total') }}: {{ (($endHour - $startHour) * 60) / $timeBlockMinutes }} {{ __('appointment.blocks_per_day') }}
                         </div>
                     </div>
 
                     <div style="margin-top: 20px; display: flex; gap: 15px;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">Aplicar Configuración</button>
-                        <button type="button" wire:click="toggleTimeBlockConfig" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">{{ __('appointment.apply_configuration') }}</button>
+                        <button type="button" wire:click="toggleTimeBlockConfig" class="btn btn-secondary">{{ __('generic.cancel') }}</button>
                     </div>
                 </form>
             </div>

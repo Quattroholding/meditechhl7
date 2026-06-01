@@ -39,6 +39,9 @@
                 <img src="{{ URL::asset('/assets/img/icons/support-icon-01.svg') }}" alt="Centro de Ayuda" style="width: 32px; height: 32px;">
             </a>
         </li>
+        <li class="nav-item" style="padding-top: 15px; padding-right: 10px;">
+            @livewire('settings.language-switcher')
+        </li>
         <li class="nav-item dropdown d-none d-md-block">
             @php
                 $unreadNotifications = auth()->user()->unreadNotifications()->limit(10)->get();
@@ -54,9 +57,9 @@
             </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
-                    <span>Notificaciones</span>
+                    <span>{{ __('notifications.title') }}</span>
                     @if($unreadCount > 0)
-                        <a href="javascript:void(0);" class="text-primary" onclick="markAllAsRead()" style="float: right; font-size: 12px;">Marcar todas como leídas</a>
+                        <a href="javascript:void(0);" class="text-primary" onclick="markAllAsRead()" style="float: right; font-size: 12px;">{{ __('notifications.mark_all_as_read') }}</a>
                     @endif
                 </div>
                 <div class="drop-scroll">
@@ -70,7 +73,7 @@
                                         </span>
                                         <div class="media-body">
                                             <p class="noti-details">
-                                                <span class="noti-title">{{ $notification->data['title'] ?? 'Notificación' }}</span><br>
+                                                <span class="noti-title">{{ $notification->data['title'] ?? __('notifications.notification') }}</span><br>
                                                 <small>{{ $notification->data['message'] ?? '' }}</small>
                                                 @if(isset($notification->data['steps']))
                                                     <ul style="font-size: 11px; margin-top: 5px; padding-left: 15px;">
@@ -90,14 +93,14 @@
                         @empty
                             <li class="notification-message">
                                 <div class="text-center py-3">
-                                    <p class="text-muted">No tienes notificaciones pendientes</p>
+                                    <p class="text-muted">{{ __('notifications.no_notifications') }}</p>
                                 </div>
                             </li>
                         @endforelse
                     </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
-                    <a href="{{ route('notifications.index') }}">Ver todas las notificaciones</a>
+                    <a href="{{ route('notifications.index') }}">{{ __('notifications.view_all') }}</a>
                 </div>
             </div>
         </li>

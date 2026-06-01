@@ -41,7 +41,7 @@
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 24px; font-weight: 700;">{{ $totalExams }}</div>
-                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalExams == 1 ? 'examen' : 'exámenes' }}</div>
+                                <div style="font-size: 12px; opacity: 0.9;">{{ $totalExams == 1 ? '{{ __('patient.medical_history.physical_exams_grouped.exam') }}' : '{{ __('patient.medical_history.physical_exams_grouped.exams') }}' }}</div>
                             </div>
                         </div>
                     </div>
@@ -281,8 +281,8 @@
     @else
         <div style="text-align: center; padding: 60px; color: #64748b;">
             <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
-            <h3>No hay exámenes físicos registrados</h3>
-            <p>Este paciente no tiene exámenes físicos en el período seleccionado.</p>
+            <h3>No hay {{ __('patient.medical_history.physical_exams_grouped.exams') }} físicos registrados</h3>
+            <p>Este paciente no tiene {{ __('patient.medical_history.physical_exams_grouped.exams') }} físicos en el período seleccionado.</p>
         </div>
     @endif
 </div>

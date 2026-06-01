@@ -56,7 +56,7 @@ class SearchCptDropdown extends Component
             'q' => $this->query,
         ]);
 
-        //$this->results = $response->json() ?? []; LO CAMBIE PORQUE NO FUNCIONABAN LOS DROPDOWNS DE ACCESOS RAPIDOS 16/04/26
+        // $this->results = $response->json() ?? []; LO CAMBIE PORQUE NO FUNCIONABAN LOS DROPDOWNS DE ACCESOS RAPIDOS 16/04/26
         $this->results = $response->json('data') ?? [];
     }
 
