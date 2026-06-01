@@ -39,9 +39,11 @@
                 <img src="{{ URL::asset('/assets/img/icons/support-icon-01.svg') }}" alt="Centro de Ayuda" style="width: 32px; height: 32px;">
             </a>
         </li>
+        {{--}}
         <li class="nav-item" style="padding-top: 15px; padding-right: 10px;">
             @livewire('settings.language-switcher')
         </li>
+        {{--}}
         <li class="nav-item dropdown d-none d-md-block">
             @php
                 $unreadNotifications = auth()->user()->unreadNotifications()->limit(10)->get();
