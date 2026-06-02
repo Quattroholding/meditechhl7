@@ -14,6 +14,7 @@ return [
     'general_information' => 'General Information',
     'changes_history' => 'Change History',
     'operation_completed' => 'Operation completed',
+    'select_diagnosis' => 'Select Diagnosis',
 
     // Patient Information
     'address' => 'Address',
@@ -695,6 +696,15 @@ return [
         'birth_date' => 'Birth Date:',
         'doctor' => 'Doctor:',
         'speciality' => 'Specialty:',
+    ],
+
+    // Timer
+    'timer' => [
+        'remaining_time' => 'Remaining Time',
+        'overtime' => 'Overtime',
+        'completed_on_time' => 'Duration',
+        'completed_overtime' => 'Duration (Exceeded)',
+        'extra' => 'extra',
     ],
 
     // Service Request

@@ -13,6 +13,7 @@ class Client extends Model
     protected $fillable = [
         'name',
         'diagnostic_ai_suggestions',
+        'show_consultation_timer',
         'group',
         'ruc',
         'dv',
@@ -30,6 +31,7 @@ class Client extends Model
 
     protected $casts = [
         'diagnostic_ai_suggestions' => 'boolean',
+        'show_consultation_timer' => 'boolean',
         'hemoscreen_only' => 'boolean',
     ];
 

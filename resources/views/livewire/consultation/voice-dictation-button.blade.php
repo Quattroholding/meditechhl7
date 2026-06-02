@@ -10,7 +10,7 @@
             'btn-warning': isProcessing
         }"
         class="btn"
-        style="position: fixed; bottom: 110px; right: 30px; z-index: 9999; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;"
+        style="position: fixed; bottom: 90px; right: 30px; z-index: 9999; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;"
         :title="buttonTitle"
         :disabled="isProcessing"
     >

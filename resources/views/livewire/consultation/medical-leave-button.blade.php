@@ -5,7 +5,7 @@
         wire:click="openModal"
         type="button"
         class="btn btn-primary"
-        style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;"
+        style="position: fixed; bottom: 20px; right: 30px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;"
         title="Crear Incapacidad Médica"
     >
 

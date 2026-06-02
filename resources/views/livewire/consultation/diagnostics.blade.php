@@ -81,7 +81,7 @@
         {{-- Search Input and AI Button --}}
         <div style="width:100%;padding:20px;">
             <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text"  wire:model.live="query" class="form-control" placeholder="{{ __('general.write_diagnosis') }}" style="padding: 0 20px; flex: 1;">
+                <input type="text"  wire:model.live="query" class="form-control" placeholder="{{ __('consultation.select_diagnosis') }}" style="padding: 0 20px; flex: 1;">
 
                 @if($this->aiSuggestionsEnabled)
                 <button
