@@ -332,7 +332,7 @@
                                     <strong>{{ strtoupper(__('consultation.medication_requests_section.load_more_results')) }}</strong>
                                 </div>
                                 <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
-                                    {{ __('general.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.medication_requests_section.results_available') }}
+                                    {{ __('generic.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.medication_requests_section.results_available') }}
                                 </div>
                             </div>
                             <div wire:loading wire:target="loadMore">

@@ -15,7 +15,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path></svg>
                                     </span>
-                                    <span>{{ __('general.delete') }}</span>
+                                    <span>{{ __('generic.delete') }}</span>
                                 </div>
                                 </span>
                                 </td>
@@ -152,7 +152,7 @@
 
                     {{-- Disclaimer --}}
                     <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.85rem;">
-                        <strong>⚠️ {{ __('general.important') }}:</strong> {{ __('consultation.diagnostics_ai.important_disclaimer') }}
+                        <strong>⚠️ {{ __('generic.important') }}:</strong> {{ __('consultation.diagnostics_ai.important_disclaimer') }}
                     </div>
                 </div>
 
@@ -160,7 +160,7 @@
                 @if($loadingAiSuggestions)
                     <div style="padding: 40px; text-align: center;">
                         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">{{ __('general.loading') }}</span>
+                            <span class="visually-hidden">{{ __('generic.loading') }}</span>
                         </div>
                         <p style="margin-top: 15px; color: #6c757d;">{{ __('consultation.diagnostics_ai.loading_suggestions') }}</p>
                     </div>
@@ -291,7 +291,7 @@
                                     <strong>{{ strtoupper(__('consultation.diagnostics_ai.load_more_results')) }}</strong>
                                 </div>
                                 <div style="font-size: 0.9rem; margin-top: 4px; opacity: 0.9;">
-                                    {{ __('general.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.diagnostics_ai.results_available') }}
+                                    {{ __('genric.there_are') }} {{ $totalResults - count($results) }} {{ __('consultation.diagnostics_ai.results_available') }}
                                 </div>
                             </div>
                             <div wire:loading wire:target="loadMore">

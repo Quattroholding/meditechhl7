@@ -33,4 +33,7 @@ return [
     'no_client_selected' => 'No client selected',
     'error' => 'Error',
     'are_you_sure' => 'Are you sure?',
+    'loading' => 'Loading...',
+    'important' => 'Important',
+    'there_are'=>'There are',
 ];
