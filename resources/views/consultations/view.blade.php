@@ -175,6 +175,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                                 <dl class="dl-horizontal">
+                                                    @empty(!$encounter->presentIllnesses->locations)
                                                     <dt>{{ __('encounter.locations') }}</dt>
                                                     <dd>
 
@@ -190,18 +191,31 @@
                                                             N/A
                                                         @endif
                                                     </dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->severity)
                                                     <dt>{{ __('encounter.severity') }}</dt>
                                                     <dd>{{__('present_illness.'.$encounter->presentIllnesses->severity)}}</dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->duration)
                                                     <dt>{{ __('encounter.duration') }}</dt>
                                                     <dd>{{__('present_illness.'.$encounter->presentIllnesses->duration)}}</dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->timing)
                                                     <dt>{{ __('encounter.timing') }}</dt>
                                                     <dd>{{__('present_illness.'.$encounter->presentIllnesses->timing) }}</dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->aggravating_factors)
                                                     <dt>{{ __('encounter.aggravating_factors') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->aggravating_factors}}</dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->alleviating_factors)
                                                     <dt>{{ __('encounter.alleviating_factors') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->alleviating_factors}}</dd>
+                                                    @endempty
+                                                    @empty(!$encounter->presentIllnesses->associated_symptoms)
                                                     <dt>{{ __('encounter.associated_symptoms') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->associated_symptoms}}</dd>
+                                                    @endempty
                                                     <dt>{{ __('encounter.description') }}</dt>
                                                     <dd>{{$encounter->presentIllnesses->description}}</dd>
                                                 </dl>

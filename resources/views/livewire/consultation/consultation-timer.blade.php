@@ -15,9 +15,16 @@
         >
             <span class="timer-v6-label">{{ $timerData['message'] }}</span>
             <span class="timer-v6-separator">:</span>
-            <span class="timer-v6-time" x-text="displayTime"></span>
+            <span
+                class="timer-v6-time"
+                x-text="displayTime"
+                title="{{ $timerData['status'] === 'finished' ? __('consultation.timer.tooltip_total_duration') : __('consultation.timer.tooltip_current_time') }}"
+            ></span>
             @if(isset($timerData['overtime']))
-                <span class="timer-v6-badge">
+                <span
+                    class="timer-v6-badge"
+                    title="{{ __('consultation.timer.tooltip_overtime') }}"
+                >
                     +<span x-text="formatSeconds({{ $timerData['overtime'] }})"></span>
                 </span>
             @endif
@@ -138,6 +145,11 @@ function consultationTimer(initialData) {
         },
 
         calculateCurrentSeconds() {
+            // Para consultas finalizadas (static), usar el valor inicial
+            if (this.timerData.type === 'static') {
+                return this.timerData.seconds || 0;
+            }
+
             if (!this.appointmentEndTimestamp) {
                 return 0;
             }

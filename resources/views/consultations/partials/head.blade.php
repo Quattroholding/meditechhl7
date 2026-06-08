@@ -68,7 +68,7 @@
         </div>
         @endif
     </div>
-
+    @livewire('consultation.consultation-timer', ['encounter' => $encounter, 'appointment' => $appointment])
 
 </div>
 

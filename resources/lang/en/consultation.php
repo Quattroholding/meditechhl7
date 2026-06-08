@@ -705,6 +705,9 @@ return [
         'completed_on_time' => 'Duration',
         'completed_overtime' => 'Duration (Exceeded)',
         'extra' => 'extra',
+        'tooltip_total_duration' => 'Total consultation time from start to finish',
+        'tooltip_current_time' => 'Currently elapsed time',
+        'tooltip_overtime' => 'Time exceeded from scheduled limit',
     ],
 
     // Service Request
