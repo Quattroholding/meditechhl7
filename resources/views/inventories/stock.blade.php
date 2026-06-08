@@ -16,7 +16,7 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <livewire:inventory.stock-management/>
+                            <livewire:inventory.stock-management :item="$itemId"/>
                         </div>
                     </div>
                 </div>

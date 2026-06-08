@@ -33,9 +33,11 @@ class InventoryController extends Controller
     /**
      * Display the stock management interface.
      */
-    public function stockIndex()
+    public function stockIndex(Request $request)
     {
-        return view('inventories.stock');
+        $itemId = $request->query('item');
+
+        return view('inventories.stock', compact('itemId'));
     }
 
     /**

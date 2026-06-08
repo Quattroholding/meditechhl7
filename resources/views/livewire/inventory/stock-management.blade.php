@@ -16,7 +16,7 @@
                 <div class="col-12 col-md-6">
                     <div class="input-block local-forms">
                         <x-input-label for="selectedItemId" value="Seleccionar Item" required/>
-                        <livewire:components.inventory-item-selector wire:model="selectedItemId" :required="true" />
+                        <livewire:components.inventory-item-selector wire:model="selectedItemId" :selectedItemId="$selectedItemId" :required="true" />
                     </div>
                 </div>
                 <div class="col-12 col-md-6">

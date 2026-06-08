@@ -25,6 +25,16 @@ class InventoryItemSelector extends Component
 
     public function mount()
     {
+        $this->loadSelectedItem();
+    }
+
+    public function updatedSelectedItemId()
+    {
+        $this->loadSelectedItem();
+    }
+
+    protected function loadSelectedItem()
+    {
         if ($this->selectedItemId) {
             $item = InventoryItem::find($this->selectedItemId);
             if ($item) {
