@@ -116,6 +116,10 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.2fa');
     })->name('2fa');
 
+    Route::get('/inventory', function () {
+        return view('help.inventory');
+    })->name('inventory');
+
     Route::get('/roles', function () {
         $roles = Rol::whereIn('id', [5, 2, 6, 3, 4])
             ->get()

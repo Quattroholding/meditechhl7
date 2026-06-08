@@ -491,6 +491,8 @@ EOT;
     /**
      * Process medical dictation audio and extract structured clinical information
      *
+     * Extracts: reason for encounter, present illness, vital signs, and physical exam findings
+     *
      * @param  string  $audioBase64  Base64 encoded audio file
      * @param  string  $mimeType  Audio mime type (audio/webm, audio/mp4, audio/wav, audio/ogg)
      * @param  int|null  $encounterId  Optional encounter ID for context
@@ -566,10 +568,9 @@ EOT;
             Log::info('Claude AI: Medical dictation processed successfully', [
                 'has_transcription' => isset($normalizedData['transcription']),
                 'has_reason' => isset($normalizedData['reason']),
+                'has_present_illness' => isset($normalizedData['present_illness']),
                 'vital_signs_count' => count($normalizedData['vital_signs'] ?? []),
-                'diagnostics_count' => count($normalizedData['diagnostics'] ?? []),
-                'medications_count' => count($normalizedData['medications'] ?? []),
-                'service_requests_count' => count($normalizedData['service_requests'] ?? []),
+                'physical_exam_count' => count($normalizedData['physical_exam'] ?? []),
             ]);
 
             return $normalizedData;
@@ -596,19 +597,12 @@ Identifica y extrae:
 2. Enfermedad actual (síntomas, duración, severidad)
 3. Signos vitales mencionados
 4. Hallazgos del examen físico
-5. Diagnósticos
-6. Medicamentos prescritos
-7. Exámenes de laboratorio solicitados
-8. Imágenes diagnósticas solicitadas
-9. Procedimientos solicitados
 
 IMPORTANTE:
 - Responde ÚNICAMENTE con JSON válido, sin markdown ni texto adicional
 - Usa terminología médica precisa en español
 - Si no detectas información para un campo, omítelo del JSON
 - Para signos vitales, usa códigos LOINC estándar
-- Para diagnósticos, incluye código ICD-10 si es mencionado
-- Para service requests (laboratorios, imágenes, procedimientos), extrae el nombre descriptivo exacto mencionado
 
 CRÍTICO - SIGNOS VITALES:
 - SOLO extrae signos vitales con valores NUMÉRICOS explícitos
@@ -667,32 +661,7 @@ SCHEMA JSON DE RESPUESTA:
   },
   "physical_exam": {
     "codigo_loinc": "hallazgo textual"
-  },
-  "diagnostics": [
-    {
-      "code": "código ICD-10",
-      "description": "Descripción del diagnóstico",
-      "confidence": "high|medium|low"
-    }
-  ],
-  "medications": [
-    {
-      "medication_name": "Nombre del medicamento SIN la dosis",
-      "dosage": "Cantidad de unidades por toma (ej: '1 tableta', '2 cápsulas', '10 ml')",
-      "frequency": "Frecuencia en horas (ej: 8, 12, 24)",
-      "route": "Vía de administración",
-      "duration": "Duración del tratamiento en días (ej: '5', '7', '10')",
-      "instructions": "Instrucciones completas incluyendo dosis en miligramos"
-    }
-  ],
-  "service_requests": [
-    {
-      "service_type": "laboratory|images|procedure",
-      "description": "Descripción del examen/imagen/procedimiento solicitado",
-      "priority": "routine|urgent|asap|stat",
-      "note": "Indicaciones o notas adicionales (opcional)"
-    }
-  ]
+  }
 }
 
 CÓDIGOS LOINC COMUNES PARA EXAMEN FÍSICO:
@@ -711,72 +680,6 @@ CÓDIGOS LOINC COMUNES PARA EXAMEN FÍSICO:
 - 11394-4: Examen de extremidades
 - 11395-1: Examen neurológico
 - 11396-9: Examen de piel
-
-CRÍTICO - SERVICE REQUESTS (EXÁMENES, IMÁGENES, PROCEDIMIENTOS):
-- Extrae TODOS los exámenes de laboratorio mencionados (ej: "hemograma completo", "glucosa", "perfil lipídico", "pruebas de función hepática")
-- Extrae TODAS las imágenes diagnósticas solicitadas (ej: "radiografía de tórax", "ecografía abdominal", "tomografía", "resonancia magnética")
-- Extrae TODOS los procedimientos solicitados (ej: "electrocardiograma", "espirometría", "biopsia")
-- Clasifica cada uno en el service_type correcto:
-  - "laboratory": análisis de sangre, orina, heces, cultivos, química sanguínea, hematología, etc.
-  - "images": rayos X, ecografías, TAC, resonancias magnéticas, mamografías, etc.
-  - "procedure": ECG, espirometrías, biopsias, endoscopias, colonoscopias, pruebas de esfuerzo, etc.
-- Para priority, usa:
-  - "routine": exámenes de rutina o control
-  - "urgent": requiere atención pronta
-  - "asap": lo antes posible
-  - "stat": inmediato/emergencia
-
-EJEMPLOS DE SERVICE REQUESTS:
-- "solicitar hemograma completo" → {"service_type": "laboratory", "description": "Hemograma completo", "priority": "routine"}
-- "proteína C reactiva" o "PCR" → {"service_type": "laboratory", "description": "Proteína C reactiva", "priority": "routine"}
-- "radiografía de tórax PA y lateral" → {"service_type": "images", "description": "Radiografía de tórax", "priority": "routine", "note": "PA y lateral"}
-- "realizar electrocardiograma" → {"service_type": "procedure", "description": "Electrocardiograma", "priority": "routine"}
-- "nebulización con salbutamol" → {"service_type": "procedure", "description": "Nebulización", "priority": "routine", "note": "Con salbutamol"}
-
-IMPORTANTE para descripciones:
-- Usa nombres GENÉRICOS y SIMPLES (ej: "Hemograma completo", NO "hemograma completo con diferencial")
-- Para radiografías, usa solo "Radiografía de [parte del cuerpo]" (ej: "Radiografía de tórax")
-- Detalles específicos (PA, lateral, con contraste, etc.) van en el campo "note"
-
-EJEMPLOS DE MEDICAMENTOS (CRÍTICO):
-1. "azitromicina quinientos miligramos día uno y luego doscientos cincuenta miligramos diarios por cuatro días"
-   → {
-       "medication_name": "Azitromicina",
-       "dosage": "1 tableta",
-       "frequency": "24",
-       "route": "oral",
-       "duration": "5",
-       "instructions": "500 mg el primer día, luego 250 mg diarios por 4 días"
-     }
-
-2. "acetaminofén quinientos miligramos cada seis horas si fiebre"
-   → {
-       "medication_name": "Acetaminofén",
-       "dosage": "1 tableta",
-       "frequency": "6",
-       "route": "oral",
-       "duration": "",
-       "instructions": "500 mg cada 6 horas si presenta fiebre"
-     }
-
-3. "nebulización con salbutamol"
-   → {
-       "medication_name": "Salbutamol",
-       "dosage": "1 dosis",
-       "frequency": "",
-       "route": "inhalado",
-       "duration": "",
-       "instructions": "Nebulización"
-     }
-
-REGLAS IMPORTANTES PARA MEDICAMENTOS:
-- **medication_name**: Solo el nombre del medicamento, SIN dosis en miligramos
-- **dosage**: Cantidad de UNIDADES físicas (tabletas, cápsulas, ml), NO miligramos
-  - Si se mencion "500 mg" → dosage debe ser "1 tableta" (asumiendo presentación estándar)
-  - Si no se especifica la forma, usa "1 dosis"
-- **frequency**: Solo el NÚMERO de horas entre cada toma (6, 8, 12, 24)
-- **duration**: Solo el NÚMERO de días, NO incluir "días"
-- **instructions**: Aquí SÍ incluye todas las dosis en miligramos y detalles completos
 
 RESPONDE SOLO CON EL JSON (sin ```json ni markdown):
 EOT;
@@ -827,33 +730,6 @@ EOT;
             $normalized['physical_exam'] = array_filter($data['physical_exam'], function ($value) {
                 return ! empty($value);
             });
-        }
-
-        // Diagnostics
-        if (isset($data['diagnostics']) && is_array($data['diagnostics'])) {
-            $normalized['diagnostics'] = array_filter($data['diagnostics'], function ($item) {
-                return isset($item['code']) && isset($item['description']);
-            });
-        }
-
-        // Medications
-        if (isset($data['medications']) && is_array($data['medications'])) {
-            $normalized['medications'] = array_filter($data['medications'], function ($item) {
-                return isset($item['medication_name']);
-            });
-        }
-
-        // Service Requests (laboratory, images, procedures)
-        if (isset($data['service_requests']) && is_array($data['service_requests'])) {
-            $normalized['service_requests'] = array_values(array_filter($data['service_requests'], function ($item) {
-                // Validate required fields and service_type
-                $validServiceTypes = ['laboratory', 'images', 'procedure'];
-
-                return isset($item['service_type'])
-                    && in_array($item['service_type'], $validServiceTypes)
-                    && isset($item['description'])
-                    && ! empty($item['description']);
-            }));
         }
 
         return $normalized;

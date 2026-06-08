@@ -250,6 +250,14 @@
                 @endif
             </a>
 
+            <a href="{{ route('help.inventory') }}" class="nav-link {{ $active === 'inventory' ? 'active' : '' }}">
+                <i class="fas fa-boxes"></i>
+                <span>Inventario</span>
+                @if ($active === 'inventory')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
+
             <a href="{{ route('help.medical-directory') }}" class="nav-link {{ $active === 'medical-directory' ? 'active' : '' }}">
                 <i class="fas fa-address-book"></i>
                 <span>Directorio Médico</span>
