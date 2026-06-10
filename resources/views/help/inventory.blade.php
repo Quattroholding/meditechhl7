@@ -538,6 +538,12 @@ body {
                         </a>
                     </li>
                     <li>
+                        <a href="#paso-6">
+                            <i class="fas fa-undo-alt"></i>
+                            Paso 6: Devolver Suministros
+                        </a>
+                    </li>
+                    <li>
                         <a href="#historial">
                             <i class="fas fa-history"></i>
                             Historial de Transacciones
@@ -1070,6 +1076,193 @@ body {
                         <i class="fas fa-bell"></i>
                         <div>
                             <strong>Notificaciones:</strong> Puedes configurar el sistema para enviar emails automáticos cuando un artículo llega al punto de reorden.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Paso 6: Devolver Suministros -->
+            <section id="paso-6" class="step-card step-primary">
+                <div class="step-number">6</div>
+                <h3 class="step-title">Devolver Suministros Dispensados</h3>
+                <div class="step-content">
+                    <p>Si dispensaste un suministro incorrecto durante una consulta, puedes devolverlo al inventario:</p>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-route me-2"></i>¿Cuándo Devolver?</h6>
+                        <ul>
+                            <li><strong>Artículo Incorrecto:</strong> Se dispensó el item equivocado</li>
+                            <li><strong>Cantidad Incorrecta:</strong> Se registró más de lo que se usó</li>
+                            <li><strong>No Usado:</strong> El paciente no requirió el suministro finalmente</li>
+                            <li><strong>Paciente Rechazó:</strong> El paciente decidió no usar el suministro</li>
+                            <li><strong>Vencido/Dañado:</strong> Se detectó que el producto estaba en mal estado</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-mouse-pointer me-2"></i>Proceso de Devolución</h6>
+                        <ol>
+                            <li>Abre la <strong>consulta donde se dispensó el suministro</strong></li>
+                            <li>Ve a la pestaña <strong>"Suministros Médicos"</strong></li>
+                            <li>Busca la sección <strong>"Suministros Dispensados"</strong> (card verde)</li>
+                            <li>Encuentra el suministro que deseas devolver</li>
+                            <li>Haz clic en el botón <strong>"Devolver"</strong></li>
+                        </ol>
+                    </div>
+
+                    <div class="info-box info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Importante:</strong> Solo puedes devolver suministros desde la consulta donde fueron dispensados. Los suministros deben estar en estado "Completado".
+                        </div>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-edit me-2"></i>Completar el Formulario de Devolución</h6>
+                        <table class="field-table">
+                            <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Requerido</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Cantidad a Devolver</strong></td>
+                                <td data-label="Descripción">Cantidad que deseas devolver. Puede ser total o parcial.</td>
+                                <td data-label="Requerido"><span class="required">Sí</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Razón de Devolución</strong></td>
+                                <td data-label="Descripción">Selecciona el motivo: Artículo Incorrecto, Cantidad Incorrecta, No Usado, Paciente Rechazó, Vencido, Dañado, Otro</td>
+                                <td data-label="Requerido"><span class="required">Sí</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Notas Adicionales</strong></td>
+                                <td data-label="Descripción">Detalles adicionales sobre la devolución (opcional)</td>
+                                <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-cogs me-2"></i>¿Qué Sucede al Procesar la Devolución?</h6>
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #00897b !important;">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold" style="color: #00897b;"><i class="fas fa-box me-2"></i>1. Stock Restaurado</h6>
+                                        <p class="small mb-0">La cantidad devuelta se suma automáticamente al inventario de donde se tomó (sucursal o profesional).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0288d1 !important;">
+                                    <div class="card-body">
+                                        <h6 class="text-primary fw-bold"><i class="fas fa-exchange-alt me-2"></i>2. Transacción Registrada</h6>
+                                        <p class="small mb-0">Se crea una transacción de tipo RETURN en el historial de inventario.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #f57c00 !important;">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold" style="color: #f57c00;"><i class="fas fa-dollar-sign me-2"></i>3. Cargo Ajustado</h6>
+                                        <p class="small mb-0">Si era facturable, el cargo se ajusta (parcial) o anula (total).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #388e3c !important;">
+                                    <div class="card-body">
+                                        <h6 class="text-success fw-bold"><i class="fas fa-clipboard-check me-2"></i>4. Auditoría Completa</h6>
+                                        <p class="small mb-0">Se registra quién, cuándo, por qué y cuánto se devolvió.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-percent me-2"></i>Devoluciones Parciales vs Totales</h6>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-warning">
+                                    <div class="card-header bg-warning bg-opacity-10">
+                                        <strong>Devolución Parcial</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="small"><strong>Ejemplo:</strong> Dispensaste 10 guantes, solo usaste 6</p>
+                                        <p class="small mb-2"><strong>Devuelves:</strong> 4 guantes</p>
+                                        <p class="small mb-0">
+                                            <i class="fas fa-check text-success"></i> Stock: +4 unidades<br>
+                                            <i class="fas fa-dollar-sign text-warning"></i> Cargo: Ajustado a 6 unidades<br>
+                                            <i class="fas fa-undo text-info"></i> Puedes devolver más después
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-danger">
+                                    <div class="card-header bg-danger bg-opacity-10">
+                                        <strong>Devolución Total</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="small"><strong>Ejemplo:</strong> Dispensaste 10 gasas por error</p>
+                                        <p class="small mb-2"><strong>Devuelves:</strong> 10 gasas (todo)</p>
+                                        <p class="small mb-0">
+                                            <i class="fas fa-check text-success"></i> Stock: +10 unidades<br>
+                                            <i class="fas fa-ban text-danger"></i> Cargo: Anulado completamente<br>
+                                            <i class="fas fa-lock text-secondary"></i> No se puede devolver más
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-history me-2"></i>Ver Historial de Devoluciones</h6>
+                        <p>Si un suministro tiene devoluciones, verás:</p>
+                        <ul>
+                            <li>Cantidad total devuelta (en color amarillo)</li>
+                            <li>Cantidad neta = Dispensado - Devuelto (en color verde)</li>
+                            <li>Botón "Ver devoluciones (X)" que despliega el detalle completo</li>
+                            <li>Cada devolución muestra: cantidad, razón, fecha, usuario y notas</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box info-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Validaciones Importantes:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>No puedes devolver más de lo dispensado</li>
+                                <li>La cantidad debe ser mayor a 0</li>
+                                <li>La razón es obligatoria</li>
+                                <li>Si ya devolviste todo, el botón "Devolver" se deshabilitará</li>
+                                <li>Las devoluciones quedan registradas permanentemente</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="info-box info-tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>Mejores Prácticas:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li><strong>Revisa antes de finalizar:</strong> Verifica los suministros en la consulta ANTES de finalizarla</li>
+                                <li><strong>Devuelve rápido:</strong> Procesa devoluciones lo antes posible para mantener el inventario actualizado</li>
+                                <li><strong>Usa notas:</strong> Agrega detalles útiles que expliquen el contexto de la devolución</li>
+                                <li><strong>Verifica el stock:</strong> Confirma en Inventario que el stock se restauró correctamente</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

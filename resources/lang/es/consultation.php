@@ -94,7 +94,7 @@ return [
     // Medications
     'medicine' => 'Medicamentos',
     'medication' => 'Medicamento',
-    'medication_requests' => 'Prescripcion de medicamentos',
+    'medication_requests_title' => 'Prescripcion de medicamentos',
     'medical_prescriptions' => 'Recetas médicas',
     'dosage' => 'Dosis',
     'dose_quantity' => 'Cantidad de dosis',

@@ -22,8 +22,11 @@
 <header>
     <!-- Logo según pais -->
     <!-- Panamá = 1 -->
+
     @if(request()->has('html'))
         <img style="max-height:56px" src="{{ url('assets/img/logo.png') }}">
+    @elseif($data->appointment->client->logo)
+        <img style="max-height:56px" src="{{ storage_path('app/public/'.$data->appointment->client->logo) }}">
     @else
         <img style="max-height:56px" src="{{ public_path('images/logoSAMI.png') }}">
     @endif

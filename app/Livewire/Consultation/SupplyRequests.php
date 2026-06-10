@@ -34,10 +34,15 @@ class SupplyRequests extends Component
 
     public $hasMoreResults = false;
 
+    public $completedSupplies = [];
+
+    protected $listeners = ['supply-returned' => 'refreshCompletedSupplies'];
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
         $this->getSupplyRequestsProperty();
+        $this->refreshCompletedSupplies();
     }
 
     public function getSupplyRequestsProperty()
@@ -256,6 +261,15 @@ class SupplyRequests extends Component
         if ($supplyRequest) {
             $supplyRequest->update(['custom_price' => $value ?: null]);
         }
+    }
+
+    public function refreshCompletedSupplies()
+    {
+        $this->completedSupplies = $this->encounter->supplyRequests()
+            ->with(['inventoryItem', 'supplyDelivery.supplyReturns'])
+            ->where('status', SupplyRequestStatus::COMPLETED)
+            ->orderBy('updated_at', 'DESC')
+            ->get();
     }
 
     public function render()

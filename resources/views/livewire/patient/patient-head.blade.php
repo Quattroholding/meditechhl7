@@ -37,7 +37,7 @@
                 @elseif(auth()->user()->hasRole('doctor') && $typeNote=='private')
                 <button wire:click="openModalNote({{ $data->id }},'private')" class="btn-head btn-head-light"> <i class="fa fa-unlock"></i>  {{__('patient.add_note_private')}}</button>
                 @endif
-                @if(auth()->user()->hasRole('doctor'))
+                @if(auth()->user()->hasRole('doctor') or auth()->user()->hasRole('paciente'))
                 <livewire:patient.add-medical-history :patient_id="$data->id"/>
                 @endif
                 <livewire:patient.add-insurance :patient_id="$data->id"/>

@@ -9,6 +9,10 @@
             @if(file_exists($logoPath) && is_file($logoPath))
                 <img src="data:image/{{ pathinfo($doctorProfile->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($logoPath)) }}" alt="Logo" class="facility-logo">
             @endif
+        @elseif($encounter->appointment->client->logo)
+            @if(file_exists( storage_path('app/public/'.$encounter->appointment->client->logo)) && is_file( storage_path('app/public/'.$encounter->appointment->client->logo)))
+                <img src="{{ storage_path('app/public/'.$encounter->appointment->client->logo) }}" alt="Logo" class="facility-logo">
+            @endif
         @endif
     </div>
 

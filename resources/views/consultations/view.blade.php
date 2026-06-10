@@ -54,7 +54,7 @@
                                 @if($encounter->medicationRequests->count() > 0)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="medications-tab" data-bs-toggle="tab" data-bs-target="#medications" type="button" role="tab" aria-controls="medications" aria-selected="false">
-                                        <i class="fa fa-pills"></i> {{ __('consultation.medication_requests') }}
+                                        <i class="fa fa-pills"></i> {{ __('consultation.medication_requests_title') }}
                                     </button>
                                 </li>
                                 @endif

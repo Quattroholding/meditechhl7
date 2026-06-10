@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
+use App\Models\User;
 use App\Notifications\EncounterPrescriptionNotification;
 use App\Notifications\SendPatientSatisfactionSurvey;
 use App\Services\EncounterPrescriptionPdfService;
@@ -145,6 +146,7 @@ class EncounterObserver
     /**
      * Send prescription notification to patient with attached PDFs
      * Only sends if practitioner has signature and seal, and there are unsent prescriptions
+     * Also sends to all receptionists (asistente role) associated with the same client
      */
     private function sendPrescriptionNotification(Encounter $encounter): void
     {
@@ -158,16 +160,6 @@ class EncounterObserver
                 $this->safeLog('info', 'Practitioner no tiene firma y sello configurados, no se envian recetas', [
                     'encounter_id' => $encounter->id,
                     'practitioner_id' => $practitioner->id,
-                ]);
-
-                return;
-            }
-
-            // Validate patient has email
-            if (! $patient || ! $patient->email) {
-                $this->safeLog('info', 'Paciente sin email para envio de recetas', [
-                    'encounter_id' => $encounter->id,
-                    'patient_id' => $patient?->id,
                 ]);
 
                 return;
@@ -192,12 +184,61 @@ class EncounterObserver
                 return;
             }
 
-            // Send notification with PDFs attached
-            $patient->notify(new EncounterPrescriptionNotification(
-                $encounter,
-                $hasUnsentMedications,
-                $hasUnsentServiceRequests
-            ));
+            // Send notification to patient
+            if ($patient && $patient->email) {
+                $patient->notify(new EncounterPrescriptionNotification(
+                    $encounter,
+                    $hasUnsentMedications,
+                    $hasUnsentServiceRequests
+                ));
+
+                $this->safeLog('info', 'Notificacion de recetas medicas enviada al paciente', [
+                    'encounter_id' => $encounter->id,
+                    'patient_id' => $patient->id,
+                    'patient_email' => $patient->email,
+                ]);
+            } else {
+                $this->safeLog('info', 'Paciente sin email para envio de recetas', [
+                    'encounter_id' => $encounter->id,
+                    'patient_id' => $patient?->id,
+                ]);
+            }
+
+            // Send notification to all receptionists (asistente role) associated with the same client
+            $client = $encounter->appointment->client;
+            if ($client) {
+                $receptionists = User::role('asistente')
+                    ->whereHas('clients', function ($query) use ($client) {
+                        $query->where('clients.id', $client->id);
+                    })
+                    ->whereNotNull('email')
+                    ->get();
+
+                $notifiedCount = 0;
+                foreach ($receptionists as $receptionist) {
+                    try {
+                        $receptionist->notify(new EncounterPrescriptionNotification(
+                            $encounter,
+                            $hasUnsentMedications,
+                            $hasUnsentServiceRequests
+                        ));
+                        $notifiedCount++;
+                    } catch (\Exception $e) {
+                        $this->safeLog('error', 'Error al enviar notificacion a recepcionista', [
+                            'encounter_id' => $encounter->id,
+                            'user_id' => $receptionist->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+
+                $this->safeLog('info', 'Notificaciones de recetas enviadas a recepcionistas del cliente', [
+                    'encounter_id' => $encounter->id,
+                    'client_id' => $client->id,
+                    'receptionists_notified' => $notifiedCount,
+                    'total_receptionists' => $receptionists->count(),
+                ]);
+            }
 
             // Mark prescriptions as sent
             if ($hasUnsentMedications) {
@@ -208,13 +249,12 @@ class EncounterObserver
                 $pdfService->markServiceRequestsAsSent($encounter);
             }
 
-            $this->safeLog('info', 'Notificacion de recetas medicas enviada', [
+            $this->safeLog('info', 'Notificacion de recetas medicas completada', [
                 'encounter_id' => $encounter->id,
                 'patient_id' => $patient->id,
                 'practitioner_id' => $practitioner->id,
                 'has_medications' => $hasUnsentMedications,
                 'has_service_requests' => $hasUnsentServiceRequests,
-                'patient_email' => $patient->email,
             ]);
 
         } catch (\Exception $e) {

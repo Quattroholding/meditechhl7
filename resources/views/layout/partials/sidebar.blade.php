@@ -269,10 +269,10 @@
                 <li>
                     <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/medical_history') ? 'active' : '' }}"  href="{{ route('patient.medical_history',auth()->user()->patient->id) }}">
                         <span class="menu-side"><i class="fa fa-file-medical"></i></span>&nbsp;
-                        <span>{{ __('patient.medical_history') }}</span>
+                        <span>{{ __('patient.clinical_history') }}</span>
                     </a>
                 </li>
-                @endcan
+                @endif
                 @canany(['users.view', 'users.create','users.validate'])
                 <li class="submenu">
                     <a href="javascript:;"><span class="menu-side">
@@ -420,7 +420,7 @@
                         <span>{{ __('doctor.profile') }}</span>
                     </a>
                 </li>
-                @endcan
+                @endif
                 @if(auth()->user()->can('patients.profile') && auth()->user()->patient)
                     <li>
                         <a class="{{ Request::is('patients/'.auth()->user()->patient->id.'/profile') ? 'active' : '' }}"  href="{{ route('patient.profile',auth()->user()->patient->id) }}">
@@ -428,7 +428,7 @@
                             <span>{{ __('patient.profile') }}</span>
                         </a>
                     </li>
-                @endcan
+                @endif
                 @can('users.profile')
                     <li>
                         <a class="{{ Request::is('profile') ? 'active' : '' }}"  href="{{ route('profile.edit') }}">

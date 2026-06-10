@@ -14,6 +14,130 @@
         </div>
     @endif
 
+    {{-- Suministros Completados/Dispensados --}}
+    @if(count($completedSupplies) > 0)
+        <div class="card border-success mb-4">
+            <div class="card-header bg-success bg-opacity-10 border-success">
+                <h6 class="mb-0">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    Suministros Dispensados
+                    <span class="badge bg-success ms-2">{{ count($completedSupplies) }}</span>
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                <table style="width:100%;" border="1" class="medicine-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Suministro</th>
+                            <th style="width: 20%;">Cantidad</th>
+                            <th style="width: 25%;">Estado</th>
+                            <th style="width: 25%;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($completedSupplies as $supply)
+                        @php
+                            $delivery = $supply->supplyDelivery;
+                            $quantityReturned = $delivery ? $delivery->getTotalQuantityReturned() : 0;
+                            $netQuantity = $delivery ? $delivery->getNetQuantity() : $supply->quantity;
+                            $canReturn = $delivery && ($netQuantity > 0);
+                        @endphp
+                        <tr class="consultation-tr-inputs" style="background: {{ $loop->iteration % 2 == 0 ? '#fff' : '#f8f9fa' }}">
+                            <td>
+                                <b>{{ $supply->inventoryItem->name }}</b>
+                                <div style="font-size: 0.85rem; color: #6c757d;">
+                                    SKU: {{ $supply->inventoryItem->sku }}
+                                </div>
+                                @if($supply->is_free)
+                                    <span class="badge bg-success" style="font-size: 0.75rem;">
+                                        <i class="fas fa-gift"></i> Gratuito
+                                    </span>
+                                @elseif($supply->custom_price)
+                                    <div style="font-size: 0.85rem; color: #6c757d;">
+                                        Precio: ${{ number_format($supply->custom_price, 2) }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="mb-1">
+                                    <strong>Dispensado:</strong> {{ $supply->quantity }} {{ $supply->unit_of_measure }}
+                                </div>
+                                @if($quantityReturned > 0)
+                                    <div class="text-warning mb-1">
+                                        <i class="fas fa-undo"></i>
+                                        <strong>Devuelto:</strong> {{ $quantityReturned }} {{ $supply->unit_of_measure }}
+                                    </div>
+                                    <div class="text-success">
+                                        <strong>Neto:</strong> {{ $netQuantity }} {{ $supply->unit_of_measure }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check"></i> Completado
+                                </span>
+                                @if($delivery)
+                                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 4px;">
+                                        {{ $delivery->occurrence_datetime->format('d/m/Y H:i') }}
+                                    </div>
+                                    @if($delivery->lot_number)
+                                        <div style="font-size: 0.75rem; color: #6c757d;">
+                                            Lote: {{ $delivery->lot_number }}
+                                        </div>
+                                    @endif
+                                @endif
+                            </td>
+                            <td>
+                                @if($canReturn)
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-warning"
+                                        wire:click="$dispatch('openReturnModal', { deliveryId: {{ $delivery->id }} })"
+                                        title="Devolver suministro">
+                                        <i class="fas fa-undo me-1"></i>
+                                        Devolver
+                                    </button>
+                                @else
+                                    <span class="text-muted small">
+                                        <i class="fas fa-check-double"></i>
+                                        Devuelto completamente
+                                    </span>
+                                @endif
+
+                                @if($delivery && $delivery->hasReturns())
+                                    <div class="mt-2">
+                                        <a href="#" class="btn btn-sm btn-link text-decoration-none" data-bs-toggle="collapse" data-bs-target="#returns-{{ $delivery->id }}">
+                                            <i class="fas fa-history"></i>
+                                            Ver devoluciones ({{ $delivery->supplyReturns->count() }})
+                                        </a>
+                                        <div class="collapse mt-2" id="returns-{{ $delivery->id }}">
+                                            <div class="card card-body small">
+                                                @foreach($delivery->supplyReturns as $return)
+                                                    <div class="mb-2 pb-2 border-bottom">
+                                                        <strong>{{ $return->quantity_returned }} {{ $return->unit_of_measure }}</strong>
+                                                        - {{ $return->reason->label() }}
+                                                        <div class="text-muted">
+                                                            {{ $return->returned_at->format('d/m/Y H:i') }}
+                                                            por {{ $return->returnedBy->name }}
+                                                        </div>
+                                                        @if($return->notes)
+                                                            <div class="text-muted fst-italic">{{ $return->notes }}</div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endif
+
     {{-- Lista de suministros seleccionados --}}
     @if(count($selectedSupplies) > 0)
         <table style="width:100%;" border="1" class="medicine-table">
@@ -208,4 +332,15 @@
             </div>
         @endif
     </div>
+
+    {{-- Return Supply Modal Component --}}
+    @livewire('consultation.return-supply')
 </div>
+
+@script
+<script>
+    $wire.on('openReturnModal', (event) => {
+        Livewire.dispatch('openReturnModal', event);
+    });
+</script>
+@endscript
