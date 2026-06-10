@@ -24,11 +24,22 @@
     <!-- Panamá = 1 -->
 
     @if(request()->has('html'))
-        <img style="max-height:56px" src="{{ url('assets/img/logo.png') }}">
+        @if($data->appointment->client->logo)
+            <img style="max-height:56px" src="{{ url('storage/'.$data->appointment->client->logo) }}">
+        @else
+            <img style="max-height:56px" src="{{ url('assets/img/logo.png') }}">
+        @endif
     @elseif($data->appointment->client->logo)
-        <img style="max-height:56px" src="{{ storage_path('app/public/'.$data->appointment->client->logo) }}">
+        @php
+            $clientLogoPath = public_path('storage/' . $data->appointment->client->logo);
+        @endphp
+        @if(file_exists($clientLogoPath) && is_file($clientLogoPath))
+            <img style="max-height:56px" src="data:image/{{ pathinfo($data->appointment->client->logo, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($clientLogoPath)) }}">
+        @else
+            <img style="max-height:56px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logoSAMI.png'))) }}">
+        @endif
     @else
-        <img style="max-height:56px" src="{{ public_path('images/logoSAMI.png') }}">
+        <img style="max-height:56px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logoSAMI.png'))) }}">
     @endif
     {{--}}
     @if($data['appointment']->clinic()->first()->pais != "1")
