@@ -122,6 +122,10 @@ class RolePermissionSeeder extends Seeder
             // Service Request
             ['name' => 'service_request.view', 'description' => 'Ver lista de Solicitud de Examenes', 'module' => 'examenes'],
             ['name' => 'service_request.upload_result', 'description' => 'Subir Resultado', 'module' => 'examenes'],
+
+            // Medication Request
+            ['name' => 'medication_request.view', 'description' => 'Ver repositorio de prescripciones médicas', 'module' => 'prescripciones'],
+
             // Dashboard access
             ['name' => 'dashboard.admin', 'description' => 'Acceso al dashboard de administrador', 'module' => 'dashboards'],
             ['name' => 'dashboard.doctor', 'description' => 'Acceso al dashboard de médico', 'module' => 'dashboards'],
@@ -249,6 +253,7 @@ class RolePermissionSeeder extends Seeder
             // 'settings.prescription_template',
             'service_request.view',
             'service_request.upload_result',
+            'medication_request.view',
             'branches.view',
             'branches.create',
             'branches.edit',
@@ -303,6 +308,7 @@ class RolePermissionSeeder extends Seeder
             'payments.delete',
             'service_request.view',
             'service_request.upload_result',
+            'medication_request.view',
             'users.profile',
             'users.change_client',
         ]);
@@ -402,6 +408,7 @@ class RolePermissionSeeder extends Seeder
             'settings.create_user_procedures',
             'service_request.view',
             'service_request.upload_result',
+            'medication_request.view',
             'branches.view',
             'branches.create',
             'branches.edit',
@@ -485,6 +492,7 @@ class RolePermissionSeeder extends Seeder
             // 'settings.prescription_template',
             'service_request.view',
             'service_request.upload_result',
+            'medication_request.view',
             'practitioners.profile',
             'practitioners.directory',
             'practitioners.add_assistant',

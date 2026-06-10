@@ -134,7 +134,7 @@
                     </ul>
                 </li>
                 @endcan
-                @can('service_request.view')
+                @canany(['service_request.view', 'medication_request.view'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side"> <i class="fa fa-tasks"></i></span>
@@ -142,10 +142,15 @@
                         <span class="menu-arrow"></span>
                     </a>
                     <ul style="display: none;">
+                        @can('service_request.view')
                         <li><a class="{{ Request::is('service_requests') ? 'active' : '' }}" href="{{ route('service_request.index') }}">{{ __('menu.studies.list') }}</a></li>
+                        @endcan
+                        @can('medication_request.view')
+                        <li><a class="{{ Request::is('medication_requests') ? 'active' : '' }}" href="{{ route('medication_request.index') }}">Prescripciones</a></li>
+                        @endcan
                     </ul>
                 </li>
-                @endcan
+                @endcanany
                 @canany(['medicines.view','medicines.create'])
                 <li class="submenu">
                     <a href="javascript:;">

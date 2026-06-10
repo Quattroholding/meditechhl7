@@ -211,6 +211,21 @@ Route::group(['prefix' => 'service_requests', 'middleware' => ['auth', 'verified
 });
 
 // ============================================================================
+// MEDICATION REQUEST ROUTES - Repositorio de Prescripciones
+// ============================================================================
+
+Route::group(['prefix' => 'medication_requests', 'middleware' => ['auth', 'verified', 'first.login']], function () {
+
+    // Repositorio de prescripciones médicas
+    Route::get('/', function () {
+        return view('medication-requests.index');
+    })
+        ->middleware('permission:medication_request.view')
+        ->name('medication_request.index');
+
+});
+
+// ============================================================================
 // MEDICINE ROUTES - Catálogo de Medicamentos
 // ============================================================================
 
