@@ -28,7 +28,7 @@
                 <br><br>
                 @if($d->note)
                     <strong>Notas adicionales:</strong><br>
-                    {{ $d->note }}
+                    {{ $d->note }}<br/><br/>
                 @endif
             @endforeach
         </div>

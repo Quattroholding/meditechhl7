@@ -73,7 +73,6 @@
             }
         </style>
     </x-slot:additionalStyles>
-
     @foreach($servicePages as $pageIndex => $pageServices)
         <x-documents.page
             :doctor-profile="$doctorProfile ?? null"
@@ -89,25 +88,26 @@
                 <div class="content-section rx-section">
                     <div class="section-header">{{ $serviceTypeTitle }}</div>
                     <div class="section-content">
+
                         @foreach($pageServices as $index => $service)
                             @php $service = (object) $service; @endphp
                             <div class="service-item">
                                 <div class="service-details">
-                                    {{ ($pageIndex * $servicesPerPage) + $index + 1 }}. {{ $service->code }} | {{ $service->cpt['description_es'] ?? 'Servicio no especificado' }}
+                                    {{ ($pageIndex * $servicesPerPage) + $index + 1 }}. {{ $service->code }} | {{ $service->cpt['description_es'] ?? 'Servicio no especificado' }}<br/>
                                 </div>
                                 @if($service->body_site && is_array($service->body_site))
                                     <div class="service-details">
-                                        <strong>Sitio Anatómico:</strong> {{ $service->body_site['display'] ?? $service->body_site['code'] ?? 'N/A' }}
+                                        <strong>Sitio Anatómico:</strong> {{ $service->body_site['display'] ?? $service->body_site['code'] ?? 'N/A' }}<br/>
                                     </div>
                                 @endif
                                 @if($service->patient_instruction)
                                     <div class="service-details">
-                                        <strong>Instrucciones para el paciente:</strong> {{ $service->patient_instruction }}
+                                        <strong>Instrucciones para el paciente:</strong> {{ $service->patient_instruction }}<br/>
                                     </div>
                                 @endif
                                 @if($service->note)
                                     <div class="service-details">
-                                        <strong>Notas:</strong> {{ $service->note }}
+                                        <strong>Notas:</strong> {{ $service->note }}<br/><br/>
                                     </div>
                                 @endif
                                 @if($service->reason_code)

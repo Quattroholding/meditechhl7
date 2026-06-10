@@ -146,12 +146,12 @@
             <tr>
                 <td align="right">
                     @if($selloExists)
-                    <img src="{{$selloPath}}">
+                    <img src="data:image/{{ pathinfo($selloPath, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($selloPath)) }}">
                     @endif
                 </td>
                 <td align="left">
                     @if($firmaExists)
-                    <img src="{{$firmaPath}}">
+                    <img src="data:image/{{ pathinfo($firmaPath, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($firmaPath)) }}">
                     @endif
                 </td>
             </tr>
