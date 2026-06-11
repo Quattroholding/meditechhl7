@@ -828,7 +828,7 @@ class ModalSave extends Component
 
         // Verificar conflictos con otras citas
         $query = Appointment::where('practitioner_id', $this->doctor_id)
-            ->whereRaw("date_format(start,'%Y-%m-%d') = '".$this->appointment_date."'")
+            ->whereDate('start', $this->appointment_date)
             ->where('status', '!=', 'cancelled')
             ->where(function ($q) use ($startTime, $endTime) {
                 $q->where(function ($q2) use ($startTime, $endTime) {

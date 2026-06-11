@@ -26,7 +26,10 @@ class ApiController extends Controller
 
         $data = Patient::selectRaw($select)
             ->when($request->has('q'), function ($q) use ($request) {
-                $q->whereRaw("(identifier LIKE '%".$request->q."%' or name LIKE '%".$request->q."%')");
+                $q->where(function ($query) use ($request) {
+                    $query->where('identifier', 'like', '%'.$request->q.'%')
+                        ->orWhere('name', 'like', '%'.$request->q.'%');
+                });
             })
             ->take(10)
             ->get();
@@ -50,7 +53,10 @@ class ApiController extends Controller
                 });
             })
             ->when($request->has('q'), function ($q) use ($request) {
-                $q->whereRaw("(first_name LIKE '%".$request->q."%' or last_name LIKE '%".$request->q."%')");
+                $q->where(function ($query) use ($request) {
+                    $query->where('first_name', 'like', '%'.$request->q.'%')
+                        ->orWhere('last_name', 'like', '%'.$request->q.'%');
+                });
             })
             ->take(10)
             ->get();
@@ -69,7 +75,11 @@ class ApiController extends Controller
 
         $query = Icd10Code::selectRaw($select)
             ->when($request->has('q'), function ($q) use ($request) {
-                $q->whereRaw("(code LIKE '%".$request->q."%' or description LIKE '%".$request->q."%' or description_es LIKE '%".$request->q."%')");
+                $q->where(function ($query) use ($request) {
+                    $query->where('code', 'like', '%'.$request->q.'%')
+                        ->orWhere('description', 'like', '%'.$request->q.'%')
+                        ->orWhere('description_es', 'like', '%'.$request->q.'%');
+                });
             });
 
         if ($request->has('ramdom')) {

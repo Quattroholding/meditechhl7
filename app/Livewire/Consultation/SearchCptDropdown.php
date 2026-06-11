@@ -95,7 +95,14 @@ class SearchCptDropdown extends Component
     public function delete($id)
     {
         $rapidAccess = RapidAccess::find($id);
-        $rapidAccess->delete();
+
+        if ($rapidAccess) {
+            $rapidAccess->delete();
+            $this->dispatch('notify', ['message' => 'Acceso rápido eliminado correctamente', 'type' => 'success']);
+        } else {
+            $this->dispatch('notify', ['message' => 'El registro ya no existe', 'type' => 'warning']);
+        }
+
         $this->setSelectedOptions();
     }
 

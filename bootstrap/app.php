@@ -18,6 +18,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Livewire\Exceptions\ComponentNotFoundException;
+use Livewire\Mechanisms\HandleComponents\CorruptComponentPayloadException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -122,7 +124,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Don't report Livewire exceptions caused by session expiration or stale browser cache
+        $exceptions->dontReport([
+            CorruptComponentPayloadException::class,
+            ComponentNotFoundException::class,
+        ]);
     })
     ->withSchedule(function ($schedule) {
         // === Tareas de Suscripciones ===

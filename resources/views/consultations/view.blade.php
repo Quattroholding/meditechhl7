@@ -284,9 +284,13 @@
                                                         <tr>
                                                             <td>{{ $exam->observationType->name }}</td>
                                                             <td>
-
                                                                 @foreach((array)$exam->finding as $key=>$value)
-                                                                    {{$value}}
+                                                                    @if(is_array($value))
+                                                                        {{ implode(', ', $value) }}
+                                                                    @else
+                                                                        {{ $value }}
+                                                                    @endif
+                                                                    @if(!$loop->last)<br>@endif
                                                                 @endforeach
                                                             </td>
                                                             {{--}}

@@ -234,8 +234,15 @@ class Create extends Component
         $this->patients = [];
         $this->existingPatientData = null;
 
+        // Use parameterized queries to prevent SQL injection
         $query = DB::table('patients')
-            ->whereRaw("(identifier ='".$this->id_number."' or identifier ='".$this->id_number."-SELF' or identifier ='".$this->id_number."-SPOUSE' or identifier ='".$this->id_number."-CHILD' or identifier ='".$this->id_number."-CHILDDISAB')")
+            ->where(function ($q) {
+                $q->where('identifier', $this->id_number)
+                    ->orWhere('identifier', $this->id_number.'-SELF')
+                    ->orWhere('identifier', $this->id_number.'-SPOUSE')
+                    ->orWhere('identifier', $this->id_number.'-CHILD')
+                    ->orWhere('identifier', $this->id_number.'-CHILDDISAB');
+            })
             ->get();
 
         if ($query->count() > 0) {

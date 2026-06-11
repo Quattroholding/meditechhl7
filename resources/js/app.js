@@ -339,3 +339,28 @@ function updateUnreadCount() {
         .catch(error => console.error('Error:', error));
 }
 
+// Livewire error handlers
+document.addEventListener('livewire:init', () => {
+    Livewire.hook('request', ({ fail }) => {
+        fail(({ status, content, preventDefault }) => {
+            // Handle 419 CSRF token mismatch (session expired)
+            if (status === 419) {
+                preventDefault();
+
+                // Show user-friendly message
+                if (confirm('Tu sesión ha expirado. ¿Deseas recargar la página para continuar?')) {
+                    window.location.reload();
+                }
+            }
+
+            // Handle 500 errors that might be component not found
+            if (status === 500 && content && content.includes('ComponentNotFoundException')) {
+                preventDefault();
+
+                // Silently reload the page to clear stale component state
+                window.location.reload();
+            }
+        });
+    });
+});
+
