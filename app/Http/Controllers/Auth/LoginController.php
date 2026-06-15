@@ -222,7 +222,7 @@ class LoginController extends Controller
             $route = route('hemoscreen.dashboard');
         }
 
-        if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
+        if ($user->hasRole('doctor') or $user->hasRole('asistente medico') or $user->hasRole('registro medico')) {
             $route = route('doctor.dashboard');
         }
         if ($user->hasRole('paciente')) {
