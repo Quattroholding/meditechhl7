@@ -41,7 +41,8 @@ class AppointmentScope implements Scope
             $builder->where('patient_id', $user->patient->id);
         } elseif ($user->hasRole('recepcionista') ||
             $user->hasRole('admin client') ||
-            $user->hasRole('asistente medico')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
+            $user->hasRole('asistente medico') ||
+            $user->hasRole('registro medico')) { // el recepcionista ve todas las citas de los doctores asociados a cu cliente
             $builder->whereHas('patient', function ($q) use ($user) {
                 $q->whereHas('clients', function ($q2) use ($user) {
                     $q2->whereIn('client_id', $user->clients()->pluck('client_id'));

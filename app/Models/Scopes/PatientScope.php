@@ -21,7 +21,7 @@ class PatientScope implements Scope
         }
 
         if ($user->hasRole('doctor') or $user->hasRole('recepcionista')
-            or $user->hasRole('admin client') or $user->hasRole('asistente medico')) {
+            or $user->hasRole('admin client') or $user->hasRole('asistente medico') or $user->hasRole('registro medico')) {
             $builder->whereHas('clients', function ($q) use ($user) {
                 $q->whereIn('client_id', $user->clients()->pluck('client_id'));
             });

@@ -74,7 +74,7 @@ class DebugLoginController extends Controller
         // Determinar ruta de redirección según rol
         $route = route('admin.dashboard');
 
-        if ($user->hasRole('doctor') or $user->hasRole('asistente medico')) {
+        if ($user->hasRole('doctor') or $user->hasRole('asistente medico') or $user->hasRole('registro medico')) {
             $route = route('doctor.dashboard');
         } elseif ($user->hasRole('paciente')) {
             $route = route('patient.dashboard');
