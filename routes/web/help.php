@@ -56,6 +56,10 @@ Route::prefix('help')->name('help.')->group(function () {
         return view('help.settings');
     })->name('settings');
 
+    Route::get('/external-storage', function () {
+        return view('help.external-storage');
+    })->name('external-storage');
+
     Route::get('/consultation', function () {
         return view('help.consultation');
     })->name('consultation');

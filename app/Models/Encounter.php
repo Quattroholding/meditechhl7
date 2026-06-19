@@ -132,6 +132,11 @@ class Encounter extends BaseModel
         return $this->hasMany(EncounterSnapshot::class)->orderBy('version', 'desc');
     }
 
+    public function consultationFiles(): HasMany
+    {
+        return $this->hasMany(Media::class);
+    }
+
     /**
      * Scope a query to only include appointments fullfilled.
      */

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\MediaStorageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -36,6 +37,9 @@ class Media extends BaseModel
         'issued_datetime',
         'device_name',
         'extension',
+        'storage_disk',
+        'external_id',
+        'external_metadata',
     ];
 
     protected function casts(): array
@@ -50,6 +54,7 @@ class Media extends BaseModel
             'issued_datetime' => 'datetime',
             'device_name' => 'array',
             'extension' => 'array',
+            'external_metadata' => 'array',
         ];
     }
 
@@ -110,13 +115,33 @@ class Media extends BaseModel
 
     // Helper methods
 
+    public function isStoredExternally(): bool
+    {
+        return $this->storage_disk !== 'public' && ! empty($this->external_id);
+    }
+
+    public function getAccessibleUrlAttribute(): string
+    {
+        if ($this->isStoredExternally()) {
+            $service = app(MediaStorageService::class);
+
+            return $service->getMediaUrl($this, 60);
+        }
+
+        return $this->url;
+    }
+
     public function getUrlAttribute(): string
     {
-        return Storage::url($this->file_path);
+        return Storage::disk($this->storage_disk)->url($this->file_path);
     }
 
     public function getFullUrlAttribute(): string
     {
+        if ($this->isStoredExternally()) {
+            return $this->getAccessibleUrlAttribute();
+        }
+
         return Storage::disk('public')->url($this->file_path);
     }
 
@@ -266,17 +291,22 @@ class Media extends BaseModel
 
     public function delete()
     {
-        // Delete physical file when deleting media record
-        if (Storage::exists($this->file_path)) {
-            Storage::delete($this->file_path);
+        // Para archivos externos, MediaStorageService maneja la eliminación del archivo
+        // Este método solo elimina archivos locales del disco antes de borrar el registro
+        if (!$this->isStoredExternally()) {
+            // Delete physical file when deleting media record
+            if (Storage::disk($this->storage_disk)->exists($this->file_path)) {
+                Storage::disk($this->storage_disk)->delete($this->file_path);
 
-            // Also delete thumbnail if exists
-            $thumbnailPath = str_replace($this->file_name, 'thumb_'.$this->file_name, $this->file_path);
-            if (Storage::exists($thumbnailPath)) {
-                Storage::delete($thumbnailPath);
+                // Also delete thumbnail if exists
+                $thumbnailPath = str_replace($this->file_name, 'thumb_'.$this->file_name, $this->file_path);
+                if (Storage::disk($this->storage_disk)->exists($thumbnailPath)) {
+                    Storage::disk($this->storage_disk)->delete($thumbnailPath);
+                }
             }
         }
 
+        // Siempre eliminar el registro de la base de datos
         return parent::delete();
     }
 

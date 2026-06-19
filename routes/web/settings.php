@@ -74,4 +74,10 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     Route::get('/prescription-template/preview/{template}', [SettingController::class, 'prescriptionTemplatePreview'])
         ->name('setting.prescription_template.preview');
 
+    Route::get('/external-storage', function () {
+        return view('settings.external-storage');
+    })
+        ->middleware('can.manage.subscription')
+        ->name('setting.external_storage');
+
 });

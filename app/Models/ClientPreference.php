@@ -170,4 +170,20 @@ class ClientPreference extends Model
             'Application language preference'
         );
     }
+
+    public static function getExternalStorageConfig(int $clientId): ?array
+    {
+        return static::get($clientId, PreferenceType::EXTERNAL_STORAGE, 'config');
+    }
+
+    public static function setExternalStorageConfig(int $clientId, array $config): self
+    {
+        return static::set(
+            $clientId,
+            PreferenceType::EXTERNAL_STORAGE,
+            'config',
+            $config,
+            'Configuración de almacenamiento externo'
+        );
+    }
 }

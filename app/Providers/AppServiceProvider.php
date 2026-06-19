@@ -22,7 +22,11 @@ use App\Policies\PatientPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
+use Spatie\Dropbox\Client as DropboxClient;
+use Spatie\FlysystemDropbox\DropboxAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,5 +55,17 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(Encounter::class, ConsultationPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+
+        $this->registerDropboxDriver();
+    }
+
+    protected function registerDropboxDriver(): void
+    {
+        Storage::extend('dropbox', function ($app, $config) {
+            $client = new DropboxClient($config['authorization_token']);
+            $adapter = new DropboxAdapter($client);
+
+            return new Filesystem($adapter, $config);
+        });
     }
 }

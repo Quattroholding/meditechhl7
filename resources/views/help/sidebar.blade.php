@@ -209,6 +209,13 @@
                     <span class="badge bg-warning">Actual</span>
                 @endif
             </a>
+            <a href="{{ route('help.external-storage') }}" class="nav-link {{ $active === 'external-storage' ? 'active' : '' }}">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Almacenamiento Externo</span>
+                @if ($active === 'external-storage')
+                    <span class="badge bg-warning">Actual</span>
+                @endif
+            </a>
             <a href="{{ route('help.profile') }}" class="nav-link {{ $active === 'profile' ? 'active' : '' }}">
                 <i class="fas fa-user-circle"></i>
                 <span>Mi Perfil</span>

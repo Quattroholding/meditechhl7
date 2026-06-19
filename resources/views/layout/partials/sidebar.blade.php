@@ -259,6 +259,9 @@
                         <li><a class="{{ Request::is('settings/invoice-template') ? 'active' : '' }}"  href="{{ route('setting.invoice_template') }}">{{ __('menu.settings.invoice_template') }}</a></li>
                         <li><a class="{{ Request::is('settings/medical-leave-template') ? 'active' : '' }}"  href="{{ route('setting.medical_leave_template') }}">{{ __('menu.settings.medical_leave_template') }}</a></li>
                         @endcan
+                        @if(auth()->user()->canPaySubscription())
+                        <li><a class="{{ Request::is('settings/external-storage') ? 'active' : '' }}"  href="{{ route('setting.external_storage') }}">{{ __('Almacenamiento Externo') }}</a></li>
+                        @endif
                         @endif
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>

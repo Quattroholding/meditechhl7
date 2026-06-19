@@ -383,6 +383,21 @@ body {
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center p-4">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: rgba(33, 150, 243, 0.1);">
+                        <i class="fas fa-cloud-upload-alt fa-2x" style="color: #2196f3;"></i>
+                    </div>
+                    <h5 class="card-title">Almacenamiento Externo</h5>
+                    <p class="card-text text-muted">Configura Dropbox para almacenar archivos de consultas en la nube.</p>
+                    <a href="{{ route('help.external-storage') }}" class="btn text-white" style="background: #2196f3;">
+                        <i class="fas fa-arrow-right me-2"></i>Ver Guia
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
                     <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                         <i class="fas fa-stethoscope fa-2x text-danger"></i>
                     </div>

@@ -14,6 +14,7 @@ enum PreferenceType: string
     case DOCUMENT_TEMPLATE = 'document_template';
     case UI_PREFERENCES = 'ui_preferences';
     case LANGUAGE_SETTINGS = 'language_settings';
+    case EXTERNAL_STORAGE = 'external_storage';
 
     public function label(): string
     {
@@ -28,6 +29,7 @@ enum PreferenceType: string
             self::DOCUMENT_TEMPLATE => 'Plantilla de Documentos',
             self::UI_PREFERENCES => 'Preferencias de Interfaz',
             self::LANGUAGE_SETTINGS => __('settings.language_configuration'),
+            self::EXTERNAL_STORAGE => 'Almacenamiento Externo',
         };
     }
 
@@ -44,6 +46,7 @@ enum PreferenceType: string
             self::DOCUMENT_TEMPLATE => 'Selecciona plantillas para documentos',
             self::UI_PREFERENCES => 'Personaliza tu interfaz',
             self::LANGUAGE_SETTINGS => __('settings.language_configuration_description'),
+            self::EXTERNAL_STORAGE => 'Configura almacenamiento externo para archivos de consultas',
         };
     }
 }
