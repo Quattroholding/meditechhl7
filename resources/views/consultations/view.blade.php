@@ -81,6 +81,15 @@
                                         </button>
                                     </li>
                                 @endif
+
+                                <!-- Archivos de Consulta -->
+                                @if($encounter->consultationFiles()->count() > 0)
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files" type="button" role="tab" aria-controls="files" aria-selected="false">
+                                            <i class="fa fa-file-image"></i> Archivos ({{ $encounter->consultationFiles()->count() }})
+                                        </button>
+                                    </li>
+                                @endif
                             </ul>
 
                             <!-- Tab Content -->
@@ -449,6 +458,26 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 @livewire('consultation.encounter-snapshot-history', ['encounterId' => $encounter->id])
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($encounter->consultationFiles()->count() > 0)
+                                    <!-- Archivos de Consulta Tab -->
+                                    <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0">
+                                                    <i class="fa fa-file-image me-2"></i>Archivos de Consulta
+                                                    <span class="badge bg-primary ms-2">{{ $encounter->consultationFiles()->count() }}</span>
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                @livewire('consultation.file-upload', [
+                                                    'encounter_id' => $encounter->id,
+                                                    'viewOnly' => true
+                                                ])
                                             </div>
                                         </div>
                                     </div>

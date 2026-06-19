@@ -26,6 +26,8 @@ class FileUpload extends Component
 
     public bool $hasExternalStorage = false;
 
+    public bool $viewOnly = false;
+
     public array $categories = [
         'clinical_photo' => 'Fotografía Clínica',
         'diagnostic_image' => 'Imagen Diagnóstica',
