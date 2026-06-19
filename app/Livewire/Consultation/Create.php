@@ -59,6 +59,9 @@ class Create extends Component
 
     public function render()
     {
+        if(!auth()->user()->can('edit',$this->encounter)){
+            abort(403, 'No tienes permiso para acceder a esta sección.');
+        }
         return view('livewire.consultation.create');
     }
 }

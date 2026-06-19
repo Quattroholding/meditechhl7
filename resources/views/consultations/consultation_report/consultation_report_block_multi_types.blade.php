@@ -1,6 +1,7 @@
 <!---------------- MULTI TYPES - IMAGENES - PROCEDIMIENTOS - LABORATORIOS Y DMES -------------------------------->
 @if($data->serviceRequests()->count()>0)
 @foreach($data['multitypes_selecto'] as $type)
+    @if($data->serviceRequests()->whereServiceType($type)->count()>0)
     @component($table_component,['title'=>trans('consultation.'.strtolower($type)."_exams")])
         <table class="result-table" cellspacing="no" cellpadding="0">
             <tr class="table-inner-content-head">
@@ -20,5 +21,6 @@
             @endforeach
         </table>
     @endcomponent
+    @endif
 @endforeach
 @endif
