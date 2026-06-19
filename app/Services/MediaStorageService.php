@@ -157,10 +157,15 @@ class MediaStorageService
         $extension = $file->getClientOriginalExtension();
         $sanitizedFilename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename);
 
+        // Get patient name and sanitize it for folder name
+        $patientName = $encounter->patient->getFullNameAttribute();
+        $sanitizedPatientName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $patientName);
+
         return sprintf(
-            '/consultations/%s/%s/%s_%s.%s',
+            '/consultations/%s/%s-%s/%s_%s.%s',
             $encounter->patient_id,
             $encounter->id,
+            $sanitizedPatientName,
             $timestamp,
             $sanitizedFilename,
             $extension
