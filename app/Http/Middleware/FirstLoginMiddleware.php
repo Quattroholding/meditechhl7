@@ -15,9 +15,9 @@ class FirstLoginMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check()) {
-            $user = auth()->user();
 
+        if (auth()->check() and env('ENABLED_FIRST_LOGIN_PASSWORD_CHANGE')) {
+            $user = auth()->user();
             // Check if user has doctor role and hasn't completed first login
             if (is_null($user->first_login_at)) {
                 // Skip middleware for password change routes to avoid infinite redirect
@@ -26,6 +26,8 @@ class FirstLoginMiddleware
                 }
             }
         }
+
+
 
         return $next($request);
     }
