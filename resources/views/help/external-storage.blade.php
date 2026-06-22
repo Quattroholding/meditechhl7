@@ -103,174 +103,62 @@ body {
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 12px;
+    text-decoration: none;
 }
 
-.help-sidebar .nav-link:hover,
+.help-sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    transform: translateX(5px);
+}
+
 .help-sidebar .nav-link.active {
     background: rgba(255,255,255,0.15);
     color: #fff;
 }
 
 .help-sidebar .nav-link i {
+    margin-right: 10px;
     width: 20px;
     text-align: center;
 }
 
-/* Breadcrumb */
-.help-breadcrumb {
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Module Header */
+/* Module header */
 .module-header {
-    background: linear-gradient(135deg, #5e35b1 0%, #7c4dff 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     padding: 40px;
-    border-radius: 15px;
+    border-radius: 12px;
     margin-bottom: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-.module-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .module-header h1 {
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 15px;
-    position: relative;
+    margin-bottom: 10px;
 }
 
 .module-header p {
-    opacity: 0.9;
     font-size: 1.1rem;
-    position: relative;
+    opacity: 0.95;
+    margin: 0;
 }
 
-/* Content Section */
-.content-section {
-    background: #fff;
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.content-section h2 {
-    color: #5e35b1;
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ede7f6;
-}
-
-.content-section h3 {
-    color: #333;
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-top: 25px;
-    margin-bottom: 15px;
-}
-
-.content-section h4 {
-    color: #555;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-/* Step Cards */
-.step-card {
-    background: linear-gradient(135deg, #faf5ff 0%, #fff 100%);
-    border-left: 4px solid #5e35b1;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 0 8px 8px 0;
-}
-
-.step-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    background: #5e35b1;
-    color: white;
-    border-radius: 50%;
-    font-weight: bold;
-    margin-right: 15px;
-}
-
-.step-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
-}
-
-/* Info Boxes */
-.info-box {
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.info-box.note {
-    background: #e3f2fd;
-    border-left: 4px solid #2196f3;
-}
-
-.info-box.warning {
-    background: #fff3e0;
-    border-left: 4px solid #ff9800;
-}
-
-.info-box.tip {
-    background: #e8f5e9;
-    border-left: 4px solid #4caf50;
-}
-
-.info-box.danger {
-    background: #ffebee;
-    border-left: 4px solid #f44336;
-}
-
-.info-box-title {
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Table of Contents */
+/* Table of Contents Card */
 .toc-card {
-    background: #fff;
-    border-radius: 15px;
+    background: white;
+    border-radius: 12px;
     padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e8ecf1;
 }
 
 .toc-card h5 {
-    color: #5e35b1;
+    color: #1a1f36;
     font-weight: 700;
     margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #ede7f6;
+    font-size: 1.1rem;
 }
 
 .toc-list {
@@ -280,91 +168,121 @@ body {
 }
 
 .toc-list li {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .toc-list a {
-    color: #4527a0;
+    color: #4a5568;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 15px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.toc-list a:hover {
+    background: #f7fafc;
+    color: #667eea;
+    transform: translateX(4px);
+}
+
+.toc-list a i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+/* Content sections */
+.content-section {
+    background: white;
+    border-radius: 12px;
+    padding: 35px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e8ecf1;
+}
+
+.content-section h2 {
+    color: #1a1f36;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #667eea;
+    font-size: 1.75rem;
+}
+
+.content-section h3 {
+    color: #2d3748;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.content-section p {
+    color: #4a5568;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+/* Step Cards */
+.step-card {
+    background: #f7fafc;
+    border-left: 4px solid #667eea;
+    padding: 25px;
+    margin: 25px 0;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
 
-.toc-list a:hover {
-    background: #ede7f6;
-    color: #5e35b1;
+.step-card:hover {
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
 }
 
-.toc-list a i {
-    width: 20px;
-    text-align: center;
-}
-
-/* Field Tables */
-.field-table-wrapper {
-width: 100%;
-overflow-x: auto;
-margin: 20px 0;
-}
-.field-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 15px 0;
-}
-
-.field-table th {
-    background: #5e35b1;
-    color: white;
-    padding: 12px 15px;
-    text-align: left;
+.step-card h4 {
+    color: #2d3748;
     font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
 }
 
-.field-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.field-table tr:hover {
-    background: #faf5ff;
-}
-
-.required-badge {
-    background: #dc3545;
+.step-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 5px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
-.optional-badge {
-    background: #6c757d;
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 5px;
+.step-title {
+    flex: 1;
 }
 
-/* Feature cards */
+/* Feature Cards */
 .feature-card {
-    background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
-    border: 1px solid #d1c4e9;
+    background: white;
     border-radius: 12px;
     padding: 25px;
-    height: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border: 1px solid #e8ecf1;
     transition: all 0.3s ease;
+    height: 100%;
 }
 
 .feature-card:hover {
-    border-color: #7c4dff;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(124, 77, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
 
 .feature-card .icon-circle {
@@ -374,233 +292,235 @@ margin: 20px 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
     margin-bottom: 15px;
 }
 
+.feature-card .icon-circle i {
+    font-size: 1.8rem;
+}
+
 .feature-card h5 {
+    color: #2d3748;
     font-weight: 600;
-    color: #333;
     margin-bottom: 10px;
+    font-size: 1.1rem;
 }
 
 .feature-card p {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 0;
+    color: #718096;
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Info Boxes */
+.info-box {
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 4px solid;
+}
+
+.info-box.note {
+    background: #ebf8ff;
+    border-color: #3182ce;
+}
+
+.info-box.tip {
+    background: #f0fff4;
+    border-color: #38a169;
+}
+
+.info-box.warning {
+    background: #fffaf0;
+    border-color: #dd6b20;
+}
+
+.info-box.danger {
+    background: #fff5f5;
+    border-color: #e53e3e;
+}
+
+.info-box-title {
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.info-box-title i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.info-box ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.info-box li {
+    margin-bottom: 8px;
 }
 
 /* Code blocks */
 .code-block {
-    background: #f5f5f5;
-    border-left: 4px solid #5e35b1;
-    padding: 15px;
-    border-radius: 0 8px 8px 0;
+    background: #2d3748;
+    color: #63b3ed;
+    padding: 15px 20px;
+    border-radius: 8px;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
     overflow-x: auto;
+    margin: 15px 0;
+    border: 1px solid #4a5568;
 }
 
-/* Screenshot placeholder */
-.screenshot-placeholder {
-    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-    border: 2px dashed #bdbdbd;
-    border-radius: 10px;
-    padding: 60px 20px;
-    text-align: center;
+code {
+    background: #edf2f7;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #e53e3e;
+}
+
+/* Tables */
+.field-table-wrapper {
+    overflow-x: auto;
     margin: 20px 0;
-    color: #757575;
 }
 
-.screenshot-placeholder i {
-    font-size: 3rem;
-    margin-bottom: 15px;
-    opacity: 0.5;
+.field-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-/* Back to top */
-.back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #522c9f 0%, #5e35b1  100%);
+.field-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-radius: 50%;
-    display: flex;
-    border: none;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(94, 53, 177, 0.4);
-    transition: all 0.3s ease;
-    opacity: 0;
-    cursor: pointer;
-    visibility: hidden;
-    z-index: 9999;
 }
 
-.back-to-top.visible {
-    opacity: 1;
-    visibility: visible;
+.field-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
-.back-to-top:hover {
-    background: #4527a0;
+.field-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e8ecf1;
+    color: #4a5568;
+}
+
+.field-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.field-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+/* Badges */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge.bg-primary {
+    background: #667eea !important;
     color: white;
-    transform: translateY(-3px);
 }
 
-@media print {
-    .back-to-top {
-        display: none;
-    }
+.required-badge {
+    background: #e53e3e;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Images */
+.content-section img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    border: 1px solid #e8ecf1;
+}
+
+.content-section small {
+    color: #718096;
+    font-style: italic;
+    display: block;
+    margin-top: -15px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
-    .help-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
     .help-content {
         margin-left: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .help-content {
-        padding: 15px;
+        max-width: 100%;
+        padding: 20px;
     }
 
-    .back-to-top {
-        right: 15px;
-        bottom: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .step-card, .info-box{
-        border-left: none;
-        padding: 25px;
-        border-bottom: 5px solid #5e35b1;
-        border-radius: 8px;
+    .help-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
     }
 
-    .info-box.note {
-        border-left: none;
-        border-bottom-color: #2196f3;
+    .module-header h1 {
+        font-size: 1.8rem;
     }
-    .info-box.warning {
-        border-left: none;
-        border-bottom-color: #ff9800;
-    }
-    .info-box.tip {
-        border-left: none;
-        border-bottom-color: #4caf50;
-    }
-    .info-box.danger {
-        border-left: none;
-        border-bottom-color: #f44336;
+
+    .toc-card {
+        position: relative !important;
+        margin-bottom: 20px;
     }
 
     .field-table {
-        border: 0;
-        box-shadow: none;
+        font-size: 0.85rem;
     }
 
     .field-table thead {
         display: none;
     }
 
-    .field-table tbody {
-        display: block;
-    }
-
-    .field-table tr {
-        display: block;
-        margin-bottom: 15px;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        background: #fff;
-    }
-
     .field-table td {
         display: block;
-        text-align: center;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    .field-table td:last-child {
-        border-bottom: none;
+        text-align: right;
+        padding: 10px;
+        position: relative;
+        padding-left: 50%;
     }
 
-    .field-table td[data-label="Campo"], .field-table td[data-label="Paso"] {
-        background: #5e35b1;
-        color: white;
-        font-size: 15px;
-        padding: 12px;
-        border-bottom: 2px solid #552fa1;
-    }
-
-    .field-table td[data-label="Campo"] strong, .field-table td[data-label="Paso"] strong {
-        color: white;
-    }
-
-    .field-table td[data-label="Descripcion"] {
-        padding: 15px;
-        color: #555;
-        font-size: 13px;
-        line-height: 1.5;
+    .field-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 600;
+        text-align: left;
     }
 }
 
-@media (max-width: 365px){
-    .info-box-title, .content-section h4, .help-header h1 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .step-number {
-        margin-right: 0;
-    }
-    .content-section, .help-content {
-        padding:25px;
-    }
-    .info-box{
-        padding: 20px;
-    }
-    .step-card{
-        padding: 15px;
-    }
-}
-
-@stop
-
-@section('sidebar')
-    @include('help.sidebar', ['active' => 'external-storage'])
-@stop
-
-@section('breadcrumb')
-    <nav class="help-breadcrumb">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('help.settings') }}">Guías de Configuraciones</a></li>
-            <li class="breadcrumb-item active">Almacenamiento Externo</li>
-        </ol>
-    </nav>
 @endsection
 
 @section('module-header')
     <div class="module-header">
         <h1><i class="fas fa-cloud-upload-alt me-3"></i>Almacenamiento Externo de Archivos</h1>
-        <p>Configure Dropbox para almacenar archivos de consultas médicas en la nube de forma segura y accesible.</p>
+        <p>Configure Dropbox para almacenar archivos de consultas médicas en la nube de forma segura con renovación automática de acceso.</p>
     </div>
 @stop
 
@@ -612,13 +532,11 @@ margin: 20px 0;
                 <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                 <ul class="toc-list">
                     <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
-                    <li><a href="#crear-app-dropbox"><i class="fab fa-dropbox"></i> 2. Crear App en Dropbox</a></li>
-                    <li><a href="#configurar-permisos"><i class="fas fa-shield-alt"></i> 3. Configurar Permisos</a></li>
-                    <li><a href="#obtener-token"><i class="fas fa-key"></i> 4. Obtener Access Token</a></li>
-                    <li><a href="#configurar-sami"><i class="fas fa-cog"></i> 5. Configurar en SAMI</a></li>
-                    <li><a href="#usar-sistema"><i class="fas fa-file-upload"></i> 6. Subir Archivos</a></li>
-                    <li><a href="#gestionar-archivos"><i class="fas fa-folder-open"></i> 7. Gestionar Archivos</a></li>
-                    <li><a href="#tips"><i class="fas fa-lightbulb"></i> 8. Tips y Seguridad</a></li>
+                    <li><a href="#preparacion"><i class="fab fa-dropbox"></i> 2. Preparación</a></li>
+                    <li><a href="#conectar-dropbox"><i class="fas fa-link"></i> 3. Conectar Dropbox</a></li>
+                    <li><a href="#subir-archivos"><i class="fas fa-file-upload"></i> 4. Subir Archivos</a></li>
+                    <li><a href="#gestionar-archivos"><i class="fas fa-folder-open"></i> 5. Gestionar Archivos</a></li>
+                    <li><a href="#tips"><i class="fas fa-lightbulb"></i> 6. Tips y Problemas</a></li>
                 </ul>
             </div>
         </div>
@@ -630,7 +548,7 @@ margin: 20px 0;
     <section id="introduccion" class="content-section">
         <h2><i class="fas fa-info-circle me-2"></i>1. Introducción al Almacenamiento Externo</h2>
 
-        <p>El módulo de <strong>Almacenamiento Externo</strong> permite integrar SAMI con servicios en la nube como Dropbox para almacenar archivos de consultas médicas (fotografías clínicas, imágenes diagnósticas, resultados de laboratorio, etc.).</p>
+        <p>El módulo de <strong>Almacenamiento Externo</strong> permite integrar SAMI con Dropbox para almacenar archivos de consultas médicas (fotografías clínicas, imágenes diagnósticas, resultados de laboratorio, etc.) de forma segura en la nube.</p>
 
         <div class="info-box danger">
             <div class="info-box-title">
@@ -640,33 +558,52 @@ margin: 20px 0;
             <p class="mb-0"><strong>El almacenamiento externo es OBLIGATORIO</strong> para subir archivos en SAMI. No es posible almacenar archivos en el servidor local. Debe configurar Dropbox antes de poder subir cualquier archivo durante las consultas.</p>
         </div>
 
-        <h3>Beneficios del Almacenamiento Externo</h3>
+        <h3>Arquitectura Multi-Tenant: Cada Cliente Su Propio Dropbox</h3>
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-building text-success"></i>
+                ¿Cómo funciona con múltiples clientes?
+            </div>
+            <div class="mb-3">
+                <strong>Una sola app de Dropbox en el servidor</strong> (configurada por el administrador de SAMI), pero <strong>cada cliente conecta su propia cuenta</strong> de Dropbox:
+            </div>
+            <ul class="mb-3">
+                <li><strong>Clínica A</strong> → Conecta su Dropbox personal → Archivos en el Dropbox de Clínica A</li>
+                <li><strong>Clínica B</strong> → Conecta su Dropbox personal → Archivos en el Dropbox de Clínica B</li>
+                <li><strong>Clínica C</strong> → Conecta su Dropbox personal → Archivos en el Dropbox de Clínica C</li>
+            </ul>
+            <div class="alert alert-success mb-0" style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4caf50; padding: 12px;">
+                <strong>✓ Aislamiento total:</strong> Los archivos de cada clínica están completamente separados en sus propias cuentas de Dropbox. Una clínica no puede ver los archivos de otra.
+            </div>
+        </div>
+
+        <h3>Beneficios del Almacenamiento Externo con OAuth 2.0</h3>
         <div class="row mt-4">
             <div class="col-md-6 mb-4">
                 <div class="feature-card">
                     <div class="icon-circle" style="background: rgba(33, 150, 243, 0.1);">
                         <i class="fas fa-shield-alt" style="color: #2196f3;"></i>
                     </div>
-                    <h5>Seguridad y Respaldo</h5>
-                    <p>Los archivos se almacenan en la infraestructura segura de Dropbox con respaldo automático y cifrado.</p>
+                    <h5>Seguridad Mejorada</h5>
+                    <p>Conexión OAuth 2.0 con tokens que se renuevan automáticamente sin intervención manual.</p>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
                 <div class="feature-card">
                     <div class="icon-circle" style="background: rgba(76, 175, 80, 0.1);">
-                        <i class="fas fa-globe" style="color: #4caf50;"></i>
+                        <i class="fas fa-sync-alt" style="color: #4caf50;"></i>
                     </div>
-                    <h5>Acceso desde Cualquier Lugar</h5>
-                    <p>Acceda a los archivos médicos desde cualquier dispositivo con conexión a internet.</p>
+                    <h5>Renovación Automática</h5>
+                    <p>Los tokens se actualizan automáticamente antes de expirar. Sin interrupciones en el servicio.</p>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
                 <div class="feature-card">
                     <div class="icon-circle" style="background: rgba(255, 152, 0, 0.1);">
-                        <i class="fas fa-expand-arrows-alt" style="color: #ff9800;"></i>
+                        <i class="fas fa-globe" style="color: #ff9800;"></i>
                     </div>
-                    <h5>Escalabilidad</h5>
-                    <p>No hay límites de almacenamiento más allá de los de su cuenta de Dropbox.</p>
+                    <h5>Acceso Universal</h5>
+                    <p>Acceda a los archivos médicos desde cualquier dispositivo con conexión a internet.</p>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
@@ -674,8 +611,8 @@ margin: 20px 0;
                     <div class="icon-circle" style="background: rgba(156, 39, 176, 0.1);">
                         <i class="fas fa-lock" style="color: #9c27b0;"></i>
                     </div>
-                    <h5>Privacidad</h5>
-                    <p>Cada cliente puede usar su propia cuenta de Dropbox, manteniendo los datos separados.</p>
+                    <h5>Privacidad Total</h5>
+                    <p>Cada cliente usa su propia cuenta de Dropbox con datos completamente separados.</p>
                 </div>
             </div>
         </div>
@@ -689,217 +626,55 @@ margin: 20px 0;
         </div>
     </section>
 
-    <!-- Section 2: Create Dropbox App -->
-    <section id="crear-app-dropbox" class="content-section">
-        <h2><i class="fab fa-dropbox me-2"></i>2. Crear una Aplicación en Dropbox</h2>
+    <!-- Section 2: Preparation -->
+    <section id="preparacion" class="content-section">
+        <h2><i class="fab fa-dropbox me-2"></i>2. Preparación: Lo que Necesitas</h2>
 
-        <p>Para conectar SAMI con Dropbox, primero debe crear una aplicación en el <strong>Dropbox App Console</strong>. Este proceso es gratuito y solo toma unos minutos.</p>
+        <p>Antes de conectar Dropbox con SAMI, asegúrate de tener lo siguiente:</p>
 
-        <div class="step-card">
-            <h4><span class="step-number">1</span><span class="step-title">Acceder al Dropbox App Console</span></h4>
-            <p>Abra su navegador y visite:</p>
-            <div class="code-block">
-                https://www.dropbox.com/developers/apps
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="feature-card">
+                    <div class="icon-circle" style="background: rgba(33, 150, 243, 0.1);">
+                        <i class="fab fa-dropbox" style="color: #0061FF;"></i>
+                    </div>
+                    <h5>Cuenta de Dropbox</h5>
+                    <p>Necesitas tener una cuenta de Dropbox (gratuita o de pago). Si no tienes una, créala en <a href="https://www.dropbox.com" target="_blank">dropbox.com</a></p>
+                </div>
             </div>
-            <p class="mt-3">Inicie sesión con su cuenta de Dropbox (o cree una si no tiene).</p>
-
-            <!-- Espacio para captura de pantalla -->
-
-
-                <img src="{{url('images/tutorial/external_storage/step1.png')}}" width="100%">
-
-                <small>Muestra el botón "Create app" en la interfaz de Dropbox Developers</small>
-
+            <div class="col-md-6 mb-3">
+                <div class="feature-card">
+                    <div class="icon-circle" style="background: rgba(76, 175, 80, 0.1);">
+                        <i class="fas fa-user-shield" style="color: #4caf50;"></i>
+                    </div>
+                    <h5>Permisos de Administrador</h5>
+                    <p>Debes ser <strong>administrador</strong> de tu clínica en SAMI para poder configurar Dropbox.</p>
+                </div>
+            </div>
         </div>
 
-        <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Crear Nueva App</span></h4>
-            <p>Haga clic en el botón <strong>"Create app"</strong> y complete los siguientes campos:</p>
-
-            <div class="field-table-wrapper">
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Valor Recomendado</th>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Campo"><strong>Choose an API</strong></td>
-                            <td data-label="Valor"><span class="badge bg-primary">Scoped access</span></td>
-                            <td data-label="Descripcion">Seleccione "Scoped access" para usar la API moderna de Dropbox</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Choose the type of access</strong></td>
-                            <td data-label="Valor"><span class="badge bg-primary">Full Dropbox</span></td>
-                            <td data-label="Descripcion">Puede elegir "Full Dropbox" o "App folder" (carpeta dedicada). Recomendamos "Full Dropbox" para mayor flexibilidad.</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Name your app</strong></td>
-                            <td data-label="Valor"><code>SAMI-Meditech2</code></td>
-                            <td data-label="Descripcion">Nombre único para su aplicación. Use algo descriptivo como "SAMI-[NombreClinica]"</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-info-circle text-success"></i>
+                No Necesitas Crear una App
             </div>
+            <p class="mb-0">La aplicación de Dropbox ya está configurada por el administrador de SAMI. Tú solo necesitas <strong>conectar tu cuenta de Dropbox</strong> con un clic. Es muy simple.</p>
+        </div>
 
-            <div class="info-box warning">
-                <div class="info-box-title">
-                    <i class="fas fa-exclamation-triangle text-warning"></i>
-                    Importante
-                </div>
-                <p class="mb-0">El nombre de la app debe ser <strong>único en todo Dropbox</strong>. Si el nombre ya existe, agregue un sufijo único como su nombre o fecha.</p>
+        <div class="info-box warning mt-3">
+            <div class="info-box-title">
+                <i class="fas fa-cloud text-warning"></i>
+                Espacio en Dropbox
             </div>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step2.png')}}" width="100%">
-            <small>Muestra las opciones "Scoped access", "Full Dropbox" y el campo de nombre</small>
-
-
-            <p class="mt-3">Haga clic en <strong>"Create app"</strong> para finalizar.</p>
+            <p class="mb-0">Asegúrate de tener suficiente espacio disponible en tu cuenta de Dropbox para almacenar los archivos médicos. Las cuentas gratuitas tienen 2GB, las de pago tienen más espacio.</p>
         </div>
     </section>
 
-    <!-- Section 3: Configure Permissions -->
-    <section id="configurar-permisos" class="content-section">
-        <h2><i class="fas fa-shield-alt me-2"></i>3. Configurar Permisos de la App</h2>
+    <!-- Section 3: Connect Dropbox -->
+    <section id="conectar-dropbox" class="content-section">
+        <h2><i class="fas fa-link me-2"></i>3. Conectar Tu Cuenta de Dropbox</h2>
 
-        <p>Una vez creada la aplicación, debe configurar los <strong>permisos necesarios</strong> para que SAMI pueda leer, escribir y eliminar archivos en Dropbox.</p>
-
-        <div class="step-card">
-            <h4><span class="step-number">1</span><span class="step-title">Ir a la Pestaña "Permissions"</span></h4>
-            <p>En la página de configuración de su app, haga clic en la pestaña <strong>"Permissions"</strong>.</p>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step3.png')}}" width="100%">
-            <small>Muestra las pestañas Settings, Permissions, Branding en la interfaz</small>
-
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Activar Permisos Requeridos</span></h4>
-            <p>Busque y active los siguientes permisos en la sección <strong>"Files and folders"</strong>:</p>
-
-            <div class="field-table-wrapper">
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Permiso</th>
-                            <th>Descripción</th>
-                            <th>Requerido</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Permiso"><strong>files.content.write</strong></td>
-                            <td data-label="Descripcion">Permite crear y subir archivos a Dropbox</td>
-                            <td data-label="Requerido"><span class="required-badge">OBLIGATORIO</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Permiso"><strong>files.content.read</strong></td>
-                            <td data-label="Descripcion">Permite leer y descargar archivos desde Dropbox</td>
-                            <td data-label="Requerido"><span class="required-badge">OBLIGATORIO</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Permiso"><strong>files.metadata.write</strong></td>
-                            <td data-label="Descripcion">Permite eliminar y mover archivos</td>
-                            <td data-label="Requerido"><span class="required-badge">OBLIGATORIO</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Permiso"><strong>sharing.write</strong></td>
-                            <td data-label="Descripcion">Permite crear enlaces compartidos para visualizar archivos</td>
-                            <td data-label="Requerido"><span class="required-badge">OBLIGATORIO</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step4.png')}}" width="100%">
-            <small>Muestra files.content.write, files.content.read, files.metadata.write y sharing.write marcados</small>
-
-
-
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">3</span><span class="step-title">Guardar Cambios</span></h4>
-            <p>Después de seleccionar todos los permisos, haga clic en el botón <strong>"Submit"</strong> al final de la página para guardar los cambios.</p>
-
-            <div class="info-box danger">
-                <div class="info-box-title">
-                    <i class="fas fa-exclamation-circle text-danger"></i>
-                    Muy Importante
-                </div>
-                <p class="mb-0">Si cambia los permisos de una app existente, <strong>DEBE generar un nuevo Access Token</strong>. Los tokens antiguos no tendrán los nuevos permisos y causarán errores.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 4: Get Access Token -->
-    <section id="obtener-token" class="content-section">
-        <h2><i class="fas fa-key me-2"></i>4. Obtener el Access Token</h2>
-
-        <p>El <strong>Access Token</strong> es la credencial que permite a SAMI acceder a su cuenta de Dropbox de forma segura. Es como una contraseña específica para esta aplicación.</p>
-
-        <div class="step-card">
-            <h4><span class="step-number">1</span><span class="step-title">Ir a la Pestaña "Settings"</span></h4>
-            <p>En la página de su app en Dropbox, haga clic en la pestaña <strong>"Settings"</strong>.</p>
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Buscar la Sección "OAuth 2"</span></h4>
-            <p>Desplácese hacia abajo hasta encontrar la sección <strong>"OAuth 2"</strong>. Allí verá un botón que dice <strong>"Generate access token"</strong> o <strong>"Generated access token"</strong>.</p>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step5.png')}}" width="100%">
-            <small>Muestra el botón "Generate" y el campo donde aparecerá el token</small>
-
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">3</span><span class="step-title">Generar el Token</span></h4>
-            <p>Haga clic en <strong>"Generate"</strong>. Dropbox generará un token largo que comienza con <code>sl.</code> seguido de caracteres aleatorios.</p>
-
-            <div class="info-box note">
-                <div class="info-box-title">
-                    <i class="fas fa-info-circle text-primary"></i>
-                    Formato del Token
-                </div>
-                <p class="mb-0">El token tendrá un formato similar a:<br>
-                <code>sl.B1aBCDeFGhIjKlMnOpQrStUvWxYz-1234567890AbCdEfGhIjK</code></p>
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">4</span><span class="step-title">Copiar el Token</span></h4>
-            <p>Haga clic en el botón de copiar (icono de portapapeles) o seleccione todo el texto del token y cópielo. Lo necesitará en el siguiente paso.</p>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step6.png')}}" width="100%">
-            <small>Muestra el token generado desplazar el taron a la derecha para copiar todo el token haciendo clic derecho en ratón , copiar o Ctrl C una vez ya este sombreado todo el token.</small>
-
-
-            <div class="info-box danger">
-                <div class="info-box-title">
-                    <i class="fas fa-shield-alt text-danger"></i>
-                    Seguridad del Token
-                </div>
-                <ul class="mb-0">
-                    <li><strong>NO comparta este token con nadie</strong>. Quien lo tenga puede acceder a su Dropbox.</li>
-                    <li>Si sospecha que el token fue comprometido, puede <strong>revocar el acceso</strong> desde esta misma página.</li>
-                    <li>El token no tiene fecha de expiración, pero puede regenerar uno nuevo cuando lo necesite.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 5: Configure in SAMI -->
-    <section id="configurar-sami" class="content-section">
-        <h2><i class="fas fa-cog me-2"></i>5. Configurar Almacenamiento en SAMI</h2>
-
-        <p>Ahora que tiene el Access Token de Dropbox, el siguiente paso es configurarlo en SAMI para activar el almacenamiento externo.</p>
+        <p>Sigue estos pasos para conectar tu cuenta de Dropbox con SAMI. El proceso toma menos de 2 minutos.</p>
 
         <div class="info-box tip">
             <div class="info-box-title">
@@ -913,10 +688,8 @@ margin: 20px 0;
             <h4><span class="step-number">1</span><span class="step-title">Acceder a la Configuración</span></h4>
             <p>En SAMI, navegue al menú lateral y haga clic en <strong>"Configuraciones"</strong>, luego seleccione <strong>"Almacenamiento Externo"</strong>.</p>
 
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step6.5.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step7.png')}}" width="100%">
             <small>Muestra el menú "Configuraciones" expandido con la opción "Almacenamiento Externo"</small>
-
 
             <div class="info-box note">
                 <div class="info-box-title">
@@ -930,438 +703,334 @@ margin: 20px 0;
         </div>
 
         <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Completar el Formulario</span></h4>
-            <p>Verá un formulario de configuración con los siguientes campos:</p>
+            <h4><span class="step-number">2</span><span class="step-title">Hacer Clic en "Conectar con Dropbox"</span></h4>
+            <p>En la página de configuración, verá un botón azul grande que dice <strong>"Conectar con Dropbox"</strong>. Haga clic en él.</p>
 
-            <div class="field-table-wrapper">
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Campo"><strong>Habilitar Almacenamiento Externo</strong></td>
-                            <td data-label="Descripcion">Active este toggle para habilitar la funcionalidad</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Proveedor</strong></td>
-                            <td data-label="Descripcion">Seleccione "Dropbox" (actualmente es el único proveedor disponible)</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Dropbox Access Token</strong></td>
-                            <td data-label="Descripcion">Pegue aquí el token que copió de Dropbox (comienza con "sl.")</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step7.png')}}" width="100%">
-            <small>Muestra el toggle habilitado, dropdown con "Dropbox" y campo de texto para el token</small>
-
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">3</span><span class="step-title">Probar la Conexión</span></h4>
-            <p>Antes de guardar, haga clic en el botón <strong>"Test Connection"</strong> o <strong>"Probar Conexión"</strong> para verificar que el token es válido.</p>
-
-            <p>Verá uno de estos mensajes:</p>
-            <ul>
-                <li><strong class="text-success">✓ Conexión exitosa:</strong> El token es válido y SAMI puede acceder a Dropbox.</li>
-                <li><strong class="text-danger">✗ Error de conexión:</strong> Revise que:
-                    <ul>
-                        <li>El token esté completo (sin espacios al inicio o final)</li>
-                        <li>Los permisos estén configurados correctamente en Dropbox</li>
-                        <li>El token sea reciente (generado después de configurar permisos)</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- Espacio para captura de pantalla -->
             <img src="{{url('images/tutorial/external_storage/step8.png')}}" width="100%">
-            <small>Muestra un alert verde con el mensaje "Conexión exitosa con Dropbox"</small>
-
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">4</span><span class="step-title">Guardar Configuración</span></h4>
-            <p>Una vez que la prueba de conexión sea exitosa, haga clic en <strong>"Guardar"</strong> o <strong>"Save"</strong> para aplicar la configuración.</p>
+            <small>Muestra el botón "Conectar con Dropbox" con el icono de Dropbox</small>
 
             <div class="info-box tip">
                 <div class="info-box-title">
-                    <i class="fas fa-lock text-success"></i>
-                    Seguridad
+                    <i class="fas fa-magic text-success"></i>
+                    Sin Tokens Manuales
                 </div>
-                <p class="mb-0">El token se almacena <strong>encriptado</strong> en la base de datos de SAMI. Nadie más que el sistema puede leerlo en texto plano.</p>
+                <p class="mb-0">Ya no necesita copiar y pegar tokens manualmente. OAuth 2.0 maneja todo automáticamente de forma segura.</p>
             </div>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">3</span><span class="step-title">Autorizar en Dropbox</span></h4>
+            <p>Será redirigido a la página de Dropbox donde se le pedirá autorizar a SAMI para acceder a su cuenta.</p>
+
+            <ol>
+                <li>Revise los permisos solicitados (deben coincidir con los configurados)</li>
+                <li>Haga clic en <strong>"Allow"</strong> o <strong>"Permitir"</strong></li>
+                <li>Será redirigido automáticamente de vuelta a SAMI</li>
+            </ol>
+
+            <img src="{{url('images/tutorial/external_storage/step9.png')}}" width="100%">
+            <small>Muestra la pantalla de autorización de Dropbox con el botón "Allow"</small>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">4</span><span class="step-title">Verificar Conexión Exitosa</span></h4>
+            <p>Después de autorizar, verá un mensaje de éxito y la configuración mostrará:</p>
+
+            <ul>
+                <li><strong>Estado</strong>: "Dropbox Conectado" con ícono verde ✓</li>
+                <li><strong>Cuenta</strong>: ID de su cuenta de Dropbox</li>
+                <li><strong>Token válido hasta</strong>: Fecha de expiración del token actual</li>
+                <li><strong>Renovación automática</strong>: Confirmación de que se auto-renovará</li>
+            </ul>
+
+            <img src="{{url('images/tutorial/external_storage/step10.png')}}" width="100%">
+            <small>Muestra el estado "Conectado" con información del token y renovación automática</small>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-sync-alt text-success"></i>
+                    Renovación Automática
+                </div>
+                <p class="mb-0">El sistema renovará automáticamente los tokens antes de que expiren. <strong>No necesitará reconectarse manualmente</strong> nunca más.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">5</span><span class="step-title">Habilitar Almacenamiento</span></h4>
+            <p>Con Dropbox ya conectado, active el toggle <strong>"Almacenamiento Externo Activo"</strong> para comenzar a usar el almacenamiento en la nube.</p>
+
+            <p>Cuando esté activo:</p>
+            <ul>
+                <li>✓ Todos los archivos nuevos se guardarán en Dropbox</li>
+                <li>✓ Los archivos existentes permanecen donde están</li>
+                <li>✓ Puede desactivarlo temporalmente si lo necesita</li>
+            </ul>
+
+            <img src="{{url('images/tutorial/external_storage/step11.png')}}" width="100%">
+            <small>Muestra el toggle "Almacenamiento Externo Activo" habilitado</small>
         </div>
     </section>
 
-    <!-- Section 6: Upload Files -->
-    <section id="usar-sistema" class="content-section">
-        <h2><i class="fas fa-file-upload me-2"></i>6. Subir Archivos Durante Consultas</h2>
+    <!-- Section 4: Upload Files -->
+    <section id="subir-archivos" class="content-section">
+        <h2><i class="fas fa-file-upload me-2"></i>4. Subir Archivos de Consulta</h2>
 
-        <p>Una vez configurado Dropbox, puede subir archivos durante las consultas médicas. Los archivos se almacenarán automáticamente en su cuenta de Dropbox.</p>
+        <p>Una vez configurado el almacenamiento externo, puede subir archivos durante las consultas médicas.</p>
 
         <div class="step-card">
             <h4><span class="step-number">1</span><span class="step-title">Acceder a una Consulta</span></h4>
-            <p>Abra o cree una consulta médica para un paciente. En la interfaz de consulta, encontrará la sección <strong>"Archivos de Consulta"</strong>.</p>
+            <p>Navegue a <strong>Consultas → Ver/Editar Consulta</strong> o cree una nueva consulta.</p>
+        </div>
 
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step9.png')}}" width="100%">
-            <small>Muestra las diferentes secciones de la consulta con "Archivos de Consulta" visible</small>
+        <div class="step-card">
+            <h4><span class="step-number">2</span><span class="step-title">Ir a Sección de Archivos</span></h4>
+            <p>En la consulta, busque la sección <strong>"Archivos de Consulta"</strong> o <strong>"Subir Archivos"</strong>.</p>
+
+            <img src="{{url('images/tutorial/external_storage/step12.png')}}" width="100%">
+            <small>Muestra la sección de archivos con el indicador "Dropbox conectado" en verde</small>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">3</span><span class="step-title">Seleccionar Categoría y Archivos</span></h4>
+            <p>Complete el formulario de subida:</p>
+
+            <ol>
+                <li><strong>Categoría</strong>: Seleccione el tipo (Fotografía Clínica, Imagen Diagnóstica, Resultado de Laboratorio, etc.)</li>
+                <li><strong>Archivos</strong>: Arrastre archivos o haga clic para seleccionar desde su dispositivo</li>
+                <li><strong>Nota</strong> (opcional): Agregue una descripción del archivo</li>
+            </ol>
 
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-info-circle text-primary"></i>
-                    Indicador de Dropbox
+                    Archivos Permitidos
                 </div>
-                <p class="mb-0">Si Dropbox está configurado correctamente, verá un badge verde <span class="badge bg-success">✓ Dropbox conectado</span> junto al título de la sección.</p>
+                <p class="mb-0">
+                    <strong>Formatos</strong>: Solo imágenes (JPG, PNG, GIF)<br>
+                    <strong>Tamaño máximo</strong>: 10MB por archivo<br>
+                    <strong>Cantidad</strong>: Puede subir múltiples archivos a la vez
+                </p>
             </div>
         </div>
 
         <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Seleccionar Categoría</span></h4>
-            <p>Antes de subir archivos, seleccione la categoría apropiada del dropdown:</p>
+            <h4><span class="step-number">4</span><span class="step-title">Subir a Dropbox</span></h4>
+            <p>Haga clic en <strong>"Subir Archivos"</strong>. Los archivos se cargarán directamente a Dropbox y verá:</p>
 
-            <div class="field-table-wrapper">
-                <table class="field-table">
-                    <thead>
-                        <tr>
-                            <th>Categoría</th>
-                            <th>Uso Recomendado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Categoría"><strong>Fotografía Clínica</strong></td>
-                            <td data-label="Uso">Fotos de lesiones, heridas, o condiciones visibles del paciente</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Categoría"><strong>Imagen Diagnóstica</strong></td>
-                            <td data-label="Uso">Rayos X, ultrasonidos, tomografías, resonancias magnéticas</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Categoría"><strong>Resultado de Laboratorio</strong></td>
-                            <td data-label="Uso">Resultados de análisis de sangre, orina, biopsias, etc.</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Categoría"><strong>Prescripción</strong></td>
-                            <td data-label="Uso">Recetas médicas, órdenes de medicamentos</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Categoría"><strong>Documento Clínico</strong></td>
-                            <td data-label="Uso">Informes médicos, historias clínicas de otros centros</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Categoría"><strong>Documento de Referencia</strong></td>
-                            <td data-label="Uso">Cartas de referencia a especialistas</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">3</span><span class="step-title">Subir Archivos (Drag & Drop)</span></h4>
-            <p>Puede subir archivos de dos formas:</p>
-
-            <h5 class="mt-3"><i class="fas fa-hand-pointer me-2"></i>Método 1: Arrastrar y Soltar</h5>
-            <ol>
-                <li>Arrastre uno o varios archivos desde su computadora</li>
-                <li>Suéltelos sobre el área de subida (cambiará de color al arrastrar)</li>
-                <li>Verá una vista previa de las imágenes seleccionadas</li>
-            </ol>
-
-            <h5 class="mt-3"><i class="fas fa-mouse-pointer me-2"></i>Método 2: Click para Seleccionar</h5>
-            <ol>
-                <li>Haga clic en el área de subida</li>
-                <li>Seleccione uno o varios archivos desde el explorador</li>
-                <li>Verá una vista previa de las imágenes seleccionadas</li>
-            </ol>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step10.png')}}" width="100%">
-            <small>Muestra el área de subida con vista previa de imágenes y el contador "3 archivo(s) seleccionado(s)"</small>
-
-
-            <div class="info-box warning">
-                <div class="info-box-title">
-                    <i class="fas fa-exclamation-triangle text-warning"></i>
-                    Restricciones de Archivos
-                </div>
-                <ul class="mb-0">
-                    <li><strong>Tipos permitidos:</strong> Solo imágenes (JPG, PNG, GIF)</li>
-                    <li><strong>Tamaño máximo:</strong> 10 MB por archivo</li>
-                    <li>Puede subir múltiples archivos a la vez</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h4><span class="step-number">4</span><span class="step-title">Agregar Nota (Opcional)</span></h4>
-            <p>En el campo de texto <strong>"Nota"</strong>, puede agregar un comentario descriptivo sobre los archivos. Por ejemplo:</p>
             <ul>
-                <li>"Lesión en brazo derecho - consulta inicial"</li>
-                <li>"Resultados de hemograma completo - 19/06/2026"</li>
-                <li>"Radiografía de tórax PA - seguimiento neumonía"</li>
+                <li>Barra de progreso durante la subida</li>
+                <li>Mensaje de éxito al completar</li>
+                <li>Preview de los archivos subidos</li>
             </ul>
+
+            <img src="{{url('images/tutorial/external_storage/step13.png')}}" width="100%">
+            <small>Muestra archivos subiendo con barra de progreso</small>
         </div>
 
         <div class="step-card">
-            <h4><span class="step-number">5</span><span class="step-title">Subir a Dropbox</span></h4>
-            <p>Haga clic en el botón <strong>"Subir Archivos"</strong>. El sistema:</p>
-            <ol>
-                <li>Validará que los archivos cumplan los requisitos</li>
-                <li>Los subirá a Dropbox en la carpeta del paciente</li>
-                <li>Mostrará un mensaje de éxito o error</li>
-                <li>Agregará los archivos a la lista de "Archivos Subidos"</li>
-            </ol>
+            <h4><span class="step-number">5</span><span class="step-title">Verificar en Dropbox</span></h4>
+            <p>Los archivos se organizan automáticamente en Dropbox con la siguiente estructura:</p>
 
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step11.png')}}" width="100%">
-            <small>Muestra el botón "Subir Archivos" con un spinner de carga</small>
+            <div class="code-block">
+/consultations/
+  /{patient_id}/
+    /{encounter_id}-{nombre_paciente}/
+      /{timestamp}_{nombre_archivo}.jpg
+            </div>
 
+            <p class="mt-3">Ejemplo real:</p>
+            <div class="code-block">
+/consultations/42/789-Maria_Rodriguez/20260619153045_rayos_x_torax.jpg
+            </div>
 
             <div class="info-box tip">
                 <div class="info-box-title">
-                    <i class="fas fa-folder text-success"></i>
-                    Estructura en Dropbox
+                    <i class="fas fa-folder-tree text-success"></i>
+                    Organización Inteligente
                 </div>
-                <p class="mb-0">Los archivos se organizan automáticamente en Dropbox siguiendo esta estructura:<br>
-                <code>/consultations/{ID_PACIENTE}/{ID_CONSULTA}/{TIMESTAMP}_{NOMBRE_ARCHIVO}</code></p>
+                <p class="mb-0">Cada paciente tiene su carpeta, y dentro de ella, cada consulta tiene su subcarpeta con el nombre del paciente para fácil identificación.</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 7: Manage Files -->
+    <!-- Section 5: Manage Files -->
     <section id="gestionar-archivos" class="content-section">
-        <h2><i class="fas fa-folder-open me-2"></i>7. Gestionar Archivos Subidos</h2>
+        <h2><i class="fas fa-folder-open me-2"></i>5. Gestionar Archivos Subidos</h2>
 
-        <p>Una vez que los archivos se han subido, puede visualizarlos, descargarlos o eliminarlos desde la misma interfaz de consulta.</p>
+        <p>Puede visualizar, descargar y eliminar archivos directamente desde SAMI.</p>
 
         <div class="step-card">
-            <h4><span class="step-number">1</span><span class="step-title">Visualizar Archivos</span></h4>
-            <p>En la sección <strong>"Archivos Subidos"</strong>, verá una lista en formato de tarjetas con todos los archivos de la consulta. Cada tarjeta muestra:</p>
+            <h4><span class="step-number">1</span><span class="step-title">Ver Lista de Archivos</span></h4>
+            <p>En la consulta, verá todos los archivos subidos con:</p>
+
             <ul>
-                <li><strong>Vista previa de la imagen</strong> (si es una imagen)</li>
-                <li><strong>Nombre del archivo</strong></li>
-                <li><strong>Categoría</strong> (ej: "Fotografía Clínica")</li>
-                <li><strong>Nota descriptiva</strong> (si se agregó)</li>
-                <li><strong>Tamaño del archivo</strong> (ej: "2.5 MB")</li>
-                <li><strong>Fecha y hora de subida</strong> (relativa, ej: "hace 5 minutos")</li>
+                <li>Preview de imagen (si es imagen)</li>
+                <li>Nombre del archivo</li>
+                <li>Categoría (badge de color)</li>
+                <li>Nota descriptiva (si se agregó)</li>
+                <li>Tamaño del archivo</li>
+                <li>Fecha de subida</li>
             </ul>
 
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step12.png')}}" width="100%">
-            <small>Muestra 3-4 tarjetas con vista previa de imágenes y sus metadatos</small>
-
+            <img src="{{url('images/tutorial/external_storage/step14.png')}}" width="100%">
+            <small>Muestra la lista de archivos en formato tarjetas con previews</small>
         </div>
 
         <div class="step-card">
-            <h4><span class="step-number">2</span><span class="step-title">Ver Archivo Completo</span></h4>
-            <p>Para ver el archivo en tamaño completo:</p>
-            <ol>
-                <li>Haga clic en el botón <strong>"Ver"</strong> en la tarjeta del archivo</li>
-                <li>El archivo se abrirá en una nueva pestaña del navegador</li>
-                <li>La URL es temporal y expira después de 60 minutos por seguridad</li>
-            </ol>
+            <h4><span class="step-number">2</span><span class="step-title">Visualizar Archivos</span></h4>
+            <p>Haga clic en el botón <strong>"Ver"</strong> para abrir el archivo en una nueva pestaña. El sistema generará automáticamente una URL temporal de Dropbox que expira en 60 minutos por seguridad.</p>
 
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-clock text-primary"></i>
                     URLs Temporales
                 </div>
-                <p class="mb-0">Por seguridad, las URLs de visualización son temporales. Si intenta acceder a un enlace después de 60 minutos, deberá hacer clic en "Ver" nuevamente para generar una nueva URL.</p>
+                <p class="mb-0">Las URLs de visualización son temporales por seguridad. Si vuelve a ver el archivo más tarde, se generará una nueva URL automáticamente.</p>
             </div>
         </div>
 
         <div class="step-card">
             <h4><span class="step-number">3</span><span class="step-title">Eliminar Archivos</span></h4>
             <p>Para eliminar un archivo:</p>
+
             <ol>
-                <li>Haga clic en el botón rojo <strong>"Eliminar"</strong> en la tarjeta del archivo</li>
+                <li>Haga clic en el botón rojo <strong>"Eliminar"</strong></li>
                 <li>Confirme la acción en el diálogo de confirmación</li>
-                <li>El archivo se eliminará tanto de Dropbox como del registro de SAMI</li>
-                <li>La acción es <strong>permanente y no se puede deshacer</strong></li>
+                <li>El archivo se eliminará de Dropbox y de SAMI</li>
             </ol>
-
-            <!-- Espacio para captura de pantalla -->
-            <img src="{{url('images/tutorial/external_storage/step13.png')}}" width="100%">
-            <small>Muestra el mensaje "¿Está seguro de eliminar este archivo?" con botones Cancelar y Eliminar</small>
-
 
             <div class="info-box danger">
                 <div class="info-box-title">
                     <i class="fas fa-exclamation-triangle text-danger"></i>
-                    Advertencia de Eliminación
+                    Eliminación Permanente
                 </div>
-                <p class="mb-0">Una vez eliminado, el archivo no se puede recuperar. Asegúrese de no necesitar el archivo antes de eliminarlo. El archivo se elimina tanto de SAMI como de Dropbox.</p>
+                <p class="mb-0">Los archivos eliminados <strong>NO se pueden recuperar</strong> desde SAMI. Asegúrese de que realmente desea eliminar el archivo antes de confirmar.</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 8: Tips and Security -->
+    <!-- Section 6: Tips and Security -->
     <section id="tips" class="content-section">
-        <h2><i class="fas fa-lightbulb me-2"></i>8. Tips y Mejores Prácticas</h2>
+        <h2><i class="fas fa-lightbulb me-2"></i>6. Tips y Resolución de Problemas</h2>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="info-box tip">
-                    <div class="info-box-title">
-                        <i class="fas fa-check text-success"></i>
-                        Mejores Prácticas
-                    </div>
-                    <ul class="mb-0">
-                        <li>Configure Dropbox antes de empezar a atender pacientes</li>
-                        <li>Use nombres descriptivos para los archivos antes de subirlos</li>
-                        <li>Agregue notas para identificar fácilmente el contenido</li>
-                        <li>Revise periódicamente su espacio disponible en Dropbox</li>
-                        <li>Mantenga su Access Token en un lugar seguro como respaldo</li>
-                        <li>Categorice correctamente los archivos para mejor organización</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="info-box warning">
-                    <div class="info-box-title">
-                        <i class="fas fa-exclamation text-warning"></i>
-                        Errores Comunes a Evitar
-                    </div>
-                    <ul class="mb-0">
-                        <li>No generar un nuevo token después de cambiar permisos</li>
-                        <li>Compartir el Access Token con terceros</li>
-                        <li>Subir archivos demasiado grandes (máx. 10MB)</li>
-                        <li>No probar la conexión antes de guardar</li>
-                        <li>Eliminar archivos sin confirmar que no se necesitan</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <h3>Seguridad y Privacidad</h3>
-        <div class="info-box note">
-            <div class="info-box-title">
-                <i class="fas fa-shield-alt text-primary"></i>
-                Protección de Datos
-            </div>
+        <h3>✅ Mejores Prácticas</h3>
+        <div class="info-box tip">
             <ul class="mb-0">
-                <li><strong>Encriptación:</strong> El Access Token se almacena encriptado en la base de datos</li>
-                <li><strong>Separación de datos:</strong> Cada cliente puede usar su propia cuenta de Dropbox</li>
-                <li><strong>URLs temporales:</strong> Los enlaces de visualización expiran automáticamente</li>
-                <li><strong>Auditoría:</strong> Todos los accesos a archivos quedan registrados</li>
-                <li><strong>HIPAA/GDPR:</strong> Asegúrese de que su cuenta de Dropbox cumple con las regulaciones de su país</li>
+                <li>Use una cuenta de Dropbox exclusiva para su clínica (no personal)</li>
+                <li>Habilite autenticación de dos factores en su cuenta Dropbox</li>
+                <li>Categorice correctamente los archivos para fácil búsqueda</li>
+                <li>Agregue notas descriptivas a archivos importantes</li>
+                <li>Revise periódicamente el espacio disponible en Dropbox</li>
+                <li>Mantenga las credenciales OAuth seguras en el servidor</li>
+                <li>No comparta el App Secret con terceros</li>
             </ul>
         </div>
 
-        <h3>Solución de Problemas Comunes</h3>
-        <div class="field-table-wrapper">
-            <table class="field-table">
-                <thead>
-                    <tr>
-                        <th>Problema</th>
-                        <th>Solución</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Problema"><strong>Error: "missing_scope"</strong></td>
-                        <td data-label="Solución">Faltan permisos en Dropbox. Verifique que todos los permisos estén activados y genere un nuevo token.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Problema"><strong>Error: "invalid_access_token"</strong></td>
-                        <td data-label="Solución">El token es inválido o ha sido revocado. Genere un nuevo token en Dropbox y actualice la configuración.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Problema"><strong>No se muestra vista previa</strong></td>
-                        <td data-label="Solución">Las vistas previas solo funcionan para imágenes. Otros tipos de archivos mostrarán un ícono genérico.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Problema"><strong>Formulario deshabilitado</strong></td>
-                        <td data-label="Solución">No hay almacenamiento externo configurado. Complete la configuración de Dropbox primero.</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Problema"><strong>Error: "path_lookup/not_found"</strong></td>
-                        <td data-label="Solución">El archivo no existe en Dropbox. Puede haber sido eliminado manualmente desde Dropbox.</td>
-                    </tr>
-                </tbody>
-            </table>
+        <h3 class="mt-4">🔒 Seguridad y Privacidad</h3>
+        <div class="info-box note">
+            <div class="info-box-title">
+                <i class="fas fa-shield-alt text-primary"></i>
+                Medidas de Seguridad Implementadas
+            </div>
+            <ul class="mb-0">
+                <li><strong>Tokens encriptados</strong>: Los access tokens y refresh tokens se guardan encriptados en la base de datos</li>
+                <li><strong>Renovación automática</strong>: Los tokens se renuevan antes de expirar sin exponer credenciales</li>
+                <li><strong>URLs temporales</strong>: Los enlaces de visualización expiran en 60 minutos</li>
+                <li><strong>Aislamiento multi-tenant</strong>: Cada cliente tiene sus propias credenciales y archivos separados</li>
+                <li><strong>Audit logs</strong>: Todas las operaciones quedan registradas para auditoría</li>
+                <li><strong>HTTPS obligatorio</strong>: Todas las comunicaciones están cifradas en producción</li>
+            </ul>
         </div>
 
-        <h3>Preguntas Frecuentes</h3>
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                        ¿Puedo usar mi cuenta personal de Dropbox?
-                    </button>
-                </h2>
-                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Sí, puede usar una cuenta personal. Sin embargo, para prácticas médicas se recomienda usar una cuenta de Dropbox Business para mayor capacidad de almacenamiento y funciones de seguridad adicionales.
-                    </div>
-                </div>
+        <h3 class="mt-4">🔧 Resolución de Problemas</h3>
+
+        <div class="step-card">
+            <h4>Error: "Token expirado" o "expired_access_token"</h4>
+            <p><strong>Causa</strong>: El refresh token también expiró (muy poco común).</p>
+            <p><strong>Solución</strong>:</p>
+            <ol>
+                <li>Vaya a Configuración → Almacenamiento Externo</li>
+                <li>Click en "Desconectar Dropbox"</li>
+                <li>Click en "Conectar con Dropbox" nuevamente</li>
+                <li>Autorice de nuevo en Dropbox</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h4>Error: "redirect_uri_mismatch"</h4>
+            <p><strong>Causa</strong>: La URL de callback configurada en Dropbox no coincide con la de su servidor.</p>
+            <p><strong>Solución</strong>:</p>
+            <ol>
+                <li>Verifique la Redirect URI en Dropbox App Console → Settings → OAuth 2</li>
+                <li>Debe ser exactamente: <code>https://su-dominio.com/settings/dropbox/callback</code></li>
+                <li>Incluya https:// si usa SSL (recomendado)</li>
+                <li>Verifique que no haya espacios extra al inicio o final</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h4>Error: "No se puede subir archivos"</h4>
+            <p><strong>Causa</strong>: Almacenamiento externo deshabilitado o no configurado.</p>
+            <p><strong>Solución</strong>:</p>
+            <ol>
+                <li>Verifique que Dropbox esté conectado (estado verde)</li>
+                <li>Verifique que el toggle "Almacenamiento Externo Activo" esté habilitado</li>
+                <li>Si ve mensaje de error sobre credenciales, reconéctese con Dropbox</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h4>Las imágenes no se visualizan (src="#")</h4>
+            <p><strong>Causa</strong>: Error al generar URL temporal desde Dropbox.</p>
+            <p><strong>Solución</strong>:</p>
+            <ol>
+                <li>Refresque la página (el sistema generará nueva URL)</li>
+                <li>Verifique que los permisos de Dropbox incluyan <code>sharing.write</code> y <code>sharing.read</code></li>
+                <li>Si persiste, desconecte y vuelva a conectar Dropbox</li>
+            </ol>
+        </div>
+
+        <div class="info-box warning">
+            <div class="info-box-title">
+                <i class="fas fa-tools text-warning"></i>
+                Soporte Técnico
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                        ¿Qué pasa con los archivos si cambio de proveedor?
-                    </button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Los archivos permanecerán en su cuenta de Dropbox. Si cambia de proveedor, deberá migrar manualmente los archivos al nuevo servicio. SAMI mantendrá el registro de los archivos pero no podrá acceder a ellos hasta que configure el nuevo proveedor.
-                    </div>
-                </div>
+            <p class="mb-0">Si los problemas persisten después de seguir estos pasos, contacte a soporte técnico con:<br>
+            1. Descripción del error exacto<br>
+            2. Captura de pantalla del mensaje de error<br>
+            3. Pasos que realizó antes del error</p>
+        </div>
+
+        <h3 class="mt-4">📊 Monitoreo</h3>
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-chart-line text-success"></i>
+                Verificación de Salud del Sistema
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                        ¿Cuánto espacio necesito en Dropbox?
-                    </button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Depende del volumen de pacientes y del tipo de archivos. Como referencia, una consulta promedio con 5 fotos clínicas ocupa aproximadamente 15-20 MB. Una cuenta gratuita de Dropbox (2 GB) puede almacenar alrededor de 100 consultas con archivos.
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                        ¿Los pacientes pueden ver los archivos en Dropbox?
-                    </button>
-                </h2>
-                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        No. Los archivos se almacenan en su cuenta privada de Dropbox. Solo usted y los usuarios autorizados de SAMI pueden acceder a ellos. Los pacientes no tienen acceso directo a su Dropbox.
-                    </div>
-                </div>
-            </div>
+            <p class="mb-0">El sistema registra automáticamente en los logs cuando:<br>
+            • Se renuevan tokens automáticamente<br>
+            • Se suben archivos exitosamente<br>
+            • Ocurren errores de conexión<br>
+            <br>
+            Su administrador de sistemas puede revisar <code>storage/logs/laravel.log</code> para monitoreo detallado.</p>
         </div>
 
         <div class="info-box note mt-4">
             <div class="info-box-title">
-                <i class="fas fa-question-circle text-primary"></i>
-                ¿Necesita Ayuda?
+                <i class="fas fa-graduation-cap text-primary"></i>
+                ¿Necesita Más Ayuda?
             </div>
-            <p class="mb-0">Si tiene problemas configurando el almacenamiento externo o preguntas sobre el uso del sistema, contacte al equipo de soporte técnico de SAMI. También puede revisar las otras guías del Centro de Ayuda para aprender sobre funcionalidades relacionadas.</p>
+            <p class="mb-0">Para asistencia adicional:<br>
+            • Consulte la <a href="{{route('help.index')}}" target="_blank">documentación completa</a><br>
+            • Contacte al equipo de soporte<br>
+            • Revise la <a href="https://www.dropbox.com/developers/documentation" target="_blank">documentación de Dropbox</a> (en inglés)</p>
         </div>
     </section>
 
-        </div> <!-- End col-lg-8 -->
-    </div> <!-- End row -->
-
-    <!-- Navigation -->
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{{ route('help.settings') }}" class="btn btn-outline-secondary btn-lg">
-            <i class="fas fa-arrow-left me-2"></i>Configuraciones
-        </a>
-        <a href="{{ route('help.index') }}" class="btn btn-primary btn-lg">
-            Centro de Ayuda <i class="fas fa-arrow-right ms-2"></i>
-        </a>
+        </div>
     </div>
 @stop
+
+@section('sidebar')
+    @include('help.sidebar', ['active' => 'external-storage'])
+@endsection

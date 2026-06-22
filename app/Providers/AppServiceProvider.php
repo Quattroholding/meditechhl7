@@ -43,6 +43,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Disable SSL verification for local development only
+        if (config('app.env') === 'local') {
+            stream_context_set_default([
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ],
+            ]);
+        }
+
         // Paginator::useTailwind();
         Appointment::observe(AppointmentObserver::class);
         ClientSubscription::observe(ClientSubscriptionObserver::class);

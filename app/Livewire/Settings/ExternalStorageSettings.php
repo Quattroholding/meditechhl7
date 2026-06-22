@@ -3,8 +3,6 @@
 namespace App\Livewire\Settings;
 
 use App\Models\ClientPreference;
-use App\Services\Storage\DropboxStorageProvider;
-use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
 
 class ExternalStorageSettings extends Component
@@ -13,11 +11,11 @@ class ExternalStorageSettings extends Component
 
     public string $provider = 'dropbox';
 
-    public string $dropbox_access_token = '';
+    public bool $isConnected = false;
 
-    public bool $testingConnection = false;
+    public ?string $accountInfo = null;
 
-    public ?string $connectionTestResult = null;
+    public ?string $expiresAt = null;
 
     public function mount(): void
     {
@@ -32,38 +30,23 @@ class ExternalStorageSettings extends Component
         if ($config) {
             $this->enabled = $config['enabled'] ?? false;
             $this->provider = $config['provider'] ?? 'dropbox';
-            $this->dropbox_access_token = ''; // No mostramos el token por seguridad
+            $this->isConnected = isset($config['access_token']) && isset($config['refresh_token']);
+            $this->accountInfo = $config['account_id'] ?? null;
+            $this->expiresAt = $config['expires_at'] ?? null;
         }
     }
 
-    public function testDropboxConnection(): void
+    public function connectDropbox(): void
     {
-        $this->testingConnection = true;
-        $this->connectionTestResult = null;
-
-        try {
-            if (empty($this->dropbox_access_token)) {
-                $this->connectionTestResult = 'error:Por favor ingrese un token de acceso';
-                $this->testingConnection = false;
-
-                return;
-            }
-
-            $provider = new DropboxStorageProvider($this->dropbox_access_token);
-
-            if ($provider->validateCredentials()) {
-                $this->connectionTestResult = 'success:Conexión exitosa con Dropbox';
-            } else {
-                $this->connectionTestResult = 'error:No se pudo conectar con Dropbox. Verifique el token de acceso';
-            }
-        } catch (\Exception $e) {
-            $this->connectionTestResult = 'error:Error al conectar con Dropbox: '.$e->getMessage();
-        } finally {
-            $this->testingConnection = false;
-        }
+        $this->redirect(route('admin.dropbox.redirect'), navigate: false);
     }
 
-    public function saveSettings(): void
+    public function disconnectDropbox(): void
+    {
+        $this->redirect(route('admin.dropbox.disconnect'), navigate: false);
+    }
+
+    public function toggleEnabled(): void
     {
         $client = auth()->user()->getCurrentClient();
 
@@ -73,39 +56,25 @@ class ExternalStorageSettings extends Component
             return;
         }
 
+        if (! $this->isConnected && $this->enabled) {
+            session()->flash('error', 'Debe conectar con Dropbox primero');
+            $this->enabled = false;
+
+            return;
+        }
+
         try {
-            $config = [
-                'enabled' => $this->enabled,
-                'provider' => $this->provider,
-            ];
+            $config = ClientPreference::getExternalStorageConfig($client->id);
 
-            if ($this->enabled && $this->provider === 'dropbox') {
-                if (empty($this->dropbox_access_token)) {
-                    session()->flash('error', 'Por favor ingrese un token de acceso de Dropbox');
+            if ($config) {
+                $config['enabled'] = $this->enabled;
+                ClientPreference::setExternalStorageConfig($client->id, $config);
 
-                    return;
-                }
-
-                $provider = new DropboxStorageProvider($this->dropbox_access_token);
-
-                if (! $provider->validateCredentials()) {
-                    session()->flash('error', 'No se pudo validar el token de Dropbox. Por favor verifique que sea correcto.');
-
-                    return;
-                }
-
-                $config['dropbox_access_token'] = Crypt::encryptString($this->dropbox_access_token);
+                session()->flash('success', $this->enabled ? 'Almacenamiento externo habilitado' : 'Almacenamiento externo deshabilitado');
             }
-
-            ClientPreference::setExternalStorageConfig($client->id, $config);
-
-            session()->flash('success', 'Configuración de almacenamiento externo guardada exitosamente');
-
-            $this->dropbox_access_token = '';
-
-            $this->dispatch('settings-saved');
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al guardar la configuración: '.$e->getMessage());
+            session()->flash('error', 'Error al actualizar la configuración: '.$e->getMessage());
+            $this->enabled = ! $this->enabled; // Revert
         }
     }
 

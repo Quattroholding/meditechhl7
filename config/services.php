@@ -112,4 +112,9 @@ return [
         'voice_dictation_max_file_size' => env('CLAUDE_VOICE_DICTATION_MAX_FILE_SIZE', 10485760),
     ],
 
+    'dropbox' => [
+        'app_key' => env('DROPBOX_APP_KEY'),
+        'app_secret' => env('DROPBOX_APP_SECRET'),
+    ],
+
 ];

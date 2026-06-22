@@ -28,13 +28,13 @@ class ConsultationPolicy
 
     public function edit(User $user, Encounter $encounter)
     {
-        if ($encounter->getRawOriginal('status') != 'finished') {
+        //if ($encounter->getRawOriginal('status') != 'finished') {
             if ($user->hasAnyRole(['admin', 'asistente medico'])) {
                 return true;
             } elseif ($user->hasRole(['doctor']) and $user->practitioner->id == $encounter->practitioner_id) {
                 return true;
             }
-        }
+        //}
 
         return false;
     }

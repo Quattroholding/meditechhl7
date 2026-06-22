@@ -16,6 +16,7 @@
 |
 */
 
+use App\Http\Controllers\Admin\DropboxOAuthController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,5 +80,17 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     })
         ->middleware('can.manage.subscription')
         ->name('setting.external_storage');
+
+    // Dropbox OAuth Routes
+    Route::get('/dropbox/redirect', [DropboxOAuthController::class, 'redirect'])
+        ->middleware('can.manage.subscription')
+        ->name('admin.dropbox.redirect');
+
+    Route::get('/dropbox/callback', [DropboxOAuthController::class, 'callback'])
+        ->name('admin.dropbox.callback');
+
+    Route::get('/dropbox/disconnect', [DropboxOAuthController::class, 'disconnect'])
+        ->middleware('can.manage.subscription')
+        ->name('admin.dropbox.disconnect');
 
 });

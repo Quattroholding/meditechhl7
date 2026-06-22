@@ -23,6 +23,9 @@ class StorageProviderFactory
 
         $provider = $config['provider'] ?? null;
 
+        // Add client_id to config for token refresh
+        $config['client_id'] = $clientId;
+
         return match ($provider) {
             'dropbox' => static::makeDropboxProvider($config),
             default => null,
@@ -63,7 +66,8 @@ class StorageProviderFactory
     protected static function makeDropboxProvider(array $config): ?ExternalStorageProvider
     {
         try {
-            $accessToken = $config['dropbox_access_token'] ?? null;
+            // Support both old (dropbox_access_token) and new (access_token) config keys
+            $accessToken = $config['access_token'] ?? $config['dropbox_access_token'] ?? null;
 
             if (! $accessToken) {
                 Log::warning('Dropbox access token not found in configuration');
@@ -71,9 +75,33 @@ class StorageProviderFactory
                 return null;
             }
 
-            $decryptedToken = Crypt::decryptString($accessToken);
+            $decryptedAccessToken = Crypt::decryptString($accessToken);
 
-            return new DropboxStorageProvider($decryptedToken);
+            // OAuth tokens
+            $refreshToken = null;
+            $expiresAt = null;
+
+            if (isset($config['refresh_token'])) {
+                try {
+                    $refreshToken = Crypt::decryptString($config['refresh_token']);
+                } catch (\Exception $e) {
+                    Log::warning('Failed to decrypt refresh token', ['error' => $e->getMessage()]);
+                }
+            }
+
+            if (isset($config['expires_at'])) {
+                $expiresAt = $config['expires_at'];
+            }
+
+            // Get client_id from config metadata if available
+            $clientId = $config['client_id'] ?? null;
+
+            return new DropboxStorageProvider(
+                $decryptedAccessToken,
+                $refreshToken,
+                $expiresAt,
+                $clientId
+            );
         } catch (\Exception $e) {
             Log::error('Error creating Dropbox provider', [
                 'error' => $e->getMessage(),

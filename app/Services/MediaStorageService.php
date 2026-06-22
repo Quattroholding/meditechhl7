@@ -158,7 +158,7 @@ class MediaStorageService
         $sanitizedFilename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $filename);
 
         // Get patient name and sanitize it for folder name
-        $patientName = $encounter->patient->getFullNameAttribute();
+        $patientName = $encounter->patient->name;
         $sanitizedPatientName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $patientName);
 
         return sprintf(
