@@ -653,13 +653,6 @@ code {
             </div>
         </div>
 
-        <div class="info-box tip">
-            <div class="info-box-title">
-                <i class="fas fa-info-circle text-success"></i>
-                No Necesitas Crear una App
-            </div>
-            <p class="mb-0">La aplicación de Dropbox ya está configurada por el administrador de SAMI. Tú solo necesitas <strong>conectar tu cuenta de Dropbox</strong> con un clic. Es muy simple.</p>
-        </div>
 
         <div class="info-box warning mt-3">
             <div class="info-box-title">
@@ -688,7 +681,7 @@ code {
             <h4><span class="step-number">1</span><span class="step-title">Acceder a la Configuración</span></h4>
             <p>En SAMI, navegue al menú lateral y haga clic en <strong>"Configuraciones"</strong>, luego seleccione <strong>"Almacenamiento Externo"</strong>.</p>
 
-            <img src="{{url('images/tutorial/external_storage/step7.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step0.png')}}" width="100%">
             <small>Muestra el menú "Configuraciones" expandido con la opción "Almacenamiento Externo"</small>
 
             <div class="info-box note">
@@ -706,16 +699,10 @@ code {
             <h4><span class="step-number">2</span><span class="step-title">Hacer Clic en "Conectar con Dropbox"</span></h4>
             <p>En la página de configuración, verá un botón azul grande que dice <strong>"Conectar con Dropbox"</strong>. Haga clic en él.</p>
 
-            <img src="{{url('images/tutorial/external_storage/step8.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step1.png')}}" width="100%">
             <small>Muestra el botón "Conectar con Dropbox" con el icono de Dropbox</small>
 
-            <div class="info-box tip">
-                <div class="info-box-title">
-                    <i class="fas fa-magic text-success"></i>
-                    Sin Tokens Manuales
-                </div>
-                <p class="mb-0">Ya no necesita copiar y pegar tokens manualmente. OAuth 2.0 maneja todo automáticamente de forma segura.</p>
-            </div>
+
         </div>
 
         <div class="step-card">
@@ -728,7 +715,7 @@ code {
                 <li>Será redirigido automáticamente de vuelta a SAMI</li>
             </ol>
 
-            <img src="{{url('images/tutorial/external_storage/step9.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step2.png')}}" width="100%">
             <small>Muestra la pantalla de autorización de Dropbox con el botón "Allow"</small>
         </div>
 
@@ -743,16 +730,9 @@ code {
                 <li><strong>Renovación automática</strong>: Confirmación de que se auto-renovará</li>
             </ul>
 
-            <img src="{{url('images/tutorial/external_storage/step10.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step3.png')}}" width="100%">
             <small>Muestra el estado "Conectado" con información del token y renovación automática</small>
 
-            <div class="info-box tip">
-                <div class="info-box-title">
-                    <i class="fas fa-sync-alt text-success"></i>
-                    Renovación Automática
-                </div>
-                <p class="mb-0">El sistema renovará automáticamente los tokens antes de que expiren. <strong>No necesitará reconectarse manualmente</strong> nunca más.</p>
-            </div>
         </div>
 
         <div class="step-card">
@@ -766,7 +746,7 @@ code {
                 <li>✓ Puede desactivarlo temporalmente si lo necesita</li>
             </ul>
 
-            <img src="{{url('images/tutorial/external_storage/step11.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step4.png')}}" width="100%">
             <small>Muestra el toggle "Almacenamiento Externo Activo" habilitado</small>
         </div>
     </section>
@@ -786,7 +766,7 @@ code {
             <h4><span class="step-number">2</span><span class="step-title">Ir a Sección de Archivos</span></h4>
             <p>En la consulta, busque la sección <strong>"Archivos de Consulta"</strong> o <strong>"Subir Archivos"</strong>.</p>
 
-            <img src="{{url('images/tutorial/external_storage/step12.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step9.png')}}" width="100%">
             <small>Muestra la sección de archivos con el indicador "Dropbox conectado" en verde</small>
         </div>
 
@@ -823,7 +803,7 @@ code {
                 <li>Preview de los archivos subidos</li>
             </ul>
 
-            <img src="{{url('images/tutorial/external_storage/step13.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step10.png')}}" width="100%">
             <small>Muestra archivos subiendo con barra de progreso</small>
         </div>
 
@@ -872,7 +852,7 @@ code {
                 <li>Fecha de subida</li>
             </ul>
 
-            <img src="{{url('images/tutorial/external_storage/step14.png')}}" width="100%">
+            <img src="{{url('images/tutorial/external_storage/step12.png')}}" width="100%">
             <small>Muestra la lista de archivos en formato tarjetas con previews</small>
         </div>
 
@@ -956,17 +936,7 @@ code {
             </ol>
         </div>
 
-        <div class="step-card">
-            <h4>Error: "redirect_uri_mismatch"</h4>
-            <p><strong>Causa</strong>: La URL de callback configurada en Dropbox no coincide con la de su servidor.</p>
-            <p><strong>Solución</strong>:</p>
-            <ol>
-                <li>Verifique la Redirect URI en Dropbox App Console → Settings → OAuth 2</li>
-                <li>Debe ser exactamente: <code>https://su-dominio.com/settings/dropbox/callback</code></li>
-                <li>Incluya https:// si usa SSL (recomendado)</li>
-                <li>Verifique que no haya espacios extra al inicio o final</li>
-            </ol>
-        </div>
+
 
         <div class="step-card">
             <h4>Error: "No se puede subir archivos"</h4>
