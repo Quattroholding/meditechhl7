@@ -240,4 +240,4 @@ Route::get('/test-email', function () {
             ],
         ], 500);
     }
-})->middleware('restrict.ip:127.0.0.1,::1,200.12.208.98,142.93.124.207')->name('test.email');
+})->middleware('restrict.ip')->name('test.email');
