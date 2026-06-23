@@ -21,8 +21,11 @@ class RestrictByIp
             ? explode(',', $ips)
             : config('app.allowed_ips', ['127.0.0.1', '::1']);
 
-        // Get client IP
-        $clientIp = $request->ip();
+        // Get client IP (handles proxies like Cloudflare)
+        // Cloudflare sends the real IP in CF-Connecting-IP header
+        $clientIp = $request->header('CF-Connecting-IP')
+            ?? $request->header('X-Forwarded-For')
+            ?? $request->ip();
 
         // Check if IP is allowed
         if (! in_array($clientIp, $allowedIps)) {
