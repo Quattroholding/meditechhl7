@@ -18,7 +18,7 @@ class RestrictByIp
     {
         // Get allowed IPs from parameter or config
         $allowedIps = $ips
-            ? explode(',', $ips)
+            ? array_map('trim', explode(',', $ips))
             : config('app.allowed_ips', ['127.0.0.1', '::1']);
 
         // Get client IP (handles proxies like Cloudflare)
@@ -27,8 +27,11 @@ class RestrictByIp
             ?? $request->header('X-Forwarded-For')
             ?? $request->ip();
 
-        // Check if IP is allowed
-        if (! in_array($clientIp, $allowedIps)) {
+        // Debug: uncomment to see what's happening
+        // \Log::info('IP Restriction Debug', ['clientIp' => $clientIp, 'allowedIps' => $allowedIps]);
+
+        // Check if IP is allowed (case-insensitive, trim whitespace)
+        if (! in_array(trim($clientIp), $allowedIps, true)) {
             abort(403, sprintf(
                 'Acceso no autorizado desde esta IP: %s. IPs permitidas: %s',
                 $clientIp,
