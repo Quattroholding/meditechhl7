@@ -209,3 +209,35 @@ Route::get('/join-consultation/{appointment}/{token}', function (Appointment $ap
 
     return view('virtual-consultation.patient-join', compact('appointment'));
 })->name('virtual-consultation.join');
+
+/**
+ * ============================================================================
+ * EMAIL TEST ROUTE (IP restricted)
+ * ============================================================================
+ */
+Route::get('/test-email', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('Este es un correo de prueba desde Laravel.', function ($message) {
+            $message->to('rgasperi@smartcarebilling.com')
+                ->subject('Prueba de correo - '.now()->format('Y-m-d H:i:s'));
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Correo enviado exitosamente',
+            'from' => config('mail.from.address'),
+            'to' => 'rgasperi@smartcarebilling.com',
+            'time' => now()->toDateTimeString(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'config' => [
+                'host' => config('mail.mailers.smtp.host'),
+                'port' => config('mail.mailers.smtp.port'),
+                'username' => config('mail.mailers.smtp.username'),
+            ],
+        ], 500);
+    }
+})->middleware('restrict.ip:127.0.0.1,::1,200.12.208.98')->name('test.email');

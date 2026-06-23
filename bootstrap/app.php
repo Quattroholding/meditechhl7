@@ -8,6 +8,7 @@ use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
 use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use App\Http\Middleware\FirstLoginMiddleware;
+use App\Http\Middleware\RestrictByIp;
 use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\WhatsappClientFilter;
@@ -100,7 +101,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'whatsapp.client' => WhatsappClientFilter::class,
             'can.manage.subscription' => CanManageSubscription::class,
             '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
-
+            'restrict.ip' => RestrictByIp::class,
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
