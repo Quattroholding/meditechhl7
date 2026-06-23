@@ -19,7 +19,7 @@ class RestrictByIp
         // Get allowed IPs from parameter or config
         $allowedIps = $ips
             ? explode(',', $ips)
-            : config('app.allowed_ips', ['127.0.0.1','142.93.124.207', '::1']);
+            : config('app.allowed_ips', ['127.0.0.1', '::1']);
 
         // Get client IP
         $clientIp = $request->ip();
