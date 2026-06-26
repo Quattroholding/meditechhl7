@@ -7,6 +7,7 @@ use App\Models\Encounter;
 use App\Models\HistoryDownload;
 use App\Models\Patient;
 use App\Models\PatientPractitionerAuthorization;
+use App\Services\PatientAccessAuditService;
 
 class PatientHistoryController extends Controller
 {
@@ -156,6 +157,13 @@ class PatientHistoryController extends Controller
 
             // Descargar archivo
             $fileName = 'historial_'.$historyDownload->patient->full_name.'_'.now()->format('Ymd').'.zip';
+
+            // Log the download
+            app(PatientAccessAuditService::class)->logHistoryDownload(
+                patient: $historyDownload->patient,
+                historyDownloadId: $historyDownload->id,
+                fileName: $fileName
+            );
 
             return response()->download($fullPath, $fileName)->deleteFileAfterSend(false);
 

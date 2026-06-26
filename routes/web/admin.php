@@ -31,8 +31,22 @@ use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\HemoScreenExportController;
 use App\Http\Controllers\HemoScreenStandaloneWebController;
 use App\Http\Controllers\ReportController;
+use App\Livewire\Admin\PatientAccessAuditLog;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Route;
+
+// ============================================================================
+// ENTERPRISE LEADS (Admin - Protegido)
+// ============================================================================
+
+// ============================================================================
+// PATIENT ACCESS AUDIT LOG (Compliance - Admin only)
+// ============================================================================
+
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin/compliance')->group(function () {
+    Route::get('/patient-access-audit', PatientAccessAuditLog::class)
+        ->name('compliance.patient.access.audit');
+});
 
 // ============================================================================
 // ENTERPRISE LEADS (Admin - Protegido)

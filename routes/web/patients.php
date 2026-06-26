@@ -54,7 +54,7 @@ Route::group(['prefix' => 'patients', 'middleware' => ['auth', 'verified', 'firs
         ->name('patient.insurances');
 
     Route::get('/{id}/medical_history', [PatientController::class, 'medicalHistory'])
-        ->middleware('permission:patients.medical_history')
+        ->middleware(['permission:patients.medical_history', 'log.patient.access:medical_history'])
         ->name('patient.medical_history');
 
     Route::get('/{id}/edit', [PatientController::class, 'edit'])

@@ -8,6 +8,7 @@ use App\Http\Middleware\DebugIpRestriction;
 use App\Http\Middleware\DetectConcurrentSession;
 use App\Http\Middleware\EnsureTwoFactorIsEnabled;
 use App\Http\Middleware\FirstLoginMiddleware;
+use App\Http\Middleware\LogPatientAccess;
 use App\Http\Middleware\RestrictByIp;
 use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Middleware\TrustProxies;
@@ -102,6 +103,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'can.manage.subscription' => CanManageSubscription::class,
             '2fa.enforce' => EnsureTwoFactorIsEnabled::class,
             'restrict.ip' => RestrictByIp::class,
+            'log.patient.access' => LogPatientAccess::class,
         ]);
 
         // Agregar middleware de tema del cliente a todas las rutas web
