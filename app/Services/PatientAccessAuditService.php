@@ -108,6 +108,27 @@ class PatientAccessAuditService
     }
 
     /**
+     * Log encounter resumen/summary download
+     */
+    public function logEncounterDownload(
+        Patient $patient,
+        int $encounterId,
+        ?string $fileName = null,
+        ?array $additionalMetadata = null
+    ): PatientAccessLog {
+        return $this->logAccess(
+            patient: $patient,
+            actionType: 'download',
+            resourceType: 'encounter_resumen',
+            metadata: array_merge([
+                'encounter_id' => $encounterId,
+                'filename' => $fileName ?? 'resumen_consulta.pdf',
+                'download_timestamp' => now()->toIso8601String(),
+            ], $additionalMetadata ?? [])
+        );
+    }
+
+    /**
      * Get patient audit summary
      */
     public function getPatientAuditSummary(Patient $patient, ?int $daysBack = 30): array

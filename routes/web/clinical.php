@@ -72,7 +72,7 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 
     // Descargar resumen de consulta
     Route::get('/{appointment_id}/download_resumen', [ConsultationController::class, 'downloadResumen'])
-        ->middleware('permission:consultations.download_resumen')
+        ->middleware(['permission:consultations.download_resumen', 'log.patient.access:encounter_download'])
         ->name('consultation.download_resumen');
 
     // Finalizar consulta
