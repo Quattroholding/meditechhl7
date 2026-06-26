@@ -57,7 +57,7 @@ Route::group(['prefix' => 'consultation', 'middleware' => ['auth', 'verified', '
 
     // Ver consulta finalizada (encounter_id)
     Route::get('/{encounter_id}/view', [ConsultationController::class, 'view'])
-        ->middleware('permission:consultations.show')
+        ->middleware(['permission:consultations.show', 'log.patient.access:encounter'])
         ->name('consultation.view');
 
     // Reenviar recetas por WhatsApp

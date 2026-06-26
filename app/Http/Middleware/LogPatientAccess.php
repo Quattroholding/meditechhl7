@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Encounter;
 use App\Models\Patient;
 use App\Services\PatientAccessAuditService;
 use Closure;
@@ -22,14 +23,27 @@ class LogPatientAccess
                 $patient = $this->extractPatient($request);
 
                 if ($patient) {
-                    $this->auditService->logMedicalHistoryView(
-                        patient: $patient,
-                        metadata: [
-                            'endpoint' => $request->path(),
-                            'method' => $request->method(),
-                            'resource_type' => $resourceType ?? 'medical_history',
-                        ]
-                    );
+                    $actionType = $this->getActionType($resourceType);
+                    $metadata = [
+                        'endpoint' => $request->path(),
+                        'method' => $request->method(),
+                        'resource_type' => $resourceType ?? 'medical_history',
+                    ];
+
+                    // Log encounter separately if this is an encounter view
+                    if ($resourceType === 'encounter') {
+                        $encounterId = $request->route('encounter_id');
+                        $this->auditService->logEncounterView(
+                            patient: $patient,
+                            encounterId: $encounterId,
+                            metadata: $metadata
+                        );
+                    } else {
+                        $this->auditService->logMedicalHistoryView(
+                            patient: $patient,
+                            metadata: $metadata
+                        );
+                    }
                 }
             } catch (\Exception $e) {
                 // Silently fail - don't disrupt user experience if logging fails
@@ -61,6 +75,29 @@ class LogPatientAccess
             return Patient::find($patientId);
         }
 
+        // Try to extract patient from encounter
+        $encounterId = $request->route('encounter_id');
+        if ($encounterId) {
+            $encounter = Encounter::find($encounterId);
+            if ($encounter) {
+                return $encounter->patient;
+            }
+        }
+
         return null;
+    }
+
+    /**
+     * Determine action type based on resource type
+     */
+    private function getActionType(?string $resourceType): string
+    {
+        return match ($resourceType) {
+            'encounter' => 'view',
+            'medical_history' => 'view',
+            'download' => 'download',
+            'export' => 'export',
+            default => 'view',
+        };
     }
 }
