@@ -67,6 +67,7 @@ return [
     // Physical Exam
     'physical_exam' => 'Physical Examination',
     'physical_exams' => 'Physical Examinations',
+    'physical_exams_use_suggestion' => 'Use suggestion',
     'cardiovascular' => 'Cardiovascular',
     'chest_breast' => 'Chest / Breast',
     'constitutional' => 'Constitutional',

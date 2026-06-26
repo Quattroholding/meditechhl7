@@ -16,7 +16,6 @@
                                 <th>Tipo</th>
                                 <th>Fecha/Hora</th>
                                 <th>Creado Por</th>
-                                <th>Resumen</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -43,12 +42,7 @@
                                         <small>{{ $snapshot->created_at->format('d/m/Y H:i:s') }}</small>
                                     </td>
                                     <td>
-                                        {{ $snapshot->creator->first_name ?? 'Sistema' }}
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">
-                                            {{ $snapshot->change_summary ?? 'Sin descripción' }}
-                                        </small>
+                                        {{ $snapshot->creator->full_name ?? 'Sistema' }}
                                     </td>
                                     <td>
                                         <button
@@ -170,20 +164,90 @@
                                 <h6 class="mb-0">Información de la Consulta</h6>
                             </div>
                             <div class="card-body">
+                                @php
+                                    $encounterChanges = $snapshotChanges['encounter'] ?? [];
+                                @endphp
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p><strong>Estado:</strong> {{ ucfirst($selectedSnapshotData['encounter']['status'] ?? 'N/A') }}</p>
-                                        <p><strong>Motivo:</strong> {{ $selectedSnapshotData['encounter']['reason'] ?? 'N/A' }}</p>
+                                        <p>
+                                            <strong>Estado:</strong>
+                                            {{ ucfirst($selectedSnapshotData['encounter']['status'] ?? 'N/A') }}
+                                            @if(isset($encounterChanges['status']))
+                                                <span class="change-badge-modified">🔄 MODIFICADO</span>
+                                            @endif
+                                        </p>
+                                        @if(isset($encounterChanges['status']))
+                                            <div class="field-change ms-2">
+                                                <small class="old-value">{{ $encounterChanges['status']['old'] ?? 'N/A' }}</small>
+                                                <small> → </small>
+                                                <small class="new-value">{{ $encounterChanges['status']['new'] ?? 'N/A' }}</small>
+                                            </div>
+                                        @endif
+
+                                        <p class="mt-2">
+                                            <strong>Motivo:</strong>
+                                            {{ $selectedSnapshotData['encounter']['reason'] ?? 'N/A' }}
+                                            @if(isset($encounterChanges['reason']))
+                                                <span class="change-badge-modified">🔄 MODIFICADO</span>
+                                            @endif
+                                        </p>
+                                        @if(isset($encounterChanges['reason']))
+                                            <div class="field-change ms-2">
+                                                <small class="old-value">{{ $encounterChanges['reason']['old'] ?? 'N/A' }}</small>
+                                                <small> → </small>
+                                                <small class="new-value">{{ $encounterChanges['reason']['new'] ?? 'N/A' }}</small>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="col-md-6">
-                                        <p><strong>Inicio:</strong> {{ \Carbon\Carbon::parse($selectedSnapshotData['encounter']['start'])->format('d-m-Y H:i') ?? 'N/A' }}</p>
-                                        <p><strong>Fin:</strong> {{ \Carbon\Carbon::parse($selectedSnapshotData['encounter']['end'])->format('d-m-Y H:i') ?? 'N/A' }}</p>
+                                        <p>
+                                            <strong>Inicio:</strong>
+                                            {{ \Carbon\Carbon::parse($selectedSnapshotData['encounter']['start'])->format('d-m-Y H:i') ?? 'N/A' }}
+                                        </p>
+                                        <p>
+                                            <strong>Fin:</strong>
+                                            {{ \Carbon\Carbon::parse($selectedSnapshotData['encounter']['end'])->format('d-m-Y H:i') ?? 'N/A' }}
+                                            @if(isset($encounterChanges['end']))
+                                                <span class="change-badge-modified">🔄 MODIFICADO</span>
+                                            @endif
+                                        </p>
+                                        @if(isset($encounterChanges['end']))
+                                            <div class="field-change ms-2">
+                                                <small class="old-value">{{ \Carbon\Carbon::parse($encounterChanges['end']['old'])->format('d-m-Y H:i') ?? 'N/A' }}</small>
+                                                <small> → </small>
+                                                <small class="new-value">{{ \Carbon\Carbon::parse($encounterChanges['end']['new'])->format('d-m-Y H:i') ?? 'N/A' }}</small>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 @if(!empty($selectedSnapshotData['encounter']['general_note']))
                                     <div class="mt-2">
                                         <strong>Nota General:</strong>
                                         <p class="text-muted">{{ $selectedSnapshotData['encounter']['general_note'] }}</p>
+                                        @if(isset($encounterChanges['general_note']))
+                                            <div class="field-change ms-2">
+                                                <small class="old-value">{{ $encounterChanges['general_note']['old'] ?? 'N/A' }}</small>
+                                                <small> → </small>
+                                                <small class="new-value">{{ $encounterChanges['general_note']['new'] ?? 'N/A' }}</small>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+
+                                @if(!empty($encounterChanges) && count($encounterChanges) > 0)
+                                    <div class="alert alert-warning mt-3 mb-0">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <strong>Resumen de cambios en la consulta:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            @foreach($encounterChanges as $field => $change)
+                                                <li>
+                                                    <strong>{{ ucfirst(str_replace('_', ' ', $field)) }}:</strong>
+                                                    <span class="old-value">{{ is_array($change['old']) ? json_encode($change['old']) : ($change['old'] ?? 'vacío') }}</span>
+                                                    →
+                                                    <span class="new-value">{{ is_array($change['new']) ? json_encode($change['new']) : ($change['new'] ?? 'vacío') }}</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 @endif
                             </div>
@@ -466,6 +530,12 @@
                                     <h6 class="mb-0 text-white">
                                         <i class="fas fa-file-medical-alt me-2"></i>
                                         Enfermedad Actual
+                                        @php
+                                            $presentIllnessChanges = $snapshotChanges['present_illness'] ?? [];
+                                        @endphp
+                                        @if(!empty($presentIllnessChanges) && $presentIllnessChanges['changed'] === true)
+                                            <span class="change-badge-modified ms-2">🔄 MODIFICADO</span>
+                                        @endif
                                     </h6>
                                 </div>
                                 <div class="card-body">
@@ -473,6 +543,13 @@
                                         <div class="mb-2">
                                             <strong>Descripción:</strong>
                                             <p class="mb-1">{{ $selectedSnapshotData['present_illness']['description'] }}</p>
+                                            @if(!empty($presentIllnessChanges['changed_fields']['description']))
+                                                <div class="field-change ms-2">
+                                                    <small class="old-value">{{ $presentIllnessChanges['changed_fields']['description']['old'] ?? 'N/A' }}</small>
+                                                    <small> → </small>
+                                                    <small class="new-value">{{ $presentIllnessChanges['changed_fields']['description']['new'] ?? 'N/A' }}</small>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endif
                                     <div class="row">
@@ -482,6 +559,13 @@
                                                 <span class="badge bg-info">
                                                     {{ __('present_illness.' . $selectedSnapshotData['present_illness']['location']) }}
                                                 </span>
+                                                @if(!empty($presentIllnessChanges['changed_fields']['location']))
+                                                    <div class="field-change ms-2 mt-1">
+                                                        <small class="old-value">{{ $presentIllnessChanges['changed_fields']['location']['old'] ?? 'N/A' }}</small>
+                                                        <small> → </small>
+                                                        <small class="new-value">{{ $presentIllnessChanges['changed_fields']['location']['new'] ?? 'N/A' }}</small>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endif
                                         @if(!empty($selectedSnapshotData['present_illness']['severity']))
@@ -490,18 +574,39 @@
                                                 <span class="badge bg-{{ $selectedSnapshotData['present_illness']['severity'] === 'disabling' ? 'danger' : ($selectedSnapshotData['present_illness']['severity'] === 'severe' ? 'warning' : 'info') }}">
                                                     {{ __('present_illness.' . $selectedSnapshotData['present_illness']['severity']) }}
                                                 </span>
+                                                @if(!empty($presentIllnessChanges['changed_fields']['severity']))
+                                                    <div class="field-change ms-2 mt-1">
+                                                        <small class="old-value">{{ $presentIllnessChanges['changed_fields']['severity']['old'] ?? 'N/A' }}</small>
+                                                        <small> → </small>
+                                                        <small class="new-value">{{ $presentIllnessChanges['changed_fields']['severity']['new'] ?? 'N/A' }}</small>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endif
                                         @if(!empty($selectedSnapshotData['present_illness']['duration']))
                                             <div class="col-md-3">
                                                 <strong>Duración:</strong><br>
                                                 {{ __('present_illness.' . $selectedSnapshotData['present_illness']['duration']) }}
+                                                @if(!empty($presentIllnessChanges['changed_fields']['duration']))
+                                                    <div class="field-change ms-2 mt-1">
+                                                        <small class="old-value">{{ $presentIllnessChanges['changed_fields']['duration']['old'] ?? 'N/A' }}</small>
+                                                        <small> → </small>
+                                                        <small class="new-value">{{ $presentIllnessChanges['changed_fields']['duration']['new'] ?? 'N/A' }}</small>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endif
                                         @if(!empty($selectedSnapshotData['present_illness']['timing']))
                                             <div class="col-md-3">
                                                 <strong>Temporalidad:</strong><br>
                                                 {{ __('present_illness.' . $selectedSnapshotData['present_illness']['timing']) }}
+                                                @if(!empty($presentIllnessChanges['changed_fields']['timing']))
+                                                    <div class="field-change ms-2 mt-1">
+                                                        <small class="old-value">{{ $presentIllnessChanges['changed_fields']['timing']['old'] ?? 'N/A' }}</small>
+                                                        <small> → </small>
+                                                        <small class="new-value">{{ $presentIllnessChanges['changed_fields']['timing']['new'] ?? 'N/A' }}</small>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>
@@ -509,12 +614,43 @@
                                         <div class="mt-2">
                                             <strong>Factores agravantes:</strong>
                                             <p class="mb-1">{{ $selectedSnapshotData['present_illness']['aggravating_factors'] }}</p>
+                                            @if(!empty($presentIllnessChanges['changed_fields']['aggravating_factors']))
+                                                <div class="field-change ms-2">
+                                                    <small class="old-value">{{ $presentIllnessChanges['changed_fields']['aggravating_factors']['old'] ?? 'N/A' }}</small>
+                                                    <small> → </small>
+                                                    <small class="new-value">{{ $presentIllnessChanges['changed_fields']['aggravating_factors']['new'] ?? 'N/A' }}</small>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endif
                                     @if(!empty($selectedSnapshotData['present_illness']['alleviating_factors']))
                                         <div class="mt-2">
                                             <strong>Factores aliviantes:</strong>
                                             <p class="mb-1">{{ $selectedSnapshotData['present_illness']['alleviating_factors'] }}</p>
+                                            @if(!empty($presentIllnessChanges['changed_fields']['alleviating_factors']))
+                                                <div class="field-change ms-2">
+                                                    <small class="old-value">{{ $presentIllnessChanges['changed_fields']['alleviating_factors']['old'] ?? 'N/A' }}</small>
+                                                    <small> → </small>
+                                                    <small class="new-value">{{ $presentIllnessChanges['changed_fields']['alleviating_factors']['new'] ?? 'N/A' }}</small>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+
+                                    @if(!empty($presentIllnessChanges['changed_fields']))
+                                        <div class="alert alert-warning mt-3 mb-0">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <strong>Campos modificados en Enfermedad Actual:</strong>
+                                            <ul class="mb-0 mt-2">
+                                                @foreach($presentIllnessChanges['changed_fields'] as $field => $change)
+                                                    <li>
+                                                        <strong>{{ ucfirst(str_replace('_', ' ', $field)) }}:</strong>
+                                                        <span class="old-value">{{ is_array($change['old']) ? json_encode($change['old']) : ($change['old'] ?? 'vacío') }}</span>
+                                                        →
+                                                        <span class="new-value">{{ is_array($change['new']) ? json_encode($change['new']) : ($change['new'] ?? 'vacío') }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
                                         </div>
                                     @endif
                                 </div>

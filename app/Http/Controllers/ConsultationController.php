@@ -434,9 +434,12 @@ class ConsultationController extends Controller
             if (auth()->user()->id == $appointment->practitioner->user_id) {
                 $wasAlreadyFinished = $encounter->getRawOriginal('status') === 'finished';
 
-                $encounter->status = 'finished';
-                $encounter->end = now();
-                $encounter->save();
+                // Only set end time when finishing for the first time, not on subsequent edits
+                if ($encounter->status !== 'finished') {
+                    $encounter->status = 'finished';
+                    $encounter->end = now();
+                    $encounter->save();
+                }
 
                 // If encounter was already finished and has no snapshots, create initial snapshot
                 // This handles cases where the feature was added after encounter was completed

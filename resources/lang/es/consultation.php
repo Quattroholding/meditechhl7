@@ -67,6 +67,7 @@ return [
     // Physical Exam
     'physical_exam' => 'Examen físico',
     'physical_exams' => 'Examenes fisicos',
+    'physical_exams_use_suggestion' => 'Usar sugerencia',
     'cardiovascular' => 'Cardiovascular',
     'chest_breast' => 'Tórax / Senos',
     'constitutional' => 'Constitucional',

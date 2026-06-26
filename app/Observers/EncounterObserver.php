@@ -116,21 +116,28 @@ class EncounterObserver
 
             // Case 2: Encounter already finished but was modified - Create post-modification snapshot
             if ($currentStatus === 'finished' && $encounter->wasChanged()) {
-                // Check if there are actual changes worth snapshotting
-                if ($snapshotService->hasChangedSinceLastSnapshot($encounter)) {
-                    $changedFields = array_keys($encounter->getChanges());
-                    $changeSummary = 'Modified fields: '.implode(', ', $changedFields);
+                // Ignore purely metadata changes (like updated_at)
+                $significantFields = array_filter(
+                    array_keys($encounter->getChanges()),
+                    fn ($field) => ! in_array($field, ['updated_at', 'created_at'])
+                );
 
-                    $snapshotService->createSnapshot(
-                        $encounter,
-                        'post_modification',
-                        $changeSummary
-                    );
+                if (! empty($significantFields)) {
+                    // Check if there are actual changes worth snapshotting
+                    if ($snapshotService->hasChangedSinceLastSnapshot($encounter)) {
+                        $changeSummary = 'Modified fields: '.implode(', ', $significantFields);
 
-                    $this->safeLog('info', 'Snapshot post-modificación creado', [
-                        'encounter_id' => $encounter->id,
-                        'changed_fields' => $changedFields,
-                    ]);
+                        $snapshotService->createSnapshot(
+                            $encounter,
+                            'post_modification',
+                            $changeSummary
+                        );
+
+                        $this->safeLog('info', 'Snapshot post-modificación creado', [
+                            'encounter_id' => $encounter->id,
+                            'changed_fields' => $significantFields,
+                        ]);
+                    }
                 }
             }
 
