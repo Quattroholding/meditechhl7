@@ -136,7 +136,6 @@
     @endif
 </div>
 
-@push('scripts')
 <script>
 // Asegurar que las variables sean globales
 if (typeof window.historyDownloadId === 'undefined') {
@@ -263,4 +262,3 @@ if (!document.getElementById('notification-animations')) {
 
 window.addEventListener('beforeunload', window.stopPolling);
 </script>
-@endpush
