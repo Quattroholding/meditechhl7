@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class MedicalAlgorithmController extends Controller
 {
@@ -80,29 +80,30 @@ class MedicalAlgorithmController extends Controller
     /**
      * Display the list of medical algorithms
      */
-    public function index(): \Illuminate\View\View
+    public function index(): View
     {
         $algorithms = $this->getAlgorithmMetadata();
+
         return view('medical-algorithms.index', compact('algorithms'));
     }
 
     /**
      * View/download a specific PDF file
      */
-    public function view(string $filename): StreamedResponse
+    public function view(string $filename): Response
     {
         // Prevent directory traversal attacks
         $filename = basename($filename);
 
         // Validate filename is in our allowed list
         $metadata = $this->getAlgorithmMetadata();
-        if (!isset($metadata[$filename])) {
+        if (! isset($metadata[$filename])) {
             abort(404, 'Algoritmo no encontrado');
         }
 
-        // Check if file exists
-        $filepath = "algoritmos/{$filename}";
-        if (!Storage::disk('public')->exists($filepath)) {
+        // Check if file exists in storage
+        $filepath = "algoritmos_medicos/{$filename}";
+        if (! Storage::disk('public')->exists($filepath)) {
             abort(404, 'Archivo no encontrado');
         }
 
