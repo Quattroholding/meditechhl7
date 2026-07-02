@@ -329,7 +329,7 @@ Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])
 // MEDICAL ALGORITHMS ROUTES - Algoritmos Médicos ACLS
 // ============================================================================
 
-Route::group(['prefix' => 'medical-algorithms', 'middleware' => ['auth', 'verified', 'first.login']], function () {
+Route::group(['prefix' => 'algoritmos_medicos', 'middleware' => ['auth', 'verified', 'first.login']], function () {
 
     // Lista de algoritmos médicos
     Route::get('/', [MedicalAlgorithmController::class, 'index'])
