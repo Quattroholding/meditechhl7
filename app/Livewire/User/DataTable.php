@@ -86,7 +86,9 @@ class DataTable extends Component
             });
         })
         // ->whereDoesntHave('practitioner')
-            ->whereDoesntHave('patient')
+           ->when(!auth()->user()->hasRole('admin'), function (Builder $query) {
+                $query->whereDoesntHave('patient');
+           })
             ->when($this->search, function (Builder $query) {
                 $query->where(function ($q) {
                     $q->orWhere('first_name', 'like', '%'.$this->search.'%');

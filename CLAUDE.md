@@ -8,6 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
+## Codebase Memory (codebase-memory-mcp)
+When this MCP server is available, **prefer graph tools over grep/Explore for structural code questions**.
+Graph queries return precise results in a single tool call (~500 tokens) vs file-by-file exploration (~80K tokens).
+
 ### Essential Development Commands
 ```bash
 # Start development environment (includes server, queue, logs, and vite)

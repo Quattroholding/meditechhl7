@@ -155,7 +155,7 @@ window.requestFullHistory = async function(patientId) {
     btnText.textContent = '{{ __('patient.medical_history.initiating_generation') }}';
 
     try {
-        const response = await fetch(`/patient-history/${patientId}/generate`, {
+        const response = await fetch('/patient-history/${patientId}/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
