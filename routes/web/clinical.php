@@ -38,6 +38,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DermatologyController;
 use App\Http\Controllers\InsuranceController;
+use App\Http\Controllers\MedicalAlgorithmController;
 use App\Http\Controllers\MedicalDocumentController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ServiceRequestController;
@@ -323,3 +324,21 @@ Route::get('/survey/{token}', [SurveyController::class, 'publicForm'])
 // Envío de encuesta pública
 Route::post('/survey/{token}/submit', [SurveyController::class, 'submitPublic'])
     ->name('survey.submit');
+
+// ============================================================================
+// MEDICAL ALGORITHMS ROUTES - Algoritmos Médicos ACLS
+// ============================================================================
+
+Route::group(['prefix' => 'medical-algorithms', 'middleware' => ['auth', 'verified', 'first.login']], function () {
+
+    // Lista de algoritmos médicos
+    Route::get('/', [MedicalAlgorithmController::class, 'index'])
+        ->middleware('permission:algorithms.view')
+        ->name('algorithms.index');
+
+    // Ver algoritmo específico (PDF)
+    Route::get('/{filename}', [MedicalAlgorithmController::class, 'view'])
+        ->middleware('permission:algorithms.view')
+        ->name('algorithms.view');
+
+});

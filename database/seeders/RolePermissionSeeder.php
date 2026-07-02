@@ -126,6 +126,9 @@ class RolePermissionSeeder extends Seeder
             // Medication Request
             ['name' => 'medication_request.view', 'description' => 'Ver repositorio de prescripciones médicas', 'module' => 'prescripciones'],
 
+            // Medical Algorithms
+            ['name' => 'algorithms.view', 'description' => 'Ver algoritmos médicos de ACLS', 'module' => 'algoritmos'],
+
             // Dashboard access
             ['name' => 'dashboard.admin', 'description' => 'Acceso al dashboard de administrador', 'module' => 'dashboards'],
             ['name' => 'dashboard.doctor', 'description' => 'Acceso al dashboard de médico', 'module' => 'dashboards'],
@@ -273,6 +276,7 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
             'practitioners.edit',
             'practitioners.update',
+            'algorithms.view',
             'suscriptions.show',
             'suscriptions.upgrade',
             'suscriptions.invoices.index',
@@ -422,6 +426,7 @@ class RolePermissionSeeder extends Seeder
             'practitioners.add_assistant',
             'practitioners.edit',
             'practitioners.update',
+            'algorithms.view',
         ]);
 
         $doctorRole = Role::firstOrCreate(['name' => 'contabilidad']);

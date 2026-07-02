@@ -24,6 +24,8 @@ return [
         'transaction_history' => 'Historial de Transacciones',
     ],
 
+    'algorithms' => 'Algoritmos Médicos',
+
     'surveys' => [
         'title' => 'Encuestas',
         'list' => 'Lista de Encuestas',

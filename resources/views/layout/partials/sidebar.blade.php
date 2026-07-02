@@ -134,6 +134,14 @@
                     </ul>
                 </li>
                 @endcan
+                @can('algorithms.view')
+                <li class="menu-side">
+                    <a class="{{ Request::is('medical-algorithms*') ? 'active' : '' }}" href="{{ route('algorithms.index') }}">
+                        <span class="menu-side"><i class="fa fa-heartbeat"></i></span>
+                        <span>{{ __('menu.algorithms') }}</span>
+                    </a>
+                </li>
+                @endcan
                 @canany(['service_request.view', 'medication_request.view'])
                 <li class="submenu">
                     <a href="javascript:;">
