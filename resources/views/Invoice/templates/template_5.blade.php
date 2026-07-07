@@ -69,6 +69,13 @@
             padding:10px 20px 0 20px;
         }
 
+        .logo img{
+            max-width: 120px;
+            max-height: 80px;
+            height: auto;
+            width: auto;
+        }
+
         .brandline{
             background:#ddd;
             height:10px;
@@ -205,7 +212,7 @@
                             </tr>
                         </table>
                     </td>
-                    <td class="logo" width="35%">  @if(is_file(storage_path('/app/public/'.$organization->logo))) <img src="{{url('/storage/'.$organization->logo)}}"> @else LOGO @endif</td>
+                    <td class="logo" width="35%">  @if(is_file(public_path('storage/'.$organization->logo))) <img src="data:image/png;base64,{{base64_encode(file_get_contents(public_path('storage/'.$organization->logo)))}}"> @else LOGO @endif</td>
                 </tr>
             </table>
 

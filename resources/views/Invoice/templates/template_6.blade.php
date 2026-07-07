@@ -46,6 +46,13 @@
             margin-bottom: 12px;
         }
 
+        .logo img{
+            max-width: 140px;
+            max-height: 90px;
+            height: auto;
+            width: auto;
+        }
+
         .block-title{
             font-size: 16px;
             font-weight: bold;
@@ -205,7 +212,7 @@
             <table>
                 <tr>
                     <td width="60%" class="header">
-                        <div class="logo">@if(is_file(storage_path('/app/public/'.$organization->logo))) <img src="{{url('/storage/'.$organization->logo)}}"> @else LOGO @endif</div>
+                        <div class="logo">@if(is_file(public_path('storage/'.$organization->logo))) <img src="data:image/png;base64,{{base64_encode(file_get_contents(public_path('storage/'.$organization->logo)))}}"> @else LOGO @endif</div>
 
                         <div class="block-title">INFORMACIÓN DE LA CONSULTA</div>
                         <div class="small">
