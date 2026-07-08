@@ -322,6 +322,7 @@
                                 <td style="height:8px;"></td>
                                 <td></td>
                             </tr>
+                            @if($invoice->amount_paid >0)
                             <tr>
                                 <td class="box-total" style="color: green">MONTO PAGADO</td>
                                 <td class="box-val" >${{ number_format($invoice->amount_paid, 2) }}</td>
@@ -334,6 +335,7 @@
                                 <td class="box-total" style="color: red">MONTO PENDIENTE</td>
                                 <td class="box-val" >${{ number_format($invoice->amount_due, 2) }}</td>
                             </tr>
+                            @endif
                         </table>
 
                         <br><br>

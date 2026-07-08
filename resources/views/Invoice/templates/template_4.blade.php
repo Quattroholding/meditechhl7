@@ -259,6 +259,7 @@
                                 <td class="right total-final blue" style="color: #2f78ff">TOTAL:</td>
                                 <td class="right total-final blue" style="color: #2f78ff">${{ number_format($total, 2) }}</td>
                             </tr>
+                            @if($invoice->amount_paid >0)
                             <tr>
                                 <td class="right green" style="color: green">Monto Pagado:</td>
                                 <td class="right" style="color: green">${{ number_format($invoice->amount_paid, 2) }}</td>
@@ -267,6 +268,7 @@
                                 <td class="right green" style="color: red">Monto Pendiente:</td>
                                 <td class="right" style="color: red">${{ number_format($invoice->amount_due, 2) }}</td>
                             </tr>
+                            @endif
                         </table>
                     </td>
                 </tr>

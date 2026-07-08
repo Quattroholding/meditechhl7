@@ -256,6 +256,7 @@
                             <div class="total-box">TOTAL: ${{ number_format($total, 2) }}</div>
                         </td>
                     </tr>
+                    @if($invoice->amount_paid >0)
                     <tr>
                         <td class="right" style="color: green"><b>Monto Pagado:</b></td>
                         <td class="right" style="color: green"><b>${{ number_format($invoice->amount_paid, 2) }}</b></td>
@@ -264,6 +265,7 @@
                         <td class="right" style="color: red"><b>Monto Pendiente:</b></td>
                         <td class="right" style="color: red"><b>${{ number_format($invoice->amount_due, 2) }}</b></td>
                     </tr>
+                    @endif
                 </table>
             </td>
         </tr>
