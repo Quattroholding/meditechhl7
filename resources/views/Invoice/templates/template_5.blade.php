@@ -70,8 +70,8 @@
         }
 
         .logo img{
-            max-width: 140px;
-            max-height: 100px;
+            max-width: 240px;
+            max-height: 200px;
             height: auto;
             width: auto;
         }
