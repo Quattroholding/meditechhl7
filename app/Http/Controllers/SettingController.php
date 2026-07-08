@@ -154,6 +154,8 @@ class SettingController extends Controller
             'tax_amount' => 19.95,
             'discount_amount' => 0,
             'total' => 304.95,
+            'amount_paid' => 152.48,
+            'amount_due' => 152.47,
             'notes' => 'Esta es una factura de ejemplo para vista previa. Gracias por su confianza.',
             'encounter' => $encounter,
             'patient' => $patient,

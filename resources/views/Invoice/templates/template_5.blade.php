@@ -70,8 +70,8 @@
         }
 
         .logo img{
-            max-width: 120px;
-            max-height: 80px;
+            max-width: 140px;
+            max-height: 100px;
             height: auto;
             width: auto;
         }
@@ -317,6 +317,22 @@
                             <tr class="total-row">
                                 <td class="box-total">TOTAL</td>
                                 <td class="box-val"> ${{ number_format($total, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="height:8px;"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="box-total" style="color: green">MONTO PAGADO</td>
+                                <td class="box-val" >${{ number_format($invoice->amount_paid, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="height:8px;"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="box-total" style="color: red">MONTO PENDIENTE</td>
+                                <td class="box-val" >${{ number_format($invoice->amount_due, 2) }}</td>
                             </tr>
                         </table>
 

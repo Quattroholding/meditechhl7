@@ -264,6 +264,14 @@
                     <td class="right total-final text-black">TOTAL:</td>
                     <td class="right total-final text-black">${{ number_format($total, 2) }}</td>
                 </tr>
+                <tr>
+                    <td class="right text-green-600" style="color: green">Monto Pagado:</td>
+                    <td class="right text-green-600" style="color: green">${{ number_format($invoice->amount_paid, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="right text-red-600" style="color: red">Monto Pendiente:</td>
+                    <td class="right text-red-600" style="color: red">${{ number_format($invoice->amount_due, 2) }}</td>
+                </tr>
             </table>
         </td>
     </tr>

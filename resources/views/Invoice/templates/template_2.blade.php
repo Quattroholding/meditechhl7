@@ -227,6 +227,16 @@ body {
         <td class="right total-final">TOTAL:</td>
         <td class="right total-final">${{ number_format($total, 2) }}</td>
     </tr>
+    <tr>
+        <td></td>
+        <td class="right">Monto Pagado:</td>
+        <td class="right">${{ number_format($invoice->amount_paid, 2) }}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td class="right">Monto Pendiente:</td>
+        <td class="right">${{ number_format($invoice->amount_due, 2) }}</td>
+    </tr>
 </table>
 
 <br>
@@ -278,6 +288,14 @@ body {
                 <tr style="border-top:1px solid #000;">
                     <td class="right total-final">TOTAL:</td>
                     <td class="right total-final" >${{ number_format($total, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="right" style="color: green"><b>Monto Pagado:</b></td>
+                    <td class="right" style="color: green"><b>${{ number_format($invoice->amount_paid, 2) }}</b></td>
+                </tr>
+                <tr>
+                    <td class="right" style="color: red"><b>Monto Pendiente:</b></td>
+                    <td class="right" style="color: red"><b>${{ number_format($invoice->amount_due, 2) }}</b></td>
                 </tr>
             </table>
         </td>

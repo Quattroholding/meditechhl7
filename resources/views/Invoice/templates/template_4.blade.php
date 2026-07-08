@@ -248,16 +248,24 @@
                     <td width="50%">
                         <table class="totals">
                             <tr>
-                                <td class="right green">Subtotal:</td>
-                                <td class="right green">${{ number_format($subtotal, 2) }}</td>
+                                <td class="right blue">Subtotal:</td>
+                                <td class="right blue">${{ number_format($subtotal, 2) }}</td>
                             </tr>
                             <tr>
-                                <td class="right green">ITBMS (7%):</td>
-                                <td class="right green">${{ number_format($tax, 2) }}</td>
+                                <td class="right blue">ITBMS (7%):</td>
+                                <td class="right blue">${{ number_format($tax, 2) }}</td>
                             </tr>
                             <tr style="border-top:1px solid #008000;">
-                                <td class="right total-final green">TOTAL:</td>
-                                <td class="right total-final">${{ number_format($total, 2) }}</td>
+                                <td class="right total-final blue" style="color: #2f78ff">TOTAL:</td>
+                                <td class="right total-final blue" style="color: #2f78ff">${{ number_format($total, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right green" style="color: green">Monto Pagado:</td>
+                                <td class="right" style="color: green">${{ number_format($invoice->amount_paid, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right green" style="color: red">Monto Pendiente:</td>
+                                <td class="right" style="color: red">${{ number_format($invoice->amount_due, 2) }}</td>
                             </tr>
                         </table>
                     </td>
