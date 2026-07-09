@@ -268,7 +268,7 @@
             @if(!empty($results))
                 <div style="position: absolute; z-index: 1000; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     {{-- Contenedor con scroll --}}
-                    <div style="max-height: 400px; min-height: 200px; overflow-y: auto;">
+                    <div style="max-height: 400px; min-height: 200px; overflow-y: auto;padding: 0 0 150px 0;">
                         @foreach($results as $result)
                             @php
                                 // Definir ícono y color según el tipo de servicio
