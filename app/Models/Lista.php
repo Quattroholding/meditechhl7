@@ -71,13 +71,7 @@ class Lista extends Model
     public static function medicationVias()
     {
 
-        return [
-            'Oral' => 'Oral',
-            'Sublingual' => 'Sublingual',
-            'Intramuscular' => 'Intramuscular',
-            'Subcutáneo' => 'Subcutáneo',
-            'Otro' => 'Otro',
-        ];
+        return MedicationType::pluck('name','name');
     }
 
     public static function userProcedureTypes()
