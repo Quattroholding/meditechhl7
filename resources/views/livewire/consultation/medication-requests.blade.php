@@ -40,35 +40,111 @@
             if (savingEl) savingEl.style.display = 'none';
         });
      ">
-    @if(count($selectedLists)>0)
-        <table style="width:100%;" border="1"
-               class="medicine-table">
-            <tbody>
-            <tr>
+    <style>
 
-            </tr>
+        .producto-full-name {
+            font-size: 16px; color: #333;padding: 10px;
+        }
+
+        .producto-form{
+            font-size: 12px; color: #666;
+        }
+
+        .medication-records-group {
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .medication-records-group:hover {
+            background-color: #005dba;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .medication-records-group:hover table {
+            background-color: #005dba;
+        }
+
+        .medication-records-group:hover table tr {
+            background-color: #005dba !important;
+        }
+
+        .medication-records-group:hover .producto-full-name{
+            color:#fff;
+        }
+
+        .medication-records-group:hover .producto-form{
+            color:#fff;
+        }
+
+        .medication-records-group:hover .producto-full-name {
+            background-color: #005dba;
+        }
+
+        .sprite-trash-container {
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background-color: transparent;
+            display: inline-block;
+        }
+
+        .sprite-trash-container:hover {
+            background-color: #ba0900;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
+            color:#fff;
+        }
+
+        .sprite-trash-container:hover .sprite-trash {
+            filter: brightness(1.2);
+        }
+
+        .medication-records-group:hover .sprite-trash-container{
+            color:#fff;
+        }
+    </style>
+    @if(count($selectedLists)>0)
+        <div style="display: grid; gap: 15px;">
             @foreach($selectedLists as $m)
-            <tr class="consultation-tr-inputs" style="background: {{ $loop->iteration % 2 == 0 ? '#fff' : '#ededed' }}">
-                <td>
-                    <b rel="producto-full-name">
-                        @if($m->medication2)
-                            {{ $m->medication2->display }}
-                            @if($m->medication2->ingredients->count() > 0)
-                                @php $ing = $m->medication2->ingredients->first(); @endphp
-                                ({{ $m->medication2->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})
-                            @endif
-                        @elseif($m->medicine)
-                            {{ $m->medicine->full_name }}
-                        @else
-                            {{ $m->medication }}
-                        @endif
-                    </b>
-                </td>
-                <td>
-                    <table style="width:100%;">
-                        <tbody>
+                <div class="medication-records-group"
+                     @mouseenter="hoveredMedication = {{ $m->id }}"
+                     @mouseleave="hoveredMedication = null">
+                    <table width="100%">
                         <tr>
-                            <td >
+                            <td colspan="5">
+                                <b rel="producto-full-name" class="producto-full-name" >
+                                    @if($m->medication2)
+                                        {{ $m->medication2->display }}
+                                        @if($m->medication2->ingredients->count() > 0)
+                                            @php $ing = $m->medication2->ingredients->first(); @endphp
+                                            <span class="producto-form">({{ $m->medication2->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})</span>
+                                        @endif
+                                    @elseif($m->medicine)
+                                        {{ $m->medicine->full_name }}
+                                    @else
+                                        {{ $m->medication }}
+                                    @endif
+                                </b>
+                            </td>
+                            <td style="text-align: right; padding-right: 15px;">
+                                <div class="sprite-trash-container"
+                                     ani="1"
+                                     style="cursor:pointer;"
+                                     wire:click="delete({{ $m->id }})">
+                                    <div class="sprite-trash"></div>
+                                    <div style="font-weight: 500; font-size: 12px;">{{ __('consultation.medication_requests_section.delete') }}</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 5px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;padding:10px;">
                                 <div class="input-block local-forms">
                                     <x-input-label for="quantity" :value="__('consultation.medication_requests_section.quantity')" />
                                     <x-autosave-input
@@ -84,6 +160,8 @@
                                     />
 
                                 </div>
+                            </td>
+                            <td style="width: 20%;padding:10px;">
                                 <div class="input-block local-forms">
                                     <x-input-label for="frecuency" :value="__('consultation.medication_requests_section.frequency')" />
                                     <x-autosave-input
@@ -98,9 +176,8 @@
                                         class="form-control block w-full"
                                     />
                                 </div>
-
                             </td>
-                            <td>
+                            <td style="width: 20%;padding:10px;">
                                 <div class="input-block local-forms">
                                     <x-input-label for="route" :value="__('consultation.medication_requests_section.route')" />
                                     <x-autosave-input
@@ -114,7 +191,8 @@
                                         class="form-control block w-full"
                                     />
                                 </div>
-
+                            </td>
+                            <td style="width: 20%;padding:10px;">
                                 <div class="input-block local-forms">
                                     <x-input-label for="duration" :value="__('consultation.medication_requests_section.duration')" />
                                     <x-autosave-input
@@ -130,51 +208,64 @@
                                     />
                                 </div>
                             </td>
+                            <td colspan="2" style="width: 20%;padding:10px;">
+                                <div class="input-block local-forms">
+                                    <x-input-label for="duration_type" :value="__('consultation.medication_requests_section.duration_type')" />
+                                    <x-autosave-input
+                                        type="select"
+                                        :value="$duration_types[$m->id] ?? 'dias'"
+                                        :options="[
+                                                    'dias' => 'Días',
+                                                    'semanas' => 'Semanas',
+                                                    'meses' => 'Meses',
+                                                    'años' => 'Años',
+                                                    'indefinido' => 'Indefinido'
+                                                ]"
+                                        :selected="$duration_types[$m->id] ?? 'dias'"
+                                        wire:model.live="duration_types.{{ $m->id }}"
+                                        save-method="updateField"
+                                        save-key="duration-type-{{ $m->id }}"
+                                        class="form-control block w-full"
+                                    />
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3" style="padding: 10px">
                                 <div class="input-block local-forms">
                                     <x-input-label for="dosage_text" :value="__('consultation.medication_requests_section.indications')"/>
                                     <x-autosave-input
                                         type="textarea"
                                         :value="$dosage_texts[$m->id]"
-                                        disabled="disabled"
                                         class="form-control mt-1 block w-full"
                                         rows="2"
                                         wire:model.live="dosage_texts.{{$m->id}}"
-                                        laceholder="Ejemplo: Una tableta cada 8 horas vía oral por 5 días"
+                                        placeholder="Ejemplo: 1 tableta cada 8 horas vía oral por 5 días"
                                         save-method="updateField"
                                         save-key="dosage_text_{{ $m->id }}"
                                     />
                                 </div>
                             </td>
-                            {{--}}
-                            <td>
+                            <td colspan="3" style="padding: 10px">
                                 <div class="input-block local-forms">
-                                    <x-input-label for="refills" :value="__('Meses de Refill')" />
-                                    <select class="form-control" wire:change="updateField({{$m->id}},$event.target.value,'refills')">
-                                        <option value="0">Sin Refill</option>
-                                        @for($i=2;$i<6;$i++)
-                                            <option value="{{$i}}" @if($m->refills==$i) selected @endif>{{$i}} meses</option>
-                                        @endfor
-                                    </select>
+                                    <x-input-label for="additional_indications" :value="__('consultation.medication_requests_section.additional_indications')"/>
+                                    <x-autosave-input
+                                        type="textarea"
+                                        :value="$additional_indications[$m->id]"
+                                        class="form-control mt-1 block w-full"
+                                        rows="2"
+                                        wire:model.live="additional_indications.{{ $m->id }}"
+                                        placeholder="Ejemplo: Tomar con alimentos, evitar alcohol"
+                                        save-method="updateField"
+                                        save-key="additional-indications-{{ $m->id }}"
+                                    />
                                 </div>
                             </td>
-                            {{--}}
                         </tr>
-                        </tbody>
                     </table>
-                </td>
-                <td>
-                    <div class="sprite-trash-container" ani="1" style="cursor:pointer" wire:click="delete({{$m->id}})">
-                        <div class="sprite-trash"></div>
-                        <div>{{ __('consultation.medication_requests_section.delete') }}</div>
-                    </div>
-                </td>
-            </tr>
+                </div>
             @endforeach
-        </tbody>
-        </table>
+        </div>
     @endif
     <div class="my-3"></div>
     <div class="general-btn-small" wire:click="medical_request_history">

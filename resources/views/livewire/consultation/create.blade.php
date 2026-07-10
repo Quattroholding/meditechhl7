@@ -14,7 +14,7 @@
                             <x-accordion-item data-id="{{$section->id}}" title="{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}" :isOpen="false" :category="$section->category" >
                                 <template x-if="loaded">
                                     <div x-transition:enter="transition ease-out duration-300">
-                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=> app()->getLocale() === 'es' ? $section->name_esp : $section->name, 'medical_specialty_id'=>$section->medical_speciality_id])
+                                        @livewire($section->livewire_component_name, ['encounter_id' => $encounter->id,'section_id'=>$section->id,'section_name'=> app()->getLocale() === 'es' ? $section->name_esp : $section->name, 'medical_specialty_id'=>$section->medical_speciality_id], key('section-' . $section->id))
                                     </div>
                                 </template>
                                 <template x-if="!loaded">

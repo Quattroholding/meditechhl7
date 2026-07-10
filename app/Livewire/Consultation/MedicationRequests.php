@@ -33,7 +33,11 @@ class MedicationRequests extends Component
 
     public $durations = [];
 
+    public $duration_types = [];
+
     public $routes = [];
+
+    public $additional_indications = [];
 
     public $section_id = 11;
 
@@ -361,8 +365,10 @@ class MedicationRequests extends Component
             $this->frecuencies[$sl->id] = $sl->frequency;
             $this->routes[$sl->id] = $sl->route;
             $this->durations[$sl->id] = $sl->duration;
+            $this->duration_types[$sl->id] = $sl->duration_type ?? 'dias';
             $this->quantitys[$sl->id] = $sl->quantity;
             $this->dosage_texts[$sl->id] = $sl->dosage_text;
+            $this->additional_indications[$sl->id] = $sl->additional_indications;
         }
     }
 
@@ -510,7 +516,6 @@ class MedicationRequests extends Component
     public function delete($id)
     {
         $this->encounter->medicationRequests()->whereId($id)->delete();
-        $this->selectedLists = $this->encounter->referrals()->get();
         $this->getMedicationRequestsProperty();
 
         // Disparar evento para actualizar el estado del botón de finalizar
@@ -588,6 +593,51 @@ class MedicationRequests extends Component
 
     }
 
+    public function updatedDurationTypes($value, $code)
+    {
+        $this->saveDurationType($code);
+    }
+
+    public function saveDurationType($id)
+    {
+        try {
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['duration_type' => $this->duration_types[$id]]);
+            $this->generateDosageInstruction($id);
+
+            $this->dispatch('saved-duration-type-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
+    public function updatedAdditionalIndications($value, $code)
+    {
+        $this->saveAdditionalIndications($code);
+    }
+
+    public function saveAdditionalIndications($id)
+    {
+        try {
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['additional_indications' => $this->additional_indications[$id]]);
+
+            $this->dispatch('saved-additional-indications-'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
     public function updatedRoutes($value, $code)
     {
         $this->saveRoute($code);
@@ -617,6 +667,7 @@ class MedicationRequests extends Component
         $frequency = '';
         $route = '';
         $duration = '';
+        $duration_type = 'dias';
         $quantity = '';
         $key = 'dosage_text_'.$id;
 
@@ -629,6 +680,9 @@ class MedicationRequests extends Component
             }
             if (isset($this->durations[$id])) {
                 $duration = $this->durations[$id];
+            }
+            if (isset($this->duration_types[$id])) {
+                $duration_type = $this->duration_types[$id];
             }
             if (isset($this->quantitys[$id])) {
                 $quantity = $this->quantitys[$id];
@@ -644,14 +698,40 @@ class MedicationRequests extends Component
                 $medicine_type = $requestMedicine->medicine->type;
             }
 
+            // Calcular tabletas por toma basándose en frequency y duration
+            $tablets_per_dose = $quantity;
+
+            if (is_numeric($frequency) && is_numeric($duration) && $frequency > 0) {
+                // Calcular número de tomas
+                $doses_per_day = 24 / (int) $frequency;
+                $total_doses = $doses_per_day * (int) $duration;
+
+                if ($total_doses > 0) {
+                    $tablets_per_dose = round($quantity / $total_doses, 2);
+                }
+            }
+
+            // Construir el texto de dosage
+            $dosage_text = $tablets_per_dose.' '.$medicine_type;
+
+            if ($frequency) {
+                $dosage_text .= ' cada '.$frequency.' horas';
+            }
+
+            if ($route) {
+                $dosage_text .= ' via '.$route;
+            }
+
+            if ($duration) {
+                $dosage_text .= ' por '.$duration.' '.$duration_type;
+            }
+
             $dosage_instructions = [
-                'text' => $quantity.' '.$medicine_type.
-                    ' cada '.$frequency.' horas'.
-                    ' via '.$route.
-                    ' por '.$duration.' dias',
+                'text' => $dosage_text,
                 'route' => $route,
                 'frequency' => $frequency,
                 'duration' => $duration,
+                'duration_type' => $duration_type,
             ];
 
             $requestMedicine->dosage_instruction = $dosage_instructions;
