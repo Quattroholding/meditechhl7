@@ -10,4 +10,8 @@ class AdministrationRoute extends Model
         'name',
         'abbreviation',
     ];
+
+    public function getFullNameAttribute(){
+        return $this->name.' ('.$this->abbreviation.')';
+    }
 }

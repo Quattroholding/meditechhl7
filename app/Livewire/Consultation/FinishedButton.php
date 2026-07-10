@@ -240,20 +240,13 @@ class FinishedButton extends Component
         foreach ($medicationRequests->get() as $medication) {
             $missingFields = [];
 
-            if (empty($medication->route)) {
-                $missingFields[] = __('consultation.finished_button.route');
-            }
-
-            if (empty($medication->frequency)) {
-                $missingFields[] = __('consultation.finished_button.frequency');
-            }
-
+            // Solo validar campos requeridos: quantity e indications (dosage_text)
             if (empty($medication->quantity)) {
                 $missingFields[] = __('consultation.finished_button.quantity');
             }
 
-            if (empty($medication->duration)) {
-                $missingFields[] = __('consultation.finished_button.duration_lowercase');
+            if (empty($medication->dosage_text)) {
+                $missingFields[] = __('consultation.finished_button.indications');
             }
 
             if (! empty($missingFields)) {

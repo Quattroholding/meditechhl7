@@ -305,6 +305,7 @@ return [
         'route' => 'route',
         'frequency' => 'frequency',
         'quantity' => 'quantity',
+        'indications' => 'indications',
         'duration_lowercase' => 'duration',
         'medication' => 'Medication',
         'incomplete_medications' => 'Incomplete medications:',

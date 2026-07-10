@@ -134,7 +134,7 @@ class MedicationRequests extends Component
                     $this->quantitys[$medicationRequest->id] = $medicationRequest->quantity;
 
                     // Generate dosage instruction
-                    $this->generateDosageInstruction($medicationRequest->id);
+                    //$this->generateDosageInstruction($medicationRequest->id);
 
                     $addedCount++;
 
@@ -533,7 +533,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['quantity' => $this->quantitys[$id]]);
 
-            $this->generateDosageInstruction($id);
+            //$this->generateDosageInstruction($id);
 
             $this->dispatch('saved-quantity-'.$id);
 
@@ -557,7 +557,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['frequency' => $this->frecuencies[$id]]);
 
-            $this->generateDosageInstruction($id);
+            //$this->generateDosageInstruction($id);
 
             $this->dispatch('saved-frecuency-'.$id);
 
@@ -580,7 +580,7 @@ class MedicationRequests extends Component
         try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['duration' => $this->durations[$id]]);
-            $this->generateDosageInstruction($id);
+            //$this->generateDosageInstruction($id);
 
             $this->dispatch('saved-duration-'.$id);
 
@@ -603,7 +603,7 @@ class MedicationRequests extends Component
         try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['duration_type' => $this->duration_types[$id]]);
-            $this->generateDosageInstruction($id);
+            //$this->generateDosageInstruction($id);
 
             $this->dispatch('saved-duration-type-'.$id);
 
@@ -638,6 +638,28 @@ class MedicationRequests extends Component
 
     }
 
+    public function updatedDosageTexts($value, $code)
+    {
+        $this->saveDosageText($code);
+    }
+
+    public function saveDosageText($id)
+    {
+        try {
+            $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
+            $medicationRequest->update(['dosage_text' => $this->dosage_texts[$id]]);
+
+            $this->dispatch('saved-dosage_text_'.$id);
+
+            // Disparar evento para actualizar el estado del botón de finalizar
+            $this->dispatch('findFinishedButtonStatus');
+
+        } catch (\Exception $e) {
+            $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
+        }
+
+    }
+
     public function updatedRoutes($value, $code)
     {
         $this->saveRoute($code);
@@ -649,7 +671,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['route' => $this->routes[$id]]);
 
-            $this->generateDosageInstruction($id);
+            //$this->generateDosageInstruction($id);
 
             $this->dispatch('saved-route-'.$id);
 
@@ -707,7 +729,7 @@ class MedicationRequests extends Component
                 $total_doses = $doses_per_day * (int) $duration;
 
                 if ($total_doses > 0) {
-                    $tablets_per_dose = round($quantity / $total_doses, 2);
+                    $tablets_per_dose = sail(round($quantity / $total_doses, 2));
                 }
             }
 

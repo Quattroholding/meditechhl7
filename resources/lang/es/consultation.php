@@ -305,6 +305,7 @@ return [
         'route' => 'vía',
         'frequency' => 'frecuencia',
         'quantity' => 'cantidad',
+        'indications' => 'indicaciones',
         'duration_lowercase' => 'duración',
         'medication' => 'Medicamento',
         'incomplete_medications' => 'Medicamentos incompletos:',

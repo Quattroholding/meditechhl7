@@ -71,7 +71,7 @@ class Lista extends Model
     public static function medicationVias()
     {
 
-        return MedicationType::pluck('name','name');
+        return AdministrationRoute::orderBy('name')->get()->pluck('full_name','full_name');
     }
 
     public static function userProcedureTypes()

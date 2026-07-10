@@ -161,6 +161,22 @@
 
                                 </div>
                             </td>
+                            <td>
+                                <div class="input-block local-forms">
+                                    <x-input-label for="dosage_text" :value="__('consultation.medication_requests_section.indications')"/>
+                                    <x-autosave-input
+                                        type="textarea"
+                                        :value="$dosage_texts[$m->id]"
+                                        class="form-control mt-1 block w-full"
+                                        rows="2"
+                                        wire:model.live="dosage_texts.{{$m->id}}"
+                                        placeholder="Ejemplo: 1 tableta cada 8 horas vía oral por 5 días"
+                                        save-method="updateField"
+                                        save-key="dosage_text_{{ $m->id }}"
+                                    />
+                                </div>
+                            </td>
+                            {{--}}
                             <td style="width: 20%;padding:10px;">
                                 <div class="input-block local-forms">
                                     <x-input-label for="frecuency" :value="__('consultation.medication_requests_section.frequency')" />
@@ -229,7 +245,9 @@
                                     />
                                 </div>
                             </td>
+                            {{--}}
                         </tr>
+                        {{--}}
                         <tr>
                             <td colspan="3" style="padding: 10px">
                                 <div class="input-block local-forms">
@@ -262,6 +280,7 @@
                                 </div>
                             </td>
                         </tr>
+                        {{--}}
                     </table>
                 </div>
             @endforeach
