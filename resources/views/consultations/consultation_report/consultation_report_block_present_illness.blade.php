@@ -72,6 +72,7 @@ $items[] = ['label' => trans('consultation.description'), 'value' => $data->pres
 
 $any_value = false;
 
+
 foreach ($items as $item) {
     if (strlen($item['value']) > 0) {
         $any_value = true;
@@ -80,7 +81,14 @@ foreach ($items as $item) {
 }
 
 ?>
-@if($data->presentIllnesses->locations || $data->presentIllnesses->severity || $data->presentIllnesses->duration || $data->presentIllnesses->timing)
+@if(!$data->presentIllnesses->locations && !$data->presentIllnesses->severity && !$data->presentIllnesses->duration && !$data->presentIllnesses->timing && $data->presentIllnesses->description)
+    @component($table_component,['title'=>trans('consultation.present_illness')])
+    <div class="paragraph">{{ $data->presentIllnesses->description }}</div>
+    @endcomponent
+@else
+
+
+@if($data->presentIllnesses->locations || $data->presentIllnesses->severity || $data->presentIllnesses->duration || $data->presentIllnesses->timing || $data->presentIllnesses->description)
     @component($table_component,['title'=>trans('consultation.present_illness')])
 <?php $exit_text = [];
 $exit_text[0] = "";
@@ -99,7 +107,7 @@ $exit_text[0] = "";
                                 {{$v[0]}}
                             @endforeach
                         @else
-                          {!! line_if_empty(urldecode($exit_text[0])) !!}
+                        {!! line_if_empty(urldecode($exit_text[0])) !!}
                         @endif
                     </td>
                 </tr>
@@ -121,5 +129,6 @@ $exit_text[0] = "";
 @endcomponent
 @endif
 
+@endif
 
 
