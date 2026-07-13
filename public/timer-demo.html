@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Designs Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+        .demo-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .demo-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .demo-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+        .demo-preview {
+            background: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .state-toggle {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-green {
+            background: #10b981;
+            color: white;
+        }
+        .btn-red {
+            background: #ef4444;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .consultation-ficha-icon {
+            margin-right: 0.5rem;
+            color: #6b7280;
+        }
+    </style>
+
+    <!-- VERSION 1: Minimalista -->
+    <style>
+        .timer-v1 {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.4rem;
+            display: inline-block;
+            margin-left: 0.5rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+        .timer-v1-green {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 1px solid #10b981;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+        }
+        .timer-v1-red {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border: 1px solid #ef4444;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+        }
+        .timer-v1-extra {
+            font-size: 0.75rem;
+            color: #991b1b;
+            margin-left: 0.4rem;
+            font-weight: 500;
+        }
+    </style>
+
+    <!-- VERSION 2: Badge Grande -->
+    <style>
+        .timer-v2 {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+        .timer-v2-green {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+        }
+        .timer-v2-red {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+        .timer-v2-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+        .timer-v2-green .timer-v2-label { color: #065f46; }
+        .timer-v2-red .timer-v2-label { color: #991b1b; }
+        .timer-v2-display {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin: 0.3rem 0;
+        }
+        .timer-v2-green .timer-v2-display { color: #065f46; }
+        .timer-v2-red .timer-v2-display { color: #991b1b; }
+        .timer-v2-subtitle {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.3rem;
+            opacity: 0.9;
+        }
+        .timer-v2-green .timer-v2-subtitle { color: #065f46; }
+        .timer-v2-red .timer-v2-subtitle { color: #991b1b; }
+    </style>
+
+    <!-- VERSION 3: Semáforo -->
+    <style>
+        .timer-v3 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 0.3rem;
+        }
+        .timer-v3-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .timer-v3-dot-green {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .timer-v3-dot-red {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+        .timer-v3-time {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #374151;
+        }
+        .timer-v3-extra {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-left: 0.3rem;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- VERSION 4: Dashboard Card -->
+    <style>
+        .timer-v4 {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            margin-left: 1rem;
+            min-width: 140px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .timer-v4-green {
+            background: linear-gradient(180deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+        }
+        .timer-v4-red {
+            background: linear-gradient(180deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+        .timer-v4-icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            opacity: 0.7;
+        }
+        .timer-v4-green .timer-v4-icon { color: #065f46; }
+        .timer-v4-red .timer-v4-icon { color: #991b1b; }
+        .timer-v4-time {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin: 0.2rem 0;
+        }
+        .timer-v4-green .timer-v4-time { color: #065f46; }
+        .timer-v4-red .timer-v4-time { color: #991b1b; }
+        .timer-v4-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+        }
+        .timer-v4-green .timer-v4-label { color: #065f46; }
+        .timer-v4-red .timer-v4-label { color: #991b1b; }
+        .timer-v4-overtime {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+            padding-top: 0.3rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .timer-v4-green .timer-v4-overtime { color: #065f46; }
+        .timer-v4-red .timer-v4-overtime { color: #991b1b; }
+    </style>
+
+    <!-- VERSION 5: Degradado -->
+    <style>
+        .timer-v5-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .timer-v5 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 2rem;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .timer-v5:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .timer-v5-green {
+            background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%);
+            color: #065f46;
+        }
+        .timer-v5-red {
+            background: linear-gradient(90deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%);
+            color: #991b1b;
+        }
+        .timer-v5-warning {
+            font-size: 0.8rem;
+            animation: blink 2s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .timer-v5-extra {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-left: 0.4rem;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- VERSION 6: Pill -->
+    <style>
+        .timer-v6 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            margin-left: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .timer-v6:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+        }
+        .timer-v6-green {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 1px solid #10b981;
+        }
+        .timer-v6-red {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 1px solid #ef4444;
+        }
+        .timer-v6-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .timer-v6-green .timer-v6-label { color: #065f46; }
+        .timer-v6-red .timer-v6-label { color: #991b1b; }
+        .timer-v6-separator {
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .timer-v6-green .timer-v6-separator { color: #065f46; }
+        .timer-v6-red .timer-v6-separator { color: #991b1b; }
+        .timer-v6-time {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .timer-v6-green .timer-v6-time { color: #065f46; }
+        .timer-v6-red .timer-v6-time { color: #991b1b; }
+        .timer-v6-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            margin-left: 0.3rem;
+        }
+        .timer-v6-green .timer-v6-badge {
+            background: rgba(6, 95, 70, 0.2);
+            color: #065f46;
+        }
+        .timer-v6-red .timer-v6-badge {
+            background: rgba(153, 27, 27, 0.2);
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Timer Design Options</h1>
+
+        <div class="grid">
+            <!-- Version 1 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>1️⃣ Minimalista Moderno</span>
+                </div>
+                <div class="demo-description">Badge compacto con gradiente sutil y bordes redondeados suaves</div>
+                <div class="demo-preview">
+                    <div>
+                        <i class="fas fa-clock consultation-ficha-icon"></i>
+                        <b>Tiempo Extra:</b>
+                        <div class="timer-v1" :class="state === 'green' ? 'timer-v1-green' : 'timer-v1-red'">
+                            <span>00:32:45</span>
+                        </div>
+                        <span class="timer-v1-extra" x-show="state === 'red'">(+00:15:30 extra)</span>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+
+            <!-- Version 2 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>2️⃣ Badge Grande Destacado</span>
+                </div>
+                <div class="demo-description">Formato de tarjeta completa con timer grande y prominente</div>
+                <div class="demo-preview">
+                    <div class="timer-v2" :class="state === 'green' ? 'timer-v2-green' : 'timer-v2-red'">
+                        <div class="timer-v2-label">
+                            <i class="fas fa-clock"></i>
+                            TIEMPO EXTRA
+                        </div>
+                        <div class="timer-v2-display">00:32:45</div>
+                        <div class="timer-v2-subtitle" x-show="state === 'red'">Excedido por 00:15:30</div>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+
+            <!-- Version 3 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>3️⃣ Semáforo Compacto</span>
+                </div>
+                <div class="demo-description">Punto de color pulsante animado, ultra compacto</div>
+                <div class="demo-preview">
+                    <div>
+                        <i class="fas fa-clock consultation-ficha-icon"></i>
+                        <b>Tiempo Extra:</b>
+                        <div class="timer-v3">
+                            <span class="timer-v3-dot" :class="state === 'green' ? 'timer-v3-dot-green' : 'timer-v3-dot-red'"></span>
+                            <span class="timer-v3-time">00:32:45</span>
+                        </div>
+                        <span class="timer-v3-extra" x-show="state === 'red'">+00:15:30</span>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+
+            <!-- Version 4 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>4️⃣ Dashboard Card</span>
+                </div>
+                <div class="demo-description">Formato de métrica/KPI tipo tarjeta vertical</div>
+                <div class="demo-preview">
+                    <div>
+                        <i class="fas fa-clock consultation-ficha-icon"></i>
+                        <div class="timer-v4" :class="state === 'green' ? 'timer-v4-green' : 'timer-v4-red'">
+                            <div class="timer-v4-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="timer-v4-time">00:32:45</div>
+                            <div class="timer-v4-label">Tiempo Extra</div>
+                            <div class="timer-v4-overtime" x-show="state === 'red'">+00:15:30</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+
+            <!-- Version 5 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>5️⃣ Inline con Degradado</span>
+                </div>
+                <div class="demo-description">Gradiente horizontal llamativo con icono de advertencia animado</div>
+                <div class="demo-preview">
+                    <div>
+                        <i class="fas fa-clock consultation-ficha-icon"></i>
+                        <span class="timer-v5-label">Tiempo Extra:</span>
+                        <div class="timer-v5" :class="state === 'green' ? 'timer-v5-green' : 'timer-v5-red'">
+                            <span class="timer-v5-time">00:32:45</span>
+                            <i class="fas fa-exclamation-triangle timer-v5-warning" x-show="state === 'red'"></i>
+                        </div>
+                        <span class="timer-v5-extra" x-show="state === 'red'">(+00:15:30)</span>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+
+            <!-- Version 6 -->
+            <div class="demo-card" x-data="{ state: 'red' }">
+                <div class="demo-title">
+                    <span>6️⃣ Pill con Sombra ⭐</span>
+                </div>
+                <div class="demo-description">Forma de píldora con badge adicional, sombra elevada (RECOMENDADA)</div>
+                <div class="demo-preview">
+                    <div>
+                        <i class="fas fa-clock consultation-ficha-icon"></i>
+                        <div class="timer-v6" :class="state === 'green' ? 'timer-v6-green' : 'timer-v6-red'">
+                            <span class="timer-v6-label">Tiempo Extra</span>
+                            <span class="timer-v6-separator">:</span>
+                            <span class="timer-v6-time">00:32:45</span>
+                            <span class="timer-v6-badge" x-show="state === 'red'">+00:15:30</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="state-toggle">
+                    <button class="btn btn-green" @click="state = 'green'">Verde</button>
+                    <button class="btn btn-red" @click="state = 'red'">Rojo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

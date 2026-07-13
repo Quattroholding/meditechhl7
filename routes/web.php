@@ -17,6 +17,7 @@ use App\Http\Controllers\DebugLoginController;
 use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\MedicalLeaveVerificationController;
 use App\Http\Controllers\PublicPatientRegistrationController;
 use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SurveyController;
@@ -241,3 +242,11 @@ Route::get('/test-email', function () {
         ], 500);
     }
 })->middleware('restrict.ip')->name('test.email');
+
+/**
+ * ============================================================================
+ * MEDICAL LEAVE VERIFICATION ROUTES (Public)
+ * ============================================================================
+ */
+Route::get('/verificar-incapacidad/{verificationHash}', [MedicalLeaveVerificationController::class, 'verify'])
+    ->name('medical-leave.verify');

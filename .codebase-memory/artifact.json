@@ -1,0 +1,11 @@
+{
+    "schema_version": 1,
+    "commit": "10d1e761bbed075b0a0108ec82236885d5588758",
+    "indexed_at": "2026-07-13T19:08:34Z",
+    "project": "var-www-html-meditech2",
+    "nodes": 24431,
+    "edges": 95681,
+    "original_size": 77660160,
+    "compressed_size": 14620851,
+    "compression_level": 3
+}

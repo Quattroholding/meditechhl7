@@ -10,6 +10,8 @@ use App\Models\ServiceRequest;
 use App\Services\EncounterPrescriptionPdfService;
 use App\Services\PrescriptionPdfService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
 class MedicalDocumentController extends Controller
@@ -331,6 +333,13 @@ class MedicalDocumentController extends Controller
             $end_year = $medicalLeave->end_datetime->format('Y');
             $logo = $medicalLeave->client->logo;
 
+            // Generar QR para verificación
+            $verificationUrl = route('medical-leave.verify', ['verificationHash' => $medicalLeave->verification_hash], true);
+            $qrCode = new QrCode($verificationUrl);
+            $writer = new PngWriter;
+            $qrResult = $writer->write($qrCode);
+            $qrDataUri = $qrResult->getDataUri();
+
             $data = [
                 'branch' => $branch,
                 'patient' => $patient,
@@ -356,6 +365,8 @@ class MedicalDocumentController extends Controller
                 'firma' => $firma,
                 'sello' => $sello,
                 'logo' => $logo,
+                'qrCode' => $qrDataUri,
+                'verificationUrl' => $verificationUrl,
             ];
 
             // Si es solo vista previa

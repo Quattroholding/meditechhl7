@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class MedicalLeave extends BaseModel
 {
@@ -35,6 +36,7 @@ class MedicalLeave extends BaseModel
         'issue_date',
         'notes',
         'extension',
+        'verification_hash',
     ];
 
     protected $casts = [
@@ -44,6 +46,17 @@ class MedicalLeave extends BaseModel
         'extension' => 'array',
         'total_days' => 'integer',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (self $model) {
+            if (! $model->verification_hash) {
+                $model->verification_hash = Str::random(32);
+            }
+        });
+    }
 
     // Relaciones
     public function patient(): BelongsTo

@@ -22,6 +22,8 @@ class AddMedicalHistory extends Component
 
     public $occurrence_date;
 
+    public $existingCategories = [];
+
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
         'category' => 'required|string',
@@ -35,19 +37,27 @@ class AddMedicalHistory extends Component
         'occurrence_date.required' => 'La fecha es obligatoria.',
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $this->patient = Patient::find($this->patient_id);
+        $this->loadExistingCategories();
     }
 
-    public function openModal()
+    private function loadExistingCategories(): void
+    {
+        $this->existingCategories = $this->patient->medicalHistories()
+            ->pluck('category')
+            ->unique()
+            ->toArray();
+    }
+
+    public function openModal(): void
     {
         $this->showModal = true;
     }
 
-    public function save()
+    public function save(): void
     {
-
         $this->validate();
 
         $this->patient->medicalHistories()->create([
@@ -61,6 +71,7 @@ class AddMedicalHistory extends Component
             'verification_status' => 'confirmed',
         ]);
 
+        $this->loadExistingCategories();
         $this->showModal = false;
 
         $this->dispatch('$refresh')->to('patient.medical-history');
@@ -78,7 +89,7 @@ class AddMedicalHistory extends Component
         return view('livewire.patient.add-medical-history');
     }
 
-    public function closeModal()
+    public function closeModal(): void
     {
         $this->showModal = false;
     }
