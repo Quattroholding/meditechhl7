@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MedicalDocumentController extends Controller
 {
@@ -334,6 +335,12 @@ class MedicalDocumentController extends Controller
             $logo = $medicalLeave->client->logo;
 
             // Generar QR para verificación
+            // Si no tiene hash, generar uno
+            if (! $medicalLeave->verification_hash) {
+                $medicalLeave->verification_hash = Str::random(32);
+                $medicalLeave->save();
+            }
+
             $verificationUrl = route('medical-leave.verify', ['verificationHash' => $medicalLeave->verification_hash], true);
             $qrCode = new QrCode($verificationUrl);
             $writer = new PngWriter;
