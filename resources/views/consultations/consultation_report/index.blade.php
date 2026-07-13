@@ -1,6 +1,8 @@
 <html>
 <head>
     <title>{{ $data->identifier }}</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
     <?php
 
     $table_component = 'consultations.consultation_report.consultation_report_table';
