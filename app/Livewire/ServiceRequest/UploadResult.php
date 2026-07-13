@@ -150,7 +150,6 @@ class UploadResult extends Component
 
         } catch (\Exception $e) {
             // session()->flash('error', __('service_request_result.upload_failed') . ': ' . $e->getMessage());
-            dd($e->getMessage());
             $this->dispatch('showToastr',
                 type: 'error',
                 message: __('service_request_result.upload_failed').': '.$e->getMessage(),
