@@ -122,7 +122,6 @@
                                 <div class="mb-3">
                                     <label for="interpretation" class="form-label">{{ __('service_request_result.interpretation') }}</label>
                                     <select wire:model="interpretation" id="interpretation" class="form-select @error('interpretation') is-invalid @enderror">
-                                        <option value="">{{ __('generic.select') }}</option>
                                         <option value="normal">{{ __('service_request_result.interpretation_normal') }}</option>
                                         <option value="abnormal">{{ __('service_request_result.interpretation_abnormal') }}</option>
                                         <option value="high">{{ __('service_request_result.interpretation_high') }}</option>

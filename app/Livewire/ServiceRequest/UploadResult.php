@@ -124,7 +124,7 @@ class UploadResult extends Component
                 'uploaded_at' => now(),
                 'observations' => $this->observations,
                 'notes' => $this->notes,
-                'interpretation' => $this->interpretation ?? 'normal',
+                'interpretation' => $this->interpretation ?: 'normal',
                 'reference_range' => $this->reference_range,
                 'effective_date' => $this->result_date,
                 'issued_date' => now(),
@@ -150,6 +150,7 @@ class UploadResult extends Component
 
         } catch (\Exception $e) {
             // session()->flash('error', __('service_request_result.upload_failed') . ': ' . $e->getMessage());
+            dd($e->getMessage());
             $this->dispatch('showToastr',
                 type: 'error',
                 message: __('service_request_result.upload_failed').': '.$e->getMessage(),
