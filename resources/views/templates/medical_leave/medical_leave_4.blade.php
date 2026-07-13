@@ -124,7 +124,7 @@
         .doctor{
             position:absolute;
             bottom: 15mm;
-            left: 100mm;
+            left: 10mm;
             right: 0;
             text-align: center;
             font-size: 20pt;

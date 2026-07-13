@@ -95,7 +95,7 @@
         .doctor{
             position: absolute;
             bottom: 26mm;
-            left: 120mm;
+            left: 100mm;
             font-size: 20pt;
             font-weight: 800;
             color: #000;
