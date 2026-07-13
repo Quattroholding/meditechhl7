@@ -47,7 +47,7 @@ class MedicalLeave extends BaseModel
         'total_days' => 'integer',
     ];
 
-    protected static function boot(): void
+    public static function boot(): void
     {
         parent::boot();
 
