@@ -1,5 +1,7 @@
 <div>
     <div class="row">
+
+        @if(auth()->user()->practitioner)
         <!-- Left Column - Forms -->
         <div class="col-sm-5">
             <!-- CPT-based Service Form -->
@@ -242,6 +244,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Right Column - Services List -->
         <div class="col-sm-7">
