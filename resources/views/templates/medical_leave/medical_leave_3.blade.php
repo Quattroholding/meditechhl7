@@ -191,6 +191,40 @@
             height: 55mm;
             background: var(--cyan);
         }
+
+
+        /* ====== QR Code ====== */
+        .qr-container {
+            position: absolute;
+            bottom: 10mm;
+            right: 18mm;
+            width: 40mm;
+            height: 40mm;
+            border: 2px solid #ddd;
+            padding: 2mm;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2mm;
+        }
+
+        .qr-container img {
+            width: 35mm;
+            height: 35mm;
+            object-fit: contain;
+        }
+
+        .qr-label {
+            position: absolute;
+            bottom: 5mm;
+            right: 18mm;
+            font-size: 8pt;
+            color: #666;
+            font-weight: 600;
+            text-align: center;
+            width: 40mm;
+        }
     </style>
 </head>
 <body>
@@ -278,6 +312,14 @@
     <div class="doctor">
         {{ $medicalLeave->practitioner_name ?? 'Nombre del Médico aquí' }} – Registro No.{{ $medicalLeave->practitioner_license_number ?? '0000000' }}
     </div>
+
+    {{-- QR CODE --}}
+    @if($qrCode ?? false)
+        <div class="qr-label">Escaneá para verificar</div>
+        <div class="qr-container">
+            <img src="{{ $qrCode }}" alt="Código QR de verificación">
+        </div>
+    @endif
 
 </div>
 
