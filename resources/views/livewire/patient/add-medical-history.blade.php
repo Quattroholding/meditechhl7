@@ -1,5 +1,5 @@
 <div>
-    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{ __('patient.medical-history')}}</button>
+    <button wire:click="openModal()" class="btn-head btn-head-light">  📚 {{ __('patient.medical_history.title')}}</button>
     @if($showModal)
     <!-- Modal -->
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">

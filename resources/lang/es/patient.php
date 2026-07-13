@@ -341,6 +341,7 @@ return [
     // Medical History Section
     'medical_history' => [
         // Direct translation keys (alphabetically sorted)
+        'title' => 'Antecedentes Médicos',
         'abortions' => 'Abortos',
         'actions' => 'Acciones',
         'active' => 'Activa',

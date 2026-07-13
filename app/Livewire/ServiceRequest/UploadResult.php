@@ -82,30 +82,91 @@ class UploadResult extends Component
 
     public function save()
     {
+        \Log::info('UploadResult.save() iniciado');
+
         $this->validate();
+        \Log::info('Validación completada');
 
         try {
-            // Subir el archivo
+            // Obtener datos del archivo
+            \Log::info('Obteniendo datos del archivo');
             $fileName = $this->file->getClientOriginalName();
             $fileSize = $this->file->getSize();
             $fileType = $this->file->getMimeType();
             $fileHash = hash_file('sha256', $this->file->getRealPath());
+            \Log::info('Datos del archivo obtenidos', [
+                'fileName' => $fileName,
+                'fileSize' => $fileSize,
+                'fileType' => $fileType,
+                'fileHash' => $fileHash,
+            ]);
 
-            // Verificar duplicados por hash
-            $existingResult = ServiceRequestResult::where('file_hash', $fileHash)
+            // Verificar si ya existe en este estudio (activo)
+            \Log::info('Verificando duplicados activos en este estudio');
+            $existingActive = ServiceRequestResult::where('file_hash', $fileHash)
                 ->where('service_request_id', $this->serviceRequestId)
                 ->first();
 
-            if ($existingResult) {
+            if ($existingActive) {
+                \Log::info('Archivo activo ya existe en este estudio');
                 session()->flash('error', __('service_request_result.file_already_exists'));
 
                 return;
             }
 
-            // Guardar archivo
-            $filePath = $this->file->store('service_request_results/'.$this->serviceRequestId, 'public');
+            // Verificar si existe pero está eliminado
+            \Log::info('Verificando si fue eliminado anteriormente');
+            $existingDeleted = ServiceRequestResult::onlyTrashed()
+                ->where('file_hash', $fileHash)
+                ->where('service_request_id', $this->serviceRequestId)
+                ->first();
+
+            if ($existingDeleted) {
+                \Log::info('Encontrado registro eliminado, restaurando', ['id' => $existingDeleted->id]);
+                $existingDeleted->restore();
+                $existingDeleted->update([
+                    'file_name' => $fileName,
+                    'uploaded_at' => now(),
+                    'observations' => $this->observations,
+                    'notes' => $this->notes,
+                    'interpretation' => $this->interpretation ?: 'normal',
+                    'reference_range' => $this->reference_range,
+                ]);
+                \Log::info('Registro restaurado y actualizado');
+
+                $this->dispatch('showToastr',
+                    type: 'success',
+                    message: __('service_request_result.uploaded_successfully'),
+                );
+                $this->dispatch('refreshServiceRequests');
+                $this->closeModal();
+
+                return;
+            }
+
+            // Buscar si el archivo existe en otros estudios
+            \Log::info('Buscando archivo en otros estudios');
+            $existingResult = ServiceRequestResult::where('file_hash', $fileHash)
+                ->where('service_request_id', '!=', $this->serviceRequestId)
+                ->first();
+
+            // Si no existe, subir el archivo
+            if (! $existingResult) {
+                \Log::info('Subiendo nuevo archivo');
+                $filePath = $this->file->store('service_request_results/'.$this->serviceRequestId, 'public');
+                \Log::info('Archivo subido', ['filePath' => $filePath]);
+            } else {
+                // Reutilizar archivo existente
+                \Log::info('Reutilizando archivo existente', ['existingPath' => $existingResult->file_path]);
+                $filePath = $existingResult->file_path;
+            }
 
             // Crear el resultado
+            \Log::info('Creando ServiceRequestResult', [
+                'service_request_id' => $this->serviceRequestId,
+                'file_path' => $filePath,
+                'interpretation' => $this->interpretation ?: 'normal',
+            ]);
             ServiceRequestResult::create([
                 'fhir_id' => 'SRR-'.uniqid(),
                 'service_request_id' => $this->serviceRequestId,
@@ -129,27 +190,35 @@ class UploadResult extends Component
                 'effective_date' => $this->result_date,
                 'issued_date' => now(),
             ]);
+            \Log::info('ServiceRequestResult creado exitosamente');
 
             // Intentar cambio automático de estado
             try {
+                \Log::info('Intentando cambio automático de estado');
                 $this->serviceRequest->autoChangeStatus(
                     __('service_request.auto_completed_reason'),
                     Auth::id()
                 );
+                \Log::info('Cambio automático de estado completado');
             } catch (\Exception $e) {
                 // Si falla el cambio automático, continuar sin error
                 \Log::warning('Auto status change failed: '.$e->getMessage());
             }
 
+            \Log::info('Despachando eventos');
             $this->dispatch('showToastr',
                 type: 'success',
                 message: __('service_request_result.uploaded_successfully'),
             );
             $this->dispatch('refreshServiceRequests');
             $this->closeModal();
+            \Log::info('UploadResult.save() completado exitosamente');
 
         } catch (\Exception $e) {
-            // session()->flash('error', __('service_request_result.upload_failed') . ': ' . $e->getMessage());
+            \Log::error('Error en UploadResult.save()', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('showToastr',
                 type: 'error',
                 message: __('service_request_result.upload_failed').': '.$e->getMessage(),
