@@ -82,6 +82,9 @@
                                                     <i  class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
                                                 @endif
+                                                <button type="button" wire:click="$dispatch('showStatusHistory', { encounterId: {{ $dato->id }} })" class="btn btn-warning btn-sm" title="Historial de Status">
+                                                    <i class="fa-solid fa-history m-r-5"></i>
+                                                </button>
                                                 @can('consultations.download_resumen')
                                                 <a href="{{ route('consultation.download_resumen',$dato->appointment_id) }}" target="_blank" class="btn btn-danger btn-sm"  title="{{__('consultation.download_resumen')}}">
                                                     <i  class="fa-solid fa-file-pdf m-r-5"></i>
@@ -135,4 +138,7 @@
             </div>
         </div>
     </div>
+
+    <!-- Status History Modal -->
+    <livewire:consultation.status-history-modal />
 </div>
