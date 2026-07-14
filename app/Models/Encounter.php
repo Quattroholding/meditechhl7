@@ -137,6 +137,11 @@ class Encounter extends BaseModel
         return $this->hasMany(Media::class);
     }
 
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(EncounterStatus::class)->orderBy('created_at', 'desc');
+    }
+
     /**
      * Scope a query to only include appointments fullfilled.
      */

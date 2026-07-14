@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Encounter;
+use App\Models\EncounterStatus;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
 use App\Models\User;
@@ -32,6 +33,16 @@ class EncounterObserver
      */
     public function created(Encounter $encounter): void
     {
+        $user_id = auth()->id();
+        if (empty($user_id)) {
+            $user_id = 1;
+        }
+        EncounterStatus::create([
+            'encounter_id' => $encounter->id,
+            'status' => $encounter->getAttributes()['status'],
+            'user_id' => $user_id,
+        ]);
+
         $this->clearDashboardCache();
     }
 
@@ -40,6 +51,24 @@ class EncounterObserver
      */
     public function updated(Encounter $encounter): void
     {
+        // Record status changes
+        if ($encounter->isDirty('status')) {
+            if (auth()->id()) {
+                $user_id = auth()->id();
+            } else {
+                $user_id = $encounter->patient->user_id;
+            }
+
+            $user_id = $user_id ?? 1;
+
+            EncounterStatus::create([
+                'encounter_id' => $encounter->id,
+                'previous_status' => $encounter->getRawOriginal('status'),
+                'status' => $encounter->getAttributes()['status'],
+                'user_id' => $user_id,
+            ]);
+        }
+
         // Handle snapshots first (critical functionality)
         try {
             $this->handleEncounterSnapshots($encounter);

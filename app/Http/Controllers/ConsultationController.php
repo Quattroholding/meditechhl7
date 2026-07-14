@@ -46,7 +46,7 @@ class ConsultationController extends Controller
         $client = auth()->user()->clients()->first();
 
         if (! $client) {
-            abort(403, 'Usuario no tiene acceso a ningún cliente.');
+            abort(403, 'Usuario no tiene acceso a editar esta consulta.');
         }
 
         $client_id = $client->id;
