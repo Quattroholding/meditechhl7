@@ -4,6 +4,8 @@ namespace App\Livewire\Consultation;
 
 use App\Models\ClinicalObservationType;
 use App\Models\Encounter;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -110,6 +112,14 @@ class VitalSigns extends Component
             $this->dispatch('saved-'.$code);
 
         } catch (\Exception $e) {
+            Log::error('Error guardando signos vitales en VitalSigns', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'observation_code' => $code,
+                'value' => $this->values[$code] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$code, $e->getMessage());
         }
     }

@@ -6,7 +6,9 @@ use App\Enums\ChargeItemStatus;
 use App\Models\ChargeItem;
 use App\Models\Encounter;
 use App\Models\ServiceCatalog;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Services extends Component
@@ -252,6 +254,13 @@ class Services extends Component
             }
 
         } catch (\Exception $e) {
+            Log::error('Error agregando servicio desde acceso rápido en Services', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'service_id' => $this->selectedServiceId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             DB::rollBack();
             $this->dispatch('error-'.$key, 'Error al agregar el servicio: '.$e->getMessage());
         }
@@ -317,6 +326,13 @@ class Services extends Component
             }
 
         } catch (\Exception $e) {
+            Log::error('Error agregando servicio a encounter en Services', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'service_id' => $this->selectedServiceId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             DB::rollBack();
             $this->dispatch('error-'.$key, 'Error al agregar el servicio: '.$e->getMessage());
         }
@@ -356,6 +372,13 @@ class Services extends Component
             );
             $this->loadSelectedServices();
         } catch (\Exception $e) {
+            Log::error('Error eliminando servicio en Services', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'charge_item_id' => $chargeItemId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             // session()->flash('error', 'Error al eliminar el servicio.');
             $this->dispatch('showToastrConsultation',
                 type: 'success',
@@ -387,6 +410,14 @@ class Services extends Component
             session()->flash('message.success', 'Cantidad actualizada.');
             $this->loadSelectedServices();
         } catch (\Exception $e) {
+            Log::error('Error actualizando cantidad de servicio en Services', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'charge_item_id' => $chargeItemId,
+                'new_quantity' => $newQuantity,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('error', 'Error al actualizar la cantidad.');
         }
     }
@@ -414,6 +445,14 @@ class Services extends Component
             session()->flash('message.success', 'Precio actualizado.');
             $this->loadSelectedServices();
         } catch (\Exception $e) {
+            Log::error('Error actualizando precio de servicio en Services', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'charge_item_id' => $chargeItemId,
+                'new_price' => $newPrice,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('error', 'Error al actualizar el precio.');
         }
     }

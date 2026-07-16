@@ -4,6 +4,8 @@ namespace App\Livewire\Consultation;
 
 use App\Models\ClinicalObservationType;
 use App\Models\Encounter;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -127,6 +129,14 @@ class PhysicalExam extends Component
             $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
+            Log::error('Error guardando examen físico en PhysicalExam', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'observation_code' => $code,
+                'value' => $this->values[$code] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }

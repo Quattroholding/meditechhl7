@@ -6,6 +6,8 @@ use App\Models\Encounter;
 use App\Models\Medication;
 use App\Models\MedicationRequest;
 use App\Models\RapidAccess;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -67,14 +69,14 @@ class MedicationRequests extends Component
      */
     public function updateFromVoice($medications)
     {
-        \Log::info('MedicationRequests: updateFromVoice called', [
+        Log::info('MedicationRequests: updateFromVoice called', [
             'encounter_id' => $this->encounter_id,
             'is_array' => is_array($medications),
             'medications_count' => is_array($medications) ? count($medications) : 0,
         ]);
 
         if (! is_array($medications)) {
-            \Log::warning('Voice dictation: medications parameter is not an array', [
+            Log::warning('Voice dictation: medications parameter is not an array', [
                 'encounter_id' => $this->encounter_id,
                 'medications_type' => gettype($medications),
                 'medications_value' => $medications,
@@ -87,7 +89,7 @@ class MedicationRequests extends Component
         $notFoundCount = 0;
         $notFoundMedications = [];
 
-        \Log::info('MedicationRequests: Processing medications', [
+        Log::info('MedicationRequests: Processing medications', [
             'medications' => $medications,
         ]);
 
@@ -134,17 +136,17 @@ class MedicationRequests extends Component
                     $this->quantitys[$medicationRequest->id] = $medicationRequest->quantity;
 
                     // Generate dosage instruction
-                    //$this->generateDosageInstruction($medicationRequest->id);
+                    // $this->generateDosageInstruction($medicationRequest->id);
 
                     $addedCount++;
 
-                    \Log::info('Voice dictation: Medication added', [
+                    Log::info('Voice dictation: Medication added', [
                         'medication_name' => $medData['medication_name'],
                         'medication_id' => $medication->id,
                         'encounter_id' => $this->encounter_id,
                     ]);
                 } else {
-                    \Log::info('Voice dictation: Medication already exists in encounter', [
+                    Log::info('Voice dictation: Medication already exists in encounter', [
                         'medication_name' => $medData['medication_name'],
                         'encounter_id' => $this->encounter_id,
                     ]);
@@ -153,7 +155,7 @@ class MedicationRequests extends Component
                 $notFoundCount++;
                 $notFoundMedications[] = $medData['medication_name'];
 
-                \Log::warning('Voice dictation: Medication not found in database', [
+                Log::warning('Voice dictation: Medication not found in database', [
                     'medication_name' => $medData['medication_name'],
                     'encounter_id' => $this->encounter_id,
                 ]);
@@ -509,6 +511,13 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error seleccionando medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $option['id'] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, 'Error al guardar: '.$e->getMessage());
         }
     }
@@ -533,7 +542,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['quantity' => $this->quantitys[$id]]);
 
-            //$this->generateDosageInstruction($id);
+            // $this->generateDosageInstruction($id);
 
             $this->dispatch('saved-quantity-'.$id);
 
@@ -541,6 +550,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando cantidad de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'quantity' => $this->quantitys[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -557,7 +574,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['frequency' => $this->frecuencies[$id]]);
 
-            //$this->generateDosageInstruction($id);
+            // $this->generateDosageInstruction($id);
 
             $this->dispatch('saved-frecuency-'.$id);
 
@@ -565,6 +582,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando frecuencia de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'frequency' => $this->frecuencies[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -580,7 +605,7 @@ class MedicationRequests extends Component
         try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['duration' => $this->durations[$id]]);
-            //$this->generateDosageInstruction($id);
+            // $this->generateDosageInstruction($id);
 
             $this->dispatch('saved-duration-'.$id);
 
@@ -588,6 +613,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando duración de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'duration' => $this->durations[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -603,7 +636,7 @@ class MedicationRequests extends Component
         try {
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['duration_type' => $this->duration_types[$id]]);
-            //$this->generateDosageInstruction($id);
+            // $this->generateDosageInstruction($id);
 
             $this->dispatch('saved-duration-type-'.$id);
 
@@ -611,6 +644,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando tipo de duración de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'duration_type' => $this->duration_types[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -633,6 +674,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando indicaciones adicionales de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'additional_indications' => $this->additional_indications[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -655,6 +704,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando texto de dosaje de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'dosage_text' => $this->dosage_texts[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -671,7 +728,7 @@ class MedicationRequests extends Component
             $medicationRequest = $this->encounter->medicationRequests()->whereId($id)->first();
             $medicationRequest->update(['route' => $this->routes[$id]]);
 
-            //$this->generateDosageInstruction($id);
+            // $this->generateDosageInstruction($id);
 
             $this->dispatch('saved-route-'.$id);
 
@@ -679,6 +736,14 @@ class MedicationRequests extends Component
             $this->dispatch('findFinishedButtonStatus');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando ruta de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'route' => $this->routes[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, 'Error al guardar : '.$e->getMessage());
         }
 
@@ -764,6 +829,13 @@ class MedicationRequests extends Component
             $this->dispatch('saved-dosage_text_'.$key);
 
         } catch (\Exception $e) {
+            Log::error('Error generando instrucción de dosaje de medicamento en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, 'Error al guardar :'.$e->getMessage());
         }
 
@@ -893,6 +965,13 @@ class MedicationRequests extends Component
                 );
             }
         } catch (\Exception $e) {
+            Log::error('Error agregando medicamento a acceso rápido en MedicationRequests', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'medication_id' => $medicationId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('showToastrConsultation',
                 type: 'error',
                 message: __('consultation.service_request.error_adding_to_rapid_access')

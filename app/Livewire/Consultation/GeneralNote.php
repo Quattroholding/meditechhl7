@@ -3,6 +3,8 @@
 namespace App\Livewire\Consultation;
 
 use App\Models\Encounter;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class GeneralNote extends Component
@@ -50,6 +52,12 @@ class GeneralNote extends Component
             // Emitir evento al componente padre para calcular si el button finished se debe habilitar
             $this->dispatch('findFinishedButtonStatus');
         } catch (\Exception $e) {
+            Log::error('Error guardando nota general en GeneralNote', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }

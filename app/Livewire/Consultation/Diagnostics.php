@@ -7,6 +7,7 @@ use App\Models\Encounter;
 use App\Models\EncounterDiagnosis;
 use App\Models\Icd10Code;
 use App\Services\ClaudeService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -353,6 +354,13 @@ class Diagnostics extends Component
             }
 
         } catch (\Exception $e) {
+            Log::error('Error seleccionando diagnóstico en Diagnostics', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'icd10_code' => $option['code'] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, 'Error al giardar :'.$e->getMessage());
         }
     }
@@ -383,7 +391,13 @@ class Diagnostics extends Component
             $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
-
+            Log::error('Error guardando nota de diagnóstico en Diagnostics', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'encounter_diagnosis_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
     }
@@ -404,6 +418,14 @@ class Diagnostics extends Component
 
             $this->finishSaving($key);
         } catch (\Exception $e) {
+            Log::error('Error guardando estado clínico de diagnóstico en Diagnostics', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'encounter_diagnosis_id' => $id,
+                'clinical_status' => $this->clinical_status[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->resetSaveState($key);
             session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
@@ -429,7 +451,14 @@ class Diagnostics extends Component
             $this->dispatch('saved-'.$id);
 
         } catch (\Exception $e) {
-
+            Log::error('Error guardando severidad de diagnóstico en Diagnostics', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'encounter_diagnosis_id' => $id,
+                'severity' => $this->severity[$id] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('error', 'Error al guardar: '.$e->getMessage());
         }
     }

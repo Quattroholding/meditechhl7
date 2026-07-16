@@ -7,6 +7,7 @@ use App\Models\EncounterSection;
 use App\Models\EncounterTemplate;
 use App\Models\PresentIllnesType;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -55,14 +56,14 @@ class PresentIllness extends Component
      */
     public function updateFromVoice($data)
     {
-        \Log::info('PresentIllness: updateFromVoice called', [
+        Log::info('PresentIllness: updateFromVoice called', [
             'encounter_id' => $this->encounter_id,
             'data' => $data,
         ]);
 
         // Create or get present illness record FIRST
         if (! $this->encounter->presentIllnesses || ! $this->encounter->presentIllnesses->id) {
-            \Log::info('PresentIllness: Creating new record');
+            Log::info('PresentIllness: Creating new record');
             $this->create();
             $this->encounter->refresh();
             $this->present_illness = $this->encounter->presentIllnesses;
@@ -86,7 +87,7 @@ class PresentIllness extends Component
             // If mapping returns null, keep the original Spanish text
             $presentIllness->duration = $mappedDuration ?? $data['duration'];
 
-            \Log::info('PresentIllness: Duration mapped', [
+            Log::info('PresentIllness: Duration mapped', [
                 'original' => $data['duration'],
                 'mapped' => $presentIllness->duration,
             ]);
@@ -108,7 +109,7 @@ class PresentIllness extends Component
             $allLocations = array_unique(array_merge($existingLocations, $mappedLocations));
             $presentIllness->locations = array_values($allLocations);
 
-            \Log::info('PresentIllness: Locations mapped', [
+            Log::info('PresentIllness: Locations mapped', [
                 'original' => $data['locations'],
                 'mapped' => $mappedLocations,
                 'saved' => $presentIllness->locations,
@@ -133,7 +134,7 @@ class PresentIllness extends Component
         // Save all changes in one go
         $presentIllness->save();
 
-        \Log::info('PresentIllness: Record saved', [
+        Log::info('PresentIllness: Record saved', [
             'id' => $presentIllness->id,
             'locations' => $presentIllness->locations,
             'duration' => $presentIllness->duration,
@@ -551,6 +552,12 @@ class PresentIllness extends Component
             $this->dispatch('saved-'.$key);
 
         } catch (\Exception $e) {
+            Log::error('Error guardando aggravating_factors', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
@@ -577,6 +584,12 @@ class PresentIllness extends Component
 
             $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
+            Log::error('Error guardando alleviating_factors', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
@@ -602,6 +615,12 @@ class PresentIllness extends Component
 
             $this->dispatch('saved-'.$key);
         } catch (\Exception $e) {
+            Log::error('Error guardando associated_symptoms', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }
@@ -630,6 +649,12 @@ class PresentIllness extends Component
 
             $this->dispatch('findFinishedButtonStatus');
         } catch (\Exception $e) {
+            Log::error('Error guardando description', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, $e->getMessage());
         }
     }

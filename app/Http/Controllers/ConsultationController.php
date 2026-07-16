@@ -30,6 +30,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ConsultationController extends Controller
@@ -257,7 +258,7 @@ class ConsultationController extends Controller
                     ->active()
                     ->first();
 
-                \Log::info('Creating invoice for patient', [
+                Log::info('Creating invoice for patient', [
                     'appointment_patient_id' => $appointment->patient_id,
                     'patient_found_id' => $patient->id,
                     'account_id' => $account?->id,
@@ -290,7 +291,7 @@ class ConsultationController extends Controller
                             throw new \Exception('Account object is null or missing ID after creation');
                         }
 
-                        \Log::info('Account created successfully', [
+                        Log::info('Account created successfully', [
                             'account_id' => $account->id,
                             'patient_id' => $patient->id,
                             'client_id' => $currentClientId,
@@ -340,7 +341,7 @@ class ConsultationController extends Controller
                         // Let the model generate invoice_number automatically
                     ]);
                 } catch (QueryException $e) {
-                    \Log::error('Failed to create invoice', [
+                    Log::error('Failed to create invoice', [
                         'error' => $e->getMessage(),
                         'account_id' => $account->id,
                         'patient_id' => $encounter->patient_id,
@@ -455,7 +456,7 @@ class ConsultationController extends Controller
                         'initial_finish',
                         'Snapshot inicial creado al activar funcionalidad'
                     );
-                    \Log::info('Snapshot inicial creado para encounter ya finalizado', [
+                    Log::info('Snapshot inicial creado para encounter ya finalizado', [
                         'encounter_id' => $encounter->id,
                     ]);
                 }
@@ -488,6 +489,14 @@ class ConsultationController extends Controller
             return redirect(route('consultation.view', $encounter->id));
 
         } catch (\Exception $e) {
+            Log::error('Error al finalizar consulta', [
+                'appointment_id' => $appointment_id ?? null,
+                'user_id' => auth()->id(),
+                'client_id' => auth()->user()?->getCurrentClient()?->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             session()->flash('message.error', 'Error al finalizar consulta: '.$e->getMessage());
 
             return back()->withInput();
@@ -617,6 +626,14 @@ class ConsultationController extends Controller
 
             return $pdf->stream($data->identifier.'.pdf');
         } catch (\Exception $e) {
+            Log::error('Error al descargar resumen de consulta', [
+                'appointment_id' => $appointment_id ?? null,
+                'user_id' => auth()->id(),
+                'client_id' => auth()->user()?->getCurrentClient()?->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             session()->flash('message.error', 'Error al descargar el resumen: '.$e->getMessage());
 
             return back();
@@ -666,7 +683,7 @@ class ConsultationController extends Controller
             return redirect()->back()->with('message.success', 'Prescripciones enviadas por WhatsApp exitosamente.');
 
         } catch (\Exception $e) {
-            \Log::error('Error al reenviar prescripciones por WhatsApp', [
+            Log::error('Error al reenviar prescripciones por WhatsApp', [
                 'encounter_id' => $encounter_id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

@@ -5,7 +5,9 @@ namespace App\Livewire\Consultation;
 use App\Models\CptCode;
 use App\Models\Encounter;
 use App\Models\RapidAccess;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -181,6 +183,13 @@ class ServiceRequest extends Component
 
             $this->loadSelectedLists();
         } catch (\Exception $e) {
+            Log::error('Error seleccionando servicio en ServiceRequest', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'cpt_code' => $option['code'] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$key, 'Error al guardar: '.$e->getMessage());
             /*
             $this->dispatch('showToastrConsultation',
@@ -514,6 +523,13 @@ class ServiceRequest extends Component
             $this->dispatch('saved-'.$id);
 
         } catch (\Exception $e) {
+            Log::error('Error guardando nota de servicio en ServiceRequest', [
+                'encounter_id' => $this->encounter_id,
+                'user_id' => Auth::id(),
+                'service_request_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('error-'.$id, $e->getMessage());
         }
     }
