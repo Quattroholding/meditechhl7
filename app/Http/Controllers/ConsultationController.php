@@ -364,9 +364,9 @@ class ConsultationController extends Controller
                     $serviceDescription = 'Servicio médico';
                     $serviceCode = 'N/A';
 
-                    if ($serviceCatalog && ! empty($serviceCatalog->description)) {
-                        // Regular medical service
-                        $serviceDescription = $serviceCatalog->description;
+                    if ($serviceCatalog) {
+                        // Regular medical service - use description if available, fallback to name
+                        $serviceDescription = $serviceCatalog->description ?? $serviceCatalog->name;
                         $serviceCode = $serviceCatalog->code ?? 'N/A';
                     } elseif ($chargeItem->product_reference && is_array($chargeItem->product_reference)) {
                         // Supply/Inventory item
