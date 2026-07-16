@@ -65,6 +65,7 @@ class PresentIllness extends Component
             \Log::info('PresentIllness: Creating new record');
             $this->create();
             $this->encounter->refresh();
+            $this->present_illness = $this->encounter->presentIllnesses;
         }
 
         $presentIllness = $this->encounter->presentIllnesses;
@@ -539,6 +540,7 @@ class PresentIllness extends Component
                 $this->create();
                 // Refresh to get the newly created record
                 $this->encounter->refresh();
+                $this->present_illness = $this->encounter->presentIllnesses;
             }
 
             if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
@@ -565,6 +567,7 @@ class PresentIllness extends Component
                 $this->create();
                 // Refresh to get the newly created record
                 $this->encounter->refresh();
+                $this->present_illness = $this->encounter->presentIllnesses;
             }
 
             if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
@@ -589,6 +592,7 @@ class PresentIllness extends Component
                 $this->create();
                 // Refresh to get the newly created record
                 $this->encounter->refresh();
+                $this->present_illness = $this->encounter->presentIllnesses;
             }
 
             if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
@@ -614,11 +618,11 @@ class PresentIllness extends Component
                 $this->create();
                 // Refresh to get the newly created record
                 $this->encounter->refresh();
+                $this->present_illness = $this->encounter->presentIllnesses;
             }
 
             if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->description = $this->description;
-                if(empty($this->present_illness->fhir_id)) $this->present_illness->fhir_id =  'condition-'.Str::uuid();
                 $this->present_illness->save();
             }
 
