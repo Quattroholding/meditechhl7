@@ -364,10 +364,10 @@ class ConsultationController extends Controller
                     $serviceDescription = 'Servicio médico';
                     $serviceCode = 'N/A';
 
-                    if ($serviceCatalog) {
+                    if ($serviceCatalog && ! empty($serviceCatalog->description)) {
                         // Regular medical service
                         $serviceDescription = $serviceCatalog->description;
-                        $serviceCode = $serviceCatalog->code;
+                        $serviceCode = $serviceCatalog->code ?? 'N/A';
                     } elseif ($chargeItem->product_reference && is_array($chargeItem->product_reference)) {
                         // Supply/Inventory item
                         if (isset($chargeItem->product_reference['reference'])) {
@@ -376,14 +376,19 @@ class ConsultationController extends Controller
                             if (str_contains($reference, 'InventoryItem/')) {
                                 $fhirId = str_replace('InventoryItem/', '', $reference);
                                 $inventoryItem = InventoryItem::where('fhir_id', $fhirId)->first();
-                                if ($inventoryItem) {
+                                if ($inventoryItem && ! empty($inventoryItem->name)) {
                                     $serviceDescription = $inventoryItem->name;
-                                    $serviceCode = $inventoryItem->sku;
+                                    $serviceCode = $inventoryItem->sku ?? 'N/A';
                                 }
                             }
                         }
-                    } elseif ($chargeItem->definition) {
+                    } elseif (! empty($chargeItem->definition)) {
                         $serviceDescription = $chargeItem->definition;
+                    }
+
+                    // Ensure service_description is never empty
+                    if (empty($serviceDescription)) {
+                        $serviceDescription = 'Servicio médico';
                     }
 
                     InvoiceLineItem::create([
