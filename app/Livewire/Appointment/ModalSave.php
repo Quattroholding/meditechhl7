@@ -10,6 +10,8 @@ use App\Models\Practitioner;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
@@ -138,7 +140,7 @@ class ModalSave extends Component
 
         // Cargar consultorios si ya hay doctor y fecha
         if ($this->doctor_id && $this->appointment_date) {
-            \Log::info('openModal: Cargando consultorios', [
+            Log::info('openModal: Cargando consultorios', [
                 'doctor_id' => $this->doctor_id,
                 'appointment_date' => $this->appointment_date,
             ]);
@@ -178,7 +180,7 @@ class ModalSave extends Component
         }
         if (! auth()->user()->hasRole('doctor')) {
             $this->doctor_id = '';
-            \Log::info('resetForm: Usuario NO es doctor, limpiando doctor_id');
+            Log::info('resetForm: Usuario NO es doctor, limpiando doctor_id');
         } else {
             // Si es doctor, mantener su ID
             if (auth()->user()->practitioner) {
@@ -219,7 +221,7 @@ class ModalSave extends Component
      */
     public function updatedAppointmentDate($value)
     {
-        \Log::info('updatedAppointmentDate called', [
+        Log::info('updatedAppointmentDate called', [
             'date' => $value,
             'doctor_id' => $this->doctor_id,
         ]);
@@ -227,7 +229,7 @@ class ModalSave extends Component
         $this->loadConsultorios();
         $this->consulting_room_id = '';
 
-        \Log::info('Consultorios after update', [
+        Log::info('Consultorios after update', [
             'consultorios' => $this->consultorios,
         ]);
     }
@@ -237,7 +239,7 @@ class ModalSave extends Component
      */
     public function updatedDoctorId($value)
     {
-        \Log::info('updatedDoctorId called', [
+        Log::info('updatedDoctorId called', [
             'doctor_id' => $value,
             'appointment_date' => $this->appointment_date,
         ]);
@@ -247,7 +249,7 @@ class ModalSave extends Component
             $this->consulting_room_id = '';
         }
 
-        \Log::info('Consultorios after update', [
+        Log::info('Consultorios after update', [
             'consultorios' => $this->consultorios,
         ]);
     }
@@ -257,7 +259,7 @@ class ModalSave extends Component
      */
     public function updatedMedicalSpecialityId($value)
     {
-        \Log::info('updatedMedicalSpecialityId called', ['speciality_id' => $value]);
+        Log::info('updatedMedicalSpecialityId called', ['speciality_id' => $value]);
         if (! auth()->user()->practitioner or auth()->user()->hasRole('asistente medico')) {
             // Recargar la lista de doctores filtrados por especialidad
 
@@ -292,14 +294,14 @@ class ModalSave extends Component
 
     public function loadConsultorios()
     {
-        \Log::info('loadConsultorios START', [
+        Log::info('loadConsultorios START', [
             'doctor_id' => $this->doctor_id,
             'appointment_date' => $this->appointment_date,
         ]);
 
         if (! $this->doctor_id) {
             $this->consultorios = [];
-            \Log::info('loadConsultorios: No doctor_id, consultorios vacíos');
+            Log::info('loadConsultorios: No doctor_id, consultorios vacíos');
 
             return;
         }
@@ -307,12 +309,12 @@ class ModalSave extends Component
         $practitioner = Practitioner::find($this->doctor_id);
         if (! $practitioner) {
             $this->consultorios = [];
-            \Log::info('loadConsultorios: Practitioner no encontrado');
+            Log::info('loadConsultorios: Practitioner no encontrado');
 
             return;
         }
 
-        \Log::info('Practitioner encontrado', [
+        Log::info('Practitioner encontrado', [
             'practitioner_id' => $practitioner->id,
             'user_id' => $practitioner->user_id,
         ]);
@@ -322,13 +324,13 @@ class ModalSave extends Component
         if ($this->appointment_date) {
             $date = Carbon::parse($this->appointment_date);
             $dayOfWeek = $this->getDayNameInSpanish($date);
-            \Log::info('Día de la semana calculado', ['dayOfWeek' => $dayOfWeek]);
+            Log::info('Día de la semana calculado', ['dayOfWeek' => $dayOfWeek]);
         }
 
         // Verificar si el doctor tiene horarios configurados
         $workingHours = $this->getDoctorWorkingHours();
 
-        \Log::info('Working hours obtenidos', [
+        Log::info('Working hours obtenidos', [
             'count' => $workingHours->count(),
             'days' => $workingHours->pluck('day_of_week')->toArray(),
         ]);
@@ -341,7 +343,7 @@ class ModalSave extends Component
                 }
             })->get()->pluck('full_name_branch', 'id')->toArray();
 
-            \Log::info('Sin horarios configurados, todos los consultorios', [
+            Log::info('Sin horarios configurados, todos los consultorios', [
                 'count' => count($this->consultorios),
             ]);
         } else {
@@ -349,7 +351,7 @@ class ModalSave extends Component
             if ($dayOfWeek) {
                 $workingHoursForDay = $workingHours->where('day_of_week', $dayOfWeek);
 
-                \Log::info('Filtrando por día', [
+                Log::info('Filtrando por día', [
                     'dayOfWeek' => $dayOfWeek,
                     'count' => $workingHoursForDay->count(),
                 ]);
@@ -357,7 +359,7 @@ class ModalSave extends Component
                 if ($workingHoursForDay->isEmpty()) {
                     // El doctor no trabaja este día
                     $this->consultorios = [];
-                    \Log::info('Doctor no trabaja este día, consultorios vacíos');
+                    Log::info('Doctor no trabaja este día, consultorios vacíos');
                 } else {
                     // Obtener solo los consultorios donde trabaja ese día
                     $consultingRoomIds = $workingHoursForDay->pluck('consulting_room_id')->unique();
@@ -366,7 +368,7 @@ class ModalSave extends Component
                         ->pluck('full_name_branch', 'id')
                         ->toArray();
 
-                    \Log::info('Consultorios del día', [
+                    Log::info('Consultorios del día', [
                         'room_ids' => $consultingRoomIds->toArray(),
                         'consultorios' => $this->consultorios,
                     ]);
@@ -379,14 +381,14 @@ class ModalSave extends Component
                     ->pluck('full_name_branch', 'id')
                     ->toArray();
 
-                \Log::info('Sin fecha, todos los consultorios configurados', [
+                Log::info('Sin fecha, todos los consultorios configurados', [
                     'room_ids' => $consultingRoomIds->toArray(),
                     'count' => count($this->consultorios),
                 ]);
             }
         }
 
-        \Log::info('loadConsultorios END', [
+        Log::info('loadConsultorios END', [
             'consultorios_count' => count($this->consultorios),
             'consultorios' => array_keys($this->consultorios),
         ]);
@@ -544,7 +546,7 @@ class ModalSave extends Component
                         $changedBy = $currentUser->first_name.' '.$currentUser->last_name;
                         $this->appointment->notifyPractitionerAboutReschedule($originalStart, $this->notes, $changedBy);
 
-                        \Log::info('Médico notificado sobre reprogramación de cita por otro usuario', [
+                        Log::info('Médico notificado sobre reprogramación de cita por otro usuario', [
                             'appointment_id' => $this->appointment->id,
                             'practitioner_id' => $this->appointment->practitioner_id,
                             'changed_by' => $changedBy,
@@ -558,7 +560,7 @@ class ModalSave extends Component
                     // Schedule new reminder with the new datetime
                     $this->appointment->notifyPatientAboutAppointment();
 
-                    \Log::info('Cita reprogramada - notificación enviada y recordatorio reprogramado', [
+                    Log::info('Cita reprogramada - notificación enviada y recordatorio reprogramado', [
                         'appointment_id' => $this->appointment->id,
                         'original_datetime' => $originalStart->format('Y-m-d H:i:s'),
                         'new_datetime' => $newStart->format('Y-m-d H:i:s'),
@@ -609,6 +611,14 @@ class ModalSave extends Component
             // $this->dispatch('loadStats');
 
         } catch (\Exception $e) {
+            Log::error('Error guardando cita en ModalSave::saveAppointment', [
+                'user_id' => Auth::id(),
+                'appointment_id' => $this->appointment?->id,
+                'patient_id' => $this->patient_id,
+                'doctor_id' => $this->doctor_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->closeModal();
             session()->flash('message.error', 'Error al guardar la cita: '.$e->getMessage());
             $this->dispatch('showToastr',
@@ -709,6 +719,12 @@ class ModalSave extends Component
                 );
             }
         } catch (\Exception $e) {
+            Log::error('Error eliminando cita en ModalSave::deleteAppointment', [
+                'user_id' => Auth::id(),
+                'appointment_id' => $appointmentId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('message.error', 'Error al eliminar la cita.');
             $this->dispatch('showToastr',
                 type: 'error',
@@ -767,6 +783,13 @@ class ModalSave extends Component
             $this->closeModal();
 
         } catch (\Exception $e) {
+            Log::error('Error cancelando cita en ModalSave::confirmCancellation', [
+                'user_id' => Auth::id(),
+                'appointment_id' => $this->appointment?->id,
+                'cancellation_reason' => $this->cancellationReason,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $this->dispatch('showToastr', [
                 'type' => 'error',
                 'message' => 'Error al cancelar la cita: '.$e->getMessage(),

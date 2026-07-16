@@ -10,6 +10,8 @@ use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\UserClient;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -316,6 +318,13 @@ class Calendar extends Component
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Error actualizando estado de cita en Calendar::updateStatus', [
+                'user_id' => Auth::id(),
+                'appointment_id' => $appointmentId,
+                'new_status' => $newStatus ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('message.error', 'Error al actualizar el estado :'.$e->getMessage());
         }
     }
@@ -355,6 +364,13 @@ class Calendar extends Component
                 );
             }
         } catch (\Exception $e) {
+            Log::error('Error cancelando cita en Calendar::confirmCancellation', [
+                'user_id' => Auth::id(),
+                'appointment_id' => $this->cancellingAppointmentId,
+                'cancellation_reason' => $this->cancellationReason,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('message.error', 'Error al cancelar la cita: '.$e->getMessage());
         }
 
@@ -575,6 +591,11 @@ class Calendar extends Component
             session()->flash('message.success', 'Sincronización completada exitosamente.');
             $this->loadAppointments();
         } catch (\Exception $e) {
+            Log::error('Error sincronizando citas con servidor en Calendar::syncWithServer', [
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('message.error', 'Error en la sincronización: '.$e->getMessage());
         }
     }
