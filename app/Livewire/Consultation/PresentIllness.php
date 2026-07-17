@@ -642,6 +642,9 @@ class PresentIllness extends Component
 
             if ($this->encounter->presentIllnesses && $this->encounter->presentIllnesses->id) {
                 $this->present_illness->description = $this->description;
+                if(empty($this->present_illness->fhir_id)) $this->present_illness->fhir_id = 'condition-'.Str::uuid();
+
+
                 $this->present_illness->save();
             }
 
