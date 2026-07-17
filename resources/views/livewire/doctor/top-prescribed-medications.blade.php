@@ -67,9 +67,13 @@
                                     </div>
                                 </div>
                                 <div class="medication-details">
+                                    {{--}}
                                     <span class="badge bg-light text-dark me-1">{{ $medication['concentration'] }}</span>
+                                    {{--}}
                                     <span class="badge bg-light text-dark me-1">{{ ucfirst($medication['form']) }}</span>
+                                    {{--}}
                                     <span class="badge bg-light text-dark">{{ $medication['route'] }}</span>
+                                    {{--}}
                                 </div>
                             </div>
                             <div class="medication-stats-text text-end">
@@ -91,21 +95,15 @@
 
                         <!-- Detalles de prescripción -->
                         <div class="row text-center">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <small class="text-muted d-block">{{ __('doctor.dashboard.consultations') }}</small>
                                 <span class="fw-bold">{{ $medication['encounter_count'] }}</span>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <small class="text-muted d-block">{{ __('doctor.dashboard.patients') }}</small>
                                 <span class="fw-bold">{{ $medication['patient_count'] }}</span>
                             </div>
-                            <div class="col-3">
-                                <small class="text-muted d-block">{{ __('doctor.dashboard.common_freq') }}</small>
-                                <span class="fw-bold text-truncate" title="{{ $medication['frequency'] }}">
-                                    {{ Str::limit($medication['frequency'], 8) }}
-                                </span>
-                            </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <small class="text-muted d-block">{{ __('doctor.dashboard.avg_quantity') }}</small>
                                 <span class="fw-bold">{{ $medication['avg_quantity'] }}</span>
                             </div>

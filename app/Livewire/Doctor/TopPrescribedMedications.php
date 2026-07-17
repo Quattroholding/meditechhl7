@@ -54,26 +54,17 @@ class TopPrescribedMedications extends Component
         // Obtener los medicamentos más prescritos por el doctor
         $medications = MedicationRequest::query()
             ->select([
-                'medications.id as medication_id',
-                'medications.generic_name as generic_name1',
-                'medications.home_name as home_name1',
-                'medications.display as display1',
-                'medications.form as form1',
                 'medications2.id as medication_id2',
                 'medications2.generic_name as generic_name2',
                 'medications2.home_name as home_name2',
                 'medications2.display as display2',
                 'medications2.form as form2',
-                'medication_requests.medication',
-                'medication_requests.frequency',
-                'medication_requests.route',
                 DB::raw('COUNT(*) as prescription_count'),
                 DB::raw('COUNT(DISTINCT medication_requests.encounter_id) as encounter_count'),
                 DB::raw('COUNT(DISTINCT medication_requests.patient_id) as patient_count'),
                 DB::raw('AVG(CAST(medication_requests.quantity AS DECIMAL(10,2))) as avg_quantity'),
             ])
             ->join('encounters', 'medication_requests.encounter_id', '=', 'encounters.id')
-            ->leftJoin('medications', 'medication_requests.medication_id', '=', 'medications.id')
             ->leftJoin('medications as medications2', 'medication_requests.medication_id2', '=', 'medications2.id')
             ->where('medication_requests.practitioner_id', $practitionerId)
             ->where('medication_requests.status', '!=', 'cancelled')
@@ -81,19 +72,11 @@ class TopPrescribedMedications extends Component
                 return $query->where('encounters.start', '>=', now()->subDays($days));
             })
             ->groupBy([
-                'medications.id',
-                'medications.generic_name',
-                'medications.home_name',
-                'medications.display',
-                'medications.form',
                 'medications2.id',
                 'medications2.generic_name',
                 'medications2.home_name',
                 'medications2.display',
                 'medications2.form',
-                'medication_requests.medication',
-                'medication_requests.frequency',
-                'medication_requests.route',
             ])
             ->orderByDesc('prescription_count')
             ->limit(5)
@@ -110,10 +93,6 @@ class TopPrescribedMedications extends Component
                         'generic_name' => $item->medication ?: 'Medicamento sin nombre',
                         'home_name' => $item->medication ?: 'Medicamento sin nombre',
                         'medication' => $item->medication,
-                        'concentration' => 'N/A',
-                        'form' => 'N/A',
-                        'frequency' => $item->frequency ?: 'No especificada',
-                        'route' => $item->route ?: 'Oral',
                         'prescription_count' => $item->prescription_count,
                         'encounter_count' => $item->encounter_count,
                         'patient_count' => $item->patient_count,
