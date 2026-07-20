@@ -311,7 +311,7 @@ class Diagnostics extends Component
                 $this->selectedOption = $option;
                 $this->query = $option['name']; // Asigna el nombre seleccionado al input
                 $this->results = []; // Limpia los resultados
-                $condition = Condition::wherePatientId($this->encounter->patient_id)->whereCode($option)->first();
+                $condition = Condition::wherePatientId($this->encounter->patient_id)->whereCode($option['code'])->first();
                 $onset_info = '';
                 $diagnostic = Icd10Code::whereCode($option['code'])->first();
                 if ($diagnostic) {
@@ -322,6 +322,7 @@ class Diagnostics extends Component
                         'fhir_id' => 'condition-'.Str::uuid(),
                         'patient_id' => $this->encounter->patient_id,
                         'practitioner_id' => $this->encounter->practitioner_id,
+                        'encounter_id'=>$this->encounter->id,
                         'identifier' => 'DX-'.strtoupper(Str::random(7)),
                         'clinical_status' => 'active',
                         'verification_status' => 'confirmed',
