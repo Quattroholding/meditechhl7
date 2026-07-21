@@ -10,13 +10,94 @@
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soluciones Meditec</title>
+
+    <!-- SEO Meta Tags -->
+    <title>Soluciones Meditec - Plataformas Digitales en Salud</title>
+    <meta name="description" content="Soluciones Meditec ofrece plataformas digitales innovadoras para la gestión médica. SAMI para clínicas y SAMI Recetas para prescripciones. Transformamos la atención médica.">
+    <meta name="keywords" content="soluciones médicas, plataformas salud, gestión clínica, software médico, SAMI, Panamá, tecnología sanitaria, historia clínica digital">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="author" content="Soluciones Meditec">
+    <meta name="language" content="es-ES">
+    <link rel="canonical" href="https://meditecpty.com">
+
+    <!-- Open Graph Tags (Redes Sociales) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://meditecpty.com">
+    <meta property="og:title" content="Soluciones Meditec - Plataformas Digitales en Salud">
+    <meta property="og:description" content="Plataformas digitales innovadoras que conectan a profesionales y pacientes. SAMI para gestión clínica y SAMI Recetas para prescripciones digitales.">
+    <meta property="og:image" content="{{ asset('landing/images/hero-welcome.jpg') }}">
+    <meta property="og:site_name" content="Soluciones Meditec">
+    <meta property="og:locale" content="es_ES">
+
+    <!-- Twitter Card Tags -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://meditecpty.com">
+    <meta property="twitter:title" content="Soluciones Meditec - Plataformas Digitales en Salud">
+    <meta property="twitter:description" content="Plataformas digitales innovadoras que conectan a profesionales y pacientes.">
+    <meta property="twitter:image" content="{{ asset('landing/images/hero-welcome.jpg') }}">
+
     <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/welcome.css?time='.time())}}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; }
     </style>
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Soluciones Meditec",
+      "url": "https://meditecpty.com",
+      "logo": "{{ asset('images/logoFull.png') }}",
+      "description": "Empresa de tecnología en salud que integra plataformas digitales diseñadas para optimizar la gestión médica y mejorar la experiencia del paciente",
+      "email": "business@meditecpty.com",
+      "telephone": "+507-831-6100",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "PA",
+        "addressLocality": "Panamá"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "email": "business@meditecpty.com",
+        "telephone": "+507-831-6100"
+      },
+      "sameAs": [
+        "https://sami.meditecpty.com",
+        "https://samirx.meditecpty.com"
+      ]
+    }
+    </script>
+
+    <!-- Software Applications Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Soluciones Meditec Productos",
+      "description": "Plataformas digitales en salud ofrecidas por Soluciones Meditec",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "SAMI",
+          "description": "Sistema de Gestión para Clínicas y Hospitales",
+          "url": "https://sami.meditecpty.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SAMI Recetas",
+          "description": "Recetas Médicas Digitales para Panamá",
+          "url": "https://samirx.meditecpty.com"
+        }
+      ]
+    }
+    </script>
+
     @livewireStyles
 </head>
 <body>
@@ -27,8 +108,8 @@
 <!-- HEADER -->
 <header class="header">
     <div class="container header__inner">
-        <a href="#" class="brand">
-            <img src="{{url('images/logoFull.png')}}" alt="Soluciones Meditec" class="brand__logo">
+        <a href="#" class="brand" title="Soluciones Meditec - Inicio">
+            <img src="{{url('images/logoFull.png')}}" alt="Soluciones Meditec - Plataformas digitales en salud" class="brand__logo">
         </a>
 
         <nav class="nav">
@@ -54,7 +135,7 @@
     <div class=" hero__content">
         <div class="hero__bg">
             <!-- placeholder hero -->
-            <img src="{{ asset('landing/images/hero-welcome.jpg') }}" alt="Hero">
+            <img src="{{ asset('landing/images/hero-welcome.jpg') }}" alt="Soluciones Meditec - Conectamos profesionales y pacientes a través de tecnología confiable">
         </div>
         <div class="container">
             <div class="hero__line"></div>
@@ -124,7 +205,7 @@
             </div>
         </div>
         <aside class="mv__right">
-            <img src="{{ asset('landing/images/lateral-welcome.jpg') }}" alt="Imagen sección">
+            <img src="{{ asset('landing/images/lateral-welcome.jpg') }}" alt="Misión y Visión - Soluciones Meditec transformando la atención médica">
         </aside>
 
     </div>
@@ -146,19 +227,19 @@
                     <div class="carousel" data-carousel="sami">
                         <div class="carousel__track">
                             <div class="carousel__slide active">
-                                <img src="{{url('images/tutorial/dashboard/global.png')}}" alt="SAMI Dashboard">
+                                <img src="{{url('images/tutorial/dashboard/global.png')}}" alt="Dashboard de SAMI - Vista general del sistema de gestión">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('images/tutorial/appointments/appointment-schedule.png')}}" alt="Agenda de Citas">
+                                <img src="{{url('images/tutorial/appointments/appointment-schedule.png')}}" alt="Gestión de citas en SAMI - Agenda y horarios integrados">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('images/tutorial/encounters/encounter_start.png')}}" alt="Consultas Médicas">
+                                <img src="{{url('images/tutorial/encounters/encounter_start.png')}}" alt="Consultas médicas en SAMI - Documentación de encuentros clínicos">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('images/tutorial/patients/profile.png')}}" alt="Perfil de Paciente">
+                                <img src="{{url('images/tutorial/patients/profile.png')}}" alt="Perfil de paciente en SAMI - Historia clínica completa y accesible">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('images/tutorial/invoices/invoice_list.png')}}" alt="Facturación">
+                                <img src="{{url('images/tutorial/invoices/invoice_list.png')}}" alt="Facturación en SAMI - Gestión de invoices y pagos">
                             </div>
                         </div>
                         <button class="carousel__btn carousel__btn--prev" aria-label="Anterior">
@@ -228,13 +309,13 @@
                     <div class="carousel" data-carousel="recetas">
                         <div class="carousel__track">
                             <div class="carousel__slide active">
-                                <img src="{{url('landing/images/sami_recetas_movil_dashboard.jpeg')}}" alt="SAMI Recetas Dashboard">
+                                <img src="{{url('landing/images/sami_recetas_movil_dashboard.jpeg')}}" alt="SAMI Recetas - Dashboard móvil para prescripciones digitales">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('landing/images/sami_recetas_movil_registro.jpeg')}}" alt="Registro SAMI Recetas">
+                                <img src="{{url('landing/images/sami_recetas_movil_registro.jpeg')}}" alt="SAMI Recetas - Registro de usuario en aplicación móvil">
                             </div>
                             <div class="carousel__slide">
-                                <img src="{{url('landing/images/sami_recetas_movil_nueva_receta.jpeg')}}" alt="Nueva Receta">
+                                <img src="{{url('landing/images/sami_recetas_movil_nueva_receta.jpeg')}}" alt="SAMI Recetas - Crear y enviar recetas digitales desde el móvil">
                             </div>
                         </div>
                         <button class="carousel__btn carousel__btn--prev" aria-label="Anterior">

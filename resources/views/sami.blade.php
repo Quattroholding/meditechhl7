@@ -16,7 +16,7 @@
     <meta name="description" content="SAMI es una plataforma integral de gestión médica diseñada para médicos, clínicas y hospitales. Historia clínica digital, citas en línea, reportes y más. Soporte profesional incluido.">
     <meta name="keywords" content="software médico, gestión clínica, historia clínica digital, citas médicas, SAMI, plataforma salud, EHR, EMR">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="author" content="Meditec">
+    <meta name="author" content="Soluciones Meditec">
     <meta name="language" content="es-ES">
     <link rel="canonical" href="https://sami.meditecpty.com">
 
