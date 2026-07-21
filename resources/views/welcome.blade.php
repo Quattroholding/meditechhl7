@@ -44,59 +44,61 @@
     </style>
 
     <!-- JSON-LD Schema Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Soluciones Meditec",
-      "url": "https://meditecpty.com",
-      "logo": "{{ asset('images/logoFull.png') }}",
-      "description": "Empresa de tecnología en salud que integra plataformas digitales diseñadas para optimizar la gestión médica y mejorar la experiencia del paciente",
-      "email": "business@meditecpty.com",
-      "telephone": "+507-831-6100",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "PA",
-        "addressLocality": "Panamá"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "Customer Service",
-        "email": "business@meditecpty.com",
-        "telephone": "+507-831-6100"
-      },
-      "sameAs": [
+    @php
+    $organizationSchema = [
+      "@context" => "https://schema.org",
+      "@type" => "Organization",
+      "name" => "Soluciones Meditec",
+      "url" => "https://meditecpty.com",
+      "logo" => asset('images/logoFull.png'),
+      "description" => "Empresa de tecnología en salud que integra plataformas digitales diseñadas para optimizar la gestión médica y mejorar la experiencia del paciente",
+      "email" => "business@meditecpty.com",
+      "telephone" => "+507-831-6100",
+      "address" => [
+        "@type" => "PostalAddress",
+        "addressCountry" => "PA",
+        "addressLocality" => "Panamá"
+      ],
+      "contactPoint" => [
+        "@type" => "ContactPoint",
+        "contactType" => "Customer Service",
+        "email" => "business@meditecpty.com",
+        "telephone" => "+507-831-6100"
+      ],
+      "sameAs" => [
         "https://sami.meditecpty.com",
         "https://samirx.meditecpty.com"
       ]
-    }
-    </script>
+    ];
+    @endphp
+    <script type="application/ld+json">@json($organizationSchema)</script>
 
     <!-- Software Applications Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Soluciones Meditec Productos",
-      "description": "Plataformas digitales en salud ofrecidas por Soluciones Meditec",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "SAMI",
-          "description": "Sistema de Gestión para Clínicas y Hospitales",
-          "url": "https://sami.meditecpty.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "SAMI Recetas",
-          "description": "Recetas Médicas Digitales para Panamá",
-          "url": "https://samirx.meditecpty.com"
-        }
+    @php
+    $productsSchema = [
+      "@context" => "https://schema.org",
+      "@type" => "ItemList",
+      "name" => "Soluciones Meditec Productos",
+      "description" => "Plataformas digitales en salud ofrecidas por Soluciones Meditec",
+      "itemListElement" => [
+        [
+          "@type" => "ListItem",
+          "position" => 1,
+          "name" => "SAMI",
+          "description" => "Sistema de Gestión para Clínicas y Hospitales",
+          "url" => "https://sami.meditecpty.com"
+        ],
+        [
+          "@type" => "ListItem",
+          "position" => 2,
+          "name" => "SAMI Recetas",
+          "description" => "Recetas Médicas Digitales para Panamá",
+          "url" => "https://samirx.meditecpty.com"
+        ]
       ]
-    }
-    </script>
+    ];
+    @endphp
+    <script type="application/ld+json">@json($productsSchema)</script>
 
     @livewireStyles
 </head>

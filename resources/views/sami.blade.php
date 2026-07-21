@@ -37,7 +37,7 @@
     <meta property="twitter:image" content="{{ asset('landing/images/hero-sami.png') }}">
 
     <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
-    <link rel="stylesheet" href="{{url('styles/sami.css?time'.time())}}">
+    <link rel="stylesheet" href="{{url('styles/sami.css?time='.time())}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -45,40 +45,40 @@
     </style>
 
     <!-- JSON-LD Schema Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "SAMI",
-      "description": "Plataforma integral de gestión médica para clínicas, hospitales y profesionales de la salud",
-      "url": "https://sami.meditecpty.com",
-      "image": "{{ asset('landing/images/hero-sami.png') }}",
-      "applicationCategory": "MedicalApplication",
-      "offers": {
-        "@type": "AggregateOffer",
-        "priceCurrency": "USD",
-        "lowPrice": "4.99",
-        "highPrice": "999"
-      },
-      "author": {
-        "@type": "Organization",
-        "name": "Meditec",
-        "url": "https://meditecpty.com",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "contactType": "Customer Service",
-          "email": "business@meditecpty.com",
-          "telephone": "+507-831-6100"
-        }
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "500",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
-      "featureList": [
+    @php
+    $softwareSchema = [
+      "@context" => "https://schema.org",
+      "@type" => "SoftwareApplication",
+      "name" => "SAMI",
+      "description" => "Plataforma integral de gestión médica para clínicas, hospitales y profesionales de la salud",
+      "url" => "https://sami.meditecpty.com",
+      "image" => asset('landing/images/hero-sami.png'),
+      "applicationCategory" => "MedicalApplication",
+      "offers" => [
+        "@type" => "AggregateOffer",
+        "priceCurrency" => "USD",
+        "lowPrice" => "4.99",
+        "highPrice" => "999"
+      ],
+      "author" => [
+        "@type" => "Organization",
+        "name" => "Meditec",
+        "url" => "https://meditecpty.com",
+        "contactPoint" => [
+          "@type" => "ContactPoint",
+          "contactType" => "Customer Service",
+          "email" => "business@meditecpty.com",
+          "telephone" => "+507-831-6100"
+        ]
+      ],
+      "aggregateRating" => [
+        "@type" => "AggregateRating",
+        "ratingValue" => "4.8",
+        "ratingCount" => "500",
+        "bestRating" => "5",
+        "worstRating" => "1"
+      ],
+      "featureList" => [
         "Historia clínica digital centralizada",
         "Gestión de citas en línea",
         "Directorio médico inteligente",
@@ -86,31 +86,33 @@
         "Acceso multidispositivo",
         "Cumplimiento de estándares internacionales"
       ]
-    }
-    </script>
+    ];
+    @endphp
+    <script type="application/ld+json">@json($softwareSchema)</script>
 
     <!-- Organization Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "SAMI",
-      "url": "https://sami.meditecpty.com",
-      "logo": "{{ asset('images/logoSAMI.png') }}",
-      "description": "Plataforma integral de gestión médica",
-      "email": "business@meditecpty.com",
-      "telephone": "+507-831-6100",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "Customer Service",
-        "email": "business@meditecpty.com",
-        "telephone": "+507-831-6100"
-      },
-      "sameAs": [
+    @php
+    $organizationSchema = [
+      "@context" => "https://schema.org",
+      "@type" => "Organization",
+      "name" => "SAMI",
+      "url" => "https://sami.meditecpty.com",
+      "logo" => asset('images/logoSAMI.png'),
+      "description" => "Plataforma integral de gestión médica",
+      "email" => "business@meditecpty.com",
+      "telephone" => "+507-831-6100",
+      "contactPoint" => [
+        "@type" => "ContactPoint",
+        "contactType" => "Customer Service",
+        "email" => "business@meditecpty.com",
+        "telephone" => "+507-831-6100"
+      ],
+      "sameAs" => [
         "https://meditecpty.com"
       ]
-    }
-    </script>
+    ];
+    @endphp
+    <script type="application/ld+json">@json($organizationSchema)</script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -325,13 +327,15 @@
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
             </div>
-            {{--}}<div class="feature">
+            {{--
+            <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
                 </div>
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
-            </div>{{--}}
+            </div>
+            --}}
             <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-5.png') }}" alt="Icono de acceso multidispositivo">
@@ -342,9 +346,10 @@
 
         </div>
 
-        {{--}}<div class="features__grid_alt">
+        {{--
+        <div class="features__grid_alt">
             <div></div>
-                        <div class="feature">
+            <div class="feature">
                 <div class="feature__icon">
                     <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
                 </div>
@@ -367,7 +372,8 @@
             </div>
 
             <div></div>
-        </div>{{--}}
+        </div>
+        --}}
     </div>
 </section>
 
@@ -419,7 +425,7 @@
                 </div>
 
                 @if($package->id<>4)
-                     <div class="plan__price text__cyan">@isset($package->base_price) ${{ number_format($package->base_price,2) }} @else XXX @endif</div>
+                     <div class="plan__price text__cyan">@if(isset($package->base_price)) ${{ number_format($package->base_price,2) }} @else XXX @endif</div>
                      <div class="plan__month_text text__cyan"><span>al mes</span></div>
                      <a href="{{ route('public.register', ['package' => $package->id]) }}" class="btn  @if($loop->index==1) btn--navy @else btn--primary @endif">Suscribirse ahora</a>
                 @else
