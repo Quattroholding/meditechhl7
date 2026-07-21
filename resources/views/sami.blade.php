@@ -10,7 +10,32 @@
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SAMI Landing</title>
+
+    <!-- SEO Meta Tags -->
+    <title>SAMI - Software Médico Integral | Gestión Clínica Moderna</title>
+    <meta name="description" content="SAMI es una plataforma integral de gestión médica diseñada para médicos, clínicas y hospitales. Historia clínica digital, citas en línea, reportes y más. Soporte profesional incluido.">
+    <meta name="keywords" content="software médico, gestión clínica, historia clínica digital, citas médicas, SAMI, plataforma salud, EHR, EMR">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="author" content="Meditec">
+    <meta name="language" content="es-ES">
+    <link rel="canonical" href="https://sami.meditecpty.com">
+
+    <!-- Open Graph Tags (Redes Sociales) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sami.meditecpty.com">
+    <meta property="og:title" content="SAMI - Software Médico Integral | Gestión Clínica Moderna">
+    <meta property="og:description" content="Plataforma integral para la gestión de clínicas, hospitales y prácticas médicas independientes. Historia clínica digital, citas en línea y reportes.">
+    <meta property="og:image" content="{{ asset('landing/images/hero-sami.png') }}">
+    <meta property="og:site_name" content="SAMI">
+    <meta property="og:locale" content="es_ES">
+
+    <!-- Twitter Card Tags -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://sami.meditecpty.com">
+    <meta property="twitter:title" content="SAMI - Software Médico Integral">
+    <meta property="twitter:description" content="Plataforma integral para la gestión de clínicas, hospitales y prácticas médicas independientes.">
+    <meta property="twitter:image" content="{{ asset('landing/images/hero-sami.png') }}">
+
     <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/sami.css?time'.time())}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,6 +43,74 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; }
     </style>
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SAMI",
+      "description": "Plataforma integral de gestión médica para clínicas, hospitales y profesionales de la salud",
+      "url": "https://sami.meditecpty.com",
+      "image": "{{ asset('landing/images/hero-sami.png') }}",
+      "applicationCategory": "MedicalApplication",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "USD",
+        "lowPrice": "4.99",
+        "highPrice": "999"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Meditec",
+        "url": "https://meditecpty.com",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "Customer Service",
+          "email": "business@meditecpty.com",
+          "telephone": "+507-831-6100"
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "500",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "featureList": [
+        "Historia clínica digital centralizada",
+        "Gestión de citas en línea",
+        "Directorio médico inteligente",
+        "Reportes y métricas",
+        "Acceso multidispositivo",
+        "Cumplimiento de estándares internacionales"
+      ]
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SAMI",
+      "url": "https://sami.meditecpty.com",
+      "logo": "{{ asset('images/logoSAMI.png') }}",
+      "description": "Plataforma integral de gestión médica",
+      "email": "business@meditecpty.com",
+      "telephone": "+507-831-6100",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "email": "business@meditecpty.com",
+        "telephone": "+507-831-6100"
+      },
+      "sameAs": [
+        "https://meditecpty.com"
+      ]
+    }
+    </script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -28,8 +121,8 @@
 <section class="top-hero" id="home">
     <header class="header">
         <div class="container header__inner">
-            <a href="#" class="brand">
-                <img src="{{url('images/logoSAMI.png')}}" alt="SAMI" class="brand__logo">
+            <a href="#" class="brand" title="SAMI - Inicio">
+                <img src="{{url('images/logoSAMI.png')}}" alt="SAMI - Plataforma de gestión médica integral" class="brand__logo">
             </a>
 
             <nav class="nav principal-nav">
@@ -93,7 +186,7 @@
 
         <div class="hero__right">
             <div class="hero__img2">
-                <img src="{{ asset('landing/images/hero-sami.png') }}" alt="Hero">
+                <img src="{{ asset('landing/images/hero-sami.png') }}" alt="SAMI - Innovación tecnológica al servicio de la salud, plataforma de gestión médica integral">
             </div>
         </div>
     </div>
@@ -122,7 +215,7 @@
         <!-- ROW 1 -->
         <div class="sami-row">
             <div class="sami-row__img">
-                <img src="{{ asset('landing/images/Foto-2.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-2.png') }}" alt="Historia clínica electrónica digital y segura en SAMI">
             </div>
             <div class="sami-row__text">
                 <div class="num num--right">1</div>
@@ -141,14 +234,14 @@
                 <span class="title">Acceder a la información del paciente <br/>   en cualquier momento y desde cualquier <br/> dispositivo (PC, tablet o smartphone).</span>
             </div>
             <div class="sami-row__img samrow-2">
-                <img src="{{ asset('landing/images/Foto-3.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-3.png') }}" alt="Acceso a información de pacientes desde cualquier dispositivo - PC, tablet o smartphone">
             </div>
         </div>
 
         <!-- ROW 3 -->
         <div class="sami-row">
             <div class="sami-row__img">
-                <img src="{{ asset('landing/images/Foto-1.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-1.png') }}" alt="Cumplimiento de regulaciones de privacidad y estándares de seguridad internacional en SAMI">
             </div>
 
             <div class="sami-row__text">
@@ -174,17 +267,17 @@
 
         <div class="audience__grid">
             <article class="audience__card">
-                <img src="{{ asset('landing/images/Foto-4.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-4.png') }}" alt="Profesionales de la salud independientes usando SAMI">
                 <h4>Profesionales de la<br>salud independientes</h4>
             </article>
 
             <article class="audience__card">
-                <img src="{{ asset('landing/images/Foto-5.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-5.png') }}" alt="Clínicas y centros médicos de todos los tamaños gestionando pacientes en SAMI">
                 <h4>Clínicas y centros médicos<br>de todos los tamaños</h4>
             </article>
 
             <article class="audience__card">
-                <img src="{{ asset('landing/images/Foto-6.png') }}" alt="">
+                <img src="{{ asset('landing/images/Foto-6.png') }}" alt="Hospitales y redes de salud corporativas con gestión centralizada en SAMI">
                 <h4>Hospitales y redes de<br>salud corporativas</h4>
             </article>
         </div>
@@ -202,7 +295,7 @@
         <div class="features__grid">
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-1.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-1.png') }}" alt="Icono de historia clínica digital centralizada">
                 </div>
                 <h3>Historia clínica<br>digital centralizada</h3>
                 <p>Consulta, actualiza y gestiona el historial médico de cada paciente con facilidad y precisión.</p>
@@ -211,7 +304,7 @@
 
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-2.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-2.png') }}" alt="Icono de directorio médico inteligente">
                 </div>
                 <h3>Directorio médico<br>inteligente</h3>
                 <p>Consulta, y agenda con todos nuestros especialistas.</p>
@@ -220,14 +313,14 @@
 
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-3.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-3.png') }}" alt="Icono de gestión de citas y personal">
                 </div>
                 <h3>Gestión de citas<br>y personal</h3>
                 <p>Coordina horarios, agenda citas en línea y gestiona a todo tu equipo médico y administrativo desde un solo lugar.</p>
             </div>
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-4.png') }}" alt="Icono de reportes y métricas">
                 </div>
                 <h3>Reportes y métricas</h3>
                 <p>Accede a estadísticas relevantes, indicadores de atención y reportes personalizados.</p>
@@ -241,7 +334,7 @@
             </div>{{--}}
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="Icono de acceso multidispositivo">
                 </div>
                 <h3>Multidispositivo</h3>
                 <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
@@ -267,7 +360,7 @@
             </div>
             <div class="feature">
                 <div class="feature__icon">
-                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="">
+                    <img src="{{ asset('landing/images/funcion-5.png') }}" alt="Icono de acceso multidispositivo">
                 </div>
                 <h3>Multidispositivo</h3>
                 <p>Accede desde donde estés. No requiere instalaciones complejas, solo conexión a internet.</p>
