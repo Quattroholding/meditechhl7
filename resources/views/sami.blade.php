@@ -153,6 +153,12 @@
             </nav>
 
             <div class="header__actions">
+                <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" title="SAMI en Instagram" style="color: #63b3ed; font-size: 24px;">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61589894518714" target="_blank" rel="noopener noreferrer" title="SAMI en Facebook" style="color: #63b3ed; font-size: 24px;">
+                    <i class="fab fa-facebook"></i>
+                </a>
                 <a href="{{route('login')}}" class="btn btn--outline btn--small btn-login">Ingresar</a>
             </div>
 
@@ -478,6 +484,15 @@
             <a href="mailto:business@meditecpty.com">business@meditecpty.com</a>
             <span class="sep">|</span>
             <a href="tel:+5078316100">+507 831-6100</a>
+        </div>
+        <div class="footer__social" style="margin-top: 20px;">
+            <span style="margin-right: 15px;">Síguenos:</span>
+            <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" title="SAMI en Instagram" style="display: inline-block; margin-right: 15px;">
+                <i class="fab fa-instagram" style="font-size: 20px;"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61589894518714" target="_blank" rel="noopener noreferrer" title="SAMI en Facebook" style="display: inline-block;">
+                <i class="fab fa-facebook" style="font-size: 20px;"></i>
+            </a>
         </div>
     </div>
 </footer>

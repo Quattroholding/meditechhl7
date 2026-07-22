@@ -38,7 +38,7 @@
 
     <link rel="icon" href="{{url('images/iconoSAMI.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/sami_rx.css')}}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- JSON-LD Schema Markup for Mobile Application -->
     @php
     $mobileAppSchema = [
@@ -257,6 +257,14 @@
                 <span style="color: #cbd5e0;"> | </span>
                 <a href="tel:+5078316100" style="color: #63b3ed; text-decoration: none;">+507 831-6100</a>
             </p>
+        </div>
+        <div style="margin-bottom: 20px; display: flex; justify-content: center; gap: 20px;">
+            <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" title="SAMI en Instagram" style="color: #63b3ed; font-size: 24px;">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61589894518714" target="_blank" rel="noopener noreferrer" title="SAMI en Facebook" style="color: #63b3ed; font-size: 24px;">
+                <i class="fab fa-facebook"></i>
+            </a>
         </div>
         <p style="margin: 10px 0; font-size: 12px; color: #cbd5e0;">
             © 2024 Soluciones Meditec. Todos los derechos reservados. | Recetas digitales para Panamá

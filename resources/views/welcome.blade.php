@@ -38,6 +38,7 @@
 
     <link rel="icon" href="{{url('images/favicon.ico')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{url('styles/welcome.css?time='.time())}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; }
@@ -444,7 +445,17 @@
 <!-- FOOTER -->
 <footer class="footer">
     <div class="container footer__inner">
-        <p>© <span id="year"></span> Soluciones Meditec. Todos los derechos reservados.</p>
+        <div style="margin-bottom: 20px;">
+            <p>© <span id="year"></span> Soluciones Meditec. Todos los derechos reservados.</p>
+        </div>
+        <div class="footer__social" style="display: flex; justify-content: center; gap: 20px;">
+            <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" title="SAMI en Instagram" style="color: inherit; font-size: 24px;">
+                <i class="fab fa-instagram"></i> Instagram
+            </a> |
+            <a href="https://www.facebook.com/profile.php?id=61589894518714" target="_blank" rel="noopener noreferrer" title="SAMI en Facebook" style="color: inherit; font-size: 24px;">
+                <i class="fab fa-facebook"></i> Facebook
+            </a>
+        </div>
     </div>
 </footer>
 
