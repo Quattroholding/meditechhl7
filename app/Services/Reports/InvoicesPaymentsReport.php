@@ -235,7 +235,7 @@ class InvoicesPaymentsReport extends BaseReport
             number_format($totalPaid, 2),
             number_format($balance, 2),
             $this->getInvoiceStatusLabel($invoice->status),
-            $this->getPaymentStatusLabel($invoice->payment_status),
+            $this->getPaymentStatusLabel($invoice->payment_status->value),
             $invoice->payments()->where('status', 'completed')->count(),
             $lastPayment?->payment_date?->format('d/m/Y') ?? 'N/A',
         ];
