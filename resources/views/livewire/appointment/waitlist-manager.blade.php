@@ -176,7 +176,7 @@
                             </td>
 
                             <td>
-                                {{ max(0, (int) ($entry->created_at ?? now())->diffInDays(now())) }}
+                                {{ max(0, (int) \Carbon\Carbon::parse($entry->getOriginalRaw('created_at'))->diffInDays(now())) }}
                             </td>
 
                             <td>
