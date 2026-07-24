@@ -176,7 +176,7 @@
                             </td>
 
                             <td>
-                                {{ max(0, (int) \Carbon\Carbon::parse($entry->getOriginalRaw('created_at'))->diffInDays(now())) }}
+                                {{ max(0, (int) \Carbon\Carbon::parse($entry->getRawOriginal('created_at'))->diffInDays(now())) }}
                             </td>
 
                             <td>
@@ -286,11 +286,16 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeAssignModal()">
+                        <button type="button" class="btn btn-secondary" wire:click="closeAssignModal()" wire:loading.attr="disabled">
                             Cancelar
                         </button>
-                        <button type="button" class="btn btn-success" wire:click="assignAppointment()">
-                            <i class="fas fa-check me-2"></i> Asignar Cita
+                        <button type="button" class="btn btn-success" wire:click="assignAppointment()" wire:loading.attr="disabled" wire:loading.class="opacity-50">
+                            <span wire:loading.remove>
+                                <i class="fas fa-check me-2"></i> Asignar Cita
+                            </span>
+                            <span wire:loading>
+                                <i class="fas fa-spinner fa-spin me-2"></i> Procesando...
+                            </span>
                         </button>
                     </div>
                 </div>
