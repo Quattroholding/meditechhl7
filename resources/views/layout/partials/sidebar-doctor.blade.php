@@ -15,6 +15,7 @@
                     <ul style="display: none;">
                         <li><a class="{{ Request::is('appointments') ? 'active' : '' }}" href="{{ url('appointments') }}">{{ __('generic.list') }} {{ __('appointment.titles') }}</a></li>
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('appointment.scheduler') }} </a></li>
+                        <li><a class="{{ Request::is('appointments/waitlist') ? 'active' : '' }}" href="{{ route('appointment.waitlist') }}">{{ __('menu.waitlist') }} </a></li>
                     </ul>
                 </li>
                 <li class="submenu">

@@ -4,6 +4,7 @@ return [
     'title' => 'Menu',
     'dashboard' => 'Dashboard',
     'calendar' => 'Calendar',
+    'waitlist' => 'Waitlist',
 
     'studies' => [
         'repositories' => 'Study Repositories',

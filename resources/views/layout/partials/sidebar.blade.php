@@ -105,7 +105,7 @@
                     </ul>
                 </li>
                 @endcanany
-                @canany(['appointments.view','appointments.calendar'])
+                @canany(['appointments.view','appointments.calendar','appointments.viewWaitlist'])
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side"><i class="fa fa-calendar-alt"></i></span>
@@ -118,6 +118,9 @@
                         @endif
                         @can('appointments.calendar')
                         <li><a class="{{ Request::is('appointments/calendar') ? 'active' : '' }}" href="{{ route('appointment.calendar') }}">{{ __('menu.calendar') }} </a></li>
+                        @endif
+                        @can('appointments.viewWaitlist')
+                        <li><a class="{{ Request::is('appointments/waitlist') ? 'active' : '' }}" href="{{ route('appointment.waitlist') }}">{{ __('menu.waitlist') }} </a></li>
                         @endif
                     </ul>
                 </li>
@@ -268,6 +271,7 @@
                         <li><a class="{{ Request::is('settings/medical-leave-template') ? 'active' : '' }}"  href="{{ route('setting.medical_leave_template') }}">{{ __('menu.settings.medical_leave_template') }}</a></li>
                         @endcan
                         @if(auth()->user()->canPaySubscription())
+                        <li><a class="{{ Request::is('settings/waitlist-settings') ? 'active' : '' }}"  href="{{ route('setting.waitlist_settings') }}">{{ __('Lista de Espera') }}</a></li>
                         <li><a class="{{ Request::is('settings/external-storage') ? 'active' : '' }}"  href="{{ route('setting.external_storage') }}">{{ __('Almacenamiento Externo') }}</a></li>
                         @endif
                         @endif
