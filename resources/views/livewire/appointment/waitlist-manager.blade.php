@@ -176,7 +176,7 @@
                             </td>
 
                             <td>
-                                {{ now()->diffInDays($entry->created_at ?? now()) }}
+                                {{ max(0, (int) ($entry->created_at ?? now())->diffInDays(now())) }}
                             </td>
 
                             <td>
