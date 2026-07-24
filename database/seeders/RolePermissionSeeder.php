@@ -62,6 +62,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'appointments.edit', 'description' => 'Modificar citas existentes', 'module' => 'citas'],
             ['name' => 'appointments.delete', 'description' => 'Cancelar o eliminar citas', 'module' => 'citas'],
             ['name' => 'appointments.calendar', 'description' => 'Ver calendario de citas', 'module' => 'citas'],
+            ['name' => 'appointments.viewWaitlist', 'description' => 'Ver y gestionar lista de espera de citas', 'module' => 'citas'],
 
             // Consultation management
             ['name' => 'consultations.view', 'description' => 'Ver historial de consultas', 'module' => 'consultas'],
@@ -227,6 +228,7 @@ class RolePermissionSeeder extends Seeder
             'appointments.create',
             'appointments.edit',
             'appointments.calendar',
+            'appointments.viewWaitlist',
             'patients.view',
             'patients.create',
             'patients.edit',
@@ -302,6 +304,7 @@ class RolePermissionSeeder extends Seeder
             'appointments.edit',
             'appointments.delete',
             'appointments.calendar',
+            'appointments.viewWaitlist',
             'consultations.view',
             'settings.create_user_procedures',
             'practitioners.view',
@@ -392,6 +395,7 @@ class RolePermissionSeeder extends Seeder
             'appointments.create',
             'appointments.edit',
             'appointments.calendar',
+            'appointments.viewWaitlist',
             'patients.view',
             'patients.create',
             'patients.edit',
