@@ -118,7 +118,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
      * Uses WhatsApp template: cita_reservada
      * Template: "Hola {{1}}, Tiene una cita reservada con {{2}}. Se confirma su cita para {{3}} el {{4}} a las {{5}}.
      *            Gracias por su preferirnos."
-     * Button: "Ver detalles" -> https://sami.meditecpty.com/{{1}}
+     * Button: "Ver detalles" -> https://sami.meditecpty.com/cita/{{1}}
      */
     public function toWhatsApp(object $notifiable): array
     {
@@ -138,23 +138,24 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
         $components[] = [
             'type' => 'body',
             'parameters' => [
-                ['type' => 'text', 'text' => $notifiable->name],
-                ['type' => 'text', 'text' => $practitioner->name],
-                ['type' => 'text', 'text' => $specialty],
+                ['type' => 'text', 'text' => trim($notifiable->name ?? '') ?: 'Paciente'],
+                ['type' => 'text', 'text' => trim($practitioner->name ?? '') ?: 'Doctor'],
+                ['type' => 'text', 'text' => trim($specialty) ?: 'Medicina General'],
                 ['type' => 'text', 'text' => $appointmentDate->format('d/m/Y')],
                 ['type' => 'text', 'text' => $appointmentDate->format('H:i')],
             ],
         ];
 
         // Button component (Ver detalles)
-        $components[] = [
+        // Parameter should be the appointment ID to form a valid URL
+        /*$components[] = [
             'type' => 'button',
             'sub_type' => 'url',
-            'index' => '0',
+            'index' => 0,
             'parameters' => [
-                ['type' => 'text', 'text' => $notifiable->name],
+                ['type' => 'text', 'text' => (string) $this->appointment->id],
             ],
-        ];
+        ];*/
 
         return [
             'use_template' => true,
