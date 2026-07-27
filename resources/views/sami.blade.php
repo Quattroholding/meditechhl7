@@ -123,9 +123,11 @@
 <section class="top-hero" id="home">
     <header class="header">
         <div class="container header__inner">
+            {{--}}
             <a href="#" class="brand" title="SAMI - Inicio">
                 <img src="{{url('images/logoSAMI.png')}}" alt="SAMI - Plataforma de gestión médica integral" class="brand__logo">
             </a>
+            {{--}}
 
             <nav class="nav principal-nav">
                 <ul class="sidebar">
@@ -151,7 +153,7 @@
                     </li>
                 </ul>
             </nav>
-
+            {{--}}
             <div class="header__actions">
                 <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" title="SAMI en Instagram" style="color: #63b3ed; font-size: 24px;">
                     <i class="fab fa-instagram"></i>
@@ -161,6 +163,7 @@
                 </a>
                 <a href="{{route('login')}}" class="btn btn--outline btn--small btn-login">Ingresar</a>
             </div>
+            {{--}}
 
             <button class="burger" aria-label="Abrir menú" onclick="document.body.classList.toggle('menu-open')">
                 <span></span><span></span><span></span>
@@ -176,27 +179,29 @@
             <a href="{{route('login')}}">Ingresar</a>
         </div>
     </header>
-
-    <div class="container hero">
-        <div class="hero__left">
-            <h1>
-                Innovación <br>
-                tecnológica al <br>
-                servicio de la <br>
-                salud.
-            </h1>
-
-            <div class="hero__buttons">
-                <a href="#quienes" class="btn btn--primary">Conoce más</a>
-                <a href="{{route('login')}}" class="btn btn--outline">Ingresar</a>
-            </div>
+    <div class="container">
+    <div class="hero" style="background-image: url('{{ asset('images/banner.png') }}');">
+        <div class="hero__buttons">
+            <a href="#quienes" class="hero__button-link">
+                <img src="{{ asset('images/CONOCEMAS.png') }}" alt="Conoce más sobre SAMI" class="hero__button-img">
+            </a>
+            <a href="{{route('login')}}" class="hero__button-link">
+                <img src="{{ asset('images/INGRESAR.png') }}" alt="Ingresar a SAMI" class="hero__button-img">
+            </a>
         </div>
 
-        <div class="hero__right">
-            <div class="hero__img2">
-                <img src="{{ asset('landing/images/hero-sami.png') }}" alt="SAMI - Innovación tecnológica al servicio de la salud, plataforma de gestión médica integral">
-            </div>
+        <div class="hero__social">
+            <a href="https://www.facebook.com/profile.php?id=61589894518714" target="_blank" rel="noopener noreferrer" class="hero__social-link">
+                <img src="{{ asset('images/FB.png') }}" alt="SAMI en Facebook" class="hero__social-img">
+            </a>
+            <a href="https://www.instagram.com/samipanama/" target="_blank" rel="noopener noreferrer" class="hero__social-link">
+                <img src="{{ asset('images/IG.png') }}" alt="SAMI en Instagram" class="hero__social-img">
+            </a>
+            <a href="https://www.youtube.com/channel/UCgycloM24jY24aim1gdyCyw" target="_blank" rel="noopener noreferrer" class="hero__social-link">
+                <img src="{{ asset('images/YT.png') }}" alt="SAMI en YouTube" class="hero__social-img">
+            </a>
         </div>
+    </div>
     </div>
 </section>
 <!-- ¿QUÉ ES SAMI? -->
