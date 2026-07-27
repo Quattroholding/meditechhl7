@@ -27,6 +27,11 @@ class ManualSlotAssignment extends Component
 
     public ?int $assignRoomId = null;
 
+    public function loadData(): void
+    {
+        // Este componente no requiere carga de datos adicional al iniciar
+    }
+
     #[On('show-manual-assignment')]
     public function show(int $slotId): void
     {

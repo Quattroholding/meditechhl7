@@ -126,7 +126,8 @@
         </div>
         @endteleport
     @endif
-    <script>
+
+    <script wire:ignore>
         function showManualSlotToastr(event) {
             if (event && event.type && event.message) {
                 if (typeof toastr !== 'undefined' && toastr[event.type]) {

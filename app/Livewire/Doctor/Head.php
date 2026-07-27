@@ -19,10 +19,13 @@ class Head extends Component
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
 
-    public function render()
+    public function loadData()
     {
         $this->data = Practitioner::find($this->practitioner_id);
+    }
 
+    public function render()
+    {
         return view('livewire.doctor.head');
     }
 

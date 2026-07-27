@@ -51,6 +51,11 @@ class SignatureManager extends Component
     {
         $this->practitioner_id = $practitioner_id;
         $this->practitioner = Practitioner::find($practitioner_id);
+        // No cargar archivos en mount, esperar la llamada explícita a loadData()
+    }
+
+    public function loadData()
+    {
         $this->loadExistingFiles();
     }
 

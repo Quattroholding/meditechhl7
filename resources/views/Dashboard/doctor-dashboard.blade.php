@@ -98,13 +98,25 @@
                         setTimeout(() => {
                             console.log(`⏰ Loading widget ${index + 1}/${componentsWithOrder.length} (order: ${item.order})`);
 
-                            item.component.call('loadData')
-                                .then(() => {
-                                    console.log(`✅ Widget ${item.wireId} loaded successfully`);
-                                })
-                                .catch(error => {
-                                    console.error(`❌ Error loading widget ${item.wireId}:`, error);
-                                });
+                            try {
+                                // Intentar llamar a loadData si existe
+                                if (typeof item.component.call === 'function') {
+                                    item.component.call('loadData')
+                                        .then(() => {
+                                            console.log(`✅ Widget ${item.wireId} loaded successfully`);
+                                        })
+                                        .catch(error => {
+                                            // Si el método no existe, simplemente log el warning
+                                            if (error.message && error.message.includes('not found')) {
+                                                console.warn(`⚠️ Widget ${item.wireId} does not have loadData method`);
+                                            } else {
+                                                console.error(`❌ Error loading widget ${item.wireId}:`, error);
+                                            }
+                                        });
+                                }
+                            } catch (error) {
+                                console.warn(`⚠️ Error with widget ${item.wireId}:`, error.message);
+                            }
                         }, index * 300); // 300ms delay entre widgets
                     });
                 }

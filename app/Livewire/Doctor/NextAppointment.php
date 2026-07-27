@@ -15,6 +15,11 @@ class NextAppointment extends Component
 
     public function mount()
     {
+        // No cargar datos aquí, esperar la llamada explícita a loadData()
+    }
+
+    public function loadData()
+    {
         $this->getNextAppointment();
     }
 

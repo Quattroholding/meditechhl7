@@ -15,11 +15,14 @@ class ProfileAbout extends Component
 
     public $qualifications;
 
-    public function render()
+    public function loadData()
     {
         $this->data = Practitioner::find($this->practitioner_id);
         $this->loadQualifications();
+    }
 
+    public function render()
+    {
         return view('livewire.doctor.profile-about');
     }
 

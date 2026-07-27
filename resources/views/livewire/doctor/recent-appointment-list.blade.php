@@ -270,8 +270,9 @@
         });
     </script>
 
-    {{-- Modal de Asignación Manual de Slot --}}
+    {{-- Modal de Asignación Manual de Slot
     <livewire:appointment.manual-slot-assignment />
+    --}}
 
 </div>
 

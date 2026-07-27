@@ -15,6 +15,11 @@ class SelectDashboard extends Component
         $this->options1 = ['2023', '2022', '2021', '2020'];
     }
 
+    public function loadData()
+    {
+        // Este componente no requiere carga de datos adicional
+    }
+
     public function render()
     {
         return view('livewire.doctor.select-dashboard');
