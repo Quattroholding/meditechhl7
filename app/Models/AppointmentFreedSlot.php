@@ -33,8 +33,8 @@ class AppointmentFreedSlot extends BaseModel
 
     protected $casts = [
         'slot_date' => 'date',
-        'slot_start_time' => 'datetime:H:i',
-        'slot_end_time' => 'datetime:H:i',
+        'slot_start_time' => 'string',
+        'slot_end_time' => 'string',
         'duration_minutes' => 'integer',
         'freed_by' => FreedSlotSource::class,
         'status' => FreedSlotStatus::class,

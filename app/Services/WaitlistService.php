@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\AppointmentStatusEnum;
-use App\Enums\FreedSlotSource;
 use App\Enums\FreedSlotStatus;
 use App\Enums\WaitlistStatus;
 use App\Enums\WaitlistUrgencyLevel;
@@ -11,6 +10,11 @@ use App\Models\Appointment;
 use App\Models\AppointmentFreedSlot;
 use App\Models\AppointmentWaitlistEntry;
 use App\Models\User;
+use App\Notifications\AppointmentAddedToWaitlistNotification;
+use App\Notifications\AppointmentBookedNotification;
+use App\Notifications\WaitlistEntryCancelledNotification;
+use App\Notifications\WaitlistEntryExpiredNotification;
+use App\Notifications\WaitlistSlotAvailableNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -71,7 +75,26 @@ class WaitlistService
         string $source = 'cancellation'
     ): ?AppointmentFreedSlot {
         // Validar que la cita está siendo cancelada/no-show
-        if (!in_array($cancelledAppointment->status->value, ['booked', 'confirm', 'arrived'])) {
+        if (! in_array($cancelledAppointment->status->value, ['booked', 'confirm', 'arrived'])) {
+            \Log::warning('registerFreedSlot retornando null: Estado de cita no válido', [
+                'appointment_id' => $cancelledAppointment->id,
+                'status' => $cancelledAppointment->status->value,
+                'valid_statuses' => ['booked', 'confirm', 'arrived'],
+            ]);
+
+            return null;
+        }
+
+        // Validar que el slot está en el futuro con al menos 30 minutos de diferencia
+        if ($cancelledAppointment->start->lessThanOrEqualTo(now()->addMinutes(30))) {
+            \Log::warning('registerFreedSlot retornando null: Cita muy pronto', [
+                'appointment_id' => $cancelledAppointment->id,
+                'appointment_start' => $cancelledAppointment->start->format('Y-m-d H:i:s'),
+                'now' => now()->format('Y-m-d H:i:s'),
+                'minutos_hasta_cita' => now()->diffInMinutes($cancelledAppointment->start),
+                'minimo_requerido' => 30,
+            ]);
+
             return null;
         }
 
@@ -94,10 +117,60 @@ class WaitlistService
             'expires_at' => $expiresAt,
         ]);
 
-        // Buscar y notificar matches automáticamente
-        $this->findAndNotifyMatches($freedSlot);
+        // Respetar configuración del cliente para auto-asignación
+        $client = $cancelledAppointment->client;
+        $autoAssign = $client->getSettings('waitlist_auto_assign', false);
+
+        if ($autoAssign) {
+            // Buscar y notificar matches automáticamente
+            $this->findAndNotifyMatches($freedSlot);
+        }
 
         return $freedSlot;
+    }
+
+    /**
+     * Get suggested candidates for a freed slot (for manual assignment by receptionist)
+     */
+    public function getSuggestedCandidates(AppointmentFreedSlot $freedSlot, int $limit = 5): \Illuminate\Support\Collection
+    {
+        // Obtener entradas activas y no expiradas
+        $activeEntries = AppointmentWaitlistEntry::query()
+            ->where('client_id', $freedSlot->client_id)
+            ->where(function ($query) use ($freedSlot) {
+                // Mismo doctor O misma especialidad
+                $query->where('practitioner_id', $freedSlot->practitioner_id)
+                    ->orWhere(function ($q) use ($freedSlot) {
+                        if ($freedSlot->medical_speciality_id) {
+                            $q->where('medical_speciality_id', $freedSlot->medical_speciality_id);
+                        }
+                    });
+            })
+            ->active()
+            ->notExpired()
+            ->get();
+
+        if ($activeEntries->isEmpty()) {
+            return collect();
+        }
+
+        // Calcular match scores y retornar ordenados por score
+        return $activeEntries->map(function (AppointmentWaitlistEntry $entry) use ($freedSlot) {
+            $createdAt = Carbon::parse($entry->getRawOriginal('created_at'));
+
+            return [
+                'entry' => $entry,
+                'score' => $freedSlot->matchScore($entry),
+                'patient_name' => $entry->patient->name,
+                'patient_id' => $entry->patient->id,
+                'urgency' => $entry->urgency_level->label(),
+                'days_waiting' => (int) ceil($createdAt->diffInDays(now())),
+                'priority_score' => $entry->priority_score,
+            ];
+        })
+            ->sortByDesc('score')
+            ->take($limit)
+            ->values();
     }
 
     /**
@@ -167,22 +240,23 @@ class WaitlistService
         Carbon $start,
         int $duration,
         ?int $roomId = null,
-        User $assignedBy = null
+        ?User $assignedBy = null
     ): Appointment {
         $appointment = $entry->appointment;
 
         // Validar disponibilidad del slot
+        // ⚠️ IMPORTANTE: Excluir la propia cita en waitlist para que no considere conflicto consigo misma
         $conflicts = Appointment::where('client_id', $appointment->client_id)
             ->where('practitioner_id', $appointment->practitioner_id)
+            ->where('id', '!=', $appointment->id)  // ← Excluir la propia cita
             ->where('status', '!=', AppointmentStatusEnum::Cancelled->value)
+            ->where('status', '!=', AppointmentStatusEnum::Waitlist->value)  // ← Excluir otras citas en waitlist
             ->where(function ($query) use ($start, $duration) {
                 $end = $start->copy()->addMinutes($duration);
-                $query->whereBetween('start', [$start, $end])
-                    ->orWhereBetween('end', [$start, $end])
-                    ->orWhere(function ($q) use ($start, $end) {
-                        $q->where('start', '<=', $start)
-                            ->where('end', '>=', $end);
-                    });
+                // Usar < y > en lugar de <= y >= para permitir citas back-to-back
+                // Ejemplo: Si asignas 10:00-10:30, puedes tener otra cita de 10:30-11:00 sin conflicto
+                $query->where('start', '<', $end)      // start < end (10:00-10:30)
+                    ->where('end', '>', $start);        // end > start (10:00-10:30)
             })
             ->exists();
 
@@ -309,7 +383,7 @@ class WaitlistService
     public function cancelEntry(
         AppointmentWaitlistEntry $entry,
         User $cancelledBy,
-        string $reason = null
+        ?string $reason = null
     ): void {
         $entry->cancel($cancelledBy, $reason);
 
@@ -363,15 +437,55 @@ class WaitlistService
         ?AppointmentFreedSlot $freedSlot = null,
         ?Carbon $assignedTime = null
     ): void {
-        // Aquí se enviarían las notificaciones
-        // Por ahora, esta es una estructura placeholder
-        // Las notificaciones se implementarán en la Fase 7
+        $patient = $entry->patient;
+        $appointment = $entry->appointment;
 
-        // Ejemplos de tipos:
-        // 'added' - Agregado a lista de espera
-        // 'slot_available' - Espacio disponible
-        // 'assigned' - Asignado a una cita
-        // 'expired' - Entrada expirada
-        // 'cancelled' - Entrada cancelada
+        \Log::info('notifyWaitlistEntry() iniciado', [
+            'type' => $type,
+            'entry_id' => $entry->id,
+            'patient_id' => $patient->id,
+        ]);
+
+        if ($type === 'assigned' && $assignedTime) {
+            // Notificar que la cita ha sido asignada desde la waitlist
+            $appointment->refresh();
+            $patient->notify(new AppointmentBookedNotification($appointment));
+
+            \Log::info('Notificación de asignación desde waitlist enviada', [
+                'entry_id' => $entry->id,
+                'appointment_id' => $appointment->id,
+                'assigned_time' => $assignedTime->format('Y-m-d H:i'),
+            ]);
+        } elseif ($type === 'slot_available' && $freedSlot) {
+            // Notificar que hay un espacio disponible
+            $patient->notify(new WaitlistSlotAvailableNotification($freedSlot));
+
+            \Log::info('Notificación de espacio disponible enviada', [
+                'entry_id' => $entry->id,
+                'freed_slot_id' => $freedSlot->id,
+            ]);
+        } elseif ($type === 'expired') {
+            // Notificar que la entrada en la lista de espera ha expirado
+            $patient->notify(new WaitlistEntryExpiredNotification($entry));
+
+            \Log::info('Notificación de expiración enviada', [
+                'entry_id' => $entry->id,
+            ]);
+        } elseif ($type === 'cancelled') {
+            // Notificar que la entrada ha sido cancelada
+            $patient->notify(new WaitlistEntryCancelledNotification($entry));
+
+            \Log::info('Notificación de cancelación enviada', [
+                'entry_id' => $entry->id,
+            ]);
+        } elseif ($type === 'added') {
+            // Notificar que fue agregado a la lista de espera
+            $patient->notify(new AppointmentAddedToWaitlistNotification($entry));
+
+            \Log::info('Notificación de agregación a waitlist enviada', [
+                'entry_id' => $entry->id,
+                'patient_id' => $patient->id,
+            ]);
+        }
     }
 }

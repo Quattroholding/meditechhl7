@@ -31,11 +31,11 @@ class AppointmentAddedToWaitlistNotification extends Notification implements Sho
         $channels = ['database'];
 
         // Priorizar WhatsApp si está disponible
-        if ($notifiable->whatsapp_phone || $notifiable->phone) {
+        /*if ($notifiable->whatsapp_phone || $notifiable->phone) {
             $channels[] = WhatsAppMetaChannel::class;
         }
         // Si no tiene WhatsApp, usar email
-        elseif ($this->isValidEmail($notifiable->email)) {
+        else*/ if ($this->isValidEmail($notifiable->email)) {
             $channels[] = 'mail';
         }
 
@@ -80,8 +80,8 @@ class AppointmentAddedToWaitlistNotification extends Notification implements Sho
                 '⏳ Máximo de espera: '.$this->waitlistEntry->max_wait_days.' días',
             ]),
             'action' => [
-                'text' => 'Ver Lista de Espera',
-                'url' => route('appointment.waitlist'),
+                'text' => 'Ver Calendario',
+                'url' => route('appointment.calendar'),
             ],
             'priority' => 'medium',
             'icon' => 'fas fa-hourglass-half',
@@ -109,14 +109,14 @@ class AppointmentAddedToWaitlistNotification extends Notification implements Sho
         $message .= "Te has agregado a la lista de espera con éxito.\n\n";
 
         $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
-        $message .= "🏥 *Especialidad:* ".($appointment->medicalSpeciality->name ?? 'Medicina General')."\n";
-        $message .= "⏱️ *Nivel de Urgencia:* ".$this->waitlistEntry->urgency_level->label()."\n";
-        $message .= "📅 *Fecha Solicitada:* ".$appointment->start->format('d/m/Y')."\n";
-        $message .= "🕐 *Hora Solicitada:* ".$appointment->start->format('H:i a')."\n";
-        $message .= "⏳ *Máximo de Espera:* ".$this->waitlistEntry->max_wait_days." días\n";
+        $message .= '🏥 *Especialidad:* '.($appointment->medicalSpeciality->name ?? 'Medicina General')."\n";
+        $message .= '⏱️ *Nivel de Urgencia:* '.$this->waitlistEntry->urgency_level->label()."\n";
+        $message .= '📅 *Fecha Solicitada:* '.$appointment->start->format('d/m/Y')."\n";
+        $message .= '🕐 *Hora Solicitada:* '.$appointment->start->format('H:i a')."\n";
+        $message .= '⏳ *Máximo de Espera:* '.$this->waitlistEntry->max_wait_days." días\n";
 
         $message .= "\n💬 Te notificaremos por WhatsApp cuando se libere un espacio disponible.\n";
-        $message .= "¡Gracias por elegir ".$clinicName."! 😊";
+        $message .= '¡Gracias por elegir '.$clinicName.'! 😊';
 
         return $message;
     }

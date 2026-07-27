@@ -5,6 +5,7 @@ namespace App\Livewire\Appointment;
 use App\Enums\AppointmentCancelledReason;
 use App\Events\AppointmentCheckedIn;
 use App\Models\Appointment;
+use App\Services\WaitlistService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -64,6 +65,19 @@ class Status extends Component
         }
 
         $current_status = $this->appointment->status;
+
+        // Registrar espacio liberado ANTES de cambiar el status si se marca como no-show
+        if ($newStatus == 'noshow' && in_array($current_status->value, ['booked', 'confirm', 'arrived'])) {
+            $waitlistService = app(WaitlistService::class);
+            $freedSlot = $waitlistService->registerFreedSlot($this->appointment, 'noshow');
+
+            // Mostrar modal de asignación manual si está configurado para ello
+            if ($freedSlot && ! $this->appointment->client->getSettings('waitlist_auto_assign', false)) {
+                $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+            }
+        }
+
+        // Ahora cambiar el status
         $this->appointment->status = $newStatus;
         $this->appointment->save();
         $this->status = $newStatus;
@@ -120,6 +134,19 @@ class Status extends Component
         ]);
 
         $current_status = $this->appointment->status;
+
+        // Registrar espacio liberado ANTES de cambiar el status si la cita estaba confirmada
+        if (in_array($current_status->value, ['booked', 'confirm', 'arrived'])) {
+            $waitlistService = app(WaitlistService::class);
+            $freedSlot = $waitlistService->registerFreedSlot($this->appointment, 'cancellation');
+
+            // Mostrar modal de asignación manual si está configurado para ello
+            if ($freedSlot && ! $this->appointment->client->getSettings('waitlist_auto_assign', false)) {
+                $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+            }
+        }
+
+        // Ahora cambiar el status a cancelled
         $this->appointment->status = 'cancelled';
         $this->appointment->save();
         $this->status = 'cancelled';

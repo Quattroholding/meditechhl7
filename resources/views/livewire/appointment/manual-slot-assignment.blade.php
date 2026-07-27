@@ -29,7 +29,7 @@
                             </div>
                             <div>
                                 <small style="color: #999;">🕐 Hora</small><br>
-                                <strong>{{ substr($freedSlot->slot_start_time, 0, 5) }}</strong>
+                                <strong>{{ \Carbon\Carbon::createFromFormat('H:i:s', $freedSlot->slot_start_time)->format('H:i') }} - {{ \Carbon\Carbon::createFromFormat('H:i:s', $freedSlot->slot_end_time)->format('H:i') }}</strong>
                             </div>
                             <div>
                                 <small style="color: #999;">⏱️ Duración</small><br>
@@ -107,12 +107,18 @@
 
                 <!-- Footer -->
                 <div style="border-top: 1px solid #e9ecef; padding: 15px; display: flex; gap: 10px; justify-content: flex-end; background: #f8f9fa;">
-                    <button wire:click="closeModal" class="btn btn-secondary">
+                    <button wire:click="closeModal" class="btn btn-secondary" type="button">
                         Cancelar
                     </button>
-                    <button wire:click="assignSlot"
-                            @if(!$selectedEntryId) disabled @endif
-                            style="background: {{ $selectedEntryId ? '#ff9800' : '#ccc' }}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: {{ $selectedEntryId ? 'pointer' : 'not-allowed' }}; font-weight: 600;">
+                    <button
+                        type="button"
+                        wire:click="assignSlot"
+                        @if(!$selectedEntryId) disabled @endif
+                        style="background: {{ $selectedEntryId ? '#ff9800' : '#ccc' }}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: {{ $selectedEntryId ? 'pointer' : 'not-allowed' }}; font-weight: 600; transition: all 0.3s ease;"
+                        @if($selectedEntryId)
+                            onmouseover="this.style.background='#e68900';"
+                            onmouseout="this.style.background='#ff9800';"
+                        @endif>
                         <i class="fas fa-check me-2"></i>Confirmar Asignación
                     </button>
                 </div>
@@ -120,4 +126,27 @@
         </div>
         @endteleport
     @endif
+    <script>
+        function showManualSlotToastr(event) {
+            if (event && event.type && event.message) {
+                if (typeof toastr !== 'undefined' && toastr[event.type]) {
+                    toastr[event.type](event.message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                } else {
+                    // Si toastr no está disponible, reintentar en 100ms
+                    setTimeout(() => showManualSlotToastr(event), 100);
+                }
+            }
+        }
+
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('showToastrManualSlotassigment', (event) => {
+                showManualSlotToastr(event);
+            });
+        });
+    </script>
 </div>

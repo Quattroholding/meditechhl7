@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PreferenceType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -151,5 +152,21 @@ class Client extends Model
     public function scopeFullSami($query)
     {
         return $query->where('hemoscreen_only', false);
+    }
+
+    /**
+     * Get a client preference/setting
+     */
+    public function getSettings(string $key, mixed $default = null): mixed
+    {
+        return ClientPreference::get($this->id, PreferenceType::APPOINTMENT_SETTINGS, $key, $default);
+    }
+
+    /**
+     * Set a client preference/setting
+     */
+    public function setSettings(string $key, mixed $value, ?string $description = null): ClientPreference
+    {
+        return ClientPreference::set($this->id, PreferenceType::APPOINTMENT_SETTINGS, $key, $value, $description);
     }
 }

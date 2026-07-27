@@ -138,6 +138,10 @@
     </div>
     <livewire:appointment.modal-save wire:model="showModal" :title="$modalTitle"/>
     <livewire:appointment.status-history-modal />
+
+    {{-- Modal de Asignación Manual de Slot --}}
+    <livewire:appointment.manual-slot-assignment />
+
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToastr', (event) => {

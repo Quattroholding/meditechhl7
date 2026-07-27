@@ -144,16 +144,101 @@
         :custom-cancellation-reason="$customCancellationReason"
     />
 
+    {{-- Modal de Lista de Espera --}}
+    @if($showWaitlistModal)
+        @teleport('body')
+        <div class="modal-overlay" wire:click="closeWaitlistModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title">
+                        <i class="fas fa-hourglass-half text-warning me-2"></i>
+                        Agregar a Lista de Espera
+                    </h5>
+                    <button wire:click="closeWaitlistModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        El doctor no tiene disponibilidad en el horario seleccionado. Puedes agregarte a la lista de espera y te notificaremos cuando se libere un espacio.
+                    </div>
+
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Urgencia</label>
+                                <select wire:model="waitlistUrgencyLevel" class="form-control">
+                                    <option value="routine">Rutinaria</option>
+                                    <option value="urgent">Urgente</option>
+                                    <option value="very_urgent">Muy Urgente</option>
+                                    <option value="emergency">Emergencia</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Máximo días de espera</label>
+                                <input type="number" wire:model="waitlistMaxWaitDays" class="form-control" min="1" max="180" value="30">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha Preferida (Opcional)</label>
+                                <input type="date" wire:model="waitlistPreferredDate" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Hora Preferida (Opcional)</label>
+                                <input type="time" wire:model="waitlistPreferredTime" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input type="checkbox" wire:model="waitlistIsFlexibleDate" class="form-check-input" id="flexibleDate">
+                                    <label class="form-check-label" for="flexibleDate">
+                                        Soy flexible con la fecha
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input type="checkbox" wire:model="waitlistIsFlexibleTime" class="form-check-input" id="flexibleTime">
+                                    <label class="form-check-label" for="flexibleTime">
+                                        Soy flexible con la hora
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Motivo/Notas (Opcional)</label>
+                            <textarea wire:model="waitlistReason" class="form-control" rows="3" placeholder="Ej: Consulta de seguimiento, primera vez, etc."></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; gap: 15px;">
+                    <button type="button" class="btn btn-primary" style="flex: 1;" wire:click="addToWaitlist()" wire:loading.attr="disabled" wire:loading.class="opacity-50">
+                        <i class="fas fa-check me-2"></i>
+                        <span wire:loading.remove>Agregar a Lista de Espera</span>
+                        <span wire:loading>Procesando...</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" wire:click="closeWaitlistModal">
+                        Cancelar
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        @endteleport
+    @endif
+
         <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.store('debug', {
-                    log(message) {
-                        console.log(message);
-                    }
-                });
-            });
             document.addEventListener('livewire:initialized', () => {
-                Livewire.on('showToastr', (event) => {
+                Livewire.on('showToastrModalSave', (event) => {
                     toastr[event.type](event.message, '', {
                         closeButton: true,
                         progressBar: true,
@@ -162,6 +247,7 @@
                     });
                 });
             });
+
         </script>
 </div>
 

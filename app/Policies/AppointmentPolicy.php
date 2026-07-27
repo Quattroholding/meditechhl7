@@ -101,4 +101,22 @@ class AppointmentPolicy
     {
         return ! $user->hasRole('paciente') && ! $user->hasRole('admin client');
     }
+
+    public function addToWaitlist(User $user, Appointment $appointment): bool
+    {
+        // Recepcionista, doctor, and asistente médico can add to waitlist
+        return $user->hasAnyRole('recepcionista', 'doctor', 'asistente medico');
+    }
+
+    public function viewWaitlist(User $user): bool
+    {
+        // Recepcionista, doctor, and asistente médico can view the waitlist
+        return $user->hasAnyRole('recepcionista', 'doctor', 'asistente medico');
+    }
+
+    public function assignFromWaitlist(User $user): bool
+    {
+        // Recepcionista and doctor can assign from waitlist
+        return $user->hasAnyRole('recepcionista', 'doctor');
+    }
 }

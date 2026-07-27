@@ -2,14 +2,12 @@
 
 namespace App\Livewire\Appointment;
 
-use App\Enums\WaitlistStatus;
 use App\Enums\WaitlistUrgencyLevel;
 use App\Models\AppointmentWaitlistEntry;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Services\WaitlistService;
 use Carbon\Carbon;
-use Illuminate\Pagination\Paginator;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,16 +17,25 @@ class WaitlistManager extends Component
     use WithPagination;
 
     public int $clientId;
+
     public ?int $filterPractitionerId = null;
+
     public ?int $filterSpecialityId = null;
+
     public ?string $filterUrgency = null;
+
     public ?string $searchQuery = null;
 
     public bool $showAssignModal = false;
+
     public ?AppointmentWaitlistEntry $selectedEntry = null;
+
     public ?string $assignDate = null;
+
     public ?string $assignTime = null;
+
     public ?int $assignDuration = 30;
+
     public ?int $assignRoomId = null;
 
     public function mount(): void
@@ -71,6 +78,7 @@ class WaitlistManager extends Component
     public function statistics()
     {
         $waitlistService = app(WaitlistService::class);
+
         return $waitlistService->getWaitlistStats($this->clientId);
     }
 
@@ -170,7 +178,7 @@ class WaitlistManager extends Component
             // Combinar fecha y hora
             $dateTime = Carbon::createFromFormat(
                 'Y-m-d H:i',
-                $this->assignDate . ' ' . $this->assignTime
+                $this->assignDate.' '.$this->assignTime
             );
 
             // Asignar cita
@@ -182,12 +190,17 @@ class WaitlistManager extends Component
                 auth()->user()
             );
 
-            $this->closeAssignModal();
-            $this->dispatch('appointment-assigned');
+            // Cerrar modal PRIMERO
+            $this->showAssignModal = false;
+            $this->selectedEntry = null;
+            $this->resetForm();
 
+            // Luego hacer el resto
+            $this->dispatch('appointment-assigned');
             session()->flash('success', 'Cita asignada exitosamente');
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al asignar cita: ' . $e->getMessage());
+            $this->closeAssignModal();
+            session()->flash('error', 'Error al asignar cita: '.$e->getMessage());
         }
     }
 
@@ -204,7 +217,7 @@ class WaitlistManager extends Component
             session()->flash('success', 'Entrada cancelada exitosamente');
             $this->dispatch('entry-cancelled');
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al cancelar: ' . $e->getMessage());
+            session()->flash('error', 'Error al cancelar: '.$e->getMessage());
         }
     }
 

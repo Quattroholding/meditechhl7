@@ -4,11 +4,13 @@ namespace App\Livewire\Appointment;
 
 use App\Enums\AppointmentCancelledReason;
 use App\Models\Appointment;
+use App\Models\AppointmentWaitlistEntry;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
+use App\Services\WaitlistService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -71,6 +73,23 @@ class ModalSave extends Component
     public $cancellationReason = '';
 
     public $customCancellationReason = '';
+
+    // Propiedades para lista de espera
+    public $showWaitlistModal = false;
+
+    public $waitlistUrgencyLevel = 'routine';
+
+    public $waitlistPreferredDate = '';
+
+    public $waitlistPreferredTime = '';
+
+    public $waitlistIsFlexibleDate = true;
+
+    public $waitlistIsFlexibleTime = true;
+
+    public $waitlistMaxWaitDays = 30;
+
+    public $waitlistReason = '';
 
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
@@ -278,7 +297,7 @@ class ModalSave extends Component
         $this->clients = auth()->user()->clients()->pluck('client_id')->toArray();
         $esp = MedicalSpeciality::when(auth()->user()->hasRole('doctor'), function ($q) {
             $q->whereIn('id', auth()->user()->practitioner->qualifications->pluck('medical_speciality_id'));
-        })->when(auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico'), function ($q) {
+        })->when(auth()->user()->hasRole('recepcionista') or auth()->user()->hasRole('asistente medico') or auth()->user()->hasRole('admin client'), function ($q) {
             $q->whereHas('practitionerQualifications.practitioner.user.clients', function ($q2) {
                 $q2->whereIn('clients.id', $this->clients);
             });
@@ -480,13 +499,8 @@ class ModalSave extends Component
 
             // Verificar disponibilidad
             if (! $this->checkAvailability()) {
-                // $this->closeModal();
-                // session()->flash('message.error', 'El doctor no está disponible en ese horario.');
-                $this->dispatch('cita-message', message: 'El doctor no está disponible en ese horario.');
-                $this->dispatch('showToastr',
-                    type: 'error',
-                    message: 'El doctor no está disponible en ese horario.',
-                );
+                // Mostrar modal de lista de espera
+                $this->showWaitlistOptions();
 
                 return;
             }
@@ -575,7 +589,7 @@ class ModalSave extends Component
                 }
 
                 session()->flash('message.success', 'Cita actualizada exitosamente.');
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrModalSave',
                     type: 'success',
                     message: 'Cita actualizada exitosamente.',
                 );
@@ -600,7 +614,7 @@ class ModalSave extends Component
                 }
 
                 session()->flash('message.success', 'Cita creada exitosamente.');
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrModalSave',
                     type: 'success',
                     message: 'Cita creada exitosamente.',
                 );
@@ -621,7 +635,7 @@ class ModalSave extends Component
             ]);
             $this->closeModal();
             session()->flash('message.error', 'Error al guardar la cita: '.$e->getMessage());
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrModalSave',
                 type: 'error',
                 message: 'Error al guardar la cita: '.$e->getMessage(),
             );
@@ -638,7 +652,7 @@ class ModalSave extends Component
         session()->flash('message.success', 'Cita cancelada exitosamente , se le envio notificacion al paciente.');
         $this->closeModal();
         $this->dispatch('loadAppointments');
-        $this->dispatch('showToastr',
+        $this->dispatch('showToastrModalSave',
             type: 'success',
             message: 'Cita cancelada exitosamente , se le envio notificacion al paciente.',
         );
@@ -713,7 +727,7 @@ class ModalSave extends Component
                 session()->flash('message.success', 'Cita eliminada exitosamente.');
                 $this->closeModal();
                 $this->dispatch('loadAppointments');
-                $this->dispatch('showToastr',
+                $this->dispatch('showToastrModalSave',
                     type: 'success',
                     message: 'Cita eliminada exitosamente.',
                 );
@@ -726,7 +740,7 @@ class ModalSave extends Component
                 'trace' => $e->getTraceAsString(),
             ]);
             session()->flash('message.error', 'Error al eliminar la cita.');
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrModalSave',
                 type: 'error',
                 message: 'Error al eliminar la cita. '.$e->getMessage(),
             );
@@ -755,8 +769,34 @@ class ModalSave extends Component
                 throw new \Exception('No se encontró la cita para cancelar');
             }
 
+            $oldStatus = $this->appointment->status;
+
+            // ⚠️ IMPORTANTE: Registrar espacio liberado ANTES de cambiar el status
+            $freedSlot = null;
+            if (in_array($oldStatus->value, ['booked', 'confirm', 'arrived'])) {
+                $waitlistService = app(WaitlistService::class);
+                $freedSlot = $waitlistService->registerFreedSlot($this->appointment, 'cancellation');
+
+                \Log::info('ModalSave::confirmCancellation - registerFreedSlot resultado', [
+                    'appointment_id' => $this->appointment->id,
+                    'oldStatus' => $oldStatus->value,
+                    'freedSlot_id' => $freedSlot?->id ?? 'NULL',
+                    'freed_slot_data' => $freedSlot ? [
+                        'date' => $freedSlot->slot_date,
+                        'start_time' => $freedSlot->slot_start_time,
+                        'practitioner_id' => $freedSlot->practitioner_id,
+                    ] : null,
+                ]);
+            }
+
+            // Ahora sí cambiar el status a cancelled
             $this->appointment->status = 'cancelled';
             $this->appointment->save();
+
+            // Mostrar modal de asignación manual si hay freedSlot y está configurado para ello
+            if ($freedSlot && ! $this->appointment->client->getSettings('waitlist_auto_assign', false)) {
+                $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+            }
 
             // Determinar la razón final a enviar
             $finalReason = $this->cancellationReason === 'OTHER'
@@ -773,10 +813,7 @@ class ModalSave extends Component
                 new_status: 'cancelled'
             );
 
-            $this->dispatch('showToastr', [
-                'type' => 'warning',
-                'message' => '¡Cita cancelada, se envió notificación al paciente!',
-            ]);
+            session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
 
             // Cerrar modales y limpiar
             $this->closeCancelModal();
@@ -790,10 +827,7 @@ class ModalSave extends Component
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            $this->dispatch('showToastr', [
-                'type' => 'error',
-                'message' => 'Error al cancelar la cita: '.$e->getMessage(),
-            ]);
+            session()->flash('message.error', 'Error al cancelar la cita: '.$e->getMessage());
         }
     }
 
@@ -805,18 +839,158 @@ class ModalSave extends Component
         $this->resetValidation();
     }
 
+    /**
+     * Mostrar opciones de lista de espera cuando no hay disponibilidad
+     */
+    public function showWaitlistOptions(): void
+    {
+        // Pre-rellenar con la fecha y hora solicitadas
+        $this->waitlistPreferredDate = $this->appointment_date;
+        $this->waitlistPreferredTime = $this->appointment_time;
+        $this->waitlistReason = $this->reason;
+
+        $this->dispatch('showToastrModalSave',
+            type: 'info',
+            message: 'El doctor no está disponible en ese horario. Puedes agregarte a la lista de espera.',
+        );
+
+        $this->showWaitlistModal = true;
+    }
+
+    /**
+     * Agregar paciente a la lista de espera
+     */
+    public function addToWaitlist(): void
+    {
+        try {
+            // Verificar que no exista una entrada activa en waitlist para este paciente/doctor/fecha
+            $existingEntry = AppointmentWaitlistEntry::where('patient_id', $this->patient_id)
+                ->where('practitioner_id', $this->doctor_id)
+                ->where('status', 'active')
+                ->whereDate('created_at', today())
+                ->first();
+
+            if ($existingEntry) {
+                throw new \Exception('Ya tienes una entrada en la lista de espera activa para este doctor. Por favor, intenta más tarde.');
+            }
+
+            // Crear cita provisional para la lista de espera
+            $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
+
+            $appointmentData = [
+                'fhir_id' => 'appointment-'.Str::uuid(),
+                'identifier' => 'APT-'.strtoupper(Str::random(7)),
+                'patient_id' => $this->patient_id,
+                'practitioner_id' => $this->doctor_id,
+                'client_id' => ConsultingRoom::find($this->consulting_room_id)->branch->client_id,
+                'medical_speciality_id' => $this->medical_speciality_id,
+                'start' => $start->format('Y-m-d H:i'),
+                'end' => $start->copy()->addMinutes($this->duration)->format('Y-m-d H:i'),
+                'minutes_duration' => $this->duration,
+                'consulting_room_id' => $this->consulting_room_id,
+                'service_type' => $this->service_type,
+                'status' => 'waitlist', // Estado de lista de espera
+                'consultation_type' => $this->consultation_type,
+                'description' => $this->description,
+                'original_requested_datetime' => $start->format('Y-m-d H:i'),
+            ];
+
+            $appointment = Appointment::create($appointmentData);
+
+            // Usar el servicio WaitlistService
+            $waitlistService = app(WaitlistService::class);
+            $waitlistService->addToWaitlist($appointment, [
+                'urgency_level' => $this->waitlistUrgencyLevel,
+                'preferred_date' => $this->waitlistPreferredDate ? Carbon::parse($this->waitlistPreferredDate) : null,
+                'preferred_time' => $this->waitlistPreferredTime ? Carbon::createFromTimeString($this->waitlistPreferredTime) : null,
+                'is_flexible_date' => $this->waitlistIsFlexibleDate,
+                'is_flexible_time' => $this->waitlistIsFlexibleTime,
+                'max_wait_days' => $this->waitlistMaxWaitDays,
+                'reason' => $this->waitlistReason,
+            ], auth()->user());
+
+            // Notificar al paciente
+            $appointment->addPatientToPractitionerClient();
+
+            $this->dispatch('showToastrModalSave',
+                type: 'success',
+                message: 'Te has agregado a la lista de espera exitosamente. Te notificaremos cuando haya disponibilidad.',
+            );
+
+            $this->closeWaitlistModal();
+            $this->closeModal();
+            $this->dispatch('loadAppointments');
+
+        } catch (\Exception $e) {
+            Log::error('Error agregando paciente a waitlist en ModalSave::addToWaitlist', [
+                'user_id' => Auth::id(),
+                'patient_id' => $this->patient_id,
+                'doctor_id' => $this->doctor_id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            $this->dispatch('showToastrModalSave',
+                type: 'error',
+                message: 'Error al agregar a la lista de espera: '.$e->getMessage(),
+            );
+        }
+    }
+
+    /**
+     * Cerrar modal de lista de espera
+     */
+    public function closeWaitlistModal(): void
+    {
+        $this->showWaitlistModal = false;
+        $this->resetWaitlistForm();
+        $this->resetValidation();
+    }
+
+    /**
+     * Resetear formulario de lista de espera
+     */
+    private function resetWaitlistForm(): void
+    {
+        $this->waitlistUrgencyLevel = 'routine';
+        $this->waitlistPreferredDate = '';
+        $this->waitlistPreferredTime = '';
+        $this->waitlistIsFlexibleDate = true;
+        $this->waitlistIsFlexibleTime = true;
+        $this->waitlistMaxWaitDays = 30;
+        $this->waitlistReason = '';
+    }
+
     private function checkAvailability()
     {
         $minutes = (int) $this->duration;
         $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
         $endTime = $startTime->copy()->addMinutes($minutes);
 
+        Log::info('checkAvailability() iniciado', [
+            'doctor_id' => $this->doctor_id,
+            'appointment_date' => $this->appointment_date,
+            'appointment_time' => $this->appointment_time,
+            'startTime' => $startTime->format('Y-m-d H:i'),
+            'endTime' => $endTime->format('Y-m-d H:i'),
+            'duration' => $minutes,
+        ]);
+
         // Verificar si el doctor tiene horarios configurados
         $workingHours = $this->getDoctorWorkingHours();
+
+        Log::info('checkAvailability() - Working hours retrieved', [
+            'doctor_id' => $this->doctor_id,
+            'working_hours_count' => $workingHours->count(),
+        ]);
 
         if ($workingHours->isNotEmpty()) {
             // Validar que el doctor trabaje ese día
             if (! $this->isDoctorWorkingOnDate($this->appointment_date)) {
+                Log::info('checkAvailability() - Doctor not working on this day', [
+                    'doctor_id' => $this->doctor_id,
+                    'date' => $this->appointment_date,
+                ]);
                 $this->addError('appointment_date', 'El doctor no trabaja este día de la semana según su configuración de horarios.');
 
                 return false;
@@ -829,7 +1003,19 @@ class ModalSave extends Component
                 $workStart = Carbon::parse($this->appointment_date.' '.$workingHour->start_time);
                 $workEnd = Carbon::parse($this->appointment_date.' '.$workingHour->end_time);
 
+                Log::info('checkAvailability() - Validating working hours', [
+                    'workStart' => $workStart->format('Y-m-d H:i'),
+                    'workEnd' => $workEnd->format('Y-m-d H:i'),
+                    'startTime' => $startTime->format('Y-m-d H:i'),
+                    'endTime' => $endTime->format('Y-m-d H:i'),
+                ]);
+
                 if ($startTime->lt($workStart) || $endTime->gt($workEnd)) {
+                    Log::info('checkAvailability() - Appointment outside working hours', [
+                        'doctor_id' => $this->doctor_id,
+                        'start_time' => $this->appointment_time,
+                        'working_hours' => $workingHour->start_time.' - '.$workingHour->end_time,
+                    ]);
                     $this->addError('appointment_time',
                         "La cita debe estar dentro del horario laboral del doctor: {$workingHour->start_time} - {$workingHour->end_time}"
                     );
@@ -839,6 +1025,11 @@ class ModalSave extends Component
 
                 // Validar que el consultorio seleccionado sea el configurado para ese día
                 if ($this->consulting_room_id != $workingHour->consulting_room_id) {
+                    Log::info('checkAvailability() - Consulting room mismatch', [
+                        'doctor_id' => $this->doctor_id,
+                        'selected_room' => $this->consulting_room_id,
+                        'required_room' => $workingHour->consulting_room_id,
+                    ]);
                     $roomName = $workingHour->consultingRoom->full_name_branch ?? 'N/A';
                     $this->addError('consulting_room_id',
                         "El doctor trabaja en '{$roomName}' este día. Por favor, seleccione el consultorio correcto."
@@ -864,11 +1055,28 @@ class ModalSave extends Component
             $query->where('id', '!=', $this->appointment->id);
         }
 
-        if ($query->count() > 0) {
+        $conflictingAppointments = $query->count();
+        Log::info('checkAvailability() - Checking for conflicts', [
+            'doctor_id' => $this->doctor_id,
+            'date' => $this->appointment_date,
+            'conflicting_appointments' => $conflictingAppointments,
+        ]);
+
+        if ($conflictingAppointments > 0) {
+            Log::info('checkAvailability() - Conflict found', [
+                'doctor_id' => $this->doctor_id,
+                'start_time' => $startTime->format('Y-m-d H:i'),
+                'end_time' => $endTime->format('Y-m-d H:i'),
+            ]);
             $this->addError('appointment_time', 'El doctor ya tiene una cita programada en ese horario.');
 
             return false;
         }
+
+        Log::info('checkAvailability() - Check passed, availability confirmed', [
+            'doctor_id' => $this->doctor_id,
+            'appointment_date' => $this->appointment_date,
+        ]);
 
         return true;
     }

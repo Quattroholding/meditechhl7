@@ -351,6 +351,7 @@ class RolePermissionSeeder extends Seeder
             'appointments.view',
             'appointments.create',
             'appointments.edit',
+            'appointments.calendar',
             'consultations.view',
             'branches.view',
             'branches.create',

@@ -811,12 +811,16 @@
                     No hay citas programadas para este día.
                 @endif
             </p>
+            @can('appointments.create')
             <button wire:click="openModal('{{ $calendarData['date']->format('Y-m-d') }}')"  class="btn btn-primary" style="margin-top: 20px;">
                 <i class="fa fa-calendar desc-cal"></i> Programar Nueva Cita
             </button>
+            @endcan
+            @can('patients.create')
             <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary" style="margin-top: 20px;">
                 <i class="fa fa-user-injured"></i> Registrar Paciente
             </button>
+            @endcan
         </div>
     @endif
     <!-- Script Alpine.js para manejo del tiempo -->

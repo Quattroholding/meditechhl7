@@ -839,6 +839,12 @@ body {
                         </a>
                     </li>
                     <li>
+                        <a href="#waitlist">
+                            <i class="fas fa-hourglass-half"></i>
+                            Lista de Espera
+                        </a>
+                    </li>
+                    <li>
                         <a href="#siguiente">
                             <i class="fas fa-arrow-right"></i>
                             Siguiente Paso
@@ -1392,6 +1398,280 @@ body {
                         <i class="fas fa-cog"></i>
                         <div>
                             <strong>Configuración:</strong> Puedes personalizar las plantillas de email y los tiempos de envío de recordatorios desde la configuración de tu clínica.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lista de Espera (Waitlist) -->
+            <section id="waitlist" class="step-card">
+                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-hourglass-half me-2"></i>Sistema de Lista de Espera</h3>
+                <div class="step-content">
+                    <p>Cuando un médico no tiene disponibilidad en el horario solicitado, el paciente puede ser agregado a una <strong>lista de espera</strong>. El sistema notificará automáticamente al paciente cuando se libere un espacio.</p>
+
+                    <div class="info-box info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>¿Cuándo usar la lista de espera?</strong> Úsala cuando los pacientes soliciten citas en horarios ocupados. Esto mejora la experiencia del paciente porque no se pierden sus solicitudes y pueden ser asignados automáticamente cuando se libera un espacio.
+                        </div>
+                    </div>
+
+                    <div class="appointment-flow-timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <h6><i class="fas fa-plus-circle me-2"></i>Paso 1: Intentar Agendar</h6>
+                                <p>El usuario intenta agendar una cita en un horario ocupado del médico. El sistema detecta que no hay disponibilidad.</p>
+
+                            </div>
+                        </div>
+
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <h6><i class="fas fa-hourglass-start me-2"></i>Paso 2: Agregar a Lista de Espera</h6>
+                                <p>Se abre un modal con opciones para agregar el paciente a la lista de espera. Aquí se capturan las preferencias del paciente:</p>
+                                <ul style="margin-top: 10px;">
+                                    <li><strong>Nivel de Urgencia:</strong> Rutinaria, Urgente, Muy Urgente, Emergencia</li>
+                                    <li><strong>Máximo de días esperando:</strong> Cuántos días está dispuesto a esperar el paciente</li>
+                                    <li><strong>Fecha preferida:</strong> Si desea una fecha específica (opcional)</li>
+                                    <li><strong>Hora preferida:</strong> Si desea una hora específica (opcional)</li>
+                                    <li><strong>Flexibilidad de fecha/hora:</strong> Si está flexible con ambos parámetros</li>
+                                    <li><strong>Notas:</strong> Observaciones adicionales sobre la solicitud</li>
+                                </ul>
+                                <div>
+                                    <img src="{{ asset('images/tutorial/appointments/waitlist-modal.png') }}" alt="Modal de lista de espera" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 15px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <h6><i class="fas fa-bell me-2"></i>Paso 3: Confirmación y Notificación</h6>
+                                <p>Una vez agregado a la lista de espera, el paciente recibe una notificación informando que está en la lista. El sistema calcula automáticamente su <strong>score de prioridad</strong> basado en:</p>
+                                <ul style="margin-top: 10px;">
+                                    <li><strong>Urgencia:</strong> Emergencias y urgencias tienen mayor prioridad</li>
+                                    <li><strong>Tiempo esperando:</strong> Pacientes que esperan más tiempo suben en la lista</li>
+                                    <li><strong>Flexibilidad:</strong> Pacientes flexibles con horarios tienen mayor probabilidad de asignación</li>
+                                    <li><strong>Historial:</strong> Pacientes recurrentes (con citas previas) ganan puntos</li>
+                                </ul>
+                                <div>
+                                    <img src="{{ asset('images/tutorial/appointments/waitlist-notification.png') }}" alt="Notificación de lista de espera" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 15px;">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <h6><i class="fas fa-hand-holding me-2"></i>Paso 4: Asignación Manual de Espacio</h6>
+                                <p><strong>Proceso Principal (Manual):</strong> Cuando se libera un espacio, el sistema muestra los candidatos sugeridos <strong>POR SCORE</strong> de coincidencia, pero TÚ decides quién asignar.</p>
+
+                                <div style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; border-radius: 8px;">
+                                    <h6 style="margin-top: 0; color: #1976d2;">
+                                        <i class="fas fa-info-circle me-2"></i>Flujo de Asignación Manual
+                                    </h6>
+                                    <ol style="margin: 10px 0;">
+                                        <li><strong>Se libera un espacio</strong> → Paciente cancela o no asiste</li>
+                                        <li><strong>Panel muestra candidatos</strong> → El sistema sugiere los 5-10 mejores por score</li>
+                                        <li><strong>Tú seleccionas quién</strong> → Puedes elegir cualquiera, no solo el top 1</li>
+                                        <li><strong>Confirmas la asignación</strong> → El paciente es notificado automáticamente</li>
+                                    </ol>
+                                </div>
+
+                                <p><strong>Cómo ver y asignar:</strong></p>
+                                <ul style="margin-top: 10px;">
+                                    <li>📍 Abre el calendario en el horario donde se liberó el espacio</li>
+                                    <li>🎯 Se mostrará un botón <strong>"Asignar Espacio"</strong> o una notificación visual</li>
+                                    <li>👥 Se despliega el modal con candidatos ordenados por score de coincidencia</li>
+                                    <li>✅ Selecciona el paciente que desees (basándote en score sugerido o tu criterio)</li>
+                                    <li>📤 Confirma la asignación</li>
+                                </ul>
+
+                                <div style="background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 15px 0; border-radius: 8px;">
+                                    <h6 style="margin-top: 0; color: #e65100;">
+                                        <i class="fas fa-cog me-2"></i>Configuración por Cliente (Opcional)
+                                    </h6>
+                                    <p style="margin: 0;">Tu clínica puede configurar si desea <strong>asignación automática</strong> para ciertos casos. Por defecto, <strong>la asignación es manual</strong> para que tengas control total.</p>
+                                </div>
+
+                                <div>
+                                    <img src="{{ asset('images/tutorial/appointments/manual-assignment-modal.png') }}" alt="Modal de asignación manual" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 15px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <h6><i class="fas fa-sync-alt me-2"></i>Paso 5: Expiración Automática</h6>
+                                <p>El sistema automáticamente:</p>
+                                <ul style="margin-top: 10px;">
+                                    <li>Expira entradas cuando se alcanza el máximo de días configurado</li>
+                                    <li>Notifica al paciente cuando su entrada expira</li>
+                                    <li>Ejecuta recálculos de prioridad diarios para mantener la lista actualizada</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box info-warning" style="margin-top: 30px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Acceso a Lista de Espera:</strong> Solo recepcionistas y doctores pueden acceder al panel de gestión. Los pacientes verán el estado de su solicitud en su perfil y recibirán notificaciones automáticas.
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ffa10b !important;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold" style="color: #ffa10b;"><i class="fas fa-users me-2"></i>Visión de Recepcionista</h6>
+                                    <p class="small text-muted mb-2">Gestión centralizada de toda la lista de espera.</p>
+                                    <ul class="small mb-0">
+                                        <li>✅ Ver lista priorizada completa</li>
+                                        <li>✅ Asignar pacientes a espacios</li>
+                                        <li>✅ Cancelar entradas</li>
+                                        <li>✅ Filtrar por criterios</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ff6f00 !important;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold" style="color: #ff6f00;"><i class="fas fa-user-injured me-2"></i>Visión de Paciente</h6>
+                                    <p class="small text-muted mb-2">Seguimiento transparente de su solicitud.</p>
+                                    <ul class="small mb-0">
+                                        <li>✅ Recibir confirmación de entrada</li>
+                                        <li>✅ Notificaciones de espacios</li>
+                                        <li>✅ Notificación de expiración</li>
+                                        <li>✅ Aceptar/rechazar ofertas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box info-tip" style="margin-top: 20px;">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>Configuración de lista de espera:</strong> Desde tu configuración clínica, puedes ajustar tiempos de expiración, patrones de priorización y plantillas de notificación para adaptarlos a tu flujo específico.
+                        </div>
+                    </div>
+
+                    <!-- Sección: Cómo Ver la Lista de Espera -->
+                    <hr style="margin: 30px 0;">
+                    <h5 style="color: #bf360c; margin-bottom: 15px;"><i class="fas fa-eye me-2"></i>Acceder a la Lista de Espera</h5>
+
+                    <p>Para ver todos los pacientes en lista de espera (no solo cuando se libera un espacio):</p>
+
+                    <div class="step-card" style="border-left: none; margin: 20px 0; padding: 20px; background: #f8f9fa; box-shadow: none;">
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Abre el menú principal</strong> → Haz clic en <strong>"Citas"</strong></li>
+                            <li><strong>Selecciona "Lista de Espera"</strong> en el submenú</li>
+                            <li><strong>Verás el panel completo</strong> con:
+                                <ul style="margin-top: 10px;">
+                                    <li>📊 <strong>Estadísticas</strong> - Total, urgentes, expirando pronto</li>
+                                    <li>🔍 <strong>Filtros</strong> - Por doctor, especialidad, urgencia, búsqueda</li>
+                                    <li>📋 <strong>Tabla de pacientes</strong> - Ordenados por score de prioridad</li>
+                                    <li>⚡ <strong>Acciones rápidas</strong> - Asignar o cancelar para cada paciente</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/waitlist-manager-view.png') }}" alt="Vista del panel de lista de espera" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px 0;">
+                    </div>
+
+                    <!-- Sección: Columnas de la Tabla -->
+                    <h5 style="color: #bf360c; margin: 30px 0 15px 0;"><i class="fas fa-table me-2"></i>Entendiendo la Tabla de Lista de Espera</h5>
+
+                    <table class="field-table" style="margin: 20px 0;">
+                        <thead>
+                            <tr>
+                                <th>Columna</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Columna"><strong>Score Prioridad</strong></td>
+                                <td data-label="Descripción">Número 0-100 que indica la posición en la fila. Score más alto = más prioridad</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Paciente</strong></td>
+                                <td data-label="Descripción">Nombre completo del paciente + identificador</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Especialidad</strong></td>
+                                <td data-label="Descripción">Especialidad médica solicitada</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Urgencia</strong></td>
+                                <td data-label="Descripción">Nivel de urgencia (Rutinaria, Urgente, Muy Urgente, Emergencia)</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Fecha Preferida</strong></td>
+                                <td data-label="Descripción">Fecha que el paciente solicitó (si es específica)</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Días Esperando</strong></td>
+                                <td data-label="Descripción">Cuántos días lleva esperando en la lista</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Expira En</strong></td>
+                                <td data-label="Descripción">Días restantes antes de que su solicitud expire</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Acciones</strong></td>
+                                <td data-label="Descripción">Botones para Asignar (si hay espacio) o Cancelar</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Sección: Score de Prioridad Explicado -->
+                    <div class="info-box info-note" style="margin: 30px 0;">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <strong>¿Cómo se calcula el Score?</strong><br>
+                            El sistema calcula automáticamente puntos basándose en:
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li><strong>Urgencia</strong> (0-40 pts) - Emergencias = 40 pts, Rutinarias = 0 pts</li>
+                                <li><strong>Tiempo esperando</strong> (0-30 pts) - Cada día suma puntos (máx 30)</li>
+                                <li><strong>Flexibilidad</strong> (0-20 pts) - Si es flexible con fecha/hora = más puntos</li>
+                                <li><strong>Historial</strong> (0-10 pts) - Si tuvo citas previas completas = más puntos</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Cómo Asignar desde el Panel -->
+                    <h5 style="color: #bf360c; margin: 30px 0 15px 0;"><i class="fas fa-plus-circle me-2"></i>Asignar Paciente Manualmente</h5>
+
+                    <p>Cuando haces clic en el botón <strong>"Asignar"</strong> en cualquier fila:</p>
+
+                    <div class="step-card" style="border-left: none; margin: 20px 0; padding: 20px; background: #f8f9fa; box-shadow: none;">
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Se abre un modal</strong> donde puedes elegir:
+                                <ul style="margin-top: 10px;">
+                                    <li>📅 <strong>Fecha</strong> - El día disponible</li>
+                                    <li>🕐 <strong>Hora</strong> - La hora exacta</li>
+                                    <li>⏱️ <strong>Duración</strong> - Cuánto durará la consulta</li>
+                                    <li>🏥 <strong>Consultorio</strong> - Dónde se hará la consulta</li>
+                                </ul>
+                            </li>
+                            <li><strong>Confirma la asignación</strong> → El paciente recibe una notificación automáticamente</li>
+                            <li><strong>El calendario se actualiza</strong> → La cita aparece como "Agendada"</li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/assign-from-waitlist.png') }}" alt="Modal de asignación" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px 0;">
+                    </div>
+
+                    <div class="info-box info-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Importante:</strong> Cuando asignas desde la lista de espera, el sistema valida que NO haya conflicto con otras citas del mismo médico en ese horario.
                         </div>
                     </div>
                 </div>

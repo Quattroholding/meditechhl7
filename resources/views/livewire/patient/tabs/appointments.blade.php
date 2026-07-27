@@ -151,4 +151,7 @@
             </div>
         @endif
     </div>
+
+    {{-- Modal de Asignación Manual de Slot --}}
+    <livewire:appointment.manual-slot-assignment />
 </div>

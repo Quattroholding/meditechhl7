@@ -124,6 +124,11 @@ Route::group(['prefix' => 'appointments', 'middleware' => ['auth', 'verified', '
         ->middleware('permission:appointments.delete')
         ->name('appointment.destroy');
 
+    // Gestión de lista de espera
+    Route::get('/waitlist', [AppointmentController::class, 'waitlist'])
+        ->middleware('permission:appointments.view')
+        ->name('appointment.waitlist');
+
 });
 
 // ============================================================================

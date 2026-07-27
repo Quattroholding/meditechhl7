@@ -115,45 +115,53 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
 
     /**
      * Get the WhatsApp representation of the notification.
+     * Uses WhatsApp template: cita_reservada
+     * Template: "Hola {{1}}, Tiene una cita reservada con {{2}}. Se confirma su cita para {{3}} el {{4}} a las {{5}}.
+     *            Gracias por su preferirnos."
+     * Button: "Ver detalles" -> https://sami.meditecpty.com/{{1}}
      */
-    public function toWhatsApp(object $notifiable): string
+    public function toWhatsApp(object $notifiable): array
     {
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
-        $clinicName = $this->appointment->client->name ?? config('app.name');
+        $specialty = $this->appointment->medicalSpeciality->name ?? 'Medicina General';
 
-        $message = "✅ *Cita Médica Agendada*\n\n";
-        $message .= "Hola {$notifiable->name},\n\n";
-        $message .= "Su cita médica ha sido agendada exitosamente:\n\n";
+        // Build components for template
+        $components = [];
 
-        $message .= "👨‍⚕️ *Doctor:* {$practitioner->name}\n";
+        // Body component with variables
+        // {{1}} = Nombre del paciente
+        // {{2}} = Nombre del doctor
+        // {{3}} = Especialidad
+        // {{4}} = Fecha de la cita (formato: 15/01/2026)
+        // {{5}} = Hora de la cita (formato: 10:30)
+        $components[] = [
+            'type' => 'body',
+            'parameters' => [
+                ['type' => 'text', 'text' => $notifiable->name],
+                ['type' => 'text', 'text' => $practitioner->name],
+                ['type' => 'text', 'text' => $specialty],
+                ['type' => 'text', 'text' => $appointmentDate->format('d/m/Y')],
+                ['type' => 'text', 'text' => $appointmentDate->format('H:i')],
+            ],
+        ];
 
-        if ($this->appointment->medicalSpeciality) {
-            $message .= "🏥 *Especialidad:* {$this->appointment->medicalSpeciality->name}\n";
-        }
+        // Button component (Ver detalles)
+        $components[] = [
+            'type' => 'button',
+            'sub_type' => 'url',
+            'index' => '0',
+            'parameters' => [
+                ['type' => 'text', 'text' => $notifiable->name],
+            ],
+        ];
 
-        $message .= "📅 *Fecha:* {$appointmentDate->format('d/m/Y')}\n";
-        $message .= "🕐 *Hora:* {$appointmentDate->format('H:i a')}\n";
-        $message .= "⏱️ *Duración:* {$this->appointment->minutes_duration} minutos\n";
-        $message .= "🏢 *Clínica:* {$clinicName}\n";
-
-        if ($this->appointment->consultingRoom->branch->name ?? null) {
-            $message .= "🏪 *Sede:* {$this->appointment->consultingRoom->branch->name}\n";
-        }
-
-        if ($this->appointment->consultingRoom->name ?? null) {
-            $message .= "🚪 *Consultorio:* {$this->appointment->consultingRoom->name}\n";
-        }
-
-        if ($this->appointment->patient_instruction) {
-            $message .= "\n📋 *Instrucciones:*\n{$this->appointment->patient_instruction}\n";
-        }
-
-        $message .= "\n⏰ *Recordatorio:* Recibirá una notificación 2 horas antes de su cita.\n";
-        $message .= "\nPor favor llegue 15 minutos antes de su cita.\n";
-        $message .= '¡Esperamos verle pronto! 😊';
-
-        return $message;
+        return [
+            'use_template' => true,
+            'template_name' => 'cita_reservada',
+            'language_code' => 'es',
+            'components' => $components,
+        ];
     }
 
     /**

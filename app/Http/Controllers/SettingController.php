@@ -554,4 +554,18 @@ class SettingController extends Controller
             ->with('serviceType', null)
             ->with('isPreview', true);
     }
+
+    /**
+     * Configuración de asignación de lista de espera
+     */
+    public function waitlistSettings()
+    {
+        $client = auth()->user()->getCurrentClient();
+
+        if (! $client) {
+            abort(403, 'No tiene un cliente asociado');
+        }
+
+        return view('settings.waitlist-settings', compact('client'));
+    }
 }

@@ -75,6 +75,9 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     Route::get('/prescription-template/preview/{template}', [SettingController::class, 'prescriptionTemplatePreview'])
         ->name('setting.prescription_template.preview');
 
+    Route::get('/waitlist-settings', [SettingController::class, 'waitlistSettings'])
+        ->name('setting.waitlist_settings');
+
     Route::get('/external-storage', function () {
         return view('settings.external-storage');
     })

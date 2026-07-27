@@ -222,84 +222,90 @@
 
     <!-- Modal de Asignación -->
     @if($showAssignModal && $selectedEntry)
-        <div class="modal d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header border-bottom">
-                        <h5 class="modal-title">
-                            <i class="fas fa-calendar-check text-success me-2"></i>
-                            Asignar Cita
-                        </h5>
-                        <button type="button" class="btn-close" wire:click="closeAssignModal()"></button>
-                    </div>
+        @teleport('body')
+        <div class="modal-overlay" wire:click="closeAssignModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-check text-success me-2"></i>
+                        Asignar Cita
+                    </h5>
+                    <button type="button" style="background: none; border: none; font-size: 24px; cursor: pointer;" wire:click="closeAssignModal">&times;</button>
+                </div>
 
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-500">Paciente</label>
-                            <div class="form-control-plaintext">
-                                {{ $selectedEntry->patient->name }}
-                            </div>
-                        </div>
+                <div class="modal-body">
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="assignDate" class="form-label">Fecha</label>
-                                <input type="date" id="assignDate" wire:model="assignDate"
-                                    class="form-control @error('assignDate') is-invalid @enderror" />
-                                @error('assignDate')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Los datos están pre-rellenados con las preferencias del paciente</small>
+                    </div><p>&nbsp;</p>
 
-                            <div class="col-md-6">
-                                <label for="assignTime" class="form-label">Hora</label>
-                                <input type="time" id="assignTime" wire:model="assignTime"
-                                    class="form-control @error('assignTime') is-invalid @enderror" />
-                                @error('assignTime')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="assignDuration" class="form-label">Duración (minutos)</label>
-                                <input type="number" id="assignDuration" wire:model="assignDuration"
-                                    class="form-control @error('assignDuration') is-invalid @enderror"
-                                    min="15" max="480" />
-                                @error('assignDuration')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="assignRoomId" class="form-label">Consultorio</label>
-                                <input type="text" id="assignRoomId" wire:model="assignRoomId"
-                                    class="form-control" disabled />
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info mb-0">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <small>Los datos están pre-rellenados con las preferencias del paciente</small>
+                    <div class="mb-3">
+                        <label class="form-label fw-500">Paciente</label>
+                        <div class="form-control-plaintext">
+                            {{ $selectedEntry->patient->name }}
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeAssignModal()" wire:loading.attr="disabled">
-                            Cancelar
-                        </button>
-                        <button type="button" class="btn btn-success" wire:click="assignAppointment()" wire:loading.attr="disabled" wire:loading.class="opacity-50">
-                            <span wire:loading.remove>
-                                <i class="fas fa-check me-2"></i> Asignar Cita
-                            </span>
-                            <span wire:loading>
-                                <i class="fas fa-spinner fa-spin me-2"></i> Procesando...
-                            </span>
-                        </button>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="assignDate" class="form-label">Fecha</label>
+                            <input type="date" id="assignDate" wire:model="assignDate"
+                                class="form-control @error('assignDate') is-invalid @enderror" />
+                            @error('assignDate')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="assignTime" class="form-label">Hora</label>
+                            <input type="time" id="assignTime" wire:model="assignTime"
+                                class="form-control @error('assignTime') is-invalid @enderror" />
+                            @error('assignTime')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="assignDuration" class="form-label">Duración (minutos)</label>
+                            <input type="number" id="assignDuration" wire:model="assignDuration"
+                                class="form-control @error('assignDuration') is-invalid @enderror"
+                                min="15" max="480" />
+                            @error('assignDuration')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="assignRoomId" class="form-label">Consultorio</label>
+                            <input type="text" id="assignRoomId" wire:model="assignRoomId"
+                                class="form-control" disabled />
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div style="margin-top: 30px; display: flex; gap: 15px;">
+                    <button type="button" class="btn btn-primary" style="flex: 1;" wire:click="assignAppointment()" wire:loading.attr="disabled" wire:loading.class="opacity-50">
+                        <span wire:loading.remove>
+                            <i class="fas fa-check me-2"></i> Asignar Cita
+                        </span>
+                        <span wire:loading>
+                            <i class="fas fa-spinner fa-spin me-2"></i> Procesando...
+                        </span>
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" wire:click="closeAssignModal()" wire:loading.attr="disabled">
+                        Cancelar
+                    </button>
+
                 </div>
             </div>
         </div>
+        @endteleport
     @endif
 </div>
+

@@ -9,6 +9,7 @@ use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use App\Models\UserClient;
+use App\Services\WaitlistService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -225,7 +226,11 @@ class Calendar extends Component
         }
 
         if ($this->currentView == 'daily') {
-            $query->whereNotIn('status', ['pending', 'proposed', 'whaitlist', 'noshow', 'cancelled']);
+            $query->whereIn('status', ['booked', 'arrived', 'confirm', 'checked-in', 'fulfilled']);
+        }
+
+        if ($this->currentView == 'monthly') {
+            $query->where('status', '<>', 'waitlist');
         }
 
         // Convertir a array manualmente para preservar la zona horaria local
@@ -287,10 +292,22 @@ class Calendar extends Component
             $current_status = $appointment->status;
             if ($appointment) {
 
+                // Registrar espacio liberado ANTES de cambiar el status si se cancela o no-show
+                if (in_array($newStatus, ['cancelled', 'noshow']) &&
+                    in_array($current_status->value, ['booked', 'confirm', 'arrived'])) {
+
+                    $waitlistService = app(WaitlistService::class);
+                    $source = $newStatus === 'cancelled' ? 'cancellation' : 'noshow';
+                    $freedSlot = $waitlistService->registerFreedSlot($appointment, $source);
+
+                    // Mostrar modal de asignación manual si está configurado para ello
+                    if ($freedSlot && ! $appointment->client->getSettings('waitlist_auto_assign', false)) {
+                        $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+                    }
+                }
+
                 $appointment->status = $newStatus;
                 $appointment->save();
-
-                // $appointment->update(['status' => $newStatus]);
 
                 session()->flash('message.success', 'Estado actualizado exitosamente.');
                 $this->loadAppointments();
@@ -343,8 +360,31 @@ class Calendar extends Component
             $appointment = Appointment::find($this->cancellingAppointmentId);
 
             if ($appointment) {
+                $oldStatus = $appointment->status;
+
                 $appointment->status = 'cancelled';
                 $appointment->save();
+
+                // Registrar espacio liberado si la cita estaba confirmada
+                if (in_array($oldStatus->value, ['booked', 'confirm', 'arrived'])) {
+
+                    $waitlistService = app(WaitlistService::class);
+                    $freedSlot = $waitlistService->registerFreedSlot($appointment, 'cancellation');
+
+                    Log::info('registerFreedSlot resultado en Calendar::confirmCancellation', [
+                        'appointment_id' => $appointment->id,
+                        'oldStatus' => $oldStatus->value,
+                        'freedSlot' => $freedSlot?->id ?? 'NULL',
+                        'appointment_start' => $appointment->start->format('Y-m-d H:i:s'),
+                        'now' => now()->format('Y-m-d H:i:s'),
+                        'minutos_hasta_cita' => now()->diffInMinutes($appointment->start),
+                    ]);
+
+                    // Mostrar modal de asignación manual si está configurado para ello
+                    if ($freedSlot && ! $appointment->client->getSettings('waitlist_auto_assign', false)) {
+                        $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+                    }
+                }
 
                 // Determinar la razón final a enviar
                 $finalReason = $this->cancellationReason === 'OTHER'

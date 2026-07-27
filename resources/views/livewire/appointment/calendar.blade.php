@@ -31,14 +31,18 @@
                 {{--}}
             </div>
             <div class="view-buttons">
+                @can('appointments.create')
                 <button wire:click="openModal" class="btn btn-primary btn-fonts">
                    <i class="fa fa-calendar"></i> {{ __('appointment.new_appointment') }}
                 </button>
+                @endcan
+                @can('patients.create')
                 @if(!auth()->user()->hasRole('paciente'))
                 <button x-on:click="$dispatch('open-modal', 'create_patient')" class="btn btn-secondary btn-fonts">
                     <i class="fa fa-user-injured"></i> {{ __('appointment.register_patient') }}
                 </button>
                 @endif
+                @endcan
             </div>
         </div>
         <!-- Estadísticas -->
@@ -178,6 +182,9 @@
         :cancellation-reason="$cancellationReason"
         :custom-cancellation-reason="$customCancellationReason"
     />
+
+    {{-- Modal de Asignación Manual de Slot --}}
+    <livewire:appointment.manual-slot-assignment />
 
     @include('patients.modals.create',['name'=>'create_patient'])
 

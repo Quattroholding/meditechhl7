@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\AppointmentStatusEnum;
-use App\Enums\FreedSlotSource;
 use App\Enums\WaitlistStatus;
 use App\Enums\WaitlistUrgencyLevel;
 use Carbon\Carbon;
@@ -223,7 +222,7 @@ class AppointmentWaitlistEntry extends BaseModel
     /**
      * Cancel the entry
      */
-    public function cancel(User $cancelledBy, string $reason = null): void
+    public function cancel(User $cancelledBy, ?string $reason = null): void
     {
         $this->update([
             'status' => WaitlistStatus::Cancelled->value,
@@ -238,8 +237,7 @@ class AppointmentWaitlistEntry extends BaseModel
      */
     public function updatePriority(): void
     {
-        $this->saveQuietly(function (self $model) {
-            $model->priority_score = $model->calculatePriority();
-        });
+        $this->priority_score = $this->calculatePriority();
+        $this->saveQuietly();
     }
 }
