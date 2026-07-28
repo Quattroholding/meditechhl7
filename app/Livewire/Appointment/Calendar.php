@@ -81,6 +81,15 @@ class Calendar extends Component
 
     public $showDebug = true;
 
+    // Propiedades para especialidades y datos del usuario
+    public $especialidades = [];
+
+    public $consultorios = [];
+
+    public $patient_id = null;
+
+    public $doctor_id = null;
+
     public function mount()
     {
         $this->currentDate = Carbon::now();
