@@ -200,6 +200,8 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
+            // Validar explícitamente la request de practitioner
+            $request->validate($request->rules());
             // Verificar si existe un usuario desactivado con este email
             $existingUser = User::where('email', $request->email)
                 ->whereNotNull('inactive_at')
@@ -235,6 +237,13 @@ class AuthController extends Controller
                     'email' => $user->email,
                 ],
             ], 201);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
 
