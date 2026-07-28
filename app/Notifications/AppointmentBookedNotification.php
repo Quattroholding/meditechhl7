@@ -116,15 +116,18 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
     /**
      * Get the WhatsApp representation of the notification.
      * Uses WhatsApp template: cita_reservada
-     * Template: "Hola {{1}}, Tiene una cita reservada con {{2}}. Se confirma su cita para {{3}} el {{4}} a las {{5}}.
-     *            Gracias por su preferirnos."
-     * Button: "Ver detalles" -> https://sami.meditecpty.com/cita/{{1}}
+     * Template: "Hola {{1}}, Tiene una cita reservada con {{2}}. Se cita esta confirmada para {{3}} el {{4}} a las {{5}} en {{6}}.
+     *            Gracias por su preferencia."
      */
     public function toWhatsApp(object $notifiable): array
     {
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
         $specialty = $this->appointment->medicalSpeciality->name ?? 'Medicina General';
+
+        $consultingRoomName = $this->appointment->consultingRoom->name ?? 'Consultorio';
+        $branchAddress = $this->appointment->consultingRoom->branch->address ?? '';
+        $location = trim($consultingRoomName . (! empty($branchAddress) ? ' en ' . $branchAddress : '')) ?: 'Consultorio';
 
         // Build components for template
         $components = [];
@@ -133,8 +136,9 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
         // {{1}} = Nombre del paciente
         // {{2}} = Nombre del doctor
         // {{3}} = Especialidad
-        // {{4}} = Fecha de la cita (formato: 15/01/2026)
-        // {{5}} = Hora de la cita (formato: 10:30)
+        // {{4}} = Fecha de la cita (formato: 31/12/2025)
+        // {{5}} = Hora de la cita (formato: 13:00)
+        // {{6}} = Ubicación del consultorio (nombre + dirección del branch)
         $components[] = [
             'type' => 'body',
             'parameters' => [
@@ -143,19 +147,9 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 ['type' => 'text', 'text' => trim($specialty) ?: 'Medicina General'],
                 ['type' => 'text', 'text' => $appointmentDate->format('d/m/Y')],
                 ['type' => 'text', 'text' => $appointmentDate->format('H:i')],
+                ['type' => 'text', 'text' => $location],
             ],
         ];
-
-        // Button component (Ver detalles)
-        // Parameter should be the appointment ID to form a valid URL
-        /*$components[] = [
-            'type' => 'button',
-            'sub_type' => 'url',
-            'index' => 0,
-            'parameters' => [
-                ['type' => 'text', 'text' => (string) $this->appointment->id],
-            ],
-        ];*/
 
         return [
             'use_template' => true,
