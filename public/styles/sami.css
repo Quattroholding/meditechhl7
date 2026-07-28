@@ -170,16 +170,22 @@ img{ max-width:100%; display:block; }
 /* ======================
    HERO
 ====================== */
+.container2{
+    width:100%;
+    overflow:hidden;
+}
+
 .hero{
     position:relative;
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
-    min-height:500px;
+    min-height:800px;
     display:flex;
     align-items:flex-end;
     justify-content:space-between;
     padding:40px;
+    width:100%;
 }
 
 .hero__buttons{
@@ -805,6 +811,14 @@ img{ max-width:100%; display:block; }
         align-items: center;
         justify-content: center;
         padding: 8px;
+        margin-left: 300px;
+    }
+
+    /* Mostrar iconos de redes en móvil */
+    .header__actions {
+        display: flex !important;
+        gap: 15px;
+        margin-right: 10px;
     }
 
     /* Sidebar en móvil */
@@ -816,11 +830,10 @@ img{ max-width:100%; display:block; }
         position: fixed;
         top: 0;
         right: 0;
-        height: 100vh;
         width: 280px;
         z-index: 999;
         gap: 0;
-        background-color: rgba(255, 255, 255, 0.98);
+        background-color: #9E9E9E;
         backdrop-filter: blur(10px);
         box-shadow: -10px 0 30px rgba(0,0,0,.2);
     }
@@ -928,24 +941,31 @@ img{ max-width:100%; display:block; }
         width: 50%;
     }
     .hero{
-        min-height:350px;
-        padding:20px;
+        min-height: auto;
+        padding:110px 20px 40px 20px;
         flex-wrap:wrap;
+        align-items:flex-end;
+        justify-content:space-between;
     }
     .hero__buttons{
         gap:12px;
         width:100%;
+        order:2;
+        display: none;
     }
     .hero__button-img{
-        max-width:120px;
+        max-width:140px;
     }
     .hero__social{
         gap:10px;
         width:100%;
         justify-content:flex-start;
+        order:1;
+        margin-bottom:40px;
     }
     .hero__social-img{
-        max-width:40px;
+        max-width:35px;
+        display: none;
     }
     .num{
         font-size: 35px;
@@ -978,5 +998,30 @@ img{ max-width:100%; display:block; }
 
     .sidebar{
         width: 100%;
+    }
+
+    .hero{
+        min-height: auto;
+        padding:80px 20px 30px 20px;
+    }
+
+    .hero__button-img{
+        max-width:100px;
+    }
+
+    .hero__social-img{
+        max-width:28px;
+    }
+
+    .hero__social{
+        margin-bottom:30px;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 320px){
+    .hero{
+        min-height: auto;
+        padding:100px 15px 25px 15px;
     }
 }

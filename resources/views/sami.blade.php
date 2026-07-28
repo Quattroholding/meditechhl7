@@ -139,6 +139,9 @@
                     <li><a href="{{route('patients.landing')}}">SOY PACIENTE</a></li>
                     <li><a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a></li>
                     <li><a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a></li>
+                    <li> <a href="{{route('login')}}" class="hero__button-link">
+                            <img src="{{ asset('images/INGRESAR.png') }}" alt="Ingresar a SAMI" class="hero__button-img">
+                        </a></li>
                 </ul>
                 <ul class="mainbar">
                     <li class="hidden-mobile"><a href="#home">HOME</a></li>
@@ -148,6 +151,7 @@
                     <li class="hidden-mobile"><a href="{{route('patients.landing')}}">SOY PACIENTE</a></li>
                     <li class="hidden-mobile"><a href="{{url('http://samirx.' . str_replace('sami.', '', request()->getHost()))}}">SAMI RECETAS</a></li>
                     <li class="hidden-mobile"><a href="{{url('http://' . str_replace('sami.', '', request()->getHost()))}}">SOLUCIONES MEDITEC</a></li>
+
                                         <li class="menu-hamburguesa" onclick="showSidebar()">
                         <i class="fa fa-bars" aria-hidden="true"></i>
                     </li>
@@ -179,8 +183,8 @@
             <a href="{{route('login')}}">Ingresar</a>
         </div>
     </header>
-    <div class="container">
-    <div class="hero" style="background-image: url('{{ asset('images/banner.png') }}');">
+    <div class="container2">
+    <div class="hero" style="background-image: url('{{ asset('images/banner.png') }}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
         <div class="hero__buttons">
             <a href="#quienes" class="hero__button-link">
                 <img src="{{ asset('images/CONOCEMAS.png') }}" alt="Conoce más sobre SAMI" class="hero__button-img">
