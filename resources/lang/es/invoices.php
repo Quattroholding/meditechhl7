@@ -12,4 +12,5 @@ return [
     'description' => 'Descripción',
     'status' => 'Estatus',
     'identifier' => 'Idetificador',
+    'receivable'=>'Por cobrar'
 ];

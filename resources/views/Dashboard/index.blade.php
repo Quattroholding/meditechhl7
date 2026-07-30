@@ -33,12 +33,16 @@
                         <livewire:dashboard.counter function="patients" wire:key="counter_patients"/>
                     </x-dashboard-tile>
 
-                    <x-dashboard-tile position="g1:i1" :refresh-interval-in-seconds="120">
+                    <x-dashboard-tile position="g1:h1" :refresh-interval-in-seconds="120">
                         <livewire:dashboard.counter function="encounters" wire:key="counter_encounters"/>
                     </x-dashboard-tile>
 
-                    <x-dashboard-tile position="j1:l1" :refresh-interval-in-seconds="120">
-                        <livewire:dashboard.counter function="invoices" wire:key="counter_invoices"/>
+                    <x-dashboard-tile position="i1:j1" :refresh-interval-in-seconds="120">
+                        <livewire:dashboard.counter function="subscriptions" wire:key="counter_suscriptions"/>
+                    </x-dashboard-tile>
+
+                    <x-dashboard-tile position="k1:l1" :refresh-interval-in-seconds="120">
+                        <livewire:dashboard.counter function="receivable_subscriptions" wire:key="counter_suscriptions"/>
                     </x-dashboard-tile>
 
                     {{--}}

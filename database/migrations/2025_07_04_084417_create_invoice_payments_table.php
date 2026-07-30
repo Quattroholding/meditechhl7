@@ -29,6 +29,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'processed', 'cleared', 'failed', 'refunded', 'voided'])->default('pending');
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index(['invoice_id', 'payment_date']);
