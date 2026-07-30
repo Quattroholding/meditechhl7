@@ -77,8 +77,8 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'appointments'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Appointment::where('client_id', $currentClient->id)->whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Appointment::where('client_id', $currentClient->id)->whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Appointment::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -123,12 +123,8 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'patients'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Patient::whereHas('clients', function ($q) use ($currentClient) {
-                    $q->where('clients.id', $currentClient->id);
-                })->whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Patient::whereHas('clients', function ($q) use ($currentClient) {
-                    $q->where('clients.id', $currentClient->id);
-                })->whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Patient::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -173,12 +169,8 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'encounters'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Encounter::whereHas('appointment', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Encounter::whereHas('appointment', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
+                $lastMonth = Encounter::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -225,12 +217,8 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'invoices'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Payment::whereHas('invoice', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
-                $lastMonth = Payment::whereHas('invoice', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $count = Payment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonth = Payment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -277,12 +265,8 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'subscriptions'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = ClientInvoicePayment::whereHas('clientInvoice', function ($q) use ($currentClient) {
-                    $q->where('client_invoices.client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
-                $lastMonth = ClientInvoicePayment::whereHas('clientInvoice', function ($q) use ($currentClient) {
-                    $q->where('client_invoices.client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $count = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonth = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -329,16 +313,12 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'receivable_services'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $invoiced = Invoice::where('client_id', $currentClient->id)->whereRaw("issue_date>='".$curr_month->format('Y-m-01')."' and issue_date <='".$curr_month->format('Y-m-t')."'")->sum('total_net') ?? 0;
-                $paid = Payment::whereHas('invoice', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $invoiced = Invoice::whereRaw("issue_date>='".$curr_month->format('Y-m-01')."' and issue_date <='".$curr_month->format('Y-m-t')."'")->sum('total_net') ?? 0;
+                $paid = Payment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
                 $count = $invoiced - $paid;
 
-                $lastMonthInvoiced = Invoice::where('client_id', $currentClient->id)->whereRaw("issue_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and issue_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total_net') ?? 0;
-                $lastMonthPaid = Payment::whereHas('invoice', function ($q) use ($currentClient) {
-                    $q->where('client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonthInvoiced = Invoice::whereRaw("issue_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and issue_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total_net') ?? 0;
+                $lastMonthPaid = Payment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
                 $lastMonth = $lastMonthInvoiced - $lastMonthPaid;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
@@ -386,16 +366,12 @@ class Counter extends Component
 
         $data = Cache::tags(['dashboard', 'receivable_subscriptions'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $invoiced = ClientInvoice::where('client_id', $currentClient->id)->whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total') ?? 0;
-                $paid = ClientInvoicePayment::whereHas('clientInvoice', function ($q) use ($currentClient) {
-                    $q->where('client_invoices.client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $invoiced = ClientInvoice::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total') ?? 0;
+                $paid = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
                 $count = $invoiced - $paid;
 
-                $lastMonthInvoiced = ClientInvoice::where('client_id', $currentClient->id)->whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total') ?? 0;
-                $lastMonthPaid = ClientInvoicePayment::whereHas('clientInvoice', function ($q) use ($currentClient) {
-                    $q->where('client_invoices.client_id', $currentClient->id);
-                })->whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonthInvoiced = ClientInvoice::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total') ?? 0;
+                $lastMonthPaid = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
                 $lastMonth = $lastMonthInvoiced - $lastMonthPaid;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];

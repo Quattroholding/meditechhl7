@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Appointment;
+use App\Models\ClientInvoice;
+use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
 use App\Models\Encounter;
 use App\Models\Invoice;
@@ -10,6 +12,8 @@ use App\Models\MedicationRequest;
 use App\Models\Patient;
 use App\Models\User;
 use App\Observers\AppointmentObserver;
+use App\Observers\ClientInvoiceObserver;
+use App\Observers\ClientInvoicePaymentObserver;
 use App\Observers\ClientSubscriptionObserver;
 use App\Observers\EncounterObserver;
 use App\Observers\InvoiceObserver;
@@ -56,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Paginator::useTailwind();
         Appointment::observe(AppointmentObserver::class);
+        ClientInvoice::observe(ClientInvoiceObserver::class);
+        ClientInvoicePayment::observe(ClientInvoicePaymentObserver::class);
         ClientSubscription::observe(ClientSubscriptionObserver::class);
         Encounter::observe(EncounterObserver::class);
         Invoice::observe(InvoiceObserver::class);

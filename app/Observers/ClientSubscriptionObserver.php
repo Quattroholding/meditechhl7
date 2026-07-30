@@ -78,6 +78,7 @@ class ClientSubscriptionObserver
                 $cacheDriver = config('cache.default');
                 if (in_array($cacheDriver, ['redis', 'memcached', 'array'])) {
                     Cache::tags(['practitioners', 'subscriptions'])->flush();
+                    Cache::tags(['dashboard', 'subscriptions'])->flush();
                 }
 
                 Log::info('ClientSubscriptionObserver - Cache cleared', [
