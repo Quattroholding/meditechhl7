@@ -53,6 +53,8 @@ class Diagnostics extends Component
 
     public $validationMessage = '';
 
+    public $selectedOption = [];
+
     public function mount()
     {
         $this->encounter = Encounter::find($this->encounter_id);
@@ -322,7 +324,7 @@ class Diagnostics extends Component
                         'fhir_id' => 'condition-'.Str::uuid(),
                         'patient_id' => $this->encounter->patient_id,
                         'practitioner_id' => $this->encounter->practitioner_id,
-                        'encounter_id'=>$this->encounter->id,
+                        'encounter_id' => $this->encounter->id,
                         'identifier' => 'DX-'.strtoupper(Str::random(7)),
                         'clinical_status' => 'active',
                         'verification_status' => 'confirmed',

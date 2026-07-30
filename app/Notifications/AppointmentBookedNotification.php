@@ -127,7 +127,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
 
         $consultingRoomName = $this->appointment->consultingRoom->name ?? 'Consultorio';
         $branchAddress = $this->appointment->consultingRoom->branch->address ?? '';
-        $location = trim($consultingRoomName . (! empty($branchAddress) ? ' en ' . $branchAddress : '')) ?: 'Consultorio';
+        $location = trim($consultingRoomName.(! empty($branchAddress) ? ' en '.$branchAddress : '')) ?: 'Consultorio';
 
         // Build components for template
         $components = [];
@@ -147,7 +147,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 ['type' => 'text', 'text' => trim($specialty) ?: 'Medicina General'],
                 ['type' => 'text', 'text' => $appointmentDate->format('d/m/Y')],
                 ['type' => 'text', 'text' => $appointmentDate->format('H:i')],
-                ['type' => 'text', 'text' => $location],
+                ['type' => 'text', 'text' => trim($location) ?: 'Consultorio'],
             ],
         ];
 
