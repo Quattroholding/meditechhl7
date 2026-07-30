@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
-
 class Counter extends Component
 {
     public $function;
@@ -31,6 +30,8 @@ class Counter extends Component
     public $arrowClass;
 
     public $symbol = '';
+
+    public $currentClient;
 
     public function render()
     {
@@ -59,9 +60,13 @@ class Counter extends Component
         return view('livewire.dashboard.counter');
     }
 
+    public function mount()
+    {
+       $this->currentClient =  auth()->user()->getCurrentClient();
+    }
+
     public function appointments()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/calendar.svg');
         }
@@ -73,13 +78,15 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient =  $this->currentClient;
         $cacheKey = 'dashboard_appointments_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'appointments'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Appointment::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Appointment::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Appointment::whereBetween('start', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->count();
+                $lastMonth = Appointment::whereBetween('start', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -87,14 +94,13 @@ class Counter extends Component
         $this->count = $data['count'];
         $lastMonth = $data['lastMonth'];
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
 
         if ($this->count > $lastMonth) {
@@ -102,12 +108,10 @@ class Counter extends Component
         } else {
             $this->class = 'negative-view';
         }
-
     }
 
     public function patients()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/profile-add.svg');
         }
@@ -119,13 +123,15 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient =  $this->currentClient;
         $cacheKey = 'dashboard_patients_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'patients'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Patient::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Patient::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Patient::whereBetween('created_at', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->count();
+                $lastMonth = Patient::whereBetween('created_at', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -133,14 +139,13 @@ class Counter extends Component
         $this->count = $data['count'];
         $lastMonth = $data['lastMonth'];
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
 
         if ($this->count > $lastMonth) {
@@ -148,12 +153,10 @@ class Counter extends Component
         } else {
             $this->class = 'negative-view';
         }
-
     }
 
     public function encounters()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/dep-icon-01.svg');
         }
@@ -165,13 +168,15 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_encounters_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'encounters'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Encounter::whereRaw("start>='".$curr_month->format('Y-m-01')."' and end <='".$curr_month->format('Y-m-t')."'")->count();
-                $lastMonth = Encounter::whereRaw("start>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and end <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->count();
+                $count = Encounter::whereBetween('start', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->count();
+                $lastMonth = Encounter::whereBetween('start', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->count();
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -179,14 +184,13 @@ class Counter extends Component
         $this->count = $data['count'];
         $lastMonth = $data['lastMonth'];
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
 
         if ($this->count > $lastMonth) {
@@ -194,12 +198,10 @@ class Counter extends Component
         } else {
             $this->class = 'negative-view';
         }
-
     }
 
     public function invoices()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/tag-icon-02.svg');
         }
@@ -213,13 +215,15 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_invoices_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'invoices'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = Payment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
-                $lastMonth = Payment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $count = Payment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('amount') ?? 0;
+                $lastMonth = Payment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('amount') ?? 0;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -233,21 +237,18 @@ class Counter extends Component
             $this->class = 'negative-view';
         }
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
-
     }
 
     public function subscriptions()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/tag-icon-02.svg');
         }
@@ -261,13 +262,15 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient =  $this->currentClient;
         $cacheKey = 'dashboard_subscriptions_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'subscriptions'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $count = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
-                $lastMonth = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $count = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('amount') ?? 0;
+                $lastMonth = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('amount') ?? 0;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
             });
@@ -281,21 +284,18 @@ class Counter extends Component
             $this->class = 'negative-view';
         }
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // 100% de incremento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
-
     }
 
     public function receivableServices()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/tag-icon-03.svg');
         }
@@ -309,17 +309,21 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_receivable_services_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'receivable_services'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $invoiced = Invoice::whereRaw("issue_date>='".$curr_month->format('Y-m-01')."' and issue_date <='".$curr_month->format('Y-m-t')."'")->sum('total_net') ?? 0;
-                $paid = Payment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $invoiced = Invoice::whereBetween('issue_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('total_net') ?? 0;
+                $paid = Payment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('amount') ?? 0;
                 $count = $invoiced - $paid;
 
-                $lastMonthInvoiced = Invoice::whereRaw("issue_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and issue_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total_net') ?? 0;
-                $lastMonthPaid = Payment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonthInvoiced = Invoice::whereBetween('issue_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('total_net') ?? 0;
+                $lastMonthPaid = Payment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('amount') ?? 0;
                 $lastMonth = $lastMonthInvoiced - $lastMonthPaid;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
@@ -334,21 +338,18 @@ class Counter extends Component
             $this->class = 'negative-view';
         }
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // Aumento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
-
     }
 
     public function receivableSubscriptions()
     {
-
         if (empty($this->icon)) {
             $this->icon = url('/assets/img/icons/tag-icon-03.svg');
         }
@@ -362,17 +363,21 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient = auth()->user()->getCurrentClient();
+        $currentClient =  $this->currentClient;
         $cacheKey = 'dashboard_receivable_subscriptions_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'receivable_subscriptions'])
             ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
-                $invoiced = ClientInvoice::whereRaw("created_at>='".$curr_month->format('Y-m-01')."' and created_at <='".$curr_month->format('Y-m-t')."'")->sum('total') ?? 0;
-                $paid = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->format('Y-m-01')."' and payment_date <='".$curr_month->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $invoiced = ClientInvoice::whereBetween('created_at', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('total') ?? 0;
+                $paid = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
+                    ->sum('amount') ?? 0;
                 $count = $invoiced - $paid;
 
-                $lastMonthInvoiced = ClientInvoice::whereRaw("created_at>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and created_at <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('total') ?? 0;
-                $lastMonthPaid = ClientInvoicePayment::whereRaw("payment_date>='".$curr_month->copy()->subMonth(1)->format('Y-m-01')."' and payment_date <='".$curr_month->copy()->subMonth(1)->format('Y-m-t')."'")->sum('amount') ?? 0;
+                $lastMonthInvoiced = ClientInvoice::whereBetween('created_at', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('total') ?? 0;
+                $lastMonthPaid = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
+                    ->sum('amount') ?? 0;
                 $lastMonth = $lastMonthInvoiced - $lastMonthPaid;
 
                 return ['count' => $count, 'lastMonth' => $lastMonth];
@@ -387,15 +392,13 @@ class Counter extends Component
             $this->class = 'negative-view';
         }
 
-        // Calcular el cambio porcentual correctamente
         if ($lastMonth > 0) {
             $percentageChange = (($this->count - $lastMonth) / $lastMonth) * 100;
             $this->change = round($percentageChange, 2).'%';
         } elseif ($this->count > 0) {
-            $this->change = '100%'; // Aumento si el mes pasado era 0
+            $this->change = '100%';
         } else {
-            $this->change = '0%'; // Ambos son 0
+            $this->change = '0%';
         }
-
     }
 }

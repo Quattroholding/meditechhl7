@@ -16,7 +16,7 @@ class DataTable extends Component
 
     public $statusFilter = '';
 
-    public $perPage = 5;
+    public $perPage = 10;
 
     public $sortField = 'created_at';
 
