@@ -38,7 +38,7 @@ class SubscriptionService
 
             if ($trialDays > 0 || $freeMonths > 0) {
                 $subscription->status = SubscriptionStatus::TRIAL;
-                $trialEnd = now()->addDays($trialDays)->addMonths($freeMonths);
+                $trialEnd = now()->addDays((int)$trialDays)->addMonths((int)$freeMonths);
                 $subscription->trial_ends_at = $trialEnd;
                 $subscription->next_billing_date = $trialEnd;
             } else {
