@@ -11,6 +11,11 @@ class ProfileDetails extends Component
 
     public $data;
 
+    public function mount(): void
+    {
+        $this->loadData();
+    }
+
     public function loadData()
     {
         $this->data = Practitioner::find($this->practitioner_id);

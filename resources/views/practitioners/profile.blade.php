@@ -13,6 +13,7 @@
             <!-- /Page Header -->
             <div class="row">
                 <div class="col-sm-12">
+
                     <livewire:doctor.head practitioner_id="{{$data->id}}"/>
                     <div class="row">
                         <livewire:doctor.profile-about practitioner_id="{{$data->id}}"/>

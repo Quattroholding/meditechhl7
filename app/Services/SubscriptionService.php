@@ -20,8 +20,8 @@ class SubscriptionService
     public function create(Client $client, Package $package, array $options = []): ClientSubscription
     {
         return DB::transaction(function () use ($client, $package, $options) {
-            $trialDays = $options['trial_days'] ?? config('subscriptions.default_trial_days', 0);
-            $freeMonths = $options['free_months'] ?? 0;
+            $trialDays = (int) ($options['trial_days'] ?? config('subscriptions.default_trial_days', 0));
+            $freeMonths = (int) ($options['free_months'] ?? 0);
             $extraDoctors = $options['extra_doctors'] ?? 0;
             $billingDay = $options['billing_day'] ?? null;
 
@@ -38,7 +38,7 @@ class SubscriptionService
 
             if ($trialDays > 0 || $freeMonths > 0) {
                 $subscription->status = SubscriptionStatus::TRIAL;
-                $trialEnd = now()->addDays((int)$trialDays)->addMonths((int)$freeMonths);
+                $trialEnd = now()->addDays($trialDays)->addMonths($freeMonths);
                 $subscription->trial_ends_at = $trialEnd;
                 $subscription->next_billing_date = $trialEnd;
             } else {

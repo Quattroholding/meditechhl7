@@ -19,7 +19,12 @@ class Head extends Component
     #[Validate('image|max:1024')] // 1MB Max
     public $avatar;
 
-    public function loadData()
+    public function mount(): void
+    {
+        $this->loadData();
+    }
+
+    public function loadData(): void
     {
         $this->data = Practitioner::find($this->practitioner_id);
     }

@@ -15,6 +15,11 @@ class ProfileAbout extends Component
 
     public $qualifications;
 
+    public function mount(): void
+    {
+        $this->loadData();
+    }
+
     public function loadData()
     {
         $this->data = Practitioner::find($this->practitioner_id);
