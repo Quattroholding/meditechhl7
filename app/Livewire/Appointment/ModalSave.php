@@ -557,17 +557,25 @@ class ModalSave extends Component
             $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
             $original_requested_datetime = null;
             $practitioner_suggested_datetime = null;
+            $hasDateTimeChanged = false;
+
             if ($this->appointment) {
                 $original_requested_datetime = $this->appointment->original_requested_datetime;
                 $practitioner_suggested_datetime = $this->appointment->practitioner_suggested_datetime;
+                // Detectar si cambió la fecha/hora
+                $originalStart = $this->appointment->start->copy();
+                $newStart = $start->copy();
+                $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
             }
 
-            // Verificar disponibilidad
-            if (! $this->checkAvailability()) {
-                // Mostrar modal de lista de espera
-                $this->showWaitlistOptions();
+            // Verificar disponibilidad solo si es nueva cita o si cambió fecha/hora
+            if (! $this->appointment || $hasDateTimeChanged) {
+                if (! $this->checkAvailability()) {
+                    // Mostrar modal de lista de espera
+                    $this->showWaitlistOptions();
 
-                return;
+                    return;
+                }
             }
 
             if ($this->confirm) {
@@ -600,11 +608,6 @@ class ModalSave extends Component
 
             if ($this->appointment) {
                 // Actualizar cita existente
-                // Detectar si cambió la fecha/hora antes de actualizar
-                $originalStart = $this->appointment->start->copy();
-                $newStart = $start->copy();
-                $hasDateTimeChanged = ! $originalStart->equalTo($newStart);
-
                 // Actualizar la cita
                 $this->appointment->update($appointmentData);
 
