@@ -78,6 +78,7 @@ return [
     'minutes' => 'minutos',
 
     // Duration options
+    'duration_10' => '10minutos',
     'duration_15' => '15 minutos',
     'duration_30' => '30 minutos',
     'duration_45' => '45 minutos',

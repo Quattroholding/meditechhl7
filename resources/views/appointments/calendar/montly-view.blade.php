@@ -21,8 +21,8 @@
                         <div class="appointment appointment-{{ $appointment['status'] }}" style="top: {{ 20 + ($index * 16) }}px;"
                              wire:click.stop="editAppointment({{ $appointment['id'] }})">
                             <div style="font-weight: 600; font-size: 10px;">{{ date('H:i', strtotime($appointment['start'])) }} - {{ date('H:i', strtotime($appointment['end'])) }}</div>
-                            <div style="font-size: 9px;">{{ $appointment['patient']['name'] }}</div>
-                            <div style="font-size: 8px; opacity: 0.8;">{{ $appointment['practitioner']['name'] }}  @if($appointment['assistant']['first_name'] ?? null)  👩‍💼 Asistente: {{ $appointment['assistant']['first_name'] ?? 'N/A' }} {{ $appointment['assistant']['last_name'] ?? 'N/A' }} @endif</div>
+                            <div style="font-size: 10px;font-weight: bold">😷 {{ $appointment['patient']['name'] }}</div>
+                            <div style="font-size: 9px; opacity: 0.9;">👨‍ {{ $appointment['practitioner']['name'] }}  @if($appointment['assistant']['first_name'] ?? null) <br/> 👩‍💼 {{ $appointment['assistant']['first_name'] ?? 'N/A' }} {{ $appointment['assistant']['last_name'] ?? 'N/A' }} @endif</div>
                         </div>
                     @endif
                 @endforeach

@@ -43,10 +43,10 @@
                         <div style="font-weight: 600; font-size: 11px;">
                             {{ date('H:i', strtotime($appointment['start'])) }} - {{ date('H:i', strtotime($appointment['end'])) }}
                         </div>
-                        <div style="font-size: 10px;">{{ $appointment['patient']['name'] }}</div>
-                        <div style="font-size: 9px; opacity: 0.9;">{{ $appointment['practitioner']['name'] }}  </div>
+                        <div style="font-size: 10px;font-weight: bold"> 😷 {{ $appointment['patient']['name'] }}</div>
+                        <div style="font-size: 10px; opacity: 0.9;">‍👨‍ Doctor: {{ $appointment['practitioner']['name'] }}  </div>
                         @if($appointment['assistant']['first_name'] ?? null)
-                        <div style="font-size: 9px; opacity: 1;font-weight: bold">  👩‍💼 Asistente: {{ $appointment['assistant']['first_name'] ?? 'N/A' }} {{ $appointment['assistant']['last_name'] ?? 'N/A' }} </div>
+                        <div style="font-size: 9px; opacity: 0.9">  👩‍💼 Asistente: {{ $appointment['assistant']['first_name'] ?? 'N/A' }} {{ $appointment['assistant']['last_name'] ?? 'N/A' }} </div>
                         @endif
                         @if($position['height'] > 40)
                             <div style="font-size: 8px; opacity: 0.7; margin-top: 2px;">{{ Str::limit($appointment['description'], 20) }}</div>

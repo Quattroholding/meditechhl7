@@ -58,10 +58,35 @@
                         </div>
                         <div class="input-block local-forms">
                             <x-input-label for="appointment_time" :value="__('appointment.time')" required/>
-                            <input wire:model="appointment_time" type="time" class="form-control-full">
+                            <input wire:model.live="appointment_time" type="time" class="form-control-full">
                             <x-input-error :messages="$errors->get('appointment_time')"/>
                         </div>
                     </div>
+                    @if($hasConflict)
+                        <div class="alert alert-warning" style="margin-top: 15px; border-left: 4px solid #ff9800;">
+                            <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                <div style="font-size: 20px;">⚠️</div>
+                                <div>
+                                    <strong style="color: #d97706; font-size: 15px;">Bloque de Tiempo Ocupado</strong>
+                                    <div style="margin-top: 8px; font-size: 13px; color: #333;">
+                                        <p style="margin: 0 0 8px 0;">
+                                            El doctor <strong>{{ $appointment['practitioner']['name'] ?? 'ya tiene' }}</strong> tiene una cita programada en este horario.
+                                        </p>
+                                        <p style="margin: 0 0 8px 0;">
+                                            <strong>Paciente:</strong> {!! $conflictingPatientName !!}
+                                        </p>
+                                        <p style="margin: 0;">
+                                            <strong>Horario del conflicto:</strong>
+                                            {{ $conflictingAppointment ? \Carbon\Carbon::parse($conflictingAppointment->start)->format('H:i') . ' - ' . \Carbon\Carbon::parse($conflictingAppointment->end)->format('H:i') : 'N/A' }}
+                                        </p>
+                                        <p style="margin: 8px 0 0 0; padding-top: 8px; border-top: 1px solid #fbbf24;">
+                                            Si guarda esta cita, será agregada automáticamente a la <strong>lista de espera</strong>.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     @if($doctor_id && $appointment_date)
                         @php
                             $workingHour = $this->getWorkingHourForDate($appointment_date);
@@ -84,6 +109,7 @@
                     <div  class="input-block local-forms">
                         <x-input-label class="form-label" required>{{__('appointment.duration')}}</x-input-label>
                         <select wire:model="duration" class="form-control-full" required>
+                            <option value="10">{{ __('appointment.duration_10') }}</option>
                             <option value="15">{{ __('appointment.duration_15') }}</option>
                             <option value="30">{{ __('appointment.duration_30') }}</option>
                             <option value="45">{{ __('appointment.duration_45') }}</option>

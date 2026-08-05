@@ -96,6 +96,13 @@ class ModalSave extends Component
 
     public $assistants = [];
 
+    // Propiedades para detectar conflictos en tiempo real
+    public $hasConflict = false;
+
+    public $conflictingAppointment = null;
+
+    public $conflictingPatientName = '';
+
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
         'doctor_id' => 'required|exists:practitioners,id',
@@ -255,10 +262,19 @@ class ModalSave extends Component
 
         $this->loadConsultorios();
         $this->consulting_room_id = '';
+        $this->checkConflicts();
 
         Log::info('Consultorios after update', [
             'consultorios' => $this->consultorios,
         ]);
+    }
+
+    /**
+     * Listener para cuando cambia la hora de la cita
+     */
+    public function updatedAppointmentTime($value)
+    {
+        $this->checkConflicts();
     }
 
     /**
@@ -1030,6 +1046,56 @@ class ModalSave extends Component
         $this->waitlistIsFlexibleTime = true;
         $this->waitlistMaxWaitDays = 30;
         $this->waitlistReason = '';
+    }
+
+    /**
+     * Verificar conflictos con otras citas en tiempo real
+     */
+    private function checkConflicts(): void
+    {
+        // Limpiar conflicto anterior
+        $this->hasConflict = false;
+        $this->conflictingAppointment = null;
+        $this->conflictingPatientName = '';
+
+        // Si no hay doctor, fecha u hora seleccionada, no verificar
+        if (! $this->doctor_id || ! $this->appointment_date || ! $this->appointment_time) {
+            return;
+        }
+
+        $minutes = (int) $this->duration;
+        $startTime = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
+        $endTime = $startTime->copy()->addMinutes($minutes);
+
+        // Buscar conflictos con otras citas
+        $query = Appointment::where('practitioner_id', $this->doctor_id)
+            ->whereDate('start', $this->appointment_date)
+            ->where('status', '!=', 'cancelled')
+            ->where(function ($q) use ($startTime, $endTime) {
+                $q->where('start', '<', $endTime)
+                    ->where('end', '>', $startTime);
+            });
+
+        // Excluir la cita actual si estamos editando
+        if ($this->appointment) {
+            $query->where('id', '!=', $this->appointment->id);
+        }
+
+        $conflicting = $query->with('patient')->first();
+
+        if ($conflicting) {
+            $this->hasConflict = true;
+            $this->conflictingAppointment = $conflicting;
+            $this->conflictingPatientName = $conflicting->patient?->profile_name ?? 'Paciente desconocido';
+
+            Log::info('Conflicto detectado', [
+                'doctor_id' => $this->doctor_id,
+                'requested_time' => $startTime->format('Y-m-d H:i'),
+                'conflicting_appointment_id' => $conflicting->id,
+                'conflicting_patient' => $this->conflictingPatientName,
+                'conflicting_start' => $conflicting->start->format('Y-m-d H:i'),
+            ]);
+        }
     }
 
     private function checkAvailability()
