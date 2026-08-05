@@ -23,7 +23,7 @@ class AppointmentPolicy
             return false;
         }
 
-        if ($user->hasRole('doctor') && $appointment->practitioner_id == $user->practitioner->id
+        if ($user->hasRole('doctor') && ($appointment->practitioner_id == $user->practitioner->id || $user->id == $appointment->assisted_by)
             && in_array($appointment->status->value, ['fulfilled', 'checked-in'])) {
             return true;
         }
@@ -57,7 +57,7 @@ class AppointmentPolicy
 
     public function fulfilled(User $user, Appointment $appointment): bool
     {
-        return $appointment->status->value == 'checked-in' && $appointment->practitioner->user_id == $user->id;
+        return $appointment->status->value == 'checked-in' && ($appointment->practitioner->user_id == $user->id || $user->id == $appointment->assisted_by);
         /* && ! $user->hasRole('paciente') && ! $user->hasRole('admin client') && ! $user->hasRole('recepcionista'); */
     }
 

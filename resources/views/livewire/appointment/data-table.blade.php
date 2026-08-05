@@ -70,13 +70,13 @@
                                         <span class="cell-content"><livewire:appointment.status appointment_id="{{$appointment->id}}" wire:key="{{$appointment->id}}"/></span>
                                     </td>
                                     <td data-column="service_type" data-priority="5" data-label="{{__('appointment.type')}}">
-                                        <span class="cell-content">{{ $appointment->service_type }}</span>
+                                        <span class="cell-content" title="{{ $appointment->service_type }}">{{ Str::limit($appointment->service_type, 20) }}</span>
                                     </td>
                                     <td data-column="branch" data-priority="6" data-label="{{__('appointment.branch')}}">
                                         <span class="cell-content">{{ $appointment->consultingRoom->branch->name }}</span>
                                     </td>
                                     <td data-column="consulting_room" data-priority="7" data-label="{{__('appointment.consultorio')}}">
-                                        <span class="cell-content">{{ $appointment->consultingRoom->name }}</span>
+                                        <span class="cell-content" title="{{ $appointment->consultingRoom->name }}">{{ Str::limit($appointment->consultingRoom->name, 15) }}</span>
                                     </td>
                                     <td data-column="date" data-priority="8" data-label="{{__('appointment.date')}}">
                                         <span class="cell-content">{{ \Carbon\Carbon::parse($appointment->start)->format('d-m-Y') }}</span>

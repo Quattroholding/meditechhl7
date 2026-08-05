@@ -83,10 +83,10 @@
                                         </span>
                                     </td>
                                     <td data-column="form" data-priority="5" data-label="Forma">
-                                        <span class="cell-content">{{ $medication->form }}</span>
+                                        <span class="cell-content" title="{{ $medication->form }}">{{ Str::limit($medication->form,15) }}</span>
                                     </td>
                                     <td data-column="manufacturer" data-priority="6" data-label="Fabricante">
-                                        <span class="cell-content">{{ $medication->manufacturer }}</span>
+                                        <span class="cell-content" title="{{ $medication->manufacturer }}">{{ Str::limit($medication->manufacturer,15) }}</span>
                                     </td>
                                     <td data-column="status" data-priority="7" data-label="Estado">
                                         <span class="cell-content">

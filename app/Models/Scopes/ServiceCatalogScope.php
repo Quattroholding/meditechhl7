@@ -31,7 +31,7 @@ class ServiceCatalogScope implements Scope
                     ->orWhereIn('service_catalog.client_id', $clientIds);
             });
         } elseif ($user->hasRole('recepcionista') || $user->hasRole('admin client')) {
-            $builder->whereIn('service_catalog.client_id', $user->clients()->pluck('id'));
+            $builder->whereIn('service_catalog.client_id', $user->clients()->pluck('clients.id'));
         }
     }
 }

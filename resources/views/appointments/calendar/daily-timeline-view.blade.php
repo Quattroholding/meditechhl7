@@ -734,7 +734,7 @@
                                 👨‍⚕️ {{ $appointment['practitioner']['name'] ?? 'Doctor no asignado' }}
                             </div>
 
-                            @if($appointment['assistant'] ?? null)
+                            @if($appointment['assistant']['first_name'] ?? null)
                                 <div class="appointment-doctor" style="font-size: 14px; margin-top: 5px; color: #7f8c8d;">
                                     👩‍💼 Asistente: {{ $appointment['assistant']['first_name'] ?? 'N/A' }} {{ $appointment['assistant']['last_name'] ?? 'N/A' }}
                                 </div>
