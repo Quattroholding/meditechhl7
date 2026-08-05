@@ -3,6 +3,7 @@
 namespace App\Livewire\Appointment;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
@@ -26,11 +27,18 @@ class DataTable extends Component
 
     public $modalTitle = 'Confirmar Cita';
 
+    public $methodFilter = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
     ];
 
     public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedMethodFilter()
     {
         $this->resetPage();
     }
@@ -52,19 +60,57 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    /**
+     * Obtener variaciones de búsqueda por fecha
+     * Convierte formatos de fecha latinos (dd-mm-yyyy) a formato de BD (yyyy-mm-dd)
+     */
+    private function getSearchVariations(): array
+    {
+        $variations = [$this->search];
+
+        // Intentar parsear como fecha en formato latino (dd-mm-yyyy)
+        if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $this->search)) {
+            try {
+                $date = Carbon::createFromFormat('d-m-Y', $this->search);
+                $variations[] = $date->format('Y-m-d');
+            } catch (\Exception $e) {
+                // Si no se puede parsear, continuar sin la variación
+            }
+        }
+
+        // Intentar parsear como fecha en formato yyyy-mm-dd
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $this->search)) {
+            try {
+                $date = Carbon::createFromFormat('Y-m-d', $this->search);
+                // También agregar en formato latino
+                $variations[] = $date->format('d-m-Y');
+            } catch (\Exception $e) {
+                // Si no se puede parsear, continuar sin la variación
+            }
+        }
+
+        return array_unique($variations);
+    }
+
     public function getDataProperty()
     {
         return Appointment::query()->selectRaw('appointments.*')
             ->leftJoin('patients', 'patients.id', '=', 'appointments.patient_id')
             ->leftJoin('practitioners', 'practitioners.id', '=', 'appointments.practitioner_id')
             ->when($this->search, function (Builder $query) {
-                $query->where(function ($q) {
+                $variations = $this->getSearchVariations();
+                $query->where(function ($q) use ($variations) {
+                    // Búsqueda en campos de texto
                     $q->orWhere('service_type', 'like', '%'.$this->search.'%');
-                    $q->orWhere('start', 'like', '%'.$this->search.'%');
-                    $q->orWhere('end', 'like', '%'.$this->search.'%');
                     $q->orWhere('status', 'like', '%'.$this->search.'%');
                     $q->orWhereRaw("patients.name like '%".$this->search."%'");
                     $q->orWhereRaw("practitioners.name like '%".$this->search."%'");
+
+                    // Búsqueda por fecha - probar todas las variaciones
+                    foreach ($variations as $variation) {
+                        $q->orWhere('start', 'like', '%'.$variation.'%');
+                        $q->orWhere('end', 'like', '%'.$variation.'%');
+                    }
                 });
             })
             ->when(! empty($this->patient_id), function ($q) {
@@ -81,6 +127,9 @@ class DataTable extends Component
             })
             ->when(request()->has('id'), function ($q) {
                 $q->whereId(request()->get('id'));
+            })
+            ->when(! empty($this->methodFilter), function ($q) {
+                $q->where('status', $this->methodFilter);
             })
             ->when(! empty($this->limit), function ($q) {
                 $q->take($this->limit);

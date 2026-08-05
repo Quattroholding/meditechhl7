@@ -22,7 +22,9 @@ class DataTable extends Component
 
     public $search; // Búsqueda
 
-    public $statusFilter = ''; // Filtro de status
+    public $statusFilter = ''; // Filtro de status (deprecated, usar methodFilter)
+
+    public $methodFilter = ''; // Filtro de status
 
     public $sortField = 'id'; // Ordenación por defecto
 
@@ -76,6 +78,13 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatedMethodFilter()
+    {
+        // Mantener sincronizado statusFilter para compatibilidad
+        $this->statusFilter = $this->methodFilter;
+        $this->resetPage();
+    }
+
     public function render(Request $request)
     {
         $data = Encounter::selectRaw('encounters.*')
@@ -92,8 +101,9 @@ class DataTable extends Component
                     $q->orWhere('practitioners.name', 'like', '%'.$this->search.'%');
                 });
             })
-            ->when(! empty($this->statusFilter), function ($q) {
-                $q->where('encounters.status', $this->statusFilter);
+            ->when(! empty($this->methodFilter) || ! empty($this->statusFilter), function ($q) {
+                $filterValue = ! empty($this->methodFilter) ? $this->methodFilter : $this->statusFilter;
+                $q->where('encounters.status', $filterValue);
             })
             ->when(! empty($request->status), function ($q) use ($request) {
                 $q->where('encounters.status', $request->status);

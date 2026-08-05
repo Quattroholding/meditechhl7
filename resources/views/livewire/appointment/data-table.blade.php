@@ -5,6 +5,14 @@
                 <div class="card-body">
                     <!-- Table Header -->
                     @component('components.table-header',array('show_create'=>false))
+                        @slot('filters')
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{__('consultation.data_table.status')}}</label>
+                                    <x-select-input wire:model.live="methodFilter" name="metodo" :options="\App\Enums\AppointmentStatusEnum::cases()" :selected="[]" class="form-select"/>
+                                </div>
+                            </div>
+                        @endslot
                         @slot('title')
 
                         @endslot
