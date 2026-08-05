@@ -43,6 +43,13 @@
                     @else
                         <input type="hidden" wire:model="doctor_id" value="{{$doctor_id}}" id="doctor_id" name="doctor_id">
                     @endif
+                    @if(count($assistants) > 0 || $assisted_by)
+                        <div class="input-block local-forms">
+                            <x-input-label for="assisted_by" :value="'Asistente Médico'" />
+                            <x-select-input wire:model="assisted_by" id="assisted_by" name="assisted_by" :options="$assistants"  class="block w-full"/>
+                            <x-input-error :messages="$errors->get('assisted_by')"/>
+                        </div>
+                    @endif
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="input-block local-forms">
                             <x-input-label for="Fecha" :value="__('appointment.date')" required/>

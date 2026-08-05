@@ -65,6 +65,7 @@ class ConsultationController extends Controller
             $consultation = Encounter::create(['fhir_id' => 'encounter-'.Str::uuid(),
                 'patient_id' => $appointment->patient_id,
                 'practitioner_id' => $appointment->practitioner_id,
+                'assisted_by' => $appointment->assisted_by,
                 'appointment_id' => $appointment->id,
                 'identifier' => 'ENC-'.strtoupper(Str::random(7)),
                 'status' => 'in-progress',
@@ -429,7 +430,7 @@ class ConsultationController extends Controller
             }
 
             // Update appointment status
-            if (auth()->user()->id == $appointment->practitioner->user_id) {
+            if (auth()->user()->id == $appointment->practitioner->user_id || auth()->user()->id == $appointment->assisted_by) {
                 $appointment->update(['status' => 'fulfilled']);
             }
 
@@ -437,7 +438,7 @@ class ConsultationController extends Controller
             $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
 
             // Update encounter status
-            if (auth()->user()->id == $appointment->practitioner->user_id) {
+            if (auth()->user()->id == $appointment->practitioner->user_id || auth()->user()->id == $appointment->assisted_by) {
                 $wasAlreadyFinished = $encounter->getRawOriginal('status') === 'finished';
 
                 // Only set end time when finishing for the first time, not on subsequent edits

@@ -196,6 +196,7 @@ class Calendar extends Component
          $query = Appointment::with('practitioner:id,name')
              ->with('patient:id,name,phone')
              ->with('medicalSpeciality:id,name')
+             ->with('assistant:id,first_name,last_name')
              ->selectRaw('appointments.*')
              ->leftJoin('patients', 'patients.id', '=', 'appointments.patient_id')
              ->leftJoin('practitioners', 'practitioners.id', '=', 'appointments.practitioner_id')
@@ -328,8 +329,10 @@ class Calendar extends Component
 
                 if ($newStatus == 'checked-in') {
 
-                    if (auth()->user()->hasAnyRole(['admin', 'doctor']) or
-                        (auth()->user()->practitioner && $appointment->practitioner_id == auth()->user()->practitioner()->user_id)) {
+                    if (auth()->user()->hasAnyRole(['admin', 'doctor','asistente medico']) or
+                        (auth()->user()->practitioner &&
+                            ($appointment->practitioner_id == auth()->user()->practitioner()->user_id or $appointment->assisted_by == auth()->user()->id)
+                        )) {
 
                         $this->dispatch('showToastrAppointment',
                             type: 'success',

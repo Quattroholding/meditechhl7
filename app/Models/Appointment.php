@@ -30,7 +30,7 @@ class Appointment extends BaseModel
         'original_requested_datetime', 'practitioner_suggested_datetime', 'comment', 'client_id', 'scb_id',
         'consultation_type', 'virtual_room_id', 'virtual_room_url',
         'virtual_session_started_at', 'virtual_session_ended_at', 'virtual_session_metadata', 'source_creation',
-        'reminder_scheduled_at', 'reminder_sent_at',
+        'reminder_scheduled_at', 'reminder_sent_at', 'assisted_by',
     ];
 
     protected $casts = [
@@ -70,6 +70,11 @@ class Appointment extends BaseModel
     public function practitioner(): BelongsTo
     {
         return $this->belongsTo(Practitioner::class)->withDefault(['profile_name' => 'N/A']);
+    }
+
+    public function assistant(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assisted_by')->withDefault(['profile_name' => 'N/A']);
     }
 
     public function encounter(): HasOne

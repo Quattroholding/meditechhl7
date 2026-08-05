@@ -30,7 +30,8 @@
                                     </button>
                                 </li>
                                 @endif
-                                @if($encounter->presentIllnesses)
+
+                                @if($encounter->presentIllnesses->location)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="illness-tab" data-bs-toggle="tab" data-bs-target="#illness" type="button" role="tab" aria-controls="illness" aria-selected="false">
                                         <i class="fa fa-stethoscope"></i> {{ __('consultation.present_illness') }}
@@ -112,6 +113,13 @@
                                                         <label><strong>{{ __('encounter.practitioner') }}:</strong></label>
                                                         <span>{!! $encounter->practitioner->profile_name !!}</span>
                                                     </div>
+
+                                                    @if($encounter->assistant->id)
+                                                    <div class="form-group">
+                                                        <label><strong>{{ __('encounter.assistant') }}:</strong></label>
+                                                        <span>{!! $encounter->assistant->profile_name !!}</span>
+                                                    </div>
+                                                    @endif
                                                     <div class="form-group">
                                                         <label><strong>{{ __('encounter.reason') }}:</strong></label>
                                                         <span>{!! $encounter->reason !!}</span>

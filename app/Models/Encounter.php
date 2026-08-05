@@ -16,7 +16,7 @@ class Encounter extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id', 'appointment_id', 'identifier',
-        'status', 'class', 'type', 'priority', 'reason', 'start', 'end', 'medical_speciality_id', 'scb_id',
+        'status', 'class', 'type', 'priority', 'reason', 'start', 'end', 'medical_speciality_id', 'scb_id', 'assisted_by',
     ];
 
     protected $casts = [
@@ -38,6 +38,11 @@ class Encounter extends BaseModel
     public function practitioner(): BelongsTo
     {
         return $this->belongsTo(Practitioner::class);
+    }
+
+    public function assistant(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assisted_by')->withDefault(['profile_name' => 'N/A']);
     }
 
     public function appointment(): BelongsTo

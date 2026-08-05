@@ -4,6 +4,7 @@ return [
     'title' => 'Consulta',
     'titles' => 'Consultas',
     'practitioner' => 'Doctor',
+    'assistant' => 'Asistente',
     'patient' => 'Paciente',
     'start' => 'Inicio',
     'end' => 'Fin',

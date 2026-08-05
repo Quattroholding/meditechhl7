@@ -48,6 +48,9 @@
                         <td>
                             <strong>{{ $encounter->practitioner->name ?? 'No asignado' }}</strong>
                             <br><small>{{ $encounter->medicalSpeciality->name ?? '' }}</small>
+                            @if($encounter->assistant->id)
+                              <br>  👩‍💼 Asistente: {{ $encounter->assistant->full_name ?? '' }}
+                            @endif
                         </td>
                         <td>
                             @foreach($encounter->diagnoses as $diag)

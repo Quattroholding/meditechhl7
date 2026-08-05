@@ -8,6 +8,7 @@ use App\Models\AppointmentWaitlistEntry;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
+use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
 use App\Services\WaitlistService;
@@ -91,6 +92,10 @@ class ModalSave extends Component
 
     public $waitlistReason = '';
 
+    public $assisted_by = '';
+
+    public $assistants = [];
+
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
         'doctor_id' => 'required|exists:practitioners,id',
@@ -103,6 +108,7 @@ class ModalSave extends Component
         'service_type' => 'required|string',
         'description' => 'nullable|string',
         'notes' => 'nullable|string',
+        'assisted_by' => 'nullable|exists:users,id',
     ];
 
     protected $messages = [
@@ -192,6 +198,8 @@ class ModalSave extends Component
         $this->appointment_time = $time ?? '';
         $this->duration = 30;
         $this->status = 'booked';
+        $this->assisted_by = '';
+        $this->assistants = [];
 
         $this->appointment = null;
         if (! auth()->user()->hasRole('paciente')) {
@@ -265,7 +273,9 @@ class ModalSave extends Component
 
         if ($value) {
             $this->loadConsultorios();
+            $this->loadAssistants();
             $this->consulting_room_id = '';
+            $this->assisted_by = '';
         }
 
         Log::info('Consultorios after update', [
@@ -414,6 +424,61 @@ class ModalSave extends Component
     }
 
     /**
+     * Cargar lista de asistentes médicos disponibles para el cliente del doctor
+     */
+    public function loadAssistants()
+    {
+        if (! $this->doctor_id) {
+            $this->assistants = [];
+
+            return;
+        }
+
+        $practitioner = Practitioner::find($this->doctor_id);
+        if (! $practitioner || ! $practitioner->user) {
+            $this->assistants = [];
+
+            return;
+        }
+
+        // Obtener el cliente del doctor desde su primer cliente asignado
+        $userClient = UserClient::where('user_id', $practitioner->user_id)->first();
+        if (! $userClient) {
+            $this->assistants = [];
+
+            return;
+        }
+
+        // Obtener asistentes médicos del mismo cliente
+        $assistants = User::whereHas('roles', function ($q) {
+            $q->where('name', 'asistente medico');
+        })
+            ->whereHas('clients', function ($q) use ($userClient) {
+                $q->where('client_id', $userClient->client_id);
+            })
+            ->get()
+            ->pluck('full_name', 'id')
+            ->toArray();
+
+        // Si hay un asistente actual asignado, asegurarse de que esté en la lista
+        if ($this->assisted_by && ! isset($assistants[$this->assisted_by])) {
+            $currentAssistant = User::find($this->assisted_by);
+            if ($currentAssistant) {
+                $assistants[$this->assisted_by] = $currentAssistant->full_name;
+            }
+        }
+
+        $this->assistants = $assistants;
+
+        Log::info('loadAssistants completed', [
+            'doctor_id' => $this->doctor_id,
+            'client_id' => $userClient->client_id,
+            'assistants_count' => count($this->assistants),
+            'assisted_by' => $this->assisted_by,
+        ]);
+    }
+
+    /**
      * Obtener los horarios laborales del doctor
      */
     private function getDoctorWorkingHours()
@@ -530,6 +595,7 @@ class ModalSave extends Component
                 'original_requested_datetime' => $original_requested_datetime,
                 'practitioner_suggested_datetime' => $practitioner_suggested_datetime,
                 'comment' => $this->notes,
+                'assisted_by' => $this->assisted_by ?: null,
             ];
 
             if ($this->appointment) {
@@ -712,7 +778,9 @@ class ModalSave extends Component
             $this->reason = $this->appointment->description;
             $this->description = $this->appointment->description;
             $this->notes = $this->appointment->comment;
+            $this->assisted_by = $this->appointment->assisted_by;
             $this->canEdit = auth()->user()->can('edit', $this->appointment);
+            $this->loadAssistants();
             $this->showModal = true;
             // $this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
         }
