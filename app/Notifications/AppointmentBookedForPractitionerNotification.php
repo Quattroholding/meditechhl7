@@ -67,7 +67,7 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
 
         return (new MailMessage)
             ->subject('Nueva Cita Médica Agendada - '.$clinicName)
-            ->bcc('business@meditecpty.com')
+            //->bcc('business@meditecpty.com')
             ->view('emails.appointment-booked-practitioner', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
