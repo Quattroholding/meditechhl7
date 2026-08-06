@@ -74,6 +74,11 @@ class SurveyController extends Controller
             ->with('success', 'Encuesta eliminada exitosamente.');
     }
 
+    public function responses(Survey $survey)
+    {
+        return view('surveys.responses', compact('survey'));
+    }
+
     public function publicForm(string $token)
     {
         $surveyResponse = SurveyResponse::where('token', $token)->firstOrFail();

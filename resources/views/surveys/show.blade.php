@@ -19,6 +19,11 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title mb-0">{{ $survey->title }}</h4>
                                 <div>
+                                    @can('surveys.view')
+                                    <a href="{{ route('surveys.responses', $survey->id) }}" class="btn btn-info btn-sm text-white">
+                                        <i class="fa fa-chart-bar"></i> Ver Respuestas
+                                    </a>
+                                    @endcan
                                     @can('surveys.edit')
                                     <a href="{{ route('surveys.edit', $survey->id) }}" class="btn btn-warning btn-sm">
                                         <i class="fa fa-edit"></i> Editar

@@ -50,8 +50,13 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                                 @can('surveys.view')
-                                <a href="{{ route('surveys.show', $survey->id) }}" class="btn btn-info btn-sm text-white">
+                                <a href="{{ route('surveys.show', $survey->id) }}" class="btn btn-info btn-sm text-white" title="Ver encuesta">
                                     <i class="fa fa-eye"></i>
+                                </a>
+                                @endcan
+                                @can('surveys.view')
+                                <a href="{{ route('surveys.responses', $survey->id) }}" class="btn btn-success btn-sm text-white" title="Ver respuestas">
+                                    <i class="fa fa-chart-bar"></i>
                                 </a>
                                 @endcan
                                 @can('surveys.edit')

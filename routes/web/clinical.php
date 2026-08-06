@@ -281,6 +281,10 @@ Route::middleware(['auth', 'first.login'])->group(function () {
         ->middleware('permission:surveys.view')
         ->name('surveys.show');
 
+    Route::get('surveys/{survey}/responses', [SurveyController::class, 'responses'])
+        ->middleware('permission:surveys.view')
+        ->name('surveys.responses');
+
     // --------------------------------------------------------------------
     // CREATE ROUTES - Crear encuestas (create, store)
     // --------------------------------------------------------------------
