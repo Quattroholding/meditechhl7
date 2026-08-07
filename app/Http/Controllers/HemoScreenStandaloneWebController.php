@@ -26,4 +26,12 @@ class HemoScreenStandaloneWebController extends Controller
 
         return view('hemoscreen.result-detail', compact('result'));
     }
+
+    /**
+     * Display the HemoScreen Gateway configuration manual
+     */
+    public function config()
+    {
+        return view('hemoscreen.hemoscreen_config');
+    }
 }

@@ -96,4 +96,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
         ->middleware('role:hemoscreen')
         ->name('hemoscreen.dashboard');
 
+    Route::get('/hemoscreen/config', [HemoScreenStandaloneWebController::class, 'config'])
+        ->middleware('role:hemoscreen')
+        ->name('hemoscreen.config');
+
 });

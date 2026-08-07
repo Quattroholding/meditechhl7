@@ -24,6 +24,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HemoScreenStandaloneWebController;
 
 /**
  * ============================================================================
@@ -64,6 +65,7 @@ Route::domain('sami.{domain}')->where(['domain' => '.*'])->group(function () {
 // HemoScreen Subdomain
 Route::domain('hemoscreen.{domain}')->where(['domain' => '.*'])->group(function () {
     Route::get('/', [LandingController::class, 'hemoscreen'])->name('hemoscreen.landing');
+    Route::get('/gateway_config', [HemoScreenStandaloneWebController::class, 'config'])->name('hemoscreen.config');
 });
 
 // SAMIRX Subdomain
