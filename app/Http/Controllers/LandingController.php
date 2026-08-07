@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Requests\HemoScreenDemoRequest as HemoScreenDemoRequestForm;
+use App\Mail\HemoScreenDemoRequest;
 use App\Models\ConsultingRoom;
 use App\Models\MedicalSpeciality;
 use App\Models\Practitioner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class LandingController extends Controller
 {
@@ -137,5 +140,21 @@ class LandingController extends Controller
     public function hemoscreen()
     {
         return view('sami-hemoscreen');
+    }
+
+    public function hemoscreenDemoRequest(HemoScreenDemoRequestForm $request)
+    {
+        // Enviar el correo a business@meditecpty.com
+        Mail::to('business@meditecpty.com')
+            ->cc($request->email)
+            ->send(new HemoScreenDemoRequest(
+                name: $request->name,
+                email: $request->email,
+                phone: $request->phone,
+                specialty: $request->specialty,
+                demoMessage: $request->message,
+            ));
+
+        return redirect()->back()->with('success', '¡Solicitud enviada exitosamente! Pronto nos pondremos en contacto contigo.');
     }
 }

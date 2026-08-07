@@ -380,38 +380,70 @@
             </div>
 
             <div class="bg-linear-to-br from-purple-50 to-blue-50 rounded-3xl p-8 md:p-12">
-                <form class="space-y-6">
+                @if ($errors->any())
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                        <strong>Por favor corrige los siguientes errores:</strong>
+                        <ul class="mt-2 list-disc list-inside text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+                        <strong>✅ {{ session('success') }}</strong>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('hemoscreen.demo-request') }}" class="space-y-6">
+                    @csrf
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Dr. Juan Pérez">
+                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Dr. Juan Pérez" value="{{ old('name') }}">
+                            @error('name')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                            <input type="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="doctor@ejemplo.com">
+                            <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="doctor@ejemplo.com" value="{{ old('email') }}">
+                            @error('email')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Teléfono</label>
-                            <input type="tel" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="+507 6XXX-XXXX">
+                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="+507 6XXX-XXXX" value="{{ old('phone') }}">
+                            @error('phone')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Especialidad</label>
-                            <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent">
-                                <option >Seleccione</option>
+                            <select name="specialty" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                                <option value="">Seleccione</option>
                                 @foreach(\App\Models\MedicalSpeciality::get() as $ms)
-                                    <option value="{{$ms->name}}">{{ $ms->name}}</option>
+                                    <option value="{{$ms->name}}" {{ old('specialty') == $ms->name ? 'selected' : '' }}>{{ $ms->name}}</option>
                                 @endforeach
-
                             </select>
+                            @error('specialty')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Mensaje</label>
-                        <textarea rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Cuéntanos sobre tu consultorio y cómo HemoScreen puede ayudarte..."></textarea>
+                        <textarea rows="4" name="message" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Cuéntanos sobre tu consultorio y cómo HemoScreen puede ayudarte...">{{ old('message') }}</textarea>
+                        @error('message')
+                            <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <button type="submit" class="w-full bg-purple-600 text-white py-4 rounded-full font-semibold hover:bg-purple-700 transition shadow-lg">
@@ -421,8 +453,8 @@
 
                     <p class="text-center text-sm text-gray-600">
                         También puedes contactarnos directamente:
-                        <a href="tel:+50760000000" class="text-purple-600 font-semibold">+507 6XXX-XXXX</a> |
-                        <a href="mailto:hemoscreen@sami.com" class="text-purple-600 font-semibold">hemoscreen@sami.com</a>
+                        <a href="tel: +507 831 6100" class="text-purple-600 font-semibold">+ +507 831 6100</a> |
+                        <a href="mailto:business@meditecpty.com" class="text-purple-600 font-semibold">business@meditecpty.com</a>
                     </p>
                 </form>
             </div>
@@ -430,7 +462,7 @@
     </section>
 
     <!-- Sección para Usuarios Existentes -->
-    <section class="py-16 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+    <section class="py-16 bg-linear-to-r from-purple-600 to-indigo-600 text-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="mb-8">
                 <i class="fas fa-user-check text-6xl mb-4 opacity-90"></i>
@@ -508,11 +540,11 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-3"></i>
-                            +507 6XXX-XXXX
+                            +507 831 6100
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-3"></i>
-                            hemoscreen@sami.com
+                            business@meditecpty.com
                         </li>
                     </ul>
                 </div>

@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\TwoFactorLoginController;
 use App\Http\Controllers\DebugLoginController;
 use App\Http\Controllers\EnterpriseLeadController;
 use App\Http\Controllers\FirstLoginController;
+use App\Http\Controllers\HemoScreenStandaloneWebController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MedicalLeaveVerificationController;
 use App\Http\Controllers\PublicPatientRegistrationController;
@@ -23,8 +24,8 @@ use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HemoScreenStandaloneWebController;
 
 /**
  * ============================================================================
@@ -83,6 +84,7 @@ Route::get('/sami', [LandingController::class, 'index'])->name('sami');
 Route::get('/sami_recetas', [LandingController::class, 'recetas'])->name('sami_recetas');
 Route::get('/api/practitioners', [LandingController::class, 'getPractitioners'])->name('api.practitioners');
 Route::get('/pacientes', [LandingController::class, 'patientLanding'])->name('patients.landing');
+Route::post('/hemoscreen/demo-request', [LandingController::class, 'hemoscreenDemoRequest'])->name('hemoscreen.demo-request');
 
 /**
  * ============================================================================
@@ -220,7 +222,7 @@ Route::get('/join-consultation/{appointment}/{token}', function (Appointment $ap
  */
 Route::get('/test-email', function () {
     try {
-        \Illuminate\Support\Facades\Mail::raw('Este es un correo de prueba desde Laravel.', function ($message) {
+        Mail::raw('Este es un correo de prueba desde Laravel.', function ($message) {
             $message->to('rgasperi@smartcarebilling.com')
                 ->subject('Prueba de correo - '.now()->format('Y-m-d H:i:s'));
         });
@@ -232,7 +234,7 @@ Route::get('/test-email', function () {
             'to' => 'rgasperi@smartcarebilling.com',
             'time' => now()->toDateTimeString(),
         ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         return response()->json([
             'success' => false,
             'error' => $e->getMessage(),
