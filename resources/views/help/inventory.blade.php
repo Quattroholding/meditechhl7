@@ -510,7 +510,7 @@ body {
                     <li>
                         <a href="#paso-1">
                             <i class="fas fa-box"></i>
-                            Paso 1: Crear Artículos
+                            Paso 1: Crear Item
                         </a>
                     </li>
                     <li>
@@ -795,6 +795,10 @@ body {
                         </tbody>
                     </table>
 
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/new_article.png') }}" alt="Vistas del calendario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    </div>
+
                     <div class="info-box info-tip">
                         <i class="fas fa-lightbulb"></i>
                         <div>
@@ -863,6 +867,10 @@ body {
                         </tbody>
                     </table>
 
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/stock_managment.png') }}" alt="Recibir Articulos de Inventario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    </div>
+
                     <div class="info-box info-note">
                         <i class="fas fa-clipboard-check"></i>
                         <div>
@@ -923,6 +931,10 @@ body {
                         </tr>
                         </tbody>
                     </table>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/stock_transfer.png') }}" alt="Transferir Articulo de Inventario de un destino a otro" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    </div>
 
                     <div class="sub-step">
                         <h6><i class="fas fa-sitemap me-2"></i>Casos de Uso Comunes</h6>
@@ -988,6 +1000,10 @@ body {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/encounter_supply.png') }}" alt="Suministro de Articulo de inventario en consulta" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     </div>
 
                     <div class="info-box info-note">
@@ -1294,6 +1310,11 @@ body {
                             <li><strong>DISPOSAL:</strong> Baja de inventario (vencimiento, daño)</li>
                             <li><strong>COUNT:</strong> Conteos de inventario</li>
                         </ul>
+                    </div>
+
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/transaction_history.png') }}" alt="Recibir Articulos de Inventario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     </div>
 
                     <div class="info-box info-note">

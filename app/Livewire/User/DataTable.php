@@ -125,4 +125,9 @@ class DataTable extends Component
         $this->modalTitle = 'Actualizar Usuario';
         $this->dispatch('editUserModal', $userId);
     }
+
+    public function openPermissionsModal($userId)
+    {
+        $this->dispatch('open-manage-permissions-modal', userId: $userId);
+    }
 }

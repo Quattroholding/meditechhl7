@@ -43,6 +43,11 @@ class StockManagement extends Component
             $this->selectedItemId = $item;
             $this->loadItem();
         }
+
+        if(auth()->user()->hasRole('doctor')){
+            $this->locationType = 'practitioner';
+            $this->locationId = auth()->user()->practitioner->id;
+        }
     }
 
     public function updatedSelectedItemId()

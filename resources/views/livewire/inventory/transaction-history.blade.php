@@ -86,7 +86,7 @@
                                         <span class="text-muted">0</span>
                                     @endif
                                 </td>
-                                <td>{{ $trans->performedByUser->name }}</td>
+                                <td>{{ $trans->performedByUser->full_name }}</td>
                                 <td>{{ $trans->patient?->name ?? '-' }}</td>
                                 <td>{{ Str::limit($trans->reason, 50) }}</td>
                             </tr>

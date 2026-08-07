@@ -98,10 +98,10 @@ class ManagePermissions extends Component
             // Refrescar el usuario para obtener datos actualizados
             $this->user->refresh();
 
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'message' => 'Permisos del usuario actualizados exitosamente.',
-            ]);
+            $this->dispatch('showToastrManagePermissions',
+                type: 'success',
+                message:  'Permisos del usuario actualizados exitosamente.',
+            );
 
             $this->closeModal();
             $this->dispatch('permissions-updated');
@@ -112,10 +112,11 @@ class ManagePermissions extends Component
                 'error' => $e->getMessage(),
             ]);
 
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'message' => 'Error al actualizar los permisos: '.$e->getMessage(),
-            ]);
+
+            $this->dispatch('showToastrManagePermissions',
+                type: 'error',
+                message: 'Error al actualizar los permisos: '.$e->getMessage(),
+            );
         }
     }
 

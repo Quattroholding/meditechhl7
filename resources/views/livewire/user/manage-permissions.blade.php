@@ -1,7 +1,7 @@
 <div>
     @if($showModal)
         <div class="modal-overlay" wire:click="closeModal" style="z-index: 10000;">
-            <div class="modal-content" wire:click.stop style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-content" wire:click.stop style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
                 <div class="modal-header">
                     <h5 class="modal-title">Gestionar Permisos - {{ $user->full_name }}</h5>
                     <button wire:click="closeModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
@@ -28,43 +28,77 @@
                             type="text"
                             class="form-control"
                             placeholder="Buscar permiso..."
-                            wire:model.live="search"
+                            wire:model.live.debounce.300ms="search"
                         >
                     </div>
 
-                    <!-- Lista de Permisos -->
-                    <div class="permissions-list" style="max-height: 400px; overflow-y: auto;">
-                        @forelse($permissions as $permission)
-                            <div class="form-check mb-2 p-2 border rounded">
-                                <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value="{{ $permission->id }}"
-                                    id="permission-{{ $permission->id }}"
-                                    wire:model="selectedPermissions"
-                                    @if($this->isPermissionFromRole($permission->id) && !$this->isDirectPermission($permission->id))
-                                        checked
-                                        disabled
-                                    @endif
-                                >
-                                <label class="form-check-label w-100" for="permission-{{ $permission->id }}">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{{ $permission->name }}</strong>
-                                            @if($permission->description)
-                                                <br><small class="text-muted">{{ $permission->description }}</small>
-                                            @endif
+                    <!-- Resumen de Permisos Seleccionados -->
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle me-1"></i>
+                            <strong>{{ count($selectedPermissions) }}</strong> permisos directos seleccionados
+                        </small>
+                    </div>
+
+                    <!-- Accordion de Permisos Agrupados por Módulo con Alpine.js -->
+                    <div class="permissions-accordion" style="max-height: 500px; overflow-y: auto;">
+                        @forelse($groupedPermissions as $module => $permissions)
+                            <div class="accordion-item mb-2" x-data="{ open: {{ $loop->first ? 'true' : 'false' }} }">
+                                <div class="accordion-header">
+                                    <button
+                                        type="button"
+                                        class="accordion-button-custom"
+                                        :class="{ 'active': open }"
+                                        @click="open = !open"
+                                    >
+                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                            <div>
+                                                <i class="fas" :class="open ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                                                <strong class="ms-2">{{ $moduleDisplayName($module) }}</strong>
+                                            </div>
+                                            <span class="badge bg-primary">{{ $permissions->count() }}</span>
                                         </div>
-                                        <div>
-                                            @if($this->isPermissionFromRole($permission->id) && !$this->isDirectPermission($permission->id))
-                                                <span class="badge bg-secondary">Desde Rol</span>
-                                            @endif
-                                            @if($this->isDirectPermission($permission->id))
-                                                <span class="badge bg-success">Directo</span>
-                                            @endif
-                                        </div>
+                                    </button>
+                                </div>
+                                <div class="accordion-body-custom" x-show="open" x-collapse>
+                                    <div class="p-2">
+                                        @foreach($permissions as $permission)
+                                            <div class="form-check mb-2 p-2 border rounded permission-item" style="margin: 0 10px">
+                                                @if(!$this->isPermissionFromRole($permission->id))
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    value="{{ (int)$permission->id }}"
+                                                    id="permission-{{ $permission->id }}"
+                                                    wire:model.live="selectedPermissions"
+                                                    @if($this->isPermissionFromRole($permission->id) && !$this->isDirectPermission($permission->id))
+                                                        checked
+                                                        disabled
+                                                    @endif
+                                                >
+                                                @endif
+                                                <label class="form-check-label w-100" for="permission-{{ $permission->id }}">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div style="flex: 1;">
+                                                            <strong>{{ $permission->name }}</strong>
+                                                            @if($permission->description)
+                                                                <br><small class="text-muted">{{ $permission->description }}</small>
+                                                            @endif
+                                                        </div>
+                                                        <div class="ms-2" style="white-space: nowrap;">
+                                                            @if($this->isPermissionFromRole($permission->id) && !$this->isDirectPermission($permission->id))
+                                                                <span class="badge bg-secondary">Desde Rol</span>
+                                                            @endif
+                                                            @if($this->isDirectPermission($permission->id))
+                                                                <span class="badge bg-success">Directo</span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                </label>
+                                </div>
                             </div>
                         @empty
                             <div class="alert alert-info">
@@ -83,7 +117,19 @@
         </div>
     @endif
 </div>
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('showToastrManagePermissions', (event) => {
+            toastr[event.type](event.message, '', {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 5000,
+            });
+        });
+    });
 
+</script>
 <style>
 .modal-overlay {
     position: fixed;
@@ -123,5 +169,43 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+}
+
+.accordion-item {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.accordion-button-custom {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+}
+
+.accordion-button-custom:hover {
+    background-color: #e9ecef;
+}
+
+.accordion-button-custom.active {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+.accordion-body-custom {
+    border-top: 1px solid #dee2e6;
+    background-color: #fff;
+}
+
+.permission-item {
+    transition: background-color 0.2s;
+}
+
+.permission-item:hover {
+    background-color: #f8f9fa;
 }
 </style>

@@ -18,8 +18,8 @@ return [
 
     'inventory' => [
         'title' => 'Inventario',
-        'catalog' => 'Catálogo de Items',
-        'create_item' => 'Crear Item',
+        'catalog' => 'Catálogo de Articulos',
+        'create_item' => 'Crear Articulo',
         'stock_management' => 'Gestión de Stock',
         'low_stock' => 'Stock Bajo',
         'transaction_history' => 'Historial de Transacciones',

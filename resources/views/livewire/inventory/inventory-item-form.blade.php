@@ -2,7 +2,7 @@
     <form wire:submit.prevent="save">
         <div class="col-12">
             <div class="form-heading">
-                <h4>{{ $item ? 'Editar' : 'Nuevo' }} Item de Inventario</h4>
+                <h4>{{ $item ? 'Editar' : 'Nuevo' }} Articulo de Inventario</h4>
             </div>
         </div>
 

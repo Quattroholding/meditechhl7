@@ -37,6 +37,7 @@ class PractitionerScope implements Scope
 
         if ($user->hasRole('admin client')
                 or $user->hasRole('recepcionista')
+                or $user->hasRole('doctor')
                 or $user->hasRole('asistente medico')) {  // el doctor solo ve los clientes que tiene asociados
             // Optimized version - Use whereIn instead of nested whereHas
             $clientIds = $user->clients()->pluck('client_id');

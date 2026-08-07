@@ -45,7 +45,9 @@
                             <div class="input-block local-forms">
                                 <x-input-label for="locationType" value="Tipo de Ubicación"/>
                                 <select wire:model.live="locationType" class="form-select" id="locationType">
+                                    @if(!auth()->user()->hasRole('doctor'))
                                     <option value="branch">Sucursal</option>
+                                    @endif
                                     <option value="practitioner">Practitioner</option>
                                 </select>
                             </div>

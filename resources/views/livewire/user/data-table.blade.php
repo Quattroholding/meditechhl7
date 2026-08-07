@@ -1,4 +1,7 @@
 <div>
+    <!-- Componente para gestionar permisos -->
+    <livewire:user.manage-permissions />
+
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table show-entire">
@@ -97,13 +100,18 @@
                                     <td data-column="active" data-priority="5" data-label="{{__('Estado')}}">
                                         <span class="cell-content badge me-1 {{$user->active ? 'bg-success' : 'bg-danger'}}">{{  $user->active ? 'Activo' : 'Inactivo' }}</span>
                                     </td>
-                                    @canany(['users.edit','users.activate','users.delete'])
+                                    @canany(['users.edit','users.activate','users.delete','manage-permissions'])
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
                                             @can('users.edit')
                                                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success btn-sm" title="{{__('generic.edit')}}">
                                                     <i class="fa-solid fa-pen-to-square m-r-5"></i>
                                                 </a>
+                                            @endcan
+                                            @can('manage-permissions')
+                                                <button wire:click="openPermissionsModal({{ $user->id }})" class="btn btn-warning btn-sm" title="Gestionar Permisos">
+                                                    <i class="fa-solid fa-key m-r-5"></i>
+                                                </button>
                                             @endcan
                                             @can('users.activate')
                                                 @if($user->active == false)
