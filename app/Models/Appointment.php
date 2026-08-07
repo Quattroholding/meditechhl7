@@ -105,6 +105,19 @@ class Appointment extends BaseModel
     }
 
     /**
+     * Get the user who created this appointment
+     * Retrieves the user from the appointment status history where status = 'booked'
+     */
+    public function getCreator(): ?User
+    {
+        return $this->statusHistory()
+            ->where('status', 'booked')
+            ->with('user')
+            ->first()
+            ?->user;
+    }
+
+    /**
      * Scope a query to only include appointments fullfilled.
      */
     public function scopeFullFilled(Builder $query): void

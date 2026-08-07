@@ -53,7 +53,7 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
         $newDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
             ->subject('Cita Reprogramada - '.$clinicName)
             ->view('emails.appointment-rescheduled-practitioner', [
                 'practitionerName' => $notifiable->name,
@@ -72,6 +72,14 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
                 'clinicName' => $clinicName,
                 'appointmentUrl' => route('appointment.calendar'),
             ]);
+
+        // Agregar el usuario creador de la cita en BCC si es distinto del practitioner notificado
+        $appointmentCreator = $this->appointment->getCreator();
+        if ($appointmentCreator && $appointmentCreator->email !== $notifiable->email && $this->isValidEmail($appointmentCreator->email)) {
+            $mailMessage->bcc($appointmentCreator->email);
+        }
+
+        return $mailMessage;
     }
 
     public function toArray(object $notifiable): array
