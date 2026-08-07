@@ -17,6 +17,7 @@
 */
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HemoScreenStandaloneWebController;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================================
@@ -90,5 +91,9 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified', 'fir
     Route::get('/accounting', [DashboardController::class, 'accounting'])
         ->middleware('permission:dashboard.accounting')
         ->name('accounting.dashboard');
+
+    Route::get('/hemoscreen', [HemoScreenStandaloneWebController::class, 'index'])
+        ->middleware('role:hemoscreen')
+        ->name('hemoscreen.dashboard');
 
 });

@@ -88,6 +88,8 @@ class DebugLoginController extends Controller
             $route = route('user.pending-validations');
         } elseif ($user->hasRole('ventas')) {
             $route = route('quotations.index');
+        } elseif ($user->hasRole('hemoscreen')) {
+            $route = route('hemoscreen.dashboard');
         }
 
         return redirect($route.'?show_salute=true')
