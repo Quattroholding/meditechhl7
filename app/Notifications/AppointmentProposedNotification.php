@@ -48,9 +48,8 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
         $requestedDate = $this->appointment->original_requested_datetime;
         $clinicName = $this->appointment->client->name ?? config('app.name');
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
             ->subject('Nueva Solicitud de Cita Médica - '.$clinicName)
-            ->bcc('business@meditecpty.com')
             ->view('emails.appointment-proposed', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
@@ -65,6 +64,14 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
                 'comment' => $this->appointment->comment,
                 'reviewUrl' => url('/appointments?status=proposed'), // . $this->appointment->id
             ]);
+
+        // Agregar el usuario creador de la cita en BCC si es distinto del practitioner notificado
+        $appointmentCreator = $this->appointment->getCreator();
+        if ($appointmentCreator && $appointmentCreator->email !== $notifiable->email && $this->isValidEmail($appointmentCreator->email)) {
+            $mailMessage->bcc($appointmentCreator->email);
+        }
+
+        return $mailMessage;
     }
 
     /**

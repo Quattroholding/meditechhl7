@@ -65,9 +65,8 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
             ['appointment' => $this->appointment->id]
         );
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
             ->subject('Nueva Cita Médica Agendada - '.$clinicName)
-            //->bcc('business@meditecpty.com')
             ->view('emails.appointment-booked-practitioner', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
@@ -85,6 +84,14 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
                 'confirmUrl' => $confirmUrl,
                 'cancelUrl' => $cancelUrl,
             ]);
+
+        // Agregar el usuario creador de la cita en BCC si es distinto del practitioner notificado
+        $appointmentCreator = $this->appointment->getCreator();
+        if ($appointmentCreator && $appointmentCreator->email !== $notifiable->email && $this->isValidEmail($appointmentCreator->email)) {
+            $mailMessage->bcc($appointmentCreator->email);
+        }
+
+        return $mailMessage;
     }
 
     /**
