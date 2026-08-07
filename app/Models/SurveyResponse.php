@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SurveyResponsesScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -25,6 +26,14 @@ class SurveyResponse extends BaseModel
         'responses' => 'array',
         'submitted_at' => 'datetime',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new SurveyResponsesScope());
+    }
 
     public static function boot()
     {
