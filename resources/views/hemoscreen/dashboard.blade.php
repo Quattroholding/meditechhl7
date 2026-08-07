@@ -12,6 +12,29 @@
             @endcomponent
             <!-- /Page Header -->
 
+            <!-- Download Gateway Section -->
+            <div class="mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between flex-col sm:flex-row gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                Descargar Gateway HemoScreen
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Descarga la aplicación gateway para comunicarte con tu dispositivo HemoScreen
+                            </p>
+                        </div>
+                        <a href="/storage/HemoScreen Gateway Setup 1.0.0.exe"
+                           download
+                           class="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg transition-colors whitespace-nowrap">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Descargar (v1.0.0)
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             @livewire(\App\Livewire\HemoScreen\StandaloneDashboard::class)
         </div>

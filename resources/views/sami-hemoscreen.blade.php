@@ -292,7 +292,7 @@
     </section>
 
     <!-- Beneficios -->
-    <section id="beneficios" class="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+    <section id="beneficios" class="py-20 bg-linear-to-br from-purple-50 to-blue-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
@@ -379,7 +379,7 @@
                 <p class="text-xl text-gray-600">Solicita una demostración sin compromiso</p>
             </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl p-8 md:p-12">
+            <div class="bg-linear-to-br from-purple-50 to-blue-50 rounded-3xl p-8 md:p-12">
                 <form class="space-y-6">
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
@@ -440,17 +440,23 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                 <a href="{{ route('login') }}" class="bg-white text-purple-700 px-8 py-6 rounded-2xl font-bold hover:bg-purple-50 transition shadow-2xl flex flex-col items-center justify-center transform hover:scale-105">
                     <i class="fas fa-sign-in-alt text-4xl mb-3 text-purple-600"></i>
                     <span class="text-xl">Iniciar Sesión</span>
                     <span class="text-sm text-gray-600 mt-1 font-normal">Accede a tu cuenta</span>
                 </a>
 
-                <a href="{{ route('hemoscreen.dashboard') }}" class="bg-gradient-to-br from-yellow-400 to-orange-500 text-gray-900 px-8 py-6 rounded-2xl font-bold hover:from-yellow-500 hover:to-orange-600 transition shadow-2xl flex flex-col items-center justify-center transform hover:scale-105">
+                <a href="{{ route('hemoscreen.dashboard') }}" class="bg-linear-to-br from-yellow-400 to-orange-500 text-gray-900 px-8 py-6 rounded-2xl font-bold hover:from-yellow-500 hover:to-orange-600 transition shadow-2xl flex flex-col items-center justify-center transform hover:scale-105">
                     <i class="fas fa-chart-line text-4xl mb-3 text-gray-900"></i>
                     <span class="text-xl">Ver Dashboard</span>
                     <span class="text-sm text-gray-800 mt-1 font-normal">Resultados y tendencias</span>
+                </a>
+
+                <a href="/storage/HemoScreen Gateway Setup 1.0.0.exe" download class="bg-linear-to-br from-green-500 to-teal-600 text-white px-8 py-6 rounded-2xl font-bold hover:from-green-600 hover:to-teal-700 transition shadow-2xl flex flex-col items-center justify-center transform hover:scale-105">
+                    <i class="fas fa-download text-4xl mb-3 text-white"></i>
+                    <span class="text-xl">Descargar Gateway</span>
+                    <span class="text-sm text-gray-100 mt-1 font-normal">v1.0.0</span>
                 </a>
             </div>
 
