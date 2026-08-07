@@ -45,9 +45,11 @@
         <div class="card mb-3">
             <div class="card-header">
                 <h6 class="mb-0 text-white">{{ $loop->iteration }}. {{ $question->question_text }}</h6>
-                <small class="text-muted">
+                {{--}}
+                <small class="text-shadow-white">
                     Tipo: <span class="badge bg-secondary">{{ ucfirst($question->question_type) }}</span>
                 </small>
+                {{--}}
             </div>
             <div class="card-body">
                 @php

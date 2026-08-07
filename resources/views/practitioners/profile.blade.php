@@ -26,6 +26,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Calificación de Satisfacción del Practitioner -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            @livewire('doctor.practitioner-satisfaction-rating', ['practitioner_id' => $data->id])
+                        </div>
+                    </div>
                     @if(auth()->user()->hasAnyRole(['admin','doctor']))
                     <div class="row mt-4">
 

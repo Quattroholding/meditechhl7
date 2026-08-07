@@ -23,7 +23,7 @@ class SurveyResponses extends Component
 
     public function mount(Survey $survey)
     {
-        $this->survey = $survey;
+        $this->survey = $survey->load('questions');
     }
 
     public function updatingSearch()
@@ -56,12 +56,46 @@ class SurveyResponses extends Component
             ->paginate(10);
 
         return view('livewire.survey.survey-responses', [
+            'survey' => $this->survey,
             'responses' => $responses,
             'totalResponses' => $this->survey->responses()->count(),
             'completedResponses' => $this->survey->responses()->where('status', 'completed')->count(),
             'pendingResponses' => $this->survey->responses()->where('status', '!=', 'completed')->count(),
             'surveyStats' => $this->calculateSurveyStats(),
         ]);
+    }
+
+    private function calculateIndividualRating(mixed $response): array
+    {
+        $ratingQuestions = $this->survey->questions()
+            ->where('question_type', 'rating')
+            ->get();
+
+        if ($ratingQuestions->isEmpty()) {
+            return [
+                'average' => 0,
+                'total' => 0,
+            ];
+        }
+
+        $ratings = [];
+
+        foreach ($ratingQuestions as $question) {
+            $rating = $response->responses[$question->id] ?? null;
+            if ($rating !== null && $rating !== '') {
+                $rating = (int) $rating;
+                if ($rating >= 1 && $rating <= 5) {
+                    $ratings[] = $rating;
+                }
+            }
+        }
+
+        $average = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
+
+        return [
+            'average' => round($average, 2),
+            'total' => count($ratings),
+        ];
     }
 
     private function calculateSurveyStats(): array
@@ -76,6 +110,7 @@ class SurveyResponses extends Component
                 'totalRatings' => 0,
                 'ratingDistribution' => [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0],
                 'ratingPercentage' => [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0],
+                'questionStats' => [],
             ];
         }
 
@@ -89,23 +124,45 @@ class SurveyResponses extends Component
                 'totalRatings' => 0,
                 'ratingDistribution' => [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0],
                 'ratingPercentage' => [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0],
+                'questionStats' => [],
             ];
         }
 
         $ratings = [];
         $distribution = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+        $questionStats = [];
 
-        foreach ($completedResponses as $response) {
-            foreach ($ratingQuestions as $question) {
+        foreach ($ratingQuestions as $question) {
+            $questionRatings = [];
+            $questionDist = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+
+            foreach ($completedResponses as $response) {
                 $rating = $response->responses[$question->id] ?? null;
                 if ($rating !== null && $rating !== '') {
                     $rating = (int) $rating;
                     if ($rating >= 1 && $rating <= 5) {
+                        $questionRatings[] = $rating;
+                        $questionDist[$rating]++;
                         $ratings[] = $rating;
                         $distribution[$rating]++;
                     }
                 }
             }
+
+            $questionAverage = count($questionRatings) > 0 ? array_sum($questionRatings) / count($questionRatings) : 0;
+            $questionPercentage = [];
+
+            for ($i = 1; $i <= 5; $i++) {
+                $questionPercentage[$i] = count($questionRatings) > 0 ? round(($questionDist[$i] / count($questionRatings)) * 100) : 0;
+            }
+
+            $questionStats[$question->id] = [
+                'question' => $question->question_text,
+                'averageRating' => round($questionAverage, 2),
+                'totalRatings' => count($questionRatings),
+                'distribution' => $questionDist,
+                'percentage' => $questionPercentage,
+            ];
         }
 
         $averageRating = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
@@ -121,6 +178,7 @@ class SurveyResponses extends Component
             'totalRatings' => $totalRatings,
             'ratingDistribution' => $distribution,
             'ratingPercentage' => $percentage,
+            'questionStats' => $questionStats,
         ];
     }
 }

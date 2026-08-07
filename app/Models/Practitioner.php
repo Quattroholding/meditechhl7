@@ -112,6 +112,68 @@ class Practitioner extends BaseModel
         return $this->hasMany(SurveyResponse::class);
     }
 
+    public function getSatisfactionRating(int $surveyId = 1): array
+    {
+        $responses = $this->completedSurveyResponses()
+            ->where('survey_id', $surveyId)
+            ->get();
+
+        if ($responses->isEmpty()) {
+            return [
+                'average' => 0,
+                'total' => 0,
+                'count' => 0,
+                'percentage' => 0,
+            ];
+        }
+
+        $survey = Survey::find($surveyId);
+        if (! $survey) {
+            return [
+                'average' => 0,
+                'total' => 0,
+                'count' => 0,
+                'percentage' => 0,
+            ];
+        }
+
+        $ratingQuestions = $survey->questions()
+            ->where('question_type', 'rating')
+            ->get();
+
+        if ($ratingQuestions->isEmpty()) {
+            return [
+                'average' => 0,
+                'total' => 0,
+                'count' => 0,
+                'percentage' => 0,
+            ];
+        }
+
+        $ratings = [];
+        foreach ($responses as $response) {
+            foreach ($ratingQuestions as $question) {
+                $rating = $response->responses[$question->id] ?? null;
+                if ($rating !== null && $rating !== '') {
+                    $rating = (int) $rating;
+                    if ($rating >= 1 && $rating <= 5) {
+                        $ratings[] = $rating;
+                    }
+                }
+            }
+        }
+
+        $average = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
+        $percentage = count($ratings) > 0 ? round(($average / 5) * 100) : 0;
+
+        return [
+            'average' => round($average, 2),
+            'total' => count($ratings),
+            'count' => $responses->count(),
+            'percentage' => $percentage,
+        ];
+    }
+
     public function avatar()
     {
         return $this->files()->whereType('avatar')->latest()->first();
@@ -459,5 +521,61 @@ class Practitioner extends BaseModel
     public function scopeIntegrated($query)
     {
         return $query->where('is_standalone', false);
+    }
+
+    /**
+     * Scope to order practitioners by satisfaction rating (survey_id = 1)
+     * Calculates average of all rating-type questions in the survey
+     */
+    public function scopeOrderBySatisfactionRating($query, string $direction = 'desc', int $surveyId = 1)
+    {
+        return $query->withCount(['completedSurveyResponses as satisfaction_rating' => function ($q) use ($surveyId) {
+            $q->where('survey_id', $surveyId)
+                ->where('status', 'completed')
+                ->whereNotNull('submitted_at');
+        }])
+            ->withSum(['completedSurveyResponses' => function ($q) use ($surveyId) {
+                $q->where('survey_id', $surveyId)
+                    ->where('status', 'completed')
+                    ->whereNotNull('submitted_at');
+            }], 'responses')
+            ->orderBy('satisfaction_rating', $direction);
+    }
+
+    /**
+     * Get practitioners ranked by satisfaction rating for a specific survey
+     */
+    public static function rankBySatisfactionRating(int $surveyId = 1, string $direction = 'desc', ?int $limit = null)
+    {
+        $practitioners = self::withCount(['completedSurveyResponses as total_surveys' => function ($q) use ($surveyId) {
+            $q->where('survey_id', $surveyId)
+                ->where('status', 'completed')
+                ->whereNotNull('submitted_at');
+        }])
+            ->get()
+            ->map(function ($practitioner) use ($surveyId) {
+                $rating = $practitioner->getSatisfactionRating($surveyId);
+                $practitioner->satisfaction_rating = $rating['average'];
+                $practitioner->satisfaction_count = $rating['count'];
+                $practitioner->satisfaction_total = $rating['total'];
+                $practitioner->satisfaction_percentage = $rating['percentage'];
+
+                return $practitioner;
+            });
+
+        // Sort by rating
+        $practitioners = $practitioners->sort(function ($a, $b) use ($direction) {
+            if ($direction === 'desc') {
+                return $b->satisfaction_rating <=> $a->satisfaction_rating;
+            }
+
+            return $a->satisfaction_rating <=> $b->satisfaction_rating;
+        });
+
+        if ($limit) {
+            $practitioners = $practitioners->take($limit);
+        }
+
+        return $practitioners;
     }
 }
