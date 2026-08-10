@@ -101,10 +101,11 @@
                             @endif
 
                             @if($payment->processedBy)
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h6 class="text-muted">Procesado por</h6>
-                                        <p class="mb-0">{{ $payment->processedBy->name }}</p>
+                                        <p class="mb-0">{{ $payment->processedBy->full_name }} <small>({{ $payment->processedBy->email }})</small></p>
                                     </div>
                                 </div>
                             @endif

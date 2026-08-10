@@ -146,7 +146,6 @@ class LandingController extends Controller
     {
         // Enviar el correo a business@meditecpty.com
         Mail::to('business@meditecpty.com')
-            ->cc($request->email)
             ->send(new HemoScreenDemoRequest(
                 name: $request->name,
                 email: $request->email,

@@ -2,34 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ChargeItemStatus;
-use App\Enums\InventoryTransactionType;
-use App\Enums\SupplyDeliveryStatus;
-use App\Enums\SupplyRequestStatus;
-use App\Models\Account;
 use App\Models\Appointment;
-use App\Models\ChargeItem;
 use App\Models\Encounter;
 use App\Models\File;
-use App\Models\InventoryItem;
-use App\Models\InventoryReport;
-use App\Models\InventoryTransaction;
-use App\Models\Invoice;
-use App\Models\InvoiceLineItem;
 use App\Models\Patient;
 use App\Models\PatientPractitionerAuthorization;
-use App\Models\Practitioner;
 use App\Models\PresentIllnesType;
 use App\Models\Scopes\EncouterScope;
-use App\Models\ServiceCatalog;
-use App\Models\SupplyDelivery;
-use App\Models\SupplyRequest;
 use App\Notifications\EncounterPrescriptionNotification;
-use App\Services\EncounterSnapshotService;
+use App\Services\Consultation\ConsultationInvoiceService;
+use App\Services\Consultation\ConsultationValidator;
+use App\Services\Consultation\EncounterFinalizationService;
+use App\Services\Consultation\ServiceRequestProcessor;
+use App\Services\Consultation\SupplyRequestProcessor;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -83,408 +70,34 @@ class ConsultationController extends Controller
     public function finished(Request $request, $appointment_id)
     {
         try {
-            // Note: Not using DB::beginTransaction() here because Account creation
-            // needs to be committed before Invoice can reference it via foreign key
+            // 1. Validación y autorización
+            $validator = app(ConsultationValidator::class);
+            $validated = $validator->validateConsultationFinalization($appointment_id);
 
-            $appointment = Appointment::find($appointment_id);
-            if (! $appointment) {
-                throw new \Exception('Cita no encontrada.');
-            }
+            $appointment = $validated['appointment'];
+            $encounter = $validated['encounter'];
+            $clientId = $validated['client_id'];
+            $isAuthorized = $validator->isUserAuthorizedToFinalize($appointment);
 
-            // Get client_id from appointment or from authenticated user
-            $clientId = $appointment->client_id ?? auth()->user()->getCurrentClient()?->id;
+            // 2. Procesar Service Requests
+            app(ServiceRequestProcessor::class)->processServiceRequests($encounter);
 
-            if (! $clientId) {
-                throw new \Exception('No se pudo determinar el client_id de la consulta.');
-            }
+            // 3. Procesar Supply Requests (transacción atómica)
+            app(SupplyRequestProcessor::class)->processSupplyRequests($encounter);
 
-            $encounter = Encounter::whereAppointmentId($appointment->id)->first();
-            if (! $encounter) {
-                throw new \Exception('Encounter no encontrado.');
-            }
+            // 4. Generar factura si hay items cobrables
+            $invoice = app(ConsultationInvoiceService::class)
+                ->generateInvoiceForEncounter($encounter, $clientId);
 
-            // CAMBIAR EL ESTATUS DE LOS SERVICE REQUEST
-            // Si el procedimiento se realizó en la consulta, marcar como completed
-            $encounter->serviceRequests()
-                ->where('status', 'draft')
-                ->where('performed_in_consultation', true)
-                ->update(['status' => 'completed']);
+            // 5. Verificar notificación de prescripción (antes de que observer se dispare)
+            $finalizationService = app(EncounterFinalizationService::class);
+            $prescriptionInfo = $finalizationService->checkPrescriptionNotification($encounter);
 
-            // Los demás service requests se marcan como active
-            $encounter->serviceRequests()
-                ->where('status', 'draft')
-                ->update(['status' => 'active']);
+            // 6. Finalizar Encounter y Appointment
+            $finalizationService->finalizeConsultation($encounter, $appointment, $isAuthorized);
 
-            // ============================================
-            // PROCESAR SUPPLY REQUESTS
-            // ============================================
-            $supplyRequests = $encounter->supplyRequests()
-                ->where('status', SupplyRequestStatus::DRAFT)
-                ->with(['inventoryItem', 'practitioner'])
-                ->get();
-
-            if ($supplyRequests->isNotEmpty()) {
-                DB::transaction(function () use ($supplyRequests, $encounter) {
-                    foreach ($supplyRequests as $supplyRequest) {
-                        // 1. Determinar ubicación de inventario
-                        $practitioner = $supplyRequest->practitioner;
-                        $inventoryReport = InventoryReport::getForPractitioner(
-                            inventoryItemId: $supplyRequest->inventory_item_id,
-                            practitioner: $practitioner,
-                            branchId: $supplyRequest->branch_id
-                        );
-
-                        // 2. Validar stock
-                        if (! $inventoryReport) {
-                            throw new \Exception(
-                                "No hay inventario configurado para {$supplyRequest->inventoryItem->name}"
-                            );
-                        }
-
-                        if ($inventoryReport->quantity_available < $supplyRequest->quantity) {
-                            throw new \Exception(
-                                "Stock insuficiente para {$supplyRequest->inventoryItem->name}. ".
-                                "Disponible: {$inventoryReport->quantity_available}, ".
-                                "Solicitado: {$supplyRequest->quantity}"
-                            );
-                        }
-
-                        // 3. Crear SupplyDelivery
-                        $delivery = SupplyDelivery::create([
-                            'based_on_supply_request_id' => $supplyRequest->id,
-                            'inventory_item_id' => $supplyRequest->inventory_item_id,
-                            'supplied_quantity' => $supplyRequest->quantity,
-                            'unit_of_measure' => $supplyRequest->unit_of_measure,
-                            'lot_number' => $inventoryReport->lot_number,
-                            'serial_number' => $inventoryReport->serial_number,
-                            'expiration_date' => $inventoryReport->expiration_date,
-                            'patient_id' => $supplyRequest->patient_id,
-                            'encounter_id' => $supplyRequest->encounter_id,
-                            'practitioner_id' => auth()->user()->practitioner->id,
-                            'occurrence_datetime' => now(),
-                            'status' => SupplyDeliveryStatus::COMPLETED,
-                            'client_id' => $supplyRequest->client_id,
-                            'branch_id' => $inventoryReport->branch_id,
-                            'practitioner_inventory_id' => $inventoryReport->practitioner_id,
-                        ]);
-
-                        // 4. Deducir stock
-                        $quantityBefore = $inventoryReport->quantity_on_hand;
-                        $inventoryReport->decrement('quantity_on_hand', $supplyRequest->quantity);
-                        $inventoryReport->refresh();
-                        $quantityAfter = $inventoryReport->quantity_on_hand;
-
-                        // 5. Registrar transacción
-                        InventoryTransaction::create([
-                            'transaction_type' => InventoryTransactionType::SUPPLY_DELIVERY,
-                            'transaction_date' => now(),
-                            'inventory_item_id' => $supplyRequest->inventory_item_id,
-                            'quantity_change' => -$supplyRequest->quantity,
-                            'unit_of_measure' => $supplyRequest->unit_of_measure,
-                            'quantity_before' => $quantityBefore,
-                            'quantity_after' => $quantityAfter,
-                            'from_location_client_id' => $supplyRequest->client_id,
-                            'from_location_branch_id' => $inventoryReport->branch_id,
-                            'from_location_practitioner_id' => $inventoryReport->practitioner_id,
-                            'supply_request_id' => $supplyRequest->id,
-                            'supply_delivery_id' => $delivery->id,
-                            'patient_id' => $supplyRequest->patient_id,
-                            'encounter_id' => $supplyRequest->encounter_id,
-                            'performed_by_user_id' => auth()->id(),
-                            'reason' => "Suministro entregado al paciente durante encuentro {$encounter->identifier}",
-                            'client_id' => $supplyRequest->client_id,
-                        ]);
-
-                        // 6. Crear ChargeItem si es cobrable
-                        if ($supplyRequest->is_billable && ! $supplyRequest->is_free) {
-                            $item = $supplyRequest->inventoryItem;
-                            $unitPrice = $supplyRequest->custom_price ?? $item->base_price;
-
-                            ChargeItem::create([
-                                'status' => ChargeItemStatus::BILLABLE,
-                                'code' => [
-                                    'coding' => [[
-                                        'system' => 'urn:meditech:inventory',
-                                        'code' => $item->sku,
-                                        'display' => $item->name,
-                                    ]],
-                                    'text' => $item->name,
-                                ],
-                                'patient_id' => $supplyRequest->patient_id,
-                                'encounter_id' => $supplyRequest->encounter_id,
-                                'appointment_id' => $encounter->appointment_id,
-                                'performer_practitioner_id' => $supplyRequest->practitioner_id,
-                                'performer_organization_id' => $supplyRequest->client_id,
-                                'occurrence_date_time' => now(),
-                                'quantity' => $supplyRequest->quantity,
-                                'unit_price_value' => $unitPrice,
-                                'unit_price_currency' => $item->currency,
-                                'product_reference' => [
-                                    'reference' => "InventoryItem/{$item->fhir_id}",
-                                ],
-                                'supporting_information' => [
-                                    'supply_request_id' => $supplyRequest->id,
-                                    'supply_delivery_id' => $delivery->id,
-                                ],
-                                'client_id' => $supplyRequest->client_id,
-                            ]);
-                        }
-
-                        // 7. Marcar SupplyRequest como completado
-                        $supplyRequest->update(['status' => SupplyRequestStatus::COMPLETED]);
-                    }
-                });
-            }
-
-            // Get billable ChargeItems for this encounter
-            $chargeItems = ChargeItem::where('encounter_id', $encounter->id)
-                ->where('status', 'billable')
-                ->get();
-
-            $invoice = null;
-
-            if ($chargeItems->count() > 0) {
-                // Find or create patient account - use encounter's patient_id instead of appointment's
-                $patient = Patient::find($encounter->patient_id);
-
-                if (! $patient) {
-                    throw new \Exception("Patient {$encounter->patient_id} not found for encounter {$encounter->id}");
-                }
-
-                // Get client_id from user or appointment
-                $currentClientId = $clientId ?? auth()->user()->getCurrentClient()?->id;
-
-                $account = Account::where('patient_id', $patient->id)
-                    ->where('client_id', $currentClientId)
-                    ->active()
-                    ->first();
-
-                Log::info('Creating invoice for patient', [
-                    'appointment_patient_id' => $appointment->patient_id,
-                    'patient_found_id' => $patient->id,
-                    'account_id' => $account?->id,
-                ]);
-
-                if (! $account) {
-                    // Create account within the transaction
-                    try {
-                        $account = Account::create([
-                            'fhir_id' => 'account-'.Str::uuid(),
-                            'name' => "Patient Account - {$patient->name}",
-                            'description' => "Primary account for patient {$patient->name}",
-                            'type' => [
-                                'coding' => [
-                                    [
-                                        'system' => 'http://terminology.hl7.org/CodeSystem/account-type',
-                                        'code' => 'patient',
-                                        'display' => 'Patient Account',
-                                    ],
-                                ],
-                            ],
-                            'status' => 'active',
-                            'patient_id' => $patient->id,
-                            'client_id' => $currentClientId,
-                            'created_by' => auth()->id(),
-                        ]);
-
-                        // Verify the account was created successfully
-                        if (! $account || ! $account->id) {
-                            throw new \Exception('Account object is null or missing ID after creation');
-                        }
-
-                        Log::info('Account created successfully', [
-                            'account_id' => $account->id,
-                            'patient_id' => $patient->id,
-                            'client_id' => $currentClientId,
-                        ]);
-                    } catch (\Exception $e) {
-                        throw new \Exception('Error creating patient account: '.$e->getMessage());
-                    }
-                }
-
-                $identifier = 'INV-'.now()->format('Ymd').'-'.str_pad($encounter->id, 6, '0', STR_PAD_LEFT);
-
-                // Verify all foreign keys exist before creating invoice
-                $practitioner = Practitioner::find($appointment->practitioner_id);
-                if (! $practitioner) {
-                    throw new \Exception("Practitioner {$appointment->practitioner_id} not found");
-                }
-
-                // Get branch_id from appointment's consulting_room
-                $branchId = $appointment->consultingRoom?->branch_id;
-
-                // Create invoice for this encounter
-                try {
-                    $invoice = Invoice::create([
-                        'fhir_id' => 'invoice-'.Str::uuid(),
-                        'identifier' => $identifier,
-                        'status' => 'issued',
-                        'type' => 'invoice',
-                        'patient_id' => $encounter->patient_id,
-                        'encounter_id' => $encounter->id,
-                        'account_id' => $account->id,
-                        'date' => now(),
-                        'issue_date' => now(),
-                        'due_date' => now()->addDays(30), // 30 days payment term
-                        'payment_terms' => '30 días',
-                        'currency' => 'USD',
-                        'subtotal_amount' => 0,
-                        'tax_amount' => 0,
-                        'total_amount' => 0,
-                        'amount_due' => 0,
-                        'payment_status' => 'unpaid',
-                        'recipient_patient_id' => $encounter->patient_id,
-                        'performer_practitioner_id' => $encounter->practitioner_id,
-                        'client_id' => $clientId,
-                        'branch_id' => $branchId,
-                        'issuer_organization_id' => $clientId,
-                        'created_by' => auth()->id(),
-                        // Let the model generate invoice_number automatically
-                    ]);
-                } catch (QueryException $e) {
-                    Log::error('Failed to create invoice', [
-                        'error' => $e->getMessage(),
-                        'account_id' => $account->id,
-                        'patient_id' => $encounter->patient_id,
-                        'practitioner_id' => $encounter->practitioner_id,
-                        'encounter_id' => $encounter->id,
-                        'client_id' => $clientId,
-                    ]);
-                    throw new \Exception('Error creating invoice: '.$e->getMessage());
-                }
-
-                $subtotal = 0;
-                $lineItemNumber = 1;
-
-                // Create invoice line items from ChargeItems
-                foreach ($chargeItems as $chargeItem) {
-                    $lineTotal = $chargeItem->total_price;
-                    $subtotal += $lineTotal;
-                    $serviceCatalog = ServiceCatalog::find($chargeItem->service_catalog_id);
-
-                    // Determine service description based on type
-                    $serviceDescription = 'Servicio médico';
-                    $serviceCode = 'N/A';
-
-                    if ($serviceCatalog) {
-                        // Regular medical service - use description if available, fallback to name
-                        $serviceDescription = $serviceCatalog->description ?? $serviceCatalog->name;
-                        $serviceCode = $serviceCatalog->code ?? 'N/A';
-                    } elseif ($chargeItem->product_reference && is_array($chargeItem->product_reference)) {
-                        // Supply/Inventory item
-                        if (isset($chargeItem->product_reference['reference'])) {
-                            // Extract inventory item ID from FHIR reference (format: "InventoryItem/uuid")
-                            $reference = $chargeItem->product_reference['reference'];
-                            if (str_contains($reference, 'InventoryItem/')) {
-                                $fhirId = str_replace('InventoryItem/', '', $reference);
-                                $inventoryItem = InventoryItem::where('fhir_id', $fhirId)->first();
-                                if ($inventoryItem && ! empty($inventoryItem->name)) {
-                                    $serviceDescription = $inventoryItem->name;
-                                    $serviceCode = $inventoryItem->sku ?? 'N/A';
-                                }
-                            }
-                        }
-                    } elseif (! empty($chargeItem->definition)) {
-                        $serviceDescription = $chargeItem->definition;
-                    }
-
-                    // Ensure service_description is never empty
-                    if (empty($serviceDescription)) {
-                        $serviceDescription = 'Servicio médico';
-                    }
-
-                    InvoiceLineItem::create([
-                        'invoice_id' => $invoice->id,
-                        'charge_item_id' => $chargeItem->id,
-                        'sequence' => $lineItemNumber++,
-                        'service_description' => $serviceDescription,
-                        'cpt_code' => $chargeItem->cpt_code,
-                        'service_code' => $serviceCode,
-                        'quantity' => $chargeItem->quantity,
-                        'unit_price' => $chargeItem->unit_price_value,
-                        'line_total_gross' => $lineTotal,
-                        'service_date' => $chargeItem->occurrence_date_time ?? now(),
-                        'modifier_codes' => $chargeItem->modifier_codes,
-                        'client_id' => $chargeItem->client_id,
-                    ]);
-
-                    // Mark ChargeItem as billed
-                    $chargeItem->markAsBilled();
-                }
-
-                // Calculate tax (if applicable)
-                $taxEnabled = config('billing.tax_enabled', false);
-                $taxRate = config('billing.tax_rate', 0.07); // Default 7% ITBMS for Panama
-                $taxAmount = $taxEnabled ? ($subtotal * $taxRate) : 0;
-                $totalAmount = $subtotal + $taxAmount;
-
-                // Update invoice totals
-                $invoice->update([
-                    'subtotal_amount' => $subtotal,
-                    'tax_amount' => $taxAmount,
-                    'total_tax' => $taxAmount,
-                    'total_amount' => $totalAmount,
-                    'total_net' => $totalAmount,
-                    'amount_due' => $totalAmount,
-                ]);
-            }
-
-            // Update appointment status
-            if (auth()->user()->id == $appointment->practitioner->user_id || auth()->user()->id == $appointment->assisted_by) {
-                $appointment->update(['status' => 'fulfilled']);
-            }
-
-            // Check if prescriptions will be sent (before saving encounter triggers observer)
-            $prescriptionNotificationInfo = $this->checkPrescriptionNotification($encounter);
-
-            // Update encounter status
-            if (auth()->user()->id == $appointment->practitioner->user_id || auth()->user()->id == $appointment->assisted_by) {
-                $wasAlreadyFinished = $encounter->getRawOriginal('status') === 'finished';
-
-                // Only set end time when finishing for the first time, not on subsequent edits
-                if ($encounter->status !== 'finished') {
-                    $encounter->status = 'finished';
-                    $encounter->end = now();
-                    $encounter->save();
-                }
-
-                // If encounter was already finished and has no snapshots, create initial snapshot
-                // This handles cases where the feature was added after encounter was completed
-                if ($wasAlreadyFinished && $encounter->snapshots()->count() === 0) {
-                    $snapshotService = app(EncounterSnapshotService::class);
-                    $snapshotService->createSnapshot(
-                        $encounter,
-                        'initial_finish',
-                        'Snapshot inicial creado al activar funcionalidad'
-                    );
-                    Log::info('Snapshot inicial creado para encounter ya finalizado', [
-                        'encounter_id' => $encounter->id,
-                    ]);
-                }
-            }
-
-            // Build success message
-            $messages = ['¡Consulta finalizada con éxito!'];
-
-            if ($invoice) {
-                $downloadUrl = route('invoice.download', $invoice->id);
-                $messages[] = 'Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>';
-            } else {
-                $messages[] = '(Sin servicios facturables)';
-            }
-
-            // Add prescription notification message if applicable
-            if ($prescriptionNotificationInfo['will_send']) {
-                $sentItems = [];
-                if ($prescriptionNotificationInfo['has_medications']) {
-                    $sentItems[] = 'recetas médicas';
-                }
-                if ($prescriptionNotificationInfo['has_service_requests']) {
-                    $sentItems[] = 'órdenes de laboratorio/imágenes';
-                }
-                $messages[] = '<br><i class="fa fa-envelope text-success"></i> Se enviaron '.implode(' y ', $sentItems).' al correo del paciente: <strong>'.$prescriptionNotificationInfo['patient_email'].'</strong>';
-            }
-
+            // 7. Construir y mostrar mensaje de éxito
+            $messages = $this->buildSuccessMessage($invoice, $prescriptionInfo);
             session()->flash('message.success', implode(' ', $messages));
 
             return redirect(route('consultation.view', $encounter->id));
@@ -523,58 +136,31 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Check if prescription notification will be sent to patient
-     * This mirrors the logic in EncounterObserver to predict if email will be sent
+     * Construir mensaje de éxito con información de factura y prescripciones
      */
-    private function checkPrescriptionNotification(Encounter $encounter): array
+    protected function buildSuccessMessage($invoice, array $prescriptionInfo): array
     {
-        $result = [
-            'will_send' => false,
-            'has_medications' => false,
-            'has_service_requests' => false,
-            'patient_email' => null,
-            'reason' => null,
-        ];
+        $messages = ['¡Consulta finalizada con éxito!'];
 
-        $practitioner = $encounter->practitioner;
-        $patient = $encounter->patient;
-
-        // Check if practitioner has signature and seal
-        if (! $practitioner || ! $practitioner->signature() || ! $practitioner->seal()) {
-            $result['reason'] = 'practitioner_no_signature_seal';
-
-            return $result;
+        if ($invoice) {
+            $downloadUrl = route('invoice.download', $invoice->id);
+            $messages[] = 'Factura generada: '.$invoice->identifier.' - <a href="'.$downloadUrl.'" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>';
+        } else {
+            $messages[] = '(Sin servicios facturables)';
         }
 
-        // Check if patient has email
-        if (! $patient || ! $patient->email) {
-            $result['reason'] = 'patient_no_email';
-
-            return $result;
+        if ($prescriptionInfo['will_send']) {
+            $sentItems = [];
+            if ($prescriptionInfo['has_medications']) {
+                $sentItems[] = 'recetas médicas';
+            }
+            if ($prescriptionInfo['has_service_requests']) {
+                $sentItems[] = 'órdenes de laboratorio/imágenes';
+            }
+            $messages[] = '<br><i class="fa fa-envelope text-success"></i> Se enviaron '.implode(' y ', $sentItems).' al correo del paciente: <strong>'.$prescriptionInfo['patient_email'].'</strong>';
         }
 
-        // Check for unsent prescriptions
-        $hasUnsentMedications = $encounter->medicationRequests()
-            ->whereNull('notification_sent_at')
-            ->exists();
-
-        $hasUnsentServiceRequests = $encounter->serviceRequests()
-            ->whereNull('notification_sent_at')
-            ->exists();
-
-        // If no unsent prescriptions, skip
-        if (! $hasUnsentMedications && ! $hasUnsentServiceRequests) {
-            $result['reason'] = 'no_unsent_prescriptions';
-
-            return $result;
-        }
-
-        $result['will_send'] = true;
-        $result['has_medications'] = $hasUnsentMedications;
-        $result['has_service_requests'] = $hasUnsentServiceRequests;
-        $result['patient_email'] = $patient->email;
-
-        return $result;
+        return $messages;
     }
 
     public function downloadResumen(Request $request, $appointment_id)
