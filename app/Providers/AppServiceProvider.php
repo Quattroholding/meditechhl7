@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\SaveEmailToSentItems;
 use App\Models\Appointment;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
@@ -24,7 +25,9 @@ use App\Policies\AppointmentPolicy;
 use App\Policies\ConsultationPolicy;
 use App\Policies\PatientPolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -72,6 +75,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(Encounter::class, ConsultationPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+
+        // Registrar listener para guardar correos en Sent Items
+        Event::listen(
+            MessageSent::class,
+            SaveEmailToSentItems::class
+        );
 
         $this->registerDropboxDriver();
     }

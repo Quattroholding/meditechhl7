@@ -117,4 +117,12 @@ return [
         'app_secret' => env('DROPBOX_APP_SECRET'),
     ],
 
+    'microsoft' => [
+        'tenant_id' => env('MICROSOFT_TENANT_ID'),
+        'client_id' => env('MICROSOFT_CLIENT_ID'),
+        'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
+        'mailbox_email' => env('MICROSOFT_MAILBOX_EMAIL', 'notificaciones@meditecpty.com'),
+        'save_to_sent_items' => env('MICROSOFT_SAVE_TO_SENT_ITEMS', true),
+    ],
+
 ];

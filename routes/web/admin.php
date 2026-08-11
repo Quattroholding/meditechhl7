@@ -49,6 +49,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin/compliance'
 });
 
 // ============================================================================
+// EMAIL OUTBOX TRACKING (Admin only)
+// ============================================================================
+
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin/email')->group(function () {
+    Route::get('/outbox', function () {
+        return view('email.outbox');
+    })->name('email.outbox');
+
+    Route::get('/message-trace', function () {
+        return view('email.message-trace');
+    })->name('email.message-trace');
+});
+
+// ============================================================================
 // ENTERPRISE LEADS (Admin - Protegido)
 // ============================================================================
 
