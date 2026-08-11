@@ -15,7 +15,7 @@
                             <small class="text-muted">({{ $invoice->address }})</small>
                         </div>
                         <div class="condition-stats-text">
-                            <span class="condition-count">${{$invoice->total_invoices }}</span>
+                            <span class="condition-count">${{$invoice->total_payments }}</span>
                         </div>
                     </div> 
                    

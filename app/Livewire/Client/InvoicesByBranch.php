@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Client;
 
-use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -17,15 +17,16 @@ class InvoicesByBranch extends Component
 
     public function loadData()
     {
-        $this->invoices = Invoice::select(
+        $this->invoices = Payment::select(
             'branches.id',
             'branches.name',
             'branches.address',
             'branches.type',
-            DB::raw('SUM(invoices.total_amount) as total_invoices'))
+            DB::raw('SUM(payments.amount) as total_payments'))
+            ->join('invoices', 'payments.invoice_id', '=', 'invoices.id')
             ->join('branches', 'invoices.branch_id', '=', 'branches.id')
-            ->groupBy('branches.id', 'branches.name', 'branches.address', 'branches.type') // agregar todos los campos no agregados del SELECT
-            ->orderBy('total_invoices', 'DESC')
+            ->groupBy('branches.id', 'branches.name', 'branches.address', 'branches.type')
+            ->orderBy('total_payments', 'DESC')
             ->limit(5)
             ->get();
     }
