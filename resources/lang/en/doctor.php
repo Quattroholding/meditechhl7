@@ -78,6 +78,7 @@ return [
         'view_all' => 'View All',
         'no_completed_appointments_today' => 'No completed appointments today',
         'unfinished_consultations' => 'Unfinished Consultations',
+        'unfulfilled_appointments' => 'Unfulfilled Appointments',
         'monthly_appointments' => 'Monthly Appointments',
         'appointments_of_year' => 'Appointments of Year :year',
         'appointments_from_january_to' => 'Appointments registered from January to :month',

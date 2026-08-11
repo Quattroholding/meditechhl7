@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Doctor;
 
-use App\Models\Encounter;
+use App\Models\Appointment;
 use Carbon\Carbon;
 use Livewire\Component;
 
-class ConsultasEnProgreso extends Component
+class AppointmentNotFulfilled extends Component
 {
-    public $consultasEnProgreso;
+    public $appointmentsNotFulfilled;
 
     public $percentageChange;
 
@@ -16,14 +16,12 @@ class ConsultasEnProgreso extends Component
 
     public $icon;
 
-    public $order;
-
     public $isLoading = true;
 
     public function mount()
     {
         // Inicializar variables para evitar errores
-        $this->consultasEnProgreso = 0;
+        $this->appointmentsNotFulfilled = 0;
         $this->percentageChange = 0;
         $this->statusClass = 'status-green';
         $this->icon = 'sort-icon-01.svg';
@@ -31,56 +29,59 @@ class ConsultasEnProgreso extends Component
 
     public function loadData()
     {
-        $this->getConsultasEnProgreso();
+        $this->getAppointmentsNotFulfilled();
         $this->isLoading = false;
     }
 
     public function render()
     {
-        return view('livewire.doctor.consultas-en-progreso');
+        return view('livewire.doctor.appointment-not-fulfilled');
     }
 
-    public function getConsultasEnProgreso()
+    public function getAppointmentsNotFulfilled()
     {
         $user = auth()->user();
         $isPractitioner = $user->practitioner !== null;
-        $isAssistence = $user->hasRole('asistente medico');
+        $isAssistance = $user->hasRole('asistente medico');
         $clientId = $user->default_client_id;
 
-        // Query base para consultas en progreso
-        $encountersQuery = Encounter::query()
-            ->where('status', 'in-progress');
+        // Estados activos que no han sido completados
+        $activeStatuses = ['proposed', 'pending', 'booked', 'confirm', 'arrived','checked-in'];
+
+        // Query base para citas sin completar
+        $appointmentsQuery = Appointment::query()
+            ->whereIn('status', $activeStatuses);
 
         // Filtrar según tipo de usuario
-        if ($isAssistence) {
-            $encountersQuery->whereHas('appointment', function ($q) use ($user) {
-                $q->where('assisted_by', $user->id);
-            });
+        if ($isAssistance) {
+            $appointmentsQuery->where('assisted_by', $user->id);
         } elseif ($isPractitioner) {
-            $encountersQuery->where('practitioner_id', $user->practitioner->id);
+            $appointmentsQuery->where('practitioner_id', $user->practitioner->id);
         } else {
             // Para recepcionistas, filtrar por practitioners del mismo cliente
-            $encountersQuery->whereHas('practitioner', function ($q) use ($clientId) {
+            $appointmentsQuery->whereHas('practitioner', function ($q) use ($clientId) {
                 $q->whereHas('user', function ($q2) use ($clientId) {
                     $q2->where('default_client_id', $clientId);
                 });
             });
         }
 
-        $this->consultasEnProgreso = $encountersQuery->count();
+        $this->appointmentsNotFulfilled = $appointmentsQuery->count();
 
         // Comparar con el mes anterior
         $lastMonth = Carbon::now()->subMonthNoOverflow()->month;
         $lastYear = Carbon::now()->subMonthNoOverflow()->year;
 
-        // Query para consultas del mes anterior
-        $lastMonthQuery = Encounter::query()
-            ->where('status', 'in-progress')
+        // Query para citas del mes anterior
+        $lastMonthQuery = Appointment::query()
+            ->whereIn('status', $activeStatuses)
             ->whereMonth('created_at', $lastMonth)
             ->whereYear('created_at', $lastYear);
 
         // Aplicar mismo filtro según tipo de usuario
-        if ($isPractitioner) {
+        if ($isAssistance) {
+            $lastMonthQuery->where('assisted_by', $user->id);
+        } elseif ($isPractitioner) {
             $lastMonthQuery->where('practitioner_id', $user->practitioner->id);
         } else {
             // Para recepcionistas, filtrar por practitioners del mismo cliente
@@ -91,19 +92,19 @@ class ConsultasEnProgreso extends Component
             });
         }
 
-        $lastMonthConsultas = $lastMonthQuery->count();
+        $lastMonthAppointments = $lastMonthQuery->count();
 
         // Calcular porcentaje de cambio
-        if ($lastMonthConsultas > 0) {
-            $this->percentageChange = (($this->consultasEnProgreso - $lastMonthConsultas) / $lastMonthConsultas) * 100;
+        if ($lastMonthAppointments > 0) {
+            $this->percentageChange = (($this->appointmentsNotFulfilled - $lastMonthAppointments) / $lastMonthAppointments) * 100;
             if ($this->percentageChange == 0) {
                 $this->percentageChange = 100;
             }
         } else {
-            $this->percentageChange = $this->consultasEnProgreso > 0 ? 100 : 0;
+            $this->percentageChange = $this->appointmentsNotFulfilled > 0 ? 100 : 0;
         }
 
-        // Asignar icon y class según el porcentaje (menos consultas en progreso es mejor)
+        // Asignar icon y class según el porcentaje (menos citas sin completar es mejor)
         $this->statusClass = $this->percentageChange <= 0 ? 'status-green' : 'status-pink';
         $this->icon = $this->percentageChange <= 0 ? 'sort-icon-01.svg' : 'sort-icon-02.svg';
     }

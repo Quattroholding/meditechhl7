@@ -78,6 +78,7 @@ return [
         'view_all' => 'Ver todas',
         'no_completed_appointments_today' => 'No hay citas completadas el día de hoy',
         'unfinished_consultations' => 'Consultas sin finalizar',
+        'unfulfilled_appointments' => 'Citas sin completar',
         'monthly_appointments' => 'Citas del mes',
         'appointments_of_year' => 'Citas del Año :year',
         'appointments_from_january_to' => 'Citas registradas de Enero a :month',

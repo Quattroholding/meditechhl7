@@ -125,8 +125,10 @@
                                     @if(!$ongoing)
 
                                     <li class="{{ in_array($appointment->status->value, ['booked','confirm', 'arrived']) ? 'dropdown ' : ($isPast ? 'past-appointment' : 'stick-line') }}">
+                                        {{--}}
                                         <i class="fas fa-circle me-2 {{ $appointment->status->value == 'fulfilled' ? 'active-circles' : '' }}"></i>
                                         {{ \Carbon\Carbon::parse($time)->format('h:i') }}
+                                        {{--}}
                                         <a href="" title="{{ !in_array($appointment->status->value, ['booked','confirm', 'arrived', 'fulfilled']) ? 'this appointment has a status of ' .$status  : '' }}"
                                            @can('patients.medical_history') data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight{{$appointment->patient_id}}" aria-controls="offcanvasRight" @endcan>
                                             {{ $appointment->patient->name }}

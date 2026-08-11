@@ -35,8 +35,9 @@ class UserWidgetPreference extends Model
             'doctor' => [
                 'new-patients' => ['name' => 'New Patients', 'order' => 1, 'description' => 'Pacientes Nuevos', 'width' => 'col-lg-3', 'position' => 'a1:c1'],
                 'active-patients' => ['name' => 'Active Patients', 'order' => 3, 'description' => 'Pacientes Activos',  'width' => 'col-lg-3', 'position' => 'd1:f1'],
-                'monthly-appointments' => ['name' => 'Monthly Appointments', 'order' => 4, 'description' => 'Citas del Mes',  'width' => 'col-lg-3', 'position' => 'g1:i1'],
-                'consultas-en-progreso' => ['name' => 'Consultas en Progreso', 'order' => 5, 'description' => 'Consultas en Progreso',  'width' => 'col-lg-3', 'position' => 'j1:l1'],
+                'monthly-appointments' => ['name' => 'Monthly Appointments', 'order' => 4, 'description' => 'Citas del Mes',  'width' => 'col-lg-3', 'position' => 'g1:h1'],
+                'appointment-not-fulfilled' => ['name' => 'Citas Abiertas', 'order' => 5, 'description' => 'Citas Abiertas',  'width' => 'col-lg-3', 'position' => 'i1:j1'],
+                'consultas-en-progreso' => ['name' => 'Consultas en Progreso', 'order' => 5, 'description' => 'Consultas en Progreso',  'width' => 'col-lg-3', 'position' => 'k1:l1'],
                 'yearly-appointments-chart' => ['name' => 'Yearly Appointments Chart', 'order' => 8, 'description' => 'Gráfico de Citas del Año', 'width' => 'col-lg-6', 'position' => 'a2:f2'],
                 'recent-appointment-list' => ['name' => 'Recent Appointments', 'order' => 9, 'description' => 'Citas para hoy', 'width' => 'col-lg-6', 'position' => 'g2:l2'],
                 'appointment-lead-time' => ['name' => 'Appointment Lead Time', 'order' => 6, 'description' => 'Tiempo Promedio: Solicitud → Atención', 'width' => 'col-lg-3', 'position' => 'a3:c3'],

@@ -126,6 +126,14 @@ class Appointment extends BaseModel
     }
 
     /**
+     * Scope a query to only include appointments not fulfilled.
+     */
+    public function scopeNotFulfilled(Builder $query): void
+    {
+        $query->whereIn('status', ['proposed', 'pending', 'booked', 'confirm', 'arrived']);
+    }
+
+    /**
      * Scope a query to only include appointments pending.
      */
     public function scopePending(Builder $query): void
