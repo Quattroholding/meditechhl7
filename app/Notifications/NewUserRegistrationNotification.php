@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 
 class NewUserRegistrationNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -40,6 +41,24 @@ class NewUserRegistrationNotification extends Notification implements ShouldQueu
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $practitioner = $this->registeredUser->practitioner;
+
+        return [
+            'Type' => 'new-user-registration',
+            'User-ID' => $this->registeredUser->id,
+            'User-Name' => $this->registeredUser->first_name.' '.$this->registeredUser->last_name,
+            'User-Email' => $this->registeredUser->email,
+            'Registry' => $practitioner->registry ?? 'N/A',
+            'Phone' => $practitioner->phone ?? 'N/A',
+            'Registered-At' => $this->registeredUser->created_at->format('Y-m-d H:i'),
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
@@ -59,7 +78,10 @@ class NewUserRegistrationNotification extends Notification implements ShouldQueu
             ->line('Este usuario requiere validación de documentos antes de poder acceder al sistema.')
             ->action('Revisar Documentos', route('user.pending-validations'))
             ->line('Por favor, revisa los documentos subidos (cédula e idoneidad médica) y aprueba o rechaza el registro.')
-            ->salutation('Saludos, Sistema SAMI Recetas');
+            ->salutation('Saludos, Sistema SAMI Recetas')
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**

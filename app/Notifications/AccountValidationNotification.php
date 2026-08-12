@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class AccountValidationNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     /**
      * Create a new notification instance.
@@ -30,6 +31,18 @@ class AccountValidationNotification extends Notification implements ShouldQueue
         return array_filter([
             $this->getMailChannelIfValid($notifiable->email),
         ]);
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => $this->approved ? 'account-validated-approved' : 'account-validated-rejected',
+            'Approved' => $this->approved ? 'yes' : 'no',
+            'Rejection-Reason' => $this->rejectionReason ?? 'N/A',
+        ];
     }
 
     /**
@@ -58,7 +71,10 @@ class AccountValidationNotification extends Notification implements ShouldQueue
             ->line('Ya puedes iniciar sesión en la aplicación móvil con tus credenciales.')
             ->action('Descargar la App', 'https://samirx.meditecpty.com/')
             ->line('Si tienes alguna pregunta, no dudes en contactarnos.')
-            ->salutation('Saludos, El equipo de Soluciones Meditec');
+            ->salutation('Saludos, El equipo de Soluciones Meditec')
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**
@@ -79,7 +95,10 @@ class AccountValidationNotification extends Notification implements ShouldQueue
 
         return $mail->line('Si consideras que esto es un error o deseas más información, por favor contáctanos.')
             ->line('Puedes volver a registrarte corrigiendo la información solicitada.')
-            ->salutation('Saludos, El equipo de Soluciones Meditec');
+            ->salutation('Saludos, El equipo de Soluciones Meditec')
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**

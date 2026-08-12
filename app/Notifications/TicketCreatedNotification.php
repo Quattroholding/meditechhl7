@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Ticket;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 
 class TicketCreatedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -37,6 +38,25 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'ticket-created',
+            'Ticket-ID' => $this->ticket->id,
+            'Ticket-Identifier' => $this->ticket->identifier,
+            'Ticket-Title' => $this->ticket->title,
+            'Ticket-Priority' => $this->ticket->priority,
+            'Ticket-Category' => $this->ticket->category,
+            'Ticket-Status' => $this->ticket->status,
+            'Created-By' => $this->ticket->user->full_name ?? 'N/A',
+            'Client-ID' => $this->ticket->client_id,
+            'Client-Name' => $this->ticket->client->name ?? 'N/A',
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $clinicName = $this->ticket->client->name ?? config('app.name');
@@ -54,7 +74,10 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
             ->line('**Descripción:**')
             ->line($this->ticket->description)
             ->action('Ver Ticket', route('tickets.index'))
-            ->line('Gracias por usar '.$clinicName);
+            ->line('Gracias por usar '.$clinicName)
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**
