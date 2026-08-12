@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,7 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class TwoFactorDisabledNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, WithEmailMetadata;
 
     /**
      * Create a new notification instance.
@@ -29,6 +30,20 @@ class TwoFactorDisabledNotification extends Notification implements ShouldQueue
     public function via(object $notifiable): array
     {
         return ['mail'];
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => '2fa-disabled',
+            'Disabled-By' => $this->disabledBy ?? 'Self',
+            'Reason' => $this->reason ?? 'N/A',
+            'IP-Address' => request()->ip(),
+            'Timestamp' => now()->format('Y-m-d H:i:s'),
+        ];
     }
 
     /**
@@ -55,7 +70,10 @@ class TwoFactorDisabledNotification extends Notification implements ShouldQueue
             ->line('⚠️ IMPORTANTE: Tu cuenta ahora está menos protegida. Te recomendamos reactivar 2FA lo antes posible.')
             ->action('Reactivar 2FA', url('/user/profile#two_factor_settings'))
             ->line('Si no reconoces esta acción, contacta inmediatamente al administrador.')
-            ->salutation('Saludos, El equipo de SAMI');
+            ->salutation('Saludos, El equipo de SAMI')
+            ->withSymfonyMessage(function ($msg) {
+                $this->applyEmailMetadata($msg);
+            });
 
         return $message;
     }

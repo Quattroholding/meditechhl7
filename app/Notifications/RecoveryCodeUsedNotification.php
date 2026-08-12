@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,7 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class RecoveryCodeUsedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, WithEmailMetadata;
 
     /**
      * Create a new notification instance.
@@ -27,6 +28,20 @@ class RecoveryCodeUsedNotification extends Notification implements ShouldQueue
     public function via(object $notifiable): array
     {
         return ['mail'];
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => '2fa-recovery-code-used',
+            'Remaining-Codes' => $this->remainingCodes,
+            'Low-Codes-Alert' => $this->remainingCodes <= 3 ? 'yes' : 'no',
+            'IP-Address' => request()->ip(),
+            'Timestamp' => now()->format('Y-m-d H:i:s'),
+        ];
     }
 
     /**
@@ -50,7 +65,10 @@ class RecoveryCodeUsedNotification extends Notification implements ShouldQueue
         }
 
         $message->line('Si no reconoces este acceso, cambia tu contraseña inmediatamente.')
-            ->salutation('Saludos, El equipo de SAMI');
+            ->salutation('Saludos, El equipo de SAMI')
+            ->withSymfonyMessage(function ($msg) {
+                $this->applyEmailMetadata($msg);
+            });
 
         return $message;
     }

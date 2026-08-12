@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -9,7 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class TwoFactorEnabledNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, WithEmailMetadata;
 
     /**
      * Create a new notification instance.
@@ -30,6 +31,18 @@ class TwoFactorEnabledNotification extends Notification implements ShouldQueue
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => '2fa-enabled',
+            'IP-Address' => request()->ip(),
+            'Timestamp' => now()->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
@@ -44,7 +57,10 @@ class TwoFactorEnabledNotification extends Notification implements ShouldQueue
             ->line('IP: '.request()->ip())
             ->line('Si no fuiste tú quien activó esta función, contacta inmediatamente al administrador.')
             ->action('Ir a Mi Perfil', url('/user/profile'))
-            ->salutation('Saludos, El equipo de SAMI');
+            ->salutation('Saludos, El equipo de SAMI')
+            ->withSymfonyMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**

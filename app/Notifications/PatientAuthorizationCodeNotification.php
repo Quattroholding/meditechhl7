@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\AuthorizationCode;
 use App\Models\Practitioner;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class PatientAuthorizationCodeNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -45,6 +46,23 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'patient-authorization-code',
+            'Authorization-Code-ID' => $this->authorizationCode->id,
+            'Patient-ID' => $this->authorizationCode->patient_id,
+            'Patient-Name' => $this->authorizationCode->patient->full_name ?? 'N/A',
+            'Practitioner-ID' => $this->practitioner->id,
+            'Practitioner-Name' => $this->practitioner->name,
+            'Code' => $this->authorizationCode->code,
+            'Expires-At' => $this->authorizationCode->expires_at->format('Y-m-d H:i'),
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $clinicName = config('app.name');
@@ -59,7 +77,10 @@ class PatientAuthorizationCodeNotification extends Notification implements Shoul
             ->line('⚠️ **Este código expira el '.$expiresAt->format('d/m/Y').' a las '.$expiresAt->format('H:i').'** (válido por 1 hora)')
             ->line('Una vez que el médico ingrese este código correctamente, tendrá acceso permanente a su historial clínico.')
             ->line('Si usted no solicitó esto o no desea autorizar el acceso, simplemente ignore este mensaje.')
-            ->salutation('Atentamente, Equipo de '.$clinicName);
+            ->salutation('Atentamente, Equipo de '.$clinicName)
+            ->withSymfonyMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**
