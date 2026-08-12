@@ -211,7 +211,7 @@ class SendItemsSyncService
                 $bccAddresses = $message->getBcc() ?? [];
                 foreach ($bccAddresses as $address) {
                     if (is_object($address)) {
-                        $bcc[$address->getAddress()] = $bcc->getName() ?? $address->getAddress();
+                        $bcc[$address->getAddress()] = $address->getName() ?? $address->getAddress();
                     } else {
                         $bcc[$address] = $address;
                     }
