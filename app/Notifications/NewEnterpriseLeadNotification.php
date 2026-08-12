@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Client;
 use App\Models\EnterpriseLead;
 use App\Models\Package;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -36,6 +37,29 @@ class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
     public function via(object $notifiable): array
     {
         return ['mail'];
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $isUpgradeRequest = $this->lead->source === 'upgrade_request';
+
+        return [
+            'Type' => $isUpgradeRequest ? 'enterprise-lead-upgrade' : 'enterprise-lead-new',
+            'Lead-ID' => $this->lead->id,
+            'Company-Name' => $this->lead->company_name,
+            'Contact-Name' => $this->lead->full_name,
+            'Contact-Email' => $this->lead->email,
+            'Contact-Phone' => $this->lead->phone ?? 'N/A',
+            'Number-Of-Doctors' => $this->lead->number_of_doctors ?? 'N/A',
+            'Number-Of-Branches' => $this->lead->number_of_branches ?? 'N/A',
+            'Source' => $this->lead->source,
+            'Current-Package' => isset($this->lead->metadata['current_package_id'])
+                ? Package::find($this->lead->metadata['current_package_id'])?->name ?? 'N/A'
+                : 'N/A',
+        ];
     }
 
     /**
@@ -106,6 +130,10 @@ class NewEnterpriseLeadNotification extends Notification implements ShouldQueue
         if (isset($this->lead->id)) {
             $message->action('Ver Lead en el Sistema', url('/admin/leads/'.$this->lead->id));
         }
+
+        $message->withSymfonyMessage(function ($msg) {
+            $this->applyEmailMetadata($msg);
+        });
 
         return $message;
     }

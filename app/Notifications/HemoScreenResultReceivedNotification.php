@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\HemoScreenStandaloneResult;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class HemoScreenResultReceivedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -31,6 +32,25 @@ class HemoScreenResultReceivedNotification extends Notification implements Shoul
     public function via(object $notifiable): array
     {
         return ['mail'];
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $abnormalObs = $this->result->getAbnormalObservations();
+
+        return [
+            'Type' => 'hemoscreen-result',
+            'Result-ID' => $this->result->id,
+            'Device-Serial' => $this->result->device_serial,
+            'Panel-Name' => $this->result->panel_name,
+            'Panel-Code' => $this->result->panel_code,
+            'Test-Date' => $this->result->test_performed_at->format('Y-m-d H:i'),
+            'Has-Abnormal-Values' => count($abnormalObs) > 0 ? 'yes' : 'no',
+            'Abnormal-Count' => count($abnormalObs),
+        ];
     }
 
     /**
@@ -64,6 +84,10 @@ class HemoScreenResultReceivedNotification extends Notification implements Shoul
         $message->action('Ver resultados completos', url('/hemoscreen/dashboard'));
 
         $message->line('Gracias por usar SAMI HemoScreen.');
+
+        $message->withSymfonyMessage(function ($msg) {
+            $this->applyEmailMetadata($msg);
+        });
 
         return $message;
     }

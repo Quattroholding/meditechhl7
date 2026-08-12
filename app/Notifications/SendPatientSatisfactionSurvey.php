@@ -7,6 +7,7 @@ use App\Models\Encounter;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notification;
 
 class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -57,6 +58,25 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'patient-satisfaction-survey',
+            'Survey-ID' => $this->survey->id,
+            'Survey-Response-ID' => $this->surveyResponse->id,
+            'Encounter-ID' => $this->encounter->id,
+            'Patient-ID' => $this->surveyResponse->patient_id,
+            'Patient-Name' => $this->surveyResponse->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $this->encounter->practitioner_id,
+            'Doctor-Name' => $this->encounter->appointment->practitioner->name ?? 'N/A',
+            'Encounter-Date' => $this->encounter->start->format('Y-m-d'),
+            'Survey-Token' => $this->surveyResponse->token,
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
@@ -75,7 +95,10 @@ class SendPatientSatisfactionSurvey extends Notification implements ShouldQueue
                 'practitionerName' => $practitionerName,
                 'encounterDate' => $encounterDate,
                 'clinicName' => $clinicName,
-            ]);
+            ])
+            ->withSymfonyMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     /**

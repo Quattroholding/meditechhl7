@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 
 class PractitionerCredentialsNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -37,6 +38,21 @@ class PractitionerCredentialsNotification extends Notification implements Should
         ]);
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => $this->first_time_login ? 'practitioner-credentials-welcome' : 'practitioner-credentials-update',
+            'User-ID' => $this->user->id,
+            'User-Name' => $this->user->full_name,
+            'User-Email' => $this->user->email,
+            'User-Role' => $this->user->hasRole('doctor') ? 'doctor' : 'staff',
+            'First-Time-Login' => $this->first_time_login ? 'yes' : 'no',
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $userPrefix = '';
@@ -52,7 +68,10 @@ class PractitionerCredentialsNotification extends Notification implements Should
                 'temporaryPassword' => $this->temporaryPassword,
                 'userPrefix' => $userPrefix,
                 'first_time_login' => $this->first_time_login,
-            ]);
+            ])
+            ->withSymfonyMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray(object $notifiable): array

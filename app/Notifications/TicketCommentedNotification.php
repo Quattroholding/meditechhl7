@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class TicketCommentedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -39,6 +40,23 @@ class TicketCommentedNotification extends Notification implements ShouldQueue
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'ticket-commented',
+            'Ticket-ID' => $this->ticket->id,
+            'Ticket-Identifier' => $this->ticket->identifier,
+            'Comment-ID' => $this->comment->id,
+            'Commented-By' => $this->comment->user->full_name ?? 'N/A',
+            'Marks-As-Resolved' => $this->comment->marks_as_resolved ? 'yes' : 'no',
+            'Is-Internal' => $this->comment->is_internal ? 'yes' : 'no',
+            'Client-ID' => $this->ticket->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $clinicName = $this->ticket->client->name ?? config('app.name');
@@ -58,7 +76,10 @@ class TicketCommentedNotification extends Notification implements ShouldQueue
         }
 
         $mailMessage->action('Ver Ticket', route('tickets.index'))
-            ->line('Gracias por usar '.$clinicName);
+            ->line('Gracias por usar '.$clinicName)
+            ->withSymfonyMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         return $mailMessage;
     }
