@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\AppointmentWaitlistEntry;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class WaitlistEntryExpiredNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -42,6 +43,28 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $appointment = $this->waitlistEntry->appointment;
+
+        return [
+            'Type' => 'waitlist-expired',
+            'Waitlist-Entry-ID' => $this->waitlistEntry->id,
+            'Appointment-ID' => $appointment->id,
+            'Patient-ID' => $this->waitlistEntry->patient_id,
+            'Patient-Name' => $this->waitlistEntry->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $appointment->practitioner_id,
+            'Doctor-Name' => $appointment->practitioner->name ?? 'N/A',
+            'Requested-Date' => $appointment->start->format('Y-m-d H:i'),
+            'Days-Waited' => $this->waitlistEntry->created_at->diffInDays(now()),
+            'Expires-At' => $this->waitlistEntry->expires_at->format('Y-m-d H:i'),
+            'Client-ID' => $appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $appointment = $this->waitlistEntry->appointment;
@@ -58,7 +81,10 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
                 'speciality' => $appointment->medicalSpeciality->name ?? 'Medicina General',
                 'clinicName' => $clinicName,
                 'daysWaited' => $this->waitlistEntry->created_at->diffInDays(now()),
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray(object $notifiable): array

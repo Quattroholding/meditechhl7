@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notification;
 
 class AppointmentRescheduledForPractitionerNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -47,6 +48,30 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'appointment-rescheduled-practitioner',
+            'Appointment-ID' => $this->appointment->id,
+            'Patient-ID' => $this->appointment->patient_id,
+            'Patient-Name' => $this->appointment->patient->name,
+            'Doctor-ID' => $this->appointment->practitioner_id,
+            'Doctor-Name' => $this->appointment->practitioner->name ?? 'N/A',
+            'Original-Date' => $this->originalDateTime->format('Y-m-d H:i'),
+            'New-Date' => $this->appointment->start->format('Y-m-d H:i'),
+            'Reschedule-Reason' => $this->reason ?? 'N/A',
+            'Changed-By' => $this->changedBy ?? 'N/A',
+            'Duration-Minutes' => $this->appointment->minutes_duration,
+            'Specialty' => $this->appointment->medicalSpeciality->name ?? 'N/A',
+            'Branch-Name' => $this->appointment->consultingRoom->branch->name ?? 'N/A',
+            'Consulting-Room' => $this->appointment->consultingRoom->name ?? 'N/A',
+            'Client-ID' => $this->appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $patient = $this->appointment->patient;
@@ -78,6 +103,10 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
         if ($appointmentCreator && $appointmentCreator->email !== $notifiable->email && $this->isValidEmail($appointmentCreator->email)) {
             $mailMessage->bcc($appointmentCreator->email);
         }
+
+        $mailMessage->withSwiftMessage(function ($message) {
+            $this->applyEmailMetadata($message);
+        });
 
         return $mailMessage;
     }

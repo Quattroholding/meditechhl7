@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\AppointmentWaitlistEntry;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class WaitlistEntryCancelledNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -42,6 +43,27 @@ class WaitlistEntryCancelledNotification extends Notification implements ShouldQ
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $appointment = $this->waitlistEntry->appointment;
+
+        return [
+            'Type' => 'waitlist-cancelled',
+            'Waitlist-Entry-ID' => $this->waitlistEntry->id,
+            'Appointment-ID' => $appointment->id,
+            'Patient-ID' => $this->waitlistEntry->patient_id,
+            'Patient-Name' => $this->waitlistEntry->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $appointment->practitioner_id,
+            'Doctor-Name' => $appointment->practitioner->name ?? 'N/A',
+            'Requested-Date' => $appointment->start->format('Y-m-d H:i'),
+            'Cancellation-Reason' => $this->waitlistEntry->cancellation_reason ?? 'N/A',
+            'Client-ID' => $appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $appointment = $this->waitlistEntry->appointment;
@@ -58,7 +80,10 @@ class WaitlistEntryCancelledNotification extends Notification implements ShouldQ
                 'speciality' => $appointment->medicalSpeciality->name ?? 'Medicina General',
                 'clinicName' => $clinicName,
                 'cancellationReason' => $this->waitlistEntry->cancellation_reason,
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray(object $notifiable): array
