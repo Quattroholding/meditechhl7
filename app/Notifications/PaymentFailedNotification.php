@@ -7,6 +7,7 @@ use App\Enums\PaymentMethod;
 use App\Models\ClientInvoice;
 use App\Models\ClientInvoicePayment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notification;
 
 class PaymentFailedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -36,6 +37,27 @@ class PaymentFailedNotification extends Notification implements ShouldQueue
         ]);
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $client = $this->invoice->client;
+
+        return [
+            'Type' => 'payment-failed',
+            'Payment-ID' => $this->payment->id,
+            'Invoice-ID' => $this->invoice->id,
+            'Invoice-Number' => $this->invoice->invoice_number,
+            'Client-ID' => $client->id,
+            'Client-Name' => $client->name,
+            'Amount' => number_format($this->invoice->total, 2),
+            'Failure-Status' => $this->status->value,
+            'Failure-Reason' => $this->getFailureReason(),
+            'Due-Date' => $this->invoice->due_date->format('Y-m-d'),
+        ];
+    }
+
     public function toMail($notifiable): MailMessage
     {
         $client = $this->invoice->client;
@@ -53,7 +75,10 @@ class PaymentFailedNotification extends Notification implements ShouldQueue
             ->line('- **Yappy**: '.PaymentMethod::YAPPY->info()['Teléfono'])
             ->line('')
             ->action('Ver Factura y Pagar', route('suscriptions.invoices.show', $this->invoice->id))
-            ->line('Por favor, realice el pago antes de la fecha de vencimiento para evitar la suspensión del servicio.');
+            ->line('Por favor, realice el pago antes de la fecha de vencimiento para evitar la suspensión del servicio.')
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray(object $notifiable): array

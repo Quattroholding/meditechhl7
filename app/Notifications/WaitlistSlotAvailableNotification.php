@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\AppointmentFreedSlot;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notification;
 
 class WaitlistSlotAvailableNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -43,6 +44,27 @@ class WaitlistSlotAvailableNotification extends Notification implements ShouldQu
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $appointment = $this->freedSlot->cancelledAppointment;
+
+        return [
+            'Type' => 'waitlist-slot-available',
+            'Freed-Slot-ID' => $this->freedSlot->id,
+            'Cancelled-Appointment-ID' => $this->freedSlot->cancelled_appointment_id,
+            'Doctor-ID' => $appointment->practitioner_id,
+            'Doctor-Name' => $appointment->practitioner->name ?? 'N/A',
+            'Available-Date' => $this->freedSlot->slot_date,
+            'Available-Time' => substr($this->freedSlot->slot_start_time, 0, 5),
+            'Duration-Minutes' => $this->freedSlot->duration_minutes,
+            'Specialty' => $appointment->medicalSpeciality->name ?? 'N/A',
+            'Client-ID' => $appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $appointment = $this->freedSlot->cancelledAppointment;
@@ -60,7 +82,10 @@ class WaitlistSlotAvailableNotification extends Notification implements ShouldQu
                 'speciality' => $speciality,
                 'clinicName' => $clinicName,
                 'durationMinutes' => $this->freedSlot->duration_minutes,
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray(object $notifiable): array

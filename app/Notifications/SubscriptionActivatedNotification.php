@@ -7,6 +7,7 @@ use App\Models\ConsultingRoom;
 use App\Models\ServiceCatalog;
 use App\Models\UserWorkingHour;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notification;
 
 class SubscriptionActivatedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -37,6 +38,28 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $client = $this->subscription->client;
+        $package = $this->subscription->package;
+
+        return [
+            'Type' => 'subscription-activated',
+            'Subscription-ID' => $this->subscription->id,
+            'Client-ID' => $client->id,
+            'Client-Name' => $client->name,
+            'Package-ID' => $package->id,
+            'Package-Name' => $package->name,
+            'Status' => $this->subscription->status->value,
+            'Period-Start' => $this->subscription->current_period_starts_at->format('Y-m-d'),
+            'Period-End' => $this->subscription->current_period_ends_at->format('Y-m-d'),
+            'Next-Billing-Date' => $this->subscription->next_billing_date->format('Y-m-d'),
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail($notifiable): MailMessage
@@ -56,7 +79,10 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
                 'client' => $client,
                 'package' => $package,
                 'pendingSteps' => $pendingSteps,
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         $mailMessage->bcc('business@meditecpty.com');
 

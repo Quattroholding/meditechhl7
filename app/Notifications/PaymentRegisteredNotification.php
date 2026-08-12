@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\ClientInvoicePayment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 
 class PaymentRegisteredNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -34,6 +35,29 @@ class PaymentRegisteredNotification extends Notification implements ShouldQueue
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        $invoice = $this->payment->invoice;
+        $client = $invoice->client;
+
+        return [
+            'Type' => 'payment-registered',
+            'Payment-ID' => $this->payment->id,
+            'Invoice-ID' => $invoice->id,
+            'Invoice-Number' => $invoice->invoice_number,
+            'Client-ID' => $client->id,
+            'Client-Name' => $client->name,
+            'Amount' => number_format($this->payment->amount, 2),
+            'Payment-Method' => $this->payment->payment_method->value,
+            'Payment-Status' => $this->payment->status->value,
+            'Payment-Reference' => $this->payment->payment_reference ?? 'N/A',
+            'Registered-By' => $this->payment->processedBy->full_name ?? 'N/A',
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail($notifiable): MailMessage
@@ -51,7 +75,10 @@ class PaymentRegisteredNotification extends Notification implements ShouldQueue
                 'invoice' => $invoice,
                 'client' => $client,
                 'registeredBy' => $registeredBy,
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         $mailMessage->bcc('business@meditecpty.com');
 
