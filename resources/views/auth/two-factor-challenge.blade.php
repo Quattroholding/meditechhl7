@@ -36,8 +36,8 @@
                                             type="text"
                                             name="code"
                                             placeholder="000000"
-                                            maxlength="6"
-                                            pattern="[0-9]{6}"
+                                            maxlength="21"
+                                            {{--}}pattern="[0-9]{6}"{{--}}
                                             autofocus
                                             autocomplete="one-time-code"
                                             required
