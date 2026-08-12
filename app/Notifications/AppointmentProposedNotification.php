@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class AppointmentProposedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -42,6 +43,25 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'appointment-proposed',
+            'Appointment-ID' => $this->appointment->id,
+            'Patient-ID' => $this->appointment->patient_id,
+            'Patient-Name' => $this->appointment->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $this->appointment->practitioner_id,
+            'Doctor-Name' => $this->appointment->practitioner->name ?? 'N/A',
+            'Requested-Date' => $this->appointment->original_requested_datetime->format('Y-m-d H:i'),
+            'Branch-Name' => $this->appointment->consultingRoom->branch->name ?? 'N/A',
+            'Service-Type' => $this->appointment->service_type ?? 'Consulta',
+            'Client-ID' => $this->appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $patient = $this->appointment->patient;
@@ -63,7 +83,10 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
                 'description' => $this->appointment->description,
                 'comment' => $this->appointment->comment,
                 'reviewUrl' => url('/appointments?status=proposed'), // . $this->appointment->id
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         // Agregar el usuario creador de la cita en BCC si es distinto del practitioner notificado
         $appointmentCreator = $this->appointment->getCreator();

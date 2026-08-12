@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\Appointment;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notification;
 
 class AppointmentRescheduledNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -45,6 +46,26 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
         return $channels;
     }
 
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'appointment-rescheduled',
+            'Appointment-ID' => $this->appointment->id,
+            'Patient-ID' => $this->appointment->patient_id,
+            'Patient-Name' => $this->appointment->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $this->appointment->practitioner_id,
+            'Doctor-Name' => $this->appointment->practitioner->name ?? 'N/A',
+            'Original-Date' => $this->originalDateTime->format('Y-m-d H:i'),
+            'New-Date' => $this->appointment->start->format('Y-m-d H:i'),
+            'Branch-Name' => $this->appointment->consultingRoom->branch->name ?? 'N/A',
+            'Reschedule-Reason' => $this->reason ?? 'N/A',
+            'Client-ID' => $this->appointment->client_id,
+        ];
+    }
+
     public function toMail($notifiable)
     {
         $practitioner = $this->appointment->practitioner;
@@ -68,7 +89,10 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
                 'consultingRoom' => $this->appointment->consultingRoom->name ?? null,
                 'reason' => $this->reason,
                 'appointmentUrl' => route('appointment.calendar'),
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
     }
 
     public function toArray($notifiable)
