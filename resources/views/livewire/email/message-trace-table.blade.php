@@ -106,7 +106,9 @@
                                     <th>Remitente</th>
                                     <th>Destinatario</th>
                                     <th>Asunto</th>
+                                    {{--}}
                                     <th>Contexto</th>
+                                    {{--}}
                                     <th style="width: 120px;" class="text-center">Estado</th>
                                     <th style="width: 100px;" class="text-end">Acciones</th>
                                 </tr>
@@ -146,6 +148,7 @@
                                         <td>
                                             <strong title="{{ $message['Subject'] ?? '(Sin asunto)' }}">{{ Str::limit($message['Subject'],50) ?? '(Sin asunto)' }}</strong>
                                         </td>
+                                        {{--}}
                                         <td>
                                             @if(isset($message['Metadata']) && count($message['Metadata']) > 0)
                                                 <div class="d-flex flex-wrap gap-1">
@@ -161,6 +164,7 @@
                                                 <span class="text-muted"><small>-</small></span>
                                             @endif
                                         </td>
+                                        {{--}}
                                         <td class="text-center">
                                             @php
                                                 $statusClass = match($message['Status'] ?? 'Unknown') {
