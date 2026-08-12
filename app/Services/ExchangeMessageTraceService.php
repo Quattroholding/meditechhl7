@@ -115,7 +115,7 @@ class ExchangeMessageTraceService
                 $queryParams = [
                     '$top' => $limit,
                     '$orderby' => 'sentDateTime desc',
-                    '$select' => 'id,subject,from,toRecipients,ccRecipients,sentDateTime,isRead,internetMessageId',
+                    '$select' => 'id,subject,from,toRecipients,ccRecipients,sentDateTime,isRead,internetMessageId,internetMessageHeaders',
                     '$filter' => "sentDateTime ge {$startDate->format('Y-m-d\\TH:i:s\\Z')} and sentDateTime le {$endDate->format('Y-m-d\\TH:i:s\\Z')}",
                 ];
 
@@ -152,20 +152,28 @@ class ExchangeMessageTraceService
                         }
                     }
 
+                    // Detectar correos de rebote (bounce) por el asunto
+                    $subject = $message['subject'] ?? '(Sin asunto)';
+                    $status = $this->detectEmailStatus($subject);
+
+                    // Extraer metadatos de headers personalizados
+                    $metadata = $this->extractCustomHeaders($message['internetMessageHeaders'] ?? []);
+
                     return [
                         'MessageId' => $message['internetMessageId'] ?? $message['id'],
-                        'Subject' => $message['subject'] ?? '(Sin asunto)',
+                        'Subject' => $subject,
                         'SenderAddress' => $message['from']['emailAddress']['address'] ?? '',
                         'RecipientAddress' => isset($message['toRecipients'][0]) ? $message['toRecipients'][0]['emailAddress']['address'] : '',
                         'RecipientCount' => count($message['toRecipients'] ?? []),
                         'AllRecipients' => $message['toRecipients'] ?? [],
                         'CcRecipients' => $message['ccRecipients'] ?? [],
                         'Received' => $message['sentDateTime'] ?? null,
-                        'Status' => 'Entregado', // Asumimos entregado si está en sent items
+                        'Status' => $status,
                         'FromIP' => null,
                         'ToIP' => null,
                         'Size' => null,
                         'MessageTraceId' => $message['id'],
+                        'Metadata' => $metadata, // Metadatos personalizados
                     ];
                 }, $messages);
 
@@ -197,6 +205,66 @@ class ExchangeMessageTraceService
                 'error' => $e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Extrae metadatos personalizados de los headers del correo
+     * Busca headers que comiencen con "X-" (custom headers)
+     */
+    protected function extractCustomHeaders(array $headers): array
+    {
+        $metadata = [];
+
+        foreach ($headers as $header) {
+            $name = $header['name'] ?? '';
+            $value = $header['value'] ?? '';
+
+            // Solo procesar headers personalizados (X-*)
+            if (str_starts_with($name, 'X-')) {
+                // Remover el prefijo "X-" para el nombre limpio
+                $cleanName = substr($name, 2);
+                $metadata[$cleanName] = $value;
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Detecta el estado del correo basado en el asunto
+     * Identifica correos de rebote (bounce) que indican fallo en la entrega
+     */
+    protected function detectEmailStatus(string $subject): string
+    {
+        // Patrones comunes de correos de rebote/fallo
+        $failurePatterns = [
+            'no se puede entregar',
+            'undeliverable',
+            'mail delivery failed',
+            'returned mail',
+            'failure notice',
+            'delivery status notification (failure)',
+            'delivery failure',
+            'could not be delivered',
+            'mensaje no entregado',
+            'no entregado',
+            'fallo en la entrega',
+            'bounced',
+            'undelivered',
+            'mail system error',
+            'mensaje devuelto',
+        ];
+
+        $subjectLower = mb_strtolower($subject);
+
+        foreach ($failurePatterns as $pattern) {
+            if (str_contains($subjectLower, $pattern)) {
+                return 'Fallido';
+            }
+        }
+
+        // Si no es un rebote, asumimos que fue entregado
+        return 'Entregado';
     }
 
     /**

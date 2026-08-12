@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table show-entire">
-                <div class="card-body">
+                <div class="card-body" style="padding: 20px">
                     <!-- Header -->
                     <div class="page-table-header mb-3">
                         <h3><i class="fas fa-search"></i> Seguimiento de Mensajes (Message Trace)</h3>
@@ -106,6 +106,7 @@
                                     <th>Remitente</th>
                                     <th>Destinatario</th>
                                     <th>Asunto</th>
+                                    <th>Contexto</th>
                                     <th style="width: 120px;" class="text-center">Estado</th>
                                     <th style="width: 100px;" class="text-end">Acciones</th>
                                 </tr>
@@ -130,7 +131,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <strong>{{ $message['SenderAddress'] ?? 'N/A' }}</strong>
+                                            <strong title="{{ $message['SenderAddress'] }}">{{ Str::limit($message['SenderAddress'],30) ?? 'N/A' }}</strong>
                                         </td>
                                         <td>
                                             <span class="badge bg-info">
@@ -143,7 +144,22 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <strong>{{ $message['Subject'] ?? '(Sin asunto)' }}</strong>
+                                            <strong title="{{ $message['Subject'] ?? '(Sin asunto)' }}">{{ Str::limit($message['Subject'],50) ?? '(Sin asunto)' }}</strong>
+                                        </td>
+                                        <td>
+                                            @if(isset($message['Metadata']) && count($message['Metadata']) > 0)
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach($message['Metadata'] as $key => $value)
+                                                        @if(!empty($value))
+                                                            <span class="badge bg-primary" style="font-size: 0.7rem;" title="{{ $key }}: {{ $value }}">
+                                                                <i class="fas fa-tag"></i> {{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}: {{ Str::limit($value, 15) }}
+                                                            </span>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="text-muted"><small>-</small></span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             @php
@@ -204,9 +220,8 @@
 
     <!-- Modal de Detalles -->
     @if($showDetailModal && $selectedMessage)
-        <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
+        <div cclass="modal-overlay" wire:click="closeModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-content" wire:click.stop style="position: relative; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
                     <div class="modal-header">
                         <h5 class="modal-title">
                             <i class="fas fa-envelope-open-text"></i>
@@ -303,6 +318,27 @@
                                 <p><code style="font-size: 0.85em;">{{ $selectedMessage['MessageId'] }}</code></p>
                             </div>
                         @endif
+
+                        <!-- Metadatos Personalizados -->
+                        @if(isset($selectedMessage['Metadata']) && count($selectedMessage['Metadata']) > 0)
+                            <div class="mb-3">
+                                <label class="form-label fw-bold"><i class="fas fa-tags"></i> Información del Contexto:</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <dl class="row mb-0">
+                                            @foreach($selectedMessage['Metadata'] as $key => $value)
+                                                @if(!empty($value))
+                                                    <dt class="col-sm-4 text-end">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <span class="badge bg-primary">{{ $value }}</span>
+                                                    </dd>
+                                                @endif
+                                            @endforeach
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click="closeDetailModal">
@@ -310,7 +346,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
         </div>
     @endif
 </div>
