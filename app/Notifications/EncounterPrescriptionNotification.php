@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\WhatsAppMetaChannel;
 use App\Models\Encounter;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use App\Services\EncounterPrescriptionPdfService;
 use App\Services\WhatsAppService;
 use Illuminate\Bus\Queueable;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class EncounterPrescriptionNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -89,6 +90,27 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
     }
 
     /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'prescription',
+            'Encounter-ID' => $this->encounter->id,
+            'Patient-ID' => $this->encounter->patient_id,
+            'Patient-Name' => $this->encounter->patient->full_name ?? 'N/A',
+            'Doctor-ID' => $this->encounter->practitioner_id,
+            'Doctor-Name' => $this->encounter->practitioner->name ?? 'N/A',
+            'Encounter-Date' => $this->encounter->start_datetime?->format('Y-m-d H:i') ?? 'N/A',
+            'Has-Medications' => $this->hasMedications ? 'yes' : 'no',
+            'Has-Service-Requests' => $this->hasServiceRequests ? 'yes' : 'no',
+            'Medication-Count' => count($this->medicationRequestIds),
+            'Service-Request-Count' => count($this->serviceRequestIds),
+            'Client-ID' => $this->encounter->patient->client_id ?? null,
+        ];
+    }
+
+    /**
      * Get the mail representation of the notification.
      */
     public function toMail($notifiable): MailMessage
@@ -106,7 +128,10 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
                 'patient' => $patient,
                 'hasMedications' => $this->hasMedications,
                 'hasServiceRequests' => $this->hasServiceRequests,
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         // Use unified PDF service
         $pdfService = new EncounterPrescriptionPdfService;

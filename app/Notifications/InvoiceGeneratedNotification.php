@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\ClientInvoice;
 use App\Models\User;
 use App\Notifications\Concerns\ValidatesEmailChannel;
+use App\Notifications\Concerns\WithEmailMetadata;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notification;
 
 class InvoiceGeneratedNotification extends Notification implements ShouldQueue
 {
-    use Queueable, ValidatesEmailChannel;
+    use Queueable, ValidatesEmailChannel, WithEmailMetadata;
 
     public $tries = 3;
 
@@ -34,6 +35,26 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
             'database',
             $this->getMailChannelIfValid($notifiable->email),
         ]);
+    }
+
+    /**
+     * Define metadatos personalizados para tracking del correo
+     */
+    protected function emailMetadata(): array
+    {
+        return [
+            'Type' => 'invoice-generated',
+            'Invoice-ID' => $this->invoice->id,
+            'Invoice-Number' => $this->invoice->invoice_number,
+            'Client-ID' => $this->invoice->client_id,
+            'Client-Name' => $this->invoice->client->name ?? 'N/A',
+            'Subscription-ID' => $this->invoice->subscription_id,
+            'Package-Name' => $this->invoice->subscription->package->name ?? 'N/A',
+            'Total-Amount' => number_format($this->invoice->total, 2),
+            'Payment-Status' => $this->invoice->status->value ?? 'pending',
+            'Due-Date' => $this->invoice->due_date->format('Y-m-d'),
+            'Period' => $this->invoice->period_start->format('Y-m-d').' to '.$this->invoice->period_end->format('Y-m-d'),
+        ];
     }
 
     /**
@@ -63,7 +84,10 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
             ])
             ->attachData($pdfContent, $fileName, [
                 'mime' => 'application/pdf',
-            ]);
+            ])
+            ->withSwiftMessage(function ($message) {
+                $this->applyEmailMetadata($message);
+            });
 
         // Add CC to accounting email if configured
         $accountingEmail = config('subscriptions.accounting_email');
