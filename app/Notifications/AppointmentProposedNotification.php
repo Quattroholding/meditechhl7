@@ -84,7 +84,7 @@ class AppointmentProposedNotification extends Notification implements ShouldQueu
                 'comment' => $this->appointment->comment,
                 'reviewUrl' => url('/appointments?status=proposed'), // . $this->appointment->id
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

@@ -76,7 +76,7 @@ class PaymentRejectedNotification extends Notification implements ShouldQueue
                 'client' => $client,
                 'rejectionReason' => $this->rejectionReason,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

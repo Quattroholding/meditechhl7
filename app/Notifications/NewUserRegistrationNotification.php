@@ -79,7 +79,7 @@ class NewUserRegistrationNotification extends Notification implements ShouldQueu
             ->action('Revisar Documentos', route('user.pending-validations'))
             ->line('Por favor, revisa los documentos subidos (cédula e idoneidad médica) y aprueba o rechaza el registro.')
             ->salutation('Saludos, Sistema SAMI Recetas')
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

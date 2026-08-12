@@ -90,7 +90,7 @@ class AppointmentRescheduledNotification extends Notification implements ShouldQ
                 'reason' => $this->reason,
                 'appointmentUrl' => route('appointment.calendar'),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

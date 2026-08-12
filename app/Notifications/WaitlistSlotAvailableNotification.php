@@ -83,7 +83,7 @@ class WaitlistSlotAvailableNotification extends Notification implements ShouldQu
                 'clinicName' => $clinicName,
                 'durationMinutes' => $this->freedSlot->duration_minutes,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

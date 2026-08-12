@@ -80,7 +80,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
                 'package' => $package,
                 'pendingSteps' => $pendingSteps,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

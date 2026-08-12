@@ -76,7 +76,7 @@ class PaymentFailedNotification extends Notification implements ShouldQueue
             ->line('')
             ->action('Ver Factura y Pagar', route('suscriptions.invoices.show', $this->invoice->id))
             ->line('Por favor, realice el pago antes de la fecha de vencimiento para evitar la suspensión del servicio.')
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

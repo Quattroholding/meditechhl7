@@ -72,7 +72,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
             ->action('Descargar la App', 'https://samirx.meditecpty.com/')
             ->line('Si tienes alguna pregunta, no dudes en contactarnos.')
             ->salutation('Saludos, El equipo de Soluciones Meditec')
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }
@@ -96,7 +96,7 @@ class AccountValidationNotification extends Notification implements ShouldQueue
         return $mail->line('Si consideras que esto es un error o deseas más información, por favor contáctanos.')
             ->line('Puedes volver a registrarte corrigiendo la información solicitada.')
             ->salutation('Saludos, El equipo de Soluciones Meditec')
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

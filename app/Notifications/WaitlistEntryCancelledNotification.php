@@ -81,7 +81,7 @@ class WaitlistEntryCancelledNotification extends Notification implements ShouldQ
                 'clinicName' => $clinicName,
                 'cancellationReason' => $this->waitlistEntry->cancellation_reason,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

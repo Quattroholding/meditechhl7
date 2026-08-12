@@ -86,7 +86,7 @@ class AppointmentAddedToWaitlistNotification extends Notification implements Sho
                 'maxWaitDays' => $this->waitlistEntry->max_wait_days,
                 'position' => $position,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

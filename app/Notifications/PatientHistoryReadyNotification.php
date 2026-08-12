@@ -59,7 +59,7 @@ class PatientHistoryReadyNotification extends Notification
             ->line("Total de consultas: {$this->historyDownload->total_encounters}")
             ->action('Descargar Historial', $this->historyDownload->getDownloadUrl())
             ->line('Este enlace expirará en 24 horas.')
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

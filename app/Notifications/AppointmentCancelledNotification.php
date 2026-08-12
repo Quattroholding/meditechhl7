@@ -88,7 +88,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
                 'cancellationReason' => $this->cancellationReason,
                 'rescheduleUrl' => route('patients.landing'),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

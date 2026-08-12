@@ -85,7 +85,7 @@ class InvoiceGeneratedNotification extends Notification implements ShouldQueue
             ->attachData($pdfContent, $fileName, [
                 'mime' => 'application/pdf',
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

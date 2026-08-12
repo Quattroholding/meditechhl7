@@ -99,7 +99,7 @@ class AppointmentReminderNotification extends Notification implements ShouldQueu
                 'appointmentUrl' => route('appointment.calendar'),
                 'hoursUntilAppointment' => now()->diffInHours($appointmentDate),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

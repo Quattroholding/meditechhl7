@@ -104,7 +104,7 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
             $mailMessage->bcc($appointmentCreator->email);
         }
 
-        $mailMessage->withSwiftMessage(function ($message) {
+        $mailMessage->withSymfonyMessage(function ($message) {
             $this->applyEmailMetadata($message);
         });
 

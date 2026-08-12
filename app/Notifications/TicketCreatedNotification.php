@@ -75,7 +75,7 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
             ->line($this->ticket->description)
             ->action('Ver Ticket', route('tickets.index'))
             ->line('Gracias por usar '.$clinicName)
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

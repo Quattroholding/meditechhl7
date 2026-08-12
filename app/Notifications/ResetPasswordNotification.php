@@ -50,7 +50,7 @@ class ResetPasswordNotification extends ResetPassword implements ShouldQueue
                 'user' => $notifiable,
             ]);
 
-        $mailMessage->withSwiftMessage(function ($message) {
+        $mailMessage->withSymfonyMessage(function ($message) {
             $this->applyEmailMetadata($message);
         });
 

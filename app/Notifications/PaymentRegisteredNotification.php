@@ -76,7 +76,7 @@ class PaymentRegisteredNotification extends Notification implements ShouldQueue
                 'client' => $client,
                 'registeredBy' => $registeredBy,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

@@ -18,10 +18,10 @@ trait WithEmailMetadata
     }
 
     /**
-     * Agrega los metadatos como headers personalizados al mensaje Swift.
-     * Se aplica automáticamente en el método toMail() usando withSwiftMessage()
+     * Agrega los metadatos como headers personalizados al mensaje Symfony.
+     * Se aplica automáticamente en el método toMail() usando withSymfonyMessage()
      */
-    protected function applyEmailMetadata(Email $swiftMessage): void
+    protected function applyEmailMetadata(Email $message): void
     {
         $metadata = $this->emailMetadata();
 
@@ -29,7 +29,7 @@ trait WithEmailMetadata
             return;
         }
 
-        $headers = $swiftMessage->getHeaders();
+        $headers = $message->getHeaders();
 
         foreach ($metadata as $key => $value) {
             // Asegurar que el valor no esté vacío

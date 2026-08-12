@@ -84,7 +84,7 @@ class AppointmentRejectedNotification extends Notification implements ShouldQueu
                 'contactPhone' => null, // Can be configured per clinic
                 'contactEmail' => config('mail.from.address'),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

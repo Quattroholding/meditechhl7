@@ -82,7 +82,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
                 'clinicName' => $clinicName,
                 'daysWaited' => $this->waitlistEntry->created_at->diffInDays(now()),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

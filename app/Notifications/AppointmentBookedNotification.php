@@ -86,7 +86,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 'comment' => $this->appointment->comment,
                 'patientInstruction' => $this->appointment->patient_instruction,
                 'appointmentUrl' => route('appointment.calendar'),
-            ])->withSwiftMessage(function ($message) {
+            ])->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

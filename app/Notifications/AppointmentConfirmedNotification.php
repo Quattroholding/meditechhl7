@@ -95,7 +95,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
                 'originalDate' => $wasDateChanged ? $this->appointment->original_requested_datetime?->format('d/m/Y H:i') : null,
                 'appointmentUrl' => route('appointment.calendar'),
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
     }

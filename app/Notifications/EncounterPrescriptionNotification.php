@@ -129,7 +129,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
                 'hasMedications' => $this->hasMedications,
                 'hasServiceRequests' => $this->hasServiceRequests,
             ])
-            ->withSwiftMessage(function ($message) {
+            ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
 

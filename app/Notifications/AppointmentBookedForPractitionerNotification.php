@@ -115,7 +115,7 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
             $mailMessage->bcc($appointmentCreator->email);
         }
 
-        $mailMessage->withSwiftMessage(function ($message) {
+        $mailMessage->withSymfonyMessage(function ($message) {
             $this->applyEmailMetadata($message);
         });
 
