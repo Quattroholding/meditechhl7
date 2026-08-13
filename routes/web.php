@@ -24,8 +24,10 @@ use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
-use Illuminate\Support\Facades\Mail;
+use App\Notifications\TestEmailNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /**
  * ============================================================================
@@ -44,8 +46,8 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
 
     // Test Nightwatch Exception Reporting - Genera excepción única cada vez
     Route::get('/test-nightwatch', function () {
-        $testId = \Illuminate\Support\Str::random(8);
-        throw new \Exception("Nightwatch Test Exception #{$testId} - Generated at " . now()->format('Y-m-d H:i:s'));
+        $testId = Str::random(8);
+        throw new Exception("Nightwatch Test Exception #{$testId} - Generated at ".now()->format('Y-m-d H:i:s'));
     })->name('test.nightwatch');
 });
 
@@ -228,22 +230,44 @@ Route::get('/join-consultation/{appointment}/{token}', function (Appointment $ap
  */
 Route::get('/test-email', function () {
     try {
-        Mail::raw('Este es un correo de prueba desde Laravel.', function ($message) {
-            $message->to('rgasperi@smartcarebilling.com')
-                ->subject('Prueba de correo - '.now()->format('Y-m-d H:i:s'));
-        });
+        // Crear un notificable de prueba con los datos mínimos necesarios
+        $testNotifiable = new class
+        {
+            public $email = 'rgasperi@smartcarebilling.com';
+
+            public $first_name = 'Usuario de Prueba';
+
+            public function routeNotificationForMail()
+            {
+                return $this->email;
+            }
+        };
+
+        // Enviar la notificación con metadata de prueba
+        Notification::send($testNotifiable, new TestEmailNotification);
 
         return response()->json([
             'success' => true,
-            'message' => 'Correo enviado exitosamente',
+            'message' => 'Correo de prueba enviado exitosamente con metadata completa',
             'from' => config('mail.from.address'),
             'to' => 'rgasperi@smartcarebilling.com',
             'time' => now()->toDateTimeString(),
+            'metadata_included' => [
+                'Type' => 'test-email',
+                'Test-Category' => 'email-metadata-verification',
+                'Test-ID' => 'TEST-'.now()->format('YmdHis'),
+                'Environment' => config('app.env'),
+                'IP-Address' => request()->ip() ?? '127.0.0.1',
+                'Timestamp' => now()->format('Y-m-d H:i:s'),
+                'plus' => '7 campos adicionales de metadata',
+            ],
+            'instructions' => 'Revisa el Message Trace en /email/message-trace para verificar que los headers X-* estén presentes',
         ]);
     } catch (Exception $e) {
         return response()->json([
             'success' => false,
             'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
             'config' => [
                 'host' => config('mail.mailers.smtp.host'),
                 'port' => config('mail.mailers.smtp.port'),
