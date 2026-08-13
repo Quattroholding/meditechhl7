@@ -109,16 +109,9 @@ class SendItemsSyncService
                 $message['bccRecipients'] = $bccRecipientsFormatted;
             }
 
-            // Agregar headers personalizados si existen
-            if (! empty($customHeaders)) {
-                $message['internetMessageHeaders'] = [];
-                foreach ($customHeaders as $name => $value) {
-                    $message['internetMessageHeaders'][] = [
-                        'name' => $name,
-                        'value' => $value,
-                    ];
-                }
-            }
+            // NOTA: No agregamos headers personalizados aquí porque estamos creando
+            // una copia del mensaje. Los headers X- ya están en el mensaje SMTP original
+            // y aparecerán en internetMessageHeaders cuando Office 365 procese el correo.
 
             // Endpoint para crear mensaje en Sent Items
             $url = "{$this->baseUrl}/users/{$this->mailboxEmail}/mailFolders/SentItems/messages";
@@ -235,7 +228,8 @@ class SendItemsSyncService
             if (method_exists($message, 'getHeaders')) {
                 $headers = $message->getHeaders();
                 foreach ($headers->all() as $name => $header) {
-                    if (str_starts_with($name, 'X-')) {
+                    // Buscar headers que empiecen con X- (case insensitive)
+                    if (str_starts_with(strtolower($name), 'x-')) {
                         $customHeaders[$name] = $header->getBodyAsString();
                     }
                 }

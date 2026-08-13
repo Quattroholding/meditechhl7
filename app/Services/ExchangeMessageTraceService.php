@@ -156,12 +156,12 @@ class ExchangeMessageTraceService
                     $subject = $message['subject'] ?? '(Sin asunto)';
                     $status = $this->detectEmailStatus($subject);
 
-                    // Extraer metadatos de headers personalizados
+                    // Extraer metadatos de internet message headers
                     $headers = $message['internetMessageHeaders'] ?? [];
-                    Log::info('Headers del mensaje', [
+                    Log::info('Internet Message Headers del mensaje', [
                         'subject' => $subject,
                         'headers_count' => count($headers),
-                        'headers_sample' => array_slice($headers, 0, 5),
+                        'headers_sample' => array_slice($headers, 0, 10),
                     ]);
                     $metadata = $this->extractCustomHeaders($headers);
 
@@ -214,7 +214,32 @@ class ExchangeMessageTraceService
     }
 
     /**
-     * Extrae metadatos personalizados de los headers del correo
+     * Extrae metadatos personalizados de las extended properties del mensaje
+     * Las propiedades se almacenan con el formato: String {GUID} Name X_PropertyName
+     */
+    protected function extractExtendedProperties(array $properties): array
+    {
+        $metadata = [];
+
+        foreach ($properties as $property) {
+            $propertyId = $property['id'] ?? '';
+            $value = $property['value'] ?? '';
+
+            // Extraer el nombre de la propiedad del ID
+            // Formato: String {00020329-0000-0000-C000-000000000046} Name X_PropertyName
+            if (preg_match('/Name\s+(X_.+)$/', $propertyId, $matches)) {
+                // Convertir X_PropertyName a Property-Name
+                $cleanName = str_replace('X_', '', $matches[1]);
+                $cleanName = str_replace('_', '-', $cleanName);
+                $metadata[$cleanName] = $value;
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Extrae metadatos personalizados de los headers del correo (legacy)
      * Busca headers que comiencen con "X-" (custom headers)
      */
     protected function extractCustomHeaders(array $headers): array
@@ -225,9 +250,9 @@ class ExchangeMessageTraceService
             $name = $header['name'] ?? '';
             $value = $header['value'] ?? '';
 
-            // Solo procesar headers personalizados (X-*)
-            if (str_starts_with($name, 'X-')) {
-                // Remover el prefijo "X-" para el nombre limpio
+            // Solo procesar headers personalizados (X-*) - case insensitive
+            if (str_starts_with(strtolower($name), 'x-')) {
+                // Remover el prefijo "X-" o "x-" para el nombre limpio
                 $cleanName = substr($name, 2);
                 $metadata[$cleanName] = $value;
             }

@@ -325,13 +325,11 @@
                 </li>
                 @endrole
                 @role('admin')
-                <li class="submenu">
-                    <a href="javascript:;"><span class="menu-side">
+                <li class="menu-side">
+                    <a href="{{ route('email.message-trace') }}" class="{{ Request::is('admin/email/message-trace*') ? 'active' : '' }}"><span class="menu-side">
                             <i class="fa fa-envelope"></i></span>
-                        <span> Email Tracking </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a class="{{ Request::is('admin/email') ? 'active' : '' }}"  href="{{ route('email.message-trace') }}">Lista</a></li>
-                    </ul>
+                        <span> Email Tracking </span>
+                    </a>
                 </li>
                 @endrole
                 @canany(['manage-roles', 'manage-permissions'])

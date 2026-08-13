@@ -22,7 +22,16 @@ class SaveEmailToSentItems
      */
     public function handle(MessageSent $event): void
     {
-        Log::info('SaveEmailToSentItems listener ejecutándose');
+        // Obtener info del mensaje para identificarlo
+        $message = $event->sent->getOriginalMessage();
+        $subject = $message->getSubject() ?? '(Sin asunto)';
+        $messageId = spl_object_hash($event);
+
+        Log::info('=== SaveEmailToSentItems START ===', [
+            'subject' => $subject,
+            'event_id' => $messageId,
+            'timestamp' => now()->format('Y-m-d H:i:s.u'),
+        ]);
 
         // Solo guardar si está habilitado en config
         if (! config('services.microsoft.save_to_sent_items', true)) {
@@ -32,8 +41,6 @@ class SaveEmailToSentItems
         }
 
         try {
-            // Obtener el mensaje enviado
-            $message = $event->sent->getOriginalMessage();
 
             // Extraer información del mensaje
             $subject = $message->getSubject() ?? '(Sin asunto)';
@@ -41,15 +48,17 @@ class SaveEmailToSentItems
 
             // Generar un ID único para este mensaje basado en su contenido (sin timestamp para evitar duplicados)
             $messageHash = md5($subject.serialize($to));
-            $lockKey = "save-sent-item:{$messageHash}";
+            $cacheKey = "sent-item-processed:{$messageHash}";
 
-            // Usar un lock atómico para prevenir duplicados con múltiples workers
-            $lock = Cache::lock($lockKey, 300);
+            // Verificar si este mensaje ya fue procesado (Cache::add es atómico)
+            // Si la clave ya existe, add() retorna false
+            $wasAdded = Cache::add($cacheKey, true, 3600); // 1 hora de TTL
 
-            if (! $lock->get()) {
-                Log::info('Correo ya está siendo procesado por otro worker, saltando duplicado', [
+            if (! $wasAdded) {
+                Log::info('Correo ya fue procesado previamente, saltando duplicado', [
                     'subject' => $subject,
-                    'lock_key' => $lockKey,
+                    'cache_key' => $cacheKey,
+                    'event_id' => $messageId,
                 ]);
 
                 return;
@@ -72,16 +81,22 @@ class SaveEmailToSentItems
 
                 // Extraer headers personalizados (X-*)
                 $customHeaders = [];
+                $allHeaderNames = [];
                 $headers = $message->getHeaders();
+
                 foreach ($headers->all() as $name => $header) {
-                    if (str_starts_with($name, 'X-')) {
+                    $allHeaderNames[] = $name;
+                    // Buscar headers que empiecen con X- (case insensitive)
+                    if (str_starts_with(strtolower($name), 'x-')) {
                         $customHeaders[$name] = $header->getBodyAsString();
                     }
                 }
 
-                Log::info('Headers personalizados extraídos', [
-                    'count' => count($customHeaders),
-                    'headers' => $customHeaders,
+                Log::info('Headers del mensaje analizados', [
+                    'total_headers' => count($allHeaderNames),
+                    'x_headers_count' => count($customHeaders),
+                    'x_headers' => $customHeaders,
+                    'subject' => $subject,
                 ]);
 
                 // Guardar en Sent Items
@@ -90,17 +105,32 @@ class SaveEmailToSentItems
                 Log::info('Correo sincronizado a Sent Items', [
                     'subject' => $subject,
                     'recipients_count' => count($to),
-                    'lock_key' => $lockKey,
+                    'cache_key' => $cacheKey,
+                    'event_id' => $messageId,
                 ]);
-            } finally {
-                // Liberar el lock
-                $lock->release();
+
+                Log::info('=== SaveEmailToSentItems END ===', [
+                    'subject' => $subject,
+                    'event_id' => $messageId,
+                    'timestamp' => now()->format('Y-m-d H:i:s.u'),
+                ]);
+            } catch (\Exception $innerException) {
+                // Si falla, remover la marca de procesado para permitir reintento
+                Cache::forget($cacheKey);
+                throw $innerException;
             }
         } catch (\Exception $e) {
             // Loguear el error pero no fallar el envío del correo
             Log::error('Error guardando correo en Sent Items: '.$e->getMessage(), [
                 'exception' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
+                'event_id' => $messageId ?? 'unknown',
+            ]);
+
+            Log::info('=== SaveEmailToSentItems END (WITH ERROR) ===', [
+                'subject' => $subject,
+                'event_id' => $messageId,
+                'timestamp' => now()->format('Y-m-d H:i:s.u'),
             ]);
         }
     }

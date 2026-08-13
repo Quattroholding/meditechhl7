@@ -24,8 +24,8 @@ use App\Http\Controllers\PublicRegistrationController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TwoFactorEmailBackupController;
 use App\Models\Appointment;
+use App\Models\User;
 use App\Notifications\TestEmailNotification;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -230,27 +230,19 @@ Route::get('/join-consultation/{appointment}/{token}', function (Appointment $ap
  */
 Route::get('/test-email', function () {
     try {
-        // Crear un notificable de prueba con los datos mínimos necesarios
-        $testNotifiable = new class
-        {
-            public $email = 'rgasperi@smartcarebilling.com';
-
-            public $first_name = 'Usuario de Prueba';
-
-            public function routeNotificationForMail()
-            {
-                return $this->email;
-            }
-        };
+        // Usar el usuario con ID 1 como notificable
+        $user = User::findOrFail(1);
 
         // Enviar la notificación con metadata de prueba
-        Notification::send($testNotifiable, new TestEmailNotification);
+        $user->notify(new TestEmailNotification);
 
         return response()->json([
             'success' => true,
             'message' => 'Correo de prueba enviado exitosamente con metadata completa',
             'from' => config('mail.from.address'),
-            'to' => 'rgasperi@smartcarebilling.com',
+            'to' => $user->email,
+            'user_id' => $user->id,
+            'user_name' => $user->first_name.' '.$user->last_name,
             'time' => now()->toDateTimeString(),
             'metadata_included' => [
                 'Type' => 'test-email',

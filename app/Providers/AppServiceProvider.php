@@ -76,11 +76,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Encounter::class, ConsultationPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
 
-        // Registrar listener para guardar correos en Sent Items
-        Event::listen(
-            MessageSent::class,
-            SaveEmailToSentItems::class
-        );
+        // DESHABILITADO: Office 365 relay ya guarda automáticamente en Sent Items con headers X-
+        // Registrar listener para guardar correos en Sent Items manualmente
+        // Event::listen(
+        //     MessageSent::class,
+        //     SaveEmailToSentItems::class
+        // );
 
         $this->registerDropboxDriver();
     }
