@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\HemoScreenController;
 use App\Http\Controllers\Api\HemoScreenStandaloneController;
+use App\Http\Controllers\NightwatchWebhookController;
 use App\Http\Controllers\SuscriptionPaymentController;
 use App\Http\Controllers\Webhooks\NeoPaymentsWebhookController;
 use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
@@ -41,6 +42,11 @@ Route::prefix('whatsapp')->name('webhooks.whatsapp.')->group(function () {
 // URL: webhooks.meditecpty.com/neopayments
 Route::post('/neopayments', [NeoPaymentsWebhookController::class, 'handle'])
     ->name('webhooks.neopayments');
+
+// Nightwatch Webhooks (Exception Analysis with AI)
+// URL: webhooks.meditecpty.com/nightwatch
+Route::post('/nightwatch', [NightwatchWebhookController::class, 'handle'])
+    ->name('webhooks.nightwatch');
 
 Route::get('/subscriptions/payments/yappy-ipn', [SuscriptionPaymentController::class, 'yappyIPN'])->name('suscriptions.payments.yappy_ipn');
 

@@ -124,6 +124,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'whatsapp',
             'whatsapp/*',
             'neopayments',
+            'nightwatch',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -125,4 +125,11 @@ return [
         'save_to_sent_items' => env('MICROSOFT_SAVE_TO_SENT_ITEMS', true),
     ],
 
+    'nightwatch' => [
+        'webhook_secret' => env('NIGHTWATCH_WEBHOOK_SECRET'),
+        'min_priority_for_ai' => env('NIGHTWATCH_MIN_PRIORITY_FOR_AI', 'medium'),
+        'ai_enabled' => env('NIGHTWATCH_AI_ENABLED', true),
+        'alert_emails' => env('NIGHTWATCH_ALERT_EMAILS'),
+    ],
+
 ];

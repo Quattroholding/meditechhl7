@@ -41,6 +41,12 @@ Route::middleware('debug.ip')->prefix('debug')->name('debug.')->group(function (
 
     Route::post('/login/{user}', [DebugLoginController::class, 'loginAs'])
         ->name('login.as');
+
+    // Test Nightwatch Exception Reporting - Genera excepción única cada vez
+    Route::get('/test-nightwatch', function () {
+        $testId = \Illuminate\Support\Str::random(8);
+        throw new \Exception("Nightwatch Test Exception #{$testId} - Generated at " . now()->format('Y-m-d H:i:s'));
+    })->name('test.nightwatch');
 });
 
 // API Documentation Routes - Solo accesible desde IPs autorizadas

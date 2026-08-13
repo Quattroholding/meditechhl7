@@ -122,4 +122,18 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Nightwatch Alert Emails
+    |--------------------------------------------------------------------------
+    |
+    | Email addresses that should receive Nightwatch exception analysis alerts.
+    | Multiple emails can be separated by commas.
+    |
+    */
+
+    'nightwatch_alert_emails' => array_filter(
+        explode(',', env('NIGHTWATCH_ALERT_EMAILS', env('MAIL_FROM_ADDRESS')))
+    ),
+
 ];
