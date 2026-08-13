@@ -80,6 +80,7 @@ class AppointmentRescheduledForPractitionerNotification extends Notification imp
 
         $mailMessage = (new MailMessage)
             ->subject('Cita Reprogramada - '.$clinicName)
+            ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-rescheduled-practitioner', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,

@@ -122,6 +122,7 @@ class EncounterPrescriptionNotification extends Notification implements ShouldQu
 
         $mailMessage = (new MailMessage)
             ->subject($subject)
+            ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.encounter-prescription', [
                 'encounter' => $this->encounter,
                 'practitioner' => $practitioner,

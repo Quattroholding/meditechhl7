@@ -72,6 +72,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Cita Médica Agendada - '.$clinicName)
+            ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-booked', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,

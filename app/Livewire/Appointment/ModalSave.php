@@ -29,6 +29,12 @@ class ModalSave extends Component
 
     public $title;
 
+    public $modalTitle = '';
+
+    public $editingAppointment = null;
+
+    public $canEdit = false;
+
     public $buttonSaveTitle = 'Guardar Cita';
 
     public $doctor_id = '';
