@@ -74,7 +74,8 @@ class SendItemsSyncService
         string $subject,
         string $htmlBody,
         array $ccRecipients = [],
-        array $bccRecipients = []
+        array $bccRecipients = [],
+        array $customHeaders = []
     ): bool {
         try {
             $token = $this->getAccessToken();
@@ -106,6 +107,17 @@ class SendItemsSyncService
 
             if (! empty($bccRecipientsFormatted)) {
                 $message['bccRecipients'] = $bccRecipientsFormatted;
+            }
+
+            // Agregar headers personalizados si existen
+            if (! empty($customHeaders)) {
+                $message['internetMessageHeaders'] = [];
+                foreach ($customHeaders as $name => $value) {
+                    $message['internetMessageHeaders'][] = [
+                        'name' => $name,
+                        'value' => $value,
+                    ];
+                }
             }
 
             // Endpoint para crear mensaje en Sent Items
@@ -218,7 +230,18 @@ class SendItemsSyncService
                 }
             }
 
-            return $this->saveSentEmail($to, $subject, $htmlBody, $cc, $bcc);
+            // Extraer headers personalizados (X-*)
+            $customHeaders = [];
+            if (method_exists($message, 'getHeaders')) {
+                $headers = $message->getHeaders();
+                foreach ($headers->all() as $name => $header) {
+                    if (str_starts_with($name, 'X-')) {
+                        $customHeaders[$name] = $header->getBodyAsString();
+                    }
+                }
+            }
+
+            return $this->saveSentEmail($to, $subject, $htmlBody, $cc, $bcc, $customHeaders);
         } catch (Exception $e) {
             Log::error('Error procesando mensaje para Sent Items: '.$e->getMessage());
 

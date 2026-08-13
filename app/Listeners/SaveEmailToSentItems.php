@@ -3,16 +3,12 @@
 namespace App\Listeners;
 
 use App\Services\SendItemsSyncService;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Events\MessageSent;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class SaveEmailToSentItems implements ShouldQueue
+class SaveEmailToSentItems
 {
-    use InteractsWithQueue;
-
     /**
      * Crear el listener
      */
@@ -26,8 +22,12 @@ class SaveEmailToSentItems implements ShouldQueue
      */
     public function handle(MessageSent $event): void
     {
+        Log::info('SaveEmailToSentItems listener ejecutándose');
+
         // Solo guardar si está habilitado en config
         if (! config('services.microsoft.save_to_sent_items', true)) {
+            Log::info('SaveEmailToSentItems deshabilitado en config, saltando');
+
             return;
         }
 
@@ -39,8 +39,8 @@ class SaveEmailToSentItems implements ShouldQueue
             $subject = $message->getSubject() ?? '(Sin asunto)';
             $to = $this->extractRecipients($message->getTo());
 
-            // Generar un ID único para este mensaje basado en su contenido
-            $messageHash = md5($subject.serialize($to).now()->format('Y-m-d H:i:s'));
+            // Generar un ID único para este mensaje basado en su contenido (sin timestamp para evitar duplicados)
+            $messageHash = md5($subject.serialize($to));
             $lockKey = "save-sent-item:{$messageHash}";
 
             // Usar un lock atómico para prevenir duplicados con múltiples workers
@@ -70,8 +70,22 @@ class SaveEmailToSentItems implements ShouldQueue
                 $cc = $this->extractRecipients($message->getCc());
                 $bcc = $this->extractRecipients($message->getBcc());
 
+                // Extraer headers personalizados (X-*)
+                $customHeaders = [];
+                $headers = $message->getHeaders();
+                foreach ($headers->all() as $name => $header) {
+                    if (str_starts_with($name, 'X-')) {
+                        $customHeaders[$name] = $header->getBodyAsString();
+                    }
+                }
+
+                Log::info('Headers personalizados extraídos', [
+                    'count' => count($customHeaders),
+                    'headers' => $customHeaders,
+                ]);
+
                 // Guardar en Sent Items
-                $syncService->saveSentEmail($to, $subject, $htmlBody, $cc, $bcc);
+                $syncService->saveSentEmail($to, $subject, $htmlBody, $cc, $bcc, $customHeaders);
 
                 Log::info('Correo sincronizado a Sent Items', [
                     'subject' => $subject,

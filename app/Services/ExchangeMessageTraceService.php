@@ -157,7 +157,13 @@ class ExchangeMessageTraceService
                     $status = $this->detectEmailStatus($subject);
 
                     // Extraer metadatos de headers personalizados
-                    $metadata = $this->extractCustomHeaders($message['internetMessageHeaders'] ?? []);
+                    $headers = $message['internetMessageHeaders'] ?? [];
+                    Log::info('Headers del mensaje', [
+                        'subject' => $subject,
+                        'headers_count' => count($headers),
+                        'headers_sample' => array_slice($headers, 0, 5),
+                    ]);
+                    $metadata = $this->extractCustomHeaders($headers);
 
                     return [
                         'MessageId' => $message['internetMessageId'] ?? $message['id'],
