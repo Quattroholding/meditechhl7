@@ -1,10 +1,21 @@
 {
     "agents": [
-        "claude_code"
-    ],
-    "editors": [
         "claude_code",
-        "phpstorm"
+        "codex"
     ],
-    "guidelines": []
+    "cloud": false,
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch": true,
+    "sail": false,
+    "skills": [
+        "infer-conventions",
+        "fortify-development",
+        "laravel-best-practices",
+        "configure-nightwatch",
+        "octane-development",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
 }
