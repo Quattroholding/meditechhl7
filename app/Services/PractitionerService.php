@@ -90,6 +90,12 @@ class PractitionerService
 
         // Asociar usuario
         $practitioner->user_id = $user->id;
+
+        // Estudiante de medicina
+        $practitioner->is_medical_student = $data['is_medical_student'] ?? false;
+        if (isset($data['estimated_graduation_date'])) {
+            $practitioner->estimated_graduation_date = $this->parseBirthDate($data['estimated_graduation_date']);
+        }
     }
 
     /**

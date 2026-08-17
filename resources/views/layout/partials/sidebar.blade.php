@@ -146,40 +146,44 @@
                 </li>
                 @endcan
                 @canany(['service_request.view', 'medication_request.view'])
-                <li class="submenu">
-                    <a href="javascript:;">
-                        <span class="menu-side"> <i class="fa fa-tasks"></i></span>
-                        <span>  {{ __('menu.studies.repositories') }} </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <ul style="display: none;">
-                        @can('service_request.view')
-                        <li><a class="{{ Request::is('service_requests') ? 'active' : '' }}" href="{{ route('service_request.index') }}">{{ __('menu.studies.list') }}</a></li>
-                        @endcan
-                        @can('medication_request.view')
-                        <li><a class="{{ Request::is('medication_requests') ? 'active' : '' }}" href="{{ route('medication_request.index') }}">Prescripciones</a></li>
-                        @endcan
-                    </ul>
-                </li>
+                    @if(!auth()->user()->practitioner || !auth()->user()->practitioner->is_medical_student)
+                    <li class="submenu">
+                        <a href="javascript:;">
+                            <span class="menu-side"> <i class="fa fa-tasks"></i></span>
+                            <span>  {{ __('menu.studies.repositories') }} </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <ul style="display: none;">
+                            @can('service_request.view')
+                            <li><a class="{{ Request::is('service_requests') ? 'active' : '' }}" href="{{ route('service_request.index') }}">{{ __('menu.studies.list') }}</a></li>
+                            @endcan
+                            @can('medication_request.view')
+                            <li><a class="{{ Request::is('medication_requests') ? 'active' : '' }}" href="{{ route('medication_request.index') }}">Prescripciones</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                    @endif
                 @endcanany
                 @canany(['medicines.view','medicines.create'])
-                <li class="submenu">
-                    <a href="javascript:;">
-                        <span class="menu-side">
-                            <i class="fa fa-pills"></i></span>
-                        <span> {{ __('menu.medicines.title') }} </span> <span class="menu-arrow"></span>
-                    </a>
-                    <ul style="display: none;">
-                        @can('medicines.view')
-                        <li><a class="{{ Request::is('medicines') ? 'active' : '' }}" href="{{route('medicine.index')}}">{{ __('generic.list') }} {{ __('menu.medicines.title') }}</a></li>
-                        @endcan
-                        {{--}}
-                        @can('medicines.create')
-                        <li><a class="{{ Request::is('medicines/create') ? 'active' : '' }}" href="{{route('medicine.create')}}">{{ __('generic.create') }} {{ __('menu.medicines.single') }}</a></li>
-                        @endcan
-                        {{--}}
-                    </ul>
-                </li>
+                    @if(!auth()->user()->practitioner || !auth()->user()->practitioner->is_medical_student)
+                    <li class="submenu">
+                        <a href="javascript:;">
+                            <span class="menu-side">
+                                <i class="fa fa-pills"></i></span>
+                            <span> {{ __('menu.medicines.title') }} </span> <span class="menu-arrow"></span>
+                        </a>
+                        <ul style="display: none;">
+                            @can('medicines.view')
+                            <li><a class="{{ Request::is('medicines') ? 'active' : '' }}" href="{{route('medicine.index')}}">{{ __('generic.list') }} {{ __('menu.medicines.title') }}</a></li>
+                            @endcan
+                            {{--}}
+                            @can('medicines.create')
+                            <li><a class="{{ Request::is('medicines/create') ? 'active' : '' }}" href="{{route('medicine.create')}}">{{ __('generic.create') }} {{ __('menu.medicines.single') }}</a></li>
+                            @endcan
+                            {{--}}
+                        </ul>
+                    </li>
+                    @endif
                 @endcanany
                 @canany(['inventory.view','inventory.create','inventory.manage_stock','inventory.view_reports'])
                 <li class="submenu">
@@ -223,6 +227,7 @@
                 </li>
                 @endcanany
                 @canany(['invoices.view','payments.view'])
+                @if(!auth()->user()->practitioner || !auth()->user()->practitioner->is_medical_student)
                 <li class="submenu">
                     <a href="javascript:;">
                         <span class="menu-side">
@@ -238,6 +243,7 @@
                         @endcan
                     </ul>
                 </li>
+                @endif
                 @endcanany
                 @canany(['settings.create_user_procedures','settings.create_consultation_template','settings.create_rapid_access','settings.create_working_hour_user','settings.invoice_template'])
                 <li class="submenu">
@@ -246,10 +252,12 @@
                         <span> {{ __('menu.settings.title') }} </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         @can('settings.create_user_procedures')
-                        <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('menu.settings.services') }}</a></li>
+                            @if(!auth()->user()->practitioner || !auth()->user()->practitioner->is_medical_student)
+                            <li><a class="{{ Request::is('settings/create_user_procedures') ? 'active' : '' }}"  href="{{ route('setting.create_user_procedures') }}">{{ __('menu.settings.services') }}</a></li>
+                            @endif
                         @endcan
                         @can('settings.signature_and_seal')
-                            @if(auth()->user()->practitioner)
+                            @if(auth()->user()->practitioner && !auth()->user()->practitioner->is_medical_student)
                             <li><a class="{{ Request::is('settings/{id}/signature_and_seal') ? 'active' : '' }}"  href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('menu.settings.signature_and_seal') }}</a></li>
                             @endif
                         @endcan
@@ -264,7 +272,9 @@
                         @endcan
                         @if(auth()->user()->canPaySubscription())
                         @can('settings.prescription_template')
+                            @if(!auth()->user()->practitioner || !auth()->user()->practitioner->is_medical_student)
                             <li><a class="{{ Request::is('settings/prescription-template') ? 'active' : '' }}"  href="{{ route('setting.prescription_template') }}">{{ __('menu.settings.prescription_template') }}</a></li>
+                            @endif
                         @endcan
                         @can('settings.invoice_template')
                         <li><a class="{{ Request::is('settings/invoice-template') ? 'active' : '' }}"  href="{{ route('setting.invoice_template') }}">{{ __('menu.settings.invoice_template') }}</a></li>
@@ -276,7 +286,9 @@
                         @endif
                         @endif
                         @can('settings.signature_and_seal' && auth()->user()->practitioner)
+                            @if(auth()->user()->practitioner && !auth()->user()->practitioner->is_medical_student)
                             <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
+                            @endif
                         @endcan
                         @if(auth()->user()->canPaySubscription())
                             <li><a class="{{ Request::is('client/referral_code/') ? 'active' : '' }}"   href="{{ route('client.referral_code') }}">{{ __('menu.settings.referral_code') }}</a></li>

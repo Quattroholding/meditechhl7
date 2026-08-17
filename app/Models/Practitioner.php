@@ -16,7 +16,7 @@ class Practitioner extends BaseModel
         'fhir_id', 'identifier', 'name', 'given_name', 'family_name', 'user_id',
         'gender', 'birth_date', 'address', 'phone', 'email', 'active', 'is_standalone', 'registry', 'licence_code', 'identifier_type',
         'prescription_authorization', 'prescription_authorization_date', 'prescription_authorization_ip', 'prescription_authorization_terms',
-        'has_individual_inventory',
+        'has_individual_inventory', 'is_medical_student', 'estimated_graduation_date',
     ];
 
     protected $casts = [
@@ -26,6 +26,8 @@ class Practitioner extends BaseModel
         'prescription_authorization' => 'boolean',
         'prescription_authorization_date' => 'datetime',
         'has_individual_inventory' => 'boolean',
+        'is_medical_student' => 'boolean',
+        'estimated_graduation_date' => 'date',
     ];
 
     protected static function booted(): void
@@ -521,6 +523,22 @@ class Practitioner extends BaseModel
     public function scopeIntegrated($query)
     {
         return $query->where('is_standalone', false);
+    }
+
+    /**
+     * Scope to filter only medical students
+     */
+    public function scopeMedicalStudent($query)
+    {
+        return $query->where('is_medical_student', true);
+    }
+
+    /**
+     * Check if practitioner is a medical student
+     */
+    public function isMedicalStudent(): bool
+    {
+        return (bool) $this->is_medical_student;
     }
 
     /**

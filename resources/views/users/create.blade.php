@@ -100,6 +100,24 @@
                                         <x-input-error class="mt-2" :messages="$errors->get('medical_speciality')" />
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-6 col-xl-4" style="display: none" id="is_medical_student_field">
+                                    <!-- ESTUDIANTE DE MEDICINA -->
+                                    <div class="input-block local-forms">
+                                        <label class="d-block">
+                                            <input type="checkbox" name="is_medical_student" id="is_medical_student" value="1" {{ old('is_medical_student') ? 'checked' : '' }}>
+                                            {{ __('¿Es estudiante de medicina?') }}
+                                        </label>
+                                        <x-input-error class="mt-2" :messages="$errors->get('is_medical_student')" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-4" style="display: none" id="estimated_graduation_date_field">
+                                    <!-- FECHA ESTIMADA DE GRADUACIÓN -->
+                                    <div class="input-block local-forms">
+                                        <x-input-label for="estimated_graduation_date" value="{{ __('Fecha estimada de graduación') }}" />
+                                        <x-text-input id="estimated_graduation_date" class="block mt-1 w-full datetimepicker" type="text" name="estimated_graduation_date" :value="old('estimated_graduation_date')"/>
+                                        <x-input-error class="mt-2" :messages="$errors->get('estimated_graduation_date')" />
+                                    </div>
+                                </div>
                                 <div class="col-12 col-md-6 col-xl-4" style="display: none" id="maritalstatus">
                                     <!-- MARITAL STATUS -->
                                     <div class="input-block  local-forms">
@@ -268,6 +286,8 @@
                 $('#whatsapp').hide();
                 $("#registry_field").hide();
                 $("#licensecode_field").hide();
+                $("#is_medical_student_field").hide();
+                $("#estimated_graduation_date_field").hide();
 
                 switch(parseInt(type)) {
                     /*-----FORMULARIO PARA ROLE ASISTENTE MEDICO-----*/
@@ -275,6 +295,7 @@
                         $("#medical_speciality").show();
                         $("#registry_field").show();
                         $("#licensecode_field").show();
+                        $("#is_medical_student_field").show();
                     case 6:
                         $("#client_id").show();
                         $("#id_type").show();
@@ -310,6 +331,20 @@
                 changeByType({{ old('rol') }});
             @elseif(request()->get('role_id'))
                 changeByType({{ request()->get('role_id') }});
+            @endif
+
+            // Manejar visibilidad del campo de fecha de graduación
+            $("#is_medical_student").change(function() {
+                if($(this).is(':checked')) {
+                    $("#estimated_graduation_date_field").show();
+                } else {
+                    $("#estimated_graduation_date_field").hide();
+                }
+            });
+
+            // Ejecutar al cargar si está marcado
+            @if(old('is_medical_student'))
+                $("#estimated_graduation_date_field").show();
             @endif
 
             // Forzar submit del formulario evitando interferencia de Livewire

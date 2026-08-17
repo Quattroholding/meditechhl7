@@ -25,12 +25,24 @@ class ItemTransfer extends Component
         $isAdmin = $user->hasRole('admin');
         $practitioner = $user->practitioner;
         $practitionerSpecialties = [];
+        $isMedicalStudent = false;
 
         if ($practitioner) {
             $practitionerSpecialties = $practitioner->qualifications()
                 ->pluck('medical_speciality_id')
                 ->toArray();
+            $isMedicalStudent = $practitioner->is_medical_student;
         }
+
+        // Secciones restringidas para estudiantes de medicina
+        $restrictedSectionsForStudents = [
+            'Servicios Facturables',
+            'Laboratorios',
+            'Imagenes',
+            'Medicamentos',
+            'Procedimientos',
+            'Referencia Especialista',
+        ];
 
         // Get all sections filtered by specialty or admin
         $sectionsQuery = EncounterSection::query();
@@ -46,6 +58,11 @@ class ItemTransfer extends Component
                 $query->whereNull('medical_speciality_id')
                     ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
             });
+
+            // Excluir secciones restringidas si es estudiante de medicina
+            if ($isMedicalStudent) {
+                $sectionsQuery->whereNotIn('name_esp', $restrictedSectionsForStudents);
+            }
         }
 
         $disponibles = $sectionsQuery->pluck('id');
@@ -56,11 +73,15 @@ class ItemTransfer extends Component
             ->when($this->category, function ($query) {
                 $query->whereCategory($this->category);
             })
-            ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+            ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties, $isMedicalStudent, $restrictedSectionsForStudents) {
                 $query->where(function ($q) use ($practitionerSpecialties) {
                     $q->whereNull('medical_speciality_id')
                         ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
                 });
+                // Excluir secciones restringidas si es estudiante de medicina
+                if ($isMedicalStudent) {
+                    $query->whereNotIn('name_esp', $restrictedSectionsForStudents);
+                }
             })
             ->pluck('id');
 
@@ -79,6 +100,9 @@ class ItemTransfer extends Component
                     ->whereNull('medical_speciality_id')
                     ->when($this->category, function ($query) {
                         $query->whereCategory($this->category);
+                    })
+                    ->when($isMedicalStudent, function ($query) use ($restrictedSectionsForStudents) {
+                        $query->whereNotIn('name_esp', $restrictedSectionsForStudents);
                     })
                     ->get();
 
@@ -119,11 +143,15 @@ class ItemTransfer extends Component
             }
 
             $this->availableItems = $availableQuery
-                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties, $isMedicalStudent, $restrictedSectionsForStudents) {
                     $query->where(function ($q) use ($practitionerSpecialties) {
                         $q->whereNull('medical_speciality_id')
                             ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
                     });
+                    // Excluir secciones restringidas si es estudiante de medicina
+                    if ($isMedicalStudent) {
+                        $query->whereNotIn('name_esp', $restrictedSectionsForStudents);
+                    }
                 })
                 ->get()
                 ->toArray();
@@ -136,11 +164,15 @@ class ItemTransfer extends Component
             }
 
             $this->selectedItems = $selectedQuery
-                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties) {
+                ->when(! $isAdmin && $practitioner, function ($query) use ($practitionerSpecialties, $isMedicalStudent, $restrictedSectionsForStudents) {
                     $query->where(function ($q) use ($practitionerSpecialties) {
                         $q->whereNull('medical_speciality_id')
                             ->orWhereIn('medical_speciality_id', $practitionerSpecialties);
                     });
+                    // Excluir secciones restringidas si es estudiante de medicina
+                    if ($isMedicalStudent) {
+                        $query->whereNotIn('name_esp', $restrictedSectionsForStudents);
+                    }
                 })
                 ->get()
                 ->toArray();
@@ -150,7 +182,30 @@ class ItemTransfer extends Component
     public function moveToSelected($itemId)
     {
         $item = collect($this->availableItems)->firstWhere('id', $itemId);
+
         if ($item) {
+            // Verificar si es estudiante de medicina y la sección está restringida
+            $practitioner = auth()->user()->practitioner;
+            if ($practitioner && $practitioner->is_medical_student) {
+                $restrictedSectionsForStudents = [
+                    'Servicios Facturables',
+                    'Laboratorios',
+                    'Imagenes',
+                    'Medicamentos',
+                    'Procedimientos',
+                    'Referencia Especialista',
+                ];
+
+                if (in_array($item['name_esp'], $restrictedSectionsForStudents)) {
+                    $this->dispatch('showToastrItemTransfer',
+                        type: 'error',
+                        message: 'Esta sección no está disponible para estudiantes de medicina.'
+                    );
+
+                    return;
+                }
+            }
+
             $this->availableItems = array_values(array_filter($this->availableItems, fn ($i) => $i['id'] !== $itemId));
             $this->selectedItems[] = $item;
         }

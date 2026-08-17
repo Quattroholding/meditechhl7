@@ -101,7 +101,20 @@ class UserController extends Controller
                     $encounter_sections->where('available_for_medical_assistant', true);
                 }
 
+                // Verificar si es estudiante de medicina para excluir secciones específicas
+                $isStudent = false;
+                if (isset($practitioner) && $practitioner->is_medical_student) {
+                    $isStudent = true;
+                }
+
+                $restrictedSectionsForStudents = ['Servicios Facturables', 'Laboratorios', 'Imagenes', 'Medicamentos', 'Procedimientos', 'Referencia Especialista'];
+
                 foreach ($encounter_sections->get() as $es) {
+                    // Si es estudiante, excluir las secciones restringidas
+                    if ($isStudent && in_array($es->name_esp, $restrictedSectionsForStudents)) {
+                        continue;
+                    }
+
                     EncounterTemplate::firstOrCreate([
                         'type' => 'client',
                         'client_id' => $model->default_client_id,

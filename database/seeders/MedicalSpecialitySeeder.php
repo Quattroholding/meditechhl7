@@ -81,6 +81,7 @@ class MedicalSpecialitySeeder extends Seeder
         MedicalSpeciality::create(['name' => 'fonoaudiología', 'is_surgical' => '0']);
         MedicalSpeciality::create(['name' => 'Ortopedia - Cirugía de Mano', 'is_surgical' => '1']);
         MedicalSpeciality::create(['name' => 'Optometrista', 'is_surgical' => '0']);
+        MedicalSpeciality::create(['name' => 'Estudiante de Medicina', 'is_surgical' => '0']);
 
     }
 }
