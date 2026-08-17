@@ -693,14 +693,57 @@ class Calendar extends Component
                 $minutes = $block * $this->timeBlockMinutes;
                 $time = Carbon::createFromTime($hour, $minutes);
 
+                // Calcular el rango del bloque actual
+                $bloqueInicio = $time->copy();
+                $bloqueFin = $time->copy()->addMinutes($this->timeBlockMinutes);
+
+                // Contar citas en este bloque específico
+                $appointmentCount = Appointment::query();
+
+                // Para vista weekly, buscar en toda la semana
+                if ($this->currentView === 'weekly') {
+                    $startOfWeek = $this->currentDate->copy()->startOfWeek(Carbon::MONDAY);
+                    $endOfWeek = $this->currentDate->copy()->endOfWeek(Carbon::SUNDAY);
+                    $appointmentCount->whereBetween('start', [$startOfWeek, $endOfWeek]);
+                } else {
+                    // Para otras vistas, solo el día actual
+                    $appointmentCount->whereDate('start', $this->currentDate->format('Y-m-d'));
+                }
+
+                // Filtrar por hora del bloque
+                $appointmentCount->whereTime('start', '>=', $bloqueInicio->format('H:i:s'))
+                    ->whereTime('start', '<', $bloqueFin->format('H:i:s'));
+
+                // Aplicar los mismos filtros que en loadAppointments
+                if ($this->selectedDoctor) {
+                    $appointmentCount->where('practitioner_id', $this->selectedDoctor);
+                }
+
+                if ($this->selectedStatus) {
+                    $appointmentCount->where('status', $this->selectedStatus);
+                } else {
+                    // Solo contar citas activas (mismos estados que en loadAppointments)
+                    $appointmentCount->whereIn('status', ['booked', 'arrived', 'confirm', 'checked-in', 'fulfilled']);
+                }
+
+                $count = $appointmentCount->count();
+
                 $slots[] = [
                     'time' => $time->format('H:i'),
                     'display' => $time->format('H:i'),
                     'hour' => $hour,
                     'minutes' => $minutes,
                     'isHourStart' => $minutes === 0,
+                    'appointment_count' => $count,
                 ];
             }
+        }
+
+        // Para vista weekly, filtrar solo bloques con citas
+        if ($this->currentView === 'weekly') {
+            $slots = array_values(array_filter($slots, function ($slot) {
+                return $slot['appointment_count'] > 0;
+            }));
         }
 
         return $slots;
