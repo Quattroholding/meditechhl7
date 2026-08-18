@@ -48,9 +48,11 @@ class PractitionerService
      */
     private function fillPractitionerData(Practitioner $practitioner, User $user, array $data): void
     {
-        // Determinar prefijo según género
+        // Determinar prefijo según género (solo si NO es estudiante de medicina)
         $prefix = '';
-        if ($user->hasRole('practitioner')) {
+        $isMedicalStudent = $data['is_medical_student'] ?? false;
+
+        if ($user->hasRole('practitioner') && ! $isMedicalStudent) {
             $prefix = ($data['gender'] ?? 'male') === 'female' ? 'Dra. ' : 'Dr. ';
         }
 

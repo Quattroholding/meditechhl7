@@ -3,7 +3,7 @@
         type="textarea"
         :value="$reason"
         class="form-control mt-1 block w-full"
-        rows="2"
+        rows="5"
         wire:model.live.debounce.500ms="reason"
         save-method="save"
         save-key="reason"

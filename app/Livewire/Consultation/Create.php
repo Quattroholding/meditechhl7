@@ -62,6 +62,10 @@ class Create extends Component
         if(!auth()->user()->can('edit',$this->encounter)){
             abort(403, 'No tienes permiso para acceder a esta sección.');
         }
+
+        if(env('ENCOUNTER_TEMPLATE_NEW'))
+            return view('livewire.consultation.create_new');
+
         return view('livewire.consultation.create');
     }
 }

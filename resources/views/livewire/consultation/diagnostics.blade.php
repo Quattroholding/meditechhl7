@@ -1,57 +1,105 @@
 <div>
     @if(count($selectedLists)>0)
-        <x-input-label  :value="__('consultation.diagnostics')" />
-        <div id="" class="multiple-field-values mb-3">
-            <div class="multivalue-item-container">
-                @foreach($selectedLists as $s)
-                    <div class="multivalue-item" code="{{$s->id}}">
-                        <table wire:click="delete({{$s->id}})">
-                            <tbody>
-                            <tr>
-                                <td>
-                                <span>
-                                <div class="delete-multivalue">
-                                    <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path></svg>
-                                    </span>
-                                    <span>{{ __('generic.delete') }}</span>
-                                </div>
-                                </span>
-                                </td>
-                                <td>
-                                    {{$s->condition->icd10Code ? $s->condition->icd10Code->full_name : $s->condition->onset_info}}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
+                    <i class="fas fa-notes-medical me-2"></i>
+                    {{ __('consultation.diagnostics') }}
+                </h5>
+                <span class="badge" style="background: var(--sami-green); font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                    {{ count($selectedLists) }} {{ __('consultation.service_request_section.items') }}
+                </span>
+            </div>
 
-                        <div style="width:100%" class="">{{__('condition.severity')}}
-                            <x-autosave-input
-                                type="select"
-                                name="severity"
-                                class="form-control block mt-1 w-full"
-                                :options="\App\Models\Lista::conditionSeverity()"
-                                :selected="$s->condition->severity"
-                                wire:model.live="severity.{{ $s->id }}"
-                                save-method="updateSeverity"
-                                save-key="{{ $s->id }}"
-                            />
+            <div class="service-cards-container">
+                @foreach($selectedLists as $s)
+                    <div class="service-card" x-data="{ confirmDelete: false }">
+                        <!-- Header de la tarjeta -->
+                        <div class="service-card-header">
+                            <div class="service-card-title">
+                                <i class="fas fa-diagnoses me-2" style="color: var(--sami-green);"></i>
+                                {{$s->condition->icd10Code ? $s->condition->icd10Code->full_name : $s->condition->onset_info}}
+                            </div>
+                            <button
+                                type="button"
+                                class="btn-delete-service"
+                                @click="confirmDelete = !confirmDelete"
+                                title="{{ __('generic.delete') }}"
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
-                        <div class="my-3"></div>
-                        <div style="width:100%" class="">{{__('consultation.diagnostic_note')}}
-                            <x-autosave-input
-                                type="textarea"
-                                :value="$s->condition->note"
-                                class="form-control mt-1 block w-full"
-                                rows="2"
-                                wire:model.live.debounce.500ms="notes.{{$s->id}}"
-                                save-method="updateNote"
-                                save-key="note_{{$s->id}}"
-                            />
+
+                        <!-- Confirmación de borrado -->
+                        <div x-show="confirmDelete"
+                             x-transition
+                             class="delete-confirmation"
+                             style="display: none;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span style="color: #721c24; font-weight: 500;">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    {{ __('consultation.service_request_section.confirm_delete') }}
+                                </span>
+                                <div class="d-flex gap-2">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-danger"
+                                        @click.prevent="$wire.delete({{$s->id}}); confirmDelete = false;"
+                                    >
+                                        <i class="fas fa-check me-1"></i>
+                                        {{ __('generic.yes') }}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary"
+                                        @click.prevent="confirmDelete = false"
+                                    >
+                                        <i class="fas fa-times me-1"></i>
+                                        {{ __('generic.no') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contenido de la tarjeta -->
+                        <div class="service-card-body">
+                            <!-- Severidad -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    {{__('condition.severity')}}
+                                </label>
+                                <x-autosave-input
+                                    type="select"
+                                    name="severity"
+                                    class="form-control"
+                                    :options="\App\Models\Lista::conditionSeverity()"
+                                    :selected="$s->condition->severity"
+                                    wire:model.live="severity.{{ $s->id }}"
+                                    save-method="updateSeverity"
+                                    save-key="{{ $s->id }}"
+                                />
+                            </div>
+
+                            <!-- Notas -->
+                            <div>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-sticky-note me-2"></i>
+                                    {{__('consultation.diagnostic_note')}}
+                                </label>
+                                <x-autosave-input
+                                    type="textarea"
+                                    :value="$s->condition->note"
+                                    class="form-control"
+                                    rows="2"
+                                    wire:model.live.debounce.500ms="notes.{{$s->id}}"
+                                    save-method="updateNote"
+                                    save-key="note_{{$s->id}}"
+                                    placeholder="{{ __('consultation.service_request_section.instruction_placeholder') }}"
+                                />
+                            </div>
                         </div>
                     </div>
-
                 @endforeach
             </div>
         </div>
@@ -62,9 +110,9 @@
 
         {{-- Validation Message Alert --}}
         @if($showValidationMessage)
-            <div style="margin: 20px 20px 0 20px;">
-                <div class="alert alert-warning" style="display: flex; justify-content: space-between; align-items: center; margin: 0; animation: slideDown 0.3s ease-out;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="mb-3">
+                <div class="alert alert-warning d-flex justify-content-between align-items-center" style="animation: slideDown 0.3s ease-out;">
+                    <div class="d-flex align-items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                         </svg>
@@ -78,49 +126,53 @@
             </div>
         @endif
 
-        {{-- Search Input and AI Button --}}
-        <div style="width:100%;padding:20px;">
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text"  wire:model.live="query" class="form-control" placeholder="{{ __('consultation.select_diagnosis') }}" style="padding: 0 20px; flex: 1;">
-
-                @if($this->aiSuggestionsEnabled)
-                <button
-                    wire:click="getAiSuggestions"
-                    wire:loading.attr="disabled"
-                    wire:target="getAiSuggestions"
-                    class="btn btn-primary"
-                    style="white-space: nowrap; padding: 10px 20px; display: flex; align-items: center; gap: 8px;"
-                    @if(!$this->canRequestAiSuggestions)
-                        title="{{ __('consultation.diagnostics_ai.complete_required_fields') }}"
-                        disabled
-                        style="opacity: 0.6; cursor: not-allowed; white-space: nowrap; padding: 10px 20px; display: flex; align-items: center; gap: 8px;"
-                    @else
-                        title="{{ __('consultation.diagnostics_ai.suggest_with_ai') }}"
-                    @endif
-                >
-                    <svg wire:loading.remove wire:target="getAiSuggestions" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
-                    </svg>
-                    <span class="spinner-border spinner-border-sm" wire:loading wire:target="getAiSuggestions"></span>
-                    <span wire:loading.remove wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.suggest_with_ai') }}</span>
-                    <span wire:loading wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.analyzing') }}</span>
+        {{-- Search Area --}}
+        <div class="search-area">
+            <div class="search-container">
+                <button type="button" class="search-icon-btn">
+                    <i class="fas fa-search"></i>
                 </button>
-                @endif
+                <input
+                    type="text"
+                    wire:model.live="query"
+                    class="search-input"
+                    placeholder="{{ __('consultation.select_diagnosis') }}"
+                >
             </div>
 
-            {{-- Helper text for button --}}
             @if($this->aiSuggestionsEnabled)
-            @if(!$this->canRequestAiSuggestions)
-                <div style="margin-top: 8px; font-size: 0.85rem; color: #6c757d; display: flex; align-items: center; gap: 5px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                    </svg>
-                    <span>{{ __('consultation.diagnostics_ai.complete_required_fields') }}</span>
-                </div>
-            @endif
+            <button
+                wire:click="getAiSuggestions"
+                wire:loading.attr="disabled"
+                wire:target="getAiSuggestions"
+                class="btn-ai-suggest"
+                @if(!$this->canRequestAiSuggestions)
+                    title="{{ __('consultation.diagnostics_ai.complete_required_fields') }}"
+                    disabled
+                @else
+                    title="{{ __('consultation.diagnostics_ai.suggest_with_ai') }}"
+                @endif
+            >
+                <svg wire:loading.remove wire:target="getAiSuggestions" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
+                </svg>
+                <span class="spinner-border spinner-border-sm" wire:loading wire:target="getAiSuggestions"></span>
+                <span class="btn-text-desktop" wire:loading.remove wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.suggest_with_ai') }}</span>
+                <span wire:loading wire:target="getAiSuggestions">{{ __('consultation.diagnostics_ai.analyzing') }}</span>
+            </button>
             @endif
         </div>
+
+        {{-- Helper text for AI button --}}
+        @if($this->aiSuggestionsEnabled && !$this->canRequestAiSuggestions)
+            <div class="text-muted" style="margin: 0 1.25rem 1rem; font-size: 0.85rem; display: flex; align-items-center; gap: 5px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <span>{{ __('consultation.diagnostics_ai.complete_required_fields') }}</span>
+            </div>
+        @endif
 
         <style>
             @keyframes slideDown {
@@ -131,6 +183,219 @@
                 to {
                     opacity: 1;
                     transform: translateY(0);
+                }
+            }
+
+            /* Search Area */
+            .search-area {
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+                padding: 1.25rem;
+                background: white;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .search-container {
+                flex: 1;
+                display: flex;
+                align-items: stretch;
+                height: 48px;
+            }
+
+            .search-icon-btn {
+                background: linear-gradient(135deg, var(--primary-color) 0%, #003366 100%);
+                color: white;
+                border: 2px solid var(--primary-color);
+                border-right: none;
+                border-radius: 8px 0 0 8px;
+                padding: 0 1.25rem;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 56px;
+                flex-shrink: 0;
+            }
+
+            .search-icon-btn:hover {
+                background: linear-gradient(135deg, #003366 0%, #002244 100%);
+                border-color: #003366;
+            }
+
+            .search-input {
+                flex: 1;
+                border: 2px solid #dee2e6;
+                border-left: none;
+                border-radius: 0 8px 8px 0;
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                outline: none;
+            }
+
+            .search-input:focus {
+                border-color: var(--sami-green);
+                box-shadow: 0 0 0 3px rgba(122, 193, 66, 0.1);
+            }
+
+            .search-container:focus-within .search-icon-btn {
+                background: linear-gradient(135deg, var(--sami-green) 0%, #63a733 100%);
+                border-color: var(--sami-green);
+            }
+
+            /* AI Suggestions Button */
+            .btn-ai-suggest {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                white-space: nowrap;
+                box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn-ai-suggest:hover:not(:disabled) {
+                background: linear-gradient(135deg, #5a67d8 0%, #6b3fa0 100%);
+                box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+                transform: translateY(-2px);
+            }
+
+            .btn-ai-suggest:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .btn-ai-suggest:active:not(:disabled) {
+                transform: translateY(0);
+            }
+
+            /* Service Cards */
+            .service-cards-container {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .service-card {
+                background: white;
+                border-radius: 12px;
+                border: 2px solid #e9ecef;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .service-card:hover {
+                border-color: var(--sami-green);
+                box-shadow: 0 4px 12px rgba(122, 193, 66, 0.15);
+                transform: translateY(-2px);
+            }
+
+            .service-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 1.25rem;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-bottom: 2px solid #dee2e6;
+            }
+
+            .service-card-title {
+                font-weight: 600;
+                color: var(--primary-color);
+                font-size: 1.05rem;
+                flex: 1;
+            }
+
+            .btn-delete-service {
+                background: white;
+                border: 2px solid #dc3545;
+                color: #dc3545;
+                padding: 0.4rem 0.8rem;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+            }
+
+            .btn-delete-service:hover {
+                background: #dc3545;
+                color: white;
+                transform: scale(1.05);
+            }
+
+            .delete-confirmation {
+                background: #f8d7da;
+                border: 1px solid #f5c6cb;
+                padding: 0.75rem 1.25rem;
+                margin: 0;
+            }
+
+            .service-card-body {
+                padding: 1.25rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .search-area {
+                    flex-direction: column;
+                    gap: 0.75rem;
+                }
+
+                .btn-ai-suggest {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .service-card-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.75rem;
+                }
+
+                .btn-delete-service {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .service-card-body {
+                    padding: 1rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .search-area {
+                    padding: 0.75rem;
+                }
+
+                .search-container {
+                    height: 42px;
+                }
+
+                .search-icon-btn {
+                    padding: 0 1rem;
+                    font-size: 1rem;
+                    min-width: 48px;
+                }
+
+                .search-input {
+                    padding: 0.6rem 0.75rem;
+                    font-size: 0.9rem;
+                }
+
+                .btn-ai-suggest {
+                    padding: 0.6rem 1rem;
+                    font-size: 0.9rem;
                 }
             }
         </style>

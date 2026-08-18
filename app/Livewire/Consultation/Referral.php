@@ -84,7 +84,11 @@ class Referral extends Component
 
     public function init()
     {
-        $this->selectedLists = $this->encounter->referrals()->get();
+        $this->selectedLists = $this->encounter->referrals()
+            ->with(['referredTo' => function($query) {
+                $query->withoutGlobalScope(PractitionerScope::class)->with('files');
+            }, 'speciality'])
+            ->get();
 
         foreach ($this->selectedLists as $selected) {
             $http = app()->environment('local') ? Http::withoutVerifying() : Http::asForm();
@@ -221,7 +225,11 @@ class Referral extends Component
     public function delete($id)
     {
         $this->encounter->referrals()->whereId($id)->delete();
-        $this->selectedLists = $this->encounter->referrals()->get();
+        $this->selectedLists = $this->encounter->referrals()
+            ->with(['referredTo' => function($query) {
+                $query->withoutGlobalScope(PractitionerScope::class)->with('files');
+            }, 'speciality'])
+            ->get();
 
         // Disparar evento para actualizar el estado del botón de finalizar
         $this->dispatch('findFinishedButtonStatus');
@@ -360,15 +368,29 @@ class Referral extends Component
             if ($referral) {
                 $referral->referred_to_id = $practitionerId;
                 $referral->save();
+
+                // Limpiar datos de especialista externo si se selecciona uno interno
+                $referral->external_specialist_name = null;
+                $referral->external_specialist_specialty = null;
+                $referral->external_specialist_license = null;
+                $referral->external_specialist_phone = null;
+                $referral->external_specialist_clinic = null;
+                $referral->save();
+
                 $referral->refresh(); // Refrescar el modelo
                 $this->selectedEspecialist[$referral->code] = $practitionerId;
+                $this->useExternalSpecialist[$referralId] = false;
             }
 
             // Recargar el encounter para obtener las relaciones actualizadas
             $this->encounter->refresh();
 
-            // Recargar la lista de referidos con los datos actualizados
-            $this->selectedLists = $this->encounter->referrals()->get();
+            // Recargar la lista de referidos con los datos actualizados - sin scope global
+            $this->selectedLists = $this->encounter->referrals()
+                ->with(['referredTo' => function($query) {
+                    $query->withoutGlobalScope(PractitionerScope::class);
+                }, 'speciality'])
+                ->get();
 
             sleep(1);
 

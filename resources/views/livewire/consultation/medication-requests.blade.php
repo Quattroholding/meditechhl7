@@ -40,113 +40,86 @@
             if (savingEl) savingEl.style.display = 'none';
         });
      ">
-    <style>
 
-        .producto-full-name {
-            font-size: 16px; color: #333;padding: 10px;
-        }
-
-        .producto-form{
-            font-size: 12px; color: #666;
-        }
-
-        .medication-records-group {
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .medication-records-group:hover {
-            background-color: #005dba;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .medication-records-group:hover table {
-            background-color: #005dba;
-        }
-
-        .medication-records-group:hover table tr {
-            background-color: #005dba !important;
-        }
-
-        .medication-records-group:hover .producto-full-name{
-            color:#fff;
-        }
-
-        .medication-records-group:hover .producto-form{
-            color:#fff;
-        }
-
-        .medication-records-group:hover .producto-full-name {
-            background-color: #005dba;
-        }
-
-        .sprite-trash-container {
-            transition: all 0.2s ease;
-            padding: 8px 12px;
-            border-radius: 4px;
-            background-color: transparent;
-            display: inline-block;
-        }
-
-        .sprite-trash-container:hover {
-            background-color: #ba0900;
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
-            color:#fff;
-        }
-
-        .sprite-trash-container:hover .sprite-trash {
-            filter: brightness(1.2);
-        }
-
-        .medication-records-group:hover .sprite-trash-container{
-            color:#fff;
-        }
-    </style>
     @if(count($selectedLists)>0)
-        <div style="display: grid; gap: 15px;">
-            @foreach($selectedLists as $m)
-                <div class="medication-records-group"
-                     @mouseenter="hoveredMedication = {{ $m->id }}"
-                     @mouseleave="hoveredMedication = null">
-                    <table width="100%">
-                        <tr>
-                            <td colspan="5">
-                                <b rel="producto-full-name" class="producto-full-name" >
-                                    @if($m->medication2)
-                                        {{ $m->medication2->display }}
-                                        @if($m->medication2->ingredients->count() > 0)
-                                            @php $ing = $m->medication2->ingredients->first(); @endphp
-                                            <span class="producto-form">({{ $m->medication2->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})</span>
-                                        @endif
-                                    @elseif($m->medicine)
-                                        {{ $m->medicine->full_name }}
-                                    @else
-                                        {{ $m->medication }}
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
+                    <i class="fas fa-prescription-bottle-alt me-2"></i>
+                    {{ __('consultation.medication_requests_section.selected_medications') }}
+                </h5>
+                <span class="badge" style="background: var(--sami-green); font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                    {{ count($selectedLists) }} {{ __('consultation.medication_requests_section.items') }}
+                </span>
+            </div>
+
+            <div class="service-cards-container">
+                @foreach($selectedLists as $m)
+                    <div class="service-card" x-data="{ confirmDelete: false }">
+                        <!-- Header de la tarjeta -->
+                        <div class="service-card-header">
+                            <div class="service-card-title">
+                                <i class="fas fa-pills me-2" style="color: var(--sami-green);"></i>
+                                @if($m->medication2)
+                                    {{ $m->medication2->display }}
+                                    @if($m->medication2->ingredients->count() > 0)
+                                        @php $ing = $m->medication2->ingredients->first(); @endphp
+                                        <span style="font-size: 0.85rem; color: #666;">({{ $m->medication2->form }} {{ $ing->strength_value }} {{ $ing->strength_unit }})</span>
                                     @endif
-                                </b>
-                            </td>
-                            <td style="text-align: right; padding-right: 15px;">
-                                <div class="sprite-trash-container"
-                                     ani="1"
-                                     style="cursor:pointer;"
-                                     wire:click="delete({{ $m->id }})">
-                                    <div class="sprite-trash"></div>
-                                    <div style="font-weight: 500; font-size: 12px;">{{ __('consultation.medication_requests_section.delete') }}</div>
+                                @elseif($m->medicine)
+                                    {{ $m->medicine->full_name }}
+                                @else
+                                    {{ $m->medication }}
+                                @endif
+                            </div>
+                            <button
+                                type="button"
+                                class="btn-delete-service"
+                                @click="confirmDelete = !confirmDelete"
+                                title="{{ __('consultation.medication_requests_section.delete') }}"
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- Confirmación de borrado -->
+                        <div x-show="confirmDelete"
+                             x-transition
+                             class="delete-confirmation"
+                             style="display: none;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span style="color: #721c24; font-weight: 500;">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    {{ __('consultation.medication_requests_section.confirm_delete') }}
+                                </span>
+                                <div class="d-flex gap-2">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-danger"
+                                        @click.prevent="$wire.delete({{$m->id}}); confirmDelete = false;"
+                                    >
+                                        <i class="fas fa-check me-1"></i>
+                                        {{ __('generic.yes') }}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-secondary"
+                                        @click.prevent="confirmDelete = false"
+                                    >
+                                        <i class="fas fa-times me-1"></i>
+                                        {{ __('generic.no') }}
+                                    </button>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" style="padding: 5px;"></td>
-                        </tr>
-                        <tr>
-                            <td style="width: 20%;padding:10px;">
+                            </div>
+                        </div>
+
+                        <!-- Contenido de la tarjeta -->
+                        <div class="service-card-body">
+                            <!-- Campos del medicamento -->
+                            <div class="medication-fields-grid">
+                                <!-- Cantidad -->
                                 <div class="input-block local-forms">
-                                    <x-input-label for="quantity" :value="__('consultation.medication_requests_section.quantity')" />
+                                    <x-input-label for="quantity_{{$m->id}}" :value="__('consultation.medication_requests_section.quantity')" />
                                     <x-autosave-input
                                         type="number"
                                         :value="$quantitys[$m->id]"
@@ -156,14 +129,13 @@
                                         class="form-control block w-full"
                                         onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
                                         min="0" step="1"
-                                        placeholder="Ejemplo : 2"
+                                        placeholder="Ejemplo: 2"
                                     />
+                                </div>
 
-                                </div>
-                            </td>
-                            <td>
+                                <!-- Indicaciones -->
                                 <div class="input-block local-forms">
-                                    <x-input-label for="dosage_text" :value="__('consultation.medication_requests_section.indications')"/>
+                                    <x-input-label for="dosage_text_{{$m->id}}" :value="__('consultation.medication_requests_section.indications')"/>
                                     <x-autosave-input
                                         type="textarea"
                                         :value="$dosage_texts[$m->id]"
@@ -175,158 +147,69 @@
                                         save-key="dosage_text_{{ $m->id }}"
                                     />
                                 </div>
-                            </td>
-                            {{--}}
-                            <td style="width: 20%;padding:10px;">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="frecuency" :value="__('consultation.medication_requests_section.frequency')" />
-                                    <x-autosave-input
-                                        type="number"
-                                        :value="$frecuencies[$m->id]"
-                                        onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
-                                        min="0" step="1"
-                                        placeholder="Ejemplo : 2"
-                                        wire:model.live="frecuencies.{{ $m->id }}"
-                                        save-method="updateField"
-                                        save-key="frecuency-{{ $m->id }}"
-                                        class="form-control block w-full"
-                                    />
-                                </div>
-                            </td>
-                            <td style="width: 20%;padding:10px;">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="route" :value="__('consultation.medication_requests_section.route')" />
-                                    <x-autosave-input
-                                        type="select"
-                                        :value="$routes[$m->id]"
-                                        :options="\App\Models\Lista::medicationVias()"
-                                        :selected="$routes[$m->id]"
-                                        wire:model.live="routes.{{ $m->id }}"
-                                        save-method="updateField"
-                                        save-key="route-{{ $m->id }}"
-                                        class="form-control block w-full"
-                                    />
-                                </div>
-                            </td>
-                            <td style="width: 20%;padding:10px;">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="duration" :value="__('consultation.medication_requests_section.duration')" />
-                                    <x-autosave-input
-                                        type="number"
-                                        :value="$durations[$m->id]"
-                                        onkeydown="return (event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187)"
-                                        min="0" step="1"
-                                        placeholder="Ejemplo : 5"
-                                        wire:model.live="durations.{{ $m->id }}"
-                                        save-method="updateField"
-                                        save-key="duration-{{ $m->id }}"
-                                        class="form-control block w-full"
-                                    />
-                                </div>
-                            </td>
-                            <td colspan="2" style="width: 20%;padding:10px;">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="duration_type" :value="__('consultation.medication_requests_section.duration_type')" />
-                                    <x-autosave-input
-                                        type="select"
-                                        :value="$duration_types[$m->id] ?? 'dias'"
-                                        :options="[
-                                                    'dias' => 'Días',
-                                                    'semanas' => 'Semanas',
-                                                    'meses' => 'Meses',
-                                                    'años' => 'Años',
-                                                    'indefinido' => 'Indefinido'
-                                                ]"
-                                        :selected="$duration_types[$m->id] ?? 'dias'"
-                                        wire:model.live="duration_types.{{ $m->id }}"
-                                        save-method="updateField"
-                                        save-key="duration-type-{{ $m->id }}"
-                                        class="form-control block w-full"
-                                    />
-                                </div>
-                            </td>
-                            {{--}}
-                        </tr>
-                        {{--}}
-                        <tr>
-                            <td colspan="3" style="padding: 10px">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="dosage_text" :value="__('consultation.medication_requests_section.indications')"/>
-                                    <x-autosave-input
-                                        type="textarea"
-                                        :value="$dosage_texts[$m->id]"
-                                        class="form-control mt-1 block w-full"
-                                        rows="2"
-                                        wire:model.live="dosage_texts.{{$m->id}}"
-                                        placeholder="Ejemplo: 1 tableta cada 8 horas vía oral por 5 días"
-                                        save-method="updateField"
-                                        save-key="dosage_text_{{ $m->id }}"
-                                    />
-                                </div>
-                            </td>
-                            <td colspan="3" style="padding: 10px">
-                                <div class="input-block local-forms">
-                                    <x-input-label for="additional_indications" :value="__('consultation.medication_requests_section.additional_indications')"/>
-                                    <x-autosave-input
-                                        type="textarea"
-                                        :value="$additional_indications[$m->id]"
-                                        class="form-control mt-1 block w-full"
-                                        rows="2"
-                                        wire:model.live="additional_indications.{{ $m->id }}"
-                                        placeholder="Ejemplo: Tomar con alimentos, evitar alcohol"
-                                        save-method="updateField"
-                                        save-key="additional-indications-{{ $m->id }}"
-                                    />
-                                </div>
-                            </td>
-                        </tr>
-                        {{--}}
-                    </table>
-                </div>
-            @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     @endif
+
     <div class="my-3"></div>
-    <div class="general-btn-small" wire:click="medical_request_history">
+
+    <!-- Botón de historial de medicamentos -->
+    <div class="general-btn-small" wire:click="medical_request_history" style="margin-bottom: 15px;">
         <div class="general-btn-small-text general-btn-small-text-a">{{ __('consultation.medication_requests_section.medication_history') }}</div>
         <div class="general-btn-small-text general-btn-small-text-b">{{ __('consultation.medication_requests_section.view_list') }}</div>
     </div>
+
     <p>&nbsp;</p>
-    @php $id =\Illuminate\Support\Str::uuid();@endphp
+
+    @php $id = \Illuminate\Support\Str::uuid(); @endphp
+
     <div class="selector-field selector-field-on">
         <x-autosave-action save-key="medication-search" />
 
-        <table style="width:100%">
-            <tbody>
-            <tr>
-                <td style="width:80%;padding:20px;">
-                    <input type="text"  wire:model.live="query"   class="form-control" placeholder="{{ __('consultation.medication_requests_section.search_placeholder') }}" >
-                </td>
-                <td style="padding-top: 6px;padding-left: 6px;padding-right: 6px; width:10%">
-                    <div class="general-btn-small"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasRight{{$id}}"
-                            aria-controls="offcanvasRight">
-                        <div class="general-btn-small-text general-btn-small-text-a">{{ __('consultation.medication_requests_section.rapid_access_list') }}</div>
-                        <div class="general-btn-small-text general-btn-small-text-b">{{ __('consultation.medication_requests_section.view_list') }}</div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel" >
-            <div class="offcanvas-body  quick-items-content">
-                <div  class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{{ __('consultation.medication_requests_section.close_panel') }}">
+        <!-- Área de búsqueda mejorada -->
+        <div class="search-area">
+            <div class="search-container">
+                <button type="button" class="search-icon-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input
+                    type="text"
+                    wire:model.live="query"
+                    class="search-input"
+                    placeholder="{{ __('consultation.medication_requests_section.search_placeholder') }}"
+                >
+            </div>
+
+            <button
+                type="button"
+                class="btn-rapid-access"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight{{$id}}"
+                aria-controls="offcanvasRight"
+                title="{{ __('consultation.medication_requests_section.rapid_access_list') }}"
+            >
+                <i class="fas fa-star me-2"></i>
+                <span class="btn-text-desktop">{{ __('consultation.medication_requests_section.rapid_access_list') }}</span>
+                <span class="btn-text-mobile">
+                    <i class="fas fa-star"></i>
+                </span>
+            </button>
+        </div>
+
+        <!-- Offcanvas para acceso rápido -->
+        <div class="offcanvas offcanvas-end quick-items quick-items-active" tabindex="-1" id="offcanvasRight{{$id}}" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-body quick-items-content">
+                <div class="quick-items-close" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{{ __('consultation.medication_requests_section.close_panel') }}">
                     <img src="/images/close-floating.png" alt="">
                 </div>
                 <div class="sel-item-list-category">{{ strtoupper(__('consultation.rapid_access.title')) }}</div>
                 @if(count($rapidAccess) > 0)
                     @foreach($rapidAccess as $i)
-                        <div class="sel-list-item mb-2"
-                             style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
-
-                            {{-- Contenido principal clickeable --}}
+                        <div class="sel-list-item mb-2" style="cursor: pointer; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6;">
                             @if($i->medication)
                                 <div wire:click="selectOption({{ json_encode(['id'=>$i->medication_id,'name'=>$i->medication->display]) }})">
                                     <div class="sel-list-item-code fw-bold">{{ $i->medication->home_name ?? $i->medication->display }}</div>
@@ -351,28 +234,22 @@
                         <p>{{ __('consultation.medication_requests_section.no_rapid_access') }}</p>
                     </div>
                 @endif
-                {{-- Botones de control del panel --}}
+
                 <div class="mt-4 d-flex gap-2 border-top pt-3">
-                    <button type="button"
-                            class="btn btn-sm btn-outline-secondary"
-                            wire:click="clearSearch">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="clearSearch">
                         <i class="fas fa-eraser"></i> {{ __('consultation.medication_requests_section.clear_search') }}
                     </button>
-
-                    <button type="button"
-                            class="btn btn-sm btn-secondary"
-                            data-bs-dismiss="offcanvas">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="offcanvas">
                         <i class="fas fa-times"></i> {{ __('consultation.medication_requests_section.close_panel') }}
                     </button>
                 </div>
             </div>
-        </div> <!-- end offcanvas-body-->
+        </div>
 
-        {{-- RESULTADOS DE BÚSQUEDA --}}
+        <!-- Resultados de búsqueda -->
         @if(!empty($results))
             <div style="position: absolute; z-index: 1000; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-
-                {{-- Header FIJO - NO forma parte del scroll --}}
+                <!-- Header FIJO -->
                 <div style="background: #ffffff; padding: 8px 12px; border-bottom: 2px solid #0d6efd;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div style="font-size: 0.9rem;">
@@ -395,9 +272,8 @@
                     </div>
                 </div>
 
-                {{-- Contenedor con scroll - SOLO los resultados - MÁS ALTO para ver varios --}}
+                <!-- Contenedor con scroll -->
                 <div style="max-height: 320px; min-height: 300px; overflow-y: auto;">
-                    {{-- Resultados SIN agrupación - MÁS COMPACTOS --}}
                     @foreach($results as $result)
                         <div
                             class="sel-list-item"
@@ -428,7 +304,6 @@
                         </div>
                     @endforeach
 
-                    {{-- Botón "Ver más" - MUY VISIBLE --}}
                     @if($hasMoreResults)
                         <div
                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);width: 99%; padding: 10px; text-align: center; cursor: pointer; border: none; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"
@@ -454,7 +329,6 @@
                         </div>
                     @endif
 
-                    {{-- Mensaje final --}}
                     @if(!$hasMoreResults && count($results) > 0)
                         <div style="padding: 10px 12px; text-align: center; color: #6c757d; font-size: 0.85rem; background: #f8f9fa;">
                             <i class="fas fa-check-circle text-success"></i>
@@ -466,10 +340,246 @@
         @endif
     </div>
 
-   <div style="height:200px;">&nbsp;</div>
+    <div style="height:200px;">&nbsp;</div>
 
-   <!-- Componente del historial de medicamentos -->
-   <livewire:patient.medication-history />
+    <!-- Componente del historial de medicamentos -->
+    <livewire:patient.medication-history />
+
+    <style>
+        /* Search Area */
+        .search-area {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.25rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            height: 48px;
+        }
+
+        .search-icon-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #003366 100%);
+            color: white;
+            border: 2px solid var(--primary-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            padding: 0 1.25rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 56px;
+            flex-shrink: 0;
+        }
+
+        .search-icon-btn:hover {
+            background: linear-gradient(135deg, #003366 0%, #002244 100%);
+            border-color: #003366;
+        }
+
+        .search-input {
+            flex: 1;
+            border: 2px solid #dee2e6;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--sami-green);
+            box-shadow: 0 0 0 3px rgba(122, 193, 66, 0.1);
+        }
+
+        .search-container:focus-within .search-icon-btn {
+            background: linear-gradient(135deg, var(--sami-green) 0%, #63a733 100%);
+            border-color: var(--sami-green);
+        }
+
+        .btn-rapid-access {
+            background: linear-gradient(135deg, var(--sami-green) 0%, #63a733 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(122, 193, 66, 0.3);
+        }
+
+        .btn-rapid-access:hover {
+            background: linear-gradient(135deg, #63a733 0%, #4d8a26 100%);
+            box-shadow: 0 4px 8px rgba(122, 193, 66, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-rapid-access:active {
+            transform: translateY(0);
+        }
+
+        .btn-text-mobile {
+            display: none;
+        }
+
+        /* Service Cards Container */
+        .service-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Service Card */
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .service-card:hover {
+            border-color: var(--sami-green);
+            box-shadow: 0 4px 12px rgba(122, 193, 66, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Service Card Header */
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .service-card-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.05rem;
+            flex: 1;
+        }
+
+        .btn-delete-service {
+            background: white;
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete-service:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Delete Confirmation */
+        .delete-confirmation {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 0.75rem 1.25rem;
+            margin: 0;
+        }
+
+        /* Service Card Body */
+        .service-card-body {
+            padding: 1.25rem;
+        }
+
+        /* Medication Fields Grid */
+        .medication-fields-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-area {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn-rapid-access {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-text-desktop {
+                display: none;
+            }
+
+            .btn-text-mobile {
+                display: inline;
+            }
+
+            .service-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .btn-delete-service {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .medication-fields-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-card-body {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-area {
+                padding: 0.75rem;
+            }
+
+            .search-container {
+                height: 42px;
+            }
+
+            .search-icon-btn {
+                padding: 0 1rem;
+                font-size: 1rem;
+                min-width: 48px;
+            }
+
+            .search-input {
+                padding: 0.6rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-rapid-access {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </div>
 
 @script

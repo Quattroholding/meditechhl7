@@ -111,12 +111,19 @@
 
         // Escuchar cuando se elimina un item para actualizar visualmente
         Livewire.on('rapid-access-list-updated-{{$encounterId}}-{{$section_id}}', (event) => {
-            console.log('Lista de accesos rápidos actualizada, recargando visualmente...');
-            // Llamar al método de Livewire para obtener los datos actualizados
-            @this.call('loadRapidAccess').then(() => {
-                // Recargar el contenido del contenedor
-                location.reload(); // Temporal, idealmente usaríamos Alpine o fetch
-            });
+            console.log('Lista de accesos rápidos actualizada, refrescando componente...');
+            // Refrescar el componente de Livewire sin recargar la página
+            @this.call('loadRapidAccess');
+
+            // Actualizar indicadores visuales si es necesario
+            setTimeout(() => {
+                const items = document.querySelectorAll('#rapid-access-items-{{$encounterId}}-{{$section_id}} [data-cpt-id]');
+                items.forEach(item => {
+                    // Remover la clase de seleccionado si el item ya no está en la lista
+                    const cptId = item.getAttribute('data-cpt-id');
+                    // El componente Livewire se actualizará automáticamente
+                });
+            }, 100);
         });
     });
 </script>

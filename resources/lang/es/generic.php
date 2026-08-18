@@ -8,6 +8,8 @@ return [
     'save' => 'Guardar',
     'cancel' => 'Cancelar',
     'back' => 'Atras',
+    'yes' => 'Sí',
+    'no' => 'No',
     'show' => 'Detalle',
     'detail' => 'Detalle',
     'new' => 'Nuevo(a)',

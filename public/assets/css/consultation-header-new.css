@@ -1,0 +1,174 @@
+/* Consultation Header New - SAMI Inspired Design */
+
+.patient-banner-new {
+    display: flex;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid #dcdde1;
+    border-left: 4px solid #7ac142;
+    gap: 25px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.banner-block-new {
+    flex: 1;
+    min-width: 280px;
+    padding: 15px;
+    border-right: 2px solid #e9ecef;
+}
+
+.banner-block-new:last-child {
+    border-right: none;
+}
+
+.banner-block-new h3 {
+    margin-top: 0;
+    color: #004b87;
+    font-size: 1.15rem;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #7ac142;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.banner-block-new h3 i {
+    font-size: 1.4rem;
+    color: #7ac142;
+}
+
+.data-row-new {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 4px 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.data-row-new:hover {
+    background: #e9ecef;
+    transform: translateX(2px);
+}
+
+.data-label-new {
+    font-weight: 600;
+    color: #7f8c8d;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.data-label-new i {
+    font-size: 0.9rem;
+    color: #004b87;
+}
+
+.data-value-new {
+    color: #2c3e50;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .patient-banner-new {
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .banner-block-new {
+        min-width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .patient-banner-new {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .banner-block-new {
+        border-right: none;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 15px;
+    }
+
+    .banner-block-new:last-child {
+        border-bottom: none;
+    }
+
+    .data-row-new {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .data-label-new {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .data-value-new {
+        text-align: left;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .patient-banner-new {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .banner-block-new h3 {
+        font-size: 1rem;
+    }
+
+    .data-row-new {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation */
+@keyframes fadeInBanner {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.patient-banner-new {
+    animation: fadeInBanner 0.4s ease-out;
+}
+
+/* Print styles */
+@media print {
+    .patient-banner-new {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+
+    .data-row-new {
+        background: white !important;
+    }
+}

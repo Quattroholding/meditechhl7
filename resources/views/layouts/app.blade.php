@@ -53,7 +53,7 @@
     <script src="https://kit.fontawesome.com/652b8e06e9.js" crossorigin="anonymous"></script>
     @yield('scripts')
 </head>
-<body class="">
+<body  class="">
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MP5P532M"
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -78,7 +78,9 @@
                             @if (!Route::is(['change-password2', 'confirm-mail','forgot-password','login','lock-screen','register','error-404','error-500','two-factor.settings']))
                             <x-subscription-alert />
                             @endif
+
                             @include('layout.partials.sidebar')
+
                         @endif
                       {{$slot}}
                     </div>

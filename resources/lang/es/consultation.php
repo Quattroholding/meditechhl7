@@ -392,6 +392,9 @@ return [
         'refills' => 'Meses de Refill',
         'no_refill' => 'Sin Refill',
         'delete' => 'Borrar',
+        'confirm_delete' => '¿Está seguro de eliminar este medicamento?',
+        'selected_medications' => 'Medicamentos Seleccionados',
+        'items' => 'elementos',
         'medication_history' => 'Historial de Medicamentos',
         'view_list' => 'Ver listado',
         'search_placeholder' => 'Buscar medicamento por nombre, código NDC o nombre genérico',
@@ -444,6 +447,9 @@ return [
         'no_specialist_selected' => 'No hay médico seleccionado',
         'view_medical_directory' => 'Ver Directorio Médico',
         'delete' => 'Borrar',
+        'confirm_delete' => '¿Está seguro de eliminar esta referencia?',
+        'selected_referrals' => 'Referencias Seleccionadas',
+        'items' => 'elementos',
         'search_specialty' => 'Buscar especialidad.',
         'medical_specialties' => 'Especialidades Médicas',
         'load_more' => 'Cargar',
@@ -479,7 +485,11 @@ return [
     // Service Request
     'service_request_section' => [
         'delete' => 'Borrar',
+        'selected_services' => 'Servicios Seleccionados',
+        'items' => 'elementos',
+        'confirm_delete' => '¿Está seguro de eliminar este servicio?',
         'instruction' => 'Indicaciones adicionales',
+        'instruction_placeholder' => 'Escriba las indicaciones o instrucciones especiales...',
         'procedure_performed' => '¿Este procedimiento se realizó en la consulta?',
         'procedure_notes' => 'Notas del procedimiento realizado:',
         'procedure_notes_placeholder' => 'Describa lo que se realizó durante el procedimiento...',
@@ -755,5 +765,19 @@ return [
         'created_successfully_email_sent' => 'Incapacidad médica #:identifier creada exitosamente. Se enviará por email a :email',
         'created_successfully_no_email' => 'Incapacidad médica #:identifier creada exitosamente. El paciente no tiene email registrado.',
         'error_creating' => 'Error al crear la incapacidad médica:',
+    ],
+
+    // Grid View (Nueva vista de tarjetas)
+    'medical_consultation' => 'Consulta Médica',
+    'select_section_to_record' => 'Seleccione la sección que desea registrar en el expediente electrónico',
+    'section' => 'Sección',
+
+    // Footer
+    'footer' => [
+        'view_patient_info' => 'Ver Info del Paciente',
+        'back_to_calendar' => 'Volver al Calendario',
+        'pending_sections' => 'Pendiente para cerrar',
+        'complete_required_sections' => 'Complete las secciones requeridas',
+        'ready_to_finish' => '¡Todo listo! Puede finalizar la consulta',
     ],
 ];

@@ -1,6 +1,12 @@
 <x-app-layout>
-    @section('css')
-        <link href="{{url('styles/consultations.css?time2='.time())}}" rel="stylesheet" />
-    @stop
-    <livewire:consultation.create :encounter_id="$consultation->id"/>
+    <div class="page-wrapper">
+        <div class="content">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <livewire:consultation.create :encounter_id="$consultation->id"/>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

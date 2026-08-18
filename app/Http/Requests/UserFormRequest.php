@@ -77,7 +77,7 @@ class UserFormRequest extends FormRequest
                     'regex:/[A-Z]/',      // debe contener al menos una letra mayúscula
                     'regex:/[0-9]/',      // debe contener al menos un número
                 ];
-                $rules['avatar'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+                $rules['avatar'] = 'image|mimes:jpeg,png,jpg,gif|max:2048';
                 $rules['clients'] = 'required|array|min:1';
                 break;
             default:
