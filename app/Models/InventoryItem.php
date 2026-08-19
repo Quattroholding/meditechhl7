@@ -83,19 +83,33 @@ class InventoryItem extends BaseModel
      */
     public function getStockLevel(?int $branchId = null, ?int $practitionerId = null): float
     {
-        $query = $this->inventoryReports()
-            ->where('status', 'active');
-
+        // If practitioner is specified, first check their personal inventory
         if ($practitionerId) {
-            // Get stock from specific practitioner's inventory
-            $query->where('practitioner_id', $practitionerId);
-        } elseif ($branchId) {
-            // Get stock from specific branch (excluding practitioner inventories)
-            $query->where('branch_id', $branchId)
-                ->whereNull('practitioner_id');
-        } else {
-            // If no specific location, return total available stock across all locations
-            // This is useful when branch/practitioner is not specified
+            $report = $this->inventoryReports()
+                ->where('status', 'active')
+                ->where('practitioner_id', $practitionerId)
+                ->first();
+
+            if ($report) {
+                return (float) ($report->quantity_on_hand - $report->quantity_reserved);
+            }
+        }
+
+        // If no practitioner stock or no practitioner specified, check branch
+        if ($branchId) {
+            $report = $this->inventoryReports()
+                ->where('status', 'active')
+                ->where('branch_id', $branchId)
+                ->whereNull('practitioner_id')
+                ->first();
+
+            if ($report) {
+                return (float) ($report->quantity_on_hand - $report->quantity_reserved);
+            }
+        }
+
+        // If no specific location, return total available stock across all locations
+        if (! $branchId && ! $practitionerId) {
             $totalStock = $this->inventoryReports()
                 ->where('status', 'active')
                 ->get()
@@ -106,9 +120,7 @@ class InventoryItem extends BaseModel
             return (float) $totalStock;
         }
 
-        $report = $query->first();
-
-        return $report ? (float) ($report->quantity_on_hand - $report->quantity_reserved) : 0.0;
+        return 0.0;
     }
 
     /**

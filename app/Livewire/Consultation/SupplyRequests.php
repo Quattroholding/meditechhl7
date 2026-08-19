@@ -111,8 +111,8 @@ class SupplyRequests extends Component
             ?? null;
 
         $this->results = $results->map(function ($item) use ($practitioner, $branchId) {
-            // Only check practitioner inventory if they have individual inventory enabled
-            $practitionerId = ($practitioner && $practitioner->has_individual_inventory) ? $practitioner->id : null;
+            // Check practitioner's personal inventory first, then branch inventory
+            $practitionerId = $practitioner?->id;
             $stock = $item->getStockLevel($branchId, $practitionerId);
 
             return [
@@ -223,8 +223,8 @@ class SupplyRequests extends Component
                 ?? $this->encounter->appointment->consultingRoom->branch_id
                 ?? null;
 
-            // Only check practitioner inventory if they have individual inventory enabled
-            $practitionerId = ($practitioner && $practitioner->has_individual_inventory) ? $practitioner->id : null;
+            // Check practitioner's personal inventory first, then branch inventory
+            $practitionerId = $practitioner?->id;
             $stock = $supplyRequest->inventoryItem->getStockLevel($branchId, $practitionerId);
 
             if ($value > $stock) {
