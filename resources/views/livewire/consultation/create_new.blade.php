@@ -100,9 +100,8 @@
                 </div>
 
                 <div class="footer-center" id="pending-status">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>{{ __('consultation.footer.pending_sections') }}:</strong>
-                    <span id="pending-items">{{ __('consultation.footer.complete_required_sections') }}</span>
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <strong>Validando formulario...</strong>
                 </div>
 
                 <div class="footer-right">
@@ -190,6 +189,9 @@
             if (typeof Livewire !== 'undefined') {
                 @this.call('getCompletedSectionsStatus');
                 Livewire.dispatch('sectionClosed');
+
+                // IMPORTANTE: Disparar validación del botón de finalizar para actualizar el footer
+                Livewire.dispatch('findFinishedButtonStatus');
             }
         }
 
@@ -217,30 +219,16 @@
                 card.classList.remove('card-required');
             }
 
-            updatePendingStatus();
+            // No actualizar el footer aquí - el FinishedButton lo hará con mensajes detallados
         }
 
         /**
          * Actualiza el estado de secciones pendientes en el footer
+         * NOTA: Esta función ya no se usa - el FinishedButtonNew maneja el footer con mensajes detallados
          */
         function updatePendingStatus() {
-            const pendingStatus = document.getElementById('pending-status');
-            const pendingItems = document.getElementById('pending-items');
-
-            // Filtrar secciones obligatorias pendientes
-            const pendingSections = requiredSections.filter(id => !completedSections.has(id));
-
-            if (pendingSections.length === 0) {
-                pendingStatus.innerHTML = '<i class="fas fa-check-circle"></i> <strong>{{ __("consultation.footer.ready_to_finish") }}</strong>';
-                pendingStatus.classList.add('ready');
-            } else {
-                const sectionNames = pendingSections.map(id => {
-                    const section = @json($encounter_sections->keyBy('id'));
-                    return section[id] ? (section[id].name_esp || section[id].name) : '';
-                }).filter(name => name).join(', ');
-
-                pendingItems.textContent = sectionNames;
-            }
+            // No hacer nada - dejar que FinishedButtonNew maneje el footer
+            // El evento 'updateFooterMessages' tiene los mensajes detallados de campos específicos
         }
 
         /**
@@ -303,7 +291,9 @@
 
             // Evento para actualizar mensajes del footer
             Livewire.on('updateFooterMessages', (event) => {
+                console.log('updateFooterMessages event received:', event);
                 const data = Array.isArray(event) ? event[0] : event;
+                console.log('Extracted data:', data);
                 updateFooterWithMessages(data.messages, data.enabled);
             });
 
@@ -327,8 +317,7 @@
                     }
                 });
 
-                // Actualizar el footer
-                updatePendingStatus();
+                // No actualizar el footer aquí - dejar que el FinishedButton lo maneje con mensajes detallados
             });
         });
 
@@ -337,7 +326,14 @@
          */
         function updateFooterWithMessages(messages, enabled) {
             const pendingStatus = document.getElementById('pending-status');
-            const pendingItems = document.getElementById('pending-items');
+
+            if (!pendingStatus) {
+                console.error('Footer element #pending-status not found');
+                return;
+            }
+
+            // Debug: mostrar los mensajes recibidos
+            console.log('updateFooterWithMessages called with:', {messages, enabled, messageCount: messages ? Object.keys(messages).length : 0});
 
             if (!messages || Object.keys(messages).length === 0) {
                 // No hay mensajes de error - todo está completo
@@ -350,15 +346,13 @@
                 // Convertir objeto de mensajes a array
                 const messageArray = Object.values(messages);
 
-                const messageHtml = `
+                pendingStatus.innerHTML = `
                     <i class="fas fa-exclamation-triangle"></i>
                     <strong>{{ __('consultation.finished_button.add_required_info') }}</strong>
                     <div style="margin-top: 8px; font-size: 0.85rem; line-height: 1.6;">
                         ${messageArray.join('<br>')}
                     </div>
                 `;
-
-                pendingStatus.innerHTML = messageHtml;
             }
         }
 
@@ -377,7 +371,7 @@
 
         // Inicializar estado
         initializeCompletedCards();
-        updatePendingStatus();
+        // No llamar updatePendingStatus() aquí - el FinishedButtonNew lo manejará con mensajes detallados
 
         // Disparar evento para obtener el estado inicial del botón de finalizar
         document.addEventListener('livewire:initialized', () => {
