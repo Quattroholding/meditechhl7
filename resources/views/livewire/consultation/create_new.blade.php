@@ -26,13 +26,19 @@
 
         <div class="grid-container" id="module-grid">
             @foreach($encounter_sections as $section)
-            <div class="card"  data-section-id="{{ $section->id }}"
+            <div class="card {{ $section->obligatory ? 'card-required' : '' }}"  data-section-id="{{ $section->id }}"
+                 data-required="{{ $section->obligatory ? 'true' : 'false' }}"
                  onclick="openSectionModal('{{ $section->id }}', '{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}', '{{ $section->icon ?? '📄' }}')"
                  role="button"
                  tabindex="0"
                  aria-label="{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}">
                 <div class="card-icon">{{ $section->icon ?? '📄' }}</div>
                 <div class="card-title">   {{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}</div>
+                @if($section->obligatory)
+                    <div class="card-required-badge">
+                        <i class="fas fa-exclamation-circle"></i> Requerido
+                    </div>
+                @endif
             </div>
             @endforeach
        </div>
@@ -66,6 +72,8 @@
             </div>
         </div>
     @endforeach
+    <p class="mb-5">&nbsp;</p>
+    <p class="mb-5">&nbsp;</p>
     <div class="row">
         <div class="col-md-12 col-sm-12">
             <!-- Footer fijo con estado y botones -->
@@ -135,8 +143,8 @@
             };
         @endforeach
 
-        // Estado de secciones completadas
-        let completedSections = new Set();
+        // Estado de secciones completadas (inicializar con las ya completadas del backend)
+        let completedSections = new Set(@json($completedSections));
 
         // Secciones obligatorias
         const requiredSections = @json($encounter_sections->where('obligatory', true)->pluck('id')->toArray());
@@ -178,11 +186,9 @@
 
             document.body.style.overflow = '';
 
-            // Actualizar estado de secciones pendientes
-            updatePendingStatus();
-
-            // Refrescar componentes Livewire si es necesario
+            // Actualizar el estado de completitud desde el backend
             if (typeof Livewire !== 'undefined') {
+                @this.call('getCompletedSectionsStatus');
                 Livewire.dispatch('sectionClosed');
             }
         }
@@ -207,6 +213,8 @@
             const card = document.querySelector(`[data-section-id="${sectionId}"]`);
             if (card) {
                 card.classList.add('completed');
+                // Remover la clase de requerido cuando se completa
+                card.classList.remove('card-required');
             }
 
             updatePendingStatus();
@@ -286,16 +294,41 @@
             // Evento cuando se guarda una sección
             Livewire.on('sectionSaved', (event) => {
                 const data = Array.isArray(event) ? event[0] : event;
+                // No marcar automáticamente como completado
+                // La validación se hará al cerrar el modal
                 if (data.sectionId) {
-                    markSectionComplete(data.sectionId);
+                    // closeSectionModal(data.sectionId);
                 }
-                closeSectionModal();
             });
 
             // Evento para actualizar mensajes del footer
             Livewire.on('updateFooterMessages', (event) => {
                 const data = Array.isArray(event) ? event[0] : event;
                 updateFooterWithMessages(data.messages, data.enabled);
+            });
+
+            // Escuchar actualizaciones del estado de secciones desde el backend
+            Livewire.on('sectionsStatusUpdated', (event) => {
+                const data = Array.isArray(event) ? event[0] : event;
+                const updatedCompletedSections = data.completedSections || [];
+
+                // Actualizar el Set de completedSections
+                completedSections = new Set(updatedCompletedSections);
+
+                // Actualizar visualmente todas las tarjetas
+                document.querySelectorAll('.card[data-section-id]').forEach(card => {
+                    const sectionId = parseInt(card.getAttribute('data-section-id'));
+                    if (completedSections.has(sectionId)) {
+                        card.classList.add('completed');
+                        card.classList.remove('card-required');
+                    } else if (card.getAttribute('data-required') === 'true') {
+                        card.classList.remove('completed');
+                        card.classList.add('card-required');
+                    }
+                });
+
+                // Actualizar el footer
+                updatePendingStatus();
             });
         });
 
@@ -329,7 +362,21 @@
             }
         }
 
+        /**
+         * Inicializar el estado visual de las tarjetas completadas
+         */
+        function initializeCompletedCards() {
+            completedSections.forEach(sectionId => {
+                const card = document.querySelector(`[data-section-id="${sectionId}"]`);
+                if (card) {
+                    card.classList.add('completed');
+                    card.classList.remove('card-required');
+                }
+            });
+        }
+
         // Inicializar estado
+        initializeCompletedCards();
         updatePendingStatus();
 
         // Disparar evento para obtener el estado inicial del botón de finalizar

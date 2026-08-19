@@ -16,7 +16,7 @@ class Encounter extends BaseModel
 
     protected $fillable = [
         'fhir_id', 'patient_id', 'practitioner_id', 'appointment_id', 'identifier',
-        'status', 'class', 'type', 'priority', 'reason', 'start', 'end', 'medical_speciality_id', 'scb_id', 'assisted_by',
+        'status', 'class', 'type', 'priority', 'reason', 'general_note', 'follow_up_date', 'start', 'end', 'medical_speciality_id', 'scb_id', 'assisted_by',
     ];
 
     protected $casts = [

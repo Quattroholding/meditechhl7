@@ -9,7 +9,7 @@
                     <ul class="list-space">
                         <li>
                             <h4>{{__('doctor.gender')}}</h4>
-                            <span>{{$data->gender}}</span>
+                            <span>{{__('generic.'.$data->gender)}}</span>
                         </li>
                         <li>
                             <h4>{{__('doctor.birthdate')}}</h4>
@@ -47,7 +47,7 @@
                 @foreach($qualifications as $q)
                     <div class="row">
 
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                             <div class="personal-activity">
                                 <div class="personal-icons  {{ $q->default ? 'status-blue' : 'status-grey' }}">
                                     <img src="{{ URL::asset('/assets/img/icons/medal-01.svg') }}"   alt="">
@@ -59,19 +59,30 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <div class="flex items-center">
-                                <div wire:click="setDefaultSpecialty({{ $q->id }})"
-                                     class="toggle-switch {{ $q->default ? 'active' : '' }}">
-                                    <div class="toggle-thumb"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div wire:click="setDefaultSpecialty({{ $q->id }})"
+                                         class="toggle-switch {{ $q->default ? 'active' : '' }}">
+                                        <div class="toggle-thumb"></div>
+                                    </div>
+                                    <span class="ml-3 text-sm font-medium text-gray-700">
+                                        @if($q->default)
+                                            {{__('Principal')}}
+                                        @else
+                                            {{__('Establecer')}}<br/>{{__('como principal')}}
+                                        @endif
+                                    </span>
                                 </div>
-                                <span class="ml-3 text-sm font-medium text-gray-700">
-                                    @if($q->default)
-                                        {{__('Principal')}}
-                                    @else
-                                        {{__('Establecer')}}<br/>{{__('como principal')}}
-                                    @endif
-                                </span>
+
                             </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button wire:click="deleteQualification({{ $q->id }})"
+                                    wire:confirm="¿Estás seguro de que deseas eliminar esta especialidad?"
+                                    class="ml-4 text-red-500 hover:text-red-700 transition-colors"
+                                    title="{{__('Eliminar especialidad')}}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 @endforeach

@@ -48,4 +48,12 @@ class ProfileAbout extends Component
 
         session()->flash('message.success', 'Especialidad predeterminada actualizada correctamente.');
     }
+
+    public function deleteQualification($id)
+    {
+        PractitionerQualification::find($id)->delete();
+        $this->loadQualifications();
+
+        session()->flash('message.success', 'Especialidad eliminada correctamente.');
+    }
 }

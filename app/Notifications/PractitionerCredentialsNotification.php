@@ -62,7 +62,7 @@ class PractitionerCredentialsNotification extends Notification implements Should
 
         return (new MailMessage)
             ->subject('Bienvenido a SAMI - Credenciales de Acceso')
-            ->bcc('business@meditecpty.com')
+            // ->bcc('business@meditecpty.com')
             ->view('emails.practitioner-credentials', [
                 'user' => $this->user,
                 'temporaryPassword' => $this->temporaryPassword,

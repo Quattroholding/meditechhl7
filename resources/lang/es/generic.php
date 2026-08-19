@@ -37,5 +37,7 @@ return [
     'are_you_sure' => '¿Está seguro?',
     'loading' => 'Cargando...',
     'important' => 'Importante',
-    'there_are'=>'Hay'
+    'there_are'=>'Hay',
+    'male'=>'Masculino',
+    'female'=>'Femenino',
 ];

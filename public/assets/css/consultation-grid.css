@@ -90,6 +90,80 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.04);
     transition: all 0.25s ease;
     border: 1px solid var(--sami-green); /* Delineado verde fino */
+    position: relative;
+}
+
+/* Tarjetas requeridas (obligatorias) - borde rojo/naranja */
+.card.card-required {
+    border: 3px solid #ff6b6b;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.card.card-required:hover {
+    border-color: #ff4757;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(255, 107, 107, 0.4);
+}
+
+/* Badge de requerido */
+.card-required-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+    color: white;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    animation: pulse-required 2s infinite;
+}
+
+@keyframes pulse-required {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.6);
+    }
+}
+
+/* Cuando una tarjeta requerida se completa, vuelve al estilo normal */
+.card.completed {
+    border: 2px solid var(--sami-green);
+    background: linear-gradient(135deg, #f0fff4 0%, #e6f9ed 100%);
+    box-shadow: 0 4px 12px rgba(122, 193, 66, 0.3);
+}
+
+.card.completed .card-required-badge {
+    display: none;
+}
+
+/* Checkmark de completado */
+.card.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--success-color);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
 }
 
 .card:hover {
