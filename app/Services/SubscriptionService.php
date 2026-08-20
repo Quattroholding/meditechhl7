@@ -110,14 +110,11 @@ class SubscriptionService
     public function reactivate(ClientSubscription $subscription): ?ClientInvoice
     {
         return DB::transaction(function () use ($subscription) {
-            // Check if subscription was suspended for a long time
+            // Determine the suspension date: use suspended_at if available, otherwise updated_at
             $graceDaysForOldInvoices = config('subscriptions.grace_days_for_old_invoices', 30);
-            $shouldCancelOldInvoices = false;
-
-            if ($subscription->suspended_at) {
-                $daysSinceSuspension = now()->diffInDays($subscription->suspended_at);
-                $shouldCancelOldInvoices = $daysSinceSuspension > $graceDaysForOldInvoices;
-            }
+            $suspensionDate = $subscription->suspended_at ?? $subscription->updated_at;
+            $daysSinceSuspension = now()->diffInDays($suspensionDate);
+            $shouldCancelOldInvoices = $daysSinceSuspension > $graceDaysForOldInvoices;
 
             // Cancel old unpaid invoices if subscription was suspended for too long
             if ($shouldCancelOldInvoices) {

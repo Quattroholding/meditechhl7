@@ -9,6 +9,7 @@ use App\Enums\SubscriptionStatus;
 use App\Notifications\InvoiceGeneratedNotification;
 use App\Notifications\SubscriptionActivatedNotification;
 use App\Services\ReferralService;
+use App\Services\SubscriptionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -358,7 +359,9 @@ class ClientInvoice extends BaseModel
                     }
                 } elseif ($subscription->status === SubscriptionStatus::SUSPENDED) {
                     // Reactivate from suspended status
-                    $subscription->resume();
+                    // Use SubscriptionService to handle old invoice cancellation logic
+                    $subscriptionService = app(SubscriptionService::class);
+                    $subscriptionService->reactivate($subscription);
 
                     \Log::info('Subscription resumed from suspended', [
                         'subscription_id' => $subscription->id,

@@ -43,6 +43,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Grace Days For Old Invoices
+    |--------------------------------------------------------------------------
+    |
+    | Days after which unpaid invoices are automatically cancelled when
+    | reactivating a suspended subscription. This prevents charging for
+    | service periods when the client was not using the system.
+    |
+    */
+    'grace_days_for_old_invoices' => env('SUBSCRIPTION_GRACE_DAYS_OLD_INVOICES', 30),
+
+    /*
+    |--------------------------------------------------------------------------
     | Invoice Number Format
     |--------------------------------------------------------------------------
     |

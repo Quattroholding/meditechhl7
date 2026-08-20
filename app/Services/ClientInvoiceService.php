@@ -329,7 +329,9 @@ class ClientInvoiceService
                 if ($subscription->status->value === 'pending_activation') {
                     $subscription->activate();
                 } elseif ($subscription->status->value === 'suspended') {
-                    $subscription->resume();
+                    // Use SubscriptionService to handle old invoice cancellation logic
+                    // Using app() to avoid circular dependency (SubscriptionService -> ClientInvoiceService)
+                    app(SubscriptionService::class)->reactivate($subscription);
                 } elseif ($subscription->status->value === 'past_due') {
                     // Reactivar suscripción cuando se paga dentro del periodo de gracia
                     $subscription->status = SubscriptionStatus::ACTIVE;
