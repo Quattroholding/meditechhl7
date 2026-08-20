@@ -20,10 +20,12 @@ class ClientScope implements Scope
             return;
         }
 
-        if ($user->hasRole('doctor') && $user->practitioner) {  // el doctor solo ve los clientes que tiene asociados
-            $builder->whereIn('id', $user->clients()->pluck('client_id'));
-        } elseif ($user->hasRole('admin client')) {
-            $builder->whereIn('id', $user->clients()->pluck('client_id'));
+        // Get client IDs without triggering this scope again (prevent infinite recursion)
+        $clientIds = $user->clients()->withoutGlobalScopes()->pluck('client_id');
+
+        if(!$user->hasRole('admin')) {
+            $builder->whereIn('clients.id', $clientIds);  // Fixed: was 'ids', should be 'id'
         }
+
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PreferenceType;
+use App\Models\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -36,9 +37,15 @@ class Client extends Model
         'hemoscreen_only' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
+    }
+
     public static function boot()
     {
         parent::boot();
+
 
         static::creating(function ($client) {
             if (! $client->yappy_code) {

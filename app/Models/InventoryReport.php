@@ -79,27 +79,37 @@ class InventoryReport extends BaseModel
     }
 
     /**
-     * Get inventory report for a practitioner, respecting their inventory configuration
+     * Get inventory report for a practitioner, checking personal inventory first, then branch
      */
     public static function getForPractitioner(
         int $inventoryItemId,
         Practitioner $practitioner,
         ?int $branchId = null
     ): ?self {
-        if ($practitioner->has_individual_inventory) {
-            // Individual inventory for this practitioner
-            return self::where('inventory_item_id', $inventoryItemId)
-                ->where('practitioner_id', $practitioner->id)
-                ->where('status', 'active')
-                ->first();
-        } else {
-            // Shared branch inventory
-            return self::where('inventory_item_id', $inventoryItemId)
+        // First check practitioner's personal inventory
+        $report = self::where('inventory_item_id', $inventoryItemId)
+            ->where('practitioner_id', $practitioner->id)
+            ->where('status', 'active')
+            ->first();
+
+        if ($report) {
+            return $report;
+        }
+
+        // If no personal inventory, check branch inventory
+        if ($branchId) {
+            $report = self::where('inventory_item_id', $inventoryItemId)
                 ->where('branch_id', $branchId)
                 ->whereNull('practitioner_id')
                 ->where('status', 'active')
                 ->first();
+
+            if ($report) {
+                return $report;
+            }
         }
+
+        return null;
     }
 
     /**
