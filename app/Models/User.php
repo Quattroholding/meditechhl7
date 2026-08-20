@@ -429,7 +429,7 @@ class User extends Authenticatable
                 ? ($subscription->suspended_at instanceof Carbon ? $subscription->suspended_at : Carbon::parse($subscription->suspended_at))
                 : ($subscription->updated_at instanceof Carbon ? $subscription->updated_at : Carbon::parse($subscription->updated_at));
 
-            $daysSinceSuspension = now()->startOfDay()->diffInDays($suspendedAt->startOfDay());
+            $daysSinceSuspension = $suspendedAt->startOfDay()->diffInDays(now()->startOfDay());
 
             return max(0, $expirationDays - $daysSinceSuspension);
         }

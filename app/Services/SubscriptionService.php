@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientInvoice;
 use App\Models\ClientSubscription;
 use App\Models\Package;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -113,7 +114,12 @@ class SubscriptionService
             // Determine the suspension date: use suspended_at if available, otherwise updated_at
             $graceDaysForOldInvoices = config('subscriptions.grace_days_for_old_invoices', 30);
             $suspensionDate = $subscription->suspended_at ?? $subscription->updated_at;
-            $daysSinceSuspension = now()->diffInDays($suspensionDate);
+
+            // Convert to Carbon if needed and calculate days since suspension
+            if (! ($suspensionDate instanceof Carbon)) {
+                $suspensionDate = Carbon::parse($suspensionDate);
+            }
+            $daysSinceSuspension = $suspensionDate->diffInDays(now());
             $shouldCancelOldInvoices = $daysSinceSuspension > $graceDaysForOldInvoices;
 
             // Cancel old unpaid invoices if subscription was suspended for too long
