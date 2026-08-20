@@ -82,11 +82,20 @@
                             </div>
                         </div>
                         <div class="col-md-3 text-end">
-                            @can('suscriptions.invoices.index')
-                                @if($subscription && in_array($subscription->status->value, ['suspended', 'past_due', 'pending_activation']))
-                                    <a href="{{ route('suscriptions.invoices.index') }}" class="btn btn-light btn-sm me-2">
-                                        <i class="fas fa-file-invoice me-1"></i>Ver Facturas
-                                    </a>
+                            @can('suscriptions.show')
+                                @if($subscription && $subscription->status->value === 'suspended')
+                                    <form action="{{ route('suscriptions.reactivate') }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm me-2">
+                                            <i class="fas fa-redo me-1"></i>Reactivar
+                                        </button>
+                                    </form>
+                                @elseif($subscription && in_array($subscription->status->value, ['past_due', 'pending_activation']))
+                                    @can('suscriptions.invoices.index')
+                                        <a href="{{ route('suscriptions.invoices.index') }}" class="btn btn-light btn-sm me-2">
+                                            <i class="fas fa-file-invoice me-1"></i>Ver Facturas
+                                        </a>
+                                    @endcan
                                 @endif
                             @endcan
                             @can('suscriptions.show')
@@ -95,9 +104,11 @@
                                         <i class="fas fa-arrow-up me-1"></i>Actualizar Plan
                                     </a>
                                 @endif
-                                <a href="{{ route('suscriptions.show') }}" class="btn btn-light btn-sm">
-                                    <i class="fas fa-cog me-1"></i>Mi Suscripción
-                                </a>
+                                @if(!($subscription && $subscription->status->value === 'suspended'))
+                                    <a href="{{ route('suscriptions.show') }}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-cog me-1"></i>Mi Suscripción
+                                    </a>
+                                @endif
                             @endcan
                         </div>
                     </div>

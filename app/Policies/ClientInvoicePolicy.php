@@ -20,6 +20,16 @@ class ClientInvoicePolicy
             return false;
         }
 
+        // Cannot pay cancelled invoices (they are automatically cancelled when reactivating suspended subscriptions)
+        if ($clientInvoice->status->value === 'cancelled') {
+            return false;
+        }
+
+        // Cannot pay already paid invoices
+        if ($clientInvoice->status->value === 'paid') {
+            return false;
+        }
+
         // Invoice must have an outstanding balance
         if ($clientInvoice->amount_due <= 0) {
             return false;

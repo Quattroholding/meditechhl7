@@ -51,6 +51,10 @@ Route::group(['prefix' => 'suscriptions', 'middleware' => ['auth', 'verified', '
         ->middleware('permission:suscriptions.show')
         ->name('suscriptions.upgrade.process');
 
+    Route::post('/reactivate', [SuscriptionController::class, 'reactivate'])
+        ->middleware('permission:suscriptions.show')
+        ->name('suscriptions.reactivate');
+
     // ============================================================================
     // SUBSCRIPTION INVOICES
     // ============================================================================

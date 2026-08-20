@@ -27,6 +27,7 @@ class ClientSubscription extends BaseModel
         'cancelled_at',
         'cancellation_reason',
         'paused_at',
+        'suspended_at',
         'grace_period_ends_at',
         'last_billed_at',
         'next_retry_at',
@@ -45,6 +46,7 @@ class ClientSubscription extends BaseModel
             'next_billing_date' => 'datetime',
             'cancelled_at' => 'datetime',
             'paused_at' => 'datetime',
+            'suspended_at' => 'datetime',
             'grace_period_ends_at' => 'datetime',
             'last_billed_at' => 'datetime',
             'next_retry_at' => 'datetime',
@@ -244,6 +246,7 @@ class ClientSubscription extends BaseModel
     public function suspend(): bool
     {
         $this->status = SubscriptionStatus::SUSPENDED;
+        $this->suspended_at = now();
 
         // Congelar next_billing_date para que no se generen más facturas
         if ($this->next_billing_date) {
@@ -261,6 +264,7 @@ class ClientSubscription extends BaseModel
         if ($this->status === SubscriptionStatus::SUSPENDED) {
             $this->status = SubscriptionStatus::ACTIVE;
             $this->paused_at = null;
+            $this->suspended_at = null;
 
             // Restaurar y recalcular next_billing_date
             $metadata = $this->metadata ?? [];
@@ -325,7 +329,7 @@ class ClientSubscription extends BaseModel
         return $this->package->calculatePrice($this->extra_doctors_count);
     }
 
-    protected function calculatePeriodEnd(): Carbon
+    public function calculatePeriodEnd(): Carbon
     {
         $start = $this->current_period_starts_at ?? now();
         $days = $this->package->billing_period_days;

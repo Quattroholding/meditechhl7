@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\SubscriptionStatus;
 use App\Models\Client;
+use App\Models\ClientInvoice;
 use App\Models\ClientSubscription;
 use App\Models\Package;
 use Illuminate\Support\Facades\DB;
@@ -106,15 +107,62 @@ class SubscriptionService
         return $suspended;
     }
 
-    public function reactivate(ClientSubscription $subscription): bool
+    public function reactivate(ClientSubscription $subscription): ?ClientInvoice
     {
-        $reactivated = $subscription->resume();
+        return DB::transaction(function () use ($subscription) {
+            // Check if subscription was suspended for a long time
+            $graceDaysForOldInvoices = config('subscriptions.grace_days_for_old_invoices', 30);
+            $shouldCancelOldInvoices = false;
 
-        if ($reactivated) {
-            Log::info('Subscription reactivated', ['subscription_id' => $subscription->id]);
-        }
+            if ($subscription->suspended_at) {
+                $daysSinceSuspension = now()->diffInDays($subscription->suspended_at);
+                $shouldCancelOldInvoices = $daysSinceSuspension > $graceDaysForOldInvoices;
+            }
 
-        return $reactivated;
+            // Cancel old unpaid invoices if subscription was suspended for too long
+            if ($shouldCancelOldInvoices) {
+                $oldInvoices = $subscription->invoices()
+                    ->whereIn('status', ['pending', 'overdue'])
+                    ->where('due_date', '<', now()->subDays($graceDaysForOldInvoices))
+                    ->get();
+
+                foreach ($oldInvoices as $invoice) {
+                    $invoice->cancel('Factura cancelada automáticamente por reactivación tardía. El cliente no usó el servicio durante el período de suspensión.');
+                    Log::info('Old invoice cancelled during reactivation', [
+                        'subscription_id' => $subscription->id,
+                        'invoice_id' => $invoice->id,
+                        'invoice_due_date' => $invoice->due_date,
+                    ]);
+                }
+            }
+
+            // Reset billing period for new subscription cycle
+            // When reactivating after suspension, start fresh from today
+            $subscription->status = SubscriptionStatus::PENDING_ACTIVATION;
+            $subscription->paused_at = null;
+            $subscription->suspended_at = null;
+            $subscription->current_period_starts_at = now();
+            $subscription->current_period_ends_at = $subscription->calculatePeriodEnd();
+            $subscription->next_billing_date = $subscription->current_period_ends_at;
+
+            // Clear frozen dates from metadata
+            $metadata = $subscription->metadata ?? [];
+            unset($metadata['frozen_next_billing_date']);
+            $subscription->metadata = $metadata;
+            $subscription->save();
+
+            // Generate new invoice for current period starting from today
+            // The subscription will be activated once the invoice is paid (in ClientInvoiceService::markAsPaidIfComplete)
+            $newInvoice = $this->invoiceService->generate($subscription);
+
+            Log::info('Subscription reactivated', [
+                'subscription_id' => $subscription->id,
+                'cancelled_old_invoices' => $shouldCancelOldInvoices,
+                'new_invoice_id' => $newInvoice?->id,
+            ]);
+
+            return $newInvoice;
+        });
     }
 
     public function changePlan(ClientSubscription $subscription, Package $newPackage, bool $prorate = true): ClientSubscription
@@ -265,7 +313,14 @@ class SubscriptionService
             ->get();
 
         $suspendedExpired = ClientSubscription::where('status', SubscriptionStatus::SUSPENDED)
-            ->whereDate('updated_at', '<', today()->subDays($expirationDays))
+            ->where(function ($query) use ($expirationDays) {
+                // Use suspended_at if available, otherwise fallback to updated_at
+                $query->whereDate('suspended_at', '<', today()->subDays($expirationDays))
+                    ->orWhere(function ($q) use ($expirationDays) {
+                        $q->whereNull('suspended_at')
+                            ->whereDate('updated_at', '<', today()->subDays($expirationDays));
+                    });
+            })
             ->get();
 
         $count = 0;

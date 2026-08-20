@@ -110,4 +110,37 @@ class SuscriptionController extends Controller
                 ->with('message.error', 'Error al actualizar el plan: '.$e->getMessage());
         }
     }
+
+    public function reactivate()
+    {
+        $client = auth()->user()->getCurrentClient();
+
+        if (! $client) {
+            abort(403, 'No tiene un cliente asociado');
+        }
+
+        $subscription = ClientSubscription::where('client_id', $client->id)
+            ->latest()
+            ->first();
+
+        if (! $subscription) {
+            return redirect()->route('suscriptions.show')
+                ->with('message.error', 'No tiene una suscripción');
+        }
+
+        try {
+            $newInvoice = $this->subscriptionService->reactivate($subscription);
+
+            if ($newInvoice) {
+                return redirect()->route('suscriptions.invoices.show', $newInvoice->id)
+                    ->with('message.success', '¡Suscripción reactivada exitosamente! Se ha generado una nueva factura para el período actual.');
+            }
+
+            return redirect()->route('suscriptions.show')
+                ->with('message.error', 'No se pudo generar la factura durante la reactivación');
+        } catch (\Exception $e) {
+            return redirect()->route('suscriptions.show')
+                ->with('message.error', 'Error al reactivar la suscripción: '.$e->getMessage());
+        }
+    }
 }
