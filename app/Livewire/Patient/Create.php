@@ -463,8 +463,8 @@ class Create extends Component
         switch ($this->id_type) {
             case 'CC': // Cédula de Ciudadanía: solo números y guiones
                 return '/^[0-9-]+$/';
-            case 'CE': // Cédula Extranjera: solo números y guiones
-                return '/^[0-9-]+$/';
+            case 'CE': // Cédula Extranjera: alfanumérico con guiones (ej: E-X-XXXXXX)
+                return '/^[A-Z0-9-]+$/';
             case 'PA': // Pasaporte: alfanumérico
                 return '/^[A-Z0-9-]{5,20}$/';
             case 'PT': // Permiso Temporal: alfanumérico
@@ -482,7 +482,7 @@ class Create extends Component
             case 'CC':
                 return 'Números y guiones';
             case 'CE':
-                return 'Números y guiones';
+                return 'Ej: E-X-123456';
             case 'PA':
                 return 'Ej: PA1234567';
             case 'PT':
