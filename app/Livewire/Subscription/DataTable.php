@@ -4,6 +4,7 @@ namespace App\Livewire\Subscription;
 
 use App\Models\ClientSubscription;
 use App\Models\StatusHistoryLog;
+use App\Services\SubscriptionService;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -75,6 +76,30 @@ class DataTable extends Component
         $this->showHistoryModal = false;
         $this->selectedSubscription = null;
         $this->statusHistory = [];
+    }
+
+    public function reactivateSubscription($subscriptionId, SubscriptionService $subscriptionService)
+    {
+        try {
+            $subscription = ClientSubscription::findOrFail($subscriptionId);
+
+            if ($subscription->status->value !== 'suspended') {
+                $this->dispatch('notify', type: 'error', message: 'Solo se pueden reactivar suscripciones suspendidas');
+
+                return;
+            }
+
+            $newInvoice = $subscriptionService->reactivate($subscription);
+
+            if ($newInvoice) {
+                $this->dispatch('notify', type: 'success', message: '¡Suscripción reactivada! Se ha generado factura nueva.');
+                $this->resetPage();
+            } else {
+                $this->dispatch('notify', type: 'error', message: 'Error al generar factura durante reactivación');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('notify', type: 'error', message: 'Error: '.$e->getMessage());
+        }
     }
 
     public function render()

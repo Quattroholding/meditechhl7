@@ -125,11 +125,20 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <button wire:click="showHistory({{ $subscription->id }})"
-                                                    class="btn btn-info btn-sm"
-                                                    title="Ver Historial de Estados">
-                                                <i class="fa-solid fa-history"></i>
-                                            </button>
+                                            @if($subscription->status->value === 'suspended')
+                                                <button wire:click="reactivateSubscription({{ $subscription->id }})"
+                                                        class="btn btn-success btn-sm"
+                                                        title="Reactivar Suscripción"
+                                                        wire:confirm="¿Deseas reactivar esta suscripción? Se cancelarán las facturas vencidas y se generará una nueva.">
+                                                    <i class="fa-solid fa-redo"></i> Reactivar
+                                                </button>
+                                            @else
+                                                <button wire:click="showHistory({{ $subscription->id }})"
+                                                        class="btn btn-info btn-sm"
+                                                        title="Ver Historial de Estados">
+                                                    <i class="fa-solid fa-history"></i>
+                                                </button>
+                                            @endif
                                             @can('subscriptions.view')
                                                 <a href="{{ route('suscriptions.show', $subscription->id) }}"
                                                    class="btn btn-primary btn-sm"
