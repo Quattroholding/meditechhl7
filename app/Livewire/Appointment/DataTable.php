@@ -3,6 +3,7 @@
 namespace App\Livewire\Appointment;
 
 use App\Models\Appointment;
+use App\Models\Client;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -29,6 +30,8 @@ class DataTable extends Component
 
     public $methodFilter = '';
 
+    public $clientFilter = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
     ];
@@ -39,6 +42,11 @@ class DataTable extends Component
     }
 
     public function updatedMethodFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedClientFilter()
     {
         $this->resetPage();
     }
@@ -131,6 +139,9 @@ class DataTable extends Component
             ->when(! empty($this->methodFilter), function ($q) {
                 $q->where('status', $this->methodFilter);
             })
+            ->when(! empty($this->clientFilter), function ($q) {
+                $q->where('client_id', $this->clientFilter);
+            })
             ->when(! empty($this->limit), function ($q) {
                 $q->take($this->limit);
             })
@@ -143,8 +154,12 @@ class DataTable extends Component
     {
         try {
             $data = $this->data;
+            $clients = auth()->user()->hasRole('admin') ? Client::all() : [];
 
-            return view('livewire.appointment.data-table', ['data' => $data]);
+            return view('livewire.appointment.data-table', [
+                'data' => $data,
+                'clients' => $clients,
+            ]);
         } catch (\Exception $e) {
             // Log the error for debugging
             \Log::error('Invoice DataTable Error: '.$e->getMessage());

@@ -11,6 +11,17 @@
                                     <label>{{__('consultation.data_table.status')}}</label>
                                     <x-select-input wire:model.live="methodFilter" name="metodo" :options="\App\Enums\AppointmentStatusEnum::cases()" :selected="[]" class="form-select"/>
                                 </div>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <div class="input-block local-forms mb-0">
+                                        <label>{{__('client.title')}}</label>
+                                        <select wire:model.live="clientFilter" name="client" class="form-select">
+                                            <option value="">{{__('generic.all')}}</option>
+                                            @foreach($clients as $client)
+                                                <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                             </div>
                         @endslot
                         @slot('title')

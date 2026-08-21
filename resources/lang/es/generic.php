@@ -40,4 +40,5 @@ return [
     'there_are'=>'Hay',
     'male'=>'Masculino',
     'female'=>'Femenino',
+    'all'=>'Todos',
 ];
