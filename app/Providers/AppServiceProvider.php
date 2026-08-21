@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecordUserLogin;
+use App\Listeners\RecordUserLogout;
 use App\Listeners\SaveEmailToSentItems;
 use App\Models\Appointment;
 use App\Models\ClientInvoice;
@@ -25,6 +27,8 @@ use App\Policies\AppointmentPolicy;
 use App\Policies\ConsultationPolicy;
 use App\Policies\PatientPolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
@@ -75,6 +79,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(Encounter::class, ConsultationPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+
+        // Registrar listeners para auditoría de logins
+        Event::listen(Login::class, RecordUserLogin::class);
+        Event::listen(Logout::class, RecordUserLogout::class);
 
         // DESHABILITADO: Office 365 relay ya guarda automáticamente en Sent Items con headers X-
         // Registrar listener para guardar correos en Sent Items manualmente

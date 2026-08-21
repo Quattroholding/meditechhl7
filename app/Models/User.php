@@ -196,6 +196,21 @@ class User extends Authenticatable
         return $this->hasOne(Session::class)->orderBy('last_activity', 'desc');
     }
 
+    public function logins()
+    {
+        return $this->hasMany(UserLogin::class);
+    }
+
+    public function lastLogin()
+    {
+        return $this->hasOne(UserLogin::class)->orderBy('login_at', 'desc');
+    }
+
+    public function getLastLoginAtAttribute(): ?string
+    {
+        return $this->logins()->latest('login_at')->first()?->login_at?->format('Y-m-d H:i:s');
+    }
+
     public function getProfileNameAttribute()
     {
 
