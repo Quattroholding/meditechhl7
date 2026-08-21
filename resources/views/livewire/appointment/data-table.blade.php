@@ -22,6 +22,16 @@
                                         </select>
                                     </div>
                                 @endif
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{__('generic.date')}}</label>
+                                    <select wire:model.live="dateFilter" name="date" class="form-select">
+                                        <option value="">{{__('generic.all')}}</option>
+                                        <option value="today">{{__('generic.today')}}</option>
+                                        <option value="tomorrow">{{__('generic.tomorrow')}}</option>
+                                        <option value="this_week">{{__('generic.this_week')}}</option>
+                                        <option value="this_month">{{__('generic.this_month')}}</option>
+                                    </select>
+                                </div>
                             </div>
                         @endslot
                         @slot('title')

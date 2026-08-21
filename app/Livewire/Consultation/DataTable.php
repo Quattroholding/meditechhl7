@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Consultation;
 
+use App\Models\Client;
 use App\Models\Encounter;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Livewire\Component;
@@ -48,6 +50,10 @@ class DataTable extends Component
 
     public $practitioner_id;
 
+    public $clientFilter = '';
+
+    public $dateFilter = '';
+
     public function mount($pagination = 10, $sortField = 'encounters.id', $sortDirection = 'desc', $routename = '', $title = '')
     {
         $this->class = new Encounter;
@@ -85,6 +91,30 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatedClientFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDateFilter()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Obtener rango de fechas según el filtro seleccionado
+     */
+    private function getDateRange(): ?array
+    {
+        return match ($this->dateFilter) {
+            'today' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'tomorrow' => [Carbon::tomorrow(), Carbon::tomorrow()->endOfDay()],
+            'this_week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'this_month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+            default => null,
+        };
+    }
+
     public function render(Request $request)
     {
         $data = Encounter::selectRaw('encounters.*')
@@ -114,10 +144,24 @@ class DataTable extends Component
             ->when(! empty($this->practitioner_id), function ($q) use ($request) {
                 $q->where('encounters.practitioner_id', $request->practitioner_id);
             })
+            ->when(! empty($this->clientFilter), function ($q) {
+                $q->where('appointments.client_id', $this->clientFilter);
+            })
+            ->when(! empty($this->dateFilter), function ($q) {
+                $dateRange = $this->getDateRange();
+                if ($dateRange) {
+                    $q->whereBetween('encounters.start', $dateRange);
+                }
+            })
             ->whereNull('appointments.deleted_at')
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->pagination);
 
-        return view('livewire.consultation.data-table', ['data' => $data]);
+        $clients = auth()->user()->hasRole('admin') ? Client::all() : [];
+
+        return view('livewire.consultation.data-table', [
+            'data' => $data,
+            'clients' => $clients,
+        ]);
     }
 }

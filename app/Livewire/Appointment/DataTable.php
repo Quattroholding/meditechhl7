@@ -32,6 +32,8 @@ class DataTable extends Component
 
     public $clientFilter = '';
 
+    public $dateFilter = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
     ];
@@ -51,6 +53,11 @@ class DataTable extends Component
         $this->resetPage();
     }
 
+    public function updatedDateFilter()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -66,6 +73,20 @@ class DataTable extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    /**
+     * Obtener rango de fechas según el filtro seleccionado
+     */
+    private function getDateRange(): ?array
+    {
+        return match ($this->dateFilter) {
+            'today' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'tomorrow' => [Carbon::tomorrow(), Carbon::tomorrow()->endOfDay()],
+            'this_week' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'this_month' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+            default => null,
+        };
     }
 
     /**
@@ -141,6 +162,12 @@ class DataTable extends Component
             })
             ->when(! empty($this->clientFilter), function ($q) {
                 $q->where('client_id', $this->clientFilter);
+            })
+            ->when(! empty($this->dateFilter), function ($q) {
+                $dateRange = $this->getDateRange();
+                if ($dateRange) {
+                    $q->whereBetween('start', $dateRange);
+                }
             })
             ->when(! empty($this->limit), function ($q) {
                 $q->take($this->limit);

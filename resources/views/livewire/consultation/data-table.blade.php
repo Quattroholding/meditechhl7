@@ -11,6 +11,27 @@
                                     <label>{{__('consultation.data_table.status')}}</label>
                                     <x-select-input wire:model.live="methodFilter" name="metodo" :options="['in-progress'=>__('consultation.data_table.in_progress'),'finished'=>__('consultation.data_table.finished')]" :selected="[]" class="form-select"/>
                                 </div>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <div class="input-block local-forms mb-0">
+                                        <label>{{__('client.title')}}</label>
+                                        <select wire:model.live="clientFilter" name="client" class="form-select">
+                                            <option value="">{{__('generic.all')}}</option>
+                                            @foreach($clients as $client)
+                                                <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+                                <div class="input-block local-forms mb-0">
+                                    <label>{{__('generic.date')}}</label>
+                                    <select wire:model.live="dateFilter" name="date" class="form-select">
+                                        <option value="">{{__('generic.all')}}</option>
+                                        <option value="today">{{__('generic.today')}}</option>
+                                        <option value="tomorrow">{{__('generic.tomorrow')}}</option>
+                                        <option value="this_week">{{__('generic.this_week')}}</option>
+                                        <option value="this_month">{{__('generic.this_month')}}</option>
+                                    </select>
+                                </div>
                             </div>
                         @endslot
                     @endcomponent
