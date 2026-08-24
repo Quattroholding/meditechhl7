@@ -95,6 +95,7 @@ return [
     // Transiciones automáticas
     'auto_completed_reason' => 'Request automatically completed upon uploading all results',
     'auto_active_reason' => 'Request automatically activated upon creation',
+    'result_uploaded' => 'Request completed upon uploading result',
 
     // Valores por defecto
     'no_data' => '-',

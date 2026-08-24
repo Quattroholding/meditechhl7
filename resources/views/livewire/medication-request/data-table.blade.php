@@ -116,10 +116,13 @@
                                                             <th>#</th>
                                                             <th>Medicamento</th>
                                                             <th>Dosis</th>
+                                                            {{--}}
                                                             <th>Vía</th>
                                                             <th>Frecuencia</th>
                                                             <th>Duración</th>
                                                             <th>Notas</th>
+
+                                                            {{--}}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -145,6 +148,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>{{ $medicationRequest->dosage_text ?? 'N/A' }}</td>
+                                                                {{--}}
                                                                 <td>{{ $medicationRequest->route ?? 'N/A' }}</td>
                                                                 <td>{{ $medicationRequest->frequency ?? 'N/A' }}</td>
                                                                 <td>
@@ -167,6 +171,7 @@
                                                                         <span class="text-muted">-</span>
                                                                     @endif
                                                                 </td>
+                                                                {{--}}
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

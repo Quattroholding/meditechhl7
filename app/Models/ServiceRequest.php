@@ -133,15 +133,14 @@ class ServiceRequest extends BaseModel
 
         // Registrar en el historial
         StatusHistoryLog::create([
-            'model_type' => self::class,
-            'model_id' => $this->id,
-            'field_name' => 'status',
-            'old_value' => $oldStatus,
-            'new_value' => $newStatus,
-            'reason' => $reason,
+            'table_name' => $this->getTable(),
+            'model_name' => self::class,
+            'record_id' => $this->id,
+            'old_status' => $oldStatus,
+            'new_status' => $newStatus,
+            'observation' => $reason,
             'change_type' => $changeType,
             'user_id' => $userId ?: Auth::id(),
-            'changed_at' => now(),
         ]);
 
         // Actualizar el estado

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class Practitioner extends BaseModel
 {
@@ -266,6 +267,21 @@ class Practitioner extends BaseModel
     {
         return $query->whereHas('user.clients.subscriptions', function ($q) {
             $q->activeOrInGracePeriod();
+        });
+    }
+
+    public function scopeWithActiveSubscriptionNoClientScope($query)
+    {
+        return $query->whereExists(function ($subquery) {
+            $subquery->select(DB::raw(1))
+                ->from('user_clients')
+                ->whereColumn('user_clients.user_id', 'practitioners.user_id')
+                ->whereExists(function ($clientSubquery) {
+                    $clientSubquery->select(DB::raw(1))
+                        ->from('client_subscriptions')
+                        ->whereColumn('client_subscriptions.client_id', 'user_clients.client_id')
+                        ->whereIn('client_subscriptions.status', ['active', 'trial', 'past_due']);
+                });
         });
     }
 

@@ -192,17 +192,20 @@ class UploadResult extends Component
             ]);
             \Log::info('ServiceRequestResult creado exitosamente');
 
-            // Intentar cambio automático de estado
+            // Cambiar estado del ServiceRequest a completed
             try {
-                \Log::info('Intentando cambio automático de estado');
-                $this->serviceRequest->autoChangeStatus(
-                    __('service_request.auto_completed_reason'),
-                    Auth::id()
-                );
-                \Log::info('Cambio automático de estado completado');
+                \Log::info('Cambiando estado a completed');
+                if ($this->serviceRequest->isActive()) {
+                    $this->serviceRequest->changeStatusTo(
+                        'completed',
+                        __('service_request.result_uploaded'),
+                        'automatic',
+                        Auth::id()
+                    );
+                }
+                \Log::info('Estado cambiado a completed');
             } catch (\Exception $e) {
-                // Si falla el cambio automático, continuar sin error
-                \Log::warning('Auto status change failed: '.$e->getMessage());
+                \Log::warning('Status change to completed failed: '.$e->getMessage());
             }
 
             \Log::info('Despachando eventos');
