@@ -188,6 +188,9 @@ class SupplyRequests extends Component
         // Refresh list
         $this->getSupplyRequestsProperty();
 
+        // Emit event to update section checkmark
+        $this->dispatch('sectionDataSaved', sectionId: $this->section_id);
+
         session()->flash('supply-success', 'Suministro agregado exitosamente.');
     }
 
@@ -205,6 +208,9 @@ class SupplyRequests extends Component
 
             // Refresh list
             $this->getSupplyRequestsProperty();
+
+            // Emit event to update section checkmark
+            $this->dispatch('sectionDataSaved', sectionId: $this->section_id);
 
             session()->flash('supply-success', 'Suministro eliminado.');
         }

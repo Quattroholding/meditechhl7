@@ -26,7 +26,7 @@
 
         <div class="grid-container" id="module-grid">
             @foreach($encounter_sections as $section)
-            <div class="card {{ $section->obligatory ? 'card-required' : '' }}"  data-section-id="{{ $section->id }}"
+            <div class="card {{ in_array($section->id, $completedSections) ? 'completed' : '' }} {{ $section->obligatory ? 'card-required' : '' }}"  data-section-id="{{ $section->id }}"
                  data-required="{{ $section->obligatory ? 'true' : 'false' }}"
                  onclick="openSectionModal('{{ $section->id }}', '{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}', '{{ $section->icon ?? '📄' }}')"
                  role="button"
@@ -34,7 +34,13 @@
                  aria-label="{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}">
                 <div class="card-icon">{{ $section->icon ?? '📄' }}</div>
                 <div class="card-title">   {{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}</div>
-                @if($section->obligatory)
+                @if(in_array($section->id, $completedSections))
+                    <div class="card-completed-badge">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                @elseif($section->obligatory)
                     <div class="card-required-badge">
                         <i class="fas fa-exclamation-circle"></i> Requerido
                     </div>

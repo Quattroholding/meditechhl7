@@ -74,6 +74,9 @@ class Reason extends Component
 
             $this->dispatch('saved-'.$key);
 
+            // Emitir evento al componente padre para actualizar el checkmark de la sección completada
+            $this->dispatch('sectionDataSaved', sectionId: $this->section_id);
+
             // Emitir evento al componente padre para calcular si el button finished se debe habilitar
             $this->dispatch('findFinishedButtonStatus');
         } catch (\Exception $e) {

@@ -28,6 +28,8 @@ class Create extends Component
 
     public $completedSections = [];
 
+    protected $listeners = ['sectionDataSaved' => 'getCompletedSectionsStatus'];
+
     public function mount()
     {
         $encounter_sections_user = EncounterTemplate::whereUserId(Auth::getUser()->id)->get();
@@ -94,10 +96,10 @@ class Create extends Component
             'consultation.vital-signs' => fn () => $this->encounter->vitalSigns()->count() > 0,
             'consultation.physical-exam' => fn () => $this->encounter->physicalExams()->count() > 0,
             'consultation.medication-requests' => fn () => $this->checkMedicationRequestsHasData(),
-            'consultation.procedures' => fn () => $this->encounter->procedures()->count() > 0,
             'consultation.referral' => fn () => $this->checkReferralsHasData(),
-            'consultation.general-note' => fn () => ! empty($this->encounter->general_note),
+            'consultation.general_note' => fn () => ! empty($this->encounter->general_note),
             'consultation.services' => fn () => $this->checkServicesHasData(),
+            'consultation.supply-requests' => fn () => $this->encounter->supplyRequests()->count() > 0,
         ];
 
         // Si existe una verificación para este componente, ejecutarla
