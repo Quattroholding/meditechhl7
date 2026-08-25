@@ -11,7 +11,7 @@
                 @endslot
             @endcomponent
             <!-- /Page Header -->
-             <livewire:user.profile/>
+             <livewire:user.profile :userId="$user->id"/>
         </div>
     </div>
 </x-app-layout>

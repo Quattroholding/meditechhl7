@@ -4,6 +4,7 @@ namespace App\Livewire\User;
 
 use App\Models\Client;
 use App\Models\TwoFactorAuditLog;
+use App\Models\User;
 use App\Notifications\TwoFactorDisabledNotification;
 use App\Notifications\TwoFactorEnabledNotification;
 use App\Services\FileService;
@@ -22,6 +23,8 @@ class Profile extends Component
     use WithFileUploads;
 
     public $data;
+
+    public $userId;
 
     public $client_selected;
 
@@ -51,7 +54,7 @@ class Profile extends Component
 
     public function mount()
     {
-        $this->data = auth()->user();
+        $this->data = $this->userId ? User::find($this->userId) : auth()->user();
         $this->client_selected = $this->data->clients()->pluck('client_id')->toArray();
         $this->clients = Client::pluck('name', 'id')->toArray();
 
