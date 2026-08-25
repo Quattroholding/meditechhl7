@@ -788,12 +788,13 @@
                                 @if($appModel->encounter) <i class="fa fa-edit"></i> {{__('Editar Consulta')}} @else ✏️ {{__(' Llenar Consulta')}}@endif
                             </a>
                         @endif
-
+                        {{--}}
                         @if(auth()->user()->can('cancelled',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'cancelled')"  class="action-btn btn-cancel">
                                 ❌ Cancelar
                             </button>
                         @endif
+                        {{--}}
 
                         @if(auth()->user()->can('noshow',$appModel))
                             <button wire:click.stop="updateStatus({{ $appointment['id'] }}, 'noshow')"  class="action-btn btn-cancel">
@@ -829,6 +830,7 @@
             @endcan
         </div>
     @endif
+
     <!-- Script Alpine.js para manejo del tiempo -->
     <script>
         function timelineManager() {
@@ -844,7 +846,7 @@
                 autoUpdateEnabled: @entangle('autoUpdateEnabled'),
 
                 init() {
-                    console.log('Timeline Manager initialized');
+                    //console.log('Timeline Manager initialized');
 
                     // Esperar a que el DOM esté listo
                     this.$nextTick(() => {
@@ -854,7 +856,7 @@
 
                     // Escuchar eventos de Livewire
                     this.$wire.on('timePositionUpdated', (data) => {
-                        console.log('Time position update received:', data);
+                        //console.log('Time position update received:', data);
                         this.handleTimeUpdate(data);
                     });
 
@@ -933,7 +935,7 @@
 
                         // Actualizar posición cada 30 segundos
                         if (new Date().getSeconds() % 30 === 0) {
-                            console.log('Triggering server time position update');
+                            //console.log('Triggering server time position update');
                             this.$wire.call('refreshTimePosition');
                         }
                     }, 1000);
@@ -950,14 +952,14 @@
                 },
 
                 handleTimeUpdate(data) {
-                    console.log('Handling time update:', data);
+                    //console.log('Handling time update:', data);
 
                     this.isUpdating = true;
 
                     // Actualizar posición con los datos del servidor
                     if (data.position !== undefined && data.position !== null) {
                         this.timePosition = parseFloat(data.position);
-                        console.log('Position updated from server:', this.timePosition);
+                        //console.log('Position updated from server:', this.timePosition);
                     }
 
                     // Actualizar tiempo
@@ -968,7 +970,7 @@
 
                     // Debug info
                     if (data.debug) {
-                        console.log('Debug info:', data.debug);
+                        //console.log('Debug info:', data.debug);
                     }
 
                     // Remover indicador de actualización

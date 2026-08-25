@@ -90,7 +90,10 @@ class Status extends Component
         );
 
         if ($current_status == 'proposed' && $newStatus == 'booked') {
-            $this->appointment->notifyPatientAboutConfirmation();
+            $appointment = $this->appointment;
+            dispatch(function () use ($appointment) {
+                $appointment->notifyPatientAboutConfirmation();
+            })->onQueue('default');
 
             $this->dispatch('showToastr'.$this->appointment_id, [
                 'type' => 'success',
@@ -157,8 +160,11 @@ class Status extends Component
             ? $this->customCancellationReason
             : AppointmentCancelledReason::{$this->cancellationReason}->value;
 
-        // Enviar notificación con la razón
-        $this->appointment->notifyPatientAboutCancellation($finalReason);
+        // Enviar notificación con la razón de forma asincrónica
+        $appointment = $this->appointment;
+        dispatch(function () use ($appointment, $finalReason) {
+            $appointment->notifyPatientAboutCancellation($finalReason);
+        })->onQueue('default');
 
         // Emitir evento para otros usuarios
         $this->dispatch('appointmentStatusChanged',

@@ -145,6 +145,12 @@
         }
 
         document.addEventListener('livewire:initialized', () => {
+            // Escuchar evento global-show-manual-assignment desde Calendar
+            Livewire.on('global-show-manual-assignment', ({ slotId }) => {
+                console.log('ManualSlotAssignment received global-show-manual-assignment event', { slotId });
+                @this.show(slotId);
+            });
+
             Livewire.on('showToastrManualSlotassigment', (event) => {
                 showManualSlotToastr(event);
             });

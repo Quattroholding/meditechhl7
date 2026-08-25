@@ -311,7 +311,17 @@ class Calendar extends Component
                     $freedSlot = $waitlistService->registerFreedSlot($appointment, $source);
 
                     // Mostrar modal de asignación manual si está configurado para ello
-                    if ($freedSlot && ! $appointment->client->getSettings('waitlist_auto_assign', false)) {
+                    $autoAssignEnabled = $appointment->client->getSettings('waitlist_auto_assign', false);
+                    Log::info('show-manual-assignment decision en Calendar::updateStatus', [
+                        'freedSlot' => $freedSlot?->id,
+                        'autoAssignEnabled' => $autoAssignEnabled,
+                        'shouldShowModal' => $freedSlot && ! $autoAssignEnabled,
+                    ]);
+
+                    if ($freedSlot && ! $autoAssignEnabled) {
+                        Log::info('Dispatching show-manual-assignment event from updateStatus', [
+                            'slotId' => $freedSlot->id,
+                        ]);
                         $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
                     }
                 }
@@ -324,12 +334,14 @@ class Calendar extends Component
                 // $this->loadStats();
 
                 if ($current_status == 'proposed' && $newStatus == 'booked') {
-                    $appointment->notifyPatientAboutConfirmation();
+                    dispatch(function () use ($appointment) {
+                        $appointment->notifyPatientAboutConfirmation();
+                    })->onQueue('default');
                 }
 
                 if ($newStatus == 'checked-in') {
 
-                    if (auth()->user()->hasAnyRole(['admin', 'doctor','asistente medico']) or
+                    if (auth()->user()->hasAnyRole(['admin', 'doctor', 'asistente medico']) or
                         (auth()->user()->practitioner &&
                             ($appointment->practitioner_id == auth()->user()->practitioner()->user_id or $appointment->assisted_by == auth()->user()->id)
                         )) {
@@ -373,11 +385,10 @@ class Calendar extends Component
 
             if ($appointment) {
                 $oldStatus = $appointment->status;
+                $freedSlot = null;
+                $autoAssignEnabled = false;
 
-                $appointment->status = 'cancelled';
-                $appointment->save();
-
-                // Registrar espacio liberado si la cita estaba confirmada
+                // Registrar espacio liberado si la cita estaba confirmada (ANTES de cambiar el status)
                 if (in_array($oldStatus->value, ['booked', 'confirm', 'arrived'])) {
 
                     $waitlistService = app(WaitlistService::class);
@@ -393,18 +404,22 @@ class Calendar extends Component
                     ]);
 
                     // Mostrar modal de asignación manual si está configurado para ello
-                    if ($freedSlot && ! $appointment->client->getSettings('waitlist_auto_assign', false)) {
-                        $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
-                    }
+                    $autoAssignEnabled = $appointment->client->getSettings('waitlist_auto_assign', false);
+                    Log::info('show-manual-assignment decision en Calendar::confirmCancellation', [
+                        'freedSlot' => $freedSlot?->id,
+                        'autoAssignEnabled' => $autoAssignEnabled,
+                        'shouldShowModal' => $freedSlot && ! $autoAssignEnabled,
+                    ]);
                 }
+
+                // Ahora cambiar el status a cancelled
+                $appointment->status = 'cancelled';
+                $appointment->save();
 
                 // Determinar la razón final a enviar
                 $finalReason = $this->cancellationReason === 'OTHER'
                     ? $this->customCancellationReason
                     : AppointmentCancelledReason::{$this->cancellationReason}->value;
-
-                // Enviar notificación con la razón
-                $appointment->notifyPatientAboutCancellation($finalReason);
 
                 // session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
                 $this->loadAppointments();
@@ -414,6 +429,19 @@ class Calendar extends Component
                     message: '¡Cita cancelada, se envió notificación al paciente!',
                     appointment_id: $this->cancellingAppointmentId
                 );
+
+                // Mostrar modal de asignación manual AL FINAL, después de loadAppointments()
+                if ($freedSlot && ! $autoAssignEnabled) {
+                    Log::info('Dispatching show-manual-assignment event from confirmCancellation', [
+                        'slotId' => $freedSlot->id,
+                    ]);
+                    $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
+                }
+
+                // Enviar notificación con la razón de forma asincrónica para no bloquear la UI
+                dispatch(function () use ($appointment, $finalReason) {
+                    $appointment->notifyPatientAboutCancellation($finalReason);
+                })->onQueue('default');
             }
         } catch (\Exception $e) {
             Log::error('Error cancelando cita en Calendar::confirmCancellation', [

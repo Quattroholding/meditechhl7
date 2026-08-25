@@ -264,6 +264,13 @@
                     }
                 });
             });
+
+            // Reemitir show-manual-assignment globalmente para que ManualSlotAssignment lo reciba
+            Livewire.on('show-manual-assignment', ({ slotId }) => {
+                console.log('Calendar received show-manual-assignment event, reemitting globally', { slotId });
+                // Usar Livewire.dispatch() para emitir globalmente
+                Livewire.dispatch('global-show-manual-assignment', { slotId });
+            });
         });
         </script>
 </div>
