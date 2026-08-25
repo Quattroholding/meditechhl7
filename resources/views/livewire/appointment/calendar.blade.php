@@ -271,6 +271,12 @@
                 // Usar Livewire.dispatch() para emitir globalmente
                 Livewire.dispatch('global-show-manual-assignment', { slotId });
             });
+
+            // Escuchar evento global-appointment-assigned desde ManualSlotAssignment
+            Livewire.on('global-appointment-assigned', () => {
+                console.log('Calendar: received global-appointment-assigned event, reloading appointments');
+                @this.loadAppointments();
+            });
         });
         </script>
 </div>

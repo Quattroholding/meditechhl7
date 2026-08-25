@@ -151,6 +151,12 @@
                 @this.show(slotId);
             });
 
+            // Reemitir appointment-assigned globalmente para que Calendar lo reciba
+            Livewire.on('appointment-assigned', () => {
+                console.log('ManualSlotAssignment: appointment-assigned event, reemitting globally');
+                Livewire.dispatch('global-appointment-assigned');
+            });
+
             Livewire.on('showToastrManualSlotassigment', (event) => {
                 showManualSlotToastr(event);
             });
