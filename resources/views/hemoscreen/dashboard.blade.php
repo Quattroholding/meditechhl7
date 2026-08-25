@@ -34,7 +34,7 @@
                         </a>
                     </div>
                 </div>
-                {{--}}
+
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                     <div class="flex items-center justify-between flex-col sm:flex-row gap-4">
                         <div>
@@ -55,7 +55,6 @@
                         </a>
                     </div>
                 </div>
-                {{--}}
             </div>
 
             @livewire(\App\Livewire\HemoScreen\StandaloneDashboard::class)

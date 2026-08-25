@@ -492,7 +492,7 @@
                 </a>
 
             </div>
-            <p style="margin: 20px 0;"><a href="{{route('hemoscreen.config',array('hemoscreen'))}}"  target="_blank">Ver guia de instalación</a> </p>
+            <p style="margin: 20px 0;"><a href="{{route('hemoscreen.gateway-config',array('hemoscreen'))}}"  target="_blank">Ver guia de instalación</a> </p>
             <div class="mt-8 text-white text-sm">
                 <p>¿Olvidaste tu contraseña? <a href="{{ route('forgot-password') }}" class="text-yellow-300 font-bold underline hover:no-underline">Recupérala aquí</a></p>
             </div>
