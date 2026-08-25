@@ -1032,7 +1032,7 @@ body {
                     <p>Una vez hayas seleccionado tu plan desde el landing page, serás redirigido al formulario de registro con tu plan pre-seleccionado:</p>
 
                     <div>
-                        <img src="{{ asset('images/tutorial/register/regform.png') }}" alt="Formulario de registro" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        <img src="{{ asset('images/tutorial/register/register_form.png') }}" alt="Formulario de registro" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     </div>
 
                     <div class="info-box info-note">
