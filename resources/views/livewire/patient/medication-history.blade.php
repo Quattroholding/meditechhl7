@@ -48,7 +48,7 @@
                                             {{ $encounter->practitioner->name ?? __('patient.info.not_specified') }}
                                         </small>
                                     </div>
-                                    <button class="btn btn-outline-primary btn-sm"
+                                    <button class="btn btn-outline-primary btn-sm" style="color:#fff;"
                                             wire:click="selectEntireRecipe({{ $encounterId }})">
                                         @if($selectedEncounterId === $encounterId && !empty(array_intersect($encounterData['medications']->pluck('id')->toArray(), $selectedMedicationIds)))
                                             <i class="fas fa-check-square me-1"></i>{{ __('patient.medication_history.deselect_recipe') }}
