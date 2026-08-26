@@ -412,14 +412,17 @@ class Calendar extends Component
                     ]);
                 }
 
+                // Determinar la razón final
+                $finalReason = $this->cancellationReason === 'OTHER'
+                    ? $this->customCancellationReason
+                    : AppointmentCancelledReason::{$this->cancellationReason}->value;
+
                 // Ahora cambiar el status a cancelled
                 $appointment->status = 'cancelled';
                 $appointment->save();
 
-                // Determinar la razón final a enviar
-                $finalReason = $this->cancellationReason === 'OTHER'
-                    ? $this->customCancellationReason
-                    : AppointmentCancelledReason::{$this->cancellationReason}->value;
+                // Guardar la razón de cancelación en el registro de historial de status
+                $appointment->statusHistory()->first()?->update(['observation' => $finalReason]);
 
                 // session()->flash('message.success', '¡Cita cancelada, se envió notificación al paciente!');
                 $this->loadAppointments();

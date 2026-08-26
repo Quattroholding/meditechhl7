@@ -1184,6 +1184,7 @@
                             <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
                             <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
                             <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span>
                             {{--}}<span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span>{{--}}
                         </div>
                     </div>
@@ -1242,7 +1243,7 @@
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></td>
                             <td data-label="Descripcion">Cita reservada en el sistema</td>
-                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                            <td data-label="Acciones Disponibles">Cancelar, Editar , Registrar Llegada y No asistió (Si ya paso la hora de la cita)</td>
                         </tr>
                         {{--}}<tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></td>
@@ -1252,33 +1253,33 @@
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span></td>
                             <td data-label="Descripcion">Paciente está en la sala de espera</td>
-                            <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
+                            <td data-label="Acciones Disponibles">Iniciar consulta y Cancelar</td>
                         </tr>
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span></td>
                             <td data-label="Descripcion">La consulta está en progreso</td>
-                            <td data-label="Acciones Disponibles">Completar consulta</td>
+                            <td data-label="Acciones Disponibles">Completar consulta , Ver Detalle Consulta</td>
                         </tr>
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span></td>
                             <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
-                            <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
+                            <td data-label="Acciones Disponibles">Ver detalles/td>
                         </tr>
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></td>
                             <td data-label="Descripcion">La cita fue cancelada</td>
-                            <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
+                            <td data-label="Acciones Disponibles">No Aplica</td>
                         </tr>
                         <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span></td>
                             <td data-label="Descripcion">El paciente no se presentó a la cita</td>
-                            <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
+                            <td data-label="Acciones Disponibles">No Aplica</td>
                         </tr>
-                        {{--}}<tr>
+                        <tr>
                             <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span></td>
                             <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
-                            <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
-                        </tr>{{--}}
+                            <td data-label="Acciones Disponibles">No Aplica</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -1655,14 +1656,14 @@
                     <small>Recomendado: 800x500px - Mostrar el efecto visual de arrastrar una cita en el calendario</small>
                 </div> -->
 
-                <h3>Eliminar una Cita</h3>
-                <p>Para eliminar una cita:</p>
+                <h3>Cancelar una Cita</h3>
+                <p>Para cancelar una cita:</p>
                 <ol>
                     <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
-                    <li>Clic en <strong>"Borrar"</strong></li>
-                    <li>Ingrese el motivo de cancelación (opcional pero recomendado y sólo para usuarios con rol <strong>"Paciente"</strong>)</li>
+                    <li>Clic en <strong>"Cancelar"</strong></li>
+                    <li>Ingrese el motivo de cancelación</li>
                     <li>Confirme la cancelación</li>
-                    <li>Aparecerá un mensaje el parte superior derecha confirmando que la cita se ha elimnado exitosamente</li>
+                    <li>Aparecerá un mensaje el parte superior derecha confirmando que la cita se ha cancelado exitosamente</li>
                 </ol>
 
                 <div class="info-box danger">
@@ -1707,7 +1708,7 @@
                 </div>
 
                 <h3>Mensaje de Confirmación</h3>
-                <p>Se le enviará al paciente un mensaje vía WhatsApp, 2 horas antes de la cita programada como recordatorio para que confirme o cancele la cita.</p>
+                <p>Se le enviará al paciente un mensaje vía WhatsApp <strong> si existe una comunicacion previa entre el paciente y el whatsapp de SAMI </strong>, 2 horas antes de la cita programada como recordatorio para que confirme o cancele la cita.</p>
                 <!--<ol>
                     <li>El sistema enviará el mensaje al número registrado del paciente</li>
                 </ol> -->
@@ -1719,7 +1720,7 @@
                 <h3>Mensajes Interactivos</h3>
                 <p>Los pacientes pueden interactuar con los mensajes de WhatsApp para:</p>
                 <ul>
-                    <li><strong>Confirmar asistencia:</strong> El paciente responde "Confirmar" y la cita cambia automáticamente a estado <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></li>
+                    <li><strong>Confirmar asistencia:</strong> El paciente responde "Confirmar" y la cita cambia automáticamente a estado <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span></li>
                     <li><strong>Cancelar cita:</strong> El paciente responde "Cancelar" y la cita se actualiza a estado <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></li>
                     <li><strong>Solicitar reagendamiento:</strong> El paciente puede solicitar un nuevo horario</li>
                 </ul>
@@ -1746,7 +1747,7 @@
                 <ul>
                     <li><strong>Búsqueda:</strong> Buscar por nombre de paciente o doctor </li>
                     <!--<li><strong>Filtros avanzados:</strong> Por fecha, estado, sucursal, doctor</li>-->
-                    <li><strong>Ordenamiento:</strong> Por fecha, paciente, doctor, estado</li>
+                    <li><strong>Ordenamiento:</strong> Id , Por fecha,  estado y tipo</li>
                     <li><strong>Paginación:</strong> Navegar entre páginas de resultados</li>
                     <li><strong>Acciones rápidas:</strong> Cambiar estado, editar, cancelar desde la lista</li>
                 </ul>
@@ -1799,7 +1800,7 @@
                         </tr>
                         <tr>
                             <td data-label="Columna"><strong>Acciones</strong></td>
-                            <td data-label="Descripcion">Botones para editar y cambiar estado</td>
+                            <td data-label="Descripcion">Botones para editar y ver historial de cambios de estados</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1818,12 +1819,12 @@
             <section id="waitlist" class="step-card">
                 <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-hourglass-half me-2"></i>Sistema de Lista de Espera</h3>
                 <div class="step-content">
-                    <p>Cuando un médico no tiene disponibilidad en el horario solicitado, el paciente puede ser agregado a una <strong>lista de espera</strong>. El sistema notificará automáticamente al paciente cuando se libere un espacio.</p>
+                    <p>Cuando un médico no tiene disponibilidad en el horario solicitado, el paciente puede ser agregado a una <strong>lista de espera</strong>. El sistema notificará automáticamente al paciente que fue agregado a la lista de espera.</p>
 
                     <div class="info-box info-note">
                         <i class="fas fa-info-circle"></i>
                         <div>
-                            <strong>¿Cuándo usar la lista de espera?</strong> Úsala cuando los pacientes soliciten citas en horarios ocupados. Esto mejora la experiencia del paciente porque no se pierden sus solicitudes y pueden ser asignados automáticamente cuando se libera un espacio.
+                            <strong>¿Cuándo usar la lista de espera?</strong> Úsala cuando los pacientes soliciten citas en horarios ocupados. Esto mejora la experiencia del paciente porque no se pierden sus solicitudes y pueden ser asignados manualmente cuando se libera un espacio.
                         </div>
                     </div>
 
@@ -1884,7 +1885,7 @@
                                         <li><strong>Se libera un espacio</strong> → Paciente cancela o no asiste</li>
                                         <li><strong>Panel muestra candidatos</strong> → El sistema sugiere los 5-10 mejores por score</li>
                                         <li><strong>Tú seleccionas quién</strong> → Puedes elegir cualquiera, no solo el top 1</li>
-                                        <li><strong>Confirmas la asignación</strong> → El paciente es notificado automáticamente</li>
+                                        <li><strong>Confirmas la asignación</strong> → El paciente debe ser contactado para notificar su nuevo agendamiento.</li>
                                     </ol>
                                 </div>
 
@@ -1926,7 +1927,7 @@
                     <div class="info-box info-warning" style="margin-top: 30px;">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>
-                            <strong>Acceso a Lista de Espera:</strong> Solo recepcionistas y doctores pueden acceder al panel de gestión. Los pacientes verán el estado de su solicitud en su perfil y recibirán notificaciones automáticas.
+                            <strong>Acceso a Lista de Espera:</strong> Solo recepcionistas , doctores y asistentes medicos pueden acceder al panel de gestión.
                         </div>
                     </div>
 
@@ -1934,7 +1935,7 @@
                         <div class="col-md-6 mb-3">
                             <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ffa10b !important;">
                                 <div class="card-body">
-                                    <h6 class="fw-bold" style="color: #ffa10b;"><i class="fas fa-users me-2"></i>Visión de Recepcionista</h6>
+                                    <h6 class="fw-bold" style="color: #ffa10b;"><i class="fas fa-users me-2"></i>Gestion de lista de espera</h6>
                                     <p class="small text-muted mb-2">Gestión centralizada de toda la lista de espera.</p>
                                     <ul class="small mb-0">
                                         <li>✅ Ver lista priorizada completa</li>
@@ -1945,7 +1946,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        {{--}}
                         <div class="col-md-6 mb-3">
                             <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #ff6f00 !important;">
                                 <div class="card-body">
@@ -1960,12 +1961,13 @@
                                 </div>
                             </div>
                         </div>
+                        {{--}}
                     </div>
 
                     <div class="info-box info-tip" style="margin-top: 20px;">
                         <i class="fas fa-lightbulb"></i>
                         <div>
-                            <strong>Configuración de lista de espera:</strong> Desde tu configuración clínica, puedes ajustar tiempos de expiración, patrones de priorización y plantillas de notificación para adaptarlos a tu flujo específico.
+                            <strong>Configuración de lista de espera:</strong> Desde tu configuración clínica, puedes ajustar el tipo de asignación de la lista de espera , por defecto es asignación manual.
                         </div>
                     </div>
 
@@ -1993,6 +1995,8 @@
                     <div>
                         <img src="{{ asset('images/tutorial/appointments/waitlist-manager-view.png') }}" alt="Vista del panel de lista de espera" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px 0;">
                     </div>
+
+                    {{--}}
 
                     <!-- Sección: Columnas de la Tabla -->
                     <h5 style="color: #bf360c; margin: 30px 0 15px 0;"><i class="fas fa-table me-2"></i>Entendiendo la Tabla de Lista de Espera</h5>
@@ -2055,6 +2059,8 @@
                         </div>
                     </div>
 
+                    {{--}}
+
                     <!-- Sección: Cómo Asignar desde el Panel -->
                     <h5 style="color: #bf360c; margin: 30px 0 15px 0;"><i class="fas fa-plus-circle me-2"></i>Asignar Paciente Manualmente</h5>
 
@@ -2070,7 +2076,7 @@
                                     <li>🏥 <strong>Consultorio</strong> - Dónde se hará la consulta</li>
                                 </ul>
                             </li>
-                            <li><strong>Confirma la asignación</strong> → El paciente recibe una notificación automáticamente</li>
+                            <li><strong>Confirma la asignación</strong> → Se debe contactar al paciente notificando que se le agendo su cita que estaba en espera</li>
                             <li><strong>El calendario se actualiza</strong> → La cita aparece como "Agendada"</li>
                         </ol>
                     </div>

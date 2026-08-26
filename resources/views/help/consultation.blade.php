@@ -1283,6 +1283,7 @@ body {
                                 <td data-label="Campo"><strong>Cantidad</strong></td>
                                 <td data-label="Descripcion">Indique la cantidad o dosis por cada toma (ej: 1 tableta, 5ml).</td>
                             </tr>
+                            {{--}}
                             <tr>
                                 <td data-label="Campo"><strong>Frecuencia</strong></td>
                                 <td data-label="Descripcion">Establezca el intervalo de tiempo entre cada dosis (ej: cada 8 horas).</td>
@@ -1295,6 +1296,7 @@ body {
                                 <td data-label="Campo"><strong>Duración</strong></td>
                                 <td data-label="Descripcion">Indique el número total de días que durará el tratamiento médico.</td>
                             </tr>
+                            {{--}}
                             <tr>
                                 <td data-label="Campo"><strong>Indicaciones</strong></td>
                                 <td data-label="Descripcion">Prescripción completada automáticamente al llenar los campos previos.</td>

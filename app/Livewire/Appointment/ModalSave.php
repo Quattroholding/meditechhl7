@@ -882,19 +882,22 @@ class ModalSave extends Component
                 ]);
             }
 
+            // Determinar la razón final
+            $finalReason = $this->cancellationReason === 'OTHER'
+                ? $this->customCancellationReason
+                : AppointmentCancelledReason::{$this->cancellationReason}->value;
+
             // Ahora sí cambiar el status a cancelled
             $this->appointment->status = 'cancelled';
             $this->appointment->save();
+
+            // Guardar la razón de cancelación en el registro de historial de status
+            $this->appointment->statusHistory()->first()?->update(['observation' => $finalReason]);
 
             // Mostrar modal de asignación manual si hay freedSlot y está configurado para ello
             if ($freedSlot && ! $this->appointment->client->getSettings('waitlist_auto_assign', false)) {
                 $this->dispatch('show-manual-assignment', slotId: $freedSlot->id);
             }
-
-            // Determinar la razón final a enviar
-            $finalReason = $this->cancellationReason === 'OTHER'
-                ? $this->customCancellationReason
-                : AppointmentCancelledReason::{$this->cancellationReason}->value;
 
             // Enviar notificación con la razón
             $this->appointment->notifyPatientAboutCancellation($finalReason);

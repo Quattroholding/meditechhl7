@@ -149,16 +149,19 @@ class Status extends Component
             }
         }
 
+        // Determinar la razón final
+        $finalReason = $this->cancellationReason === 'OTHER'
+            ? $this->customCancellationReason
+            : AppointmentCancelledReason::{$this->cancellationReason}->value;
+
         // Ahora cambiar el status a cancelled
         $this->appointment->status = 'cancelled';
         $this->appointment->save();
         $this->status = 'cancelled';
         $this->color = $this->colors[$this->status];
 
-        // Determinar la razón final a enviar
-        $finalReason = $this->cancellationReason === 'OTHER'
-            ? $this->customCancellationReason
-            : AppointmentCancelledReason::{$this->cancellationReason}->value;
+        // Guardar la razón de cancelación en el registro de historial de status
+        $this->appointment->statusHistory()->first()?->update(['observation' => $finalReason]);
 
         // Enviar notificación con la razón de forma asincrónica
         $appointment = $this->appointment;
