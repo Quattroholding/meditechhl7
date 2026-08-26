@@ -14,6 +14,7 @@
                         <i class="feather-user me-2"></i>{{ __('patient.tabs.general') }}
                     </button>
                 </li>
+                {{--}}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'dependents' ? 'active' : '' }}"
                             wire:click="switchTab('dependents')"
@@ -21,6 +22,7 @@
                         <i class="feather-users me-2"></i>{{ __('patient.tabs.dependents') }}
                     </button>
                 </li>
+                {{--}}
                 @can('consultations.download_resumen')
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'conditions' ? 'active' : '' }}"
@@ -65,7 +67,7 @@
                         <livewire:patient.tabs.general :patient="$patient" />
                     </div>
                 @endif
-
+                {{--}}
                 <!-- Dependents Tab -->
                 @if($activeTab === 'dependents')
                     <div class="tab-pane fade show active">
@@ -76,6 +78,7 @@
                         @endif
                     </div>
                 @endif
+                {{--}}
                 @can('consultations.download_resumen')
                 <!-- Conditions Tab -->
                 @if($activeTab === 'conditions')

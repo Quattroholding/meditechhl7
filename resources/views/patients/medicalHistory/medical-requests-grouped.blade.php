@@ -66,11 +66,11 @@
                                                         {{ $medication->medication2 ? $medication->medication2->display : $medication->medication2 }}
                                                     </h4>
                                                     <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 13px; color: #374151;">
-                                                        {{--}}
+
                                                         @if($medication->dosage_text)
                                                             <span><strong>📏 Dosis:</strong> {{ $medication->dosage_text }}</span>
                                                         @endif
-                                                        {{--}}
+
                                                         @if($medication->frequency)
                                                             <span><strong>⏰ Frecuencia:</strong> {{ $medication->frequency }}</span>
                                                         @endif

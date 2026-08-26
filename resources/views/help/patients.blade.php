@@ -1402,6 +1402,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="id-card col-12 col-md-6 mb-3">
+                                    <div class="id-type-card text-start d-flex align-items-center">
+                                        <div class="code me-3" style="font-size: 1.5rem; min-width: 40px; text-align: center;">
+                                            <button class="btn btn-warning btn-sm" style="pointer-events: none;"><i class="fa-solid fa-calendar-plus m-r-5 text-black"></i></button>
+                                        </div>
+                                        <div>
+                                            <div class="name mb-1" style="font-weight: 600; font-size: 1rem; color: #4a148c;">Agendar Cita</div>
+                                            <div class="name mb-0" style="font-size: 0.85rem; color: #555;">Permite agendarle una cita medica al paciente.</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -1494,7 +1505,7 @@
                                             <h6 class="text-primary fw-bold"><i class="fas fa-user me-2"></i>1. General</h6>
                                             <p class="small text-muted mb-2">Información básica y de contacto inicial.</p>
                                             <ul class="small mb-0">
-                                                <li><strong>Datos Personales:</strong> Nombre, nacimiento, género y tipo de sangre.</li>
+                                                <li><strong>Datos Personales:</strong> Nombre, fecha de nacimiento, género , tipo de sangre , estado civil , # de documento.</li>
                                                 <li><strong>Contacto:</strong> Teléfono, WhatsApp, email y dirección física.</li>
                                                 <li><strong>Emergencia:</strong> Datos de la persona a contactar en caso de urgencia.</li>
                                             </ul>
@@ -1524,8 +1535,10 @@
                                             <p class="small text-muted mb-2">Resumen clínico y antecedentes del paciente.</p>
                                             <ul class="small mb-0">
                                                 <li><strong>Diagnósticos:</strong> Problemas de salud activos registrados.</li>
+                                                {{--}}
                                                 <li><strong>Alergias:</strong> Reacciones a medicamentos o sustancias.</li>
                                                 <li><strong>Antecedentes:</strong> Historial patológico y quirúrgico.</li>
+                                                {{--}}
                                             </ul>
                                         </div>
                                     </div>

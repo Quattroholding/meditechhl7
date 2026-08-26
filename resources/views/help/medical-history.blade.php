@@ -1017,7 +1017,7 @@ body {
                             <div class="col-md-4 mb-3">
                                 <div class="section-card">
                                     <i class="fas fa-stethoscope"></i>
-                                    <h6>Órdenes Médicos</h6>
+                                    <h6>Órdenes Médicas</h6>
                                     <p>Prescripciones de medicamentos, Procedimientos, Laboratorios e Imágenes</p>
                                 </div>
                             </div>
@@ -1213,8 +1213,10 @@ body {
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Información del Encuentro:</strong> Fecha, hora, nombre del médico que atendió y número de consulta.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Motivo de Consulta y Enfermedad Actual:</strong> Descripción detallada de los síntomas y motivo de la visita.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Signos Vitales:</strong> Registro de las mediciones tomadas durante la consulta.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Examenes Físicos:</strong> Constitucional , Respiratorio , Cardiovascular , etc.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Diagnósticos:</strong> Conclusiones médicas codificadas bajo ICD-10.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Órdenes Médicas:</strong> Medicamentos recetados con sus dosis e instrucciones, y estudios solicitados.</div></li>
+                                <li><i class="fas fa-check-circle"></i> <div><strong>Historial Médicos:</strong> Alegiar , cirujias , enfermedades cronicas , hospitalizaión , etc.</div></li>
                                 <li><i class="fas fa-check-circle"></i> <div><strong>Notas Médicas:</strong> Recomendaciones y observaciones adicionales del profesional de salud.</div></li>
                             </ul>
                         </div>
@@ -1260,10 +1262,12 @@ body {
                             </div>
                             <div class="col-md-6">
                                 <ul class="checklist">
+                                    {{--}}
                                     <li>
                                         <i class="fas fa-tags"></i>
                                         <div><strong>Categoría:</strong> Clasificación adicional para agrupar diagnósticos similares.</div>
                                     </li>
+                                    {{{--}}
                                     <li>
                                         <i class="fas fa-calendar-alt"></i>
                                         <div><strong>Fecha Dx:</strong> Fecha exacta en la que el profesional de salud registró el diagnóstico.</div>
@@ -1444,10 +1448,9 @@ body {
                                 <strong>Información incluida en medicamentos:</strong>
                                 <ul class="mb-0 mt-2">
                                     <li>Nombre del medicamento</li>
-                                    <li>Dosis y forma de administracion</li>
-                                    <li>Frecuencia (cada cuantas horas)</li>
-                                    <li>Duracion del tratamiento</li>
-                                    <li>Indicaciones especiales</li>
+                                    <li>Cantidad</li>
+                                    <li>Indicaciones</li>
+                                    <li>Estatus</li>
                                 </ul>
                             </div>
                         </div>
@@ -1651,7 +1654,7 @@ body {
                                  <ul class="checklist">
                                      <li>
                                          <i class="fas fa-id-card"></i>
-                                         <div><strong>Número de Registro:</strong> Corresponde al número identificador de la Compañía de Seguro a la cual se encuentra suscrito el paciente.</div>
+                                         <div><strong>Número de Registro:</strong> Corresponde al número identificador de la incapacidad.</div>
                                      </li>
                                      <li>
                                          <i class="fas fa-calendar-alt"></i>

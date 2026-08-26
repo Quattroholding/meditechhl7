@@ -954,6 +954,16 @@
                     const bpEl = document.getElementById('bloodPressureChart-' + this.period);
                     if (!bpEl) return;
 
+                    const dates = this.chartData.bloodPressure.dates;
+
+                    const parseDate = function(dateStr) {
+                        if (!dateStr) return '';
+                        dateStr = String(dateStr);
+                        const parts = dateStr.split('-');
+                        if (parts.length !== 3) return dateStr;
+                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    };
+
                     const options = {
                         series: [{
                             name: '{{ __("patient.medical_history.charts.systolic") }}',
@@ -972,9 +982,14 @@
                             categories: this.chartData.bloodPressure.dates,
                             title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                formatter: function(value, timestamp, index) {
+                                    if (index !== undefined && dates[index]) {
+                                        const date = parseDate(dates[index]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             }
                         },
@@ -982,9 +997,14 @@
                         legend: { position: 'top', horizontalAlign: 'left' },
                         tooltip: {
                             x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
+                                    if (dates[dataPointIndex]) {
+                                        const date = parseDate(dates[dataPointIndex]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             },
                             y: { formatter: function(value) { return value + ' mmHg'; } }
@@ -1010,6 +1030,16 @@
                     const hrEl = document.getElementById('heartRateChart-' + this.period);
                     if (!hrEl) return;
 
+                    const dates = this.chartData.heartRate.dates;
+
+                    const parseDate = function(dateStr) {
+                        if (!dateStr) return '';
+                        dateStr = String(dateStr);
+                        const parts = dateStr.split('-');
+                        if (parts.length !== 3) return dateStr;
+                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    };
+
                     const options = {
                         series: [{
                             name: '{{ __("patient.medical_history.charts.heart_rate") }}',
@@ -1024,18 +1054,28 @@
                             categories: this.chartData.heartRate.dates,
                             title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                formatter: function(value, timestamp, index) {
+                                    if (index !== undefined && dates[index]) {
+                                        const date = parseDate(dates[index]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             }
                         },
                         yaxis: { title: { text: '{{ __("patient.medical_history.charts.frequency_bpm") }}' }, min: 40, max: 160 },
                         tooltip: {
                             x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
+                                    if (dates[dataPointIndex]) {
+                                        const date = parseDate(dates[dataPointIndex]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             },
                             y: { formatter: function(value) { return value + ' bpm'; } }
@@ -1061,6 +1101,16 @@
                     const rrEl = document.getElementById('respiratoryRateChart-' + this.period);
                     if (!rrEl) return;
 
+                    const dates = this.chartData.respiratoryRate.dates;
+
+                    const parseDate = function(dateStr) {
+                        if (!dateStr) return '';
+                        dateStr = String(dateStr);
+                        const parts = dateStr.split('-');
+                        if (parts.length !== 3) return dateStr;
+                        return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    };
+
                     const options = {
                         series: [{
                             name: '{{ __("patient.medical_history.charts.respiratory_rate") }}',
@@ -1075,18 +1125,28 @@
                             categories: this.chartData.respiratoryRate.dates,
                             title: { text: '{{ __("patient.medical_history.charts.consultation_date") }}' },
                             labels: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                formatter: function(value, timestamp, index) {
+                                    if (index !== undefined && dates[index]) {
+                                        const date = parseDate(dates[index]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { day: '2-digit', month: 'short', year: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             }
                         },
                         yaxis: { title: { text: '{{ __("patient.medical_history.charts.frequency_rpm") }}' }, min: 8, max: 40 },
                         tooltip: {
                             x: {
-                                formatter: function(value) {
-                                    const date = new Date(value);
-                                    return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
+                                    if (dates[dataPointIndex]) {
+                                        const date = parseDate(dates[dataPointIndex]);
+                                        if (date instanceof Date && !isNaN(date)) {
+                                            return date.toLocaleDateString('{{ app()->getLocale() }}', { year: 'numeric', month: 'long', day: 'numeric' });
+                                        }
+                                    }
+                                    return value;
                                 }
                             },
                             y: { formatter: function(value) { return value + ' rpm'; } }

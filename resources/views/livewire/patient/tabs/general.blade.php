@@ -11,14 +11,7 @@
                         <label class="info-label">{{ __('patient.full_name') }}</label>
                         <p class="info-value">{{ $patient->name }}</p>
                     </div>
-                    <div class="info-item mb-3">
-                        <label class="info-label">{{ __('patient.first_name') }}</label>
-                        <p class="info-value">{{ $patient->given_name }}</p>
-                    </div>
-                    <div class="info-item mb-3">
-                        <label class="info-label">{{ __('patient.last_name') }}</label>
-                        <p class="info-value">{{ $patient->family_name }}</p>
-                    </div>
+
                     <div class="info-item mb-3">
                         <label class="info-label">{{ __('patient.gender') }}</label>
                         <p class="info-value">
@@ -156,7 +149,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <h5 class="mb-3">
-                    <i class="feather-activity me-2 text-primary"></i>{{ __('patient.info.medical_info') }}
+                    <i class="feather-activity me-2 text-primary"></i>Información del Sistema
                 </h5>
                 <div class="row">
                     {{--}}
@@ -168,7 +161,7 @@
                             </p>
                         </div>
                     </div>
-                    {{--}}
+
                     <div class="col-md-4">
                         <div class="info-item mb-3">
                             <label class="info-label">{{ __('patient.status') }}</label>
@@ -184,6 +177,7 @@
                             </p>
                         </div>
                     </div>
+                       {{--}}
                     <div class="col-md-4">
                         <div class="info-item mb-3">
                             <label class="info-label">{{ __('patient.info.registration_date') }}</label>

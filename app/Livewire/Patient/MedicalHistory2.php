@@ -1189,6 +1189,11 @@ class MedicalHistory2 extends Component
         $respiratoryRateData = [];
 
         foreach ($vitalSigns as $vital) {
+            // Skip vital signs with null effective_date
+            if (! $vital->effective_date) {
+                continue;
+            }
+
             $date = Carbon::parse($vital->effective_date)->format('Y-m-d');
 
             switch ($vital->code) {
