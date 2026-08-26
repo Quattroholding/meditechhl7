@@ -194,12 +194,12 @@ class AddInsurance extends Component
                 'effective_date' => $this->effective_date,
                 'expiration_date' => $this->expiration_date,
                 'priority' => $this->priority,
-                'coverage_percentage' => $this->coverage_percentage,
-                'copay_amount' => $this->copay_amount,
-                'deductible_amount' => $this->deductible_amount,
-                'deductible_remaining' => $this->deductible_amount,
-                'out_of_pocket_max' => $this->out_of_pocket_max,
-                'out_of_pocket_remaining' => $this->out_of_pocket_max,
+                'coverage_percentage' => $this->coverage_percentage ?: 0,
+                'copay_amount' => $this->copay_amount ?: 0,
+                'deductible_amount' => $this->deductible_amount ?: 0,
+                'deductible_remaining' => $this->deductible_amount ?: 0,
+                'out_of_pocket_max' => $this->out_of_pocket_max ?: 0,
+                'out_of_pocket_remaining' => $this->out_of_pocket_max ?: 0,
                 'is_active' => $this->is_active,
                 'notes' => $this->notes,
             ]);
@@ -213,13 +213,13 @@ class AddInsurance extends Component
             // Emit event to refresh parent component
             $this->dispatch('insurance-added');
 
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrAddInsurance',
                 type: 'success',
                 message: 'Seguro agregado exitosamente. ',
             );
 
         } catch (\Exception $e) {
-            $this->dispatch('showToastr',
+            $this->dispatch('showToastrAddInsurance',
                 type: 'error',
                 message: 'Error al agregar el seguro: '.$e->getMessage(),
             );
@@ -293,9 +293,19 @@ class AddInsurance extends Component
                 $policy->delete();
                 $this->loadExistingPolicies();
                 session()->flash('message.success', 'Seguro eliminado exitosamente.');
+
+                $this->dispatch('showToastrAddInsurance',
+                    type: 'success',
+                    message: 'Seguro eliminado exitosamente.',
+                );
             }
         } catch (\Exception $e) {
             session()->flash('message.error', 'Error al eliminar el seguro: '.$e->getMessage());
+
+            $this->dispatch('showToastrAddInsurance',
+                type: 'error',
+                message:'Error al eliminar el seguro: '.$e->getMessage(),
+            );
         }
     }
 }

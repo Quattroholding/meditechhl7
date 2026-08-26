@@ -74,12 +74,12 @@
                                             <div class="btn-group" role="group">
                                                 <button wire:click="togglePolicyStatus({{ $policy->id }})"
                                                         class="btn btn-sm {{ $policy->is_active ? 'btn-warning' : 'btn-success' }}"
-                                                        :title="$policy->is_active ? __('patient.insurance.deactivate') : __('patient.insurance.activate')">
+                                                        title="{{ $policy->is_active ? __('patient.insurance.deactivate') : __('patient.insurance.activate') }}">
                                                     <i class="fas fa-{{ $policy->is_active ? 'pause' : 'play' }}"></i>
                                                 </button>
                                                 <button wire:click="deletePolicy({{ $policy->id }})"
                                                         class="btn btn-sm btn-danger"
-                                                        :title="__('button.delete')"
+                                                        title="{{ __('button.delete') }}"
                                                         onclick="return confirm('{{ __('patient.insurance.confirm_delete') }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -270,27 +270,20 @@
     </div><!-- /.modal-dialog -->
     </div>
     @endif
-
     <script>
         document.addEventListener('livewire:initialized', () => {
-            // Listen for success/error messages
-            Livewire.on('showToastr', (event) => {
-                toastr[event.type](event.message, '', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000,
-                });
-            });
-
-            // Close modal on successful insurance addition
-            Livewire.on('insurance-added', () => {
-                toastr.success('{{ __('patient.insurance.insurance_added_successfully') }}', '', {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: 'toast-top-right',
-                    timeOut: 5000,
-                });
+            Livewire.on('showToastrAddInsurance', ({type, message}) => {
+                console.log('Toast event received:', {type, message}); // Debug
+                if (typeof toastr !== 'undefined') {
+                    toastr[type](message, '', {
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+                        timeOut: 5000,
+                    });
+                } else {
+                    console.warn('toastr not loaded');
+                }
             });
         });
     </script>
