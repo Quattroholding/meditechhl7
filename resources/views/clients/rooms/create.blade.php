@@ -37,13 +37,13 @@
                             </div>
                             <!-- NUMBER -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="ruc" :value="__('client.room.number')" />
+                                <x-input-label for="ruc" :value="__('client.room.number')" required/>
                                 <x-text-input id="number" class="block mt-1 w-full" type="text" name="number" :value="old('number')"/>
                                 <x-input-error :messages="$errors->get('number')"/>
                             </div>
                             <!-- FLOOR -->
                             <div class="input-block  local-forms">
-                                <x-input-label for="floor" :value="__('client.room.floor')" />
+                                <x-input-label for="floor" :value="__('client.room.floor')" required/>
                                 <x-text-input id="floor" class="block mt-1 w-full" type="text" name="floor" :value="old('floor')"/>
                                 <x-input-error :messages="$errors->get('floor')"/>
                             </div>

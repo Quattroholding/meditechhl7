@@ -1,1405 +1,1816 @@
-@extends('help.layout')
-@section('style')
-
-html {
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    color: var(--dark-text);
-    overflow-x: hidden;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Contenedor principal con límites estrictos */
-.help-content {
-    margin-left: 280px;
-    padding: 30px;
-    max-width: calc(100vw - 280px);
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-/* Corregir Bootstrap rows */
-    .help-content .row {
-        margin-left: 0;
-        margin-right: 0;
-        max-width: 100%;
-    }
-
-    .help-content .row > [class*="col-"] {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    /* Evitar que las imágenes fuercen scroll */
-    .help-content img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    /* Asegurar que tablas y contenido no desborden */
-    .help-content table,
-    .help-content .field-table {
-        max-width: 100%;
-        overflow-x: auto;
-        display: block;
-    }
-
-/* Sidebar */
-.help-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 280px;
-    height: 100vh;
-    background: linear-gradient(180deg, #e65100 0%, #ff6f00 100%);
-    padding: 20px 0;
-    overflow-y: auto;
-    z-index: 1000;
-}
-
-.help-sidebar .logo {
-    text-align: center;
-    padding: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: 20px;
-}
-
-.help-sidebar .logo img {
-    max-width: 150px;
-}
-
-.help-sidebar .logo h4 {
-    color: #fff;
-    margin-top: 10px;
-    font-weight: 600;
-}
-
-.help-sidebar .nav-section {
-    padding: 10px 20px;
-}
-
-.help-sidebar .nav-section-title {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    padding-left: 10px;
-}
-
-.help-sidebar .nav-link {
-    color: rgba(255,255,255,0.8);
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.help-sidebar .nav-link:hover,
-.help-sidebar .nav-link.active {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-}
-
-.help-sidebar .nav-link i {
-    width: 20px;
-    text-align: center;
-}
-
-/* Breadcrumb */
-.help-breadcrumb {
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Module Header */
-.module-header {
-    background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);
-    color: #fff;
-    padding: 40px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-.module-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-}
-
-.module-header h1 {
-    font-weight: 700;
-    margin-bottom: 15px;
-    position: relative;
-}
-
-.module-header p {
-    opacity: 0.9;
-    font-size: 1.1rem;
-    position: relative;
-}
-
-/* Step Cards */
-.step-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    border-left: 5px solid var(--calendar-color);
-    position: relative;
-}
-
-.step-card.step-important {
-    border-left-color: var(--warning-color);
-}
-
-.step-card.step-success {
-    border-left-color: var(--success-color);
-}
-
-.step-card.step-info {
-    border-left-color: var(--info-color);
-}
-
-.step-card.step-primary {
-    border-left-color: var(--primary-color);
-}
-
-.step-number {
-    position: absolute;
-    top: -15px;
-    left: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.3rem;
-    box-shadow: 0 4px 10px rgba(230, 81, 0, 0.4);
-}
-
-.step-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #bf360c;
-    margin-bottom: 15px;
-    padding-left: 45px;
-}
-
-.step-content {
-    color: #555;
-    line-height: 1.8;
-}
-
-/* Screenshot Placeholder */
-.screenshot-placeholder {
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-    border: 3px dashed #ff9800;
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    margin: 25px 0;
-    position: relative;
-}
-
-.screenshot-placeholder i {
-    font-size: 3rem;
-    color: #f57c00;
-    margin-bottom: 15px;
-}
-
-.screenshot-placeholder h5 {
-    color: #e65100;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-.screenshot-placeholder p {
-    color: #ff9800;
-    font-size: 0.9rem;
-    margin-bottom: 0;
-}
-
-.screenshot-placeholder .dimensions {
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    font-size: 0.75rem;
-    color: #ffb74d;
-}
-
-/* Info Boxes */
-.info-box {
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.info-box i {
-    font-size: 1.5rem;
-    margin-top: 3px;
-}
-
-.info-box.info-note {
-    background: #e3f2fd;
-    border: 1px solid #90caf9;
-}
-
-.info-box.info-note i {
-    color: #1976d2;
-}
-
-.info-box.info-warning {
-    background: #fff3e0;
-    border: 1px solid #ffcc80;
-}
-
-.info-box.info-warning i {
-    color: #f57c00;
-}
-
-.info-box.info-tip {
-    background: #e8f5e9;
-    border: 1px solid #a5d6a7;
-}
-
-.info-box.info-tip i {
-    color: #388e3c;
-}
-
-.info-box.info-danger {
-    background: #ffebee;
-    border: 1px solid #ef9a9a;
-}
-
-.info-box.info-danger i {
-    color: #d32f2f;
-}
-
-/* Field Table */
-.field-table {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.field-table th {
-    background: #bf360c;
-    color: #fff;
-    padding: 15px;
-    font-weight: 600;
-    text-align: left;
-}
-
-.field-table th:first-child {
-    border-radius: 10px 0 0 0;
-}
-
-.field-table th:last-child {
-    border-radius: 0 10px 0 0;
-}
-
-.field-table td {
-    padding: 15px;
-    border-bottom: 1px solid #e9ecef;
-    background: #fff;
-}
-
-.field-table tr:last-child td:first-child {
-    border-radius: 0 0 0 10px;
-}
-
-.field-table tr:last-child td:last-child {
-    border-radius: 0 0 10px 0;
-}
-
-.field-table .required {
-    color: #d32f2f;
-    font-weight: 600;
-}
-
-.field-table .optional {
-    color: #757575;
-}
-
-/* Table of Contents */
-.toc-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.toc-card h5 {
-    color: #bf360c;
-    font-weight: 700;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #fff3e0;
-}
-
-.toc-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.toc-list li {
-    margin-bottom: 10px;
-}
-
-.toc-list a {
-    color: #e65100;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.toc-list a:hover {
-    background: #fff3e0;
-    color: #bf360c;
-}
-
-.toc-list a i {
-    width: 20px;
-    text-align: center;
-}
-
-/* Sub-steps */
-.sub-step {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 15px 0;
-    border-left: 3px solid #e65100;
-}
-
-.sub-step h6 {
-    color: #bf360c;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-/* Checklist */
-.checklist {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-}
-
-.checklist li {
-    padding: 10px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.checklist li:last-child {
-    border-bottom: none;
-}
-
-.checklist li i {
-    color: #e65100;
-    margin-top: 3px;
-}
-
-/* Status Badge Cards */
-.status-badge-card {
-    background: #fff;
-    border: 2px solid #ffe0b2;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    height: 100%;
-}
-
-.status-badge-card .badge-display {
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
-.status-badge-card .status-name {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.status-badge-card .status-desc {
-    font-family: monospace;
-    background: #fff3e0;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.75rem;
-    color: #e65100;
-}
-
-/* Calendar View Cards */
-.calendar-view-card {
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 15px;
-}
-
-.calendar-view-card h6 {
-    color: #bf360c;
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.calendar-view-card ul {
-    margin-bottom: 0;
-    padding-left: 20px;
-}
-
-.calendar-view-card li {
-    color: #555;
-    margin-bottom: 5px;
-}
-
-/* Back to Top */
-.back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(230, 81, 0, 0.4);
-    transition: all 0.3s ease;
-    opacity: 0;
-    visibility: hidden;
-}
-
-.back-to-top.visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-.back-to-top:hover {
-    transform: translateY(-5px);
-}
-
-/* Timeline */
-.appointment-flow-timeline {
-    position: relative;
-    padding: 20px 0;
-}
-
-.appointment-flow-timeline::before {
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, #e65100 0%, #ff8f00 100%);
-}
-
-.timeline-item {
-    position: relative;
-    padding-left: 60px;
-    margin-bottom: 30px;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 5px;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border: 3px solid #e65100;
-    border-radius: 50%;
-}
-
-.timeline-item.completed::before {
-    background: #e65100;
-}
-
-.timeline-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-.timeline-content h6 {
-    color: #bf360c;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.timeline-content p {
-    color: #666;
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-    .help-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .help-content {
-        margin-left: 0;
-        max-width: 100vw;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .help-sidebar,
-    .back-to-top {
-        display: none;
-    }
-
-    .help-content {
-        margin-left: 0;
-    }
-}
-
-/* Extra small devices */
-@media screen and (max-width: 480px) {
-    .step-title {
-        padding-left: 0;
-        padding-top: 5%;
-    }
-
-    .step-number {
-        left: 45%;
-    }
-
-    .field-table {
-        border: 0;
-        box-shadow: none;
-    }
-
-    .field-table thead {
-        display: none;
-    }
-
-    .field-table tbody {
-        display: block;
-    }
-
-    .field-table tr {
-        display: block;
-        margin-bottom: 15px;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        background: #fff;
-    }
-
-    .field-table td {
-        display: block;
-        text-align: left;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .field-table td:last-child {
-        border-bottom: none;
-    }
-
-    .field-table td[data-label="Campo"] {
-        background: #bf360c;
-        color: white;
-        font-size: 15px;
-        padding: 12px;
-        border-bottom: 2px solid #d84315;
-    }
-
-    .field-table td[data-label="Campo"] strong {
-        color: white;
-    }
-
-    .field-table td[data-label="Descripcion"] {
-        padding: 15px;
-        color: #555;
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .field-table td[data-label="Descripcion"]:before {
-        content: "📝 ";
-        margin-right: 5px;
-    }
-
-    .field-table td[data-label="Requerido"] {
-        background: #f5f5f5;
-        padding: 12px 15px;
-        text-align: center;
-        font-weight: 600;
-    }
-
-    .field-table td[data-label="Requerido"]:before {
-        content: "Requerido: ";
-        font-weight: 600;
-        color: #bf360c;
-        margin-right: 5px;
-    }
-
-    .step-card, .sub-step {
-        border-left: none;
-        padding: 25px;
-        border-bottom: 5px solid var(--calendar-color);
-    }
-
-    .step-title {
-        padding-left: 0;
-        text-align: center;
-        padding-top: 8%;
-    }
-
-    .info-box, .calendar-view-card h6 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .required,
-    .optional {
-        min-width: 80px;
-        text-align: center;
-    }
-}
-
-@media screen and (max-width: 400px) {
-    .step-number{
-        left: 44%;
-    }
-}
-
-@media screen and (max-width: 350px) {
-    .step-number{
-        left: 43%;
-    }
-}
-
-@media screen and (max-width: 325px) {
-    .step-number{
-        left: 42%;
-    }
-}
-
-@stop
-@section('sidebar')
-    @include('help.sidebar', ['active' => 'appointments'])
-@stop
-@section('breadcrumb')
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Agendamiento de Citas - Centro de Ayuda SAMI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --calendar-color: #e65100;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+
+        html {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-text);
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;        /* ← añade esto */
+            padding: 0;
+            /*position: relative;*/
+        }
+
+        /* Contenedor principal con límites estrictos */
+        .help-content {
+            margin-left: 280px;
+            padding: 30px;
+            max-width: calc(100vw - 280px);
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        /* Corregir Bootstrap rows */
+        .help-content .row {
+            margin-left: 0;
+            margin-right: 0;
+            max-width: 100%;
+        }
+
+        .help-content .row > [class*="col-"] {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .field-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .field-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            /* QUITAR: display: block; */
+            /* QUITAR: overflow-x: auto; */
+        }
+
+        /* Todas las imágenes responsivas */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content-section img,
+        .step-card img,
+        .info-box img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Sidebar */
+        .help-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            padding: 20px 0;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .help-sidebar .logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .help-sidebar .logo img {
+            max-width: 150px;
+        }
+
+        .help-sidebar .logo h4 {
+            color: #fff;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .help-sidebar .nav-section {
+            padding: 10px 20px;
+        }
+
+        .help-sidebar .nav-section-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .help-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .help-sidebar .nav-link:hover,
+        .help-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .help-sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .help-sidebar .nav-link .badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+        }
+
+        /* Main Content
+        .help-content {
+            margin-left: 280px;
+            padding: 30px;
+           min-height: auto;
+            overflow-x: hidden;
+            max-width: 100%;
+        }*/
+
+        /* Breadcrumb */
+        .help-breadcrumb {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        .module-header{
+            background: linear-gradient(135deg, #e65100 0%, #ff9800 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .module-header h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .module-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .help-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .help-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .help-header .breadcrumb {
+            background: rgba(255,255,255,0.15);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .help-header .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .help-header .breadcrumb-item.active {
+            color: #fff;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .content-section h2 {
+            color: #e65100;
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fff3e0;
+        }
+
+        .content-section h3 {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .content-section h4 {
+            color: #555;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .content-section img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Table of Contents */
+        .toc-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .toc-card h5 {
+            color: #01579b;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1f5fe;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 10px;
+        }
+
+        .toc-list a {
+            color: #0288d1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-list a:hover {
+            background: #e1f5fe;
+            color: #01579b;
+        }
+
+        .toc-list a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Steps */
+        .step-card {
+            background: linear-gradient(135deg, #fff9f5 0%, #fff 100%);
+            border-left: 4px solid #e65100;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: #e65100;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Screenshot Placeholder */
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px dashed #ff9800;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-placeholder i {
+            font-size: 3rem;
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .screenshot-placeholder p {
+            color: #bf360c;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .screenshot-placeholder small {
+            color: #e65100;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .info-box.note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info-box.warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .info-box.tip {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .info-box.danger {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .toc h5 {
+            color: #e65100;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 8px;
+        }
+
+        .toc-list a {
+            color: #bf360c;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-list a:hover {
+            background: rgba(230, 81, 0, 0.1);
+            color: #e65100;
+        }
+
+        /* Field Tables */
+        .field-table {
+            max-width: 100%;
+            overflow-x: auto;
+            display: block;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .field-table th {
+            background: #e65100;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .field-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .field-table tr:hover {
+            background: #fff9f5;
+        }
+
+        .required-badge {
+            background: #dc3545;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+
+        .optional-badge {
+            background: #6c757d;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 3px;
+        }
+
+        .status-proposed { background: #e0e0e0; color: #424242; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-booked { background: #e3f2fd; color: #1565c0; }
+        .status-confirm { background: #e8f5e9; color: #2e7d32; }
+        .status-arrived { background: #f3e5f5; color: #7b1fa2; }
+        .status-fulfilled { background: #c8e6c9; color: #1b5e20; }
+        .status-checked-in { background: #b3e5fc; color: #0277bd; }
+        .status-cancelled { background: #ffcdd2; color: #c62828; }
+        .status-noshow { background: #ffccbc; color: #bf360c; }
+        .status-waitlist { background: #ffe0b2; color: #ef6c00; }
+
+        .appointment-status-proposed { background:linear-gradient(45deg, #dedede, #ededed); color: black;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-pending { background:linear-gradient(45deg, #FFA500, #FFA500); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-booked { background: linear-gradient(45deg, #28a745, #28a745); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-confirm { background: linear-gradient(45deg, #28a745, #6aa728); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-arrived { background: linear-gradient(45deg, #007bff, #007bff); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-checked-in { background:linear-gradient(45deg, #ffc107, #ffc107); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-fulfilled { background: linear-gradient(45deg, #6c757d, #6c757d); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-cancelled { background: linear-gradient(45deg, #dc3545, #dc3545); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-noshow { background: linear-gradient(45deg, #6f42c1, #6f42c1); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+        .appointment-status-waitlist { background:linear-gradient(45deg, #ffa10b, #ffc107); color: white;border-radius: 6px;display: inline-block;font-size: 13px;min-width: 105px;padding: 5px 20px;font-weight: 500;text-align: center;}
+
+        /* Calendar Views */
+        .view-card {
+            background: #fff;
+            border: 2px solid #fff3e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .view-card:hover {
+            border-color: #ff9800;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2);
+        }
+
+        .view-card i {
+            font-size: 2.5rem;
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .view-card h5 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .view-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Workflow diagram */
+        .workflow-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+            padding: 10px 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .workflow-arrow {
+            color: #e65100;
+            font-size: 1.5rem;
+        }
+
+        /* Type cards */
+        .type-card {
+            background: linear-gradient(135deg, #fff 0%, #fff9f5 100%);
+            border: 1px solid #ffe0b2;
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .type-card .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .type-card .icon-circle.presencial {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .type-card .icon-circle.virtual {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-card h5 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .type-card ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .type-card li {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #cc4700 0%, #e65100  100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 9999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+
+        .yappy-img{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .yappy-imgsize{width: 276px; height: 593px; }
+
+        @media print {
+            .back-to-top {
+                display: none;
+            }}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .help-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .help-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .help-content {
+                padding: 15px;
+            }
+
+            .back-to-top {
+                right: 15px;
+                bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .step-card, .info-box{
+                border-left: none;
+                padding: 25px;
+                border-bottom: 5px solid #e65100;
+                border-radius: 8px;
+            }
+
+            .info-box.note {
+                border-left: none;
+                border-bottom-color: #2196f3;
+            }
+            .info-box.warning {
+                border-left: none;
+                border-bottom-color: #ff9800;
+            }
+            .info-box.tip {
+                border-left: none;
+                border-bottom-color: #4caf50;
+            }
+            .info-box.danger {
+                border-left: none;
+                border-bottom-color: #f44336;
+            }
+            .yappy-imgsize{
+                width: 100%;
+                height: auto;
+            }
+            .field-table {
+                border: 0;
+                box-shadow: none;
+            }
+
+            .field-table thead {
+                display: none;
+            }
+
+            .field-table tbody {
+                display: block;
+            }
+
+            .field-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #fff;
+            }
+
+            .field-table td {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 14px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .field-table td:last-child {
+                border-bottom: none;
+            }
+
+            /* Campo (título de cada tarjeta) */
+            .field-table td[data-label="Campo"], .field-table td[data-label="Columna"], .field-table td[data-label="Color"], .field-table td[data-label="Estado"]  {
+                background: #e65100;
+                color: white;
+                font-size: 15px;
+                padding: 12px;
+                border-bottom: 2px solid #e65100;
+            }
+
+
+            .field-table td[data-label="Campo"] strong,  .field-table td[data-label="Columna"] strong, .field-table td[data-label="Color"] strong {
+                color: white;
+            }
+
+            /* Descripción */
+            .field-table td[data-label="Descripcion"] {
+                padding: 15px;
+                color: #555;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .field-table td[data-label="Descripcion"]:before {
+                content: "📝 ";
+                margin-right: 5px;
+            }
+
+            /* Requerido */
+            .field-table td[data-label="Requerido"], .field-table td[data-label="Opcional"] {
+                background: #f5f5f5;
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: 600;
+            }
+
+            .field-table td[data-label="Requerido"]:before {
+                font-weight: 600;
+                color: #e65100;
+                margin-right: 5px;
+            }
+            .field-table td[data-label="Acciones Disponibles"]:before {
+                content: "Acciones Disponibles: ";
+                font-weight: 600;
+                color: #e65100;
+                margin-right: 5px;
+            }
+
+        }
+
+        @media (max-width: 365px){
+            .info-box-title, .content-section h4{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .step-number {
+                margin-right: 0;
+            }
+            .content-section, .help-content {
+                padding:25px;
+            }
+            .info-box{
+                padding: 20px;
+            }
+            .step-card{
+                padding: 15px;
+            }
+            .section-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            p, .section-card h5{
+                text-align: center;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+@include('help.sidebar', ['active' => 'appointments'])
+
+<!-- Main Content -->
+<main class="help-content">
+
+
+    <!-- Breadcrumb -->
     <nav class="help-breadcrumb">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('help.index') }}"><i class="fas fa-home"></i> Inicio</a></li>
-            <li class="breadcrumb-item"><a href="#">Gestión de Citas</a></li>
-            <li class="breadcrumb-item active">Agendar Citas</li>
+            <li class="breadcrumb-item"><a href="#">Guia de Agendamiento de Citas</a></li>
+            <li class="breadcrumb-item active">Agendamiento de Citas</li>
         </ol>
     </nav>
-@endsection
-@section('module-header')
+
+    <!-- Module Header -->
     <div class="module-header">
-        <h1><i class="fas fa-calendar-plus me-3"></i>Guía para Agendar Citas</h1>
-        <p>Aprende a gestionar el calendario de citas de tu clínica. Programa, confirma, cancela y administra las citas de tus pacientes de forma eficiente.</p>
+        <h1><i class="fas fa-calendar-check me-3"></i>Guía de Agendamiento de Citas</h1>
+        <p>Aprende a gestionar citas médicas, usar el calendario y administrar el flujo de atención de pacientes.</p>
     </div>
-@stop
-@section('table-content')
+
+    <!-- Main Content Area -->
     <div class="row">
         <!-- Table of Contents -->
         <div class="col-lg-4">
             <div class="toc-card sticky-top" style="top: 20px;">
                 <h5><i class="fas fa-list me-2"></i>Contenido de esta Guía</h5>
                 <ul class="toc-list">
-                    <li>
-                        <a href="#concepto">
-                            <i class="fas fa-info-circle"></i>
-                            Sobre las Citas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#estados">
-                            <i class="fas fa-tag"></i>
-                            Estados de las Citas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#vistas">
-                            <i class="fas fa-eye"></i>
-                            Vistas del Calendario
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-1">
-                            <i class="fas fa-mouse-pointer"></i>
-                            Paso 1: Acceder al Calendario
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-2">
-                            <i class="fas fa-plus-circle"></i>
-                            Paso 2: Nueva Cita
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-3">
-                            <i class="fas fa-user-injured"></i>
-                            Paso 3: Seleccionar Paciente
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-4">
-                            <i class="fas fa-user-md"></i>
-                            Paso 4: Elegir Médico
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-5">
-                            <i class="fas fa-clock"></i>
-                            Paso 5: Fecha y Hora
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-6">
-                            <i class="fas fa-notes-medical"></i>
-                            Paso 6: Información Adicional
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#paso-7">
-                            <i class="fas fa-save"></i>
-                            Paso 7: Guardar Cita
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#gestionar">
-                            <i class="fas fa-cogs"></i>
-                            Gestionar Citas Existentes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#notificaciones">
-                            <i class="fas fa-bell"></i>
-                            Notificaciones
-                        </a>
-                    </li>
+                    <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
+                    {{--}}<li><a href="#tipos-cita"><i class="fas fa-list"></i> 2. Tipos de Cita</a></li>{{--}}
+                    <li><a href="#calendario"><i class="fas fa-calendar-alt"></i> 2. Vista Calendario</a></li>
+                    <li><a href="#estados"><i class="fas fa-exchange-alt"></i> 3. Estados de Cita</a></li>
+                    <li><a href="#crear-cita"><i class="fas fa-plus-circle"></i> 4. Crear Nueva Cita</a></li>
+                    <li><a href="#gestion"><i class="fas fa-tasks"></i> 5. Gestión de Citas</a></li>
+                    <li><a href="#whatsapp"><i class="fab fa-whatsapp"></i> 6. Integración WhatsApp</a></li>
+                    <li><a href="#listado"><i class="fas fa-table"></i> 7. Listado de Citas</a></li>
+                    <li><a href="#tips"><i class="fas fa-lightbulb"></i> 8. Tips y Mejores Prácticas</a></li>
                     <li>
                         <a href="#waitlist">
                             <i class="fas fa-hourglass-half"></i>
-                            Lista de Espera
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#siguiente">
-                            <i class="fas fa-arrow-right"></i>
-                            Siguiente Paso
+                            9. Lista de Espera
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Content -->
         <div class="col-lg-8">
-            <!-- Sobre las Citas -->
-            <section id="concepto" class="step-card step-info">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-info-circle me-2"></i>Sobre las Citas en SAMI</h3>
-                <div class="step-content">
-                    <p>El módulo de <strong>citas</strong> es el corazón de la gestión clínica en SAMI. Permite organizar el flujo de pacientes, controlar la disponibilidad de médicos y gestionar los horarios de tu clínica.</p>
 
-                    <ul class="checklist">
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Calendario visual</strong><br>
-                                <small class="text-muted">Interfaz intuitiva con vista de mes, semana y día</small>
+            <!-- Section 1: Introduction -->
+            <section id="introduccion" class="content-section">
+                <h2><i class="fas fa-info-circle me-2"></i>1. Introducción al Módulo de Citas</h2>
+
+                <p>El módulo de <strong>Agendamiento de Citas</strong> es el centro de control para la programación y gestión de consultas médicas en SAMI. Permite coordinar eficientemente el tiempo de los profesionales de salud con las necesidades de los pacientes.</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="info-box tip">
+                            <div class="info-box-title">
+                                <i class="fas fa-check-circle text-success"></i>
+                                Características Principales
                             </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Gestión de estados</strong><br>
-                                <small class="text-muted">Sigue el ciclo completo desde la solicitud hasta la completación</small>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Notificaciones automáticas</strong><br>
-                                <small class="text-muted">Recordatorios por email a pacientes y médicos</small>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>Historial completo</strong><br>
-                                <small class="text-muted">Registro de todos los cambios de estado y notas</small>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <div class="info-box info-note">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>Integración con consultas:</strong> Una vez completada la cita, puedes iniciar directamente la consulta médica desde el mismo calendario, vinculando el encuentro clínico con la cita agendada.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Estados de las Citas -->
-            <section id="estados" class="step-card">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-tag me-2"></i>Estados de las Citas</h3>
-                <div class="step-content">
-                    <p>Las citas pasan por diferentes estados durante su ciclo de vida:</p>
-
-                    <div class="row mt-4">
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-warning text-dark">Pendiente</div>
-                                <div class="status-name">Pendiente de Confirmación</div>
-                                <div class="status-desc">Estado inicial, requiere confirmación</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-info text-white">Confirmada</div>
-                                <div class="status-name">Confirmada</div>
-                                <div class="status-desc">Paciente y médico confirmados</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-primary text-white">En Curso</div>
-                                <div class="status-name">En Curso</div>
-                                <div class="status-desc">Consulta en progreso</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-success text-white">Completada</div>
-                                <div class="status-name">Completada</div>
-                                <div class="status-desc">Consulta finalizada</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-danger text-white">Cancelada</div>
-                                <div class="status-name">Cancelada</div>
-                                <div class="status-desc">Cita cancelada por paciente o médico</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="status-badge-card">
-                                <div class="badge-display bg-secondary text-white">No Show</div>
-                                <div class="status-name">No Asistió</div>
-                                <div class="status-desc">Paciente no se presentó</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <strong>Flujo típico:</strong> Pendiente → Confirmada → En Curso → Completada. Los estados cancelada y no show son alternativos cuando la cita no se realiza.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Vistas del Calendario -->
-            <section id="vistas" class="step-card">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-eye me-2"></i>Vistas del Calendario</h3>
-                <div class="step-content">
-                    <p>El calendario ofrece tres vistas principales para adaptarse a tus necesidades:</p>
-
-                    <div class="calendar-view-card">
-                        <h6><i class="fas fa-calendar-day me-2"></i>Vista de Día</h6>
-                        <ul>
-                            <li><strong>Uso:</strong> Gestionar el día actual con detalle</li>
-                            <li><strong>Muestra:</strong> Horario completo del día con bloques de 30 minutos</li>
-                            <li><strong>Ideal para:</strong> Seguimiento de consultas en tiempo real</li>
-                        </ul>
-                    </div>
-
-                    <div class="calendar-view-card">
-                        <h6><i class="fas fa-calendar-week me-2"></i>Vista de Semana</h6>
-                        <ul>
-                            <li><strong>Uso:</strong> Planificar y organizar la semana laboral</li>
-                            <li><strong>Muestra:</strong> 7 días completos con todas las citas</li>
-                            <li><strong>Ideal para:</strong> Distribución de carga de trabajo</li>
-                        </ul>
-                    </div>
-
-                    <div class="calendar-view-card">
-                        <h6><i class="fas fa-calendar-alt me-2"></i>Vista de Mes</h6>
-                        <ul>
-                            <li><strong>Uso:</strong> Vista panorámica mensual</li>
-                            <li><strong>Muestra:</strong> Resumen de citas del mes completo</li>
-                            <li><strong>Ideal para:</strong> Planificación a largo plazo</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/calendar-views.png') }}" alt="Vistas del calendario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 1: Acceder al Calendario -->
-            <section id="paso-1" class="step-card">
-                <div class="step-number">1</div>
-                <h3 class="step-title">Acceder al Módulo de Citas</h3>
-                <div class="step-content">
-                    <p>Para comenzar a gestionar citas:</p>
-
-                    <div class="sub-step">
-                        <h6><i class="fas fa-route me-2"></i>Navegación</h6>
-                        <ol>
-                            <li>Inicia sesión en tu cuenta SAMI</li>
-                            <li>En el menú lateral, busca <strong>"Citas"</strong></li>
-                            <li>Haz clic en <strong>Calendario</strong> para ver todas las citas</li>
-                        </ol>
-                    </div>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/access-calendar.png') }}" alt="Acceso al calendario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <strong>Dashboard directo:</strong> En tu dashboard principal también verás un resumen de las citas del día actual con acceso rápido al calendario.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 2: Nueva Cita -->
-            <section id="paso-2" class="step-card step-important">
-                <div class="step-number">2</div>
-                <h3 class="step-title">Crear Nueva Cita</h3>
-                <div class="step-content">
-                    <p>Hay dos formas de crear una nueva cita:</p>
-
-                    <div class="sub-step">
-                        <h6><i class="fas fa-mouse-pointer me-2"></i>Opción 1: Botón Nueva Cita</h6>
-                        <p>En la parte superior del calendario, haz clic en el botón <strong class="text-primary">+ Nueva Cita</strong></p>
-                    </div>
-
-                    <div class="sub-step">
-                        <h6><i class="fas fa-hand-pointer me-2"></i>Opción 2: Clic Directo en Calendario</h6>
-                        <p>Haz clic directamente en el horario deseado dentro del calendario. El sistema abrirá automáticamente el formulario con la fecha y hora preseleccionadas.</p>
-                    </div>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/new-appointment-button.png') }}" alt="Crear nueva cita" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <div class="info-box info-note">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>Atajo rápido:</strong> La opción de clic directo es más rápida si ya sabes el horario exacto que necesitas.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 3: Seleccionar Paciente -->
-            <section id="paso-3" class="step-card">
-                <div class="step-number">3</div>
-                <h3 class="step-title">Seleccionar el Paciente</h3>
-                <div class="step-content">
-                    <p>El primer campo del formulario es la selección del paciente:</p>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/select-patient.png') }}" alt="Seleccionar paciente" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <table class="field-table">
-                        <thead>
-                        <tr>
-                            <th>Acción</th>
-                            <th>Descripción</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td data-label="Acción"><strong>Buscar por nombre</strong></td>
-                            <td data-label="Descripción">Escribe el nombre del paciente. El sistema mostrará coincidencias en tiempo real</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Acción"><strong>Buscar por documento</strong></td>
-                            <td data-label="Descripción">Puedes buscar también por número de cédula o identificación</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Acción"><strong>Paciente nuevo</strong></td>
-                            <td data-label="Descripción">Si el paciente no existe, hay un enlace rápido para registrarlo</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-box info-warning">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <div>
-                            <strong>Paciente requerido:</strong> No puedes crear una cita sin seleccionar primero un paciente registrado en el sistema.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 4: Elegir Médico -->
-            <section id="paso-4" class="step-card">
-                <div class="step-number">4</div>
-                <h3 class="step-title">Elegir el Médico/Profesional</h3>
-                <div class="step-content">
-                    <p>Selecciona el médico o profesional de salud que atenderá la cita:</p>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/select-doctor.png') }}" alt="Seleccionar médico" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <div class="sub-step">
-                        <h6><i class="fas fa-filter me-2"></i>Filtros disponibles</h6>
-                        <ul>
-                            <li><strong>Por especialidad:</strong> Filtra médicos según su especialidad</li>
-                            <li><strong>Por consultorio:</strong> Muestra solo médicos de un consultorio específico</li>
-                            <li><strong>Por disponibilidad:</strong> El sistema puede destacar médicos con horarios disponibles</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <strong>Disponibilidad en tiempo real:</strong> El sistema mostrará la disponibilidad del médico en la fecha seleccionada para evitar solapamientos.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 5: Fecha y Hora -->
-            <section id="paso-5" class="step-card step-important">
-                <div class="step-number">5</div>
-                <h3 class="step-title">Establecer Fecha y Hora</h3>
-                <div class="step-content">
-                    <p>Define cuándo se realizará la cita:</p>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/date-time.png') }}" alt="Fecha y hora" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <table class="field-table">
-                        <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                            <th>Requerido</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td data-label="Campo"><strong>Fecha</strong></td>
-                            <td data-label="Descripción">Selecciona el día de la cita usando el calendario</td>
-                            <td data-label="Requerido"><span class="required">Sí</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Hora de Inicio</strong></td>
-                            <td data-label="Descripción">Hora exacta en que comienza la cita (formato 24h o 12h)</td>
-                            <td data-label="Requerido"><span class="required">Sí</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Duración</strong></td>
-                            <td data-label="Descripción">Tiempo estimado de la consulta (15, 30, 45 o 60 minutos)</td>
-                            <td data-label="Requerido"><span class="required">Sí</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-box info-danger">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <div>
-                            <strong>Validación de conflictos:</strong> El sistema alertará si ya existe otra cita para el mismo médico en el horario seleccionado.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 6: Información Adicional -->
-            <section id="paso-6" class="step-card">
-                <div class="step-number">6</div>
-                <h3 class="step-title">Completar Información Adicional</h3>
-                <div class="step-content">
-                    <p>Agrega detalles complementarios de la cita:</p>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/additional-info.png') }}" alt="Información adicional" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <table class="field-table">
-                        <thead>
-                        <tr>
-                            <th>Campo</th>
-                            <th>Descripción</th>
-                            <th>Requerido</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td data-label="Campo"><strong>Consultorio</strong></td>
-                            <td data-label="Descripción">Sala o consultorio donde se realizará la cita</td>
-                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Motivo de Consulta</strong></td>
-                            <td data-label="Descripción">Razón de la visita (ej: Control, Primera vez, Urgencia)</td>
-                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Notas</strong></td>
-                            <td data-label="Descripción">Información adicional sobre la cita (alergias, preparación necesaria, etc.)</td>
-                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Enviar Recordatorio</strong></td>
-                            <td data-label="Descripción">Checkbox para activar el envío de email de recordatorio al paciente</td>
-                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-lightbulb"></i>
-                        <div>
-                            <strong>Notas útiles:</strong> Usa el campo de notas para información que el médico deba saber antes de la consulta, como "Paciente requiere intérprete" o "Traer resultados de laboratorio".
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Paso 7: Guardar Cita -->
-            <section id="paso-7" class="step-card step-success">
-                <div class="step-number">7</div>
-                <h3 class="step-title">Guardar la Cita</h3>
-                <div class="step-content">
-                    <p>Una vez completada toda la información:</p>
-
-                    <ol>
-                        <li>Revisa que todos los datos obligatorios estén completos</li>
-                        <li>Verifica que la fecha, hora y médico sean correctos</li>
-                        <li>Haz clic en el botón <strong>"Guardar Cita"</strong> o <strong>"Agendar"</strong></li>
-                        <li>Espera la confirmación del sistema</li>
-                    </ol>
-
-                    <div>
-                        <img src="{{ asset('images/tutorial/appointments/save-appointment.png') }}" alt="Guardar cita" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    </div>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-check-circle"></i>
-                        <div>
-                            <strong>Éxito!</strong> La cita ha sido agendada. Ahora puedes:
-                            <ul class="mb-0 mt-2">
-                                <li>Verla en el calendario en el horario seleccionado</li>
-                                <li>Editarla si necesitas hacer cambios</li>
-                                <li>Enviar notificaciones al paciente</li>
-                                <li>Cambiar su estado según avance el día</li>
+                            <ul class="mb-0">
+                                <li>Calendario visual interactivo</li>
+                                <li>Múltiples vistas (mes, semana, día)</li>
+                                <li>Gestión de estados de citas</li>
+                                <!--<li>Soporte para citas presenciales y virtuales</li>-->
+                                <li>Integración con WhatsApp</li>
+                                <li>Notificaciones automáticas</li>
                             </ul>
                         </div>
                     </div>
-
-                    <div class="info-box info-note">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <strong>Notificación automática:</strong> Si activaste "Enviar recordatorio", el paciente recibirá un email con los detalles de su cita próximamente.
+                    <div class="col-md-6">
+                        <div class="info-box note">
+                            <div class="info-box-title">
+                                <i class="fas fa-lightbulb text-primary"></i>
+                                Requisitos Previos
+                            </div>
+                            <ul class="mb-0">
+                                <li>Tener al menos una <a href="{{ route('help.branches') }}">sucursal</a> creada</li>
+                                <li>Tener al menos un <a href="{{ route('help.consulting-rooms') }}">consultorio</a> configurado</li>
+                                <li>Tener <a href="{{ route('help.patients') }}">pacientes</a> registrados</li>
+                                <li>Doctor(es) con horarios configurados</li>
+                            </ul>
                         </div>
+                    </div>
+                </div>
+
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment_btn.png') }}" alt="" style="width: 100%;">
+                </div>
+            </section>
+
+            <!-- Section 2: Appointment Types
+            <section id="tipos-cita" class="content-section">
+                <h2><i class="fas fa-list me-2"></i>2. Tipos de Cita</h2>
+
+                <p>SAMI soporta dos modalidades de atención para adaptarse a las necesidades de su práctica médica:</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="type-card">
+                            <div class="icon-circle presencial">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <h5>Cita Presencial</h5>
+                            <p class="text-muted mb-3">Consultas que requieren la presencia física del paciente en el consultorio.</p>
+                            <ul>
+                                <li>Exámenes físicos</li>
+                                <li>Procedimientos médicos</li>
+                                <li>Consultas de primera vez</li>
+                                <li>Evaluaciones completas</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="type-card">
+                            <div class="icon-circle virtual">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h5>Cita Virtual (Telemedicina)</h5>
+                            <p class="text-muted mb-3">Consultas realizadas de forma remota mediante videollamada.</p>
+                            <ul>
+                                <li>Seguimiento de tratamientos</li>
+                                <li>Consultas de control</li>
+                                <li>Revisión de resultados</li>
+                                <li>Asesorías médicas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        Sobre las Citas Virtuales
+                    </div>
+                    <p class="mb-0">Las citas virtuales utilizan la plataforma <strong>Jitsi Meet</strong> integrada en SAMI. Al crear una cita virtual, el sistema genera automáticamente un enlace único para la videollamada que se comparte con el paciente.</p>
+                </div>
+
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-image"></i>
+                    <p>Captura de pantalla: Selector de tipo de cita en el formulario de creación</p>
+                    <small>Recomendado: 600x300px - Mostrar el campo "Tipo de Cita" con las opciones desplegadas</small>
+                </div>
+            </section> -->
+
+            <!-- Section 4: Calendar View -->
+            <section id="calendario" class="content-section">
+                <h2><i class="fas fa-calendar-alt me-2"></i>2. Vista Calendario</h2>
+
+                <p>El calendario interactivo es la herramienta principal para visualizar y gestionar las citas. SAMI ofrece tres vistas diferentes:</p>
+
+                <div class="row mt-4 mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="view-card">
+                            <i class="fas fa-calendar"></i>
+                            <h5>Vista Mensual</h5>
+                            <p>Panorama general del mes completo. Ideal para planificación a largo plazo.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="view-card">
+                            <i class="fas fa-calendar-week"></i>
+                            <h5>Vista Semanal</h5>
+                            <p>Detalle de 7 días. Perfecta para gestión de la agenda semanal.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="view-card">
+                            <i class="fas fa-calendar-day"></i>
+                            <h5>Vista Diaria</h5>
+                            <p>Detalle hora por hora del día. Óptima para control del día actual.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Características del Calendario</h3>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><i class="fas fa-filter text-primary me-2"></i>Filtros Disponibles</h4>
+                        <ul>
+                            <li><strong>Por Doctor:</strong> Ver citas de un médico específico</li>
+                            <!--<li><strong>Por Sucursal:</strong> Filtrar por ubicación</li>
+                            <li><strong>Por Consultorio:</strong> Ver agenda de un consultorio</li>-->
+                            <li><strong>Por Estado:</strong> Filtrar por estado de la cita</li>
+                            <li><strong>Por Paciente:</strong> Ver cites de un paciente específico</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><i class="fas fa-mouse-pointer text-primary me-2"></i>Interacciones</h4>
+                        <ul>
+                            <li><strong>Clic en cita:</strong> Ver detalles y/o modificar cita</li>
+                            <!--<li><strong>Arrastrar cita:</strong> Reprogramar fecha/hora</li>
+                            <li><strong>Redimensionar:</strong> Ajustar duración</li>
+                            <li><strong>Doble clic:</strong> Editar cita</li>-->
+                        </ul>
+                    </div>
+                </div>
+
+                {{--}}<div>
+                   <img src="{{ asset('images/tutorial/appointments/appointment-weekly.png') }}" alt="" style="width: 100%;">
+               </div>{{--}}
+
+                <h3>Código de Colores</h3>
+                <p>Las citas se muestran con diferentes colores según su estado para facilitar la identificación visual y estos estados pueden variar según el tipo de vista:</p>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="field-table-wrapper">
+                            <table class="field-table">
+                                <thead>
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Estado</th>
+                                    <th>Vista</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!--<tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ffc107;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Pendiente</td>
+                                </tr>-->
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Booked->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+
+                                </tr>
+                                {{--}}<tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Confirm->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</td>
+                                </tr>{{--}}
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Arrived->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::CheckedIn->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Fulfilled->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Cancelled->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</td>
+                                    <td data-label="Vista">Mensual y Semanal</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::NoShow->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</td>
+                                    <td data-label="Vista">Mensual y Semanal</td>
+                                </tr>
+                                {{--}}<tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Waitlist->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</td>
+                                    <td data-label="Vista">Mensual, Semanal y Hoy</td>
+                                </tr>{{--}}
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#{{\App\Enums\AppointmentStatusEnum::Proposed->color()}};border-radius:4px;"></span></td>
+                                    <td data-label="Status">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</td>
+                                    <td data-label="Vista">Mensual y Semanal</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--<div class="col-md-6">
+                        <table class="field-table">
+                            <thead>
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#8bc34a;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Completada</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#f44336;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Cancelada</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ff5722;border-radius:4px;"></span></td>
+                                    <td data-label="Status">No Asistió</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#ff9800;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Lista de Espera</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Color"><span style="display:inline-block;width:20px;height:20px;background:#9e9e9e;border-radius:4px;"></span></td>
+                                    <td data-label="Status">Propuesta</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>-->
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-calendarf.png') }}" alt="" style="width: 100%;">
+                </div>
+            </section>
+
+            <!-- Section 5: Appointment States -->
+            <section id="estados" class="content-section">
+                <h2><i class="fas fa-exchange-alt me-2"></i>3. Estados de Cita</h2>
+
+                <p>Las citas en SAMI siguen un flujo de trabajo definido. Cada estado representa una etapa en el proceso de atención:</p>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Estados Disponibles</h4>
+                        <div class="mb-4">
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>
+                            <!--<span class="status-badge status-pending">Pendiente</span>-->
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
+                            {{--}}<span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>{{--}}
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
+                            <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
+                            <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span>
+                            <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span>
+                            {{--}}<span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span>{{--}}
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Flujo Típico de una Cita</h3>
+
+                <div class="workflow-container">
+                    <div class="workflow-step">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>
+                        <small class="d-block mt-1">Cita creada</small>
+                    </div>
+                    {{--}}<i class="fas fa-arrow-right workflow-arrow"></i>
+                    <div class="workflow-step">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span>
+                        <small class="d-block mt-1">Paciente confirma</small>
+                    </div>{{--}}
+                    <i class="fas fa-arrow-right workflow-arrow"></i>
+                    <div class="workflow-step">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span>
+                        <small class="d-block mt-1">Paciente llega</small>
+                    </div>
+                    <i class="fas fa-arrow-right workflow-arrow"></i>
+                    <div class="workflow-step">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span>
+                        <small class="d-block mt-1">Inicia atención</small>
+                    </div>
+                    <i class="fas fa-arrow-right workflow-arrow"></i>
+                    <div class="workflow-step">
+                        <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span>
+                        <small class="d-block mt-1">Finaliza consulta</small>
+                    </div>
+                </div>
+
+                <h3>Descripción de Estados</h3>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Descripción</th>
+                            <th>Acciones Disponibles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span></td>
+                            <td data-label="Descripcion">Cita sugerida, pendiente de a la confirmación del médico</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar</td>
+                        </tr>
+                        <!--<tr>
+                            <td data-label="Estado"><span class="status-badge status-pending">Pendiente</span></td>
+                            <td data-label="Descripcion">Cita creada, esperando confirmación</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                        </tr>-->
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></td>
+                            <td data-label="Descripcion">Cita reservada en el sistema</td>
+                            <td data-label="Acciones Disponibles">Confirmar, Cancelar, Editar</td>
+                        </tr>
+                        {{--}}<tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Confirm->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Confirm->label()}}</span></td>
+                            <td data-label="Descripcion">El paciente ha confirmado su asistencia</td>
+                            <td data-label="Acciones Disponibles">Marcar llegada, Cancelar</td>
+                        </tr>{{--}}
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span></td>
+                            <td data-label="Descripcion">Paciente está en la sala de espera</td>
+                            <td data-label="Acciones Disponibles">Iniciar consulta, No asistió</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span></td>
+                            <td data-label="Descripcion">La consulta está en progreso</td>
+                            <td data-label="Acciones Disponibles">Completar consulta</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span></td>
+                            <td data-label="Descripcion">La consulta ha finalizado exitosamente</td>
+                            <td data-label="Acciones Disponibles">Ver detalles, Ver historia</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></td>
+                            <td data-label="Descripcion">La cita fue cancelada</td>
+                            <td data-label="Acciones Disponibles">Ver motivo, Reagendar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span></td>
+                            <td data-label="Descripcion">El paciente no se presentó a la cita</td>
+                            <td data-label="Acciones Disponibles">Reagendar, Contactar</td>
+                        </tr>
+                        {{--}}<tr>
+                            <td data-label="Estado"><span class="{{\App\Enums\AppointmentStatusEnum::Waitlist->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Waitlist->label()}}</span></td>
+                            <td data-label="Descripcion">Paciente en espera de disponibilidad</td>
+                            <td data-label="Acciones Disponibles">Asignar horario, Cancelar</td>
+                        </tr>{{--}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-status.png') }}" alt="" style="width: 100%;">
+                </div>
+            </section>
+
+            <!-- Section 3: Create Appointment -->
+            <section id="crear-cita" class="content-section">
+                <h2><i class="fas fa-plus-circle me-2"></i>4. Crear Nueva Cita</h2>
+
+                <p>Siga estos pasos para agendar una nueva cita médica en el sistema:</p>
+
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <h4><span class="step-number">1</span><span class="step-title">Acceder al Módulo de Citas</span></h4>
+                    <p>Navegue a <strong>Citas</strong> desde el menú lateral izquierdo. Puede acceder a través de:</p>
+                    <ul>
+                        <li><strong>Vista Calendario:</strong> Menú → Citas → Calendario</li>
+                        <!--<li><strong>Vista Lista:</strong> Menú → Citas → Listado</li>-->
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-calendar.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <h4><span class="step-number">2</span><span class="step-title">Iniciar Creación de Cita</span></h4>
+                    <p>Hay varias formas de iniciar la creación de una nueva cita:</p>
+                    <ul>
+                        <li><strong>Botón "Nueva Cita":</strong> Clic en el botón superior derecho</li>
+                        <li><strong>Clic en calendario:</strong> Haga clic en cualquier espacio disponible del calendario (Vista Mensual y Semanal)</li>
+                        <!--<li><strong>Arrastrar y soltar:</strong> Arrastre sobre un rango de tiempo para preseleccionar la hora</li>-->
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-new.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <h4><span class="step-number">3</span><span class="step-title">Completar Formulario de Cita</span></h4>
+                    <p>Se abrirá el modal de creación de cita. Complete los siguientes campos:</p>
+                    <div class="field-table-wrapper">
+                        <table class="field-table">
+                            <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                                <th>Requerido</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td data-label="Campo"><strong>Paciente</strong></td>
+                                <td data-label="Descripcion">Busque y seleccione el paciente por nombre o documento de identidad</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br> <small>en todos los usuarios, excluyendo al paciente.</small></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Especialidad</strong></td>
+                                <td data-label="Descripcion">Seleccione la especialidad médica requerida para la consulta.</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span> <br><small>Visible para todos los roles (para Doctores solo si tienen más de una especialidad).</small></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Doctor</strong></td>
+                                <td data-label="Descripcion">Seleccione el profesional de salud que atenderá la cita.</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span><br><small>Visible para Paciente, Asistente y Recepcionista (no visible para Doctores).</small></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Fecha</strong></td>
+                                <td data-label="Descripcion">Fecha programada para la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <!--<tr>
+                                <td data-label="Campo"><strong>Sucursal</strong></td>
+                                <td data-label="Descripcion">Seleccione la sucursal donde se realizará la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>-->
+                            <tr>
+                                <td data-label="Campo"><strong>Duración</strong></td>
+                                <td data-label="Descripcion">Tiempo programado de duración de la cita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Consultorio</strong></td>
+                                <td data-label="Descripcion">Consultorio específico dentro de la sucursal seleccionada</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <!--<tr>
+                                <td data-label="Campo"><strong>Hora Inicio</strong></td>
+                                <td data-label="Descripcion">Hora de inicio de la consulta</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Hora Fin</strong></td>
+                                <td data-label="Descripcion">Hora estimada de finalización</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Cita</strong></td>
+                                <td data-label="Descripcion">Presencial o Virtual</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Motivo de Consulta</strong></td>
+                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>-->
+                            <tr>
+                                <td data-label="Campo"><strong>Tipo de Servicio</strong></td>
+                                <td data-label="Descripcion">Descripción breve del motivo de la visita</td>
+                                <td data-label="Requerido"><span class="required-badge">Requerido</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Campo"><strong>Nota adicional</strong></td>
+                                <td data-label="Descripcion">Información adicional o instrucciones especiales</td>
+                                <td data-label="Opcional"><span class="optional-badge">Opcional</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-modal.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card">
+                    <h4><span class="step-number">4</span><span class="step-title">Búsqueda de Paciente</span></h4>
+                    <p>El campo de paciente cuenta con búsqueda inteligente:</p>
+                    <ol>
+                        <li>Escriba el nombre del paciente (al menos 2 caracteres) o escriba el número de documento de identidad.</li>
+                        <li>Seleccione el paciente de la lista desplegable.</li>
+                    </ol>
+
+                    <div class="info-box tip">
+                        <div class="info-box-title">
+                            <i class="fas fa-lightbulb text-success"></i>
+                            Consejo
+                        </div>
+                        <p class="mb-0">Si el paciente no existe, puede crear uno nuevo desde el módulo de <a href="{{ route('help.patients') }}">Pacientes</a> y luego regresar a crear la cita.</p>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-patient.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step-card">
+                    <h4><span class="step-number">5</span><span class="step-title">Selección de Especialidad</span></h4>
+                    <p>Seleccione la especialidad médica para la consulta:</p>
+                    <ul>
+                        <li>Este campo es visible para todos los roles del sistema.</li>
+                        <li><strong>Nota para Doctores:</strong> Este campo solo se mostrará si usted tiene más de una especialidad registrada en su perfil.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-spec.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="step-card">
+                    <h4><span class="step-number">6</span><span class="step-title">Selección de Doctor</span></h4>
+                    <p>Asigne al profesional de salud que realizará la atención:</p>
+                    <ul>
+                        <li>Este campo es visible para pacientes, asistentes y recepcionistas.</li>
+                        <li><strong>Nota:</strong> Este campo no es visible para los doctores, ya que el sistema asigna automáticamente la cita a su propia agenda.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-doc.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="step-card">
+                    <h4><span class="step-number">7</span><span class="step-title">Selección de Fecha y Horario Disponible</span></h4>
+                    <p>El sistema valida automáticamente la disponibilidad:</p>
+                    <ul>
+                        <li>Se verifican los horarios de trabajo del doctor seleccionado</li>
+                        <li>Se comprueba que no existan conflictos con otras citas</li>
+                        <li>Se valida la disponibilidad del consultorio</li>
+                    </ul>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                            Importante
+                        </div>
+                        <p class="mb-0">Si intenta agendar fuera del horario de trabajo del doctor o en un horario ya ocupado, el sistema mostrará un mensaje de error indicando el conflicto.</p>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-schedule.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="step-card">
+                    <h4><span class="step-number">8</span><span class="step-title">Duración de la Cita</span></h4>
+                    <p>Seleccione el tiempo estimado para la atención del paciente:</p>
+                    <ul>
+                        <li>El tiempo se define en minutos (ej. 15, 30, 45, 60 min).</li>
+                        <li>Este valor determinará el espacio que ocupará la cita en el calendario.</li>
+                        <li>Asegúrese de que el doctor tenga disponibilidad suficiente para la duración seleccionada.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-duration.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="step-card">
+                    <h4><span class="step-number">9</span><span class="step-title">Selección de Consultorio</span></h4>
+                    <p>Asigne el espacio físico donde se llevará a cabo la consulta:</p>
+                    <ul>
+                        <li>Seleccione uno de los consultorios disponibles en la sucursal.</li>
+                        <li>El sistema validará que el consultorio no esté ocupado por otro profesional al mismo tiempo.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-branch.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="step-card">
+                    <h4><span class="step-number">10</span><span class="step-title">Tipo de Servicio</span></h4>
+                    <p>Indique el propósito o servicio específico de la cita:</p>
+                    <ul>
+                        <!--<li>Seleccione de la lista de servicios configurados (ej. Consulta General, Control, Procedimiento).</li>-->
+                        <li>Este campo ayuda a categorizar la cita y preparar cualquier material necesario previo a la atención.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-st.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="step-card">
+                    <h4><span class="step-number">11</span><span class="step-title">Nota Adicional (Opcional)</span></h4>
+                    <p>Utilice este campo para añadir información relevante para el médico o el equipo de recepción:</p>
+                    <ul>
+                        <li>Motivo específico de la consulta si requiere aclaración extra.</li>
+                        <li>Observaciones sobre requerimientos especiales del paciente.</li>
+                        <li>Instrucciones internas o recordatorios para la llegada.</li>
+                    </ul>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-an.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 12 -->
+                <div class="step-card">
+                    <h4><span class="step-number">12</span><span class="step-title">Guardar la Cita</span></h4>
+                    <p>Una vez completados todos los campos requeridos:</p>
+                    <ol>
+                        <li>Revise que todos los datos sean correctos</li>
+                        <li>Clic en el botón <strong>"Guardar Cita"</strong></li>
+                        <li>El sistema creará la cita con estado inicial <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span>, si es creada por el médico, y <span class="{{\App\Enums\AppointmentStatusEnum::Proposed->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Proposed->label()}}</span>, si es creada por el paciente</li>
+                        <li>La cita aparecerá inmediatamente en el calendario</li>
+                    </ol>
+
+                    <div class="info-box note">
+                        <div class="info-box-title">
+                            <i class="fas fa-bell text-primary"></i>
+                            Notificaciones
+                        </div>
+                        <p class="mb-0">Al crear una cita, el sistema puede enviar notificaciones automáticas al paciente por correo electrónico.</p>
+                    </div>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">
+                            <i class="fas fa-calendar-alt text-warning"></i>
+                            Nota sobre Visualización y Estados
+                        </div>
+                        <p>Es importante notar que la visualización del estado puede variar según la vista del calendario:</p>
+                        <ul>
+                            <li><strong>Vistas Mensual y Semanal:</strong> Cuando el doctor, recepcionista o asistente crea la cita, esta se muestra con el estado <strong>"Reservado"</strong>.</li>
+                            <li><strong>Vista "Hoy":</strong> En esta vista, la cita no aparece como "Reservado", sino con el estado <strong>"Próxima Cita"</strong>. Adicionalmente:
+                                <ul>
+                                    <li><strong>Próximos 15 mins:</strong> Cuando falten 15 minutos para el inicio de la cita, el color cambiará automáticamente a <strong>morado</strong> y el estado se actualizará a <strong>"Próximos 15 mins"</strong>.</li>
+                                    <li><strong>Retrasada:</strong> Si la cita no se ha iniciado después del tiempo asignado, el sistema marcará automáticamente el estado como <strong>"Retrasada"</strong>.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/appointments/appointment-created.png') }}" alt="" style="width: 100%;">
                     </div>
                 </div>
             </section>
 
-            <!-- Gestionar Citas Existentes -->
-            <section id="gestionar" class="step-card">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-cogs me-2"></i>Gestionar Citas Existentes</h3>
-                <div class="step-content">
-                    <p>Una vez creadas las citas, puedes gestionarlas desde el calendario:</p>
+            <!-- Section 6: Appointment Management -->
+            <section id="gestion" class="content-section">
+                <h2><i class="fas fa-tasks me-2"></i>5. Detalles y modificaciones de Citas</h2>
 
-                    <div class="appointment-flow-timeline">
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <h6>Ver Detalles</h6>
-                                <p>Haz clic en cualquier cita del calendario para ver su información completa en un modal o panel lateral.</p>
-                                <div>
-                                    <img src="{{ asset('images/tutorial/appointments/view-details.png') }}" alt="Ver detalles" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
+                <h3>Ver Detalles de una Cita</h3>
+                <p>Al hacer clic en una cita del calendario, se muestra un panel con información detallada:</p>
 
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <h6>Editar Cita</h6>
-                                <p>Desde el detalle, puedes hacer clic en <strong>"Editar"</strong> para modificar la fecha, hora, médico o cualquier información de la cita.</p>
-                                <div>
-                                    <img src="{{ asset('images/tutorial/appointments/edit-appointment.png') }}" alt="Editar cita" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <h6>Cambiar Estado</h6>
-                                <p>Usa los botones de acción rápida para cambiar el estado: Confirmar, Cancelar, Marcar como No Show, o Completar.</p>
-                                <div>
-                                    <img src="{{ asset('images/tutorial/appointments/change-status.png') }}" alt="Cambiar estado" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <h6>Iniciar Consulta</h6>
-                                <p>Cuando el paciente llegue, puedes hacer clic en <strong>"Iniciar Consulta"</strong> para pasar directamente al módulo de consulta médica, donde se registrará la historia clínica, diagnósticos y tratamiento.</p>
-                                <div>
-                                    <img src="{{ asset('images/tutorial/appointments/start-consultation.png') }}" alt="Iniciar consulta" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item completed">
-                            <div class="timeline-content">
-                                <h6>Eliminar Cita</h6>
-                                <p>Si necesitas eliminar una cita (por error o duplicado), usa el botón de eliminar. El sistema pedirá confirmación antes de borrarla permanentemente.</p>
-                                <div class="info-box info-warning mt-3">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <div>
-                                        <strong>Importante:</strong> Eliminar una cita es permanente. Si solo necesitas cancelarla temporalmente, es mejor cambiar su estado a "Cancelada".
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Nombre del paciente</li>
+                            <!--<li>Documento de identidad</li>
+                            <li>Teléfono de contacto</li>-->
+                            <li>Tiempo en que dura la cita</li>
+                            <li>Tipo de servicio</li>
+                            <li>Doctor asignado (visible en usuarios con rol paciente, asistente y recepcionista)</li>
+                            <li>Fecha y hora programada</li>
+                        </ul>
                     </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Sucursal y consultorio</li>
+                            <!--<li>Tipo de cita (presencial/virtual)</li>
+                            <li>Estado actual</li>
+                            <li>Motivo de consulta</li>-->
+                            <li>Notas adicionales</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-detail.png') }}" alt="" style="width: 100%;">
+                </div>
+
+                <h3>Editar una Cita</h3>
+                <p>Para modificar los datos de una cita existente:</p>
+                <ol>
+                    <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
+                    <!--<li>Seleccione <strong>"Editar"</strong> en el menú de opciones</li>-->
+                    <li>Modifique los campos necesarios</li>
+                    <li>Clic en <strong>"Actualizar Cita"</strong></li>
+                </ol>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Restricciones de Edición
+                    </div>
+                    <ul class="mb-0">
+                        <li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Fulfilled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Fulfilled->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::NoShow->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::NoShow->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::Arrived->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Arrived->label()}}</span> <span class="{{\App\Enums\AppointmentStatusEnum::CheckedIn->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::CheckedIn->label()}}</span> no pueden modificarse</li>
+                        {{--}}<li>Las citas <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span> no pueden editarse, solo reagendarse</li>{{--}}
+                        <li>No se puede cambiar a un horario que genere conflictos</li>
+                    </ul>
+                </div>
+
+                <!-- <h3>Reprogramar una Cita (Drag & Drop)</h3>
+                <p>El calendario permite reprogramar citas arrastrándolas:</p>
+                <ol>
+                    <li>Ubique la cita en el calendario</li>
+                    <li>Haga click sostenido sobre la cita</li>
+                    <li>Arrastre al nuevo horario deseado</li>
+                    <li>Suelte para confirmar el cambio</li>
+                    <li>El sistema validará la disponibilidad automáticamente</li>
+                </ol>
+
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-arrows-alt"></i>
+                    <p>Captura de pantalla: Cita siendo arrastrada a nuevo horario</p>
+                    <small>Recomendado: 800x500px - Mostrar el efecto visual de arrastrar una cita en el calendario</small>
+                </div> -->
+
+                <h3>Eliminar una Cita</h3>
+                <p>Para eliminar una cita:</p>
+                <ol>
+                    <li>En la Lista Citas en la columna de acciones, selecciona el botón de editar.</li>
+                    <li>Clic en <strong>"Borrar"</strong></li>
+                    <li>Ingrese el motivo de cancelación (opcional pero recomendado y sólo para usuarios con rol <strong>"Paciente"</strong>)</li>
+                    <li>Confirme la cancelación</li>
+                    <li>Aparecerá un mensaje el parte superior derecha confirmando que la cita se ha elimnado exitosamente</li>
+                </ol>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">
+                        <i class="fas fa-exclamation-circle text-danger"></i>
+                        Advertencia
+                    </div>
+                    <p class="mb-0">La cancelación de citas es una acción que queda registrada en el historial. Si el paciente necesita otra cita, deberá crear una nueva.</p>
                 </div>
             </section>
 
-            <!-- Notificaciones -->
-            <section id="notificaciones" class="step-card step-info">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-bell me-2"></i>Sistema de Notificaciones</h3>
-                <div class="step-content">
-                    <p>SAMI envía notificaciones automáticas para mantener informados a pacientes y médicos:</p>
+            <!-- Section 7: WhatsApp Integration -->
+            <section id="whatsapp" class="content-section">
+                <h2><i class="fab fa-whatsapp me-2"></i>6. Integración con WhatsApp</h2>
 
-                    <div class="row mt-4">
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #e65100 !important;">
-                                <div class="card-body">
-                                    <h6 class="fw-bold" style="color: #e65100;"><i class="fas fa-calendar-plus me-2"></i>Confirmación de Cita</h6>
-                                    <p class="small text-muted mb-2">Se envía al crear una nueva cita.</p>
-                                    <ul class="small mb-0">
-                                        <li><strong>Destinatario:</strong> Paciente y médico</li>
-                                        <li><strong>Contenido:</strong> Fecha, hora, lugar y médico asignado</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                <p>SAMI incluye integración con WhatsApp para comunicación directa con los pacientes sobre sus citas:</p>
 
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #0288d1 !important;">
-                                <div class="card-body">
-                                    <h6 class="text-primary fw-bold"><i class="fas fa-clock me-2"></i>Recordatorio</h6>
-                                    <p class="small text-muted mb-2">Se envía 24 horas antes de la cita.</p>
-                                    <ul class="small mb-0">
-                                        <li><strong>Destinatario:</strong> Paciente</li>
-                                        <li><strong>Contenido:</strong> Recordatorio de la cita con instrucciones</li>
-                                    </ul>
-                                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="info-box tip">
+                            <div class="info-box-title">
+                                <i class="fab fa-whatsapp text-success"></i>
+                                Funciones de WhatsApp
                             </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #f57c00 !important;">
-                                <div class="card-body">
-                                    <h6 class="fw-bold" style="color: #f57c00;"><i class="fas fa-edit me-2"></i>Cambios en la Cita</h6>
-                                    <p class="small text-muted mb-2">Se envía si se modifica la cita.</p>
-                                    <ul class="small mb-0">
-                                        <li><strong>Destinatario:</strong> Paciente y médico</li>
-                                        <li><strong>Contenido:</strong> Nueva fecha/hora o cambios realizados</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #d32f2f !important;">
-                                <div class="card-body">
-                                    <h6 class="text-danger fw-bold"><i class="fas fa-times-circle me-2"></i>Cancelación</h6>
-                                    <p class="small text-muted mb-2">Se envía si se cancela la cita.</p>
-                                    <ul class="small mb-0">
-                                        <li><strong>Destinatario:</strong> Paciente y médico</li>
-                                        <li><strong>Contenido:</strong> Notificación de cancelación y motivo</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <ul class="mb-0">
+                                <li><strong>Confirmar cita:</strong> Enviar solicitud de confirmación</li>
+                                <li><strong>Recordatorios:</strong> Notificar próximas citas</li>
+                                <li><strong>Cancelación:</strong> Notificar sobre cancelaciones</li>
+                                <li><strong>Reprogramación:</strong> Informar cambios de horario</li>
+                            </ul>
                         </div>
                     </div>
-
-                    <div class="info-box info-tip">
-                        <i class="fas fa-cog"></i>
-                        <div>
-                            <strong>Configuración:</strong> Puedes personalizar las plantillas de email y los tiempos de envío de recordatorios desde la configuración de tu clínica.
+                    <div class="col-md-6">
+                        <div class="info-box note">
+                            <div class="info-box-title">
+                                <i class="fas fa-cog text-primary"></i>
+                                Configuración Requerida
+                            </div>
+                            <p class="mb-0">La integración de WhatsApp debe estar configurada por el administrador del sistema. Contacte al soporte si esta función no está disponible.</p>
                         </div>
                     </div>
+                </div>
+
+                <h3>Mensaje de Confirmación</h3>
+                <p>Se le enviará al paciente un mensaje vía WhatsApp, 2 horas antes de la cita programada como recordatorio para que confirme o cancele la cita.</p>
+                <!--<ol>
+                    <li>El sistema enviará el mensaje al número registrado del paciente</li>
+                </ol> -->
+
+                <div class="yappy-img">
+                    <img class="yappy-imgsize" src="{{ asset('images/tutorial/appointments/appointment-wp.jpeg') }}" alt="" >
+                </div>
+
+                <h3>Mensajes Interactivos</h3>
+                <p>Los pacientes pueden interactuar con los mensajes de WhatsApp para:</p>
+                <ul>
+                    <li><strong>Confirmar asistencia:</strong> El paciente responde "Confirmar" y la cita cambia automáticamente a estado <span class="{{\App\Enums\AppointmentStatusEnum::Booked->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Booked->label()}}</span></li>
+                    <li><strong>Cancelar cita:</strong> El paciente responde "Cancelar" y la cita se actualiza a estado <span class="{{\App\Enums\AppointmentStatusEnum::Cancelled->badgeClass()}}">{{\App\Enums\AppointmentStatusEnum::Cancelled->label()}}</span></li>
+                    <li><strong>Solicitar reagendamiento:</strong> El paciente puede solicitar un nuevo horario</li>
+                </ul>
+
+                <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-robot text-primary"></i>
+                        Automatización con n8n
+                    </div>
+                    <p class="mb-0">SAMI utiliza la plataforma n8n para automatizar los flujos de mensajería de WhatsApp. Las respuestas de los pacientes se procesan automáticamente y actualizan el estado de las citas en tiempo real.</p>
+                </div>
+            </section>
+
+            <!-- Section 8: Appointment List -->
+            <section id="listado" class="content-section">
+                <h2><i class="fas fa-list-alt me-2"></i>7. Listado de Citas</h2>
+
+                <p>Además del calendario, SAMI ofrece una vista de lista que permite gestionar citas de forma tabular:</p>
+
+                <h3>Acceder al Listado</h3>
+                <p>Navegue a <strong>Citas → Lista Citas</strong> desde el menú lateral.</p>
+
+                <h3>Características del Listado</h3>
+                <ul>
+                    <li><strong>Búsqueda:</strong> Buscar por nombre de paciente o doctor </li>
+                    <!--<li><strong>Filtros avanzados:</strong> Por fecha, estado, sucursal, doctor</li>-->
+                    <li><strong>Ordenamiento:</strong> Por fecha, paciente, doctor, estado</li>
+                    <li><strong>Paginación:</strong> Navegar entre páginas de resultados</li>
+                    <li><strong>Acciones rápidas:</strong> Cambiar estado, editar, cancelar desde la lista</li>
+                </ul>
+
+                <div>
+                    <img src="{{ asset('images/tutorial/appointments/appointment-filter.png') }}" alt="" style="width: 100%;">
+                </div>
+
+                <h3>Columnas del Listado</h3>
+                <div class="field-table-wrapper">
+                    <table class="field-table">
+                        <thead>
+                        <tr>
+                            <th>Columna</th>
+                            <th>Descripción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td data-label="Columna"><strong>ID</strong></td>
+                            <td data-label="Descripcion">Número de la Cita</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Paciente</strong></td>
+                            <td data-label="Descripcion">Nombre</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Doctor</strong></td>
+                            <td data-label="Descripcion">Profesional asignado a la cita</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Estado</strong></td>
+                            <td data-label="Descripcion">Estado actual de la cita</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Tipo</strong></td>
+                            <td data-label="Descripcion">Descripción del Servicio</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Sucursal</strong></td>
+                            <td data-label="Descripcion">Ubicación del lugar</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Consultorio</strong></td>
+                            <td data-label="Descripcion">Ubicación de la consulta</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Fecha/Hora</strong></td>
+                            <td data-label="Descripcion">Fecha y hora programada</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Acciones</strong></td>
+                            <td data-label="Descripcion">Botones para editar y cambiar estado</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-box note mt-4">
+                    <div class="info-box-title">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        Ordenamiento
+                    </div>
+                    <p class="mb-0">El ordenamiento se ejecuta haciendo clic en el nombre en la columna que desea ordenar.</p>
                 </div>
             </section>
 
@@ -1588,44 +1999,44 @@ body {
 
                     <table class="field-table" style="margin: 20px 0;">
                         <thead>
-                            <tr>
-                                <th>Columna</th>
-                                <th>Descripción</th>
-                            </tr>
+                        <tr>
+                            <th>Columna</th>
+                            <th>Descripción</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td data-label="Columna"><strong>Score Prioridad</strong></td>
-                                <td data-label="Descripción">Número 0-100 que indica la posición en la fila. Score más alto = más prioridad</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Paciente</strong></td>
-                                <td data-label="Descripción">Nombre completo del paciente + identificador</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Especialidad</strong></td>
-                                <td data-label="Descripción">Especialidad médica solicitada</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Urgencia</strong></td>
-                                <td data-label="Descripción">Nivel de urgencia (Rutinaria, Urgente, Muy Urgente, Emergencia)</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Fecha Preferida</strong></td>
-                                <td data-label="Descripción">Fecha que el paciente solicitó (si es específica)</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Días Esperando</strong></td>
-                                <td data-label="Descripción">Cuántos días lleva esperando en la lista</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Expira En</strong></td>
-                                <td data-label="Descripción">Días restantes antes de que su solicitud expire</td>
-                            </tr>
-                            <tr>
-                                <td data-label="Columna"><strong>Acciones</strong></td>
-                                <td data-label="Descripción">Botones para Asignar (si hay espacio) o Cancelar</td>
-                            </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Score Prioridad</strong></td>
+                            <td data-label="Descripción">Número 0-100 que indica la posición en la fila. Score más alto = más prioridad</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Paciente</strong></td>
+                            <td data-label="Descripción">Nombre completo del paciente + identificador</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Especialidad</strong></td>
+                            <td data-label="Descripción">Especialidad médica solicitada</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Urgencia</strong></td>
+                            <td data-label="Descripción">Nivel de urgencia (Rutinaria, Urgente, Muy Urgente, Emergencia)</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Fecha Preferida</strong></td>
+                            <td data-label="Descripción">Fecha que el paciente solicitó (si es específica)</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Días Esperando</strong></td>
+                            <td data-label="Descripción">Cuántos días lleva esperando en la lista</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Expira En</strong></td>
+                            <td data-label="Descripción">Días restantes antes de que su solicitud expire</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Columna"><strong>Acciones</strong></td>
+                            <td data-label="Descripción">Botones para Asignar (si hay espacio) o Cancelar</td>
+                        </tr>
                         </tbody>
                     </table>
 
@@ -1677,52 +2088,136 @@ body {
                 </div>
             </section>
 
-            <!-- Siguiente Paso -->
-            <section id="siguiente" class="step-card step-success">
-                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-arrow-right me-2"></i>Siguiente Paso: Consulta Médica</h3>
-                <div class="step-content">
-                    <p>Ahora que sabes agendar y gestionar citas, el siguiente paso es aprender a realizar la <strong>consulta médica</strong> cuando el paciente llega.</p>
+            <!-- Section 9: Tips -->
+            <section id="tips" class="content-section">
+                <h2><i class="fas fa-lightbulb me-2"></i>8. Tips y Mejores Prácticas</h2>
 
-                    <div class="info-box info-note">
-                        <i class="fas fa-stethoscope"></i>
-                        <div>
-                            <strong>La consulta médica incluye:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Registro de signos vitales</li>
-                                <li>Motivo de consulta y enfermedad actual</li>
-                                <li>Examen físico y hallazgos</li>
-                                <li>Diagnósticos con código ICD-10</li>
-                                <li>Prescripción de medicamentos</li>
-                                <li>Órdenes de laboratorio e imágenes</li>
-                                <li>Plan de tratamiento y seguimiento</li>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-box tip">
+                            <div class="info-box-title">
+                                <i class="fas fa-check text-success"></i>
+                                Mejores Prácticas
+                            </div>
+                            <ul class="mb-0">
+                                <li>Confirme las citas con anticipación vía WhatsApp</li>
+                                <li>Utilice el motivo de consulta para prepararse mejor</li>
+                                <li>Revise el calendario al inicio del día</li>
+                                <li>Deje tiempo de buffer entre citas</li>
+                                <li>Actualice los estados en tiempo real</li>
+                                <li>Registre los motivos de cancelación</li>
                             </ul>
                         </div>
                     </div>
-
-                    <div class="text-center mt-4">
-                        <a href="{{ route('help.consultation') }}" class="btn btn-lg text-white" style="background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);">
-                            <i class="fas fa-stethoscope me-2"></i>Continuar: Consulta Médica
-                        </a>
+                    <div class="col-md-6">
+                        <div class="info-box warning">
+                            <div class="info-box-title">
+                                <i class="fas fa-exclamation text-warning"></i>
+                                Errores Comunes a Evitar
+                            </div>
+                            <ul class="mb-0">
+                                <!--<li>No verificar disponibilidad antes de agendar</li>
+                                <li>Olvidar actualizar el estado de las citas</li>-->
+                                <li>No registrar el motivo de consulta</li>
+                                <!--<li>Agendar fuera del horario del doctor</li>
+                                <li>No enviar recordatorios a los pacientes</li>-->
+                                <li>Dejar citas en estado "Reservado" indefinidamente</li>
+                            </ul>
+                        </div>
                     </div>
+                </div>
+
+                <!--<h3>Atajos de Teclado (Calendario)</h3>
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Atajo</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><kbd>←</kbd> / <kbd>→</kbd></td>
+                            <td>Navegar al período anterior/siguiente</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>T</kbd></td>
+                            <td>Ir a la fecha actual (Today)</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>M</kbd></td>
+                            <td>Cambiar a vista mensual</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>W</kbd></td>
+                            <td>Cambiar a vista semanal</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>D</kbd></td>
+                            <td>Cambiar a vista diaria</td>
+                        </tr>
+                    </tbody>
+                </table>-->
+
+                <div class="info-box note mt-4">
+                    <div class="info-box-title">
+                        <i class="fas fa-question-circle text-primary"></i>
+                        ¿Necesita Ayuda?
+                    </div>
+                    <p class="mb-0">Si tiene dudas sobre el módulo de citas o encuentra algún problema, contacte al equipo de soporte técnico de SAMI. Recuerde que puede acceder a otras guías desde el menú lateral para aprender sobre funcionalidades relacionadas como la <a href="{{ route('help.medical-history') }}">Historia Médica</a>.</p>
                 </div>
             </section>
 
-            <!-- Contact Support -->
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h5 class="mb-2"><i class="fas fa-question-circle me-2" style="color: #e65100;"></i>¿Tienes preguntas sobre el agendamiento de citas?</h5>
-                            <p class="text-muted mb-0">Nuestro equipo de soporte está disponible para ayudarte.</p>
-                        </div>
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <a href="mailto:business@meditecpty.com" class="btn text-white" style="background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);">
-                                <i class="fas fa-envelope me-2"></i>Contactar Soporte
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div> <!-- End col-lg-8 -->
+    </div> <!-- End row -->
+
+    <!-- Navigation -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ route('help.medical-history') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>Historia Médica
+        </a>
+        <a href="{{ route('help.index') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-home me-2"></i>Volver al Inicio
+        </a>
     </div>
-@stop
+</main>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Back to Top functionality
+    const backToTop = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+</script>
+</body>
+</html>

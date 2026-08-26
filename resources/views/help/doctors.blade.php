@@ -292,15 +292,18 @@ body {
                 <ul>
                     <li>Nombre y Especialidad del doctor.</li>
                     <li>Información de contacto (correo y teléfono).</li>
+                    <li>Información personal (fecha de nacimineto y Número de documento)</li>
+                    {{--}}
                     <li>Sucursales y consultorios asignados.</li>
                     <li>Estado de actividad en el sistema.</li>
+                    {{--}}
                 </ul>
             </div>
                 <div>
                      <img src="{{ asset('images/tutorial/practitioner/practitioner_list.png') }}" alt="Lista de doctores" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                 </div>
         </div>
-
+       {{--}}
         <div class="step-card">
             <div class="step-title"><strong>Acciones Administrativas</strong></div>
             <div class="step-content">
@@ -312,6 +315,7 @@ body {
                 </ul>
             </div>
         </div>
+        {{--}}
     </div>
 
     <div class="d-flex justify-content-between mt-4">

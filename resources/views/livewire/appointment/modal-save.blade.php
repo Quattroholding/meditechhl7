@@ -147,6 +147,11 @@
                         <x-subscription-alert :showFirstCol="false"/>
                     @endif
                     <div style="margin-top: 30px; display: flex; gap: 15px;">
+                        @if(auth()->user()->can('viewConsultation',$appointment))
+                            <a href="{{route('consultation.show',$appointment['id'])}}" class="btn btn-primary">
+                                @if($appointment->encounter) {{__('Editar Consulta')}} @else ✏ {{__(' Llenar Consulta')}}@endif
+                            </a>
+                        @endif
                         @if(auth()->user()->can('edit',$appointment) or (!$appointment and auth()->user()->canScheduleAppointments()))
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
                                 {{ $buttonSaveTitle }}
