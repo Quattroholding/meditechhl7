@@ -336,7 +336,8 @@
                 <thead>
                 <tr>
                     <th>Módulo / Función</th>
-                    @foreach($roles as $role)
+
+                    @foreach(App\Models\Rol::withoutGlobalScopes()->where('id','<',6)->get() as $role)
                         <th>{{ ucwords($role->name) }}</th>
                     @endforeach
                 </tr>
@@ -349,7 +350,7 @@
                     @foreach($modulePermissions as $permission)
                         <tr class="permission-row">
                             <td>{{ $permission->description ?? $permission->name }}</td>
-                            @foreach($roles as $role)
+                            @foreach(App\Models\Rol::withoutGlobalScopes()->where('id','<',6)->get() as $role)
                                 @php
                                     $hasPermission = isset($matrix[$permission->id]) && in_array($role->id, $matrix[$permission->id]);
                                 @endphp
