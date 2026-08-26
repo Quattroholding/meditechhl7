@@ -559,7 +559,7 @@
 
                                 $canResendWhatsApp = ($hasUnsentMedications || $hasUnsentServiceRequests) && $practitionerHasSignatureAndSeal;
                             @endphp
-
+                            {{--}}
                             @if($canResendWhatsApp && ($encounter->patient->whatsapp_phone || $encounter->patient->phone))
                                 <form action="{{ route('consultation.resend-whatsapp', $encounter->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de enviar las prescripciones por WhatsApp al paciente?');">
                                     @csrf
@@ -568,6 +568,7 @@
                                     </button>
                                 </form>
                             @endif
+                            {{--}}
                         </div>
                     </div>
                 </div>

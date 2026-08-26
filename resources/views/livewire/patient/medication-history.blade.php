@@ -65,16 +65,18 @@
                                              wire:click="toggleMedicationSelection({{ $medication->id }})">
 
                                             <div class="d-flex align-items-start">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox"
+                                                <div class="medication-checkbox-wrapper me-3">
+                                                    <input class="medication-checkbox" type="checkbox"
+                                                           id="medication-{{ $medication->id }}"
                                                            {{ in_array($medication->id, $selectedMedicationIds) ? 'checked' : '' }}
                                                            readonly>
+                                                    <label for="medication-{{ $medication->id }}" class="medication-checkbox-label"></label>
                                                 </div>
 
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-1">
                                                         <i class="fas fa-capsules me-2 text-primary"></i>
-                                                        {{ $medication->medicine->full_name ?? __('patient.medication_history.medication_not_specified') }}
+                                                        {{ $medication->medicine->full_name ?? $medication->medication2->display ?? $medication->medication2->home_name ?? __('patient.medication_history.medication_not_specified') }}
                                                     </h6>
 
                                                     <div class="medication-details">
@@ -86,10 +88,11 @@
 
                                                         <div class="row text-sm">
                                                             @if($medication->quantity)
-                                                                <div class="col-6">
+                                                                <div class="col-12">
                                                                     <small><strong>{{ __('patient.medication_history.quantity') }}:</strong> {{ $medication->quantity }}</small>
                                                                 </div>
                                                             @endif
+                                                            {{--}}
                                                             @if($medication->frequency)
                                                                 <div class="col-6">
                                                                     <small><strong>{{ __('patient.medication_history.frequency') }}:</strong> {{ __('patient.medication_history.every_hours', ['hours' => $medication->frequency]) }}</small>
@@ -105,8 +108,9 @@
                                                                     <small><strong>{{ __('patient.medication_history.duration') }}:</strong> {{ __('patient.medication_history.days', ['days' => $medication->duration]) }}</small>
                                                                 </div>
                                                             @endif
+                                                            {{--}}
                                                         </div>
-
+                                                        {{--}}
                                                         @if($medication->refills)
                                                             <div class="mt-2">
                                                                 <span class="badge bg-info">
@@ -115,6 +119,7 @@
                                                                 </span>
                                                             </div>
                                                         @endif
+                                                        {{--}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -139,6 +144,61 @@
 
             .medication-details small {
                 color: #6c757d;
+            }
+
+            .medication-checkbox-wrapper {
+                position: relative;
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                margin-top: 4px;
+                flex-shrink: 0;
+            }
+
+            .medication-checkbox {
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 0;
+            }
+
+            .medication-checkbox-label {
+                display: block;
+                width: 24px;
+                height: 24px;
+                border: 2px solid #0d6efd;
+                border-radius: 4px;
+                background-color: #fff;
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                left: 0;
+                transition: all 0.2s ease;
+            }
+
+            .medication-checkbox:checked + .medication-checkbox-label {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .medication-checkbox:checked + .medication-checkbox-label::after {
+                content: '✓';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .medication-checkbox-label:hover {
+                border-color: #0056b3;
+                box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
             }
 
             .offcanvas {

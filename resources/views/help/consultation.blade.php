@@ -857,7 +857,7 @@ body {
         <section id="secciones" class="step-card">
             <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-list me-2"></i>3. Secciones de la Consulta</h3>
             <div class="step-content">
-                <p>La interfaz de consulta está organizada en secciones expandibles (acordeón) que se cargan dinámicamente. Cada sección contiene campos específicos para documentar diferentes aspectos de la consulta médica.</p>
+                <p>La interfaz de consulta está organizada en secciones expandibles (popup) que se cargan dinámicamente. Cada sección contiene campos específicos para documentar diferentes aspectos de la consulta médica.</p>
 
                 <div class="info-box info-note">
                     <i class="fas fa-info-circle text-primary"></i>
@@ -949,7 +949,28 @@ body {
                             <p>Nota General de la consulta.</p>
                         </div>
                     </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="section-card">
+                            <div class="icon-circle">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <h5>Suministro</h5>
+                            <p>Gestión del inventario médico. Permite registrar y entregar suministros, medicamentos o materiales del inventario al paciente durante la consulta, con seguimiento de cantidades y documentación.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="section-card">
+                            <div class="icon-circle">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <h5>Archivos</h5>
+                            <p>Respaldo seguro de imágenes y documentos. Se integra con Dropbox para almacenar copias de seguridad de archivos asociados a la consulta en su cuenta privada. Requiere configuración previa de credenciales de Dropbox.</p>
+                        </div>
+                    </div>
                 </div>
+                {{--}}
 
                 <div class="info-box info-tip">
                     <i class="fas fa-lightbulb text-success"></i>
@@ -958,6 +979,7 @@ body {
                         <p class="mb-0">Las secciones se cargan de forma progresiva para mejorar el rendimiento. Cada sección se carga cuando la expande por primera vez, lo que hace que la interfaz sea más rápida y fluida.</p>
                     </div>
                 </div>
+                {{--}}
             </div>
         </section>
 
@@ -972,9 +994,9 @@ body {
                     <h6><span style="color: #d32f2f; font-weight: 700;">1.</span> Revisar Información general del Paciente y de la Cita</h6>
                     <p>Al iniciar la consulta, verá un encabezado con la información básica del paciente y de la cita:</p>
                     <ul>
-                        <li><strong>Información de la cita:</strong> fecha, consultorio, # de consulta y tipo de servicio</li>
-                        <li><strong>Información del paciente:</strong> nombre, edad, género, tipo y número de identificación</li>
-                        <li><strong>Información del médico:</strong> nombre y especialidad</li>
+                        <li><strong>Detalle de atención:</strong> fecha, consultorio, # de consulta y tipo de servicio</li>
+                        <li><strong>Datos del paciente:</strong> nombre, edad, género, tipo y número de identificación</li>
+                        <li><strong>Equipo médico:</strong> nombre y especialidad</li>
                     </ul>
 
                     <div>
@@ -984,9 +1006,9 @@ body {
                     <div class="info-box info-note">
                         <i class="fas fa-info-circle text-primary"></i>
                         <div>
-                            <strong>Menú Lateral</strong>
+                            <strong>Menú Inferior</strong>
                             <p class="mb-0">
-                                En el lado derecho de la pantalla encontrará un menú lateral con acceso rápido a la historia clínica del paciente y documentos previos haciendo clic en <strong>Ver información del paciente</strong>. Además, encontrará una guía, ubicada al final de este menú, que muestra las secciones en rojo, si las secciones que son requeridas para poder finalizar la consulta, se encuentran vacías.</p>
+                                En la parte inferior de la pantalla encontrará un boton de acceso rápido a la historia clínica del paciente y documentos previos haciendo clic en <strong>Ver información del paciente</strong>. Además, encontrará una guía, ubicada al centro de este menú, que muestra las secciones en amarillo, si las secciones que son requeridas para poder finalizar la consulta, se encuentran vacías.</p>
                         </div>
                     </div>
                     <div>
@@ -999,7 +1021,7 @@ body {
                     <h6><span style="color: #d32f2f; font-weight: 700;">2.</span> Agregar Servicios Facturables</h6>
                     <p>Expanda la primera sección <strong>"Servicios Facturables"</strong>, elija la categoría y agregue los servicios necesarios que fueron previamente registrados en la sección de Configuraciones → Catálogo de Servicios.</p>
                     <div>
-                        <img src="{{ asset('images/tutorial/invoices/invoice_add.png') }}" alt="" style="width: 100%;">
+                        <img src="{{ asset('images/tutorial/encounters/invoice_add.png') }}" alt="" style="width: 100%;">
                     </div>
 
                     <div class="info-box info-note">
@@ -1156,6 +1178,7 @@ body {
                     <div>
                         <img src="{{ asset('images/tutorial/encounters/encounter_ai11.png') }}" alt="" style="width: 100%;">
                     </div>
+                    {{--}}
                     <div>
                         <img src="{{ asset('images/tutorial/encounters/encounter_ai12.png') }}" alt="" style="width: 100%;">
                     </div>
@@ -1168,6 +1191,7 @@ body {
                     <div>
                         <img src="{{ asset('images/tutorial/encounters/encounter_ai2.png') }}" alt="" style="width: 100%;">
                     </div>
+                    {{--}}
                 </div>
 
                 <!-- Step 6: Physical Exam -->
@@ -1191,9 +1215,9 @@ body {
                     <h6><span style="color: #d32f2f; font-weight: 700;">7.</span> Agregar Diagnósticos</h6>
                     <p>En la sección de <strong>"Diagnóstico"</strong>:</p>
                     <ul>
-                        <li>Haga clic en <strong>"Escribir Diagnóstico"</strong></li>
+                        <li>Haga clic en <strong>"Seleccionar Diagnóstico"</strong></li>
                         <li>Busque el diagnóstico por nombre o código CIE-10</li>
-                        <li>Seleccione la gravedad (medio, moderado, severo, critico)</li>
+                        <li>Seleccione la gravedad (leve, moderado, severo, critico)</li>
                         <li>Agregue notas adicionales si es necesario</li>
                         <li>Puede agregar múltiples diagnósticos</li>
                     </ul>
@@ -1249,6 +1273,7 @@ body {
                         <li>Escriba la <strong>Especialidad</strong> a la que referirá al paciente</li>
                         <li>Agregue una <strong>Nota de Referencia</strong></li>
                         <li>En caso de que desee referir a alguien y que sea usuario de nuestro sistema puede agregarlo a la referencia dando clic a <strong>Ver Directorio Médico</strong></li>
+                        <li>En caso de que desee referir a alguien que no sea usuario de nuestro sistema puede agregarlo usando el botón especialista externo donde se le pedira el nombre , teléfono y la clinica de atención.</li>
                         <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro de la referencia agregada.</li>
                     </ol>
 
@@ -1266,7 +1291,6 @@ body {
                         <li>Haga clic en el campo de búsqueda <strong>"Buscar Medicamento por nombre, código NDC o nombre genérico"</strong>.</li>
                         <li>Busque el medicamento por nombre comercial o genérico y selecciónelo de la lista desplegable.</li>
                         <li>Complete los campos del formulario de prescripción detallados en la tabla a continuación.</li>
-                        <li>Haga clic en <strong>"Guardar"</strong> o el botón correspondiente para incluir el medicamento en la receta.</li>
                         <li>Repita el proceso para todos los medicamentos adicionales que requiera el paciente.</li>
                         <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro del medicamento agregado.</li>
                     </ol>
@@ -1375,7 +1399,7 @@ body {
                         <i class="fas fa-info-circle text-primary"></i>
                         <div>
                             <strong>Validación de Campos Automática</strong>
-                            <p class="mb-0">Si al llenar la consulta, usted deja algún campo obligatorio vacío, el sistema le mostrará qué campos les hace falta llenar en el menú lateral, que se encuentra ubicado en la parte superior derecha de la pantalla.</p>
+                            <p class="mb-0">Si al llenar la consulta, usted deja algún campo obligatorio vacío, el sistema le mostrará qué campos les hace falta llenar en el menú inferior, que se encuentra ubicado en la parte inferior central de la pantalla.</p>
                         </div>
                     </div>
                 </div>
@@ -1384,7 +1408,7 @@ body {
                     <h6><span style="color: #d32f2f; font-weight: 700;">2.</span> Finalizar Consulta</h6>
                     <p>Para cerrar formalmente la consulta:</p>
                     <ul>
-                        <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> que se encuentra en la parte inferior del menú lateral</li>
+                        <li>Haga clic en el botón <strong>"Finalizar Consulta"</strong> que se encuentra en la parte inferior del menú inferior.</li>
                         <li>El sistema actualizará el estado de la cita a <strong>"Finalizado"</strong></li>
                         <li>La información quedará guardada en la historia clínica del paciente</li>
                     </ul>
