@@ -512,8 +512,16 @@ body {
                 </div>
             </div>
         </div>
+        <div class="col-lg-12">
+            <div class="content-section">
+                <h2>Calificación en base a encuesta de satisfación.</h2>
+            <div>
+                <img src="{{ asset('images/tutorial/profile/doctor_qualification.png') }}" alt="Seguridad" class="img-fluid rounded border shadow-sm">
+            </div>
+            </div>
+        </div>
     </div>
-
+    {{--}}
     <div class="row">
         <!-- 6. Firma y Sello Digital -->
         <div class="col-lg-7">
@@ -556,7 +564,7 @@ body {
             </div>
         </div>
     </div>
-
+    {{--}}
     <div class="info-box">
         <div class="info-box-title"><strong><i class="fas fa-lightbulb"></i> Tip de Seguridad</strong></div>
         <p class="mb-0">Nunca compartas tus credenciales de acceso. SAMI registra todas las acciones por usuario para garantizar la trazabilidad clínica y administrativa.</p>

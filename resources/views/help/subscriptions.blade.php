@@ -555,7 +555,7 @@
                     <p>El sistema muestra:</p>
                     <ul>
                         <li><strong>Nombre del Plan:</strong> Básico, Estándar, Premium, Empresarial, etc.</li>
-                        <li><strong>Precio Mensual:</strong> Monto base + ITBMS</li>
+                        <li><strong>Precio Mensual:</strong> Monto base</li>
                         <li><strong>Estado:</strong> Pendiente, Activa, Vencida, etc.</li>
                         <li><strong>Fecha de Renovación:</strong> Próxima fecha de facturación</li>
                         <!--<li><strong>Médicos Incluidos:</strong> Cantidad base del plan</li>
@@ -608,11 +608,13 @@
                         <td>Acceso limitado por falta de pago</td>
                         <td><span class="status-badge status-suspended">Suspendida</span></td>
                     </tr>
+                    {{--}}
                     <tr>
                         <td><strong>Cancelada</strong></td>
                         <td>Suscripción cancelada por el usuario</td>
                         <td><span class="status-badge status-cancelled">Cancelada</span></td>
                     </tr>
+                    {{--}}
                     </tbody>
                 </table>
                 <!--<table class="field-table">
@@ -765,6 +767,7 @@
                                 <li>Monto pagado</li>
                                 <li>Fecha del pago</li>
                                 <li>Método de pago (ACH)</li>
+                                <li>Método de pago (YAPPY)</li>
                                 <li>Número de referencia / transacción</li>
                                 <li>Notas</li>
                                 <li>Comprobante (imagen/PDF)</li>

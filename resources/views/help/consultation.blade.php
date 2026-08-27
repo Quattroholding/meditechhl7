@@ -1358,9 +1358,79 @@ body {
                     </div>
                 </div>
 
-                <!-- Step 11: General Notes -->
+                <!-- Step 11: Supplies -->
                 <div class="sub-step">
-                    <h6><span style="color: #d32f2f; font-weight: 700;">11.</span> Añadir Notas Generales</h6>
+                    <h6><span style="color: #d32f2f; font-weight: 700;">11.</span> Registrar Suministros Entregados</h6>
+                    <p>En la sección de <strong>"Suministro"</strong>, registre cualquier medicamento, material o insumo del inventario que haya entregado al paciente durante la consulta:</p>
+                    <ol>
+                        <li>Haga clic en <strong>"Agregar Suministro"</strong></li>
+                        <li>Busque el suministro en el inventario disponible</li>
+                        <li>Indique la cantidad entregada</li>
+                        <li>Agregue notas adicionales si es necesario (instrucciones de uso, cuidados, etc.)</li>
+                        <li>Puede agregar múltiples suministros si lo requiere</li>
+                        <li>Si desea eliminar un ítem agregado, haga clic en el botón <strong>"Borrar"</strong> que aparece en la parte superior del recuadro del suministro</li>
+                    </ol>
+
+                    <div class="info-box info-note">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <div>
+                            <strong>Gestión de Inventario</strong>
+                            <p class="mb-0">El registro de suministros entregados se integra automáticamente con su sistema de inventario, actualizando las cantidades disponibles en la clínica. Esto ayuda a mantener el control de existencias y a realizar reorden automático cuando sea necesario.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot-placeholder">
+                        <i class="fas fa-image"></i>
+                        <h5>Sección de Suministros</h5>
+                        <p>Captura de pantalla: Formulario de registro de suministros entregados</p>
+                        <span class="dimensions">Espacio reservado para captura</span>
+                    </div>
+                </div>
+
+                <!-- Step 12: Files -->
+                <div class="sub-step">
+                    <h6><span style="color: #d32f2f; font-weight: 700;">12.</span> Respaldar Archivos en la Nube</h6>
+                    <p>En la sección de <strong>"Archivos"</strong>, puede respaldar de forma segura imágenes, documentos y archivos asociados a la consulta en su cuenta de Dropbox:</p>
+                    <ol>
+                        <li>Primero, asegúrese de tener configuradas sus credenciales de Dropbox en <a href="{{ route('help.settings') }}">Configuraciones</a></li>
+                        <li>En la sección de <strong>"Archivos"</strong>, haga clic en <strong>"Seleccionar Archivo"</strong></li>
+                        <li>Elija los documentos, imágenes o archivos que desee respaldar</li>
+                        <li>El sistema comprimirá automáticamente los archivos y los enviará a su carpeta privada en Dropbox</li>
+                        <li>Todos los archivos se etiquetan con la fecha y información de la consulta para fácil identificación</li>
+                        <li>Los archivos respaldados quedan organizados automáticamente en carpetas por fecha y paciente</li>
+                    </ol>
+
+                    <div class="info-box info-tip">
+                        <i class="fas fa-cloud text-success"></i>
+                        <div>
+                            <strong>Ventajas del Respaldo en Dropbox</strong>
+                            <ul class="mb-0">
+                                <li>Acceso seguro desde cualquier dispositivo</li>
+                                <li>Almacenamiento ilimitado en su cuenta personal</li>
+                                <li>Cumple con estándares de seguridad y privacidad</li>
+                                <li>Sincronización automática entre dispositivos</li>
+                                <li>Historial de versiones y recuperación de archivos</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="info-box info-warning">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <div>
+                            <strong>Requisito de Configuración</strong>
+                            <p class="mb-0">Para utilizar esta función, debe <strong>configurar previamente sus credenciales de Dropbox</strong> en <a href="{{ route('help.settings') }}">Configuraciones → Integración Dropbox</a>. Si no ha configurado Dropbox, esta sección aparecerá deshabilitada.</p>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/encounters/encounter_db_uploaded_file.png') }}" alt="" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Step 12: General Notes (Updated number) -->
+                <div class="sub-step">
+                    <h6><span style="color: #d32f2f; font-weight: 700;">13.</span> Añadir Notas Generales</h6>
                     <p>Complete el plan de manejo del paciente:</p>
                     <ul>
                         <li><strong>Indicaciones generales:</strong> Reposo, dieta, actividad física</li>

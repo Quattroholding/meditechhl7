@@ -369,7 +369,7 @@ body {
     <div class="content-section">
             <h2><i class="fas fa-list me-2"></i>Lista de Estudios</h2>
             <p>En esta sección podrá visualizar todas las solicitudes generadas. A continuación se explican los campos disponibles en la tabla de resultados:</p>
-            
+
             <div>
                 <img src="{{ asset('images/tutorial/service_requests/services-st.png') }}" alt="" style="width: 100%;">
             </div>
@@ -475,7 +475,7 @@ body {
 
             <h3 class="mt-4"><i class="fas fa-window-maximize me-2"></i>Detalle: Modal Subir Resultado</h3>
             <p>Este formulario permite vincular el documento físico o digital del resultado con el registro del paciente:</p>
-            
+
             <div class="mb-4">
                 <img src="{{ asset('images/tutorial/service_requests/services-mod1.png') }}" alt="Subir Resultado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
             </div>
@@ -577,5 +577,92 @@ body {
                 <li><span class="status-badge bg-danger text-white">Revocado</span>: La solicitud ha sido cancelada.</li>
                 <li><span class="status-badge bg-black text-white">Ingresado por error</span>: El estudio ha sido ingresado por error.</li>
             </ul>
+        </div>
+
+        <!-- SECTION: PRESCRIPTIONS / MEDICATION REQUESTS -->
+        <div class="content-section">
+            <h2><i class="fas fa-prescription-bottle me-2"></i>Prescripciones - Lista de Recetas</h2>
+            <p>Desde esta sección puede acceder a todas las recetas médicas prescritas por los doctores durante las consultas. Aquí podrá visualizar, descargar y gestionar las prescripciones de medicamentos.</p>
+
+            <div class="mb-4">
+                <img src="{{ asset('images/tutorial/service_requests/prescription_list.png') }}" alt="Gestión de Estado" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-list me-2"></i>Campos de la Lista de Prescripciones</h3>
+            <p>La tabla de prescripciones contiene los siguientes campos:</p>
+
+            <div class="table-responsive">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Paciente</strong></td>
+                            <td data-label="Descripción">Nombre completo del paciente a quien se prescribieron los medicamentos.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Doctor</strong></td>
+                            <td data-label="Descripción">Nombre del profesional de salud que emitió la prescripción.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Fecha</strong></td>
+                            <td data-label="Descripción">Fecha en la que se generó la prescripción médica.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Total de Medicamentos</strong></td>
+                            <td data-label="Descripción">Cantidad de medicamentos incluidos en la receta.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Estado</strong></td>
+                            <td data-label="Descripción">Estatus actual de la prescripción (Activa, Completada, Cancelada, etc.).</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Descargar</strong></td>
+                            <td data-label="Descripción">Botón para descargar la receta en formato PDF con la firma digital del médico.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4"><i class="fas fa-file-pdf me-2"></i>Descargar Receta en PDF</h3>
+            <p>Para obtener una copia de la receta médica:</p>
+            <ol>
+                <li>Localice la prescripción que desea descargar en la lista</li>
+                <li>Haga clic en el botón <strong>"Descargar PDF"</strong> o el ícono de descarga</li>
+                <li>El sistema generará automáticamente un documento PDF con:
+                    <ul>
+                        <li>Todos los medicamentos prescritos con dosis e indicaciones</li>
+                        <li>Firma digital del doctor (si está configurada)</li>
+                        <li>Sello y validez legal del documento</li>
+                        <li>Datos del paciente y de la consulta</li>
+                    </ul>
+                </li>
+                <li>El PDF se descargará a su dispositivo y podrá:
+                    <ul>
+                        <li>Guardarlo en sus archivos</li>
+                        <li>Imprimirlo directamente</li>
+                        <li>Enviarlo al paciente por correo electrónico</li>
+                        <li>Compartirlo con farmacias o especialistas</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="screenshot-placeholder">
+                <i class="fas fa-image"></i>
+                <p>Opción de Descarga de PDF</p>
+                <small>Captura de pantalla: Botones de descarga y acciones de recetas</small>
+            </div>
+
+            <div class="info-box info-note">
+                <i class="fas fa-info-circle text-primary"></i>
+                <div>
+                    <strong>Documentos con Validez Legal</strong>
+                    <p class="mb-0">Los archivos PDF descargados incluyen automáticamente la firma y sello digital del médico prescriptor, lo que les confiere validez legal y médica según la normativa de documentos electrónicos.</p>
+                </div>
+            </div>
         </div>
 @stop

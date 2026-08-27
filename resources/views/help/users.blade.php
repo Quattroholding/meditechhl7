@@ -123,7 +123,7 @@
                 <ul>
                     <li>Ver quiénes tienen acceso activo al sistema.</li>
                     <li>Identificar el rol asignado a cada usuario.</li>
-                    <li>Ver la fecha de creación y último acceso.</li>
+                    <li>Ver la fecha de creación.</li>
                     <li>Realizar búsquedas rápidas por nombre o correo.</li>
                 </ul>
             </div>

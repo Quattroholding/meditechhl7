@@ -1216,6 +1216,8 @@ margin: 20px 0;
             <p>Navegue a <strong>Configuraciones → Firma y Sello</strong>. Verá dos áreas separadas: una para la firma y otra para el sello.</p>
         </div>
 
+
+
         <div class="step-card">
             <h4><span class="step-number">2</span><span class="step-title">Preparar la Imagen</h4>
             <p>Antes de cargar, asegúrese de que su firma/sello cumpla con estos requisitos:</p>
@@ -1286,6 +1288,10 @@ margin: 20px 0;
                 </div>
                 <p class="mb-0">Puede cargar ambos archivos independientemente. Si solo desea usar uno de ellos, simplemente cargue la firma o el sello sin completar el otro.</p>
             </div>
+        </div>
+
+        <div>
+            <img src="{{ asset('images/tutorial/profile/profile_sign.png') }}" alt="" style="width: 100%;">
         </div>
 
         <h3>Gestionar Firma y Sello Existentes</h3>

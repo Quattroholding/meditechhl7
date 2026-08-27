@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Medicine;
+use App\Models\Medication;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -29,8 +29,8 @@ class MedicineController extends Controller
      */
     public function edit(int $id): View
     {
-        $medicine = Medicine::find($id);
-        $response = Gate::inspect('update', $medicine);
+        $medication = Medication::find($id);
+        $response = Gate::inspect('update', $medication);
 
         if ($response->denied()) {
             abort(403, 'No tienes permisos para acceder a esta página.');

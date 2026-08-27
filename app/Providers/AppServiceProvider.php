@@ -11,6 +11,7 @@ use App\Models\ClientInvoicePayment;
 use App\Models\ClientSubscription;
 use App\Models\Encounter;
 use App\Models\Invoice;
+use App\Models\Medication;
 use App\Models\MedicationRequest;
 use App\Models\Patient;
 use App\Models\User;
@@ -25,6 +26,7 @@ use App\Observers\PatientObserver;
 use App\Observers\UserObserver;
 use App\Policies\AppointmentPolicy;
 use App\Policies\ConsultationPolicy;
+use App\Policies\MedicationPolicy;
 use App\Policies\PatientPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Auth\Events\Login;
@@ -79,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(Encounter::class, ConsultationPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Medication::class, MedicationPolicy::class);
 
         // Registrar listeners para auditoría de logins
         Event::listen(Login::class, RecordUserLogin::class);
