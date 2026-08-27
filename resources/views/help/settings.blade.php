@@ -1390,7 +1390,7 @@ margin: 20px 0;
                             </tr>
                             <tr>
                                 <td data-label="Seccion"><strong>Enfermedad Actual</strong></td>
-                                <td data-label="Descripcion">Descripcion de la enfermedad presente</td>
+                                <td data-label="Descripcion">Descripcion de la enfermedad presente <br/><b>NOTA :</b> Esta seccion se puede ajustar al modo simplificado , que implica un solo campo de descripción de la enfermedad actual.</td>
                             </tr>
                             <tr>
                                 <td data-label="Seccion"><strong>Examen Fisico</strong></td>
@@ -1411,6 +1411,14 @@ margin: 20px 0;
                             <tr>
                                 <td data-label="Seccion"><strong>Medicamentos</strong></td>
                                 <td data-label="Descripcion">Medicamentos recetados</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Seccion"><strong>Suministro</strong></td>
+                                <td data-label="Descripcion">Gestión del inventario durante la consulta.</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Seccion"><strong>Almacenamineto Externo</strong></td>
+                                <td data-label="Descripcion">Gestión del archivos conecados con dropbox durante la consulta.</td>
                             </tr>
                             <tr>
                                 <td data-label="Seccion"><strong>Nota General</strong></td>
@@ -1980,7 +1988,9 @@ margin: 20px 0;
                 <li>Apruebe el acceso para permitir que SAMI acceda a su cuenta</li>
                 <li>Será redirigido de vuelta a SAMI con la conexión establecida</li>
             </ol>
-
+            <div>
+                <img src="{{ asset('images/tutorial/settings/config_dropbox.png') }}" alt="" style="width: 100%;">
+            </div>
             <div class="info-box note">
                 <div class="info-box-title">
                     <i class="fas fa-info-circle text-primary"></i>
@@ -1999,7 +2009,9 @@ margin: 20px 0;
                 <li>Aparecerá un estado <span class="badge bg-success">Conectado</span></li>
                 <li>Los archivos comenzarán a sincronizarse automáticamente</li>
             </ol>
-
+            <div>
+                <img src="{{ asset('images/tutorial/settings/config_dropbox_configured.png') }}" alt="" style="width: 100%;">
+            </div>
             <div class="info-box warning">
                 <div class="info-box-title">
                     <i class="fas fa-exclamation-triangle text-warning"></i>
@@ -2298,7 +2310,7 @@ margin: 20px 0;
                 </div>
             </div>
         </div>
-
+        {{--}}
         <h3>Resumen de Permisos</h3>
         <div class="field-table-wrapper">
             <table class="field-table">
@@ -2357,7 +2369,7 @@ margin: 20px 0;
                 </tbody>
             </table>
         </div>
-
+        {{--}}
         <div class="info-box note mt-4">
             <div class="info-box-title">
                 <i class="fas fa-question-circle text-primary"></i>

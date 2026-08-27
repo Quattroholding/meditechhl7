@@ -324,13 +324,19 @@ body {
                     <p>Contabiliza los pacientes que han tenido consultas o movimientos recientes en su práctica.</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="step-card text-center">
                     <div class="step-title">Citas del mes</div>
                     <p>El volumen total de citas gestionadas en el transcurso del mes vigente.</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <div class="step-card text-center">
+                    <div class="step-title">Citas sin completar</div>
+                    <p>Recordatorio de citas que ha sido agendadas pero no ha sido completadas en su flujo completo .</p>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="step-card text-center">
                     <div class="step-title">Consultas sin finalizar</div>
                     <p>Recordatorio crítico de actos médicos que han sido iniciados pero aún no se han cerrado formalmente.</p>
@@ -428,7 +434,7 @@ body {
             <div class="col-md-6">
                 <div class="step-card">
                     <div class="step-title">Top 5 Medicamentos Prescritos</div>
-                    <p>Listado de los fármacos que más prescribe, incluyendo detalles de frecuencia y número de pacientes tratados.</p>
+                    <p>Listado de los fármacos que más prescribe, incluyendo detalles de número de pacientes tratados.</p>
                     <div>
                         <img src="{{ asset('images/tutorial/doctor-dashboard/dd-p42.png') }}" alt="" style="width: 100%;">
                     </div>

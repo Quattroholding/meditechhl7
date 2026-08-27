@@ -390,9 +390,9 @@ body {
 .status-issued { background: #e3f2fd; color: #1565c0; }
 .status-balanced { background: #e8f5e9; color: #2e7d32; }
 .status-cancelled { background: #ffebee; color: #c62828; }
-.status-unpaid { background: #fff3e0; color: #e65100; }
-.status-partially-paid { background: #fff9c4; color: #f57f17; }
-.status-paid { background: #c8e6c9; color: #1b5e20; }
+.status-unpaid { background: #ffe5f6; color: #ff01a2; }
+.status-partially-paid { background: #fef5e4; color: #ff9b01; }
+.status-paid { background:rgba(0, 211, 199, 0.1); color: #00D3C7; }
 
 /* Back to top */
 .back-to-top {
@@ -675,9 +675,9 @@ body {
                 <li>Esta sección muestra los servicios ya agregados</li>
             </ul>
 
-        <div>
-            <img src="{{ asset('images/tutorial/invoices/invoice_cs.png') }}" alt="" style="width: 100%;">
-        </div>
+            <div>
+                <img src="{{ asset('images/tutorial/invoices/invoice_cs.png') }}" alt="" style="width: 100%;">
+            </div>
 
         <div class="info-box note">
             <div class="info-box-title">
@@ -710,16 +710,17 @@ body {
             </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_add.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/invoice_add.png') }}" alt="" style="width: 100%;">
             </div>
-
+            {{--}}
             <div class="info-box tip">
                 <div class="info-box-title">
                     <i class="fas fa-lightbulb text-success"></i>
                     Acceso Rápido
                 </div>
-                <p class="mb-0">Esta sección cuenta con un "Acceso Rápido" con los servicios más utilizados, para acceder a el haga clic en <strong>"Listado de Servicios"</strong>. Esto permite agregar servicios comunes con un sólo clic.</p>
+                <p class="mb-0">Esta sección cuenta con un "Directorio de servicios por categoria" , para acceder a el haga clic en <strong>"Listado de Servicios"</strong>. Esto permite agregar servicios comunes con un sólo clic.</p>
             </div>
+            {{--}}
         </div>
 
         <!-- Step 3 -->
@@ -791,7 +792,7 @@ body {
             </ul>
 
             <div>
-                <img src="{{ asset('images/tutorial/invoices/invoice_edit.png') }}" alt="" style="width: 100%;">
+                <img src="{{ asset('images/tutorial/encounters/encounter_services.png') }}" alt="" style="width: 100%;">
             </div>
 
             <div class="info-box danger">
@@ -1044,24 +1045,23 @@ body {
                     <tr>
                         <th>Estado de Pago</th>
                         <th>Descripción</th>
-                        <th>Badge</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td data-label="Estado"><strong>Unpaid</strong></td>
+                        <td data-label="Badge"><span class="status-badge status-unpaid">{{ App\Enums\InvoivePatientStatus::getLabel('unpaid')  }}</span></td>
                         <td data-label="Descripcion">No se ha registrado ningún pago</td>
-                        <td data-label="Badge"><span class="status-badge status-unpaid">No Pagada</span></td>
+
                     </tr>
                     <tr>
-                        <td data-label="Estado"><strong>Partially Paid</strong></td>
+                        <td data-label="Badge"><span class="status-badge status-partially-paid">{{ App\Enums\InvoivePatientStatus::getLabel('partial')  }}</span></td>
                         <td data-label="Descripcion">Se ha pagado parte del monto total</td>
-                        <td data-label="Badge"><span class="status-badge status-partially-paid">Pago Parcial</span></td>
+
                     </tr>
                     <tr>
-                        <td data-label="Estado"><strong>Paid</strong></td>
+                        <td data-label="Badge"><span class="status-badge status-paid">{{ App\Enums\InvoivePatientStatus::getLabel('paid')  }}</span></td>
                         <td data-label="Descripcion">Monto total pagado completamente</td>
-                        <td data-label="Badge"><span class="status-badge status-paid">Pagada</span></td>
+
                     </tr>
                 </tbody>
             </table>
@@ -1171,18 +1171,6 @@ body {
                 </div>
             </div>
 
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                        ¿Cómo configuro el catálogo de servicios?
-                    </button>
-                </h2>
-                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        El catálogo de servicios se configura en el módulo de <a href="{{ route('help.settings') }}">Configuraciones</a>. Solo usuarios con permisos de administrador pueden agregar, modificar o eliminar servicios del catálogo. Contacte a su administrador si necesita cambios en el catálogo.
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="info-box tip mt-4">

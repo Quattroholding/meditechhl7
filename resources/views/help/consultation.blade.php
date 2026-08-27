@@ -1021,7 +1021,7 @@ body {
                     <h6><span style="color: #d32f2f; font-weight: 700;">2.</span> Agregar Servicios Facturables</h6>
                     <p>Expanda la primera sección <strong>"Servicios Facturables"</strong>, elija la categoría y agregue los servicios necesarios que fueron previamente registrados en la sección de Configuraciones → Catálogo de Servicios.</p>
                     <div>
-                        <img src="{{ asset('images/tutorial/encounters/invoice_add.png') }}" alt="" style="width: 100%;">
+                        <img src="{{ asset('images/tutorial/encounters/encounter_services.png') }}" alt="" style="width: 100%;">
                     </div>
 
                     <div class="info-box info-note">

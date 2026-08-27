@@ -11,6 +11,7 @@
                             <th>{{ __('Cantidad') }}</th>
                             <th>{{ __('Precio Unit.') }}</th>
                             <th>{{ __('Total') }}</th>
+                            <th>{{ __('Estatus') }}</th>
                             <th>{{ __('Acciones') }}</th>
                         </tr>
                     </thead>

@@ -28,14 +28,6 @@ class ConsultationEffectiveness extends Component
 
     public $isLoading = true;
 
-    // Flujo de estados esperado
-    private $expectedStatusFlow = [
-        'booked' => 1,
-        'arrived' => 2,
-        'checked-in' => 3,
-        'fulfilled' => 4,
-    ];
-
     public function mount()
     {
         // Inicializar variables para evitar errores
@@ -190,13 +182,20 @@ class ConsultationEffectiveness extends Component
         ];
 
         foreach ($statusHistory as $appointmentId => $statuses) {
-            $maxStatus = $statuses->max('status');
+            $statusesByStatus = $statuses->keyBy('status');
 
-            // Contar cuántas citas llegaron a cada estado
-            foreach ($this->expectedStatusFlow as $status => $order) {
-                if ($this->getStatusOrder($maxStatus) >= $order) {
-                    $statusCounts[$status]++;
-                }
+            // Contar si cada estado existe en el historial
+            if (isset($statusesByStatus['booked'])) {
+                $statusCounts['booked']++;
+            }
+            if (isset($statusesByStatus['arrived'])) {
+                $statusCounts['arrived']++;
+            }
+            if (isset($statusesByStatus['checked-in'])) {
+                $statusCounts['checked-in']++;
+            }
+            if (isset($statusesByStatus['fulfilled'])) {
+                $statusCounts['fulfilled']++;
             }
         }
 
@@ -249,11 +248,6 @@ class ConsultationEffectiveness extends Component
 
         return $totalAppointments > 0 ?
             round(($fulfilledCount / $totalAppointments) * 100, 1) : 0;
-    }
-
-    private function getStatusOrder($status)
-    {
-        return $this->expectedStatusFlow[$status] ?? 0;
     }
 
     public function getEffectivenessPercentage($fromStatus, $toStatus)

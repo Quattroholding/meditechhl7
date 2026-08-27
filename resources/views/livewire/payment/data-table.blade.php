@@ -23,12 +23,14 @@
                                         <input wire:model.live="dateTo" class="form-control datetimepicker" type="text">
                                     </div>
                                 </div>
+                                {{--}}
                                 <div class="col-12 col-md-3 col-xl-3 ">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="status" :value="__('Estatus')" />
                                         <x-select-input wire:model.live="status" name="status" :options="$this->statusOptions" :selected="['']" class="block mt-1 w-full"/>
                                     </div>
                                 </div>
+                                {{--}}
                                 <div class="col-12 col-md-3 col-xl-3 ">
                                     <div class="input-block  local-forms">
                                         <x-input-label for="paymentMethod" :value="__('Metodo de pago')" />
@@ -71,12 +73,14 @@
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
+                                        {{--}}
                                         <th data-column="status" data-priority="7" wire:click="sortBy('status')" style="cursor: pointer;">
                                             {{ __('Estado') }}
                                             @if($sortField === 'status')
                                                 <i class="fa fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                             @endif
                                         </th>
+                                        {{--}}
                                         <th data-column="acciones" data-priority="1">{{ __('Acciones') }}</th>
                                     </tr>
                                 </thead>
@@ -134,6 +138,7 @@
                                                     ${{ number_format($payment->amount, 2) }}
                                                 </span>
                                             </td>
+                                            {{--}}
                                             <td data-column="status" data-priority="7" data-label="{{ __('Estado') }}">
                                                 <span class="cell-content">
                                                     <span class="badge
@@ -159,6 +164,7 @@
                                                     </span>
                                                 </span>
                                             </td>
+                                            {{--}}
                                             <td data-column="acciones" data-priority="1" data-label="{{ __('Acciones') }}" class="text-end">
                                                 <div class="btn-group btn-group-sm">
                                                     @if($payment->invoice)
