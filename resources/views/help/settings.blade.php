@@ -701,13 +701,16 @@ margin: 20px 0;
                 <ul class="toc-list">
                     <li><a href="#introduccion"><i class="fas fa-info-circle"></i> 1. Introducción</a></li>
                     <li><a href="#catalogo-servicios"><i class="fas fa-clipboard-list"></i> 2. Catálogo de Servicios</a></li>
-                    <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 3. Plantilla de Consulta</a></li>
-                    <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 4. Accesos Rápidos</a></li>
-                    <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 5. Horarios Laborales</a></li>
-                    <li><a href="#plantilla-factura"><i class="fas fa-file-invoice"></i> 6. Plantilla de Factura</a></li>
-                    <li><a href="#plantilla-incapacidad"><i class="fas fa-file-prescription"></i> 7. Plantilla de Incapacidad Médica</a></li>
-                    <li><a href="#codigo-referidos"><i class="fas fa-user-plus"></i> 8. Código de Referidos</a></li>
-                    <li><a href="#tips"><i class="fas fa-lightbulb"></i> 9. Tips y Mejores Prácticas</a></li>
+                    <li><a href="#firma-sello"><i class="fas fa-pen-fancy"></i> 3. Firma y Sello</a></li>
+                    <li><a href="#plantilla-consulta"><i class="fas fa-file-medical"></i> 4. Plantilla de Consulta</a></li>
+                    <li><a href="#accesos-rapidos"><i class="fas fa-bolt"></i> 5. Accesos Rápidos</a></li>
+                    <li><a href="#horarios-laborales"><i class="fas fa-clock"></i> 6. Horarios Laborales</a></li>
+                    <li><a href="#plantilla-factura"><i class="fas fa-file-invoice"></i> 7. Plantilla de Factura</a></li>
+                    <li><a href="#plantilla-incapacidad"><i class="fas fa-file-prescription"></i> 8. Plantilla de Incapacidad Médica</a></li>
+                    <li><a href="#codigo-referidos"><i class="fas fa-user-plus"></i> 9. Código de Referidos</a></li>
+                    <li><a href="#almacenamiento-externo"><i class="fas fa-cloud"></i> 10. Almacenamiento Externo</a></li>
+                    <li><a href="#lista-espera"><i class="fas fa-hourglass-half"></i> 11. Lista de Espera</a></li>
+                    <li><a href="#tips"><i class="fas fa-lightbulb"></i> 12. Tips y Mejores Prácticas</a></li>
                 </ul>
             </div>
         </div>
@@ -729,6 +732,15 @@ margin: 20px 0;
                     </div>
                     <h5>Catalogo de Servicios</h5>
                     <p>Define los procedimientos y servicios que ofreces</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
+                        <i class="fas fa-sign" style="color: #4caf50;"></i>
+                    </div>
+                    <h5>Firma y Sello</h5>
+                    <p>La firma y sello se utilizarán en las recetas médicas y órdenes médicas generadas</p>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
@@ -1161,9 +1173,184 @@ margin: 20px 0;
         </div>
     </section>
 
-    <!-- Section 5: Consultation Template -->
+    <!-- Section 3: Signature and Seal -->
+    <section id="firma-sello" class="content-section">
+        <h2><i class="fas fa-pen-fancy me-2"></i>3. Firma y Sello</h2>
+
+        <p>Configure su <strong>firma y sello digital</strong> que se utilizarán automáticamente en los documentos médicos generados por SAMI, como recetas médicas, órdenes médicas, incapacidades y otros documentos oficiales.</p>
+
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-route text-success"></i>
+                Ruta de Acceso
+            </div>
+            <p class="mb-0"><strong>Menu → Configuraciones → Firma y Sello</strong></p>
+        </div>
+
+        <h3>¿Por qué es Importante la Firma y Sello?</h3>
+        <div class="row mt-3 mb-4">
+            <div class="col-md-6">
+                <div class="info-box note">
+                    <div class="info-box-title">
+                        <i class="fas fa-shield-alt text-primary"></i>
+                        Validez Oficial
+                    </div>
+                    <p class="mb-0">Su firma y sello digital validan todos los documentos médicos generados, dándoles autenticidad y legalidad ante instituciones de salud, aseguradoras y autoridades sanitarias.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-check-circle text-success"></i>
+                        Automatización
+                    </div>
+                    <p class="mb-0">Una vez configurados, se aplicarán automáticamente en todos los documentos que genere, sin necesidad de agregarlos manualmente cada vez.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Cargar Firma Digital</h3>
+
+        <div class="step-card">
+            <h4><span class="step-number">1</span><span class="step-title">Acceder a la Sección de Firma y Sello</span></h4>
+            <p>Navegue a <strong>Configuraciones → Firma y Sello</strong>. Verá dos áreas separadas: una para la firma y otra para el sello.</p>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">2</span><span class="step-title">Preparar la Imagen</h4>
+            <p>Antes de cargar, asegúrese de que su firma/sello cumpla con estos requisitos:</p>
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Requisito</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Requisito"><strong>Formato de Archivo</strong></td>
+                            <td data-label="Detalles">JPEG, PNG, JPG, GIF o SVG</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Requisito"><strong>Tamaño Máximo</strong></td>
+                            <td data-label="Detalles">2 MB (2048 KB)</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Requisito"><strong>Fondo Recomendado</strong></td>
+                            <td data-label="Detalles">Fondo transparente para mejor integración en documentos</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Requisito"><strong>Resolución</strong></td>
+                            <td data-label="Detalles">Mínimo 150x50 píxeles (recomendado 300x100)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-lightbulb text-primary"></i>
+                    Consejo: Preparar Firmas Digitales
+                </div>
+                <p class="mb-0">Si tiene una firma física, puede digitalizarla usando un escáner o aplicación de escaneo móvil. Luego, use un editor de imágenes (como Photoshop, GIMP o Paint.NET) para recortar el fondo transparente y guardar como PNG.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">3</span><span class="step-title">Cargar la Firma</span></h4>
+            <p>En la sección de <strong>"Firma"</strong>:</p>
+            <ol>
+                <li>Haga clic en el área de carga o use el botón <strong>"Seleccionar Archivo"</strong></li>
+                <li>Elija el archivo de imagen de su firma desde su computadora</li>
+                <li>El sistema validará el formato y tamaño automáticamente</li>
+                <li>Si es válido, verá una vista previa de su firma</li>
+                <li>Haga clic en <strong>"Guardar"</strong> o <strong>"Actualizar"</strong> para confirmar</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">4</span><span class="step-title">Cargar el Sello</span></h4>
+            <p>Repita el mismo proceso en la sección de <strong>"Sello"</strong>:</p>
+            <ol>
+                <li>Haga clic en el área de carga del sello</li>
+                <li>Seleccione la imagen de su sello profesional</li>
+                <li>Valide el formato y tamaño</li>
+                <li>Confirme la carga</li>
+            </ol>
+
+            <div class="info-box tip">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Tanto Firma como Sello
+                </div>
+                <p class="mb-0">Puede cargar ambos archivos independientemente. Si solo desea usar uno de ellos, simplemente cargue la firma o el sello sin completar el otro.</p>
+            </div>
+        </div>
+
+        <h3>Gestionar Firma y Sello Existentes</h3>
+
+        <div class="field-table-wrapper">
+            <table class="field-table">
+                <thead>
+                    <tr>
+                        <th>Acción</th>
+                        <th>Descripción</th>
+                        <th>Cuándo Usar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Acción"><strong>Ver Previsualizacion</strong></td>
+                        <td data-label="Descripcion">Muestra una vista previa de la firma/sello cargado actual</td>
+                        <td data-label="Cuando usar">Para verificar que se vea correctamente antes de usar en documentos</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Acción"><strong>Actualizar</strong></td>
+                        <td data-label="Descripcion">Reemplaza la firma/sello actual por una nueva imagen</td>
+                        <td data-label="Cuando usar">Cuando desee cambiar su firma o sello</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Acción"><strong>Eliminar</strong></td>
+                        <td data-label="Descripcion">Elimina la firma/sello cargado (requiere confirmación)</td>
+                        <td data-label="Cuando usar">Si ya no desea que se agreguen en los documentos</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Acción"><strong>Descargar</strong></td>
+                        <td data-label="Descripcion">Descarga el archivo de su firma/sello</td>
+                        <td data-label="Cuando usar">Para hacer respaldo o usar en otras aplicaciones</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Dónde se Utilizan</h3>
+        <p>Una vez configurados, su firma y sello aparecerán automáticamente en:</p>
+        <ul>
+            <li><strong>Recetas Médicas:</strong> Firma al pie del documento</li>
+            <li><strong>Órdenes Médicas:</strong> Firma de autorización</li>
+            <li><strong>Incapacidades Médicas:</strong> Firma del médico responsable</li>
+            <li><strong>Certificados Médicos:</strong> Firma de validación</li>
+            <li><strong>Documentos Oficiales:</strong> Cualquier documento generado por el sistema que requiera validación profesional</li>
+        </ul>
+
+        <div class="info-box warning">
+            <div class="info-box-title">
+                <i class="fas fa-exclamation-triangle text-warning"></i>
+                Importante
+            </div>
+            <ul class="mb-0">
+                <li>La firma/sello digital es solo para propósitos de identificación visual, no es una firma criptográfica legalmente vinculante</li>
+                <li>Asegúrese de que su imagen sea clara y profesional</li>
+                <li>Los cambios se aplican inmediatamente a los nuevos documentos generados</li>
+                <li>Los documentos anteriores mantendrán la firma/sello que tenían al momento de su generación</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Section 4: Consultation Template -->
     <section id="plantilla-consulta" class="content-section">
-        <h2><i class="fas fa-file-medical me-2"></i>3. Plantilla de Consulta</h2>
+        <h2><i class="fas fa-file-medical me-2"></i>4. Plantilla de Consulta</h2>
 
         <p>La <strong>Plantilla de Consulta</strong> le permite personalizar que secciones aparecen durante sus consultas medicas y en que orden. Esto agiliza su flujo de trabajo mostrando solo las secciones relevantes para su especialidad.</p>
 
@@ -1383,9 +1570,9 @@ margin: 20px 0;
         </div>
     </section>
 
-  <!-- Section 4: Rapid Access -->
+  <!-- Section 5: Rapid Access -->
     <section id="accesos-rapidos" class="content-section">
-        <h2><i class="fas fa-bolt me-2"></i>4. Accesos Rapidos</h2>
+        <h2><i class="fas fa-bolt me-2"></i>5. Accesos Rapidos</h2>
 
         <p>Los <strong>Accesos Rapidos</strong> le permiten tener a la mano los procedimientos, laboratorios e imagenes que solicita con mayor frecuencia. Durante las consultas, puede agregar estos items con un solo click.</p>
 
@@ -1492,9 +1679,9 @@ margin: 20px 0;
     </section>
 
 
-    <!-- Section 3: Working Hours -->
+    <!-- Section 6: Working Hours -->
     <section id="horarios-laborales" class="content-section">
-        <h2><i class="fas fa-clock me-2"></i>5. Horarios Laborales</h2>
+        <h2><i class="fas fa-clock me-2"></i>6. Horarios Laborales</h2>
 
         <p>Configure sus <strong>horarios de trabajo</strong> para cada dia de la semana. Estos horarios se utilizan para el sistema de agendamiento de citas y para mostrar su disponibilidad a los pacientes.</p>
 
@@ -1642,9 +1829,9 @@ margin: 20px 0;
         </div>
     </section>
 
-    <!-- Section 6: Invoice Template -->
+    <!-- Section 7: Invoice Template -->
     <section id="plantilla-factura" class="content-section">
-        <h2><i class="fas fa-file-invoice me-2"></i>6. Plantilla de Factura</h2>
+        <h2><i class="fas fa-file-invoice me-2"></i>7. Plantilla de Factura</h2>
         <p>SAMI le permite elegir entre diferentes diseños de facturas para que se adapten a la imagen de su práctica. Puede previsualizar y seleccionar el modelo que prefiera.</p>
 
         <div class="info-box tip">
@@ -1674,9 +1861,9 @@ margin: 20px 0;
         </div>
     </section>
 
-    <!-- Section 7: Medical Disability Template -->
+    <!-- Section 8: Medical Disability Template -->
     <section id="plantilla-incapacidad" class="content-section">
-        <h2><i class="fas fa-file-prescription me-2"></i>7. Plantilla de Incapacidad Médica</h2>
+        <h2><i class="fas fa-file-prescription me-2"></i>8. Plantilla de Incapacidad Médica</h2>
         <p>Personalice el formato de los documentos de incapacidad médica y justificantes que entrega a sus pacientes.</p>
 
         <div class="info-box tip">
@@ -1704,9 +1891,9 @@ margin: 20px 0;
         </div>
     </section>
 
-    <!-- Section 8: Referral Code -->
+    <!-- Section 9: Referral Code -->
     <section id="codigo-referidos" class="content-section">
-        <h2><i class="fas fa-user-plus me-2"></i>8. Código de Referidos</h2>
+        <h2><i class="fas fa-user-plus me-2"></i>9. Código de Referidos</h2>
         <p>El sistema de referidos le permite invitar a otros colegas a unirse a SAMI y gestionar los beneficios asociados a sus invitaciones.</p>
 
         <div class="info-box tip">
@@ -1733,9 +1920,349 @@ margin: 20px 0;
             </div>
         </div>
     </section>
-    <!-- Section 9: Tips -->
+
+    <!-- Section 10: External Storage -->
+    <section id="almacenamiento-externo" class="content-section">
+        <h2><i class="fas fa-cloud me-2"></i>10. Almacenamiento Externo</h2>
+
+        <p>Configure servicios de <strong>almacenamiento externo en la nube</strong> para guardar automáticamente documentos, imágenes clínicas y archivos de pacientes. SAMI soporta integración con Dropbox para sincronización segura y acceso remoto a sus archivos.</p>
+
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-route text-success"></i>
+                Ruta de Acceso
+            </div>
+            <p class="mb-0"><strong>Menu → Configuraciones → Almacenamiento Externo</strong></p>
+        </div>
+
+        <h3>Ventajas del Almacenamiento Externo</h3>
+        <div class="row mt-3 mb-4">
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5><i class="fas fa-lock me-2 text-success"></i>Seguridad</h5>
+                    <p>Datos encriptados en servidores seguros con cumplimiento de estándares HIPAA</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5><i class="fas fa-globe me-2 text-info"></i>Acceso Remoto</h5>
+                    <p>Acceda a sus archivos desde cualquier dispositivo, en cualquier momento</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5><i class="fas fa-sync me-2 text-warning"></i>Sincronización</h5>
+                    <p>Sincronización automática de documentos nuevos</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card">
+                    <h5><i class="fas fa-history me-2 text-primary"></i>Respaldos</h5>
+                    <p>Protección contra pérdida de datos con respaldos automáticos</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Configurar Dropbox</h3>
+
+        <div class="step-card">
+            <h4><span class="step-number">1</span><span class="step-title">Acceder a Almacenamiento Externo</span></h4>
+            <p>Navegue a <strong>Configuraciones → Almacenamiento Externo</strong>. Verá las opciones disponibles y el estado de conexión actual.</p>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">2</span><span class="step-title">Conectar con Dropbox</span></h4>
+            <p>Para autorizar la conexión con Dropbox:</p>
+            <ol>
+                <li>Haga clic en el botón <strong>"Conectar con Dropbox"</strong></li>
+                <li>Se abrirá una ventana de autorización de Dropbox</li>
+                <li>Ingrese sus credenciales de Dropbox (correo y contraseña)</li>
+                <li>Apruebe el acceso para permitir que SAMI acceda a su cuenta</li>
+                <li>Será redirigido de vuelta a SAMI con la conexión establecida</li>
+            </ol>
+
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Primera Conexión
+                </div>
+                <p class="mb-0">Si no tiene cuenta de Dropbox, puede crear una gratis en www.dropbox.com. El almacenamiento gratuito incluye 2 GB, perfecto para comenzar.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">3</span><span class="step-title">Habilitar Almacenamiento Externo</span></h4>
+            <p>Una vez conectado:</p>
+            <ol>
+                <li>Verá información de su cuenta Dropbox (email, espacio disponible)</li>
+                <li>Marque la casilla <strong>"Habilitar Almacenamiento Externo"</strong> para activar la sincronización</li>
+                <li>Aparecerá un estado <span class="badge bg-success">Conectado</span></li>
+                <li>Los archivos comenzarán a sincronizarse automáticamente</li>
+            </ol>
+
+            <div class="info-box warning">
+                <div class="info-box-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    Importante
+                </div>
+                <p class="mb-0">Si deshabilita el almacenamiento externo, los archivos ya sincronizados permanecerán en Dropbox, pero los nuevos archivos no se guardarán automáticamente en la nube.</p>
+            </div>
+        </div>
+
+        <h3>Estado de la Conexión</h3>
+
+        <div class="field-table-wrapper">
+            <table class="field-table">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Significado</th>
+                        <th>Acción Recomendada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Estado"><span class="badge bg-success">Conectado</span></td>
+                        <td data-label="Significado">La conexión con Dropbox está activa y funcionando correctamente</td>
+                        <td data-label="Accion">Ninguna. Sistema funcionando normalmente.</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Estado"><span class="badge bg-warning">Token Próximo a Expirar</span></td>
+                        <td data-label="Significado">El token de autenticación vence pronto (generalmente cada 6 meses)</td>
+                        <td data-label="Accion">Reconecte su cuenta de Dropbox antes de que expire</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Estado"><span class="badge bg-danger">Desconectado</span></td>
+                        <td data-label="Significado">No hay conexión activa con Dropbox</td>
+                        <td data-label="Accion">Haga clic en "Conectar con Dropbox" para restaurar la conexión</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Estado"><span class="badge bg-secondary">Sin Configurar</span></td>
+                        <td data-label="Significado">Nunca se ha configurado almacenamiento externo</td>
+                        <td data-label="Accion">Haga clic en "Conectar con Dropbox" para empezar</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Gestionar Conexión</h3>
+
+        <div class="step-card">
+            <h4><span class="step-number">1</span><span class="step-title">Desconectar Dropbox (Si Fuera Necesario)</span></h4>
+            <p>Si desea cambiar de cuenta de Dropbox o dejar de usar almacenamiento externo:</p>
+            <ol>
+                <li>Haga clic en el botón <strong>"Desconectar de Dropbox"</strong></li>
+                <li>Se le pedirá confirmación de la acción</li>
+                <li>Después de confirmar, se eliminará el acceso de SAMI a su Dropbox</li>
+                <li>Puede reconectarse en cualquier momento</li>
+            </ol>
+        </div>
+
+        <h3>Archivos que se Sincronizan</h3>
+        <p>Los siguientes tipos de documentos se guardarán automáticamente en Dropbox cuando la sincronización esté habilitada:</p>
+        <ul>
+            <li>Documentos generados (facturas, recetas, órdenes médicas)</li>
+            <li>Imágenes clínicas cargadas en consultas</li>
+            <li>Archivos adjuntos a historiales de pacientes</li>
+            <li>Reportes y documentos descargables</li>
+            <li>Certificados médicos generados</li>
+        </ul>
+
+        <div class="info-box note">
+            <div class="info-box-title">
+                <i class="fas fa-folder me-2 text-primary"></i>
+                Estructura de Carpetas
+            </div>
+            <p class="mb-0">Los archivos se organizarán automáticamente en carpetas dentro de su Dropbox por tipo de documento y fecha, facilitando la búsqueda y organización.</p>
+        </div>
+
+        <h3>Solución de Problemas</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box danger">
+                    <div class="info-box-title">
+                        <i class="fas fa-times-circle text-danger"></i>
+                        Error de Conexión
+                    </div>
+                    <p class="mb-0"><strong>Solución:</strong> Verifique que su cuenta de Dropbox esté activa y que no tenga restricciones. Intente desconectar y conectarse nuevamente.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box danger">
+                    <div class="info-box-title">
+                        <i class="fas fa-times-circle text-danger"></i>
+                        Espacio Insuficiente
+                    </div>
+                    <p class="mb-0"><strong>Solución:</strong> Compre más almacenamiento en Dropbox o elimine archivos innecesarios para liberar espacio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 11: Waitlist -->
+    <section id="lista-espera" class="content-section">
+        <h2><i class="fas fa-hourglass-half me-2"></i>11. Lista de Espera</h2>
+
+        <p>Configure cómo SAMI manejará la <strong>lista de espera de pacientes</strong> que no encontraron disponibilidad inmediata. Puede elegir entre asignación automática o manual de slots cuando haya cancelaciones.</p>
+
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-route text-success"></i>
+                Ruta de Acceso
+            </div>
+            <p class="mb-0"><strong>Menu → Configuraciones → Lista de Espera</strong></p>
+        </div>
+
+        <h3>¿Qué es la Lista de Espera?</h3>
+        <p>La lista de espera es un sistema que permite a los pacientes registrarse para ser notificados cuando:</p>
+        <ul>
+            <li>Se cancela una cita agendada</li>
+            <li>Se libera un slot con disponibilidad</li>
+            <li>Hay una fecha más cercana disponible</li>
+        </ul>
+
+        <h3>Modos de Operación</h3>
+
+        <div class="row mt-4 mb-4">
+            <div class="col-md-6">
+                <div class="feature-card text-center">
+                    <div class="icon-circle mx-auto" style="background: rgba(76, 175, 80, 0.1);">
+                        <i class="fas fa-robot" style="color: #4caf50;"></i>
+                    </div>
+                    <h5>Asignación Automática</h5>
+                    <p>El sistema asigna automáticamente slots a pacientes en la lista cuando hay disponibilidad</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card text-center">
+                    <div class="icon-circle mx-auto" style="background: rgba(33, 150, 243, 0.1);">
+                        <i class="fas fa-user-tie" style="color: #2196f3;"></i>
+                    </div>
+                    <h5>Asignación Manual</h5>
+                    <p>Usted revisa la lista y decide qué pacientes contactar cuando hay slots disponibles</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Configurar Modo de Asignación</h3>
+
+        <div class="step-card">
+            <h4><span class="step-number">1</span><span class="step-title">Acceder a Lista de Espera</span></h4>
+            <p>Navegue a <strong>Configuraciones → Lista de Espera</strong>. Verá un toggle para habilitar la asignación automática.</p>
+        </div>
+
+        <div class="step-card">
+            <h4><span class="step-number">2</span><span class="step-title">Elegir Modo de Operación</span></h4>
+
+            <h5 style="color: #5e35b1; margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-toggle-on me-2"></i>Activar Asignación Automática</h5>
+            <p>Para que el sistema asigne automáticamente:</p>
+            <ol>
+                <li>Marque la casilla <strong>"Habilitar Asignación Automática"</strong></li>
+                <li>El sistema alertará si no está completamente configurado</li>
+                <li>Guarde los cambios</li>
+            </ol>
+
+            <h5 style="color: #5e35b1; margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-toggle-off me-2"></i>Mantener Asignación Manual</h5>
+            <p>Para revisar y asignar manualmente:</p>
+            <ol>
+                <li>Deje la casilla <strong>sin marcar</strong></li>
+                <li>Recibirá notificaciones cuando haya cancelaciones</li>
+                <li>Acceda a la lista de espera desde el calendario de citas</li>
+                <li>Seleccione pacientes y confirme la asignación manualmente</li>
+            </ol>
+
+            <div class="info-box note">
+                <div class="info-box-title">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Cambios en Tiempo Real
+                </div>
+                <p class="mb-0">Puede cambiar entre modos en cualquier momento. El cambio se aplicará inmediatamente para nuevas asignaciones.</p>
+            </div>
+        </div>
+
+        <h3>Comparativa de Modos</h3>
+
+        <div class="field-table-wrapper">
+            <table class="field-table">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Asignación Automática</th>
+                        <th>Asignación Manual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Caracteristica"><strong>Velocidad</strong></td>
+                        <td data-label="Automatica">Inmediata (segundos)</td>
+                        <td data-label="Manual">Según su disponibilidad</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Caracteristica"><strong>Criterios de Selección</strong></td>
+                        <td data-label="Automatica">Por antigüedad en lista</td>
+                        <td data-label="Manual">Usted elige</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Caracteristica"><strong>Control del Médico</strong></td>
+                        <td data-label="Automatica">Limitado</td>
+                        <td data-label="Manual">Total</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Caracteristica"><strong>Notificación de Paciente</strong></td>
+                        <td data-label="Automatica">Automática</td>
+                        <td data-label="Manual">Después de confirmar</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Caracteristica"><strong>Casos de Uso Ideal</strong></td>
+                        <td data-label="Automatica">Clínicas con alto volumen</td>
+                        <td data-label="Manual">Prácticas pequeñas/medianas</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Gestión de la Lista de Espera</h3>
+
+        <p>Una vez configurado el modo, puede acceder a la lista de espera desde varios lugares:</p>
+
+        <ul>
+            <li><strong>Calendario de Citas:</strong> Panel lateral con pacientes esperando</li>
+            <li><strong>Dashboard:</strong> Notificaciones de nuevas entradas a la lista</li>
+            <li><strong>Perfil del Paciente:</strong> Historial de esperas del paciente</li>
+            <li><strong>Reportes:</strong> Análisis de tiempo en espera y tasas de conversión</li>
+        </ul>
+
+        <h3>Ejemplo de Flujo - Asignación Automática</h3>
+
+        <div class="step-card">
+            <ol>
+                <li><strong>Paciente A se registra en lista de espera</strong> - para una cita el 15 de septiembre</li>
+                <li><strong>Paciente B también se registra</strong> - para la misma fecha</li>
+                <li><strong>Se cancela una cita</strong> - se libera un slot el 12 de septiembre</li>
+                <li><strong>Sistema asigna automáticamente</strong> - Paciente A (primero en llegar)</li>
+                <li><strong>Se envía notificación</strong> - Paciente A recibe su nueva cita</li>
+                <li><strong>Paciente A confirma o rechaza</strong> - Si rechaza, se ofrece a Paciente B</li>
+            </ol>
+        </div>
+
+        <div class="info-box warning">
+            <div class="info-box-title">
+                <i class="fas fa-exclamation-triangle text-warning"></i>
+                Importante
+            </div>
+            <ul class="mb-0">
+                <li>Los pacientes deben tener un método de contacto registrado (email o teléfono) para recibir notificaciones</li>
+                <li>La asignación respeta los horarios del médico configurados</li>
+                <li>Los pacientes pueden rechazar la asignación, manteniendo su posición en la lista</li>
+                <li>Es recomendable revisar periódicamente la lista incluso con asignación automática</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Section 12: Tips -->
     <section id="tips" class="content-section">
-        <h2><i class="fas fa-lightbulb me-2"></i>9. Tips y Mejores Practicas</h2>
+        <h2><i class="fas fa-lightbulb me-2"></i>12. Tips y Mejores Practicas</h2>
 
         <div class="row">
             <div class="col-md-6">
@@ -1814,6 +2341,18 @@ margin: 20px 0;
                     <tr>
                         <td data-label="Funcionalidad"><strong>Código de Referidos</strong></td>
                         <td data-label="Descripcion">Gestionar códigos de invitación</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Funcionalidad"><strong>Firma y Sello</strong></td>
+                        <td data-label="Descripcion">Cargar y gestionar firma y sello digital para documentos</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Funcionalidad"><strong>Almacenamiento Externo</strong></td>
+                        <td data-label="Descripcion">Configurar sincronización con Dropbox</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Funcionalidad"><strong>Lista de Espera</strong></td>
+                        <td data-label="Descripcion">Configurar modo de asignación de slots (automático o manual)</td>
                     </tr>
                 </tbody>
             </table>
