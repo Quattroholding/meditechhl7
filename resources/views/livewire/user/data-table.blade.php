@@ -52,6 +52,11 @@
                                 <th data-column="active" data-priority="5">
                                     <x-table-sort-button title="{{__('Estado')}}" columnName="active" :sortField="$sortField" :sortDirection="$sortDirection"/>
                                 </th>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <th>
+                                        <x-table-sort-button title="{{__('Último Ingreso')}}" columnName=""/>
+                                    </th>
+                                @endif
                                 @canany(['user.edit','users.activate','users.delete'])
                                 <th data-column="acciones" data-priority="1" class="text-end">
                                     <x-table-sort-button title="{{__('Acciones')}}" columnName=""/>
@@ -74,7 +79,7 @@
                                         </span>
                                     </td>
                                     <td data-column="email" data-priority="3" data-label="{{__('user.email')}}">
-                                        <span class="cell-content">{{ $user->email }}</span>
+                                        <span class="cell-content" title="{{$user->email}}">{{ \Illuminate\Support\Str::limit($user->email,30) }}</span>
                                     </td>
                                     @if(auth()->user()->hasRole('admin'))
                                         <td data-column="email" data-priority="3" data-label="Cliente/Paquete">
@@ -100,6 +105,11 @@
                                     <td data-column="active" data-priority="5" data-label="{{__('Estado')}}">
                                         <span class="cell-content badge me-1 {{$user->active ? 'bg-success' : 'bg-danger'}}">{{  $user->active ? 'Activo' : 'Inactivo' }}</span>
                                     </td>
+                                    @if(auth()->user()->hasRole('admin'))
+                                        <td>
+                                          {{ $user->lastLogin?->login_at->format('d-m-Y H:i') }}
+                                        </td>
+                                    @endif
                                     @canany(['users.edit','users.activate','users.delete','manage-permissions'])
                                     <td data-column="acciones" data-priority="1" data-label="{{__('Acciones')}}" class="text-end">
                                         <div class="btn-group btn-group-sm">
