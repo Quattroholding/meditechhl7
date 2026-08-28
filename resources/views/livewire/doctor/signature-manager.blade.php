@@ -40,7 +40,7 @@
                         <div class="current-file mb-3">
                             <label class="form-label">Firma Actual:</label>
                             <div class="file-preview-container">
-                                <img src="{{ route('practitioner.signature', $practitioner_id) }}"
+                                <img src="{{ route('practitioner.signature', $practitioner_id) }}?t={{ \Carbon\Carbon::parse($existing_signature->getRawOriginal('updated_at'))->timestamp }}"
                                      alt="Firma actual"
                                      class="signature-preview img-fluid border rounded"
                                      style="max-height: 120px; background-color: #f8f9fa;">
@@ -126,7 +126,7 @@
                         <div class="current-file mb-3">
                             <label class="form-label">Sello Actual:</label>
                             <div class="file-preview-container">
-                                <img src="{{ route('practitioner.seal', $practitioner_id) }}"
+                                <img src="{{ route('practitioner.seal', $practitioner_id) }}?t={{ \Carbon\Carbon::parse($existing_seal->getRawOriginal('updated_at'))->timestamp }}"
                                      alt="Sello actual"
                                      class="seal-preview img-fluid border rounded"
                                      style="max-height: 120px; background-color: #f8f9fa;">
