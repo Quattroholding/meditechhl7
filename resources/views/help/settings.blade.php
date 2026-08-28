@@ -1261,24 +1261,24 @@ margin: 20px 0;
 
         <div class="step-card">
             <h4><span class="step-number">3</span><span class="step-title">Cargar la Firma</span></h4>
-            <p>En la sección de <strong>"Firma"</strong>:</p>
+            <p>En la sección de <strong>"Firma Digital"</strong>:</p>
             <ol>
                 <li>Haga clic en el área de carga o use el botón <strong>"Seleccionar Archivo"</strong></li>
                 <li>Elija el archivo de imagen de su firma desde su computadora</li>
                 <li>El sistema validará el formato y tamaño automáticamente</li>
                 <li>Si es válido, verá una vista previa de su firma</li>
-                <li>Haga clic en <strong>"Guardar"</strong> o <strong>"Actualizar"</strong> para confirmar</li>
+                <li>Haga clic en <strong>"Subir Firma"</strong> para confirmar</li>
             </ol>
         </div>
 
         <div class="step-card">
             <h4><span class="step-number">4</span><span class="step-title">Cargar el Sello</span></h4>
-            <p>Repita el mismo proceso en la sección de <strong>"Sello"</strong>:</p>
+            <p>Repita el mismo proceso en la sección de <strong>"Sello Digital"</strong>:</p>
             <ol>
                 <li>Haga clic en el área de carga del sello</li>
                 <li>Seleccione la imagen de su sello profesional</li>
                 <li>Valide el formato y tamaño</li>
-                <li>Confirme la carga</li>
+                <li>Haga clic en <strong>"Subir Sello"</strong> para confirmar</li>
             </ol>
 
             <div class="info-box tip">
@@ -1307,7 +1307,7 @@ margin: 20px 0;
                 </thead>
                 <tbody>
                     <tr>
-                        <td data-label="Acción"><strong>Ver Previsualizacion</strong></td>
+                        <td data-label="Acción"><strong>Ver Previsualización</strong></td>
                         <td data-label="Descripcion">Muestra una vista previa de la firma/sello cargado actual</td>
                         <td data-label="Cuando usar">Para verificar que se vea correctamente antes de usar en documentos</td>
                     </tr>
@@ -1320,11 +1320,6 @@ margin: 20px 0;
                         <td data-label="Acción"><strong>Eliminar</strong></td>
                         <td data-label="Descripcion">Elimina la firma/sello cargado (requiere confirmación)</td>
                         <td data-label="Cuando usar">Si ya no desea que se agreguen en los documentos</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Acción"><strong>Descargar</strong></td>
-                        <td data-label="Descripcion">Descarga el archivo de su firma/sello</td>
-                        <td data-label="Cuando usar">Para hacer respaldo o usar en otras aplicaciones</td>
                     </tr>
                 </tbody>
             </table>
@@ -1339,7 +1334,7 @@ margin: 20px 0;
             <li><strong>Certificados Médicos:</strong> Firma de validación</li>
             <li><strong>Documentos Oficiales:</strong> Cualquier documento generado por el sistema que requiera validación profesional</li>
         </ul>
-
+        {{--}}
         <div class="info-box warning">
             <div class="info-box-title">
                 <i class="fas fa-exclamation-triangle text-warning"></i>
@@ -1352,6 +1347,7 @@ margin: 20px 0;
                 <li>Los documentos anteriores mantendrán la firma/sello que tenían al momento de su generación</li>
             </ul>
         </div>
+        {{--}}
     </section>
 
     <!-- Section 4: Consultation Template -->
@@ -2013,7 +2009,7 @@ margin: 20px 0;
                 <li>Verá información de su cuenta Dropbox (email, espacio disponible)</li>
                 <li>Marque la casilla <strong>"Habilitar Almacenamiento Externo"</strong> para activar la sincronización</li>
                 <li>Aparecerá un estado <span class="badge bg-success">Conectado</span></li>
-                <li>Los archivos comenzarán a sincronizarse automáticamente</li>
+               {{--}} <li>Los archivos comenzarán a sincronizarse automáticamente</li>{{--}}
             </ol>
             <div>
                 <img src="{{ asset('images/tutorial/settings/config_dropbox_configured.png') }}" alt="" style="width: 100%;">
@@ -2167,7 +2163,7 @@ margin: 20px 0;
 
         <div class="step-card">
             <h4><span class="step-number">1</span><span class="step-title">Acceder a Lista de Espera</span></h4>
-            <p>Navegue a <strong>Configuraciones → Lista de Espera</strong>. Verá un toggle para habilitar la asignación automática.</p>
+            <p>Navegue a <strong>Configuraciones → Lista de Espera</strong>.</p>
         </div>
 
         <div class="step-card">
@@ -2176,18 +2172,18 @@ margin: 20px 0;
             <h5 style="color: #5e35b1; margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-toggle-on me-2"></i>Activar Asignación Automática</h5>
             <p>Para que el sistema asigne automáticamente:</p>
             <ol>
-                <li>Marque la casilla <strong>"Habilitar Asignación Automática"</strong></li>
+                <li>Marque la casilla <strong>"Asignación Automática"</strong></li>
+                {{--}}
                 <li>El sistema alertará si no está completamente configurado</li>
                 <li>Guarde los cambios</li>
+               {{--}}
             </ol>
 
             <h5 style="color: #5e35b1; margin-top: 20px; margin-bottom: 10px;"><i class="fas fa-toggle-off me-2"></i>Mantener Asignación Manual</h5>
             <p>Para revisar y asignar manualmente:</p>
             <ol>
-                <li>Deje la casilla <strong>sin marcar</strong></li>
-                <li>Recibirá notificaciones cuando haya cancelaciones</li>
-                <li>Acceda a la lista de espera desde el calendario de citas</li>
-                <li>Seleccione pacientes y confirme la asignación manualmente</li>
+                <li>Esta es la opción que esta configurada por defecto.</li>
+                <li>Marque la casilla <strong>"Asignación Manual"</strong></li>
             </ol>
 
             <div class="info-box note">
@@ -2198,7 +2194,7 @@ margin: 20px 0;
                 <p class="mb-0">Puede cambiar entre modos en cualquier momento. El cambio se aplicará inmediatamente para nuevas asignaciones.</p>
             </div>
         </div>
-
+        {{--}}
         <h3>Comparativa de Modos</h3>
 
         <div class="field-table-wrapper">
@@ -2239,18 +2235,21 @@ margin: 20px 0;
                 </tbody>
             </table>
         </div>
-
+        {{--}}
         <h3>Gestión de la Lista de Espera</h3>
 
         <p>Una vez configurado el modo, puede acceder a la lista de espera desde varios lugares:</p>
 
         <ul>
             <li><strong>Calendario de Citas:</strong> Panel lateral con pacientes esperando</li>
+            {{--}}
             <li><strong>Dashboard:</strong> Notificaciones de nuevas entradas a la lista</li>
+
             <li><strong>Perfil del Paciente:</strong> Historial de esperas del paciente</li>
             <li><strong>Reportes:</strong> Análisis de tiempo en espera y tasas de conversión</li>
+             {{--}}
         </ul>
-
+        {{--}}
         <h3>Ejemplo de Flujo - Asignación Automática</h3>
 
         <div class="step-card">
@@ -2276,6 +2275,7 @@ margin: 20px 0;
                 <li>Es recomendable revisar periódicamente la lista incluso con asignación automática</li>
             </ul>
         </div>
+        {{--}}
     </section>
 
     <!-- Section 12: Tips -->
