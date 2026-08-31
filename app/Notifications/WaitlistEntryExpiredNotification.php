@@ -6,6 +6,7 @@ use App\Channels\WhatsAppMetaChannel;
 use App\Models\AppointmentWaitlistEntry;
 use App\Notifications\Concerns\ValidatesEmailChannel;
 use App\Notifications\Concerns\WithEmailMetadata;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -59,7 +60,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
             'Doctor-ID' => $appointment->practitioner_id,
             'Doctor-Name' => $appointment->practitioner->name ?? 'N/A',
             'Requested-Date' => $appointment->start->format('Y-m-d H:i'),
-            'Days-Waited' => $this->waitlistEntry->created_at->diffInDays(now()),
+            'Days-Waited' => Carbon::parse($this->waitlistEntry->getRawOriginal('created_at'))->diffInDays(now()),
             'Expires-At' => $this->waitlistEntry->expires_at->format('Y-m-d H:i'),
             'Client-ID' => $appointment->client_id,
         ];
@@ -80,7 +81,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
                 'requestedTime' => $appointment->start->format('H:i'),
                 'speciality' => $appointment->medicalSpeciality->name ?? 'Medicina General',
                 'clinicName' => $clinicName,
-                'daysWaited' => $this->waitlistEntry->created_at->diffInDays(now()),
+                'daysWaited' => Carbon::parse($this->waitlistEntry->getRawOriginal('created_at'))->diffInDays(now()),
             ])
             ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
@@ -114,7 +115,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
             'practitioner_name' => $appointment->practitioner->name,
             'requested_date' => $appointment->start->format('Y-m-d'),
             'requested_time' => $appointment->start->format('H:i'),
-            'days_waited' => $this->waitlistEntry->created_at->diffInDays(now()),
+            'days_waited' => Carbon::parse($this->waitlistEntry->getRawOriginal('created_at'))->diffInDays(now()),
             'expires_at' => $this->waitlistEntry->expires_at->toDateTimeString(),
             'sent_at' => now()->toDateTimeString(),
         ];
@@ -125,7 +126,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
         $appointment = $this->waitlistEntry->appointment;
         $practitioner = $appointment->practitioner;
         $clinicName = $appointment->client->name ?? config('app.name');
-        $daysWaited = $this->waitlistEntry->created_at->diffInDays(now());
+        $daysWaited = Carbon::parse($this->waitlistEntry->getRawOriginal('created_at'))->diffInDays(now());
 
         $message = "⏳ *Entrada Expirada*\n\n";
         $message .= "Hola {$notifiable->name},\n\n";

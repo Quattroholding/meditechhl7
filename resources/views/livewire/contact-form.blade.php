@@ -82,7 +82,7 @@
                 <span class="error-text">{{ $message }}</span>
             @enderror
             <div class="char-count">
-                {{ strlen($message) }}/1000 caracteres
+                {{ strlen((string) $message) }}/1000 caracteres
             </div>
         </div>
 

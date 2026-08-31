@@ -508,6 +508,12 @@ body {
                         </a>
                     </li>
                     <li>
+                        <a href="#catalogo">
+                            <i class="fas fa-th-list"></i>
+                            Catálogo de Artículos
+                        </a>
+                    </li>
+                    <li>
                         <a href="#paso-1">
                             <i class="fas fa-box"></i>
                             Paso 1: Crear Item
@@ -620,7 +626,7 @@ body {
                     </div>
                 </div>
             </section>
-
+            {{--}}
             <!-- Stock Total vs Disponible -->
             <section id="diferencia" class="step-card step-important">
                 <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-balance-scale me-2"></i>Stock Total vs Stock Disponible</h3>
@@ -705,21 +711,181 @@ body {
                     </div>
                 </div>
             </section>
+            {{--}}
+
+            <!-- Catálogo de Artículos -->
+            <section id="catalogo" class="step-card step-success">
+                <h3 class="step-title" style="padding-left: 0;"><i class="fas fa-th-list me-2"></i>Catálogo de Artículos</h3>
+                <div class="step-content">
+                    <p>Antes de crear nuevos artículos, es importante visualizar el catálogo actual de tu inventario. Aquí puedes ver todos los artículos registrados, sus propiedades, niveles de stock y configuraciones.</p>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-route me-2"></i>Acceder al Catálogo</h6>
+                        <ol>
+                            <li>Inicia sesión en SAMI</li>
+                            <li>En el menú lateral, busca <strong>"Inventario"</strong></li>
+                            <li>Haz clic en <strong>" Catalogo de Artículos"</strong></li>
+                            <li>Verás la lista completa de artículos registrados</li>
+                        </ol>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-table me-2"></i>Columnas del Catálogo</h6>
+                        <p>El catálogo muestra la siguiente información para cada artículo:</p>
+                        <table class="field-table">
+                            <thead>
+                            <tr>
+                                <th>Columna</th>
+                                <th>Descripción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td data-label="Columna"><strong>Nombre</strong></td>
+                                <td data-label="Descripción">Nombre descriptivo del artículo (ej: "Guantes de Látex Talla M")</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>SKU</strong></td>
+                                <td data-label="Descripción">Código único e identificable del artículo para búsquedas rápidas</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Tipo</strong></td>
+                                <td data-label="Descripción">Categoría del artículo: Suministro, Consumible, Equipo, Medicamento, Dispositivo</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Unidad</strong></td>
+                                <td data-label="Descripción">Unidad de medida (Unidad, Caja, Vial, ml, mg, etc.)</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Stock Total</strong></td>
+                                <td data-label="Descripción">Cantidad total disponible en todas las ubicaciones (suma de todas las sucursales y profesionales)</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Punto de Reorden</strong></td>
+                                <td data-label="Descripción">Nivel mínimo configurado para generar alerta de reabastecimiento</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Costo Base</strong></td>
+                                <td data-label="Descripción">Precio de compra unitario del artículo</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Precio Base</strong></td>
+                                <td data-label="Descripción">Precio de venta predeterminado para facturación</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Columna"><strong>Estado</strong></td>
+                                <td data-label="Descripción">Activo (en uso) o Inactivo (descontinuado)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-search me-2"></i>Funcionalidades de la Lista</h6>
+                        <ul>
+                            <li><strong>Búsqueda:</strong> Utiliza el campo de búsqueda para encontrar artículos por nombre, SKU o código de barras</li>
+                            <li><strong>Ordenamiento:</strong> Haz clic en cualquier encabezado de columna para ordenar por esa información</li>
+                            <li><strong>Filtros:</strong> Filtra por tipo de artículo, estado o punto de reorden</li>
+                            <li><strong>Paginación:</strong> Navega entre páginas si tienes muchos artículos</li>
+                            <li><strong>Editar:</strong> Haz clic en un artículo para editar su información</li>
+                            <li><strong>Desactivar:</strong> Marca artículos como inactivos sin eliminarlos (mantiene historial)</li>
+                        </ul>
+                    </div>
+
+                    <div class="sub-step">
+                        <h6><i class="fas fa-eye me-2"></i>Ejemplo de Catálogo</h6>
+                        <table class="table table-sm table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>SKU</th>
+                                    <th>Tipo</th>
+                                    <th>Stock Total</th>
+                                    <th>Punto Reorden</th>
+                                    <th>Precio Base</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Guantes de Látex Talla M</td>
+                                    <td>GLV-LAT-M</td>
+                                    <td><span class="badge bg-info">Suministro</span></td>
+                                    <td><strong>250</strong></td>
+                                    <td>50</td>
+                                    <td>$0.50</td>
+                                </tr>
+                                <tr>
+                                    <td>Jeringas 5ml</td>
+                                    <td>JER-05ML</td>
+                                    <td><span class="badge bg-info">Consumible</span></td>
+                                    <td><strong>150</strong></td>
+                                    <td>30</td>
+                                    <td>$0.75</td>
+                                </tr>
+                                <tr>
+                                    <td>Mascarillas N95</td>
+                                    <td>MSK-N95</td>
+                                    <td><span class="badge bg-warning">Dispositivo</span></td>
+                                    <td><strong>20</strong></td>
+                                    <td>50</td>
+                                    <td>$2.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Alcohol al 70%</td>
+                                    <td>ALC-070</td>
+                                    <td><span class="badge bg-success">Medicamento</span></td>
+                                    <td><strong>500ml</strong></td>
+                                    <td>200ml</td>
+                                    <td>$5.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Estetoscopio Electrónico</td>
+                                    <td>EST-ELEC</td>
+                                    <td><span class="badge bg-danger">Equipo</span></td>
+                                    <td><strong>5</strong></td>
+                                    <td>2</td>
+                                    <td>$150.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="small text-muted mb-0">Este es un ejemplo de cómo se ven los artículos en el catálogo. Tu catálogo mostrará tus artículos específicos.</p>
+                    </div>
+
+                    <div>
+                        <img src="{{ asset('images/tutorial/inventory/article_list.png') }}" alt="Catálogo de Artículos de Inventario" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    </div>
+
+                    <div class="info-box info-note">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>Consejo de Organización:</strong> Mantén tu catálogo actualizado y bien organizado. Usa SKUs consistentes y descriptivos para facilitar búsquedas y auditorías.
+                        </div>
+                    </div>
+
+                    <div class="info-box info-tip">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Verificación Rápida:</strong> Antes de crear un nuevo artículo, verifica que no existe ya en el catálogo. Evita duplicados con SKUs similares.
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- Paso 1: Crear Artículos -->
             <section id="paso-1" class="step-card">
                 <div class="step-number">1</div>
                 <h3 class="step-title">Crear Artículos de Inventario</h3>
                 <div class="step-content">
-                    <p>El primer paso es registrar los artículos en el catálogo de inventario:</p>
+                    <p>Una vez familiarizado con el catálogo, el siguiente paso es registrar nuevos artículos en el inventario:</p>
 
                     <div class="sub-step">
                         <h6><i class="fas fa-route me-2"></i>Navegación</h6>
                         <ol>
                             <li>Inicia sesión en SAMI</li>
                             <li>En el menú lateral, busca <strong>"Inventario"</strong></li>
-                            <li>Haz clic en <strong>"Artículos"</strong></li>
-                            <li>Clic en el botón <strong>"+ Nuevo Artículo"</strong></li>
+                            <li>Haz clic en <strong>"Crear Artículo"</strong></li>
+                            <li>Completar los campos que se muestran a continuación.</li>
+                            <li>Luego de llenado los campos click en Crear Item en la parte inferior derecha.</li>
                         </ol>
                     </div>
 
@@ -743,6 +909,16 @@ body {
                             <td data-label="Requerido"><span class="required">Sí</span></td>
                         </tr>
                         <tr>
+                            <td data-label="Campo"><strong>Código de Barras</strong></td>
+                            <td data-label="Descripción">Código de barras del producto para escaneo rápido</td>
+                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Descripción</strong></td>
+                            <td data-label="Descripción">Corta descripción de las caracteristicas del articulo</td>
+                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                        </tr>
+                        <tr>
                             <td data-label="Campo"><strong>Tipo de Artículo</strong></td>
                             <td data-label="Descripción">Categoría: Suministro, Consumible, Equipo, Medicamento, Dispositivo</td>
                             <td data-label="Requerido"><span class="required">Sí</span></td>
@@ -763,6 +939,11 @@ body {
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
                         </tr>
                         <tr>
+                            <td data-label="Campo"><strong>Estado</strong></td>
+                            <td data-label="Descripción">Estatus del articulo (Activo , Inactivo)</td>
+                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                        </tr>
+                        <tr>
                             <td data-label="Campo"><strong>Punto de Reorden</strong></td>
                             <td data-label="Descripción">Nivel mínimo antes de recibir alerta (ej: 20 unidades)</td>
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
@@ -772,24 +953,25 @@ body {
                             <td data-label="Descripción">Cantidad sugerida para reabastecer (ej: 100 unidades)</td>
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
                         </tr>
-                        <tr>
-                            <td data-label="Campo"><strong>Código de Barras</strong></td>
-                            <td data-label="Descripción">Código de barras del producto para escaneo rápido</td>
-                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
-                        </tr>
+
                         <tr>
                             <td data-label="Campo"><strong>Rastreo de Lote</strong></td>
-                            <td data-label="Descripción">Checkbox: ¿Requiere número de lote?</td>
+                            <td data-label="Descripción">Control de lotes de facturacion</td>
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
                         </tr>
                         <tr>
                             <td data-label="Campo"><strong>Rastreo de Serie</strong></td>
-                            <td data-label="Descripción">Checkbox: ¿Requiere número de serie?</td>
+                            <td data-label="Descripción">Control por número de serie</td>
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
                         </tr>
                         <tr>
-                            <td data-label="Campo"><strong>Fecha de Vencimiento</strong></td>
-                            <td data-label="Descripción">Checkbox: ¿Tiene fecha de vencimiento?</td>
+                            <td data-label="Campo"><strong>Control de Vencimiento</strong></td>
+                            <td data-label="Descripción">Seguimiento de fecha de caducidad</td>
+                            <td data-label="Requerido"><span class="optional">Opcional</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Requiere Receta</strong></td>
+                            <td data-label="Descripción">Medicamento bajo prescripción</td>
                             <td data-label="Requerido"><span class="optional">Opcional</span></td>
                         </tr>
                         </tbody>
@@ -819,9 +1001,11 @@ body {
                         <h6><i class="fas fa-route me-2"></i>Navegación</h6>
                         <ol>
                             <li>Ve a <strong>Inventario → Gestión de Stock</strong></li>
-                            <li>Selecciona la operación <strong>"Recibir"</strong></li>
-                            <li>Busca el artículo que recibiste</li>
-                            <li>Selecciona la ubicación (sucursal o profesional)</li>
+                            <li>Selecciona la operación <strong>"Recibir Stock"</strong></li>
+                            <li>Busca el artículo que recibiste en Seleccionar Item</li>
+                            <li>Luego de la busqueda click en articulo a gestionar.</li>
+                            <li>Luego llenar los campos que se desplegan a continuación.</li>
+                            <li>Luego click en ejecutar operación .</li>
                         </ol>
                     </div>
 
@@ -835,8 +1019,8 @@ body {
                         </thead>
                         <tbody>
                         <tr>
-                            <td data-label="Campo"><strong>Artículo</strong></td>
-                            <td data-label="Descripción">Busca el artículo por nombre, SKU o código de barras</td>
+                            <td data-label="Campo"><strong>Tipo Ubicación</strong></td>
+                            <td data-label="Descripción">Seleccionar entre una ubicacion por Sucursal o una ubiciacion por doctor.</td>
                             <td data-label="Requerido"><span class="required">Sí</span></td>
                         </tr>
                         <tr>
@@ -878,18 +1062,19 @@ body {
                             <ul class="mb-0 mt-2">
                                 <li>Incrementa el stock total en la ubicación seleccionada</li>
                                 <li>Crea una transacción de tipo PURCHASE en el historial</li>
-                                <li>Registra quién recibió el stock y cuándo</li>
-                                <li>Si hay un punto de reorden configurado, actualiza las alertas</li>
+                                {{--}}<li>Registra quién recibió el stock y cuándo</li>
+                                <li>Si hay un punto de reorden configurado, actualiza las alertas</li>{{--}}
                             </ul>
                         </div>
                     </div>
-
+                    {{--}}
                     <div class="info-box info-warning">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>
                             <strong>Importante:</strong> Si el artículo requiere rastreo de lote o vencimiento, estos campos se vuelven obligatorios. No podrás guardar sin completarlos.
                         </div>
                     </div>
+                    {{--}}
                 </div>
             </section>
 
@@ -1003,7 +1188,7 @@ body {
                     </div>
 
                     <div>
-                        <img src="{{ asset('images/tutorial/inventory/encounter_supply.png') }}" alt="Suministro de Articulo de inventario en consulta" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        <img src="{{ asset('images/tutorial/inventory/encounter_supply.jpeg') }}" alt="Suministro de Articulo de inventario en consulta" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     </div>
 
                     <div class="info-box info-note">
