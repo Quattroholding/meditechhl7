@@ -16,6 +16,7 @@ class Client extends Model
         'name',
         'diagnostic_ai_suggestions',
         'show_consultation_timer',
+        'enable_virtual_appointments',
         'group',
         'ruc',
         'dv',
@@ -34,18 +35,18 @@ class Client extends Model
     protected $casts = [
         'diagnostic_ai_suggestions' => 'boolean',
         'show_consultation_timer' => 'boolean',
+        'enable_virtual_appointments' => 'boolean',
         'hemoscreen_only' => 'boolean',
     ];
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new ClientScope());
+        static::addGlobalScope(new ClientScope);
     }
 
     public static function boot()
     {
         parent::boot();
-
 
         static::creating(function ($client) {
             if (! $client->yappy_code) {

@@ -118,21 +118,29 @@
                         </select>
                         <x-input-error :messages="$errors->get('duration')"/>
                     </div>
-                    {{--}}
-                    <div class="input-block local-forms">
-                        <x-input-label for="consulting_room_id" :value="__('appointment.type')" required/>
-                        <select wire:model="consultation_type" class="form-control-full" required>
-                            <option value="presencial">Presencial</option>
-                            <option value="virtual">Virtual</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('consultation_type')"/>
-                    </div>
-                    {{--}}
-                    <div class="input-block local-forms">
-                        <x-input-label for="consulting_room_id" :value="__('appointment.consulting_room')" required/>
-                        <x-select-input  wire:model="consulting_room_id" name="consulting_room_id" :options="$consultorios"  class="block w-full"/>
-                        <x-input-error :messages="$errors->get('consulting_room_id')"/>
-                    </div>
+
+                    {{-- Selector de tipo de consulta (solo visible si está habilitado) --}}
+                    @if($enableVirtualAppointments)
+                        <div class="input-block local-forms">
+                            <x-input-label for="consultation_type" :value="__('appointment.type')" required/>
+                            <select wire:model="consultation_type" class="form-control-full" required>
+                                <option value="presencial">Presencial</option>
+                                <option value="virtual">Virtual</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('consultation_type')"/>
+                        </div>
+                    @endif
+
+                    {{-- Consultorio (solo visible si es presencial) --}}
+                    @if($consultation_type === 'presencial')
+                        <div class="input-block local-forms">
+                            <x-input-label for="consulting_room_id" :value="__('appointment.consulting_room')" required/>
+                            <x-select-input  wire:model="consulting_room_id" name="consulting_room_id" :options="$consultorios"  class="block w-full"/>
+                            <x-input-error :messages="$errors->get('consulting_room_id')"/>
+                        </div>
+                    @else
+                        <input type="hidden" wire:model="consulting_room_id" value="">
+                    @endif
                     <div class="input-block local-forms">
                         <x-input-label for="service_type" :value="__('appointment.service_type')" required/>
                         <x-text-input wire:model="service_type" id="service_type" class="block mt-1 w-full" type="text" name="service_type" placeholder="{{ __('appointment.service_type_placeholder') }}"/>

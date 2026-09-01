@@ -109,6 +109,11 @@ class ModalSave extends Component
 
     public $conflictingPatientName = '';
 
+    // Propiedades para citas virtuales
+    public $enableVirtualAppointments = false;
+
+    public $doctorClientId = null;
+
     protected $rules = [
         'patient_id' => 'required|exists:patients,id',
         'doctor_id' => 'required|exists:practitioners,id',
@@ -158,6 +163,7 @@ class ModalSave extends Component
 
         return view('livewire.appointment.modal-save', [
             'cancellationReasons' => AppointmentCancelledReason::toArray(),
+            'enableVirtualAppointments' => $this->enableVirtualAppointments,
         ]);
     }
 
@@ -207,6 +213,7 @@ class ModalSave extends Component
         $this->medical_speciality_id = '';
         $this->service_type = '';
         $this->description = '';
+        $this->consultation_type = 'presencial';
         $this->appointment_date = $date ?? Carbon::now()->format('Y-m-d');
         $this->appointment_time = $time ?? '';
         $this->duration = 30;
@@ -221,11 +228,14 @@ class ModalSave extends Component
         if (! auth()->user()->hasRole('doctor')) {
             $this->doctor_id = '';
             Log::info('resetForm: Usuario NO es doctor, limpiando doctor_id');
+            $this->enableVirtualAppointments = false;
+            $this->doctorClientId = null;
         } else {
             // Si es doctor, mantener su ID
             if (auth()->user()->practitioner) {
                 $this->doctor_id = auth()->user()->practitioner->id;
                 $this->medical_speciality_id = auth()->user()->practitioner->qualifications()->first()->code;
+                $this->checkVirtualAppointmentsEnabled();
             }
         }
 
@@ -284,6 +294,16 @@ class ModalSave extends Component
     }
 
     /**
+     * Listener para cuando cambia el tipo de consulta
+     */
+    public function updatedConsultationType($value)
+    {
+        if ($value === 'virtual') {
+            $this->consulting_room_id = '';
+        }
+    }
+
+    /**
      * Listener para cuando cambia el doctor
      */
     public function updatedDoctorId($value)
@@ -294,6 +314,7 @@ class ModalSave extends Component
         ]);
 
         if ($value) {
+            $this->checkVirtualAppointmentsEnabled();
             $this->loadConsultorios();
             $this->loadAssistants();
             $this->consulting_room_id = '';
@@ -567,8 +588,8 @@ class ModalSave extends Component
 
     public function saveAppointment()
     {
-        // dd(gettype($this->duration),$this->duration);
-        $this->validate();
+        // Validación personalizada según tipo de consulta
+        $this->validateAppointment();
 
         try {
             // Obtener información del doctor
@@ -798,6 +819,7 @@ class ModalSave extends Component
             $this->duration = $this->appointment->minutes_duration;
             $this->status = $this->appointment->status;
             $this->medical_speciality_id = $this->appointment->medical_speciality_id;
+            $this->consultation_type = $this->appointment->consultation_type ?? 'presencial';
             $this->consulting_room_id = $this->appointment->consulting_room_id;
             $this->service_type = $this->appointment->service_type;
             $this->reason = $this->appointment->description;
@@ -805,6 +827,7 @@ class ModalSave extends Component
             $this->notes = $this->appointment->comment;
             $this->assisted_by = $this->appointment->assisted_by;
             $this->canEdit = auth()->user()->can('edit', $this->appointment);
+            $this->checkVirtualAppointmentsEnabled();
             $this->loadAssistants();
             $this->showModal = true;
             // $this->dispatch('cita-message', message: 'Cita actualizada exitosamente.');
@@ -1225,5 +1248,94 @@ class ModalSave extends Component
         ]);
 
         return true;
+    }
+
+    /**
+     * Valida la cita con reglas condicionales según el tipo de consulta
+     */
+    private function validateAppointment(): void
+    {
+        $rules = [
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'required|exists:practitioners,id',
+            'appointment_date' => 'required|date|after_or_equal:today',
+            'appointment_time' => 'required',
+            'duration' => 'required|integer|min:15|max:240',
+            'medical_speciality_id' => 'required|exists:medical_specialties,id',
+            'service_type' => 'required|string',
+            'consultation_type' => 'required|in:presencial,virtual',
+            'description' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'assisted_by' => 'nullable|exists:users,id',
+        ];
+
+        // consulting_room_id es requerido solo para citas presenciales
+        if ($this->consultation_type === 'presencial') {
+            $rules['consulting_room_id'] = 'required|exists:consulting_rooms,id';
+        }
+
+        // Si es virtual, debe estar habilitado en el cliente
+        if ($this->consultation_type === 'virtual' && ! $this->enableVirtualAppointments) {
+            $this->addError('consultation_type', 'Las citas virtuales no están habilitadas para este cliente.');
+            throw new \Exception('Las citas virtuales no están habilitadas.');
+        }
+
+        $this->validate($rules, [
+            'doctor_id.required' => 'Debe seleccionar un doctor.',
+            'consulting_room_id.required' => 'Debe seleccionar un consultorio para citas presenciales.',
+            'appointment_date.required' => 'La fecha es obligatoria.',
+            'appointment_time.required' => 'La hora es obligatoria.',
+            'appointment_date.after_or_equal' => 'La fecha no puede ser anterior a hoy.',
+            'consultation_type.required' => 'Debe seleccionar un tipo de consulta.',
+            'consultation_type.in' => 'El tipo de consulta debe ser presencial o virtual.',
+        ]);
+    }
+
+    /**
+     * Verifica si el cliente del doctor tiene habilitadas las citas virtuales
+     */
+    private function checkVirtualAppointmentsEnabled(): void
+    {
+        if (! $this->doctor_id) {
+            $this->enableVirtualAppointments = false;
+            $this->doctorClientId = null;
+
+            return;
+        }
+
+        try {
+            $practitioner = Practitioner::find($this->doctor_id);
+            if (! $practitioner || ! $practitioner->user) {
+                $this->enableVirtualAppointments = false;
+                $this->doctorClientId = null;
+
+                return;
+            }
+
+            $userClient = $practitioner->user->userClients()->first();
+            if (! $userClient) {
+                $this->enableVirtualAppointments = false;
+                $this->doctorClientId = null;
+
+                return;
+            }
+
+            $client = $userClient->client;
+            $this->doctorClientId = $client->id;
+            $this->enableVirtualAppointments = $client->enable_virtual_appointments ?? false;
+
+            Log::info('Virtual appointments status checked', [
+                'doctor_id' => $this->doctor_id,
+                'client_id' => $client->id,
+                'enable_virtual_appointments' => $this->enableVirtualAppointments,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error checking virtual appointments', [
+                'doctor_id' => $this->doctor_id,
+                'error' => $e->getMessage(),
+            ]);
+            $this->enableVirtualAppointments = false;
+            $this->doctorClientId = null;
+        }
     }
 }
