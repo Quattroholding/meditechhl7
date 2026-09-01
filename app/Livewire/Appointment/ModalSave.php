@@ -11,6 +11,7 @@ use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
+use App\Services\JitsiService;
 use App\Services\WaitlistService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -592,10 +593,16 @@ class ModalSave extends Component
         $this->validateAppointment();
 
         try {
-            // Obtener información del doctor
-            // $doctor = Practitioner::find($this->doctor_id);
-            $rooms = ConsultingRoom::find($this->consulting_room_id);
-            $client_id = $rooms->branch->client_id;
+            // Obtener client_id según tipo de consulta
+            if ($this->consultation_type === 'virtual') {
+                // Para virtual: obtener del doctor
+                $practitioner = Practitioner::find($this->doctor_id);
+                $client_id = $practitioner->user->clients()->first()->id;
+            } else {
+                // Para presencial: obtener del consultorio
+                $rooms = ConsultingRoom::find($this->consulting_room_id);
+                $client_id = $rooms->branch->client_id;
+            }
 
             $start = Carbon::parse($this->appointment_date.' '.$this->appointment_time);
             $original_requested_datetime = null;
@@ -651,8 +658,30 @@ class ModalSave extends Component
 
             if ($this->appointment) {
                 // Actualizar cita existente
+                // Detectar si cambió a virtual
+                $wasVirtual = $this->appointment->consultation_type === 'virtual';
+                $isVirtualNow = $this->consultation_type === 'virtual';
+                $changedToVirtual = ! $wasVirtual && $isVirtualNow;
+
                 // Actualizar la cita
                 $this->appointment->update($appointmentData);
+
+                // Crear sala Jitsi si cambió a virtual
+                if ($changedToVirtual) {
+                    try {
+                        $jitsiService = app(JitsiService::class);
+                        $jitsiService->createRoom($this->appointment);
+                        Log::info('Jitsi room created when appointment changed to virtual', [
+                            'appointment_id' => $this->appointment->id,
+                            'room_id' => $this->appointment->virtual_room_id,
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('Error creating Jitsi room on virtual change', [
+                            'appointment_id' => $this->appointment->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
 
                 if ($this->confirm) {
                     $this->appointment->notifyPatientAboutConfirmation();
@@ -710,6 +739,23 @@ class ModalSave extends Component
                 // Crear nueva cita
 
                 $app = Appointment::create($appointmentData);
+
+                // Crear sala Jitsi si es cita virtual
+                if ($this->consultation_type === 'virtual') {
+                    try {
+                        $jitsiService = app(JitsiService::class);
+                        $jitsiService->createRoom($app);
+                        Log::info('Jitsi room created for virtual appointment', [
+                            'appointment_id' => $app->id,
+                            'room_id' => $app->virtual_room_id,
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('Error creating Jitsi room', [
+                            'appointment_id' => $app->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
 
                 if ($this->status == 'proposed') {
                     $app->addPatientToPractitionerClient();
