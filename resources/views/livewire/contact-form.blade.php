@@ -7,12 +7,13 @@
             <p>{{ $successMessage }}</p>
         </div>
     @endif
-
+    {{--}}
     @error('form')
         <div class="error-message">
-            <p>{{ $message }}</p>
+            <p>{{ is_array($message) ? reset($message) : $message }}</p>
         </div>
     @enderror
+    {{--}}
 
     <form wire:submit.prevent="submit" class="contact-form">
         <div class="form-row">
@@ -26,7 +27,7 @@
                     class="form-input @error('name') error @enderror"
                 >
                 @error('name')
-                    <span class="error-text">{{ $message }}</span>
+                    <span class="error-text">{{ is_array($message) ? reset($message) : $message }}</span>
                 @enderror
             </div>
 
@@ -40,7 +41,7 @@
                     class="form-input @error('email') error @enderror"
                 >
                 @error('email')
-                    <span class="error-text">{{ $message }}</span>
+                    <span class="error-text">{{ is_array($message) ? reset($message) : $message }}</span>
                 @enderror
             </div>
         </div>
@@ -79,7 +80,7 @@
                 class="form-textarea @error('message') error @enderror"
             ></textarea>
             @error('message')
-                <span class="error-text">{{ $message }}</span>
+                <span class="error-text">{{ is_array($message) ? reset($message) : $message }}</span>
             @enderror
             <div class="char-count">
                 {{ strlen((string) $message) }}/1000 caracteres

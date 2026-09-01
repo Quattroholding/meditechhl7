@@ -981,8 +981,8 @@ class ModalSave extends Component
                 'client_id' => ConsultingRoom::find($this->consulting_room_id)->branch->client_id,
                 'medical_speciality_id' => $this->medical_speciality_id,
                 'start' => $start->format('Y-m-d H:i'),
-                'end' => $start->copy()->addMinutes($this->duration)->format('Y-m-d H:i'),
-                'minutes_duration' => $this->duration,
+                'end' => $start->copy()->addMinutes((int) $this->duration)->format('Y-m-d H:i'),
+                'minutes_duration' => (int) $this->duration,
                 'consulting_room_id' => $this->consulting_room_id,
                 'service_type' => $this->service_type,
                 'status' => 'waitlist', // Estado de lista de espera

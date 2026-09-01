@@ -3,12 +3,9 @@
         <div class="requests-grid" style="display: grid; gap: 20px;">
             @foreach($sectionData['types'] as $type=>$value)
                 @foreach($value as $request)
-                    <?php
-
-use App\Models\Scopes\EncouterScope;
-
-                        $encounter = $request->encounter()->withoutGlobalScope(EncouterScope::class)->first();
-                    ?>
+                    @php
+                        $encounter = $request->encounter()->withoutGlobalScope(App\Models\Scopes\EncouterScope::class)->first();
+                    @endphp
                     <div class="request-card" style="background: white; border: 2px solid #f1f5f9; border-radius: 16px; padding: 25px; transition: all 0.3s ease;">
                         <div class="request-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                             <div>
