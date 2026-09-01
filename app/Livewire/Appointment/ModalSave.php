@@ -1312,15 +1312,14 @@ class ModalSave extends Component
                 return;
             }
 
-            $userClient = $practitioner->user->userClients()->first();
-            if (! $userClient) {
+            $client = $practitioner->user->clients()->first();
+            if (! $client) {
                 $this->enableVirtualAppointments = false;
                 $this->doctorClientId = null;
 
                 return;
             }
 
-            $client = $userClient->client;
             $this->doctorClientId = $client->id;
             $this->enableVirtualAppointments = $client->enable_virtual_appointments ?? false;
 
