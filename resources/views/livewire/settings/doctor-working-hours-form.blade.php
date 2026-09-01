@@ -1,6 +1,26 @@
 <div>
     @include('partials.message')
     <form wire:submit.prevent="save" class="space-y-4">
+        @if($isAdminOrAdminClient)
+            {{-- Selector de Doctor para Admin y Admin Client --}}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 text-white"><i class="fas fa-user-md"></i> Seleccionar Doctor</h5>
+                </div>
+                <div class="card-body">
+                    <div class="input-block local-forms">
+                        <x-input-label for="selected_doctor" :value="__('Doctor')" />
+                        <x-select-input
+                            id="selected_doctor"
+                            name="selected_doctor"
+                            :options="$doctors"
+                            class="block w-full"
+                            wire:model.live="selectedDoctorId"/>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="alert alert-info">
             <i class="fas fa-info-circle"></i> Configure el horario laboral para cada día de la semana. Puede agregar múltiples horarios por día para trabajar en diferentes sucursales.
         </div>

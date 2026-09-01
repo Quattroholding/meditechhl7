@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\Branch;
 use App\Models\ConsultingRoom;
+use App\Models\User;
 use App\Models\UserWorkingHour;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -25,6 +26,12 @@ class DoctorWorkingHoursForm extends Component
     public $roomsByBranch = [];
 
     public $days = [];
+
+    public $selectedDoctorId;
+
+    public $doctors = [];
+
+    public $isAdminOrAdminClient = false;
 
     protected function rules()
     {
@@ -63,13 +70,65 @@ class DoctorWorkingHoursForm extends Component
 
         $this->days = [__('lunes'), __('martes'), __('miercoles'), __('jueves'), __('viernes'), __('sabado'), __('domingo')];
 
+        // Determinar el rol del usuario actual
+        $currentUser = auth()->user();
+        $isAdmin = $currentUser->hasRole('admin');
+        $isAdminClient = $currentUser->hasRole('admin client');
+
+        $this->isAdminOrAdminClient = $isAdmin || $isAdminClient;
+
+        // Cargar doctores disponibles según el rol
+        if ($this->isAdminOrAdminClient) {
+            $this->loadAvailableDoctors();
+            // Si no hay doctor seleccionado, seleccionar el primero por defecto
+            if (empty($this->selectedDoctorId) && ! empty($this->doctors)) {
+                $this->selectedDoctorId = array_key_first($this->doctors);
+            }
+        } else {
+            // Si es doctor, establecer el doctor seleccionado como el usuario actual
+            $this->selectedDoctorId = auth()->id();
+        }
+
         // Inicializar cada día con un array vacío de horarios
         foreach ($this->days as $day) {
             $this->workingHours[$day] = [];
         }
 
-        // Cargar los horarios actuales del médico con sus sucursales/consultorios
-        $existing = UserWorkingHour::where('user_id', auth()->id())
+        // Cargar los horarios del doctor seleccionado
+        $this->loadDoctorWorkingHours();
+    }
+
+    private function loadAvailableDoctors()
+    {
+        $currentUser = auth()->user();
+        $query = User::query();
+
+        if ($currentUser->hasRole('admin client')) {
+            // Admin client: solo doctores de su cliente
+            $query->whereHas('clients', function ($q) {
+                $q->where('clients.id', $this->clientId);
+            });
+        }
+        // Si es admin global, no hay restricción de cliente
+
+        // Filtrar solo usuarios con rol doctor
+        $query->whereHas('roles', function ($q) {
+            $q->where('name', 'doctor');
+        })->orderBy('first_name')->orderBy('last_name');
+
+        $this->doctors = $query->pluck('first_name', 'id')
+            ->mapWithKeys(function ($name, $id) {
+                $user = User::find($id);
+                $lastName = $user->last_name ?? '';
+
+                return [$id => $name.' '.$lastName];
+            })->toArray();
+    }
+
+    private function loadDoctorWorkingHours()
+    {
+        // Cargar los horarios del doctor seleccionado
+        $existing = UserWorkingHour::where('user_id', $this->selectedDoctorId)
             ->with(['branch', 'consultingRoom'])
             ->orderBy('start_time')
             ->get();
@@ -116,6 +175,17 @@ class DoctorWorkingHoursForm extends Component
         foreach ($rooms as $room) {
             $this->roomsByBranch[$room->branch_id][$room->id] = $room->name;
         }
+    }
+
+    public function updatedSelectedDoctorId($value)
+    {
+        // Cuando cambia el doctor seleccionado, recargar sus horarios
+        $this->selectedDoctorId = $value;
+        $this->workingHours = [];
+        foreach ($this->days as $day) {
+            $this->workingHours[$day] = [];
+        }
+        $this->loadDoctorWorkingHours();
     }
 
     public function updatedWorkingHours($value, $key)
@@ -171,14 +241,21 @@ class DoctorWorkingHoursForm extends Component
     {
         $this->validate();
 
-        UserWorkingHour::where('user_id', auth()->id())->delete();
+        // Obtener el cliente del doctor seleccionado
+        $doctorClientId = $this->clientId;
+        if ($this->isAdminOrAdminClient && $this->selectedDoctorId !== auth()->id()) {
+            // Si se configura horario para otro doctor, usar el cliente del usuario actual
+            $doctorClientId = $this->clientId;
+        }
+
+        UserWorkingHour::where('user_id', $this->selectedDoctorId)->delete();
 
         foreach ($this->workingHours as $day => $schedules) {
             foreach ($schedules as $config) {
                 if ($config['enabled']) {
                     UserWorkingHour::create([
-                        'user_id' => auth()->id(),
-                        'client_id' => $this->clientId,
+                        'user_id' => $this->selectedDoctorId,
+                        'client_id' => $doctorClientId,
                         'branch_id' => $config['branch_id'],
                         'consulting_room_id' => $config['consulting_room_id'],
                         'day_of_week' => $day,
