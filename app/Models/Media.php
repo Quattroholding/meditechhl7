@@ -293,7 +293,7 @@ class Media extends BaseModel
     {
         // Para archivos externos, MediaStorageService maneja la eliminación del archivo
         // Este método solo elimina archivos locales del disco antes de borrar el registro
-        if (!$this->isStoredExternally()) {
+        if (! $this->isStoredExternally()) {
             // Delete physical file when deleting media record
             if (Storage::disk($this->storage_disk)->exists($this->file_path)) {
                 Storage::disk($this->storage_disk)->delete($this->file_path);

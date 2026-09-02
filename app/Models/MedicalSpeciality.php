@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Models\Scopes\MedicalSpecialityScope;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MedicalSpeciality extends Model
 {
+    use HasFactory;
+
     protected $table = 'medical_specialties';
 
     protected $fillable = ['code', 'name', 'description', 'is_surgical'];

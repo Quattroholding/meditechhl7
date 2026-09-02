@@ -304,7 +304,7 @@ class AddInsurance extends Component
 
             $this->dispatch('showToastrAddInsurance',
                 type: 'error',
-                message:'Error al eliminar el seguro: '.$e->getMessage(),
+                message: 'Error al eliminar el seguro: '.$e->getMessage(),
             );
         }
     }

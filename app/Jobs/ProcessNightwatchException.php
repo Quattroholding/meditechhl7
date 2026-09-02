@@ -116,7 +116,7 @@ class ProcessNightwatchException implements ShouldQueue
             $issue = $this->webhookPayload['issue'] ?? null;
         }
 
-        if (!$issue) {
+        if (! $issue) {
             return null;
         }
 
@@ -170,6 +170,7 @@ class ProcessNightwatchException implements ShouldQueue
             Log::warning('No se pudo obtener issue desde MCP Nightwatch', [
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -254,6 +255,7 @@ class ProcessNightwatchException implements ShouldQueue
 
         if (empty($emailsString)) {
             Log::warning('No hay emails configurados para alertas de Nightwatch');
+
             return;
         }
 
@@ -262,6 +264,7 @@ class ProcessNightwatchException implements ShouldQueue
 
         if (empty($recipients)) {
             Log::warning('Lista de emails de Nightwatch está vacía');
+
             return;
         }
 

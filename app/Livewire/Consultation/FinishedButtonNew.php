@@ -52,7 +52,7 @@ class FinishedButtonNew extends Component
         // Emitir evento con los mensajes para mostrar en el footer central
         $this->dispatch('updateFooterMessages', [
             'messages' => $this->messages,
-            'enabled' => $this->enabled
+            'enabled' => $this->enabled,
         ]);
     }
 

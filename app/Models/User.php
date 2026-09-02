@@ -239,7 +239,7 @@ class User extends Authenticatable
             }
         } elseif (auth()->user()->can('users.profile') && auth()->user()->id == $this->id) {
             $route = url('/profile');
-        }elseif(auth()->user()->hasRole('admin')){
+        } elseif (auth()->user()->hasRole('admin')) {
             $route = url('/profile/'.$this->id);
         }
 

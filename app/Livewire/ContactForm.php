@@ -67,6 +67,14 @@ class ContactForm extends Component
         }
     }
 
+    public function updated($property, $value)
+    {
+        // Ensure all string properties are always cast to string
+        if (in_array($property, ['name', 'email', 'phone', 'company', 'message', 'successMessage'])) {
+            $this->{$property} = is_array($value) ? '' : (string) $value;
+        }
+    }
+
     public function render()
     {
         return view('livewire.contact-form');

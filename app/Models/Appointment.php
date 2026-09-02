@@ -462,7 +462,7 @@ class Appointment extends BaseModel
         // Check if appointment is more than 1 day (24 hours) in the future
         $hoursUntilAppointment = now()->diffInHours($this->start, false);
 
-        if ($hoursUntilAppointment <= 24) {
+        if ($hoursUntilAppointment <= 24 and ! $this->isVirtual()) {
             \Log::info('Appointment booking notification not sent - appointment is within 24 hours', [
                 'appointment_id' => $this->id,
                 'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
@@ -532,6 +532,20 @@ class Appointment extends BaseModel
 
         \Log::info('Reminder tracking cleared for rescheduled appointment', [
             'appointment_id' => $this->id,
+        ]);
+    }
+
+    /**
+     * Get the secure patient join URL with HMAC token validation
+     * This URL is used in notifications to provide secure access to virtual consultations
+     */
+    public function getPatientJoinUrl(): string
+    {
+        $token = hash_hmac('sha256', $this->id.$this->patient_id, config('app.key'));
+
+        return route('virtual-consultation.join', [
+            'appointment' => $this->id,
+            'token' => $token,
         ]);
     }
 }

@@ -85,7 +85,7 @@ class Referral extends Component
     public function init()
     {
         $this->selectedLists = $this->encounter->referrals()
-            ->with(['referredTo' => function($query) {
+            ->with(['referredTo' => function ($query) {
                 $query->withoutGlobalScope(PractitionerScope::class)->with('files');
             }, 'speciality'])
             ->get();
@@ -226,7 +226,7 @@ class Referral extends Component
     {
         $this->encounter->referrals()->whereId($id)->delete();
         $this->selectedLists = $this->encounter->referrals()
-            ->with(['referredTo' => function($query) {
+            ->with(['referredTo' => function ($query) {
                 $query->withoutGlobalScope(PractitionerScope::class)->with('files');
             }, 'speciality'])
             ->get();
@@ -387,7 +387,7 @@ class Referral extends Component
 
             // Recargar la lista de referidos con los datos actualizados - sin scope global
             $this->selectedLists = $this->encounter->referrals()
-                ->with(['referredTo' => function($query) {
+                ->with(['referredTo' => function ($query) {
                     $query->withoutGlobalScope(PractitionerScope::class);
                 }, 'speciality'])
                 ->get();

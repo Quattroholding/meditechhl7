@@ -46,7 +46,7 @@ class AppointmentNotFulfilled extends Component
         $clientId = $user->default_client_id;
 
         // Estados activos que no han sido completados
-        $activeStatuses = ['proposed', 'pending', 'booked', 'confirm', 'arrived','checked-in'];
+        $activeStatuses = ['proposed', 'pending', 'booked', 'confirm', 'arrived', 'checked-in'];
 
         // Query base para citas sin completar
         $appointmentsQuery = Appointment::query()

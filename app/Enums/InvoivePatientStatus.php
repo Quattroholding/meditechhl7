@@ -24,7 +24,7 @@ enum InvoivePatientStatus: string
 
     public static function getLabel(string $value): string
     {
-        return match(self::tryFrom($value)) {
+        return match (self::tryFrom($value)) {
             self::UNPAID => 'No Pagada',
             self::PAID => 'Pagada',
             self::PARTIAL => 'Pago Parcial',
@@ -46,7 +46,7 @@ enum InvoivePatientStatus: string
 
     public static function getColor(string $value): string
     {
-        return match(self::tryFrom($value)) {
+        return match (self::tryFrom($value)) {
             self::UNPAID => 'custom-badge status-pink',
             self::PAID => 'custom-badge status-green',
             self::PARTIAL => 'custom-badge status-orange',

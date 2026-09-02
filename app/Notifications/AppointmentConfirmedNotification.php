@@ -74,6 +74,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
         $confirmedDate = $this->appointment->start;
         $wasDateChanged = $this->appointment->wasDateTimeChanged();
         $clinicName = $this->appointment->client->name ?? config('app.name');
+        $isVirtual = $this->appointment->consultation_type === 'virtual';
 
         $subject = $wasDateChanged
             ? 'Cita Reprogramada - Nueva Fecha Confirmada'
@@ -94,6 +95,8 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
                 'wasDateChanged' => $wasDateChanged,
                 'originalDate' => $wasDateChanged ? $this->appointment->original_requested_datetime?->format('d/m/Y H:i') : null,
                 'appointmentUrl' => route('appointment.calendar'),
+                'isVirtual' => $isVirtual,
+                'virtualRoomUrl' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
             ])
             ->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
@@ -108,6 +111,24 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
     public function toArray(object $notifiable): array
     {
         $wasDateChanged = $this->appointment->wasDateTimeChanged();
+        $isVirtual = $this->appointment->consultation_type === 'virtual';
+        $steps = [
+            '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
+            '🕐 Hora: '.$this->appointment->start->format('H:i'),
+            '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
+        ];
+
+        if ($isVirtual) {
+            $steps[] = '🎥 Videollamada: Sala virtual disponible';
+        } else {
+            if ($this->appointment->consultingRoom->branch->name) {
+                $steps[] = '🏪 Sede: '.$this->appointment->consultingRoom->branch->name;
+            }
+        }
+
+        if ($this->appointment->patient_instruction) {
+            $steps[] = '📋 Instrucciones: '.$this->appointment->patient_instruction;
+        }
 
         return [
             // Standard notification fields
@@ -115,13 +136,7 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'message' => $wasDateChanged
                 ? 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido reprogramada y confirmada.'
                 : 'Su cita con Dr. '.$this->appointment->practitioner->name.' ha sido confirmada.',
-            'steps' => array_filter([
-                '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
-                '🕐 Hora: '.$this->appointment->start->format('H:i'),
-                '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
-                $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
-                $this->appointment->patient_instruction ? '📋 Instrucciones: '.$this->appointment->patient_instruction : null,
-            ]),
+            'steps' => $steps,
             'action' => [
                 'text' => 'Ver Calendario',
                 'url' => route('appointment.calendar'),
@@ -146,6 +161,8 @@ class AppointmentConfirmedNotification extends Notification implements ShouldQue
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'comment' => $this->appointment->comment,
             'patient_instruction' => $this->appointment->patient_instruction,
+            'is_virtual' => $isVirtual,
+            'virtual_room_url' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
             'sent_at' => now()->toDateTimeString(),
         ];
     }

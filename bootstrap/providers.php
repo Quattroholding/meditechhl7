@@ -1,10 +1,16 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\BroadcastServiceProvider;
+use App\Providers\DashboardServiceProvider;
+use App\Providers\FortifyServiceProvider;
+use App\Providers\RateLimitServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\BroadcastServiceProvider::class,
-    App\Providers\DashboardServiceProvider::class,
-    App\Providers\FortifyServiceProvider::class,
+    AppServiceProvider::class,
+    BroadcastServiceProvider::class,
+    DashboardServiceProvider::class,
+    FortifyServiceProvider::class,
     // App\Providers\MailConfigServiceProvider::class,
-    App\Providers\RateLimitServiceProvider::class,
+    RateLimitServiceProvider::class,
 ];

@@ -75,6 +75,7 @@ class NightwatchWebhookController extends Controller
                 'headers' => $request->headers->all(),
                 'ip' => $request->ip(),
             ]);
+
             return false;
         }
 
@@ -103,6 +104,7 @@ class NightwatchWebhookController extends Controller
             Log::info('Webhook Nightwatch ignorado por tipo de evento', [
                 'event_type' => $eventType,
             ]);
+
             return false;
         }
 
@@ -119,12 +121,12 @@ class NightwatchWebhookController extends Controller
         $priorities = ['none' => 0, 'low' => 1, 'medium' => 2, 'high' => 3];
 
         // Si la prioridad mínima no está en el array, usar 'medium' como default
-        if (!isset($priorities[$minPriority])) {
+        if (! isset($priorities[$minPriority])) {
             $minPriority = 'medium';
         }
 
         // Si la prioridad del issue no está en el array, usar 'none' como default
-        if (!isset($priorities[$issuePriority])) {
+        if (! isset($priorities[$issuePriority])) {
             $issuePriority = 'none';
         }
 

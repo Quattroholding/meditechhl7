@@ -28,7 +28,7 @@ class RestrictByIp
             ?? $request->ip();
 
         // Debug: uncomment to see what's happening
-         \Log::info('IP Restriction Debug', ['clientIp' => $clientIp, 'allowedIps' => $allowedIps]);
+        \Log::info('IP Restriction Debug', ['clientIp' => $clientIp, 'allowedIps' => $allowedIps]);
 
         // Check if IP is allowed (case-insensitive, trim whitespace)
         if (! in_array(trim($clientIp), $allowedIps, true)) {

@@ -47,6 +47,25 @@
             'Centro médico' => $clinicName
         ]" />
 
+        @if($isVirtual ?? false)
+            <div style="margin-top: 15px; padding: 15px; background-color: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 4px;">
+                <p style="margin: 0 0 10px 0; color: #1565c0;">
+                    <strong>🎥 Cita Virtual</strong>
+                </p>
+                <p style="margin: 0 0 10px 0; color: #1565c0; font-size: 14px;">
+                    Esta es una consulta virtual. Recibirá un enlace de acceso a la videollamada.
+                </p>
+                @if($virtualRoomUrl ?? false)
+                    <p style="margin: 0; color: #1565c0;">
+                        <strong>Enlace de acceso:</strong><br>
+                        <a href="{{ $virtualRoomUrl }}" style="color: #1976d2; text-decoration: none; word-break: break-all;">
+                            {{ $virtualRoomUrl }}
+                        </a>
+                    </p>
+                @endif
+            </div>
+        @endif
+
         @if($comment)
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #b8dabc;">
                 <p style="margin: 0; color: #155724;">
@@ -59,9 +78,16 @@
     {{-- Instrucciones importantes --}}
     <x-email.message-box type="info" title="📋 Instrucciones Importantes">
         <ul style="color: #1565c0; line-height: 1.8; margin: 10px 0; padding-left: 20px;">
-            <li style="margin-bottom: 8px;"><strong>Llegada:</strong> Llegue 15 minutos antes de su cita</li>
-            <li style="margin-bottom: 8px;"><strong>Documentos:</strong> Traiga su documento de identidad</li>
-            <li style="margin-bottom: 8px;"><strong>Exámenes:</strong> Traiga sus exámenes médicos previos si los tiene</li>
+            @if($isVirtual ?? false)
+                <li style="margin-bottom: 8px;"><strong>Conexión:</strong> Acceda 10 minutos antes de la hora de su cita</li>
+                <li style="margin-bottom: 8px;"><strong>Requisitos técnicos:</strong> Asegúrese de tener micrófono y cámara funcionales</li>
+                <li style="margin-bottom: 8px;"><strong>Conexión a internet:</strong> Utilice una conexión estable y rápida</li>
+                <li style="margin-bottom: 8px;"><strong>Privacidad:</strong> Ubíquese en un lugar privado y tranquilo</li>
+            @else
+                <li style="margin-bottom: 8px;"><strong>Llegada:</strong> Llegue 15 minutos antes de su cita</li>
+                <li style="margin-bottom: 8px;"><strong>Documentos:</strong> Traiga su documento de identidad</li>
+                <li style="margin-bottom: 8px;"><strong>Exámenes:</strong> Traiga sus exámenes médicos previos si los tiene</li>
+            @endif
             @if($patientInstruction)
                 <li style="margin-bottom: 8px;"><strong>Instrucción especial:</strong> {{ $patientInstruction }}</li>
             @endif
@@ -69,7 +95,13 @@
     </x-email.message-box>
 
     {{-- Botón de acción --}}
-    @if($appointmentUrl ?? false)
+    @if($isVirtual ?? false)
+        @if($virtualRoomUrl ?? false)
+            <x-email.button href="{{ $virtualRoomUrl }}" type="success" icon="🎥">
+                Acceder a Videollamada
+            </x-email.button>
+        @endif
+    @elseif($appointmentUrl ?? false)
         <x-email.button href="{{ $appointmentUrl }}" type="success" icon="👁️">
             Ver Detalles de la Cita
         </x-email.button>

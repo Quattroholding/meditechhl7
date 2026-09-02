@@ -63,7 +63,7 @@ class AppointmentPolicy
 
     public function cancelled(User $user, Appointment $appointment): bool
     {
-        return in_array($appointment->status->value, ['proposed', 'pending', 'booked', 'arrived','waitlist'])
+        return in_array($appointment->status->value, ['proposed', 'pending', 'booked', 'arrived', 'waitlist'])
             && now()->isBefore(Carbon::parse($appointment->start));
     }
 

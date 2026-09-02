@@ -117,7 +117,7 @@ class DashboardController extends Controller
             'old-patients' => 'doctor.old-patients',
             'active-patients' => 'doctor.active-patients',
             'monthly-appointments' => 'doctor.monthly-appointments',
-            'appointment-not-fulfilled'=>'doctor.appointment-not-fulfilled',
+            'appointment-not-fulfilled' => 'doctor.appointment-not-fulfilled',
             'consultas-en-progreso' => 'doctor.consultas-en-progreso',
             'appointment-lead-time' => 'doctor.appointment-lead-time',
             'consultation-duration-time' => 'doctor.consultation-duration-time',

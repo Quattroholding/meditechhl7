@@ -35,5 +35,5 @@ return [
     'are_you_sure' => 'Are you sure?',
     'loading' => 'Loading...',
     'important' => 'Important',
-    'there_are'=>'There are',
+    'there_are' => 'There are',
 ];

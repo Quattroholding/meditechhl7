@@ -32,7 +32,7 @@ class SurveyResponse extends BaseModel
      */
     protected static function booted(): void
     {
-        static::addGlobalScope(new SurveyResponsesScope());
+        static::addGlobalScope(new SurveyResponsesScope);
     }
 
     public static function boot()

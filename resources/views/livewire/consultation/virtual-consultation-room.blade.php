@@ -194,8 +194,8 @@ document.addEventListener('alpine:init', () => {
         // Modal position and size
         modalWidth: 640,
         modalHeight: 480,
-        modalTop: 20,
-        modalLeft: 20,
+        modalTop: 0,
+        modalLeft: 0,
         minWidth: 400,
         minHeight: 300,
 
@@ -217,6 +217,9 @@ document.addEventListener('alpine:init', () => {
             // Get session active from Livewire component
             this.sessionActive = this.$wire.sessionActive;
 
+            // Calcular posición centrada
+            this.centerModal();
+
             // Load saved position and size from localStorage
             const saved = localStorage.getItem('jitsi_modal_state');
             if (saved) {
@@ -224,8 +227,8 @@ document.addEventListener('alpine:init', () => {
                     const state = JSON.parse(saved);
                     this.modalWidth = state.width || 640;
                     this.modalHeight = state.height || 480;
-                    this.modalTop = state.top || 20;
-                    this.modalLeft = state.left || 20;
+                    this.modalTop = state.top || this.getCenteredTop();
+                    this.modalLeft = state.left || this.getCenteredLeft();
                 } catch (e) {
                     console.error('Error loading modal state:', e);
                 }
@@ -253,6 +256,19 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.initialized = true;
+        },
+
+        getCenteredLeft() {
+            return Math.max(0, (window.innerWidth - this.modalWidth) / 2);
+        },
+
+        getCenteredTop() {
+            return Math.max(0, (window.innerHeight - this.modalHeight) / 2 - 60);
+        },
+
+        centerModal() {
+            this.modalLeft = this.getCenteredLeft();
+            this.modalTop = this.getCenteredTop();
         },
 
     openModal() {
@@ -559,7 +575,7 @@ document.addEventListener('alpine:init', () => {
         /* Botón flotante */
         .video-call-button-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 200px;
             right: 20px;
             z-index: 999;
         }

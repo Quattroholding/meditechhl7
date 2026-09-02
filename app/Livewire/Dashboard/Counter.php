@@ -62,7 +62,7 @@ class Counter extends Component
 
     public function mount()
     {
-       $this->currentClient =  auth()->user()->getCurrentClient();
+        $this->currentClient = auth()->user()->getCurrentClient();
     }
 
     public function appointments()
@@ -78,11 +78,11 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $currentClient =  $this->currentClient;
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_appointments_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'appointments'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $count = Appointment::whereBetween('start', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->count();
                 $lastMonth = Appointment::whereBetween('start', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
@@ -123,11 +123,11 @@ class Counter extends Component
         }
 
         $curr_month = Carbon::now();
-        $currentClient =  $this->currentClient;
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_patients_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'patients'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $count = Patient::whereBetween('created_at', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->count();
                 $lastMonth = Patient::whereBetween('created_at', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
@@ -172,7 +172,7 @@ class Counter extends Component
         $cacheKey = 'dashboard_encounters_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'encounters'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $count = Encounter::whereBetween('start', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->count();
                 $lastMonth = Encounter::whereBetween('start', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
@@ -219,7 +219,7 @@ class Counter extends Component
         $cacheKey = 'dashboard_invoices_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'invoices'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $count = Payment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->sum('amount') ?? 0;
                 $lastMonth = Payment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
@@ -262,11 +262,11 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient =  $this->currentClient;
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_subscriptions_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'subscriptions'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $count = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->sum('amount') ?? 0;
                 $lastMonth = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->subMonth(1)->startOfMonth(), $curr_month->copy()->subMonth(1)->endOfMonth()])
@@ -313,7 +313,7 @@ class Counter extends Component
         $cacheKey = 'dashboard_receivable_services_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'receivable_services'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $invoiced = Invoice::whereBetween('issue_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->sum('total_net') ?? 0;
                 $paid = Payment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
@@ -363,11 +363,11 @@ class Counter extends Component
         $this->symbol = '$';
 
         $curr_month = Carbon::now();
-        $currentClient =  $this->currentClient;
+        $currentClient = $this->currentClient;
         $cacheKey = 'dashboard_receivable_subscriptions_'.$currentClient->id.'_'.$curr_month->format('Y-m');
 
         $data = Cache::tags(['dashboard', 'receivable_subscriptions'])
-            ->remember($cacheKey, 300, function () use ($curr_month, $currentClient) {
+            ->remember($cacheKey, 300, function () use ($curr_month) {
                 $invoiced = ClientInvoice::whereBetween('created_at', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])
                     ->sum('total') ?? 0;
                 $paid = ClientInvoicePayment::whereBetween('payment_date', [$curr_month->copy()->startOfMonth(), $curr_month->copy()->endOfMonth()])

@@ -78,7 +78,7 @@ class AppointmentCancelledNotification extends Notification implements ShouldQue
 
         return (new MailMessage)
             ->subject('Cita Médica Cancelada - '.$clinicName)
-            //->bcc('rgasperi@smartcarebilling.com')
+            // ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-cancelled', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,

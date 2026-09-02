@@ -12,28 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('encounters', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('vital_signs', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('present_illnesses', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('physical_exams', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('medication_requests', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('service_requests', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('conditions', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
         Schema::table('patients', function (Blueprint $table) {
-            $table->string('source_system',50)->default('SAMI')->after('fhir_id');
+            $table->string('source_system', 50)->default('SAMI')->after('fhir_id');
         });
     }
 

@@ -209,11 +209,12 @@ class DropboxStorageProvider implements ExternalStorageProvider
             try {
                 $links = $client->listSharedLinks($externalId);
                 // Note: listSharedLinks returns array directly, not wrapped in 'links' key
-                if (!empty($links) && is_array($links)) {
+                if (! empty($links) && is_array($links)) {
                     $url = $links[0]['url'] ?? null;
                     if ($url) {
                         // Convert to raw link for direct viewing
                         $url = str_replace('dl=0', 'raw=1', $url);
+
                         return $url;
                     }
                 }
@@ -233,6 +234,7 @@ class DropboxStorageProvider implements ExternalStorageProvider
                 if ($url) {
                     // Convert to raw link for direct viewing
                     $url = str_replace('dl=0', 'raw=1', $url);
+
                     return $url;
                 }
             } catch (\Exception $e) {
@@ -240,10 +242,11 @@ class DropboxStorageProvider implements ExternalStorageProvider
                 if (str_contains($e->getMessage(), 'shared_link_already_exists')) {
                     try {
                         $links = $client->listSharedLinks($externalId);
-                        if (!empty($links) && is_array($links)) {
+                        if (! empty($links) && is_array($links)) {
                             $url = $links[0]['url'] ?? null;
                             if ($url) {
                                 $url = str_replace('dl=0', 'raw=1', $url);
+
                                 return $url;
                             }
                         }
@@ -265,6 +268,7 @@ class DropboxStorageProvider implements ExternalStorageProvider
             // Final fallback: try getTemporaryLink (requires files.content.read)
             try {
                 $result = $client->getTemporaryLink($externalId);
+
                 return is_array($result) ? $result['link'] : $result;
             } catch (\Exception $e) {
                 Log::error('getTemporaryLink also failed', [

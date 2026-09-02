@@ -36,7 +36,7 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
             $channels[] = WhatsAppMetaChannel::class;
         }
         // Si no tiene WhatsApp, usar email
-        else*/if ($this->isValidEmail($notifiable->email)) {
+        else*/ if ($this->isValidEmail($notifiable->email)) {
             $channels[] = 'mail';
         }
 
@@ -69,10 +69,11 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
+        $isVirtual = $this->appointment->consultation_type === 'virtual';
 
         return (new MailMessage)
             ->subject('Cita Médica Agendada - '.$clinicName)
-            //->bcc('rgasperi@smartcarebilling.com')
+            // ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-booked', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -87,6 +88,8 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 'comment' => $this->appointment->comment,
                 'patientInstruction' => $this->appointment->patient_instruction,
                 'appointmentUrl' => route('appointment.calendar'),
+                'isVirtual' => $isVirtual,
+                'virtualRoomUrl' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
             ])->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
@@ -99,19 +102,34 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $isVirtual = $this->appointment->consultation_type === 'virtual';
+        $steps = [
+            '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
+            '🕐 Hora: '.$this->appointment->start->format('H:i'),
+            '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
+        ];
+
+        if ($isVirtual) {
+            $steps[] = '🎥 Videollamada: Sala virtual disponible';
+        } else {
+            if ($this->appointment->consultingRoom->branch->name) {
+                $steps[] = '🏪 Sede: '.$this->appointment->consultingRoom->branch->name;
+            }
+            if ($this->appointment->consultingRoom->name) {
+                $steps[] = '🚪 Consultorio: '.$this->appointment->consultingRoom->name;
+            }
+        }
+
+        if ($this->appointment->patient_instruction) {
+            $steps[] = '📋 Instrucciones: '.$this->appointment->patient_instruction;
+        }
+        $steps[] = '⏰ Recibirá un recordatorio 2 horas antes de su cita';
+
         return [
             // Standard notification fields
             'title' => 'Cita Médica Agendada',
             'message' => 'Su cita con '.$this->appointment->practitioner->name.' ha sido agendada exitosamente.',
-            'steps' => array_filter([
-                '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
-                '🕐 Hora: '.$this->appointment->start->format('H:i'),
-                '⏱️ Duración: '.$this->appointment->minutes_duration.' minutos',
-                $this->appointment->consultingRoom->branch->name ? '🏪 Sede: '.$this->appointment->consultingRoom->branch->name : null,
-                $this->appointment->consultingRoom->name ? '🚪 Consultorio: '.$this->appointment->consultingRoom->name : null,
-                $this->appointment->patient_instruction ? '📋 Instrucciones: '.$this->appointment->patient_instruction : null,
-                '⏰ Recibirá un recordatorio 2 horas antes de su cita',
-            ]),
+            'steps' => $steps,
             'action' => [
                 'text' => 'Ver Calendario',
                 'url' => route('appointment.calendar'),
@@ -134,6 +152,8 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
             'consulting_room' => $this->appointment->consultingRoom->name ?? null,
             'comment' => $this->appointment->comment,
             'patient_instruction' => $this->appointment->patient_instruction,
+            'is_virtual' => $isVirtual,
+            'virtual_room_url' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
             'sent_at' => now()->toDateTimeString(),
         ];
     }

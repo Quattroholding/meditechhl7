@@ -27,8 +27,6 @@ class FirstLoginMiddleware
             }
         }
 
-
-
         return $next($request);
     }
 }

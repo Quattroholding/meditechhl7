@@ -300,7 +300,7 @@ class ModalSave extends Component
     public function updatedConsultationType($value)
     {
         if ($value === 'virtual') {
-            $this->consulting_room_id = '';
+            $this->consulting_room_id = null;
         }
     }
 
@@ -645,7 +645,7 @@ class ModalSave extends Component
                 'start' => $start->format('Y-m-d H:i'),
                 'end' => $start->addMinutes($minutes)->format('Y-m-d H:i'),
                 'minutes_duration' => $this->duration,
-                'consulting_room_id' => $this->consulting_room_id,
+                'consulting_room_id' => $this->consultation_type === 'virtual' ? null : $this->consulting_room_id,
                 'service_type' => $this->service_type,
                 'status' => $this->status,
                 'consultation_type' => $this->consultation_type,

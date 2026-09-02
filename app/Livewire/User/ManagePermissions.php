@@ -100,7 +100,7 @@ class ManagePermissions extends Component
 
             $this->dispatch('showToastrManagePermissions',
                 type: 'success',
-                message:  'Permisos del usuario actualizados exitosamente.',
+                message: 'Permisos del usuario actualizados exitosamente.',
             );
 
             $this->closeModal();
@@ -111,7 +111,6 @@ class ManagePermissions extends Component
                 'selected_permissions' => $this->selectedPermissions,
                 'error' => $e->getMessage(),
             ]);
-
 
             $this->dispatch('showToastrManagePermissions',
                 type: 'error',

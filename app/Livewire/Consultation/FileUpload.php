@@ -5,6 +5,7 @@ namespace App\Livewire\Consultation;
 use App\Models\Encounter;
 use App\Models\Media;
 use App\Services\MediaStorageService;
+use App\Services\Storage\StorageProviderFactory;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -69,7 +70,7 @@ class FileUpload extends Component
         $clientId = $this->encounter->appointment?->client_id ?? auth()->user()?->default_client_id;
 
         if ($clientId) {
-            $provider = \App\Services\Storage\StorageProviderFactory::make($clientId);
+            $provider = StorageProviderFactory::make($clientId);
             $this->hasExternalStorage = $provider !== null;
         }
     }
@@ -135,12 +136,12 @@ class FileUpload extends Component
             \Log::error('Error uploading consultation files', [
                 'encounter_id' => $this->encounter_id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             $this->dispatch('notify',
                 type: 'error',
-                message: 'Error al subir archivos: ' . $e->getMessage()
+                message: 'Error al subir archivos: '.$e->getMessage()
             );
         }
     }
@@ -173,12 +174,12 @@ class FileUpload extends Component
         } catch (\Exception $e) {
             \Log::error('Error deleting consultation file', [
                 'media_id' => $mediaId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             $this->dispatch('notify',
                 type: 'error',
-                message: 'Error al eliminar archivo: ' . $e->getMessage()
+                message: 'Error al eliminar archivo: '.$e->getMessage()
             );
         }
     }

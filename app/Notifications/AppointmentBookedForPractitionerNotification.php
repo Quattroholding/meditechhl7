@@ -91,7 +91,7 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
 
         $mailMessage = (new MailMessage)
             ->subject('Nueva Cita Médica Agendada - '.$clinicName)
-            //->bcc('rgasperi@smartcarebilling.com')
+            // ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-booked-practitioner', [
                 'practitionerName' => $notifiable->name,
                 'patientName' => $patient->name,
