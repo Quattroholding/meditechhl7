@@ -205,7 +205,7 @@
 
         .video-call-button-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 180px;
             right: 20px;
             z-index: 9997;
         }
@@ -270,11 +270,19 @@
 </div>
 
 <script>
-// Cargar Zoom SDK de forma asíncrona
+// Cargar Zoom Meeting SDK de forma asíncrona
+// Usar la versión más reciente y confiable
 if (!window.ZoomMtg) {
     const script = document.createElement('script');
-    script.src = 'https://source.zoom.us/2.16.0/ZoomMtg.min.js';
+    script.src = 'https://source.zoom.us/zoom-meeting-embedded.js';
     script.async = true;
+    script.onerror = () => {
+        console.warn('Zoom SDK from primary source failed, trying alternative...');
+        const altScript = document.createElement('script');
+        altScript.src = 'https://source.zoom.us/2.16.0/ZoomMtg.min.js';
+        altScript.async = true;
+        document.head.appendChild(altScript);
+    };
     document.head.appendChild(script);
 }
 </script>
@@ -379,21 +387,26 @@ document.addEventListener('alpine:init', () => {
             }));
         },
 
-        waitForZoomSDK(maxAttempts = 30) {
+        waitForZoomSDK(maxAttempts = 60) {
             return new Promise((resolve, reject) => {
                 let attempts = 0;
 
                 const checkZoomMtg = setInterval(() => {
                     if (window.ZoomMtg) {
                         clearInterval(checkZoomMtg);
-                        console.log('Zoom SDK loaded successfully');
+                        console.log('Zoom SDK loaded successfully after', attempts, 'attempts');
                         resolve();
                     } else if (attempts >= maxAttempts) {
                         clearInterval(checkZoomMtg);
-                        console.error('Zoom SDK failed to load after', maxAttempts, 'attempts');
+                        console.error('Zoom SDK failed to load after', attempts, 'attempts (6 seconds)');
+                        console.error('window.ZoomMtg:', window.ZoomMtg);
+                        console.error('Available scripts in document:', document.scripts.length);
                         reject(new Error('Zoom SDK failed to load'));
                     } else {
                         attempts++;
+                        if (attempts % 10 === 0) {
+                            console.log('Waiting for Zoom SDK...', attempts, '/ ', maxAttempts);
+                        }
                     }
                 }, 100);
             });
