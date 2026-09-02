@@ -94,7 +94,7 @@
                         $password = $appointment->virtual_session_metadata['meeting_password'] ?? null;
                         $zoomUrl = 'https://zoom.us/j/' . $appointment->virtual_room_id;
                         if ($password) {
-                            $encodedPassword = base64_encode($password);
+                            $encodedPassword = urlencode(base64_encode($password));
                             $zoomUrl .= '?pwd=' . $encodedPassword;
                         }
                     @endphp
