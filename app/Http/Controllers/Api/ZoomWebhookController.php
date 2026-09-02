@@ -19,7 +19,25 @@ class ZoomWebhookController extends Controller
     {
         try {
             $body = $request->getContent();
+
+            // Validate JSON
+            if (empty($body)) {
+                Log::warning('Zoom webhook received with empty body');
+
+                return response()->json(['status' => 'bad_request'], 400);
+            }
+
             $event = json_decode($body, true);
+
+            // Check if JSON is valid
+            if (! is_array($event)) {
+                Log::warning('Zoom webhook received with invalid JSON', [
+                    'body_length' => strlen($body),
+                    'json_error' => json_last_error_msg(),
+                ]);
+
+                return response()->json(['status' => 'invalid_json'], 400);
+            }
 
             // Step 1: Handle Zoom's endpoint URL validation
             // When Zoom validates your webhook URL, it sends endpoint.url_validation
@@ -49,11 +67,20 @@ class ZoomWebhookController extends Controller
                 return response()->json(['status' => 'unauthorized'], 401);
             }
 
-            // Step 3: Handle the event
+            // Step 3: Validate that event array has required structure
+            if (! isset($event['event'])) {
+                Log::warning('Zoom webhook missing event field', [
+                    'keys' => array_keys($event),
+                ]);
+
+                return response()->json(['status' => 'invalid_event'], 400);
+            }
+
+            // Step 4: Handle the event
             $this->zoomService->handleWebhookEvent($event);
 
             Log::info('Zoom webhook event processed successfully', [
-                'event' => $event['event'] ?? 'unknown',
+                'event' => $event['event'],
             ]);
 
             return response()->json(['status' => 'ok']);
