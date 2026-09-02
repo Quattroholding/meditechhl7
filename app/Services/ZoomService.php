@@ -137,17 +137,18 @@ class ZoomService
             }
 
             // PRODUCTION MODE: Real Zoom API call
+            // Note: No password on meeting itself - access control via secure token in join-consultation endpoint
             $payload = [
                 'topic' => 'Consulta Médica - '.$appointment->patient->name,
                 'type' => 2,
                 'start_time' => $appointment->start->format('Y-m-d\TH:i:s'),
                 'duration' => $appointment->minutes_duration ?? 30,
                 'timezone' => config('app.timezone', 'UTC'),
-                'password' => $this->generateMeetingPassword(),
                 'agenda' => 'Consulta Médica Virtual',
                 'settings' => [
                     'host_video' => true,
                     'participant_video' => true,
+                    'join_before_host' => false,
                     'waiting_room' => false,
                     'auto_recording' => 'cloud',
                 ],
