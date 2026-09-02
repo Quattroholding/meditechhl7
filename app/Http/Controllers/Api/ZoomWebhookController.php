@@ -13,26 +13,42 @@ class ZoomWebhookController extends Controller
 
     /**
      * Handle incoming Zoom webhooks
+     * Zoom requires challenge-response validation for URL verification
      */
     public function handle(Request $request)
     {
         try {
-            // Zoom sends the raw body and signature in headers
-            $signature = $request->header('x-zm-signature');
             $body = $request->getContent();
+            $event = json_decode($body, true);
 
-            // Validate webhook signature
+            // Step 1: Handle Zoom's URL validation challenge
+            // When Zoom validates your webhook URL, it sends a challenge and expects it back
+            if ($event['event'] === 'app_deauthorization') {
+                $challenge = $event['payload']['challenge'] ?? null;
+                if ($challenge) {
+                    Log::info('Zoom webhook URL validation challenge received and responded');
+
+                    return response()->json(['plainToken' => $challenge]);
+                }
+            }
+
+            // Step 2: Validate webhook signature for normal events
+            $signature = $request->header('x-zm-signature');
+
             if (! $this->zoomService->validateWebhook($body, $signature)) {
-                Log::warning('Invalid Zoom webhook signature');
+                Log::warning('Invalid Zoom webhook signature', [
+                    'event' => $event['event'] ?? 'unknown',
+                ]);
 
                 return response()->json(['status' => 'invalid_signature'], 403);
             }
 
-            // Parse the event
-            $event = json_decode($body, true);
-
-            // Handle the event
+            // Step 3: Handle the event
             $this->zoomService->handleWebhookEvent($event);
+
+            Log::info('Zoom webhook handled successfully', [
+                'event' => $event['event'] ?? 'unknown',
+            ]);
 
             return response()->json(['status' => 'ok']);
         } catch (\Exception $e) {
