@@ -11,15 +11,15 @@ class ZoomService
 {
     protected Client $httpClient;
 
-    protected string $accountId;
+    protected ?string $accountId;
 
-    protected string $clientId;
+    protected ?string $clientId;
 
-    protected string $clientSecret;
+    protected ?string $clientSecret;
 
-    protected string $hostUserId;
+    protected ?string $hostUserId;
 
-    protected string $webhookSecret;
+    protected ?string $webhookSecret;
 
     protected string $baseUrl;
 
@@ -39,7 +39,7 @@ class ZoomService
 
         // Sandbox mode: simular Zoom sin credenciales reales
         $this->sandboxMode = config('services.zoom.sandbox_mode', false)
-                            || !$this->isConfigured();
+                            || ! $this->isConfigured();
 
         $this->httpClient = new Client([
             'base_uri' => $this->baseUrl,
@@ -57,6 +57,7 @@ class ZoomService
         if ($this->sandboxMode) {
             return Cache::remember('zoom_sandbox_token', 3600, function () {
                 Log::info('Zoom Sandbox Mode: Using mock access token');
+
                 return 'zoom_sandbox_token_'.hash('sha256', 'sandbox');
             });
         }
