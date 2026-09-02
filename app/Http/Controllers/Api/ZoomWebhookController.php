@@ -35,14 +35,15 @@ class ZoomWebhookController extends Controller
             }
 
             // Step 2: Validate custom header authentication
-            // Check that the x-zoom-token header matches our configured token
+            // Check that the x-zoom-token header matches our configured webhook token
             $headerToken = $request->header('x-zoom-token');
-            $expectedToken = config('services.zoom.client_id');
+            $expectedToken = config('services.zoom.webhook_secret');
 
-            if (! $headerToken || $headerToken !== $expectedToken) {
+            if (! $headerToken || ! $expectedToken || $headerToken !== $expectedToken) {
                 Log::warning('Invalid Zoom webhook authentication', [
                     'event' => $event['event'] ?? 'unknown',
                     'has_header' => (bool) $headerToken,
+                    'has_configured_token' => (bool) $expectedToken,
                 ]);
 
                 return response()->json(['status' => 'unauthorized'], 401);
