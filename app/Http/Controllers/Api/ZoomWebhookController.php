@@ -21,18 +21,22 @@ class ZoomWebhookController extends Controller
             $body = $request->getContent();
             $event = json_decode($body, true);
 
-            // Step 1: Handle Zoom's URL validation challenge
-            // When Zoom validates your webhook URL, it sends a challenge and expects it back
-            if ($event['event'] === 'app_deauthorization') {
-                $challenge = $event['payload']['challenge'] ?? null;
-                if ($challenge) {
-                    Log::info('Zoom webhook URL validation challenge received and responded');
+            // Step 1: Handle Zoom's endpoint URL validation
+            // When Zoom validates your webhook URL, it sends endpoint.url_validation
+            // This request does NOT include a signature, so handle it first
+            if (($event['event'] ?? null) === 'endpoint.url_validation') {
+                $plainToken = $event['payload']['plainToken'] ?? null;
+                if ($plainToken) {
+                    Log::info('Zoom webhook URL validation received and validated successfully', [
+                        'plainToken' => substr($plainToken, 0, 10).'...',
+                    ]);
 
-                    return response()->json(['plainToken' => $challenge]);
+                    return response()->json(['plainToken' => $plainToken]);
                 }
             }
 
             // Step 2: Validate webhook signature for normal events
+            // Real events (meeting.started, etc.) include a signature header
             $signature = $request->header('x-zm-signature');
 
             if (! $this->zoomService->validateWebhook($body, $signature)) {
@@ -46,7 +50,7 @@ class ZoomWebhookController extends Controller
             // Step 3: Handle the event
             $this->zoomService->handleWebhookEvent($event);
 
-            Log::info('Zoom webhook handled successfully', [
+            Log::info('Zoom webhook event handled successfully', [
                 'event' => $event['event'] ?? 'unknown',
             ]);
 
