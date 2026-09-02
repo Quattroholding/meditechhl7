@@ -90,7 +90,15 @@
                             <p style="font-size: 12px; color: #ccc;">Esperando que el doctor inicie...</p>
                         @endif
                     </div>
-                    <a href="https://zoom.us/j/{{ $appointment->virtual_room_id }}"
+                    @php
+                        $password = $appointment->virtual_session_metadata['meeting_password'] ?? null;
+                        $zoomUrl = 'https://zoom.us/j/' . $appointment->virtual_room_id;
+                        if ($password) {
+                            $encodedPassword = base64_encode($password);
+                            $zoomUrl .= '?pwd=' . $encodedPassword;
+                        }
+                    @endphp
+                    <a href="{{ $zoomUrl }}"
                        target="_blank"
                        rel="noopener noreferrer"
                        style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600;">
