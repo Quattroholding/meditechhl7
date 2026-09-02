@@ -79,7 +79,25 @@
             </div>
 
             {{-- Contenedor de Zoom Meeting --}}
-            <div class="zoom-container" id="zoom-meeting-container"></div>
+            <div class="zoom-container" id="zoom-meeting-container">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px; padding: 20px;">
+                    <div style="text-align: center; color: white;">
+                        <h3>Sala de Zoom</h3>
+                        <p>Meeting ID: {{ $appointment->virtual_room_id }}</p>
+                        @if($isDoctor)
+                            <p style="font-size: 12px; color: #ccc;">Iniciando...</p>
+                        @else
+                            <p style="font-size: 12px; color: #ccc;">Esperando que el doctor inicie...</p>
+                        @endif
+                    </div>
+                    <a href="https://zoom.us/j/{{ $appointment->virtual_room_id }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600;">
+                        Abrir Zoom en nueva ventana
+                    </a>
+                </div>
+            </div>
 
             {{-- Resize Handles --}}
             <div class="resize-handle resize-handle-se" @mousedown="startResize('se')"></div>
@@ -424,61 +442,17 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            if (!config.signature) {
-                console.error('No signature in Zoom config', config);
-                alert('Error: No Zoom signature. Check browser console.');
-                return;
-            }
-
-            // Wait for Zoom SDK to load
-            try {
-                await this.waitForZoomSDK();
-            } catch (error) {
-                console.error(error);
-                alert('Error: Zoom SDK failed to load');
-                return;
-            }
-
             const element = document.getElementById('zoom-meeting-container');
             if (!element) {
                 console.error('Zoom container not found');
                 return;
             }
 
-            try {
-                // Initialize Zoom SDK
-                ZoomMtg.setZoomJSLib('https://source.zoom.us/lib', '/av');
-                ZoomMtg.preLoadWasm();
-
-                ZoomMtg.init({
-                    leaveUrl: 'about:blank',
-                    success: (success) => {
-                        console.log('Zoom SDK initialized successfully');
-
-                        ZoomMtg.join({
-                            signature: config.signature,
-                            meetingNumber: config.meetingNumber,
-                            userName: config.userName,
-                            userEmail: config.userEmail,
-                            passWord: config.password || '',
-                            tk: config.token || '',
-                            zak: config.zak || '',
-                            success: (success) => {
-                                console.log('Joined Zoom meeting successfully');
-                            },
-                            error: (error) => {
-                                console.error('Error joining Zoom meeting:', error);
-                            },
-                        });
-                    },
-                    error: (error) => {
-                        console.error('Error initializing Zoom SDK:', error);
-                    },
-                });
-            } catch (error) {
-                console.error('Exception starting Zoom meeting:', error);
-                alert('Error: ' + error.message);
-            }
+            // Para ahora, mostrar el enlace de Zoom
+            // El usuario abrirá en una nueva ventana
+            // TODO: Implementar Zoom Web SDK v2.20+ cuando sea necesario embeber
+            console.log('Zoom meeting ready. Users can click the link to join.');
+            alert('La sala de Zoom está lista. Haz click en el botón para unirte.');
         },
 
         toggleDisplayMode() {
