@@ -71,9 +71,8 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
         $clinicName = $this->appointment->client->name ?? config('app.name');
         $isVirtual = $this->appointment->consultation_type === 'virtual';
 
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->subject('Cita Médica Agendada - '.$clinicName)
-            // ->bcc('rgasperi@smartcarebilling.com')
             ->view('emails.appointment-booked', [
                 'patientName' => $notifiable->name,
                 'practitionerName' => $practitioner->name,
@@ -93,6 +92,13 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
             ])->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
+
+        // Redirect to testing email if testing mode is enabled
+        if (config('mail.testing_mode')) {
+            $mail->to(config('mail.testing_patient_email'));
+        }
+
+        return $mail;
     }
 
     /**
