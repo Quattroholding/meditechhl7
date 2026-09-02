@@ -64,6 +64,16 @@ return [
         'app_secret' => env('JITSI_APP_SECRET'),
         'key_id' => env('JITSI_KEY_ID'),
     ],
+
+    'zoom' => [
+        'account_id' => env('ZOOM_ACCOUNT_ID'),
+        'client_id' => env('ZOOM_CLIENT_ID'),
+        'client_secret' => env('ZOOM_CLIENT_SECRET'),
+        'host_user_id' => env('ZOOM_HOST_USER_ID'),
+        'webhook_secret' => env('ZOOM_WEBHOOK_SECRET_TOKEN'),
+        'data_center' => env('ZOOM_DATA_CENTER', 'US'),
+        'api_base_url' => env('ZOOM_API_BASE_URL', 'https://zoom.us/v2'),
+    ],
     'yappy_test' => [
         'merchant_id' => env('YAPPY_MERCHANT_ID', 'meet.yappy.com'),
         'base_url' => env('YAPPY_API_BASE', 'https://api.yappy.com'),

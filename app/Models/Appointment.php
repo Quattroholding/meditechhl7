@@ -548,4 +548,19 @@ class Appointment extends BaseModel
             'token' => $token,
         ]);
     }
+
+    /**
+     * Determine which virtual provider to use (Zoom or Jitsi)
+     * During migration, this allows gradual rollout to Zoom
+     */
+    public function getVirtualProvider(): string
+    {
+        // Check if client has Zoom enabled
+        if ($this->client && $this->client->zoom_provider_enabled) {
+            return 'zoom';
+        }
+
+        // Default to Jitsi for backward compatibility
+        return 'jitsi';
+    }
 }

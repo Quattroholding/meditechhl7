@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Recepy\RecepyMedicationTypeController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionController;
 use App\Http\Controllers\Api\Recepy\RecepyPrescriptionMedicationController;
 use App\Http\Controllers\Api\SurveyController;
+use App\Http\Controllers\Api\ZoomWebhookController;
 use App\Models\State;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,9 @@ Route::prefix('surveys')->group(function () {
     Route::post('/save-response', [SurveyController::class, 'saveQuestionResponse']);
     Route::get('/{surveyResponseId}/progress', [SurveyController::class, 'getSurveyProgress']);
 });
+
+// Zoom Webhooks - Public route (Zoom will call this)
+Route::post('/webhooks/zoom', [ZoomWebhookController::class, 'handle']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
