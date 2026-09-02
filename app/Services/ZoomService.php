@@ -316,7 +316,9 @@ class ZoomService
             'userEmail' => $userInfo['email'] ?? '',
             'passWord' => $appointment->virtual_session_metadata['meeting_password'] ?? '',
             'role' => $userInfo['is_moderator'] ? 1 : 0,
-            'leaveUrl' => route('dashboard'),
+            'leaveUrl' => 'about:blank',
+            'token' => '',
+            'zak' => '',
         ];
     }
 

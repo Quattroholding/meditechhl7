@@ -378,8 +378,17 @@ document.addEventListener('alpine:init', () => {
             console.log('Starting Zoom meeting');
             const config = this.$wire.zoomConfig;
 
-            if (!config || !config.signature) {
-                console.error('No Zoom config or signature available');
+            console.log('Zoom config received:', config);
+
+            if (!config || typeof config !== 'object' || Object.keys(config).length === 0) {
+                console.error('No Zoom config available', config);
+                alert('Error: No Zoom configuration available. Check browser console.');
+                return;
+            }
+
+            if (!config.signature) {
+                console.error('No signature in Zoom config', config);
+                alert('Error: No Zoom signature. Check browser console.');
                 return;
             }
 

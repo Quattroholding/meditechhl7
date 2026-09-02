@@ -71,7 +71,7 @@ class VirtualZoomConsultationRoom extends Component
 
         // Prepare Zoom Meeting SDK configuration
         try {
-            $this->zoomConfig = $this->zoomService->getZoomConfig(
+            $config = $this->zoomService->getZoomConfig(
                 $this->appointment,
                 [
                     'name' => $displayName,
@@ -80,9 +80,23 @@ class VirtualZoomConsultationRoom extends Component
                     'is_moderator' => $this->isDoctor,
                 ]
             );
+
+            if ($config && isset($config['signature'])) {
+                $this->zoomConfig = $config;
+                \Log::info('Zoom config loaded successfully', [
+                    'appointment_id' => $this->appointment->id,
+                    'meeting_number' => $config['meetingNumber'] ?? null,
+                ]);
+            } else {
+                throw new \Exception('Invalid Zoom config returned: missing signature');
+            }
         } catch (\Exception $e) {
-            \Log::error('Failed to get Zoom config', ['error' => $e->getMessage()]);
-            $this->dispatch('error', message: 'Error al cargar configuración de Zoom');
+            \Log::error('Failed to get Zoom config', [
+                'appointment_id' => $this->appointment->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $this->dispatch('error', message: 'Error al cargar configuración de Zoom: '.$e->getMessage());
         }
     }
 
