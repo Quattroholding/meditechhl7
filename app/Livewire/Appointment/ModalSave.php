@@ -1238,8 +1238,8 @@ class ModalSave extends Component
                     return false;
                 }
 
-                // Validar que el consultorio seleccionado sea el configurado para ese día
-                if ($this->consulting_room_id != $workingHour->consulting_room_id) {
+                // Validar que el consultorio seleccionado sea el configurado para ese día (solo para citas presenciales)
+                if ($this->consultation_type !== 'virtual' && $this->consulting_room_id != $workingHour->consulting_room_id) {
                     Log::info('checkAvailability() - Consulting room mismatch', [
                         'doctor_id' => $this->doctor_id,
                         'selected_room' => $this->consulting_room_id,
