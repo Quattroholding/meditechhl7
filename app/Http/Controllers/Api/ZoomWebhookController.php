@@ -41,14 +41,23 @@ class ZoomWebhookController extends Controller
 
             // Step 1: Handle Zoom's endpoint URL validation
             // When Zoom validates your webhook URL, it sends endpoint.url_validation
+            // Must respond with plainToken and encryptedToken (HMAC SHA-256 of plainToken)
             if (($event['event'] ?? null) === 'endpoint.url_validation') {
                 $plainToken = $event['payload']['plainToken'] ?? null;
                 if ($plainToken) {
-                    Log::info('Zoom webhook URL validation received', [
+                    // Calculate encryptedToken as HMAC SHA-256 of plainToken using webhook secret
+                    $webhookSecret = config('services.zoom.webhook_secret');
+                    $encryptedToken = hash_hmac('sha256', $plainToken, $webhookSecret);
+
+                    Log::info('Zoom webhook URL validation received and validated', [
                         'plainToken' => substr($plainToken, 0, 10).'...',
+                        'encryptedToken' => substr($encryptedToken, 0, 10).'...',
                     ]);
 
-                    return response()->json(['plainToken' => $plainToken]);
+                    return response()->json([
+                        'plainToken' => $plainToken,
+                        'encryptedToken' => $encryptedToken,
+                    ]);
                 }
             }
 
