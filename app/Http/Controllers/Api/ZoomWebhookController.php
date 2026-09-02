@@ -13,7 +13,7 @@ class ZoomWebhookController extends Controller
 
     /**
      * Handle incoming Zoom webhooks
-     * Zoom requires challenge-response validation for URL verification
+     * Uses custom header authentication instead of signature verification
      */
     public function handle(Request $request)
     {
@@ -23,11 +23,10 @@ class ZoomWebhookController extends Controller
 
             // Step 1: Handle Zoom's endpoint URL validation
             // When Zoom validates your webhook URL, it sends endpoint.url_validation
-            // This request does NOT include a signature, so handle it first
             if (($event['event'] ?? null) === 'endpoint.url_validation') {
                 $plainToken = $event['payload']['plainToken'] ?? null;
                 if ($plainToken) {
-                    Log::info('Zoom webhook URL validation received and validated successfully', [
+                    Log::info('Zoom webhook URL validation received', [
                         'plainToken' => substr($plainToken, 0, 10).'...',
                     ]);
 
@@ -35,22 +34,24 @@ class ZoomWebhookController extends Controller
                 }
             }
 
-            // Step 2: Validate webhook signature for normal events
-            // Real events (meeting.started, etc.) include a signature header
-            $signature = $request->header('x-zm-signature');
+            // Step 2: Validate custom header authentication
+            // Check that the x-zoom-token header matches our configured token
+            $headerToken = $request->header('x-zoom-token');
+            $expectedToken = config('services.zoom.client_id');
 
-            if (! $this->zoomService->validateWebhook($body, $signature)) {
-                Log::warning('Invalid Zoom webhook signature', [
+            if (! $headerToken || $headerToken !== $expectedToken) {
+                Log::warning('Invalid Zoom webhook authentication', [
                     'event' => $event['event'] ?? 'unknown',
+                    'has_header' => (bool) $headerToken,
                 ]);
 
-                return response()->json(['status' => 'invalid_signature'], 403);
+                return response()->json(['status' => 'unauthorized'], 401);
             }
 
             // Step 3: Handle the event
             $this->zoomService->handleWebhookEvent($event);
 
-            Log::info('Zoom webhook event handled successfully', [
+            Log::info('Zoom webhook event processed successfully', [
                 'event' => $event['event'] ?? 'unknown',
             ]);
 
