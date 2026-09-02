@@ -58,13 +58,6 @@ return [
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
     ],
 
-    'jitsi' => [
-        'domain' => env('JITSI_DOMAIN', 'meet.jit.si'),
-        'app_id' => env('JITSI_APP_ID'),
-        'app_secret' => env('JITSI_APP_SECRET'),
-        'key_id' => env('JITSI_KEY_ID'),
-    ],
-
     'zoom' => [
         'account_id' => env('ZOOM_ACCOUNT_ID'),
         'client_id' => env('ZOOM_CLIENT_ID'),
@@ -73,6 +66,7 @@ return [
         'webhook_secret' => env('ZOOM_WEBHOOK_SECRET_TOKEN'),
         'data_center' => env('ZOOM_DATA_CENTER', 'US'),
         'api_base_url' => env('ZOOM_API_BASE_URL', 'https://zoom.us/v2'),
+        'sandbox_mode' => env('ZOOM_SANDBOX_MODE', false), // Testing without real credentials
     ],
     'yappy_test' => [
         'merchant_id' => env('YAPPY_MERCHANT_ID', 'meet.yappy.com'),

@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->boolean('zoom_provider_enabled')->default(false)->comment('Enable Zoom Healthcare provider for virtual consultations');
+            // Zoom is now the only provider for virtual consultations
+            // This column can be used for future feature flags (e.g., enable/disable Zoom for specific clients)
+            $table->boolean('zoom_enabled')->default(true)->comment('Enable Zoom Healthcare for virtual consultations (always true - Zoom is now the only provider)');
         });
     }
 
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->dropColumn('zoom_provider_enabled');
+            $table->dropColumn('zoom_enabled');
         });
     }
 };

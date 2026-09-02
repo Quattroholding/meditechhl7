@@ -17,7 +17,7 @@ class Client extends Model
         'diagnostic_ai_suggestions',
         'show_consultation_timer',
         'enable_virtual_appointments',
-        'zoom_provider_enabled',
+        'zoom_enabled',
         'group',
         'ruc',
         'dv',
@@ -37,7 +37,7 @@ class Client extends Model
         'diagnostic_ai_suggestions' => 'boolean',
         'show_consultation_timer' => 'boolean',
         'enable_virtual_appointments' => 'boolean',
-        'zoom_provider_enabled' => 'boolean',
+        'zoom_enabled' => 'boolean',
         'hemoscreen_only' => 'boolean',
     ];
 

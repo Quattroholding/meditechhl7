@@ -25,6 +25,8 @@ class ZoomService
 
     protected string $dataCenter;
 
+    protected bool $sandboxMode;
+
     public function __construct()
     {
         $this->accountId = config('services.zoom.account_id');
@@ -35,6 +37,10 @@ class ZoomService
         $this->baseUrl = config('services.zoom.api_base_url', 'https://zoom.us/v2');
         $this->dataCenter = config('services.zoom.data_center', 'US');
 
+        // Sandbox mode: simular Zoom sin credenciales reales
+        $this->sandboxMode = config('services.zoom.sandbox_mode', false)
+                            || !$this->isConfigured();
+
         $this->httpClient = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 30,
@@ -43,9 +49,18 @@ class ZoomService
 
     /**
      * Get OAuth 2.0 access token (cached for 1 hour)
+     * In sandbox mode, returns a mock token
      */
     public function getAccessToken(): string
     {
+        // Sandbox mode: return mock token
+        if ($this->sandboxMode) {
+            return Cache::remember('zoom_sandbox_token', 3600, function () {
+                Log::info('Zoom Sandbox Mode: Using mock access token');
+                return 'zoom_sandbox_token_'.hash('sha256', 'sandbox');
+            });
+        }
+
         $cacheKey = 'zoom_access_token_'.$this->accountId;
 
         return Cache::remember($cacheKey, 3600, function () {
@@ -71,6 +86,7 @@ class ZoomService
 
     /**
      * Create a Zoom meeting for an appointment
+     * In sandbox mode, simulates meeting creation
      */
     public function createMeeting(Appointment $appointment): array
     {
@@ -81,9 +97,48 @@ class ZoomService
                 throw new \Exception('Unable to obtain Zoom access token');
             }
 
+            // SANDBOX MODE: Simulate meeting creation
+            if ($this->sandboxMode) {
+                $meetingId = (int) (time() % 1000000000000);
+                $password = $this->generateMeetingPassword();
+                $meetingData = [
+                    'id' => $meetingId,
+                    'uuid' => 'sandbox_uuid_'.hash('sha256', $meetingId),
+                    'join_url' => "https://zoom.us/j/{$meetingId}",
+                    'password' => $password,
+                    'start_time' => $appointment->start->format('Y-m-d\TH:i:s'),
+                ];
+
+                $appointment->update([
+                    'virtual_room_id' => (string) $meetingData['id'],
+                    'virtual_room_url' => $meetingData['join_url'],
+                    'virtual_session_metadata' => [
+                        'zoom_uuid' => $meetingData['uuid'],
+                        'meeting_password' => $password,
+                        'created_at' => now()->toIso8601String(),
+                        'provider' => 'zoom',
+                        'sandbox_mode' => true,
+                    ],
+                ]);
+
+                Log::info('Zoom meeting created (SANDBOX)', [
+                    'appointment_id' => $appointment->id,
+                    'meeting_id' => $meetingData['id'],
+                    'sandbox_mode' => true,
+                ]);
+
+                return [
+                    'meeting_id' => (string) $meetingData['id'],
+                    'join_url' => $meetingData['join_url'],
+                    'start_time' => $meetingData['start_time'],
+                    'password' => $password,
+                ];
+            }
+
+            // PRODUCTION MODE: Real Zoom API call
             $payload = [
                 'topic' => 'Consulta Médica - '.$appointment->patient->name,
-                'type' => 2, // 2 = Scheduled meeting
+                'type' => 2,
                 'start_time' => $appointment->start->format('Y-m-d\TH:i:s'),
                 'duration' => $appointment->minutes_duration ?? 30,
                 'timezone' => config('app.timezone', 'UTC'),
@@ -98,7 +153,7 @@ class ZoomService
                     'jbh_time' => 0,
                     'waiting_room' => false,
                     'mute_upon_entry' => false,
-                    'auto_recording' => 'cloud', // Cloud recording
+                    'auto_recording' => 'cloud',
                     'alternative_hosts' => '',
                     'close_registration' => false,
                     'show_share_button' => true,
@@ -136,7 +191,7 @@ class ZoomService
                 ],
             ]);
 
-            Log::info('Zoom meeting created', [
+            Log::info('Zoom meeting created (PRODUCTION)', [
                 'appointment_id' => $appointment->id,
                 'meeting_id' => $meetingData['id'],
             ]);
@@ -534,5 +589,21 @@ class ZoomService
             && ! empty($this->clientId)
             && ! empty($this->clientSecret)
             && ! empty($this->hostUserId);
+    }
+
+    /**
+     * Check if running in sandbox mode (testing without real credentials)
+     */
+    public function isSandboxMode(): bool
+    {
+        return $this->sandboxMode;
+    }
+
+    /**
+     * Get current mode as string for logging/debugging
+     */
+    public function getMode(): string
+    {
+        return $this->sandboxMode ? 'SANDBOX' : 'PRODUCTION';
     }
 }
