@@ -11,8 +11,8 @@ use App\Models\Practitioner;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserWorkingHour;
-use App\Services\JitsiService;
 use App\Services\WaitlistService;
+use App\Services\ZoomService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -666,17 +666,17 @@ class ModalSave extends Component
                 // Actualizar la cita
                 $this->appointment->update($appointmentData);
 
-                // Crear sala Jitsi si cambió a virtual
+                // Crear sala Zoom si cambió a virtual
                 if ($changedToVirtual) {
                     try {
-                        $jitsiService = app(JitsiService::class);
-                        $jitsiService->createRoom($this->appointment);
-                        Log::info('Jitsi room created when appointment changed to virtual', [
+                        $zoomService = app(ZoomService::class);
+                        $zoomService->createMeeting($this->appointment);
+                        Log::info('Zoom meeting created when appointment changed to virtual', [
                             'appointment_id' => $this->appointment->id,
-                            'room_id' => $this->appointment->virtual_room_id,
+                            'meeting_id' => $this->appointment->virtual_room_id,
                         ]);
                     } catch (\Exception $e) {
-                        Log::error('Error creating Jitsi room on virtual change', [
+                        Log::error('Error creating Zoom meeting on virtual change', [
                             'appointment_id' => $this->appointment->id,
                             'error' => $e->getMessage(),
                         ]);
@@ -740,17 +740,17 @@ class ModalSave extends Component
 
                 $app = Appointment::create($appointmentData);
 
-                // Crear sala Jitsi si es cita virtual
+                // Crear sala Zoom si es cita virtual
                 if ($this->consultation_type === 'virtual') {
                     try {
-                        $jitsiService = app(JitsiService::class);
-                        $jitsiService->createRoom($app);
-                        Log::info('Jitsi room created for virtual appointment', [
+                        $zoomService = app(ZoomService::class);
+                        $zoomService->createMeeting($app);
+                        Log::info('Zoom meeting created for virtual appointment', [
                             'appointment_id' => $app->id,
-                            'room_id' => $app->virtual_room_id,
+                            'meeting_id' => $app->virtual_room_id,
                         ]);
                     } catch (\Exception $e) {
-                        Log::error('Error creating Jitsi room', [
+                        Log::error('Error creating Zoom meeting', [
                             'appointment_id' => $app->id,
                             'error' => $e->getMessage(),
                         ]);
