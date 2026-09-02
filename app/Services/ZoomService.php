@@ -148,28 +148,13 @@ class ZoomService
                 'settings' => [
                     'host_video' => true,
                     'participant_video' => true,
-                    'cn_meeting' => false,
-                    'in_meeting' => false,
-                    'join_before_host' => false,
-                    'jbh_time' => 0,
                     'waiting_room' => false,
-                    'mute_upon_entry' => false,
                     'auto_recording' => 'cloud',
-                    'alternative_hosts' => '',
-                    'close_registration' => false,
-                    'show_share_button' => true,
-                    'allow_multiple_devices' => false,
-                    'registrants_confirmation_email' => false,
-                    'meeting_authentication' => false,
-                    'encryption_type' => 'enhanced',
-                    'approved_or_denied_countries_restriction' => [
-                        'enable' => false,
-                    ],
                 ],
             ];
 
             $response = $this->httpClient->post(
-                "/users/{$this->hostUserId}/meetings",
+                $this->baseUrl.'/users/me/meetings',
                 [
                     'headers' => [
                         'Authorization' => 'Bearer '.$accessToken,

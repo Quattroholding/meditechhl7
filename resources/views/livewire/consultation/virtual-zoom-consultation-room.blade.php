@@ -287,23 +287,6 @@
     </style>
 </div>
 
-<script>
-// Cargar Zoom Meeting SDK de forma asíncrona
-// Usar la versión más reciente y confiable
-if (!window.ZoomMtg) {
-    const script = document.createElement('script');
-    script.src = 'https://source.zoom.us/zoom-meeting-embedded.js';
-    script.async = true;
-    script.onerror = () => {
-        console.warn('Zoom SDK from primary source failed, trying alternative...');
-        const altScript = document.createElement('script');
-        altScript.src = 'https://source.zoom.us/2.16.0/ZoomMtg.min.js';
-        altScript.async = true;
-        document.head.appendChild(altScript);
-    };
-    document.head.appendChild(script);
-}
-</script>
 
 <script>
 document.addEventListener('alpine:init', () => {
@@ -405,54 +388,8 @@ document.addEventListener('alpine:init', () => {
             }));
         },
 
-        waitForZoomSDK(maxAttempts = 60) {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-
-                const checkZoomMtg = setInterval(() => {
-                    if (window.ZoomMtg) {
-                        clearInterval(checkZoomMtg);
-                        console.log('Zoom SDK loaded successfully after', attempts, 'attempts');
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkZoomMtg);
-                        console.error('Zoom SDK failed to load after', attempts, 'attempts (6 seconds)');
-                        console.error('window.ZoomMtg:', window.ZoomMtg);
-                        console.error('Available scripts in document:', document.scripts.length);
-                        reject(new Error('Zoom SDK failed to load'));
-                    } else {
-                        attempts++;
-                        if (attempts % 10 === 0) {
-                            console.log('Waiting for Zoom SDK...', attempts, '/ ', maxAttempts);
-                        }
-                    }
-                }, 100);
-            });
-        },
-
         async startZoomMeeting() {
-            console.log('Starting Zoom meeting');
-            const config = this.$wire.zoomConfig;
-
-            console.log('Zoom config received:', config);
-
-            if (!config || typeof config !== 'object' || Object.keys(config).length === 0) {
-                console.error('No Zoom config available', config);
-                alert('Error: No Zoom configuration available. Check browser console.');
-                return;
-            }
-
-            const element = document.getElementById('zoom-meeting-container');
-            if (!element) {
-                console.error('Zoom container not found');
-                return;
-            }
-
-            // Para ahora, mostrar el enlace de Zoom
-            // El usuario abrirá en una nueva ventana
-            // TODO: Implementar Zoom Web SDK v2.20+ cuando sea necesario embeber
-            console.log('Zoom meeting ready. Users can click the link to join.');
-            alert('La sala de Zoom está lista. Haz click en el botón para unirte.');
+            console.log('Zoom meeting ready. Users can click the link to open the meeting.');
         },
 
         toggleDisplayMode() {
