@@ -269,10 +269,15 @@
     </style>
 </div>
 
-@assets
-{{-- Cargar Zoom Meeting SDK --}}
-<script src="https://source.zoom.us/2.16.0/ZoomMtg.min.js"></script>
-@endassets
+<script>
+// Cargar Zoom SDK de forma asíncrona
+if (!window.ZoomMtg) {
+    const script = document.createElement('script');
+    script.src = 'https://source.zoom.us/2.16.0/ZoomMtg.min.js';
+    script.async = true;
+    document.head.appendChild(script);
+}
+</script>
 
 <script>
 document.addEventListener('alpine:init', () => {
@@ -326,8 +331,8 @@ document.addEventListener('alpine:init', () => {
             this.$watch('$wire.sessionActive', (value) => {
                 this.sessionActive = value;
                 if (value && this.modalOpen) {
-                    setTimeout(() => {
-                        this.startZoomMeeting();
+                    setTimeout(async () => {
+                        await this.startZoomMeeting();
                     }, 100);
                 }
             });
@@ -335,8 +340,8 @@ document.addEventListener('alpine:init', () => {
             // Auto-open if session is already active
             if (this.sessionActive) {
                 this.modalOpen = true;
-                setTimeout(() => {
-                    this.startZoomMeeting();
+                setTimeout(async () => {
+                    await this.startZoomMeeting();
                 }, 100);
             }
 
@@ -374,7 +379,27 @@ document.addEventListener('alpine:init', () => {
             }));
         },
 
-        startZoomMeeting() {
+        waitForZoomSDK(maxAttempts = 30) {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+
+                const checkZoomMtg = setInterval(() => {
+                    if (window.ZoomMtg) {
+                        clearInterval(checkZoomMtg);
+                        console.log('Zoom SDK loaded successfully');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkZoomMtg);
+                        console.error('Zoom SDK failed to load after', maxAttempts, 'attempts');
+                        reject(new Error('Zoom SDK failed to load'));
+                    } else {
+                        attempts++;
+                    }
+                }, 100);
+            });
+        },
+
+        async startZoomMeeting() {
             console.log('Starting Zoom meeting');
             const config = this.$wire.zoomConfig;
 
@@ -392,9 +417,14 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            // Initialize Zoom SDK
-            ZoomMtg.setZoomJSLib('https://source.zoom.us/lib', '/av');
-            ZoomMtg.preLoadWasm();
+            // Wait for Zoom SDK to load
+            try {
+                await this.waitForZoomSDK();
+            } catch (error) {
+                console.error(error);
+                alert('Error: Zoom SDK failed to load');
+                return;
+            }
 
             const element = document.getElementById('zoom-meeting-container');
             if (!element) {
@@ -403,6 +433,10 @@ document.addEventListener('alpine:init', () => {
             }
 
             try {
+                // Initialize Zoom SDK
+                ZoomMtg.setZoomJSLib('https://source.zoom.us/lib', '/av');
+                ZoomMtg.preLoadWasm();
+
                 ZoomMtg.init({
                     leaveUrl: 'about:blank',
                     success: (success) => {
@@ -430,6 +464,7 @@ document.addEventListener('alpine:init', () => {
                 });
             } catch (error) {
                 console.error('Exception starting Zoom meeting:', error);
+                alert('Error: ' + error.message);
             }
         },
 
