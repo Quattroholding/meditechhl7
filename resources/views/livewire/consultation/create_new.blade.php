@@ -130,7 +130,8 @@
     <!-- Sala virtual si aplica -->
     @if($appointment->isVirtual())
         <div class="my-3"></div>
-        @livewire('consultation.virtual-consultation-room', [
+        {{-- TODO: Cambiar a virtual-zoom-consultation-room cuando Zoom esté listo --}}
+        @livewire('consultation.virtual-zoom-consultation-room', [
             'appointment' => $appointment,
             'displayMode' => 'sidebar'
         ])
