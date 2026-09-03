@@ -25,7 +25,13 @@
                 <i class="fas fa-building"></i>
                 Consultorio:
             </span>
-            <span class="data-value-new">{{ $encounter->appointment->consultingRoom->name }}</span>
+            <span class="data-value-new">
+                @if($encounter->appointment->consultation_type=='presencial')
+                {{ $encounter->appointment->consultingRoom->name }}
+                @else
+                    {{ __('Cita Virtual') }}
+                @endif
+            </span>
         </div>
         <div class="data-row-new">
             <span class="data-label-new">

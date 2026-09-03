@@ -30,6 +30,17 @@
                         El doctor aún no ha iniciado la videoconsulta. Por favor espera a que inicie la sesión.
                     </div>
                 @endif
+
+                @php
+                    $meetingPassword = $appointment->virtual_session_metadata['meeting_password'] ?? null;
+                @endphp
+
+                @if($meetingPassword)
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="fas fa-key me-2"></i>
+                        <strong>Código de acceso de Zoom:</strong> <code style="background: #fff3cd; padding: 2px 6px; border-radius: 3px; font-family: monospace;">{{ $meetingPassword }}</code>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

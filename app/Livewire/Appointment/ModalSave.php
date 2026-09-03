@@ -769,6 +769,8 @@ class ModalSave extends Component
                     $app->notifyPractitionerAboutBooking();
                     // Programar recordatorio para 2 horas antes
                     $app->notifyPatientAboutAppointment();
+
+                    session()->flash('message.success', 'Paso por la parte donde manda las notificaciones de booking.');
                 }
 
                 session()->flash('message.success', 'Cita creada exitosamente.');

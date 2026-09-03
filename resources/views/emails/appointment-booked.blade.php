@@ -35,11 +35,16 @@
                     Esta es una consulta virtual. Recibirá un enlace de acceso a la videollamada.
                 </p>
                 @if($virtualRoomUrl ?? false)
-                    <p style="margin: 0; color: #1565c0;">
+                    <p style="margin: 0 0 10px 0; color: #1565c0;">
                         <strong>Enlace de acceso:</strong><br>
                         <a href="{{ $virtualRoomUrl }}" style="color: #1976d2; text-decoration: none; word-break: break-all;">
                             {{ $virtualRoomUrl }}
                         </a>
+                    </p>
+                @endif
+                @if($meetingPassword ?? false)
+                    <p style="margin: 0; color: #1565c0;">
+                        <strong>Código de acceso de Zoom:</strong> <code style="background: #fff3cd; padding: 2px 6px; border-radius: 3px; font-family: monospace; font-weight: bold;">{{ $meetingPassword }}</code>
                     </p>
                 @endif
             </div>

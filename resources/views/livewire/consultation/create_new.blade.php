@@ -23,7 +23,15 @@
             <h2>{{ __('consultation.medical_consultation') }}</h2>
             <p>{{ __('consultation.select_section_to_record') }}</p>
         </div>
-
+        <!-- Sala virtual si aplica -->
+        @if($appointment->isVirtual())
+            {{-- TODO: Cambiar a virtual-zoom-consultation-room cuando Zoom esté listo --}}
+            @livewire('consultation.virtual-zoom-consultation-room', [
+                'appointment' => $appointment,
+                'displayMode' => 'sidebar',
+                'embedMode' => 'inline'
+            ])
+        @endif
         <div class="grid-container" id="module-grid">
             @foreach($encounter_sections as $section)
             <div class="card {{ in_array($section->id, $completedSections) ? 'completed' : '' }} {{ $section->obligatory ? 'card-required' : '' }}"  data-section-id="{{ $section->id }}"
@@ -47,6 +55,7 @@
                 @endif
             </div>
             @endforeach
+
        </div>
     </div>
 
@@ -127,15 +136,7 @@
     <!-- Menú lateral de información del paciente -->
     @include('consultations.partials.patient_info', array('id' => $patient->id))
 
-    <!-- Sala virtual si aplica -->
-    @if($appointment->isVirtual())
-        <div class="my-3"></div>
-        {{-- TODO: Cambiar a virtual-zoom-consultation-room cuando Zoom esté listo --}}
-        @livewire('consultation.virtual-zoom-consultation-room', [
-            'appointment' => $appointment,
-            'displayMode' => 'sidebar'
-        ])
-    @endif
+
 
     <!-- Scripts -->
     <script>

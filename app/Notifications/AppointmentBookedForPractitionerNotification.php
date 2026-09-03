@@ -69,6 +69,9 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
 
     public function toMail($notifiable)
     {
+        // Refresh the appointment to ensure all data is current
+        $this->appointment->refresh();
+
         $patient = $this->appointment->patient;
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
@@ -130,6 +133,9 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
      */
     public function toArray(object $notifiable): array
     {
+        // Refresh the appointment to ensure all data is current
+        $this->appointment->refresh();
+
         return [
             // Standard notification fields
             'title' => 'Nueva Cita Médica Agendada',
@@ -175,6 +181,9 @@ class AppointmentBookedForPractitionerNotification extends Notification implemen
      */
     public function toWhatsApp(object $notifiable): string
     {
+        // Refresh the appointment to ensure all data is current
+        $this->appointment->refresh();
+
         $patient = $this->appointment->patient;
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');

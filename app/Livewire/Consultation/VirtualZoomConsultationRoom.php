@@ -19,6 +19,8 @@ class VirtualZoomConsultationRoom extends Component
 
     public string $displayMode = 'sidebar'; // 'sidebar', 'modal', 'fullscreen'
 
+    public string $embedMode = 'modal'; // 'inline', 'modal', 'floating'
+
     public string $patientJoinUrl = '';
 
     protected ZoomService $zoomService;
@@ -28,11 +30,12 @@ class VirtualZoomConsultationRoom extends Component
         $this->zoomService = $zoomService;
     }
 
-    public function mount(Appointment $appointment, string $displayMode = 'sidebar')
+    public function mount(Appointment $appointment, string $displayMode = 'sidebar', string $embedMode = 'modal')
     {
         $this->appointment = $appointment;
         $this->isDoctor = Auth::check() && Auth::user()->hasRole('doctor');
         $this->displayMode = $displayMode;
+        $this->embedMode = $embedMode;
 
         // Generate patient join URL with secure token
         $token = hash_hmac('sha256', $this->appointment->id.$this->appointment->patient_id, config('app.key'));

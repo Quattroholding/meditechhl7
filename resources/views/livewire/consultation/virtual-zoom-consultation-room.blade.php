@@ -1,6 +1,80 @@
 <div class="virtual-zoom-consultation-wrapper" x-data="zoomConsultation()" wire:ignore.self>
+    {{-- No mostrar Zoom si la cita ya está finalizada --}}
+    @if($appointment->status->value === 'fulfilled')
+        <div class="alert alert-info" style="margin-bottom: 20px;">
+            <i class="fas fa-check-circle"></i> Esta consulta ya ha sido finalizada. La sala de Zoom no está disponible.
+        </div>
+    @else
+
+    {{-- MODO INLINE: Zoom como contenedor normal en la página --}}
+    @if($embedMode === 'inline')
+        <div class="zoom-inline-container" :class="{ 'zoom-minimized': isMinimized }">
+            <div class="zoom-inline-header" @click="isMinimized = !isMinimized">
+                <span class="zoom-inline-title">
+                    <i class="fas fa-video me-2"></i>
+                    Video Consulta - Zoom (Meeting ID: {{ $appointment->virtual_room_id }})
+                </span>
+                <div class="zoom-inline-controls">
+                    <button @click.stop="isMinimized = !isMinimized" class="btn-minimize" :title="isMinimized ? 'Expandir' : 'Minimizar'">
+                        <i :class="isMinimized ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="zoom-inline-body" x-show="!isMinimized" x-transition>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 15px; padding: 20px;">
+                    <div style="text-align: center; color: #333;">
+
+                        @if($isDoctor)
+                            <p style="font-size: 12px; color: #999;">{{ $sessionActive ? 'Consulta en progreso...' : 'Haz clic para abrir Zoom' }}</p>
+                        @else
+                            <p style="font-size: 12px; color: #999;">{{ $sessionActive ? 'Unido a la consulta' : 'Esperando que el doctor inicie...' }}</p>
+                        @endif
+                    </div>
+
+
+
+                    @php
+                        $password = $appointment->virtual_session_metadata['meeting_password'] ?? null;
+                        $zoomUrl = 'https://zoom.us/j/' . $appointment->virtual_room_id;
+                        if ($password) {
+                            $encodedPassword = urlencode(base64_encode($password));
+                            $zoomUrl .= '?pwd=' . $encodedPassword;
+                        }
+                    @endphp
+                    <a href="{{ $zoomUrl }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       style="padding: 10px 20px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-block;">
+                        Abrir Zoom
+                    </a>
+                    @if($isDoctor)
+                        <div style="background: #f0f0f0; padding: 12px; border-radius: 6px; max-width: 90%; text-align: center; width: 100%;">
+                            <p style="margin: 0 0 8px 0; color: #333; font-size: 11px; font-weight: bold;">
+                                Enlace para el paciente:
+                            </p>
+                            <div style="display: flex; align-items: center; gap: 6px; background: white; padding: 6px; border-radius: 3px; border: 1px solid #ddd; word-break: break-all;">
+                                <code style="color: #0e5aa8; font-size: 10px; flex: 1; text-align: left;">{{ $patientJoinUrl }}</code>
+                                <button @click="copyLink()" style="background: #10b981; border: none; color: white; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; white-space: nowrap; flex-shrink: 0;">
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                    @if($password)
+                        <div style="font-size: 12px; color: #666; text-align: center;">
+                            Código: <code style="background: #f0f0f0; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-weight: bold;">{{ $password }}</code>
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- MODO MODAL: Comportamiento original --}}
+    @if($embedMode !== 'inline')
     {{-- Botón flotante para iniciar videoconsulta --}}
-    <div x-show="initialized && !modalOpen" x-transition class="video-call-button-container">
+    <div x-show="initialized && !modalOpen && !isMinimized" x-transition class="video-call-button-container">
         @if($isDoctor && !$sessionActive)
             <button @click="openModal(); $wire.startSession()"
                     class="btn-start-video-call"
@@ -85,11 +159,26 @@
                         <h3>Sala de Zoom</h3>
                         <p>Meeting ID: {{ $appointment->virtual_room_id }}</p>
                         @if($isDoctor)
-                            <p style="font-size: 12px; color: #ccc;">Iniciando...</p>
+                            <p style="font-size: 12px; color: #ccc;">Haz clic en el botón para abrir Zoom</p>
                         @else
                             <p style="font-size: 12px; color: #ccc;">Esperando que el doctor inicie...</p>
                         @endif
                     </div>
+
+                    @if($isDoctor)
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 6px; max-width: 90%; text-align: center;">
+                        <p style="margin: 0 0 10px 0; color: #ccc; font-size: 12px;">
+                            <strong>Enlace para el paciente:</strong>
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; word-break: break-all;">
+                            <code style="color: #4dd0ff; font-size: 11px; flex: 1; text-align: left;">{{ $patientJoinUrl }}</code>
+                            <button @click="copyLink()" style="background: #10b981; border: none; color: white; padding: 6px 12px; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                    @endif
+
                     @php
                         $password = $appointment->virtual_session_metadata['meeting_password'] ?? null;
                         $zoomUrl = 'https://zoom.us/j/' . $appointment->virtual_room_id;
@@ -101,8 +190,8 @@
                     <a href="{{ $zoomUrl }}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600;">
-                        Abrir Zoom en nueva ventana
+                       style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block;">
+                        Abrir Zoom
                     </a>
                 </div>
             </div>
@@ -114,6 +203,7 @@
             <div class="resize-handle resize-handle-nw" @mousedown="startResize('nw')"></div>
         </div>
     </div>
+    @endif
 
     {{-- Styles --}}
     <style>
@@ -292,7 +382,72 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        /* Estilos para modo inline */
+        .zoom-inline-container {
+            position: relative;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .zoom-inline-container.zoom-minimized {
+            height: auto;
+        }
+
+        .zoom-inline-header {
+            background: linear-gradient(135deg, #0e5aa8 0%, #1a6db5 100%);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .zoom-inline-title {
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .zoom-inline-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-minimize {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 12px;
+        }
+
+        .btn-minimize:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .zoom-inline-body {
+            height: 300px;
+            overflow: hidden;
+            border-radius: 0 0 8px 8px;
+        }
     </style>
+    @endif
 </div>
 
 
@@ -302,6 +457,7 @@ document.addEventListener('alpine:init', () => {
         modalOpen: false,
         sessionActive: false,
         initialized: false,
+        isMinimized: false,
 
         // Modal position and size
         modalWidth: 640,
@@ -326,6 +482,7 @@ document.addEventListener('alpine:init', () => {
             console.log('Zoom consultation component initialized');
             this.modalOpen = false;
             this.sessionActive = this.$wire.sessionActive;
+            this.isMinimized = false;
 
             // Center modal
             this.centerModal();
@@ -404,10 +561,24 @@ document.addEventListener('alpine:init', () => {
             this.$wire.toggleDisplayMode();
         },
 
+        toggleMinimized() {
+            this.$wire.toggleMinimized();
+            this.isMinimized = !this.isMinimized;
+        },
+
         copyPatientLink() {
             const link = this.$wire.patientJoinUrl;
             navigator.clipboard.writeText(link).then(() => {
                 alert('Enlace copiado al portapapeles');
+            });
+        },
+
+        copyLink() {
+            const link = this.$wire.patientJoinUrl;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Enlace copiado al portapapeles');
+            }).catch(() => {
+                alert('Error al copiar el enlace');
             });
         },
 

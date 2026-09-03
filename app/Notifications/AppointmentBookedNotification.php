@@ -66,12 +66,20 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable)
     {
+        // Refresh the appointment to ensure all data is current
+        $this->appointment->refresh();
+
         $practitioner = $this->appointment->practitioner;
         $appointmentDate = $this->appointment->start;
         $clinicName = $this->appointment->client->name ?? config('app.name');
         $isVirtual = $this->appointment->consultation_type === 'virtual';
 
-        $mail = (new MailMessage)
+        $meetingPassword = null;
+        if ($isVirtual && $this->appointment->virtual_session_metadata) {
+            $meetingPassword = $this->appointment->virtual_session_metadata['meeting_password'] ?? null;
+        }
+
+        return (new MailMessage)
             ->subject('Cita Médica Agendada - '.$clinicName)
             ->view('emails.appointment-booked', [
                 'patientName' => $notifiable->name,
@@ -89,16 +97,10 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
                 'appointmentUrl' => route('appointment.calendar'),
                 'isVirtual' => $isVirtual,
                 'virtualRoomUrl' => $isVirtual ? $this->appointment->getPatientJoinUrl() : null,
+                'meetingPassword' => $meetingPassword,
             ])->withSymfonyMessage(function ($message) {
                 $this->applyEmailMetadata($message);
             });
-
-        // Redirect to testing email if testing mode is enabled
-        if (config('mail.testing_mode')) {
-            $mail->to(config('mail.testing_patient_email'));
-        }
-
-        return $mail;
     }
 
     /**
@@ -108,6 +110,9 @@ class AppointmentBookedNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        // Refresh the appointment to ensure all data is current
+        $this->appointment->refresh();
+
         $isVirtual = $this->appointment->consultation_type === 'virtual';
         $steps = [
             '📅 Fecha: '.$this->appointment->start->format('d/m/Y'),
