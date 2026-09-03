@@ -41,10 +41,19 @@
                             $zoomUrl .= '?pwd=' . $encodedPassword;
                         }
                     @endphp
-                    <button onclick="window.open('{{ $zoomUrl }}', '_blank'); @if($isDoctor && !$sessionActive)@this.call('startSession')@endif"
-                       style="padding: 10px 20px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-block; border: none;">
-                        Abrir Zoom
-                    </button>
+                    @if($isDoctor && !$sessionActive)
+                        <button wire:click="startSession" onclick="window.open('{{ $zoomUrl }}', '_blank')"
+                           style="padding: 10px 20px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-block; border: none;">
+                            Abrir Zoom
+                        </button>
+                    @else
+                        <a href="{{ $zoomUrl }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           style="padding: 10px 20px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-block;">
+                            Abrir Zoom
+                        </a>
+                    @endif
                     @if($isDoctor)
                         <div style="background: #f0f0f0; padding: 12px; border-radius: 6px; max-width: 90%; text-align: center; width: 100%;">
                             <p style="margin: 0 0 8px 0; color: #333; font-size: 11px; font-weight: bold;">
@@ -185,10 +194,19 @@
                             $zoomUrl .= '?pwd=' . $encodedPassword;
                         }
                     @endphp
-                    <button onclick="window.open('{{ $zoomUrl }}', '_blank'); @if($isDoctor && !$sessionActive)@this.call('startSession')@endif"
-                       style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block; border: none;">
-                        Abrir Zoom
-                    </button>
+                    @if($isDoctor && !$sessionActive)
+                        <button wire:click="startSession" onclick="window.open('{{ $zoomUrl }}', '_blank')"
+                           style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block; border: none;">
+                            Abrir Zoom
+                        </button>
+                    @else
+                        <a href="{{ $zoomUrl }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           style="padding: 12px 24px; background: #0e5aa8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-block;">
+                            Abrir Zoom
+                        </a>
+                    @endif
                 </div>
             </div>
 
