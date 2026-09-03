@@ -1,5 +1,20 @@
 /* Consultation Header New - SAMI Inspired Design */
 
+:root {
+    --primary-color: #004b87;
+    --secondary-color: #00a4e4;
+    --sami-green: #097239;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --bg-color: #eef1f6;
+    --card-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-color: #dcdde1;
+    --hover-color: #f4fbf7;
+}
+
 .patient-banner-new {
     display: flex;
     flex-wrap: wrap;
@@ -33,7 +48,7 @@
     font-size: 1.15rem;
     margin-bottom: 18px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #7ac142;
+    border-bottom: 2px solid var(--sami-green);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -41,7 +56,7 @@
 
 .banner-block-new h3 i {
     font-size: 1.4rem;
-    color: #7ac142;
+    color:var(--sami-green);
 }
 
 .data-row-new {

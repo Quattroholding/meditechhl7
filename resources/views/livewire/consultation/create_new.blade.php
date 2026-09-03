@@ -36,11 +36,17 @@
             @foreach($encounter_sections as $section)
             <div class="card {{ in_array($section->id, $completedSections) ? 'completed' : '' }} {{ $section->obligatory ? 'card-required' : '' }}"  data-section-id="{{ $section->id }}"
                  data-required="{{ $section->obligatory ? 'true' : 'false' }}"
-                 onclick="openSectionModal('{{ $section->id }}', '{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}', '{{ $section->icon ?? '📄' }}')"
+                 onclick="openSectionModal('{{ $section->id }}', '{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}', '{{ $section->icon_path ?? $section->icon ?? '📄' }}')"
                  role="button"
                  tabindex="0"
                  aria-label="{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}">
-                <div class="card-icon">{{ $section->icon ?? '📄' }}</div>
+                <div class="card-icon">
+                    @if($section->icon_path)
+                        <img src="{{ asset($section->icon_path) }}" alt="{{ $section->name_esp }}" class="icon-image">
+                    @else
+                        {{ $section->icon ?? '📄' }}
+                    @endif
+                </div>
                 <div class="card-title">   {{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}</div>
                 @if(in_array($section->id, $completedSections))
                     <div class="card-completed-badge">
@@ -68,7 +74,13 @@
             <div class="consultation-modal-content">
                 <div class="consultation-modal-header">
                     <div class="consultation-modal-title-wrapper">
-                        <span class="consultation-modal-icon">{{ $section->icon ?? '📄' }}</span>
+                        <span class="consultation-modal-icon">
+                            @if($section->icon_path)
+                                <img src="{{ asset($section->icon_path) }}" alt="{{ $section->name_esp }}" class="modal-icon-image">
+                            @else
+                                {{ $section->icon ?? '📄' }}
+                            @endif
+                        </span>
                         <h2 class="consultation-modal-title">{{ app()->getLocale() === 'es' ? $section->name_esp : $section->name }}</h2>
                     </div>
                     <button class="consultation-modal-close" onclick="closeSectionModal('{{ $section->id }}')" aria-label="Cerrar">
@@ -146,7 +158,7 @@
         @foreach($encounter_sections as $section)
             sectionComponents['{{ $section->id }}'] = {
                 component: '{{ $section->livewire_component_name }}',
-                icon: '{{ $section->icon ?? '📄' }}'
+                icon: '{{ $section->icon_path ?? $section->icon ?? '📄' }}'
             };
         @endforeach
 

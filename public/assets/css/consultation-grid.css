@@ -12,7 +12,7 @@
 :root {
     --primary-color: #004b87;
     --secondary-color: #00a4e4;
-    --sami-green: #7ac142;
+    --sami-green: #097239;
     --success-color: #28a745;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
@@ -82,15 +82,16 @@
 
 /* Delineado verde muy fino alrededor de cada cubo */
 .card {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 5px;
+
     text-align: center;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.04);
     transition: all 0.25s ease;
     border: 1px solid var(--sami-green); /* Delineado verde fino */
     position: relative;
+    background: linear-gradient(135deg, #7dc342 20%, #097239 80%);
+    border-radius: 10%;
+    padding: 5px;
 }
 
 /* Tarjetas requeridas (obligatorias) - borde rojo/naranja */
@@ -165,9 +166,10 @@
 }
 
 /* Cuando una tarjeta requerida se completa, vuelve al estilo normal */
+
 .card.completed {
     border: 2px solid var(--sami-green);
-    background: linear-gradient(135deg, #f0fff4 0%, #e6f9ed 100%);
+    background: #097239;
     box-shadow: 0 4px 12px rgba(122, 193, 66, 0.3);
 }
 
@@ -201,7 +203,7 @@
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 18px rgba(122, 193, 66, 0.25);
-    background-color: var(--hover-color);
+    /*background-color: var(--hover-color);*/
     border-color: #63a733; /* Verde un poco más intenso al enfocar */
 }
 
@@ -213,7 +215,7 @@
 .card-title {
     font-weight: 600;
     font-size: 1rem;
-    color: var(--primary-color);
+    color: #fff;
 }
 
 .consultation-card::before {
@@ -1659,6 +1661,43 @@
 .consultation-card.loading {
     pointer-events: none;
     opacity: 0.6;
+}
+
+/* Icon Image Styles */
+.card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+}
+
+.card-icon .icon-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.card:hover .card-icon .icon-image {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Modal Icon Image Styles */
+.consultation-modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+}
+
+.consultation-modal-icon .modal-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 
