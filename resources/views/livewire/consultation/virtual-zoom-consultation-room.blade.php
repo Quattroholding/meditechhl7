@@ -60,7 +60,7 @@
                                 Enlace para el paciente:
                             </p>
                             <div style="display: flex; align-items: center; gap: 6px; background: white; padding: 6px; border-radius: 3px; border: 1px solid #ddd; word-break: break-all;">
-                                <code style="color: #0e5aa8; font-size: 10px; flex: 1; text-align: left;">{{ $patientJoinUrl }}</code>
+                                <code style="color: #0e5aa8; font-size: 10px; flex: 1; text-align: left;">{{ $zoomUrl }}</code>
                                 <button @click="copyLink()" style="background: #10b981; border: none; color: white; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; white-space: nowrap; flex-shrink: 0;">
                                     Copiar
                                 </button>
@@ -178,7 +178,7 @@
                             <strong>Enlace para el paciente:</strong>
                         </p>
                         <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; word-break: break-all;">
-                            <code style="color: #4dd0ff; font-size: 11px; flex: 1; text-align: left;">{{ $patientJoinUrl }}</code>
+                            <code style="color: #4dd0ff; font-size: 11px; flex: 1; text-align: left;">{{ $zoomUrl }}</code>
                             <button @click="copyLink()" style="background: #10b981; border: none; color: white; padding: 6px 12px; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap;">
                                 Copiar
                             </button>
