@@ -29,6 +29,7 @@ class ZoomOAuthController extends Controller
             'response_type' => 'code',
             'client_id' => $clientId,
             'redirect_uri' => $redirectUri,
+            'scope' => 'meeting:write:meeting user:read:user',
             'state' => session()->token(),
         ]);
 
