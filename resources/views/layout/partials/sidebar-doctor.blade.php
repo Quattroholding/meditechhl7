@@ -61,6 +61,7 @@
                         <li><a class="{{ Request::is('clients/branch') ? 'active' : '' }}"   href="{{ route('client.branch.index') }}">{{ __('client.branches') }}</a></li>
                         <li><a class="{{ Request::is('clients/consulting_rooms') ? 'active' : '' }}"   href="{{ route('client.room.index') }}">{{ __('client.rooms') }}</a></li>
                         <li><a class="{{ Request::is('settings/'.auth()->user()->practitioner->id.'/signature_and_seal') ? 'active' : '' }}"   href="{{ route('setting.signature_and_seal',auth()->user()->practitioner->id) }}">{{ __('doctor.signature-manager') }}</a></li>
+                        <li><a class="{{ Request::is('settings/zoom') ? 'active' : '' }}" href="{{ route('practitioner.settings.zoom') }}"><i class="fab fa-zoom me-2"></i>{{ __('Mi Cuenta Zoom') }}</a></li>
                     </ul>
                 </li>
                 <li>
