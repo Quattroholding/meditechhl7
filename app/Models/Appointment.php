@@ -482,6 +482,7 @@ class Appointment extends BaseModel
             'patient_email' => $this->patient->email,
             'appointment_datetime' => $this->start->format('Y-m-d H:i:s'),
             'hours_until_appointment' => $hoursUntilAppointment,
+            'is_virtual' => $this->isVirtual(),
         ]);
 
         return true;
@@ -547,6 +548,28 @@ class Appointment extends BaseModel
             'appointment' => $this->id,
             'token' => $token,
         ]);
+    }
+
+    /**
+     * Get the direct Zoom meeting URL with password encoded
+     * This URL can be used directly in notifications for quick access
+     */
+    public function getZoomDirectUrl(): ?string
+    {
+        if (! $this->virtual_room_id) {
+            return null;
+        }
+
+        $zoomUrl = 'https://zoom.us/j/'.$this->virtual_room_id;
+
+        // Add password if available
+        if ($this->virtual_session_metadata && isset($this->virtual_session_metadata['meeting_password'])) {
+            $password = $this->virtual_session_metadata['meeting_password'];
+            $encodedPassword = urlencode(base64_encode($password));
+            $zoomUrl .= '?pwd='.$encodedPassword;
+        }
+
+        return $zoomUrl;
     }
 
     /**

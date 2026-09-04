@@ -100,7 +100,7 @@ class WaitlistEntryExpiredNotification extends Notification implements ShouldQue
                 '🏥 Especialidad: '.($appointment->medicalSpeciality->name ?? 'N/A'),
                 '📅 Fecha Solicitada: '.$appointment->start->format('d/m/Y'),
                 '🕐 Hora Solicitada: '.$appointment->start->format('H:i'),
-                '⏳ Días de Espera: '.$this->waitlistEntry->created_at->diffInDays(now()),
+                '⏳ Días de Espera: '. Carbon::parse($this->waitlistEntry->getRawOriginal('created_at'))->diffInDays(now()),
             ]),
             'action' => [
                 'text' => 'Agendar Nueva Cita',
