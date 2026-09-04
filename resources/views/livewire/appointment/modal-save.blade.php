@@ -130,6 +130,18 @@
                                 </select>
                                 <x-input-error :messages="$errors->get('consultation_type')"/>
                             </div>
+                        @elseif($doctor_id)
+                            {{-- Mostrar alerta si el doctor NO tiene Zoom configurado --}}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="fas fa-video-slash me-2"></i>
+                                <strong>Citas virtuales no disponibles</strong>
+                                <p class="mb-0 mt-2 small">
+                                    El doctor seleccionado no tiene una cuenta de Zoom configurada.
+                                    <a href="{{ route('practitioner.settings.zoom') }}" target="_blank" class="alert-link">
+                                        Configurar Zoom
+                                    </a>
+                                </p>
+                            </div>
                         @endif
 
                         {{-- Consultorio (solo visible si es presencial) --}}
