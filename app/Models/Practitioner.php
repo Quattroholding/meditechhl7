@@ -115,6 +115,11 @@ class Practitioner extends BaseModel
         return $this->hasMany(SurveyResponse::class);
     }
 
+    public function zoomProfile()
+    {
+        return $this->hasOne(PractitionerZoomProfile::class);
+    }
+
     public function getSatisfactionRating(int $surveyId = 1): array
     {
         $responses = $this->completedSurveyResponses()

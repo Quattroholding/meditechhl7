@@ -49,9 +49,10 @@ class ZoomService
 
     /**
      * Get OAuth 2.0 access token (cached for 1 hour)
-     * In sandbox mode, returns a mock token
+     * If practitioner is provided and has a Zoom profile, use their access token
+     * Otherwise, use account credentials
      */
-    public function getAccessToken(): string
+    public function getAccessToken($practitioner = null): string
     {
         // Sandbox mode: return mock token
         if ($this->sandboxMode) {
@@ -62,6 +63,22 @@ class ZoomService
             });
         }
 
+        // Si el practitioner tiene Zoom configurada, usar su token
+        if ($practitioner && $practitioner->zoomProfile) {
+            $zoomProfile = $practitioner->zoomProfile;
+            $cacheKey = 'zoom_access_token_'.$zoomProfile->zoom_user_id;
+
+            return Cache::remember($cacheKey, 3600, function () use ($zoomProfile) {
+                // Si el token expiró, refrescarlo
+                if ($zoomProfile->isTokenExpired() && $zoomProfile->refresh_token) {
+                    return $this->refreshAccessToken($zoomProfile);
+                }
+
+                return $zoomProfile->access_token;
+            });
+        }
+
+        // Usar credenciales de la cuenta por defecto
         $cacheKey = 'zoom_access_token_'.$this->accountId;
 
         return Cache::remember($cacheKey, 3600, function () {
@@ -86,13 +103,44 @@ class ZoomService
     }
 
     /**
+     * Refrescar access token usando refresh token
+     */
+    protected function refreshAccessToken($zoomProfile): string
+    {
+        try {
+            $response = $this->httpClient->post('https://zoom.us/oauth/token', [
+                'auth' => [config('services.zoom.client_id'), config('services.zoom.client_secret')],
+                'form_params' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $zoomProfile->refresh_token,
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            // Actualizar el token en la BD
+            $zoomProfile->update([
+                'access_token' => $data['access_token'],
+                'token_expires_at' => now()->addSeconds($data['expires_in'] ?? 3600),
+            ]);
+
+            Log::info('Zoom token refreshed', ['zoom_user_id' => $zoomProfile->zoom_user_id]);
+
+            return $data['access_token'];
+        } catch (\Exception $e) {
+            Log::error('Error refreshing Zoom token', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+
+    /**
      * Create a Zoom meeting for an appointment
      * In sandbox mode, simulates meeting creation
      */
     public function createMeeting(Appointment $appointment): array
     {
         try {
-            $accessToken = $this->getAccessToken();
+            $accessToken = $this->getAccessToken($appointment->practitioner);
 
             if (! $accessToken) {
                 throw new \Exception('Unable to obtain Zoom access token');
@@ -155,10 +203,16 @@ class ZoomService
                 ],
             ];
 
-            // Si tienes un host_user_id configurado, usarlo; si no, crear como usuarios sin host específico
-            $endpoint = $this->hostUserId
-                ? $this->baseUrl.'/users/'.$this->hostUserId.'/meetings'
-                : $this->baseUrl.'/users/me/meetings';
+            // Usar el user_id del doctor si tiene Zoom configurada
+            // Si no, usar ZOOM_HOST_USER_ID (fallback para migraciones)
+            $doctorZoomProfile = $appointment->practitioner->zoomProfile;
+            $zoomUserId = $doctorZoomProfile?->zoom_user_id ?? $this->hostUserId;
+
+            if (!$zoomUserId) {
+                throw new \Exception('Doctor no tiene cuenta de Zoom configurada y no hay cuenta por defecto');
+            }
+
+            $endpoint = $this->baseUrl.'/users/'.$zoomUserId.'/meetings';
 
             $response = $this->httpClient->post(
                 $endpoint,
