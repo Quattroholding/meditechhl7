@@ -711,6 +711,7 @@ margin: 20px 0;
                     <li><a href="#almacenamiento-externo"><i class="fas fa-cloud"></i> 10. Almacenamiento Externo</a></li>
                     <li><a href="#lista-espera"><i class="fas fa-hourglass-half"></i> 11. Lista de Espera</a></li>
                     <li><a href="#tips"><i class="fas fa-lightbulb"></i> 12. Tips y Mejores Prácticas</a></li>
+                    <li><a href="#zoom-configuration"><i class="fas fa-video"></i> 13. Configuración de Zoom</a></li>
                 </ul>
             </div>
         </div>
@@ -2383,6 +2384,338 @@ margin: 20px 0;
             </div>
             <p class="mb-0">Si tiene dudas sobre la configuracion de su cuenta o encuentra algun problema, contacte al equipo de soporte tecnico de SAMI. Tambien puede revisar las otras guias del Centro de Ayuda para aprender sobre funcionalidades relacionadas.</p>
         </div>
+    </section>
+
+    <!-- SECCIÓN 13: CONFIGURACIÓN DE CUENTA ZOOM -->
+    <section id="zoom-configuration" class="content-section">
+        <h2><i class="fas fa-video me-2"></i>13. Configuración de Cuenta Zoom</h2>
+        <p>La integración con Zoom permite que cada doctor use su propia cuenta para crear y gestionar consultas virtuales. Esto proporciona flexibilidad total y evita conflictos de capacidad cuando múltiples doctores crean citas simultaneamente.</p>
+
+        <div class="info-box tip">
+            <div class="info-box-title">
+                <i class="fas fa-route text-success"></i>
+                Ruta de Acceso
+            </div>
+            <p class="mb-0"><strong>Menu → Configuraciones → Mi Cuenta Zoom</strong></p>
+        </div>
+
+        <!-- PASO 1: CONECTAR CUENTA -->
+        <div class="step-card">
+            <h4><span class="step-number">1</span><span class="step-title">Conectar tu Cuenta Zoom</span></h4>
+            <p>Para comenzar a usar consultas virtuales, debes conectar tu cuenta personal de Zoom a SAMI. Sigue estos pasos:</p>
+            <ol style="margin-bottom: 0;">
+                <li>Ve a <strong>Configuraciones</strong> en el menú lateral</li>
+                <li>Selecciona <strong>"Mi Cuenta Zoom"</strong> en la sección de Configuraciones</li>
+                <li>Haz click en el botón <strong>"Conectar mi Cuenta Zoom"</strong></li>
+                <li>Serás redirigido a Zoom para autorizar la aplicación</li>
+                <li>Autoriza los permisos solicitados (crear reuniones y acceder a tu información)</li>
+                <li>Vuelve a SAMI y verás tu cuenta conectada</li>
+            </ol>
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_1.png') }}" alt="" style="width: 100%;">
+
+            <div style="background: #e9ecef; border: 2px dashed #6c757d; border-radius: 8px; padding: 40px; text-align: center; margin-top: 15px;">
+                <i class="fas fa-image" style="font-size: 40px; color: #999;"></i>
+                <p style="color: #666; margin: 10px 0 0 0;"><strong>Captura 2:</strong> Autorización en Zoom</p>
+            </div>
+        </div>
+
+        <!-- PASO 2: VERIFICAR CONEXIÓN -->
+        <div class="step-card">
+            <h4><span class="step-number">2</span><span class="step-title">Verificar Conexión Exitosa</span></h4>
+
+            <p>Una vez autorizado, deberías ver la siguiente información en tu página de configuración:</p>
+
+            <div class="field-table-wrapper">
+                <table class="field-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Campo"><strong>Email Zoom</strong></td>
+                            <td data-label="Descripción">El email asociado a tu cuenta de Zoom</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>User ID</strong></td>
+                            <td data-label="Descripción">El identificador único de tu cuenta en Zoom</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Campo"><strong>Conectado desde</strong></td>
+                            <td data-label="Descripción">Fecha y hora de la conexión exitosa</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_3.png') }}" alt="" style="width: 100%;">
+        </div>
+
+        <!-- PASO 3: CREAR CITA VIRTUAL -->
+        <div class="step-card">
+            <h4><span class="step-number">3</span><span class="step-title">Crear una Cita Virtual</span></h4>
+            <p>Con tu cuenta Zoom conectada, ya puedes crear citas virtuales que se ejecutarán en tu propia cuenta.</p>
+            <ol>
+                <li>Ve a <strong>Citas</strong> en el menú lateral</li>
+                <li>Haz click en <strong>"Crear Cita"</strong></li>
+                <li>En el modal de creación:
+                    <ul>
+                        <li>Selecciona el <strong>doctor</strong> (debe ser tú o un doctor con Zoom configurado)</li>
+                        <li>Selecciona el <strong>paciente</strong></li>
+                        <li>Establece la <strong>fecha y hora</strong></li>
+                        <li><strong>Marca como "Virtual"</strong> - Esta opción solo aparece si el doctor tiene Zoom configurado</li>
+                    </ul>
+                </li>
+                <li>Haz click en <strong>"Guardar Cita"</strong></li>
+                <li>SAMI creará automáticamente una reunión de Zoom en tu cuenta con Meeting ID, contraseña de seguridad y enlace directo</li>
+            </ol>
+
+            <div style="background: #f0f0f0; border-left: 4px solid #ffc107; padding: 12px; border-radius: 4px; margin-top: 15px;">
+                <strong style="color: #ff9800;">💡 Consejo:</strong> La opción "Virtual" solo aparecerá si tu cuenta Zoom está conectada y verificada
+            </div>
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_4.png') }}" alt="" style="width: 100%;">
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_5.png') }}" alt="" style="width: 100%;">
+        </div>
+
+        <!-- PASO 4: NOTIFICACIÓN AL PACIENTE -->
+        <div class="step-card">
+            <h4><span class="step-number">4</span><span class="step-title">Notificación al Paciente</span></h4>
+
+        <p>Una vez creada la cita virtual, el paciente recibe un correo con toda la información necesaria para unirse a la reunión.</p>
+
+        <div class="field-table-wrapper">
+            <table class="field-table">
+                <thead>
+                    <tr>
+                        <th>Elemento del Correo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Elemento"><strong>Fecha y Hora</strong></td>
+                        <td data-label="Descripción">Horario exacto de la cita virtual</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Elemento"><strong>Nombre del Doctor</strong></td>
+                        <td data-label="Descripción">Quién realizará la consulta</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Elemento"><strong>Enlace Directo de Zoom</strong></td>
+                        <td data-label="Descripción">URL que el paciente puede hacer click para unirse directamente</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Elemento"><strong>Meeting ID</strong></td>
+                        <td data-label="Descripción">Identificador de la reunión (en caso de acceso manual)</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Elemento"><strong>Código de Acceso</strong></td>
+                        <td data-label="Descripción">Contraseña de seguridad de la reunión</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_6.png') }}" alt="" style="width: 100%;">
+        </div>
+
+        <!-- PASO 5: INICIAR CONSULTA VIRTUAL -->
+        <div class="step-card">
+            <h4><span class="step-number">5</span><span class="step-title">Iniciar la Consulta Virtual</span></h4>
+            <p>Cuando llega la hora de la cita, tanto el doctor como el paciente pueden acceder a la sala de Zoom desde SAMI.</p>
+
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <h5 style="margin-top: 0;">Para el Doctor:</h5>
+                <ol style="margin-bottom: 0;">
+                    <li>Ve a <strong>Citas</strong> y encuentra la cita virtual</li>
+                    <li>Haz click en la cita para abrir la consulta</li>
+                    <li>En la sección de Zoom, verás un botón <strong>"Abrir Zoom"</strong></li>
+                    <li>Al hacer click, se abre la sala de Zoom en una nueva pestaña</li>
+                    <li>SAMI automáticamente marca la sesión como iniciada</li>
+                    <li>Puedes compartir el enlace con el paciente desde la misma pantalla</li>
+                </ol>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px; margin-bottom: 15px;">
+                <h5 style="margin-top: 0;">Para el Paciente:</h5>
+                <ol style="margin-bottom: 0;">
+                    <li>Abre el correo recibido con la cita virtual</li>
+                    <li>Haz click en el <strong>enlace directo de Zoom</strong></li>
+                    <li>Zoom abre automáticamente con el Meeting ID y contraseña pre-rellenados</li>
+                    <li>Ingresa a la sala y espera al doctor</li>
+                </ol>
+            </div>
+
+            <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 12px; border-radius: 4px; margin-top: 15px;">
+                <strong style="color: #2e7d32;">Flujo de Conexión:</strong>
+                <ol style="margin: 10px 0 0 0;">
+                    <li><strong>Doctor inicia Zoom:</strong> Hace click en "Abrir Zoom" durante la consulta</li>
+                    <li><strong>Sistema marca sesión:</strong> SAMI registra que la sesión comenzó</li>
+                    <li><strong>Paciente se une:</strong> El paciente accede usando el enlace del correo</li>
+                    <li><strong>Consulta en progreso:</strong> Ambos están conectados en Zoom , el medico en simultaneo actualiza la consulta.</li>
+                    <li><strong>Finalización:</strong> Al cerrar cita teleconsulta con el paciente , medico afina detalles en vista de consulta y al teminar clic en Finalizar Conuslta.</li>
+                </ol>
+            </div>
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_7.png') }}" alt="" style="width: 100%;">
+
+            <img src="{{ asset('images/tutorial/settings/setting_zoom_8.png') }}" alt="" style="width: 100%;">
+
+
+        </div>
+
+        <!-- GESTIÓN Y SEGURIDAD -->
+        <h3><i class="fas fa-cog me-2"></i>Gestión de tu Cuenta Zoom</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box tip">
+                    <div class="info-box-title">
+                        <i class="fas fa-shield text-success"></i>
+                        Seguridad
+                    </div>
+                    <ul class="mb-0">
+                        <li>Todas las reuniones tienen contraseña automática</li>
+                        <li>Solo doctores autenticados pueden crear citas</li>
+                        <li>Cada doctor usa su propia cuenta Zoom</li>
+                        <li>Los tokens se renuevan automáticamente</li>
+                        <li>SAMI no almacena grabaciones (tu responsabilidad en Zoom)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-undo text-info"></i>
+                        Desconectar tu Cuenta
+                    </div>
+                    <p>Si deseas desconectar tu cuenta Zoom en cualquier momento:</p>
+                    <ol class="mb-0">
+                        <li>Ve a <strong>Configuraciones > Mi Cuenta Zoom</strong></li>
+                        <li>Haz click en el botón <strong>"Desconectar Zoom"</strong></li>
+                        <li>Confirma la acción</li>
+                        <li>Ya no podrás crear nuevas citas virtuales hasta reconectar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <img src="{{ asset('images/tutorial/settings/setting_zoom_9.png') }}" alt="" style="width: 100%;">
+
+        <!-- RESOLUCIÓN DE PROBLEMAS -->
+        <h3><i class="fas fa-exclamation-triangle me-2"></i>Solución de Problemas Comunes</h3>
+
+        <div class="accordion" id="zoomFAQ">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        ¿Por qué no veo la opción "Virtual" al crear una cita?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#zoomFAQ">
+                    <div class="accordion-body">
+                        <p>Esto significa que tu cuenta Zoom no está conectada o verificada. Solución:</p>
+                        <ul>
+                            <li>Ve a <strong>Configuraciones > Mi Cuenta Zoom</strong></li>
+                            <li>Verifica que tu cuenta esté "Conectada" (debe mostrar tu email y User ID)</li>
+                            <li>Si no está conectada, haz click en "Conectar mi Cuenta Zoom"</li>
+                            <li>Si está conectada, recarga la página del navegador</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        El paciente no puede abrir el enlace de Zoom
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#zoomFAQ">
+                    <div class="accordion-body">
+                        <p>Intenta lo siguiente:</p>
+                        <ul>
+                            <li>Verifica que el paciente tenga una cuenta de Zoom o la app instalada</li>
+                            <li>Copia el Meeting ID y código de acceso manualmente desde el correo</li>
+                            <li>Accede a zoom.us/j/[MEETING_ID] e ingresa el código</li>
+                            <li>Si usa móvil, asegúrate de tener la app de Zoom instalada</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        Se olvidó mi contraseña de Zoom
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#zoomFAQ">
+                    <div class="accordion-body">
+                        <p>Puedes recuperar tu cuenta directamente en Zoom:</p>
+                        <ul>
+                            <li>Ve a zoom.us y haz click en "Recuperar contraseña"</li>
+                            <li>Sigue las instrucciones en tu email</li>
+                            <li>Una vez recuperada, tu cuenta seguirá conectada a SAMI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        ¿Mi suscripción a Zoom es gratuita o de pago?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#zoomFAQ">
+                    <div class="accordion-body">
+                        <p><strong>Eso depende de ti.</strong> SAMI solo crea reuniones en tu cuenta, no maneja la suscripción. Puedes:</p>
+                        <ul>
+                            <li>Usar una cuenta <strong>Zoom gratuita</strong> (hasta 40 minutos en reuniones de 3+ participantes)</li>
+                            <li>Usar una cuenta <strong>Zoom de pago</strong> (sin límite de tiempo)</li>
+                            <li>Los costos de tu suscripción a Zoom son tu responsabilidad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTAJAS -->
+        <h3><i class="fas fa-star me-2"></i>Ventajas de la Configuración por Doctor</h3>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-box" style="background: #e8f5e9;">
+                    <div class="info-box-title">
+                        <i class="fas fa-users text-success"></i>
+                        Múltiples Doctores
+                    </div>
+                    <p class="mb-0">Cada doctor puede crear consultas virtuales simultáneamente sin conflictos de capacidad</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box" style="background: #e3f2fd;">
+                    <div class="info-box-title">
+                        <i class="fas fa-lock text-info"></i>
+                        Privacidad
+                    </div>
+                    <p class="mb-0">Tu cuenta Zoom es completamente tuya, con control total sobre grabaciones y datos</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box" style="background: #fff3e0;">
+                    <div class="info-box-title">
+                        <i class="fas fa-clock text-warning"></i>
+                        Flexibilidad
+                    </div>
+                    <p class="mb-0">Puedes desconectar en cualquier momento sin afectar a otros doctores</p>
+                </div>
+            </div>
+        </div>
+
     </section>
 
         </div> <!-- End col-lg-8 -->

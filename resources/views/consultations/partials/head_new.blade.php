@@ -29,7 +29,9 @@
                 @if($encounter->appointment->consultation_type=='presencial')
                 {{ $encounter->appointment->consultingRoom->name }}
                 @else
-                    {{ __('Cita Virtual') }}
+                    <span style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                        🎥 {{ __('Cita Virtual') }}
+                    </span>
                 @endif
             </span>
         </div>
@@ -40,7 +42,10 @@
             </span>
             <span class="data-value-new">{{ $encounter->appointment->service_type }}</span>
         </div>
+
+
     </div>
+
 
     <!-- Datos del Paciente -->
     <div class="banner-block-new">
@@ -86,30 +91,67 @@
         </div>
     </div>
 
+
+</div>
+
+<!-- Zoom Meeting Details (if virtual) -->
+@if($encounter->appointment->consultation_type === 'virtual' && $encounter->appointment->virtual_room_id)
+@php
+        $password = $encounter->appointment->virtual_session_metadata['meeting_password'] ?? null;
+        $zoomUrl = 'https://zoom.us/j/' . $encounter->appointment->virtual_room_id;
+        if ($password) {
+            $encodedPassword = urlencode(base64_encode($password));
+            $zoomUrl .= '?pwd=' . $encodedPassword;
+        }
+    @endphp
+<div class="patient-banner-new">
     <!-- Equipo Médico -->
     <div class="banner-block-new">
         <h3>
-            <i class="fas fa-user-md"></i>
-            Equipo Médico
+            <i class="fas fa-video"></i>
+            Detalles video consulta
         </h3>
         <div class="data-row-new">
             <span class="data-label-new">
-                <i class="fas fa-stethoscope"></i>
-                Doctor:
+                <i class="fas fa-list-numeric"></i>
+                Meeting Id:
             </span>
-            <span class="data-value-new">{!! $encounter->practitioner->profile_name !!}</span>
+            <span class="data-value-new">{{ $encounter->appointment->virtual_room_id }}</span>
         </div>
-        @if($appointment->practitioner->qualifications()->first())
+        <div class="data-row-new">
+            <span class="data-label-new">
+                <i class="fas fa-link"></i>
+                Link zoom:
+            </span>
+                <span class="data-value-new">{{ $zoomUrl }}</span>
+        </div>
+
         <div class="data-row-new">
             <span class="data-label-new">
                 <i class="fas fa-graduation-cap"></i>
-                Especialidad:
+                Acción:
             </span>
-            <span class="data-value-new">{{ $appointment->medicalSpeciality->name }}</span>
+            <span class="data-value-new">
+                 <a href="{{ $zoomUrl }}" target="_blank" rel="noopener noreferrer"
+                    style="display: inline-flex; align-items: center; gap: 4px; background: #0e5aa8; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; cursor: pointer; white-space: nowrap; flex-shrink: 0;"
+                    onmouseover="this.style.background='#0d4a8a'; this.style.transform='scale(1.05)';"
+                    onmouseout="this.style.background='#0e5aa8'; this.style.transform='scale(1)';">
+                    <i class="fas fa-external-link-alt"></i> Abrir Zoom
+                </a>
+            </span>
+        </div>
+        @if($password)
+        <div class="data-row-new">
+            <span class="data-label-new">
+                <i class="fas fa-graduation-cap"></i>
+                Código Reunión:
+            </span>
+            <span class="data-value-new">{{ $password }}</span>
         </div>
         @endif
     </div>
-</div>
 
+</div>
+@endif
 <!-- Timer de consulta (si aplica) -->
 @livewire('consultation.consultation-timer', ['encounter' => $encounter, 'appointment' => $appointment])

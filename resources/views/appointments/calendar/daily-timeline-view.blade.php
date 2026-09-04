@@ -732,6 +732,11 @@
                         <div>
                             <div class="appointment-doctor">
                                 👨‍⚕️ {{ $appointment['practitioner']['name'] ?? 'Doctor no asignado' }}
+                                @if($appModel->consultation_type === 'virtual')
+                                    <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-left: 8px;">
+                                        🎥 VIRTUAL
+                                    </span>
+                                @endif
                             </div>
 
                             @if($appointment['assistant']['first_name'] ?? null)
