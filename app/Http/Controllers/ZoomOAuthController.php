@@ -37,9 +37,31 @@ class ZoomOAuthController extends Controller
 
     /**
      * Callback después de que Zoom autoriza
+     * Nota: Zoom puede enviar solicitudes de validación de webhook a esta URL
+     * Respondemos igual que el webhook para pasar la validación de Zoom
      */
     public function callback(Request $request)
     {
+        // Zoom envía validación de webhook a TODAS las URLs registradas
+        // Responder como lo hace el webhook endpoint
+        if (($request->input('event') ?? null) === 'endpoint.url_validation') {
+            $plainToken = $request->input('payload.plainToken') ?? null;
+            if ($plainToken) {
+                $webhookSecret = config('services.zoom.webhook_secret');
+                $encryptedToken = hash_hmac('sha256', $plainToken, $webhookSecret);
+
+                Log::info('Zoom webhook URL validation received on OAuth callback', [
+                    'plainToken' => substr($plainToken, 0, 10).'...',
+                ]);
+
+                return response()->json([
+                    'plainToken' => $plainToken,
+                    'encryptedToken' => $encryptedToken,
+                ]);
+            }
+        }
+
+        // Si no es validación de webhook, procesar OAuth
         // Validar state token
         if ($request->state !== session()->token()) {
             Log::warning('Zoom OAuth state mismatch', [
