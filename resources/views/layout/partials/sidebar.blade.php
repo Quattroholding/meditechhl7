@@ -284,7 +284,7 @@
                         <li><a class="{{ Request::is('settings/waitlist-settings') ? 'active' : '' }}"  href="{{ route('setting.waitlist_settings') }}">{{ __('Lista de Espera') }}</a></li>
                         <li><a class="{{ Request::is('settings/external-storage') ? 'active' : '' }}"  href="{{ route('setting.external_storage') }}">{{ __('Almacenamiento Externo') }}</a></li>
                         @endif
-                        @if(auth()->user()->hasRole('doctor'))
+                        @if(auth()->user()->hasAnyRole(['admin','doctor']))
                             <li><a class="{{ Request::is('settings/zoom') ? 'active' : '' }}" href="{{ route('practitioner.settings.zoom') }}">{{ __('Mi Cuenta Zoom') }}</a></li>
                         @endif
                         @endif
