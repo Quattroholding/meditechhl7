@@ -18,6 +18,7 @@
 
 use App\Http\Controllers\Admin\DropboxOAuthController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ZoomOAuthController;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================================
@@ -95,5 +96,19 @@ Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'verified', 'firs
     Route::get('/dropbox/disconnect', [DropboxOAuthController::class, 'disconnect'])
         ->middleware('can.manage.subscription')
         ->name('admin.dropbox.disconnect');
+
+    // Zoom OAuth Routes
+    Route::get('/zoom', function () {
+        return view('settings.zoom-settings');
+    })->name('practitioner.settings.zoom');
+
+    Route::get('/zoom/authorize', [ZoomOAuthController::class, 'authorize'])
+        ->name('zoom.authorize');
+
+    Route::get('/zoom/callback', [ZoomOAuthController::class, 'callback'])
+        ->name('zoom.callback');
+
+    Route::post('/zoom/disconnect', [ZoomOAuthController::class, 'disconnect'])
+        ->name('zoom.disconnect');
 
 });
